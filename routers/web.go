@@ -6,7 +6,6 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/http/controller/captcha"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
@@ -63,14 +62,6 @@ func InitWebRouter() *gin.Engine {
 	router.StaticFS("/dir", http.Dir("./public"))    // 将public目录内的文件列举展示
 	router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
 
-	// 创建一个验证码路由
-	verifyCode := router.Group("captcha")
-	{
-		// 验证码业务，该业务无需专门校验参数，所以可以直接调用控制器
-		verifyCode.GET("/", (&captcha.Captcha{}).GenerateId)                          //  获取验证码ID
-		verifyCode.GET("/:captcha_id", (&captcha.Captcha{}).GetImg)                   // 获取图像地址
-		verifyCode.GET("/:captcha_id/:captcha_value", (&captcha.Captcha{}).CheckCode) // 校验验证码
-	}
 	//  创建一个后端接口路由组
 	backend := router.Group("/admin/")
 	{

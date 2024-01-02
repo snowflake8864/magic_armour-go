@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
-	"gorm.io/driver/postgres"
-	"gorm.io/driver/sqlserver"
 	"gorm.io/gorm"
 	gormLog "gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
@@ -105,17 +103,13 @@ func getDbDialector(sqlType, readWrite string, dbConf ...ConfigParams) (gorm.Dia
 	switch strings.ToLower(sqlType) {
 	case "mysql":
 		dbDialector = mysql.Open(dsn)
-	case "sqlserver", "mssql":
-		dbDialector = sqlserver.Open(dsn)
-	case "postgres", "postgresql", "postgre":
-		dbDialector = postgres.Open(dsn)
 	default:
 		return nil, errors.New(my_errors.ErrorsDbDriverNotExists + sqlType)
 	}
 	return dbDialector, nil
 }
 
-//  根据配置参数生成数据库驱动 dsn
+// 根据配置参数生成数据库驱动 dsn
 func getDsn(sqlType, readWrite string, dbConf ...ConfigParams) string {
 	Host := variable.ConfigGormv2Yml.GetString("Gormv2." + sqlType + "." + readWrite + ".Host")
 	DataBase := variable.ConfigGormv2Yml.GetString("Gormv2." + sqlType + "." + readWrite + ".DataBase")
