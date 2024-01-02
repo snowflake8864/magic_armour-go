@@ -6,11 +6,9 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/validator/common/register_validator"
 	"goskeleton/app/service/sys_log_hook"
-	"goskeleton/app/utils/casbin_v2"
 	"goskeleton/app/utils/gorm_v2"
 	"goskeleton/app/utils/snow_flake"
 	"goskeleton/app/utils/validator_translation"
-	"goskeleton/app/utils/websocket/core"
 	"goskeleton/app/utils/yml_config"
 	"goskeleton/app/utils/zap_factory"
 	"log"
@@ -93,22 +91,6 @@ func init() {
 	// 7.雪花算法全局变量
 	variable.SnowFlake = snow_flake.CreateSnowflakeFactory()
 
-	// 8.websocket Hub中心启动
-	if variable.ConfigYml.GetInt("Websocket.Start") == 1 {
-		// websocket 管理中心hub全局初始化一份
-		variable.WebsocketHub = core.CreateHubFactory()
-		if Wh, ok := variable.WebsocketHub.(*core.Hub); ok {
-			go Wh.Run()
-		}
-	}
-
-	// 9.casbin 依据配置文件设置参数(IsInit=1)初始化
-	if variable.ConfigYml.GetInt("Casbin.IsInit") == 1 {
-		var err error
-		if variable.Enforcer, err = casbin_v2.InitCasbinEnforcer(); err != nil {
-			log.Fatal(err.Error())
-		}
-	}
 	//10.全局注册 validator 错误翻译器,zh 代表中文，en 代表英语
 	if err := validator_translation.InitTrans("zh"); err != nil {
 		log.Fatal(my_errors.ErrorsValidatorTransInitFail + err.Error())

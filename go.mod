@@ -3,9 +3,6 @@ module goskeleton
 go 1.15
 
 require (
-	github.com/casbin/casbin/v2 v2.79.0
-	github.com/casbin/gorm-adapter/v3 v3.20.0
-	github.com/dchest/captcha v1.0.0
 	github.com/dgrijalva/jwt-go v3.2.1-0.20210802184156-9742bd7fca1c+incompatible
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-contrib/pprof v1.4.0
@@ -14,10 +11,8 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/gomodule/redigo v1.8.9
-	github.com/gorilla/websocket v1.5.1
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/qifengzhang007/goCurl v1.4.0
-	github.com/rabbitmq/amqp091-go v1.9.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
 	go.uber.org/zap v1.26.0

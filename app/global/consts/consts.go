@@ -57,19 +57,4 @@ const (
 	FilesUploadMimeTypeFailCode    int    = -400252
 	FilesUploadMimeTypeFailMsg     string = "文件mime类型不允许"
 	FilesUploadIsEmpty             string = "不允许上传空文件"
-
-	//websocket
-	WsServerNotStartCode int    = -400300
-	WsServerNotStartMsg  string = "websocket 服务没有开启，请在配置文件开启，相关路径：config/config.yml"
-	WsOpenFailCode       int    = -400301
-	WsOpenFailMsg        string = "websocket open阶段初始化基本参数失败"
-
-	//验证码
-	CaptchaGetParamsInvalidMsg    string = "获取验证码：提交的验证码参数无效,请检查验证码ID以及文件名后缀是否完整"
-	CaptchaGetParamsInvalidCode   int    = -400350
-	CaptchaCheckParamsInvalidMsg  string = "校验验证码：提交的参数无效，请检查 【验证码ID、验证码值】 提交时的键名是否与配置项一致"
-	CaptchaCheckParamsInvalidCode int    = -400351
-	CaptchaCheckOkMsg             string = "验证码校验通过"
-	CaptchaCheckFailCode          int    = -400355
-	CaptchaCheckFailMsg           string = "验证码校验失败"
 )

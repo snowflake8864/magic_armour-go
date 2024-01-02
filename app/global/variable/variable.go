@@ -1,7 +1,6 @@
 package variable
 
 import (
-	"github.com/casbin/casbin/v2"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"goskeleton/app/global/my_errors"
@@ -34,14 +33,6 @@ var (
 
 	//雪花算法全局变量
 	SnowFlake snowflake_interf.InterfaceSnowFlake
-
-	//websocket
-	WebsocketHub              interface{}
-	WebsocketHandshakeSuccess = `{"code":200,"msg":"ws连接成功","data":""}`
-	WebsocketServerPingMsg    = "Server->Ping->Client"
-
-	//casbin 全局操作指针
-	Enforcer *casbin.SyncedEnforcer
 
 	//  用户自行定义其他全局变量 ↓
 
