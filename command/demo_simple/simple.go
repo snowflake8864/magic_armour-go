@@ -1,7 +1,6 @@
 package demo_simple
 
 import (
-	"fmt"
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
 	"time"
@@ -32,7 +31,6 @@ var DemoSimple = &cobra.Command{
 
 // 注册命令、初始化参数
 func init() {
-	fmt.Println("-------------------------------simple")
 	DemoSimple.Flags().StringVarP(&LogAction, "logAction", "A", "insert", "-A 指定参数动作,例如：-A insert ")
 	DemoSimple.Flags().StringVarP(&Date, "date", "D", time.Now().Format("2006-01-02"), "-D 指定日期,例如：-D  2021-09-13")
 }
