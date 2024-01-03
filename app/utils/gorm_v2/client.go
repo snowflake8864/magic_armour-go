@@ -17,8 +17,6 @@ import (
 // 获取一个 mysql 客户端
 func GetOneMysqlClient(selectDb string) (*gorm.DB, error) {
 	readDbIsOpen := variable.ConfigGormv2Yml.GetInt("Gormv2." + selectDb + ".IsOpenReadDb")
-	fmt.Println("0-----------------------------" + selectDb)
-	fmt.Println(readDbIsOpen)
 	return GetSqlDriver(selectDb, readDbIsOpen)
 }
 
@@ -26,8 +24,6 @@ func GetOneMysqlClient(selectDb string) (*gorm.DB, error) {
 func GetSqlDriver(selectDb string, readDbIsOpen int, dbConf ...ConfigParams) (*gorm.DB, error) {
 	//获取每个库的sql类型
 	driveType := variable.ConfigGormv2Yml.GetString("Gormv2." + selectDb + ".DriveType")
-	fmt.Println("1-----------------------------" + selectDb)
-	fmt.Println("2-----------------------------" + driveType)
 	var dbDialector gorm.Dialector
 	if val, err := getDbDialector(selectDb, driveType, "Write", dbConf...); err != nil {
 		variable.ZapLog.Error(my_errors.ErrorsDialectorDbInitFail+selectDb, zap.Error(err))
