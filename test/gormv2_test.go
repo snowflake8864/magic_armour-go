@@ -34,7 +34,7 @@ func (*tb_users) TableName() string {
 	return "tb_users"
 }
 
-//角色表
+// 角色表
 type tb_role struct {
 	Id          uint   `json:"id"  gorm:"primaryKey" `
 	Name        string `json:"name"`
@@ -92,13 +92,13 @@ func TestGormSelect(t *testing.T) {
 	var roles []tb_role
 
 	// tb_users 查询数据会从  db_test 查询, 整个语句没有指定表名，那么就会从 Find 函数参数  &users 上绑定的 tableName函数的返回值中获取表名
-	result := variable.GormDbMysql.Select("id", "user_name", "phone", "email", "remark").Where("user_name  like ?", "%test%").Find(&users)
+	result := variable.GormDbPlatform.Select("id", "user_name", "phone", "email", "remark").Where("user_name  like ?", "%test%").Find(&users)
 	if result.Error != nil {
 		t.Errorf("单元测试失败，错误明细:%s\n", result.Error.Error())
 	}
 	fmt.Printf("tb_users表数据：%v\n", users)
 
-	result = variable.GormDbMysql.Where("name  like ?", "%test%").Find(&roles)
+	result = variable.GormDbPlatform.Where("name  like ?", "%test%").Find(&roles)
 	if result.Error != nil {
 		t.Errorf("单元测试失败，错误明细:%s\n", result.Error.Error())
 	}
@@ -117,13 +117,13 @@ func TestGormInsert(t *testing.T) {
 	}
 
 	// 方式1：相关sql 语句： insert  into Tb_user_log(user_id,ip,login_time,CreatedAt,updated_at)  values(1,"192.168.1.10","当前时间","当前时间")
-	result := variable.GormDbMysql.Create(usrLog)
+	result := variable.GormDbPlatform.Create(usrLog)
 	if result.RowsAffected < 0 {
 		t.Error("新增失败，错误详情：", result.Error.Error())
 	}
 
 	// 方式2：相关sql 语句： insert  into Tb_user_log(user_id,ip,remark)  values(1,"192.168.1.10","备注信息001")
-	result = variable.GormDbMysql.Select("user_id", "ip", "remark").Create(usrLog)
+	result = variable.GormDbPlatform.Select("user_id", "ip", "remark").Create(usrLog)
 	if result.RowsAffected < 0 {
 		t.Error("新增失败，错误详情：", result.Error.Error())
 	}
@@ -141,7 +141,7 @@ func TestGormUpdate(t *testing.T) {
 		UpdatedAt: time.Now().Format("2006-01-02 15:04:05"),
 	}
 	// 整个结构体全量更新
-	result := variable.GormDbMysql.Save(&usrLog)
+	result := variable.GormDbPlatform.Save(&usrLog)
 	if result.RowsAffected < 0 {
 		t.Error("update失败，错误详情：", result.Error.Error())
 	}
@@ -154,7 +154,7 @@ func TestGormUpdate(t *testing.T) {
 		"remark":     "指定字段更新，备注信息",
 	}
 	// 指定字段更新，更新sql： update  Tb_user_log  set user_id=66，ip='192.168.6.66' , login_time='当前时间', remark='指定字段更新，备注信息'  where  id=11
-	result = variable.GormDbMysql.Model(&usrLog).Select("user_id", "ip", "login_time", "remark").Where("id=?", 13).Updates(relaValue)
+	result = variable.GormDbPlatform.Model(&usrLog).Select("user_id", "ip", "login_time", "remark").Where("id=?", 13).Updates(relaValue)
 	if result.RowsAffected < 0 {
 		t.Error("update失败，错误详情：", result.Error.Error())
 	}
@@ -167,13 +167,13 @@ func TestGormDelete(t *testing.T) {
 		Id: 4,
 	}
 	// 方法1： sql：delete  from tb_role where  id =4
-	result := variable.GormDbMysql.Delete(key_primary_struct)
+	result := variable.GormDbPlatform.Delete(key_primary_struct)
 	if result.RowsAffected < 0 {
 		t.Error("delete失败，错误详情：", result.Error.Error())
 	}
 
 	// 方法2： sql：delete  from tb_role where  id =5
-	result = variable.GormDbMysql.Delete(&tb_role{}, 5)
+	result = variable.GormDbPlatform.Delete(&tb_role{}, 5)
 	if result.RowsAffected < 0 {
 		t.Error("delete失败，错误详情：", result.Error.Error())
 	}
@@ -185,12 +185,12 @@ func TestRawSql(t *testing.T) {
 
 	// 查询类
 	var receive []tb_user_log
-	variable.GormDbMysql.Raw("select * from   tb_user_log  where id>?", 0).Scan(&receive)
+	variable.GormDbPlatform.Raw("select * from   tb_user_log  where id>?", 0).Scan(&receive)
 	fmt.Printf("%v\n", receive)
 	//var dest=make([]string,0)
 	//_=sql_res_to_tree.CreateSqlResFormatFactory().ScanToTreeData(receive,&dest)
 	//执行类
-	result := variable.GormDbMysql.Exec("update tb_user_log  set  remark=?  where   id=?", "gorm原生sql执行修改操作", 17)
+	result := variable.GormDbPlatform.Exec("update tb_user_log  set  remark=?  where   id=?", "gorm原生sql执行修改操作", 17)
 	if result.RowsAffected < 0 {
 		t.Error("原生sql执行失败，错误详情：", result.Error.Error())
 	}
@@ -204,7 +204,7 @@ INSERT  INTO tb_auth_post_mount_has_menu_button(fr_auth_post_mount_has_menu_id,f
 SELECT 91,4 FROM  DUAL  WHERE   NOT EXISTS(SELECT 1 FROM tb_auth_post_mount_has_menu_button a  WHERE  a.fr_auth_post_mount_has_menu_id=91 AND a.fr_auth_button_cn_en_id=4)
 	`
 	for i := 0; i < 100; i++ {
-		result := variable.GormDbMysql.Exec(sql)
+		result := variable.GormDbPlatform.Exec(sql)
 		if result.Error != nil {
 			t.Error("原生sql执行失败，错误详情：", result.Error.Error())
 		}
@@ -219,7 +219,7 @@ func TestUseTime(t *testing.T) {
 	var time1 = time.Now()
 	for i := 0; i < 100; i++ {
 		receives = make([]tb_code_list, 0)
-		variable.GormDbMysql.Model(tb_code_list{}).Select("code", "name", "company_name", "concepts_detail", "province", "city", "remark", "status", "created_at", "updated_at").Where("id<=?", 3500).Find(&receives)
+		variable.GormDbPlatform.Model(tb_code_list{}).Select("code", "name", "company_name", "concepts_detail", "province", "city", "remark", "status", "created_at", "updated_at").Where("id<=?", 3500).Find(&receives)
 
 	}
 	fmt.Printf("gorm数据遍历完毕：最后一次条数：%d\n", len(receives))
@@ -229,7 +229,7 @@ func TestUseTime(t *testing.T) {
 	//  直接使用 gorm 的原生
 	//for i:=0;i<100;i++{
 	//	receives=make([]tb_code_list,0)
-	//	variable.GormDbMysql.Raw("SELECT   `code`,  `name`,  `company_name`,  `concepts`,  `concepts_detail`,  `province`,  `city`,  `remark`,  `status`,  `CreatedAt`,  `updated_at` FROM `tb_code_list`  where id<3500 ").Find(&receives)
+	//	variable.GormDbPlatform.Raw("SELECT   `code`,  `name`,  `company_name`,  `concepts`,  `concepts_detail`,  `province`,  `city`,  `remark`,  `status`,  `CreatedAt`,  `updated_at` FROM `tb_code_list`  where id<3500 ").Find(&receives)
 	//}
 	//fmt.Printf("gorm 原生sql数据遍历完毕：最后一次条数：%d\n",len(receives))
 	//// 经过测试，遍历处理35万条数据，需要 4.58 秒
@@ -252,7 +252,7 @@ func TestCocurrent(t *testing.T) {
 				wg.Done()
 			}()
 			var received []tb_code_list
-			variable.GormDbMysql.Table("tb_code_list").Select("code", "name", "company_name", "province", "city", "remark", "status", "created_at", "updated_at").Where("id<=?", 3500).Find(&received)
+			variable.GormDbPlatform.Table("tb_code_list").Select("code", "name", "company_name", "province", "city", "remark", "status", "created_at", "updated_at").Where("id<=?", 3500).Find(&received)
 			//fmt.Printf("本次读取的数据条数:%d\n",len(received))
 		}()
 	}
@@ -309,10 +309,10 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 	// readDbIsOpen ： 是否开启读写分离，1表示开启读数据库的配置，那么 confPrams.Read 参数部分才会生效； 0 则表示 confPrams.Read 部分参数直接忽略（即 读、写同库）
 	// confPrams 动态配置的数据库参数
 	// 此外，其他参数，例如数据库连接池等，则直接调用配置项数据库连接池参数，动态不需要配置，这部分对实际操作影响不大
-	if gormDbMysql, err := gorm_v2.GetSqlDriver("mysql", 0, confPrams); err == nil {
-		gormDbMysql.Raw("select id,username,status,last_login_ip from tb_users").Find(&vDataList)
+	if GormDbPlatform, err := gorm_v2.GetSqlDriver("mysql", 0, confPrams); err == nil {
+		GormDbPlatform.Raw("select id,username,status,last_login_ip from tb_users").Find(&vDataList)
 		fmt.Printf("Read 数据库查询结果：%v\n", vDataList)
-		res := gormDbMysql.Exec("update tb_users  set  real_name='Write数据库更新' where   id<=2 ")
+		res := GormDbPlatform.Exec("update tb_users  set  real_name='Write数据库更新' where   id<=2 ")
 		fmt.Printf("Write 数据库更新以后的影响行数：%d\n", res.RowsAffected)
 	}
 }
@@ -333,7 +333,7 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 //		SELECT   id,fid,name  FROM  tb_province_city  WHERE   id   IN(1,25,321)   OR   path_info  LIKE  '0,1,25,321,2721%'
 //      `
 //
-//	variable.GormDbMysql.Raw(sql).Find(&res1)
+//	variable.GormDbPlatform.Raw(sql).Find(&res1)
 //	fmt.Printf("%+v\n", res1)
 //
 //	type ProvinceCity struct {
@@ -355,42 +355,3 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 //	//  通过反射解剖结构体的字段以及父子关系
 //
 //}
-
-//  sqlserver 数据库测试, 以查询为例，其他操作参见mysql
-// 请在配置项 config > gorm_v2.yml 中，sqlserver 部分，正确配置数据库参数
-// 设置 IsInitGolobalGormSqlserver =1 ，程序自动初始化全局变量
-func TestSqlserver(t *testing.T) {
-	var users []tb_users
-
-	// 执行类sql，如果配置了读写分离，该命令会在 write 数据库执行
-	result := variable.GormDbSqlserver.Exec("update   tb_users  set  remark='update 操作 write数据库' where   id=?", 1)
-	if result.Error != nil {
-		t.Errorf("单元测试失败，错误明细:%s\n", result.Error.Error())
-	}
-
-	// 查询类，如果配置了读写分离，该命令会在 read 数据库执行
-	result = variable.GormDbSqlserver.Table("tb_users").Select("id", "user_name", "pass", "remark").Where("id > ?", 0).Find(&users)
-	if result.Error != nil {
-		t.Errorf("单元测试失败，错误明细：%s\n", result.Error.Error())
-	}
-	fmt.Printf("sqlserver数据查询结果：%v\n", users)
-}
-
-//  PostgreSql 数据库测试
-// 请在配置项 config > gorm_v2.yml 中，PostgreSql 部分，正确配置数据库参数。
-// 设置 IsInitGolobalGormPostgreSql =1 ，程序自动初始化全局变量
-func TestPostgreSql(t *testing.T) {
-	var users []tb_users
-
-	// 执行类sql，如果配置了读写分离，该命令会在 write 数据库执行
-	result := variable.GormDbPostgreSql.Exec("update   web.tb_users  set  remark='update 操作 write数据库' where   id=?", 1)
-	if result.Error != nil {
-		t.Errorf("单元测试失败，错误明细:%s\n", result.Error.Error())
-	}
-	// 查询类，如果配置了读写分离，该命令会在 read 数据库执行
-	result = variable.GormDbPostgreSql.Table("web.tb_users").Select("").Select("id", "user_name", "age", "addr", "remark").Where("id > ?", 0).Find(&users)
-	if result.Error != nil {
-		t.Errorf("单元测试失败，错误明细：%s\n", result.Error.Error())
-	}
-	fmt.Printf("sqlserver数据查询结果：%v\n", users)
-}

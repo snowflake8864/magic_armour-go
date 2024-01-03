@@ -64,27 +64,25 @@ func init() {
 	variable.ZapLog = zap_factory.CreateZapFactory(sys_log_hook.ZapLogHandler)
 
 	// 6.根据配置初始化 gorm mysql 全局 *gorm.Db
-	if variable.ConfigGormv2Yml.GetInt("Gormv2.Mysql.IsInitGlobalGormMysql") == 1 {
-		if dbMysql, err := gorm_v2.GetOneMysqlClient(); err != nil {
+	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbPlatform.IsInitGlobalGormMysql") == 1 {
+		if DbPlatform, err := gorm_v2.GetOneMysqlClient(); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbMysql = dbMysql
+			variable.GormDbPlatform = DbPlatform
 		}
 	}
-	// 根据配置初始化 gorm sqlserver 全局 *gorm.Db
-	if variable.ConfigGormv2Yml.GetInt("Gormv2.Sqlserver.IsInitGlobalGormSqlserver") == 1 {
-		if dbSqlserver, err := gorm_v2.GetOneSqlserverClient(); err != nil {
+	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbAlarm.IsInitGlobalGormMysql") == 1 {
+		if DbAlarm, err := gorm_v2.GetOneMysqlClient(); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbSqlserver = dbSqlserver
+			variable.GormDbAlarm = DbAlarm
 		}
 	}
-	// 根据配置初始化 gorm postgresql 全局 *gorm.Db
-	if variable.ConfigGormv2Yml.GetInt("Gormv2.PostgreSql.IsInitGlobalGormPostgreSql") == 1 {
-		if dbPostgre, err := gorm_v2.GetOnePostgreSqlClient(); err != nil {
+	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbSyslog.IsInitGlobalGormMysql") == 1 {
+		if DbSyslog, err := gorm_v2.GetOneMysqlClient(); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbPostgreSql = dbPostgre
+			variable.GormDbSyslog = DbSyslog
 		}
 	}
 

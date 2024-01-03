@@ -1,0 +1,1 @@
+go build -o demo_cli.exe -ldflags "-w -s"  -trimpath ./cmd/cli/main.go 

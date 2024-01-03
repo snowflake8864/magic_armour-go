@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	"goskeleton/command/demo_simple"
+	"goskeleton/command/initialize"
 	"os"
 )
 
@@ -35,6 +35,6 @@ func init() {
 	// 如果子命令是存在于子目录，那么就需要在入口统一添加；
 	// 如果和 root.go 同目录，则不需要像下一行一样添加
 	//RootCmd.AddCommand(demo.Demo1)
-	RootCmd.AddCommand(demo_simple.DemoSimple)
+	RootCmd.AddCommand(initialize.DbMigrate)
 
 }

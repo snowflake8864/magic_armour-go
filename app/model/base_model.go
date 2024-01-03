@@ -16,30 +16,30 @@ type BaseModel struct {
 	//DeletedAt gorm.DeletedAt `json:"deleted_at"`   // 如果开发者需要使用软删除功能，打开本行注释掉的代码即可，同时需要在数据库的所有表增加字段deleted_at 类型为 datetime
 }
 
-func UseDbConn(sqlType string) *gorm.DB {
+func UseDbConn(dbName string) *gorm.DB {
 	var db *gorm.DB
-	sqlType = strings.Trim(sqlType, " ")
-	if sqlType == "" {
-		sqlType = variable.ConfigGormv2Yml.GetString("Gormv2.UseDbType")
+	dbName = strings.Trim(dbName, " ")
+	if dbName == "" {
+		dbName = variable.ConfigGormv2Yml.GetString("Gormv2.UseDbType")
 	}
-	switch strings.ToLower(sqlType) {
-	case "mysql":
-		if variable.GormDbMysql == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, sqlType, sqlType))
+	switch strings.ToLower(dbName) {
+	case variable.DbNamePlatform:
+		if variable.GormDbPlatform == nil {
+			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, dbName, dbName))
 		}
-		db = variable.GormDbMysql
-	case "sqlserver":
-		if variable.GormDbSqlserver == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, sqlType, sqlType))
+		db = variable.GormDbPlatform
+	case variable.DbNameAlarm:
+		if variable.GormDbAlarm == nil {
+			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, dbName, dbName))
 		}
-		db = variable.GormDbSqlserver
-	case "postgres", "postgre", "postgresql":
-		if variable.GormDbPostgreSql == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, sqlType, sqlType))
+		db = variable.GormDbAlarm
+	case variable.DbNameSyslog:
+		if variable.GormDbSyslog == nil {
+			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, dbName, dbName))
 		}
-		db = variable.GormDbPostgreSql
+		db = variable.GormDbSyslog
 	default:
-		variable.ZapLog.Error(my_errors.ErrorsDbDriverNotExists + sqlType)
+		variable.ZapLog.Error(my_errors.ErrorsDbDriverNotExists + dbName)
 	}
 	return db
 }
