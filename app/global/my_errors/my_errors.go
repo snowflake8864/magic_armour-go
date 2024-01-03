@@ -45,25 +45,8 @@ const (
 
 	//snowflake
 	ErrorsSnowflakeGetIdFail string = "获取snowflake唯一ID过程发生错误"
-	// websocket
-	ErrorsWebsocketOnOpenFail                 string = "websocket onopen 发生阶段错误"
-	ErrorsWebsocketUpgradeFail                string = "websocket Upgrade 协议升级, 发生错误"
-	ErrorsWebsocketReadMessageFail            string = "websocket ReadPump(实时读取消息)协程出错"
-	ErrorsWebsocketBeatHeartFail              string = "websocket BeatHeart心跳协程出错"
-	ErrorsWebsocketBeatHeartsMoreThanMaxTimes string = "websocket BeatHeart 失败次数超过最大值"
-	ErrorsWebsocketSetWriteDeadlineFail       string = "websocket  设置消息写入截止时间出错"
-	ErrorsWebsocketWriteMgsFail               string = "websocket  Write Msg(send msg) 失败"
-	ErrorsWebsocketStateInvalid               string = "websocket  state 状态已经不可用(掉线、卡死等愿意，造成双方无法进行数据交互)"
-	// rabbitMq
-	ErrorsRabbitMqReconnectFail string = "RabbitMq消费者端掉线后重连失败，超过尝试最大次数"
 
 	//文件上传
 	ErrorsFilesUploadOpenFail string = "打开文件失败，详情："
 	ErrorsFilesUploadReadFail string = "读取文件32字节失败，详情："
-
-	// casbin 初始化可能的错误
-	ErrorCasbinCanNotUseDbPtr         string = "casbin 的初始化基于gorm 初始化后的数据库连接指针，程序检测到 gorm 连接指针无效，请检查数据库配置！"
-	ErrorCasbinCreateAdaptFail        string = "casbin NewAdapterByDBUseTableName 发生错误："
-	ErrorCasbinCreateEnforcerFail     string = "casbin NewEnforcer 发生错误："
-	ErrorCasbinNewModelFromStringFail string = "NewModelFromString 调用时出错："
 )

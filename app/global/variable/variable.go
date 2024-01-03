@@ -31,9 +31,9 @@ var (
 	GormDbAlarm    *gorm.DB // 全局gorm的客户端连接
 	GormDbSyslog   *gorm.DB // 全局gorm的客户端连接
 
-	DbNamePlatform = "platform" //数据库名称
-	DbNameAlarm    = "alarm"    //数据库名称
-	DbNameSyslog   = "syslog"   //数据库名称
+	DbNamePlatform = "DbPlatform" //数据库名称
+	DbNameAlarm    = "DbAlarm"    //数据库名称
+	DbNameSyslog   = "DbSyslog"   //数据库名称
 
 	//雪花算法全局变量
 	SnowFlake snowflake_interf.InterfaceSnowFlake

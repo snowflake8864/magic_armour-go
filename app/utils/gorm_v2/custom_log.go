@@ -13,7 +13,7 @@ import (
 )
 
 // 自定义日志格式, 对 gorm 自带日志进行拦截重写
-func createCustomGormLog(sqlType string, options ...Options) gormLog.Interface {
+func createCustomGormLog(selectDb string, options ...Options) gormLog.Interface {
 	var (
 		infoStr      = "%s\n[info] "
 		warnStr      = "%s\n[warn] "
@@ -23,7 +23,7 @@ func createCustomGormLog(sqlType string, options ...Options) gormLog.Interface {
 		traceErrStr  = "%s %s\n[%.3fms] [rows:%v] %s"
 	)
 	logConf := gormLog.Config{
-		SlowThreshold: time.Second * variable.ConfigGormv2Yml.GetDuration("Gormv2."+sqlType+"."+".SlowThreshold"),
+		SlowThreshold: time.Second * variable.ConfigGormv2Yml.GetDuration("Gormv2."+selectDb+"."+".SlowThreshold"),
 		LogLevel:      gormLog.Warn,
 		Colorful:      false,
 	}

@@ -1,8 +1,10 @@
 Gormv2: # 只针对 gorm  操作数据库有效
-  UseDbType: "DbPlatform"  # 备选项 DbPlatform 、DbAlarm、 DbSyslog
+  UseDbType: "mysql"  # 备选项 mysql
+  DefaultSelectDb: "DbPlatform"  # 默认使用那个配置, 框架没有, 新增
   DbPlatform:
     IsInitGlobalGormMysql: 1    # 随项目启动为gorm db初始化一个全局 variable.GormDbPlatform（完全等于*gorm.Db）,正确配置数据库，该值必须设置为: 1
     SlowThreshold: 30            # 慢 SQL 阈值(sql执行时间超过此时间单位（秒），就会触发系统日志记录)
+    DriveType: "mysql" # 数据库类型, 框架没有, 新增
     Write:
       Host: "192.168.17.251"
       DataBase: "magic_armour_platform"
@@ -10,7 +12,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       Prefix: ""   #  目前没有用到该配置项
       User: "root"
       Pass: "veda2020"
-      Charset: "utf-8"
+      Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60    # 连接不活动时的最大生存时间(秒)
@@ -24,41 +26,43 @@ Gormv2: # 只针对 gorm  操作数据库有效
       Prefix: "9030"
       User: "root"
       Pass: "veda2020"
-      Charset: "utf-8"
+      Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60
   DbAlarm:
-    IsInitGlobalGormMysql: 1    # 随项目启动为gorm db初始化一个全局 variable.GormDbAlarm（完全等于*gorm.Db）,正确配置数据库，该值必须设置为: 1
-    SlowThreshold: 30            # 慢 SQL 阈值(sql执行时间超过此时间单位（秒），就会触发系统日志记录)
+    IsInitGlobalGormMysql: 0
+    SlowThreshold: 30
+    DriveType: "mysql"
     Write:
       Host: "192.168.17.251"
       DataBase: "magic_armour_alarm"
       Port: 9030
-      Prefix: ""   #  目前没有用到该配置项
+      Prefix: ""
       User: "root"
       Pass: "veda2020"
-      Charset: "utf-8"
+      Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
-      SetConnMaxLifetime: 60    # 连接不活动时的最大生存时间(秒)
-      ReConnectInterval: 1    # 保留项,重连数据库间隔秒数
-      PingFailRetryTimes: 3   # 保留项,最大重连次数
-    IsOpenReadDb: 0                     # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
+      SetConnMaxLifetime: 60
+      ReConnectInterval: 1
+      PingFailRetryTimes: 3
+    IsOpenReadDb: 0
   DbSyslog:
-    IsInitGlobalGormMysql: 1    # 随项目启动为gorm db初始化一个全局 variable.GormDbSyslog（完全等于*gorm.Db）,正确配置数据库，该值必须设置为: 1
-    SlowThreshold: 30            # 慢 SQL 阈值(sql执行时间超过此时间单位（秒），就会触发系统日志记录)
+    IsInitGlobalGormMysql: 0
+    SlowThreshold: 30
+    DriveType: "mysql"
     Write:
       Host: "192.168.17.251"
       DataBase: "magic_armour_syslog"
       Port: 9030
-      Prefix: ""   #  目前没有用到该配置项
+      Prefix: ""
       User: "root"
       Pass: "veda2020"
-      Charset: "utf-8"
+      Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
-      SetConnMaxLifetime: 60    # 连接不活动时的最大生存时间(秒)
-      ReConnectInterval: 1    # 保留项,重连数据库间隔秒数
-      PingFailRetryTimes: 3   # 保留项,最大重连次数
-    IsOpenReadDb: 0                     # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
+      SetConnMaxLifetime: 60
+      ReConnectInterval: 1
+      PingFailRetryTimes: 3
+    IsOpenReadDb: 0
