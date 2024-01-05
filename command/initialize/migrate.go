@@ -1,6 +1,9 @@
 package initialize
 
 import (
+	_ "github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/database/mysql"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
 )

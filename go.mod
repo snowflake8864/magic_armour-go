@@ -10,6 +10,7 @@ require (
 	github.com/go-playground/locales v0.14.1
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
+	github.com/golang-migrate/migrate/v4 v4.17.0
 	github.com/gomodule/redigo v1.8.9
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/qifengzhang007/goCurl v1.4.0
@@ -18,7 +19,6 @@ require (
 	go.uber.org/zap v1.26.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gorm.io/driver/mysql v1.5.2
-	gorm.io/driver/postgres v1.5.4 // indirect
 	gorm.io/gorm v1.25.5
 	gorm.io/plugin/dbresolver v1.5.0
 )

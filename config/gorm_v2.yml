@@ -22,7 +22,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
     Read:
       Host: "192.168.17.251"
       DataBase: "magic_armour_platform"
-      Port: 3308                        #注意，非3306，请自行调整
+      Port: 9030                        #注意，非3306，请自行调整
       Prefix: "9030"
       User: "root"
       Pass: "veda2020"
