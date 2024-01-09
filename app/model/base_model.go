@@ -12,7 +12,7 @@ type BaseModel struct {
 	*gorm.DB  `gorm:"-" json:"-"`
 	Id        int64  `gorm:"primaryKey" json:"id"`
 	CreatedAt string `json:"created_at"` //日期时间字段统一设置为字符串即可
-	UpdatedAt string `json:"updated_at"`
+	//UpdatedAt string `json:"updated_at"`
 	//DeletedAt gorm.DeletedAt `json:"deleted_at"`   // 如果开发者需要使用软删除功能，打开本行注释掉的代码即可，同时需要在数据库的所有表增加字段deleted_at 类型为 datetime
 }
 
@@ -42,6 +42,14 @@ func UseDbConn(selectDb string) *gorm.DB {
 		variable.ZapLog.Error(my_errors.ErrorsDbDriverNotExists + selectDb)
 	}
 	return db
+}
+
+func (m *BaseModel) TableName() string {
+	return "p_tst"
+}
+
+func (m *BaseModel) GetOne() string {
+	return m.TableName()
 }
 
 // 在 ginskeleton项目中如果在业务 model 设置了回调函数，请看以下说明

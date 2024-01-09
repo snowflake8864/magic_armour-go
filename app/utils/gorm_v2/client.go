@@ -30,9 +30,11 @@ func GetSqlDriver(selectDb string, readDbIsOpen int, dbConf ...ConfigParams) (*g
 	} else {
 		dbDialector = val
 	}
+
+	prepareStmt := variable.ConfigGormv2Yml.GetBool("Gormv2." + selectDb + ".PrepareStmt")
 	gormDb, err := gorm.Open(dbDialector, &gorm.Config{
 		SkipDefaultTransaction: true,
-		PrepareStmt:            true,
+		PrepareStmt:            prepareStmt,
 		Logger:                 redefineLog(selectDb), //拦截、接管 gorm v2 自带日志
 	})
 	if err != nil {

@@ -28,7 +28,7 @@ func TestGolangMigrate(t *testing.T) {
 	// 新建migrate对象
 
 	//m, err := migrate.New("file://D:\\go_project\\magic_armour-go\\database", "mysql://"+dsn(dbname))
-	m, err := migrate.New("file://D:\\go_project\\magic_armour-go\\database\\20230616164949_init_up.sql", "mysql://"+dsn(dbname))
+	m, err := migrate.New("file://", "mysql://"+dsn(dbname))
 
 	if err != nil {
 		fmt.Printf("new migrate err: %+v \n", err)
