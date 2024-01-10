@@ -44,12 +44,12 @@ func UseDbConn(selectDb string) *gorm.DB {
 	return db
 }
 
-func (m *BaseModel) TableName() string {
-	return "p_tst"
-}
-
-func (m *BaseModel) GetOne() string {
-	return m.TableName()
+func (m *BaseModel) TrimCreateTable(sql string) string {
+	sql = strings.Replace(sql, "	", " ", -1)
+	sql = strings.Replace(sql, "\t", "", -1)
+	sql = strings.Replace(sql, "\n", "", -1)
+	//fmt.Println(sql)
+	return sql
 }
 
 // 在 ginskeleton项目中如果在业务 model 设置了回调函数，请看以下说明

@@ -1,4 +1,5 @@
-CREATE TABLE IF NOT EXISTS `a_agents`(
+CREATE TABLE IF NOT EXISTS `a_agents`
+(
 	`uuid` varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 	`id` int NOT NULL COMMENT '自增id',
 	`host_name` varchar(128)  NOT NULL DEFAULT '' COMMENT '主机名',

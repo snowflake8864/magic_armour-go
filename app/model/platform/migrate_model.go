@@ -1,10 +1,11 @@
-package model
+package modelPlatform
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"strings"
+	"time"
 )
 
 // 创建调用工厂
@@ -27,10 +28,8 @@ func (m *MigrateModel) TableName() string {
 	return "p_migrations"
 }
 
-//创建表
-
+// 创建表
 func (m *MigrateModel) CreateTable() bool {
-	m.PrepareStmt = false
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -43,25 +42,33 @@ func (m *MigrateModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
-	//fmt.Println(sql)
-	sql = strings.Replace(sql, "	", " ", -1)
-	sql = strings.Replace(sql, "\t", "", -1)
-	sql = strings.Replace(sql, "\n", "", -1)
+	result := m.Exec(m.TrimCreateTable(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+
+}
+
+func (m *MigrateModel) InsertItem(s *MigrateModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(&MigrateModel{}).Create(s)
+	})
 	fmt.Println(sql)
 	result := m.Exec(sql)
-
 	if result.RowsAffected > 0 {
 		return true
 	} else {
 		return false
 	}
-
 }
 
-func (m *MigrateModel) AddOne() bool {
-	//sql := "INSERT  INTO p_migrations (Migration,  created_at) VALUES (?, ?)"
-	//result := m.Exec(sql, "20240108000001_init_paltform", "2024-01-08 00:00:01")
-	sql := "INSERT  INTO p_migrations (Migration,  created_at) VALUES (\"20240108000001_init_paltform\", \"2024-01-09 00:01:01\")"
+func (m *MigrateModel) InsertItems(list *[]MigrateModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(&MigrateModel{}).Create(list)
+	})
+	fmt.Println(sql)
 	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
 		return true
@@ -70,14 +77,98 @@ func (m *MigrateModel) AddOne() bool {
 	}
 }
 
-func (m *MigrateModel) InsertOne() bool {
-	//sql := "INSERT  INTO p_migrations (Migration,  created_at) VALUES (?, ?)"
-	//result := m.Exec(sql, "20240108000001_init_paltform", "2024-01-08 00:00:01")
-	sql := "INSERT  INTO p_migrations (Migration,  created_at) VALUES (\"20240108000001_init_paltform\", \"2024-01-09 00:01:01\")"
-	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
-		return true
+func (m *MigrateModel) ShowOneItem() (*MigrateModel, error) {
+	sql := "SELECT  * FROM  `p_migrations`  WHERE Migration='20240108000001_init_paltform111' LIMIT 1"
+	result := m.Raw(sql).First(m)
+	if result.Error == nil {
+		return m, nil
 	} else {
-		return false
+		return nil, result.Error
 	}
+}
+
+func (m *MigrateModel) GetALLItems() (temp []MigrateModel, err error) {
+	sql := "SELECT  * FROM  `p_migrations`"
+	result := m.Raw(sql).Find(&temp)
+	if result.Error == nil {
+		return temp, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *MigrateModel) TestToSQL() bool {
+	fmt.Println("\n SELECT--------------------------------------------------")
+	sql := ""
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(&MigrateModel{}).Where("Migration = ?", "20240108000001_init_paltform111").Limit(10).Order("age desc").Find(&[]MigrateModel{})
+	})
+	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "SELECT * FROM p_migrations WHERE Migration = ?"
+		return tx.Model(&MigrateModel{}).Raw(st, "20240108000001_init_paltform111")
+	})
+	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "SELECT * FROM p_migrations WHERE Migration = ?"
+		return tx.Model(&MigrateModel{}).Raw(st, "20240108000001_init_paltform111")
+	})
+	fmt.Println(sql)
+	fmt.Println("\n INSERT--------------------------------------------------")
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(&MigrateModel{}).Exec("INSERT  INTO p_migrations (Migration,  created_at) VALUES (?, ?)",
+			"20240108000001_init_paltforma' or '1'='1",
+			"2024-01-08 00:00:01")
+	})
+	fmt.Println(sql)
+
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		var st = &MigrateModel{
+			Migration: "20240108000001_init_paltforma' or '1'='1",
+			CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		}
+		return tx.Model(&MigrateModel{}).Create(st)
+	})
+	fmt.Println(sql)
+
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		var st = &[]MigrateModel{
+			{
+				Migration: "20240108000001_init_paltforma' or '2'='2",
+				CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+			},
+			{
+				Migration: "20240108000001_init_paltforma' or '3'='3",
+				CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+			},
+		}
+		return tx.Model(&MigrateModel{}).Create(st)
+	})
+	fmt.Println(sql)
+
+	fmt.Println("\n update--------------------------------------------------")
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "update p_migrations set Migration=?,  created_at=?  WHERE Migration=? AND created_at=?"
+		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", "2006-01-02 15:04:05", "20240108000001_init_paltforma", "2006-01-02 15:04:05")
+	})
+	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		// 定义更新字段的map， 键值对
+		var relaValue = map[string]interface{}{
+			"Migration":  "192.168.6.66",
+			"created_at": time.Now().Format("2006-01-02 15:04:05"),
+		}
+		return tx.Model(&MigrateModel{}).Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
+	})
+	fmt.Println(sql)
+
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		var st = &MigrateModel{
+			Migration: "20240108000001_init_paltforma' or '1'='1",
+			CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+		}
+		return tx.Model(&MigrateModel{}).Save(st)
+	})
+	fmt.Println(sql)
+	return true
 }
