@@ -82,6 +82,20 @@ func TestShowAll(t *testing.T) {
 	}
 }
 
+func TestShowAllMAP(t *testing.T) {
+	modelFact := modelPlatform.CreateMigrateFactory()
+
+	items, err := modelFact.GetAllMap()
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	for key, value := range items {
+		fmt.Println(key)
+		fmt.Println(value.Migration)
+	}
+}
+
 func TestToSql(t *testing.T) {
 	modelFact := modelPlatform.CreateMigrateFactory()
 	_ = modelFact.TestToSQL()

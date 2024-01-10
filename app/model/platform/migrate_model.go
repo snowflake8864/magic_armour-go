@@ -97,6 +97,24 @@ func (m *MigrateModel) GetALLItems() (temp []MigrateModel, err error) {
 	}
 }
 
+func (m *MigrateModel) GetAllMap() (res map[string]MigrateModel, err error) {
+	var items []MigrateModel
+	if res == nil {
+		res = make(map[string]MigrateModel)
+	}
+
+	sql := "SELECT  * FROM  `p_migrations`"
+	result := m.Raw(sql).Find(&items)
+	if result.Error == nil {
+		for _, obj := range items {
+			res[obj.Migration] = obj
+		}
+		return res, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
 func (m *MigrateModel) TestToSQL() bool {
 	fmt.Println("\n SELECT--------------------------------------------------")
 	sql := ""
@@ -125,7 +143,7 @@ func (m *MigrateModel) TestToSQL() bool {
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		var st = &MigrateModel{
 			Migration: "20240108000001_init_paltforma' or '1'='1",
-			CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+			CreatedAt: time.Now().Format(variable.DateFormat),
 		}
 		return tx.Model(&MigrateModel{}).Create(st)
 	})
@@ -135,11 +153,11 @@ func (m *MigrateModel) TestToSQL() bool {
 		var st = &[]MigrateModel{
 			{
 				Migration: "20240108000001_init_paltforma' or '2'='2",
-				CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+				CreatedAt: time.Now().Format(variable.DateFormat),
 			},
 			{
 				Migration: "20240108000001_init_paltforma' or '3'='3",
-				CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+				CreatedAt: time.Now().Format(variable.DateFormat),
 			},
 		}
 		return tx.Model(&MigrateModel{}).Create(st)
@@ -149,14 +167,14 @@ func (m *MigrateModel) TestToSQL() bool {
 	fmt.Println("\n update--------------------------------------------------")
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		st := "update p_migrations set Migration=?,  created_at=?  WHERE Migration=? AND created_at=?"
-		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", "2006-01-02 15:04:05", "20240108000001_init_paltforma", "2006-01-02 15:04:05")
+		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", variable.DateFormat, "20240108000001_init_paltforma", variable.DateFormat)
 	})
 	fmt.Println(sql)
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		// 定义更新字段的map， 键值对
 		var relaValue = map[string]interface{}{
 			"Migration":  "192.168.6.66",
-			"created_at": time.Now().Format("2006-01-02 15:04:05"),
+			"created_at": time.Now().Format(variable.DateFormat),
 		}
 		return tx.Model(&MigrateModel{}).Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
 	})
@@ -165,9 +183,28 @@ func (m *MigrateModel) TestToSQL() bool {
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		var st = &MigrateModel{
 			Migration: "20240108000001_init_paltforma' or '1'='1",
-			CreatedAt: time.Now().Format("2006-01-02 15:04:05"),
+			CreatedAt: time.Now().Format(variable.DateFormat),
 		}
 		return tx.Model(&MigrateModel{}).Save(st)
+	})
+	fmt.Println(sql)
+
+	fmt.Println("\n delete--------------------------------------------------")
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "DELETE FROM  p_migrations WHERE Migration=? AND created_at=?"
+		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", variable.DateFormat)
+	})
+	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		var st = &MigrateModel{
+			Migration: "20240108000001_init_paltforma' or '2'='2",
+			CreatedAt: time.Now().Format(variable.DateFormat),
+		}
+		return tx.Model(&MigrateModel{}).Delete(st)
+	})
+	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(&MigrateModel{}).Delete(&MigrateModel{}, 5)
 	})
 	fmt.Println(sql)
 	return true
