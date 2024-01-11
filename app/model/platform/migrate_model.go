@@ -68,7 +68,6 @@ func (m *MigrateModel) InsertItems(list *[]MigrateModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(&MigrateModel{}).Create(list)
 	})
-	fmt.Println(sql)
 	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
 		return true
@@ -97,15 +96,12 @@ func (m *MigrateModel) GetALLItems() (temp []MigrateModel, err error) {
 	}
 }
 
-func (m *MigrateModel) GetAllMap() (res map[string]MigrateModel, err error) {
+func (m *MigrateModel) GetAllMap() (map[string]MigrateModel, error) {
 	var items []MigrateModel
-	if res == nil {
-		res = make(map[string]MigrateModel)
-	}
-
 	sql := "SELECT  * FROM  `p_migrations`"
 	result := m.Raw(sql).Find(&items)
 	if result.Error == nil {
+		res := make(map[string]MigrateModel)
 		for _, obj := range items {
 			res[obj.Migration] = obj
 		}

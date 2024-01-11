@@ -98,14 +98,20 @@ func TestShowAll(t *testing.T) {
 func TestShowAllMAP(t *testing.T) {
 	modelFact := modelPlatform.CreateMigrateFactory()
 
-	items, err := modelFact.GetAllMap()
+	items, err := modelFact.GetAllMaps()
+	if items == nil {
+		fmt.Println("items is nil")
+		fmt.Println(err)
+		return
+	}
 	if err != nil {
+		fmt.Println(items)
 		fmt.Println(err)
 	}
 
 	for key, value := range items {
 		fmt.Println(key)
-		fmt.Println(value.Migration)
+		fmt.Println(value)
 	}
 }
 
