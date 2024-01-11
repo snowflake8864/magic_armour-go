@@ -115,6 +115,22 @@ func (m *MigrateModel) GetAllMap() (res map[string]MigrateModel, err error) {
 	}
 }
 
+func (m *MigrateModel) GetAllMaps() (map[string]string, error) {
+	var items []MigrateModel
+
+	sql := "SELECT  * FROM  `p_migrations`"
+	result := m.Raw(sql).Find(&items)
+	if result.Error == nil {
+		res := make(map[string]string)
+		for _, obj := range items {
+			res[obj.Migration] = obj.CreatedAt
+		}
+		return res, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
 func (m *MigrateModel) TestToSQL() bool {
 	fmt.Println("\n SELECT--------------------------------------------------")
 	sql := ""

@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/variable"
+	modelAlarm "goskeleton/app/model/alarm"
 	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
@@ -15,6 +16,13 @@ func TestDbMigrate(t *testing.T) {
 
 	agentFact := modelPlatform.CreateAgentFactory()
 	agentFact.CreateTable()
+
+	dictionaryFact := modelPlatform.CreateDictionaryFactory()
+	dictionaryFact.CreateTable()
+
+	alarmProcessFact := modelAlarm.CreateAlarmProcessFactory()
+	alarmProcessFact.CreateTable()
+
 }
 
 func TestInsertOne(t *testing.T) {

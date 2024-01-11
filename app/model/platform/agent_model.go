@@ -16,6 +16,7 @@ func CreateAgentFactory() *AgentModel {
 type AgentModel struct {
 	model.BaseModel
 	Uuid                 string `json:"uuid"`
+	Id                   int    `json:"id"`
 	HostName             string `gorm:"column:host_name" json:"host_name"`
 	MacId                string `gorm:"column:mac_id" json:"mac_id"`
 	Ip                   string `json:"ip"`
@@ -55,12 +56,12 @@ type AgentModel struct {
 	PlugLoginConfig      string `gorm:"column:plug_login_config" json:"plug_login_config"`
 	UsbSwitch            int    `gorm:"column:usb_switch" json:"usb_switch"`
 	UsbMode              int    `gorm:"column:usb_mode" json:"usb_mode"`
-	SyslogDnsDwitch      int    `gorm:"column:syslog_dns_switch" json:"syslog_dns_switch"`
+	SyslogDnSwitch       int    `gorm:"column:syslog_dns_switch" json:"syslog_dns_switch"`
 	SyslogOuterSwitch    int    `gorm:"column:syslog_outer_switch" json:"syslog_outer_switch"`
-	SyslogSnnerSwitch    int    `gorm:"column:syslog_inner_switch" json:"syslog_inner_switch"`
+	SyslogInnerSwitch    int    `gorm:"column:syslog_inner_switch" json:"syslog_inner_switch"`
 	SyslogProcessSwitch  int    `gorm:"column:syslog_process_switch" json:"syslog_process_switch"`
-	Syslog_loginSwitch   int    `gorm:"column:syslog_login_switch" json:"syslog_login_switch"`
-	OutreachAlarm_switch int    `gorm:"column:outreach_alarm_switch" json:"outreach_alarm_switch"`
+	SyslogLoginSwitch    int    `gorm:"column:syslog_login_switch" json:"syslog_login_switch"`
+	OutreachAlarmSwitch  int    `gorm:"column:outreach_alarm_switch" json:"outreach_alarm_switch"`
 	SelfProtectionSwitch int    `gorm:"column:self_protection_switch" json:"self_protection_switch"`
 	KernelUpgradeSwitch  int    `gorm:"column:kernel_upgrade_switch" json:"kernel_upgrade_switch"`
 	CommonTime           int    `gorm:"column:common_time" json:"common_time"`
@@ -152,7 +153,8 @@ func (m *AgentModel) CreateTable() bool {
 			INDEX index_admin_id (admin_id) USING INVERTED ,
 			INDEX index_dept_id (dept_id) USING INVERTED ,
 			INDEX index_os_name (os_name) USING INVERTED,
-			INDEX index_platform_type (platform_type) COMMENT 'platform_type'
+			INDEX index_platform_type (platform_type) ,
+			INDEX index_created_at (created_at)
 		)
 		UNIQUE KEY(uuid)
 		DISTRIBUTED BY HASH(uuid) BUCKETS 1
@@ -162,25 +164,6 @@ func (m *AgentModel) CreateTable() bool {
 		);
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-
-}
-
-func (m *AgentModel) AddOne(userName, pass, userIp string) bool {
-	sql := "INSERT  INTO a_agents(uuid, id, host_name, mac_id, ip, client_ip, os_name, platform_type, os_type, " +
-		"mem_size, hd_size, cpu, agent_start_at, os_start_at, ver, auth, is_online, online_start_at, live_at, " +
-		"is_safe, upgrade_ver, admin_id, dept_id, agent_type_id, alias_name, contact_name, contact_tel, remark, " +
-		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, blackmail_switch," +
-		" blackmail_mode, port_switch, plug_switch, usb_switch, usb_mode, syslog_dns_switch, syslog_outer_switch, " +
-		"syslog_inner_switch, syslog_process_switch, syslog_login_switch, outreach_alarm_switch, " +
-		"self_protection_switch, kernel_upgrade_switch, common_time, fast_time, auto_white_switch, alarm_ai_switch, " +
-		"login_solve_switch, hardware_switch, hardware_time, plug_port_config, plug_login_config, login_solve_config, " +
-		"process_flush_at, dll_flush_at, created_at, updated_at) "
-	result := m.Exec(sql, userName, pass, userIp, userName)
 	if result.RowsAffected > 0 {
 		return true
 	} else {
