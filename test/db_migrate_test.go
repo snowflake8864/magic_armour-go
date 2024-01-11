@@ -22,6 +22,7 @@ func TestDbMigrate(t *testing.T) {
 	dictionaryFact.CreateTable()
 
 	alarmProcessFact := modelAlarm.CreateAlarmProcessFactory()
+
 	alarmProcessFact.CreateTable()
 
 	syslogDnsFact := modelSyslog.CreateSyslogDnsFactory()
