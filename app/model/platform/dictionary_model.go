@@ -15,7 +15,10 @@ func CreateDictionaryFactory() *DictionaryModel {
 
 type DictionaryModel struct {
 	model.BaseModel
-	Uuid string `json:"uuid"`
+	Uuid   string `gorm:"primaryKey" json:"uuid"`
+	Module string `json:"module"`
+	Value  string `json:"value"`
+	Remark string `json:"remark"`
 }
 
 // 表名
@@ -36,8 +39,8 @@ func (m *DictionaryModel) CreateTable() bool {
 		UNIQUE KEY(uuid) 
 		DISTRIBUTED BY HASH(uuid) BUCKETS 1 
 		PROPERTIES (
-		'enable_unique_key_merge_on_write' = 'true',
-		'replication_allocation' = 'tag.location.default: 1'
+			'enable_unique_key_merge_on_write' = 'true',
+			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
 	result := m.Exec(m.TrimCreateTable(sql))

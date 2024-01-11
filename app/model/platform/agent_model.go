@@ -15,8 +15,8 @@ func CreateAgentFactory() *AgentModel {
 
 type AgentModel struct {
 	model.BaseModel
-	Uuid                 string `json:"uuid"`
-	Id                   int    `json:"id"`
+	Uuid                 string `gorm:"unique" json:"uuid"`
+	Id                   int    `gorm:"primaryKey" json:"id"`
 	HostName             string `gorm:"column:host_name" json:"host_name"`
 	MacId                string `gorm:"column:mac_id" json:"mac_id"`
 	Ip                   string `json:"ip"`
@@ -159,8 +159,8 @@ func (m *AgentModel) CreateTable() bool {
 		UNIQUE KEY(uuid)
 		DISTRIBUTED BY HASH(uuid) BUCKETS 1
 		PROPERTIES (
-		'enable_unique_key_merge_on_write' = 'true',
-		'replication_allocation' = 'tag.location.default: 1'
+			'enable_unique_key_merge_on_write' = 'true',
+			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
 	result := m.Exec(m.TrimCreateTable(sql))

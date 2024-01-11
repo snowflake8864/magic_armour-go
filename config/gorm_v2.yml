@@ -32,7 +32,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60
   DbAlarm:
-    IsInitGlobalGormMysql: 0
+    IsInitGlobalGormMysql: 1
     SlowThreshold: 30
     DriveType: "mysql"
     PrepareStmt: false
@@ -51,7 +51,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       PingFailRetryTimes: 3
     IsOpenReadDb: 0
   DbSyslog:
-    IsInitGlobalGormMysql: 0
+    IsInitGlobalGormMysql: 1
     SlowThreshold: 30
     DriveType: "mysql"
     PrepareStmt: false

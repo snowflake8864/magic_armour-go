@@ -18,7 +18,7 @@ func CreateMigrateFactory() *MigrateModel {
 
 type MigrateModel struct {
 	model.BaseModel
-	Migration string `gorm:"column:migration" json:"migration"`
+	Migration string `gorm:"primaryKey" json:"migration"`
 	CreatedAt string `json:"created_at"`
 }
 
