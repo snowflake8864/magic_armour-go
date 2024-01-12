@@ -23,8 +23,9 @@ var (
 	// 全局日志指针
 	ZapLog *zap.Logger
 	// 全局配置文件
-	ConfigYml       ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
-	ConfigGormv2Yml ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	ConfigYml        ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	ConfigGormv2Yml  ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	ConfigKafkaV2Yml ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
 
 	//gorm 数据库客户端，如果您操作数据库使用的是gorm，请取消以下注释，在 bootstrap>init 文件，进行初始化即可使用
 	GormDbPlatform *gorm.DB // 全局gorm的客户端连接

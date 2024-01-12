@@ -14,6 +14,7 @@ require (
 	github.com/gomodule/redigo v1.8.9
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/qifengzhang007/goCurl v1.4.0
+	github.com/segmentio/kafka-go v0.4.47
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
 	go.uber.org/zap v1.26.0
