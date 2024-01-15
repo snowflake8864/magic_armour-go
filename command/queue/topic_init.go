@@ -13,7 +13,7 @@ var (
 
 var TopicInit = &cobra.Command{
 	Use:     "Topic",
-	Aliases: []string{"TopicInit"}, // 定义别名
+	Aliases: []string{"Topic"}, // 定义别名
 	Short:   "数据库迁移实现",
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 

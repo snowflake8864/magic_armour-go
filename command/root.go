@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	initMigrate "goskeleton/command/init_migrate"
+	"goskeleton/command/queue"
 	"os"
 )
 
@@ -34,6 +35,6 @@ func init() {
 	// 如果子命令是存在于子目录，那么就需要在入口统一添加；
 	// 如果和 root.go 同目录，则不需要像下一行一样添加
 	RootCmd.AddCommand(initMigrate.DbMigrate)
-	RootCmd.AddCommand(initMigrate.DbMigrate)
+	RootCmd.AddCommand(queue.TopicInit)
 
 }
