@@ -1,11 +1,11 @@
 package test
 
 import (
-	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	_ "github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/kakfa_v2"
 	_ "goskeleton/bootstrap"
 	"net"
 	"strconv"
@@ -14,16 +14,15 @@ import (
 
 func TestConfig(t *testing.T) {
 	fmt.Println(variable.ConfigKafkaV2Yml.GetString("KafkaV2.Producer.Addr"))
+
 }
 
 func TestCreateTopic(t *testing.T) {
-	_, err := kafka.DialLeader(context.Background(), "tcp", "192.168.17.251:9092", "my-topic", 3)
-	if err != nil {
-		panic(err.Error())
-	}
+	kakfa_v2.CreateTopicFactory()
 }
 
 func TestCreateTopic2(t *testing.T) {
+
 	topic := "my-topic"
 
 	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
@@ -89,7 +88,7 @@ func TestDeleteTopic(t *testing.T) {
 	}
 	defer conn.Close()
 
-	err = conn.DeleteTopics("my-topic")
+	err = conn.DeleteTopics("my-topic", "alarm")
 	if err != nil {
 		panic(err.Error())
 	}

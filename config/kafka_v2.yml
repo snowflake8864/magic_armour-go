@@ -1,10 +1,10 @@
 KafkaV2: # 只针对 Kafka  操作有效
   Producer:
-    Addr: "192.168.17.215:9092"
+    Addr: "192.168.17.251:9092"
     Balancer: "Least"
     WriteTimeout: 10
   Consumer:
-    Addr: "192.168.17.215:9092"
+    Addr: "192.168.17.251:9092"
     GroupID: "armour"
     CommitInterval: 3
     StartOffset: "LastOffset"
@@ -12,15 +12,20 @@ KafkaV2: # 只针对 Kafka  操作有效
     TopicComm:
       Name: "common"
       Partition: 2
-    TopicProc:
-      Name: "proc"
+      ReplicationFactor: 1
+    TopicProcess:
+      Name: "process"
       Partition: 3
+      ReplicationFactor: 1
     TopicThreaten:
       Name: "threaten"
       Partition: 3
+      ReplicationFactor: 1
     TopicAlarm:
       Name: "alarm"
       Partition: 2
+      ReplicationFactor: 1
     TopicSyslog:
       Name: "syslog"
       Partition: 4
+      ReplicationFactor: 1
