@@ -58,18 +58,10 @@ func (m *AlarmProcessModel) CreateTable() bool {
 			INDEX index_proc_hash (proc_hash) USING INVERTED,
 			INDEX index_proc_dir (proc_dir) USING INVERTED
 		)
-		DUPLICATE  KEY(agent_id, type, created_at, handle_status) 
-		PARTITION BY RANGE(created_at)() 
+		DUPLICATE  KEY(agent_id, type, created_at, handle_status)
 		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
 		PROPERTIES (
-			'replication_allocation' = 'tag.location.default: 1',
-			'dynamic_partition.enable' = 'true',
-			"dynamic_partition.prefix" = "p",
-			'dynamic_partition.time_unit' = 'MONTH',
-			'dynamic_partition.start' = '-12',
-			 "dynamic_partition.end" = "2",
-			'dynamic_partition.create_history_partition' = 'true',
-			'dynamic_partition.history_partition_num' = '-1'
+			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
 	result := m.Exec(m.TrimCreateTable(sql))

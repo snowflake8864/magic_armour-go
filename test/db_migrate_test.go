@@ -5,28 +5,26 @@ import (
 	"goskeleton/app/global/variable"
 	modelAlarm "goskeleton/app/model/alarm"
 	"goskeleton/app/model/platform"
-	modelSyslog "goskeleton/app/model/syslog"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
 	"time"
 )
 
 func TestDbMigrate(t *testing.T) {
-	migrateFact := modelPlatform.CreateMigrateFactory()
+	/*migrateFact := modelPlatform.CreateMigrateFactory()
 	migrateFact.CreateTable()
 
 	agentFact := modelPlatform.CreateAgentFactory()
 	agentFact.CreateTable()
 
 	dictionaryFact := modelPlatform.CreateDictionaryFactory()
-	dictionaryFact.CreateTable()
+	dictionaryFact.CreateTable()*/
 
 	alarmProcessFact := modelAlarm.CreateAlarmProcessFactory()
-
 	alarmProcessFact.CreateTable()
 
-	syslogDnsFact := modelSyslog.CreateSyslogDnsFactory()
-	syslogDnsFact.CreateTable()
+	/*syslogDnsFact := modelSyslog.CreateSyslogDnsFactory()
+	syslogDnsFact.CreateTable()*/
 
 }
 

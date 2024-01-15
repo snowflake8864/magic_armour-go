@@ -28,6 +28,7 @@ func TestCreateTopic2(t *testing.T) {
 
 	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
 	if err != nil {
+		fmt.Println("1111111111111111111111111111111111111")
 		panic(err.Error())
 	}
 	defer conn.Close()
@@ -48,7 +49,7 @@ func TestCreateTopic2(t *testing.T) {
 	topicConfigs := []kafka.TopicConfig{
 		{
 			Topic:             topic,
-			NumPartitions:     1,
+			NumPartitions:     3,
 			ReplicationFactor: 1,
 		},
 	}
@@ -78,5 +79,18 @@ func TestShowTopic(t *testing.T) {
 	}
 	for k := range m {
 		fmt.Println(k)
+	}
+}
+
+func TestDeleteTopic(t *testing.T) {
+	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer conn.Close()
+
+	err = conn.DeleteTopics("my-topic")
+	if err != nil {
+		panic(err.Error())
 	}
 }
