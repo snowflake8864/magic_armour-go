@@ -1,4 +1,4 @@
-package initMigrate
+package database
 
 import (
 	"github.com/spf13/cobra"
