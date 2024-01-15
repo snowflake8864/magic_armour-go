@@ -12,9 +12,9 @@ var (
 //数据迁移
 
 var TopicInit = &cobra.Command{
-	Use:     "Topic",
-	Aliases: []string{"Topic"}, // 定义别名
-	Short:   "数据库迁移实现",
+	Use:     "topic",
+	Aliases: []string{"topic"}, // 定义别名
+	Short:   "队列主题",
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 
 			2.执行 go  run  cmd/cli/main.go  topic -h  //可以查看使用指南

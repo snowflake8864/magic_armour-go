@@ -18,7 +18,7 @@ var (
 var DbMigrate = &cobra.Command{
 	Use:     "migrate",
 	Aliases: []string{"migrate"}, // 定义别名
-	Short:   "数据库迁移实现",
+	Short:   "数据库迁移",
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 
 			2.执行 go  run  cmd/cli/main.go  migrate -h  //可以查看使用指南
