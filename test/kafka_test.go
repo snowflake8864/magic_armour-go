@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
+	"goskeleton/app/utils/kakfa_v2/model"
 	"goskeleton/app/utils/kakfa_v2/producer"
 	"goskeleton/app/utils/kakfa_v2/topic"
 	_ "goskeleton/bootstrap"
@@ -92,7 +93,7 @@ func TestDeleteTopic(t *testing.T) {
 }
 
 func TestWriteCommon(t *testing.T) {
-	msg := producer.ProducerMessage{
+	msg := model.MessageStruct{
 		Type: "testt",
 		Data: "fsdfs",
 	}

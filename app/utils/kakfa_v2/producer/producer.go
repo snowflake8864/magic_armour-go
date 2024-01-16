@@ -148,11 +148,6 @@ func (p *KafkaProducer) produce(message kafka.Message) error {
 	return nil
 }
 
-type ProducerMessage struct {
-	Type string
-	Data string
-}
-
 func (p *KafkaProducer) PushCommon(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {

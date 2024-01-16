@@ -11,5 +11,5 @@ var configYml ymlconfig_interf.YmlConfigInterf
 func init() {
 	fmt.Println("kakfa_v2 init---------------------------------------------------------")
 	configYml = yml_config.CreateYamlFactory("kafka_v2")
-	
+
 }
