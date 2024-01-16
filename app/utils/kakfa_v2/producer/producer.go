@@ -1,4 +1,4 @@
-package kakfa_v2
+package producer
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
+	kafkaModel "goskeleton/app/utils/kakfa_v2/model"
 	"goskeleton/app/utils/yml_config"
 	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"log"
@@ -152,7 +153,7 @@ type ProducerMessage struct {
 	Data string
 }
 
-func (p *KafkaProducer) PushCommon(message ProducerMessage) bool {
+func (p *KafkaProducer) PushCommon(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushCommon json marshal err, message:%v,err:%v", message, err))
@@ -171,7 +172,7 @@ func (p *KafkaProducer) PushCommon(message ProducerMessage) bool {
 	return true
 }
 
-func (p *KafkaProducer) PushAlarm(message ProducerMessage) bool {
+func (p *KafkaProducer) PushAlarm(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushAlarm json marshal err, message:%v,err:%v", message, err))
@@ -190,7 +191,7 @@ func (p *KafkaProducer) PushAlarm(message ProducerMessage) bool {
 	return true
 }
 
-func (p *KafkaProducer) PushProcess(message ProducerMessage) bool {
+func (p *KafkaProducer) PushProcess(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushProcess json marshal err, message:%v,err:%v", message, err))
@@ -209,7 +210,7 @@ func (p *KafkaProducer) PushProcess(message ProducerMessage) bool {
 	return true
 }
 
-func (p *KafkaProducer) PushThreaten(message ProducerMessage) bool {
+func (p *KafkaProducer) PushThreaten(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushThreaten json marshal err, message:%v,err:%v", message, err))
@@ -228,7 +229,7 @@ func (p *KafkaProducer) PushThreaten(message ProducerMessage) bool {
 	return true
 }
 
-func (p *KafkaProducer) PushSyslog(message ProducerMessage) bool {
+func (p *KafkaProducer) PushSyslog(message kafkaModel.MessageStruct) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushSyslog json marshal err, message:%v,err:%v", message, err))

@@ -2,7 +2,7 @@ package queue
 
 import (
 	"github.com/spf13/cobra"
-	"goskeleton/app/utils/kakfa_v2"
+	"goskeleton/app/utils/kakfa_v2/topic"
 )
 
 var (
@@ -35,6 +35,6 @@ func init() {
 func start(action string) {
 	switch action {
 	case "init":
-		kakfa_v2.CreateTopic()
+		topic.CreateTopic()
 	}
 }

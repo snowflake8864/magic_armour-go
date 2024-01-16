@@ -3,7 +3,8 @@ package test
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/utils/kakfa_v2"
+	"goskeleton/app/utils/kakfa_v2/producer"
+	"goskeleton/app/utils/kakfa_v2/topic"
 	_ "goskeleton/bootstrap"
 	"net"
 	"strconv"
@@ -14,12 +15,12 @@ func TestConfig(t *testing.T) {
 }
 
 func TestCreateTopic(t *testing.T) {
-	kakfa_v2.CreateTopic()
+	topic.CreateTopic()
 }
 
 func TestCreateTopic2(t *testing.T) {
 
-	topic := "my-topic"
+	topic1 := "my-topic"
 
 	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
 	if err != nil {
@@ -43,7 +44,7 @@ func TestCreateTopic2(t *testing.T) {
 
 	topicConfigs := []kafka.TopicConfig{
 		{
-			Topic:             topic,
+			Topic:             topic1,
 			NumPartitions:     3,
 			ReplicationFactor: 1,
 		},
@@ -91,12 +92,12 @@ func TestDeleteTopic(t *testing.T) {
 }
 
 func TestWriteCommon(t *testing.T) {
-	msg := kakfa_v2.ProducerMessage{
+	msg := producer.ProducerMessage{
 		Type: "testt",
 		Data: "fsdfs",
 	}
 
-	producer := kakfa_v2.GetOneKafkaProducer()
-	producer.PushCommon(msg)
+	p := producer.GetOneKafkaProducer()
+	p.PushCommon(msg)
 
 }
