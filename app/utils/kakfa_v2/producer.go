@@ -74,8 +74,8 @@ func (p *ProducerPool) Get() (*kafka.Writer, error) {
 }
 
 // Release 释放生产者回连接池中
-func (p *ProducerPool) Release(producer *kafka.Writer) {
-	p.pool <- producer
+func (p *ProducerPool) Release(writer *kafka.Writer) {
+	p.pool <- writer
 }
 
 // 从连接池获取一个Kafka生产者
@@ -104,7 +104,7 @@ func GetOneKafkaProducer() *KafkaProducer {
 			break
 		}
 	}
-	return &KafkaProducer{Producer: *w}
+	return &KafkaProducer{writer: *w}
 }
 func sendMessage(pool *ProducerPool, message string) error {
 	// 在连接池中获取生产者
@@ -133,13 +133,13 @@ func sendMessage(pool *ProducerPool, message string) error {
 
 // 定义一个生产者构体
 type KafkaProducer struct {
-	Producer kafka.Writer
+	writer kafka.Writer
 }
 
-func (w *KafkaProducer) produce(message kafka.Message) error {
-	defer kafkaProducerPool.Release(&w.Producer)
+func (p *KafkaProducer) produce(message kafka.Message) error {
+	defer kafkaProducerPool.Release(&p.writer)
 
-	err := w.Producer.WriteMessages(context.Background(), message)
+	err := p.writer.WriteMessages(context.Background(), message)
 	if err != nil {
 		variable.ZapLog.Error("Failed to produce message:" + err.Error())
 		return err
@@ -152,7 +152,7 @@ type ProducerMessage struct {
 	Data string
 }
 
-func (w *KafkaProducer) PushCommon(message ProducerMessage) bool {
+func (p *KafkaProducer) PushCommon(message ProducerMessage) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushCommon json marshal err, message:%v,err:%v", message, err))
@@ -163,7 +163,7 @@ func (w *KafkaProducer) PushCommon(message ProducerMessage) bool {
 		Topic: topic,
 		Value: content,
 	}
-	result := w.produce(msg)
+	result := p.produce(msg)
 	if result != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushCommon produce, ,err:%v", result.Error()))
 		return false
@@ -171,7 +171,7 @@ func (w *KafkaProducer) PushCommon(message ProducerMessage) bool {
 	return true
 }
 
-func (w *KafkaProducer) PushAlarm(message ProducerMessage) bool {
+func (p *KafkaProducer) PushAlarm(message ProducerMessage) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushAlarm json marshal err, message:%v,err:%v", message, err))
@@ -182,7 +182,7 @@ func (w *KafkaProducer) PushAlarm(message ProducerMessage) bool {
 		Topic: topic,
 		Value: content,
 	}
-	result := w.produce(msg)
+	result := p.produce(msg)
 	if result != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushAlarm produce, ,err:%v", result.Error()))
 		return false
@@ -190,7 +190,7 @@ func (w *KafkaProducer) PushAlarm(message ProducerMessage) bool {
 	return true
 }
 
-func (w *KafkaProducer) PushProcess(message ProducerMessage) bool {
+func (p *KafkaProducer) PushProcess(message ProducerMessage) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushProcess json marshal err, message:%v,err:%v", message, err))
@@ -201,7 +201,7 @@ func (w *KafkaProducer) PushProcess(message ProducerMessage) bool {
 		Topic: topic,
 		Value: content,
 	}
-	result := w.produce(msg)
+	result := p.produce(msg)
 	if result != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushProcess produce, ,err:%v", result.Error()))
 		return false
@@ -209,7 +209,7 @@ func (w *KafkaProducer) PushProcess(message ProducerMessage) bool {
 	return true
 }
 
-func (w *KafkaProducer) PushThreaten(message ProducerMessage) bool {
+func (p *KafkaProducer) PushThreaten(message ProducerMessage) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushThreaten json marshal err, message:%v,err:%v", message, err))
@@ -220,7 +220,7 @@ func (w *KafkaProducer) PushThreaten(message ProducerMessage) bool {
 		Topic: topic,
 		Value: content,
 	}
-	result := w.produce(msg)
+	result := p.produce(msg)
 	if result != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushThreaten produce, ,err:%v", result.Error()))
 		return false
@@ -228,7 +228,7 @@ func (w *KafkaProducer) PushThreaten(message ProducerMessage) bool {
 	return true
 }
 
-func (w *KafkaProducer) PushSyslog(message ProducerMessage) bool {
+func (p *KafkaProducer) PushSyslog(message ProducerMessage) bool {
 	content, err := json.Marshal(message)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushSyslog json marshal err, message:%v,err:%v", message, err))
@@ -239,7 +239,7 @@ func (w *KafkaProducer) PushSyslog(message ProducerMessage) bool {
 		Topic: topic,
 		Value: content,
 	}
-	result := w.produce(msg)
+	result := p.produce(msg)
 	if result != nil {
 		variable.ZapLog.Error(fmt.Sprintf("PushSyslog produce, ,err:%v", result.Error()))
 		return false
