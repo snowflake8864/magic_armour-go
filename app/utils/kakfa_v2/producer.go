@@ -170,3 +170,79 @@ func (w *KafkaProducer) PushCommon(message ProducerMessage) bool {
 	}
 	return true
 }
+
+func (w *KafkaProducer) PushAlarm(message ProducerMessage) bool {
+	content, err := json.Marshal(message)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushAlarm json marshal err, message:%v,err:%v", message, err))
+	}
+	topic := configYml.GetString("KafkaV2.TopicList.TopicAlarm.Name")
+
+	msg := kafka.Message{
+		Topic: topic,
+		Value: content,
+	}
+	result := w.produce(msg)
+	if result != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushAlarm produce, ,err:%v", result.Error()))
+		return false
+	}
+	return true
+}
+
+func (w *KafkaProducer) PushProcess(message ProducerMessage) bool {
+	content, err := json.Marshal(message)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushProcess json marshal err, message:%v,err:%v", message, err))
+	}
+	topic := configYml.GetString("KafkaV2.TopicList.TopicProcess.Name")
+
+	msg := kafka.Message{
+		Topic: topic,
+		Value: content,
+	}
+	result := w.produce(msg)
+	if result != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushProcess produce, ,err:%v", result.Error()))
+		return false
+	}
+	return true
+}
+
+func (w *KafkaProducer) PushThreaten(message ProducerMessage) bool {
+	content, err := json.Marshal(message)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushThreaten json marshal err, message:%v,err:%v", message, err))
+	}
+	topic := configYml.GetString("KafkaV2.TopicList.TopicThreaten.Name")
+
+	msg := kafka.Message{
+		Topic: topic,
+		Value: content,
+	}
+	result := w.produce(msg)
+	if result != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushThreaten produce, ,err:%v", result.Error()))
+		return false
+	}
+	return true
+}
+
+func (w *KafkaProducer) PushSyslog(message ProducerMessage) bool {
+	content, err := json.Marshal(message)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushSyslog json marshal err, message:%v,err:%v", message, err))
+	}
+	topic := configYml.GetString("KafkaV2.TopicList.TopicSyslog.Name")
+
+	msg := kafka.Message{
+		Topic: topic,
+		Value: content,
+	}
+	result := w.produce(msg)
+	if result != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushSyslog produce, ,err:%v", result.Error()))
+		return false
+	}
+	return true
+}
