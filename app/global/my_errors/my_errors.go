@@ -22,6 +22,7 @@ const (
 	ErrorsRefreshTokenFail         string = "token不符合刷新条件,请通过登陆接口重新获取token!"
 	ErrorsParseTokenFail           string = "解析token失败"
 	ErrorsGormInitFail             string = "Gorm 数据库驱动、连接初始化失败"
+	ErrorsKafkaProducerInitFail    string = "Kafka生产者驱动、连接初始化失败"
 	ErrorsCasbinNoAuthorization    string = "Casbin 鉴权未通过，请在后台检查 casbin 设置参数"
 	ErrorsGormNotInitGlobalPointer string = "%s 数据库全局变量指针没有初始化，请在配置文件 config/gorm_v2.yml 设置 Gormv2.%s.IsInitGlobalGormMysql = 1, 并且保证数据库配置正确 \n"
 	// 数据库部分

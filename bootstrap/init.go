@@ -62,9 +62,6 @@ func init() {
 	// config>gorm_v2.yml 启动文件变化监听事件
 	variable.ConfigGormv2Yml = variable.ConfigYml.Clone("gorm_v2")
 	variable.ConfigGormv2Yml.ConfigFileChangeListen()
-	// config>kafka_v2.yml 启动文件变化监听事件
-	variable.ConfigKafkaV2Yml = variable.ConfigYml.Clone("kafka_v2")
-	variable.ConfigKafkaV2Yml.ConfigFileChangeListen()
 
 	// 5.初始化全局日志句柄，并载入日志钩子处理函数
 	variable.ZapLog = zap_factory.CreateZapFactory(sys_log_hook.ZapLogHandler)

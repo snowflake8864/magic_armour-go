@@ -3,8 +3,6 @@ package test
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	_ "github.com/segmentio/kafka-go"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/kakfa_v2"
 	_ "goskeleton/bootstrap"
 	"net"
@@ -13,12 +11,10 @@ import (
 )
 
 func TestConfig(t *testing.T) {
-	fmt.Println(variable.ConfigKafkaV2Yml.GetString("KafkaV2.Producer.Addr"))
-
 }
 
 func TestCreateTopic(t *testing.T) {
-	kakfa_v2.CreateTopicFactory()
+	kakfa_v2.CreateTopic()
 }
 
 func TestCreateTopic2(t *testing.T) {
@@ -92,4 +88,15 @@ func TestDeleteTopic(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+func TestWriteCommon(t *testing.T) {
+	msg := kakfa_v2.ProducerMessage{
+		Type: "testt",
+		Data: "fsdfs",
+	}
+
+	producer := kakfa_v2.GetOneKafkaProducer()
+	producer.PushCommon(msg)
+
 }

@@ -3,13 +3,12 @@ package kakfa_v2
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/global/variable"
 	"net"
 	"strconv"
 )
 
-func CreateTopicFactory() {
-	addr := variable.ConfigKafkaV2Yml.GetString("KafkaV2.Producer.Addr")
+func CreateTopic() {
+	addr := configYml.GetString("KafkaV2.Producer.Addr")
 	fmt.Println(addr)
 	conn, err := kafka.Dial("tcp", addr)
 	if err != nil {
@@ -18,8 +17,6 @@ func CreateTopicFactory() {
 	defer conn.Close()
 
 	controller, err := conn.Controller()
-	fmt.Println(controller.Host)
-	fmt.Println(controller.Port)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -34,9 +31,9 @@ func CreateTopicFactory() {
 
 	topics := []string{"TopicComm", "TopicProcess", "TopicThreaten", "TopicAlarm", "TopicSyslog"}
 	for _, val := range topics {
-		name := variable.ConfigKafkaV2Yml.GetString("KafkaV2.TopicList." + val + ".Name")
-		partition := variable.ConfigKafkaV2Yml.GetInt("KafkaV2.TopicList." + val + ".Partition")
-		replicationFactor := variable.ConfigKafkaV2Yml.GetInt("KafkaV2.TopicList." + val + ".ReplicationFactor")
+		name := configYml.GetString("KafkaV2.TopicList." + val + ".Name")
+		partition := configYml.GetInt("KafkaV2.TopicList." + val + ".Partition")
+		replicationFactor := configYml.GetInt("KafkaV2.TopicList." + val + ".ReplicationFactor")
 
 		st := kafka.TopicConfig{
 			Topic:             name,

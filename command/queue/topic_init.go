@@ -35,6 +35,6 @@ func init() {
 func start(action string) {
 	switch action {
 	case "init":
-		kakfa_v2.CreateTopicFactory()
+		kakfa_v2.CreateTopic()
 	}
 }

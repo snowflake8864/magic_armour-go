@@ -1,0 +1,98 @@
+package kakfa_v2
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"github.com/gomodule/redigo/redis"
+	"github.com/segmentio/kafka-go"
+	"goskeleton/app/global/variable"
+	"strings"
+	"sync"
+	"time"
+)
+
+type ProducerClient struct {
+	client redis.Conn
+}
+
+var kafkaProducerPool *ProducerPool
+
+type ProducerPool struct {
+	mu           sync.Mutex
+	producers    []*kafka.Writer
+	currentIndex int
+}
+
+func init() {
+	kafkaProducerPool = newProducerPool()
+}
+
+func newProducerPool() *ProducerPool {
+	addr := variable.ConfigKafkaV2Yml.GetString("KafkaV2.Producer.Addr")
+	brokers := strings.Split(addr, ",")
+	poolSize := variable.ConfigKafkaV2Yml.GetInt("KafkaV2.Producer.PoolSize")
+	writeTimeout := variable.ConfigKafkaV2Yml.GetDuration("KafkaV2.Producer.WriteTimeout")
+	batchSize := variable.ConfigKafkaV2Yml.GetInt("KafkaV2.Producer.BatchSize")
+	batchTimeout := variable.ConfigKafkaV2Yml.GetDuration("KafkaV2.Producer.BatchTimeout")
+	requiredAcks := variable.ConfigKafkaV2Yml.GetInt("KafkaV2.Producer.RequiredAcks")
+
+	pool := &ProducerPool{
+		producers: make([]*kafka.Writer, poolSize),
+	}
+
+	for i := 0; i < poolSize; i++ {
+		pool.producers[i] = &kafka.Writer{
+			Addr:         kafka.TCP(brokers...),
+			Balancer:     &kafka.LeastBytes{},
+			WriteTimeout: writeTimeout * time.Second,
+			BatchSize:    batchSize,
+			BatchTimeout: batchTimeout * time.Second,
+			RequiredAcks: kafka.RequiredAcks(requiredAcks), //kafka.RequireNone,
+		}
+	}
+
+	return pool
+}
+
+func (p *ProducerPool) produce(ctx context.Context, message kafka.Message) error {
+	p.mu.Lock()
+	defer p.mu.Unlock()
+
+	p.currentIndex++
+	if p.currentIndex >= len(p.producers) {
+		p.currentIndex = 0
+	}
+
+	err := p.producers[p.currentIndex].WriteMessages(ctx, message)
+	if err != nil {
+		variable.ZapLog.Error("Failed to produce message:" + err.Error())
+		return err
+	}
+
+	return nil
+}
+
+type ProducerMessage struct {
+	Type string
+	Data string
+}
+
+func (p *ProducerPool) PushCommon(ctx context.Context, message ProducerMessage) bool {
+	content, err := json.Marshal(message)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushCommon json marshal err, message:%v,err:%v", message, err))
+	}
+	topic := variable.ConfigKafkaV2Yml.GetString("KafkaV2.TopicList.TopicComm.Name")
+
+	msg := kafka.Message{
+		Topic: topic,
+		Value: content,
+	}
+	result := p.produce(ctx, msg)
+	if result != nil {
+		variable.ZapLog.Error(fmt.Sprintf("PushCommon produce, ,err:%v", result.Error()))
+		return false
+	}
+	return true
+}
