@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
+	"goskeleton/app/utils/kakfa_v2/consumer"
 	"goskeleton/app/utils/kakfa_v2/model"
 	"goskeleton/app/utils/kakfa_v2/producer"
 	"goskeleton/app/utils/kakfa_v2/topic"
@@ -101,4 +102,8 @@ func TestWriteCommon(t *testing.T) {
 	p := producer.GetOneKafkaProducer()
 	p.PushCommon(msg)
 
+}
+
+func TestReadCommon(t *testing.T) {
+	consumer.ReadCommon()
 }

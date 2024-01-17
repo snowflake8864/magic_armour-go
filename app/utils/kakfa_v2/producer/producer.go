@@ -36,7 +36,7 @@ func init() {
 // NewProducerPool 创建生产者连接池
 func NewProducerPool() *ProducerPool {
 	fmt.Println("NewProducerPool---------------------------------------------------------")
-	addr := configYml.GetString("KafkaV2.Producer.Addr")
+	addr := configYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
 	poolSize := configYml.GetInt("KafkaV2.Producer.PoolSize")
 	writeTimeout := configYml.GetDuration("KafkaV2.Producer.WriteTimeout")

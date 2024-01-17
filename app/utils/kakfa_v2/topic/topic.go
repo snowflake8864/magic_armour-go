@@ -17,8 +17,7 @@ func init() {
 }
 
 func CreateTopic() {
-	addr := configYml.GetString("KafkaV2.Producer.Addr")
-	fmt.Println(addr)
+	addr := configYml.GetString("KafkaV2.Addr")
 	conn, err := kafka.Dial("tcp", addr)
 	if err != nil {
 		panic(err.Error())
