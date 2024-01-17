@@ -28,14 +28,13 @@ type ProducerPool struct {
 
 // 处于程序底层的包，init 初始化的代码段的执行会优先于上层代码，因此这里读取配置项不能使用全局配置项变量
 func init() {
-	fmt.Println("kakfa_v2 init---------------------------------------------------------")
+	fmt.Println("kakfa_v2 producer---------------------------------------------------------")
 	configYml = yml_config.CreateYamlFactory("kafka_v2")
 	kafkaProducerPool = NewProducerPool()
 }
 
 // NewProducerPool 创建生产者连接池
 func NewProducerPool() *ProducerPool {
-	fmt.Println("NewProducerPool---------------------------------------------------------")
 	addr := configYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
 	poolSize := configYml.GetInt("KafkaV2.Producer.PoolSize")
@@ -53,7 +52,7 @@ func NewProducerPool() *ProducerPool {
 			BatchSize:    batchSize,
 			BatchTimeout: batchTimeout * time.Second,
 			RequiredAcks: kafka.RequiredAcks(requiredAcks),
-			Async:        false,
+			Async:        true,
 			Logger:       log.New(os.Stdout, "kafka-go: ", log.LstdFlags),
 		}
 		pool <- writer

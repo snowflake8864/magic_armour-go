@@ -57,9 +57,6 @@ func newConsumer(name string) *kafka.Reader {
 	// 配置消费者
 	consumerConfig.Topic = topic
 	consumerConfig.Partition = partition
-	fmt.Println("-----------------------------------")
-	fmt.Println(consumerConfig.Topic)
-	fmt.Println(consumerConfig.Partition)
 
 	return kafka.NewReader(consumerConfig)
 }
