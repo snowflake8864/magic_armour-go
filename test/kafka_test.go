@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/utils/kakfa_v2/consumer"
@@ -54,15 +55,15 @@ func TestDeleteTopic(t *testing.T) {
 }
 
 func TestWriteCommon(t *testing.T) {
-	msg := model.MessageStruct{
+	ctx := context.Background()
+
+	msg := &model.MessageStruct{
 		Sign: "agent",
 		Type: "safe",
 		Data: "data",
 	}
-
-	p := producer.GetOneKafkaProducer()
-	for i := 0; i <= 100; i++ {
-		p.PushCommon(msg)
+	for i := 0; i <= 10; i++ {
+		producer.ProduceCommon(ctx, msg)
 	}
 
 }

@@ -1,11 +1,12 @@
 KafkaV2: # 只针对 Kafka  操作有效
   Addr: "192.168.17.251:9092"
   Producer:
-    Balancer: "least"
+    Balancer: "hash"
     WriteTimeout: 10
     BatchSize: 1000
-    BatchTimeout: 100
+    BatchTimeout: 1
     RequiredAcks: 0
+    Async: false
     PoolSize: 30
   Consumer:
     GroupId: "armour"

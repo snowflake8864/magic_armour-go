@@ -24,7 +24,7 @@ var readerSyslog *kafka.Reader
 func init() {
 	fmt.Println("kakfa_v2 consumer---------------------------------------------------------")
 	configYml = yml_config.CreateYamlFactory("kafka_v2")
-	getconfigReader()
+	getReaderConfig()
 	readerCommon = newConsumer("TopicComm")
 	readerProcess = newConsumer("TopicSyslog")
 	readerThreaten = newConsumer("TopicThreaten")
@@ -32,7 +32,7 @@ func init() {
 	readerSyslog = newConsumer("TopicSyslog")
 }
 
-func getconfigReader() {
+func getReaderConfig() {
 	addr := configYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
 	groupId := configYml.GetString("KafkaV2.Consumer.GroupId")
@@ -61,19 +61,19 @@ func newConsumer(name string) *kafka.Reader {
 }
 
 // 消费消息
-func readMessage(ctx context.Context, consumer *kafka.Reader) (*model.MessageStruct, error) {
+func readMessage(ctx context.Context, r *kafka.Reader) (*model.MessageStruct, error) {
 	result := &model.MessageStruct{}
 
-	msg, err := consumer.ReadMessage(ctx)
+	msg, err := r.ReadMessage(ctx)
 	if err != nil {
-		variable.ZapLog.Error(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", consumer.Config().Topic, err))
+		variable.ZapLog.Error(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
 		return result, err
 	} else {
 		err = json.Unmarshal(msg.Value, result)
 		if err != nil {
-			fmt.Println(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", consumer.Config().Topic, result, err))
+			variable.ZapLog.Error(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		fmt.Println(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+		//fmt.Println(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
