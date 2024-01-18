@@ -57,7 +57,7 @@ func TestWriteCommon(t *testing.T) {
 	msg := model.MessageStruct{
 		Sign: "agent",
 		Type: "safe",
-		Data: "fsdfs",
+		Data: "data",
 	}
 
 	p := producer.GetOneKafkaProducer()
