@@ -68,5 +68,5 @@ func TestWriteCommon(t *testing.T) {
 }
 
 func TestReadCommon(t *testing.T) {
-	consumer.ReadCommon()
+	consumer.ConsumeCommon()
 }
