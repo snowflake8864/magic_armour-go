@@ -62,7 +62,7 @@ func TestWriteCommon(t *testing.T) {
 		Type: "safe",
 		Data: "data",
 	}
-	for i := 0; i <= 10; i++ {
+	for i := 0; i <= 100; i++ {
 		producer.ProduceCommon(ctx, msg)
 	}
 

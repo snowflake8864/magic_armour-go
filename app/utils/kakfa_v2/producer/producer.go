@@ -97,9 +97,10 @@ func writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error
 func ProduceCommon(ctx context.Context, data *model.MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
-		variable.ZapLog.Error(fmt.Sprintf("ProduceCommon json marshal user err，data:%v,err:%v", data, err))
+		variable.ZapLog.Error(fmt.Sprintf(
+			"ProduceCommon json marshal user err，data:%v,err:%v", data, err))
 	}
-	variable.ZapLog.Info(string(msgContent))
+	//variable.ZapLog.Info(string(msgContent))
 
 	msg := kafka.Message{
 		Value: msgContent,
@@ -107,5 +108,73 @@ func ProduceCommon(ctx context.Context, data *model.MessageStruct) {
 	err = writeMessage(ctx, writerCommon, msg)
 	if err != nil {
 		fmt.Println(fmt.Sprintf("ProduceCommon 写入kafka失败，data:%v ,err:%v", data, err))
+	}
+}
+
+func ProduceProcess(ctx context.Context, data *model.MessageStruct) {
+	msgContent, err := json.Marshal(&data)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf(
+			"ProduceProcess json marshal user err，data:%v,err:%v", data, err))
+	}
+	//variable.ZapLog.Info(string(msgContent))
+
+	msg := kafka.Message{
+		Value: msgContent,
+	}
+	err = writeMessage(ctx, writerProcess, msg)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("ProduceProcess 写入kafka失败，data:%v ,err:%v", data, err))
+	}
+}
+
+func ProduceThreaten(ctx context.Context, data *model.MessageStruct) {
+	msgContent, err := json.Marshal(&data)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf(
+			"ProduceThreaten json marshal user err，data:%v,err:%v", data, err))
+	}
+	//variable.ZapLog.Info(string(msgContent))
+
+	msg := kafka.Message{
+		Value: msgContent,
+	}
+	err = writeMessage(ctx, writerThreaten, msg)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("ProduceThreaten 写入kafka失败，data:%v ,err:%v", data, err))
+	}
+}
+
+func ProduceAlarm(ctx context.Context, data *model.MessageStruct) {
+	msgContent, err := json.Marshal(&data)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf(
+			"ProduceAlarm json marshal user err，data:%v,err:%v", data, err))
+	}
+	//variable.ZapLog.Info(string(msgContent))
+
+	msg := kafka.Message{
+		Value: msgContent,
+	}
+	err = writeMessage(ctx, writerAlarm, msg)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("ProduceAlarm 写入kafka失败，data:%v ,err:%v", data, err))
+	}
+}
+
+func ProduceSyslog(ctx context.Context, data *model.MessageStruct) {
+	msgContent, err := json.Marshal(&data)
+	if err != nil {
+		variable.ZapLog.Error(fmt.Sprintf(
+			"ProduceSyslog json marshal user err，data:%v,err:%v", data, err))
+	}
+	//variable.ZapLog.Info(string(msgContent))
+
+	msg := kafka.Message{
+		Value: msgContent,
+	}
+	err = writeMessage(ctx, writerSyslog, msg)
+	if err != nil {
+		fmt.Println(fmt.Sprintf("ProduceSyslog 写入kafka失败，data:%v ,err:%v", data, err))
 	}
 }
