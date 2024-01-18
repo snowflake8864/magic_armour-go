@@ -36,13 +36,13 @@ func init() {
 func getConsumerConfig() {
 	addr := configYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
-	//groupId := configYml.GetString("KafkaV2.Consumer.GroupId")
+	groupId := configYml.GetString("KafkaV2.Consumer.GroupId")
 	commitInterval := configYml.GetDuration("KafkaV2.Consumer.CommitInterval")
 	startOffset := configYml.GetInt64("KafkaV2.Consumer.StartOffset")
 
 	consumerConfig = kafka.ReaderConfig{
-		Brokers: brokers,
-		//GroupID:        groupId,
+		Brokers:        brokers,
+		GroupID:        groupId,
 		CommitInterval: commitInterval,
 		StartOffset:    startOffset, //kafka.FirstOffset
 		MinBytes:       0,           // 最小读取字节数
@@ -52,11 +52,11 @@ func getConsumerConfig() {
 
 func newConsumer(name string) *kafka.Reader {
 	topic := configYml.GetString("KafkaV2.TopicList." + name + ".Name")
-	partition := configYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
+	//partition := configYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
 
 	// 配置消费者
 	consumerConfig.Topic = topic
-	consumerConfig.Partition = partition
+	//consumerConfig.Partition = partition
 
 	return kafka.NewReader(consumerConfig)
 }
@@ -74,8 +74,9 @@ func readMessage(ctx context.Context, consumer *kafka.Reader) (*model.MessageStr
 		if err != nil {
 			fmt.Println(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", consumer.Config().Topic, result, err))
 		}
+		fmt.Println(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
-		//fmt.Println(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+
 	}
 }
 

@@ -55,12 +55,15 @@ func TestDeleteTopic(t *testing.T) {
 
 func TestWriteCommon(t *testing.T) {
 	msg := model.MessageStruct{
-		Type: "testt",
+		Sign: "agent",
+		Type: "safe",
 		Data: "fsdfs",
 	}
 
 	p := producer.GetOneKafkaProducer()
-	p.PushCommon(msg)
+	for i := 0; i <= 100; i++ {
+		p.PushCommon(msg)
+	}
 
 }
 

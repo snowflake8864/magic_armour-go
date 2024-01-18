@@ -52,7 +52,7 @@ func NewProducerPool() *ProducerPool {
 			BatchSize:    batchSize,
 			BatchTimeout: batchTimeout * time.Second,
 			RequiredAcks: kafka.RequiredAcks(requiredAcks),
-			Async:        true,
+			Async:        false,
 			Logger:       log.New(os.Stdout, "kafka-go: ", log.LstdFlags),
 		}
 		pool <- writer
