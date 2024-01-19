@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/IBM/sarama"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/kakfa_v2/model"
+	"goskeleton/app/utils/kafka_v2/model"
 	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"strings"
 	"time"

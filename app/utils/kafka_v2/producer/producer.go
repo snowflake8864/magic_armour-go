@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/kakfa_v2/model"
+	"goskeleton/app/utils/kafka_v2/model"
 	"goskeleton/app/utils/yml_config"
 	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"log"
