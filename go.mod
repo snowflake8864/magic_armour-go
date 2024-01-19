@@ -5,6 +5,8 @@ go 1.15
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/IBM/sarama v1.42.1
+	github.com/Shopify/sarama v1.38.1 // indirect
+	github.com/bsm/sarama-cluster v2.1.15+incompatible // indirect
 	github.com/dgrijalva/jwt-go v3.2.1-0.20210802184156-9742bd7fca1c+incompatible
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-contrib/pprof v1.4.0

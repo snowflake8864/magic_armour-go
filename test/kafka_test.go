@@ -4,10 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/utils/kakfa_v2/consumer"
-	"goskeleton/app/utils/kakfa_v2/model"
-	"goskeleton/app/utils/kakfa_v2/producer"
-	"goskeleton/app/utils/kakfa_v2/topic"
+	sarama_producer "goskeleton/app/utils/kafka_sarama/producer"
+	"goskeleton/app/utils/kafka_v2/consumer"
+	"goskeleton/app/utils/kafka_v2/model"
+	"goskeleton/app/utils/kafka_v2/producer"
+	"goskeleton/app/utils/kafka_v2/topic"
 	_ "goskeleton/bootstrap"
 	"testing"
 )
@@ -64,6 +65,19 @@ func TestWriteCommon(t *testing.T) {
 	}
 	for i := 0; i <= 100; i++ {
 		producer.ProduceCommon(ctx, msg)
+	}
+
+}
+
+func TestWriteCommon1(t *testing.T) {
+
+	msg := &model.MessageStruct{
+		Sign: "agent",
+		Type: "safe",
+		Data: "data",
+	}
+	for i := 0; i <= 100; i++ {
+		sarama_producer.ProduceCommon(msg)
 	}
 
 }
