@@ -6,6 +6,7 @@ import (
 	"github.com/IBM/sarama"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/kafka_v2/model"
+	"goskeleton/app/utils/yml_config"
 	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"strings"
 	"time"
@@ -19,6 +20,7 @@ var producerCommon *sarama.SyncProducer
 // 处于程序底层的包，init 初始化的代码段的执行会优先于上层代码，因此这里读取配置项不能使用全局配置项变量
 func init() {
 	fmt.Println("kafka_sarama producer---------------------------------------------------------")
+	configYml = yml_config.CreateYamlFactory("kafka_v2")
 	getConfig()
 
 	addr := configYml.GetString("KafkaV2.Addr")
