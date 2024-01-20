@@ -1,5 +1,6 @@
 KafkaV2: # 只针对 Kafka  操作有效
   Addr: "192.168.17.251:9092"
+  Version: "2.8.1"
   Producer:
     Balancer: "hash"
     WriteTimeout: 10
