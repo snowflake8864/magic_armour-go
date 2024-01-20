@@ -57,8 +57,8 @@ func getWriterConfig() writerConfig {
 }
 
 func newProducer(name string, c writerConfig) *kafka.Writer {
-	topic := variable.ConfigYml.GetString("KafkaV2.TopicList." + name + ".Name")
-	//partition := variable.ConfigYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
+	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
+	//partition := variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
 
 	// 配置消费者
 	return &kafka.Writer{
