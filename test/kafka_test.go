@@ -4,10 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/utils/kafka_v2/consumer"
-	"goskeleton/app/utils/kafka_v2/model"
-	"goskeleton/app/utils/kafka_v2/producer"
-	"goskeleton/app/utils/kafka_v2/topic"
+	"goskeleton/app/utils/kafka_go"
 	_ "goskeleton/bootstrap"
 	"testing"
 )
@@ -16,7 +13,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestCreateTopic(t *testing.T) {
-	topic.CreateTopic()
+	kafka_go.CreateTopic()
 }
 
 func TestShowTopic(t *testing.T) {
@@ -57,17 +54,23 @@ func TestDeleteTopic(t *testing.T) {
 func TestWriteCommon(t *testing.T) {
 	ctx := context.Background()
 
-	msg := &model.MessageStruct{
+	msg := &kafka_go.MessageStruct{
 		Sign: "agent",
 		Type: "safe",
 		Data: "data",
 	}
+	kafka_go.CreateProducerFactory()
 	for i := 0; i <= 100; i++ {
-		producer.ProduceCommon(ctx, msg)
+		kafka_go.ProduceCommon(ctx, msg)
 	}
 
 }
 
 func TestReadCommon(t *testing.T) {
-	consumer.ConsumeCommon()
+	kafka_go.CreateConsumerFactory()
+	kafka_go.ConsumeCommon()
+}
+
+func TestConsumerGroup(t *testing.T) {
+
 }

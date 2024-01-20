@@ -1,23 +1,23 @@
-package topic
+package kafka_go
 
 import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/utils/yml_config"
-	"goskeleton/app/utils/yml_config/ymlconfig_interf"
+	"goskeleton/app/global/variable"
 	"net"
 	"strconv"
 )
 
-var configYml ymlconfig_interf.YmlConfigInterf
-
-// 处于程序底层的包，init 初始化的代码段的执行会优先于上层代码，因此这里读取配置项不能使用全局配置项变量
-func init() {
-	configYml = yml_config.CreateYamlFactory("kafka_v2")
-}
+const (
+	TopicCommon   string = "TopicCommon"
+	TopicProcess  string = "TopicProcess"
+	TopicThreaten string = "TopicThreaten"
+	TopicAlarm    string = "TopicAlarm"
+	TopicSyslog   string = "TopicSyslog"
+)
 
 func CreateTopic() {
-	addr := configYml.GetString("KafkaV2.Addr")
+	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	conn, err := kafka.Dial("tcp", addr)
 	if err != nil {
 		panic(err.Error())
@@ -37,11 +37,11 @@ func CreateTopic() {
 
 	var topicConfigs []kafka.TopicConfig
 
-	topics := []string{"TopicComm", "TopicProcess", "TopicThreaten", "TopicAlarm", "TopicSyslog"}
+	topics := []string{TopicCommon, TopicProcess, TopicThreaten, TopicAlarm, TopicSyslog}
 	for _, val := range topics {
-		name := configYml.GetString("KafkaV2.TopicList." + val + ".Name")
-		partition := configYml.GetInt("KafkaV2.TopicList." + val + ".Partition")
-		replicationFactor := configYml.GetInt("KafkaV2.TopicList." + val + ".ReplicationFactor")
+		name := variable.ConfigYml.GetString("KafkaV2." + val + ".Name")
+		partition := variable.ConfigYml.GetInt("KafkaV2." + val + ".Partition")
+		replicationFactor := variable.ConfigYml.GetInt("KafkaV2." + val + ".ReplicationFactor")
 
 		st := kafka.TopicConfig{
 			Topic:             name,

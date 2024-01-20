@@ -1,4 +1,4 @@
-package consumer
+package kafka_go
 
 import (
 	"context"
@@ -6,14 +6,8 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/kafka_v2/model"
-	"goskeleton/app/utils/yml_config"
-	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"strings"
 )
-
-var configYml ymlconfig_interf.YmlConfigInterf
-var configReader kafka.ReaderConfig
 
 var readerCommon *kafka.Reader
 var readerProcess *kafka.Reader
@@ -21,48 +15,42 @@ var readerThreaten *kafka.Reader
 var readerAlarm *kafka.Reader
 var readerSyslog *kafka.Reader
 
-func init() {
-	fmt.Println("kakfa_v2 consumer---------------------------------------------------------")
-	configYml = yml_config.CreateYamlFactory("kafka_v2")
-	getReaderConfig()
-	readerCommon = newConsumer("TopicComm")
-	readerProcess = newConsumer("TopicSyslog")
-	readerThreaten = newConsumer("TopicThreaten")
-	readerAlarm = newConsumer("TopicAlarm")
-	readerSyslog = newConsumer("TopicSyslog")
+func CreateConsumerFactory() {
+	config := getReaderConfig()
+
+	readerCommon = newConsumer(TopicCommon, config)
 }
 
-func getReaderConfig() {
-	addr := configYml.GetString("KafkaV2.Addr")
+func getReaderConfig() kafka.ReaderConfig {
+	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
-	groupId := configYml.GetString("KafkaV2.Consumer.GroupId")
-	commitInterval := configYml.GetDuration("KafkaV2.Consumer.CommitInterval")
-	startOffset := configYml.GetInt64("KafkaV2.Consumer.StartOffset")
+	//groupId := variable.ConfigYml.GetString("KafkaV2.Consumer.GroupId")
+	commitInterval := variable.ConfigYml.GetDuration("KafkaV2.Consumer.CommitInterval")
+	startOffset := variable.ConfigYml.GetInt64("KafkaV2.Consumer.StartOffset")
 
-	configReader = kafka.ReaderConfig{
-		Brokers:        brokers,
-		GroupID:        groupId,
+	return kafka.ReaderConfig{
+		Brokers: brokers,
+		//GroupID:        groupId,
 		CommitInterval: commitInterval,
 		StartOffset:    startOffset, //kafka.FirstOffset
 		MinBytes:       0,           // 最小读取字节数
 		MaxBytes:       10e6,        // 最大读取字节数
 	}
+
 }
 
-func newConsumer(name string) *kafka.Reader {
-	topic := configYml.GetString("KafkaV2.TopicList." + name + ".Name")
-	//partition := configYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
+func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
+	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
+	//partition := variable.ConfigYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
 
 	// 配置消费者
 	configReader.Topic = topic
-	//configReader.Partition = partition
-
+	configReader.Partition = 2
 	return kafka.NewReader(configReader)
 }
 
-// 消费消息
-func readMessage(ctx context.Context, r *kafka.Reader) (*model.MessageStruct, error) {
-	result := &model.MessageStruct{}
+func readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
+	result := &MessageStruct{}
 
 	msg, err := r.ReadMessage(ctx)
 	if err != nil {

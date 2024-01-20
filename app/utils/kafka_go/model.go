@@ -1,4 +1,4 @@
-package model
+package kafka_go
 
 type MessageStruct struct {
 	Sign string

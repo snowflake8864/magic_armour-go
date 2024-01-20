@@ -24,9 +24,6 @@ func checkRequiredFolders() {
 	if _, err := os.Stat(variable.BasePath + "/config/gorm_v2.yml"); err != nil {
 		log.Fatal(my_errors.ErrorsConfigGormNotExists + err.Error())
 	}
-	if _, err := os.Stat(variable.BasePath + "/config/kafka_v2.yml"); err != nil {
-		log.Fatal(my_errors.ErrorsConfigKafkaNotExists + err.Error())
-	}
 	//2.检查public目录是否存在
 	if _, err := os.Stat(variable.BasePath + "/public/"); err != nil {
 		log.Fatal(my_errors.ErrorsPublicNotExists + err.Error())

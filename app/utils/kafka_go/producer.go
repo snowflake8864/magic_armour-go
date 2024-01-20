@@ -1,4 +1,4 @@
-package producer
+package kafka_go
 
 import (
 	"context"
@@ -6,18 +6,13 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/kafka_v2/model"
-	"goskeleton/app/utils/yml_config"
-	"goskeleton/app/utils/yml_config/ymlconfig_interf"
 	"log"
 	"os"
 	"strings"
 	"time"
 )
 
-var configYml ymlconfig_interf.YmlConfigInterf
-
-type writerConfigWrite struct {
+type writerConfig struct {
 	Addr         []string
 	Balancer     kafka.Balancer
 	WriteTimeout time.Duration
@@ -27,64 +22,59 @@ type writerConfigWrite struct {
 	Async        bool
 }
 
-var configWriter *writerConfigWrite
-
 var writerCommon *kafka.Writer
 var writerProcess *kafka.Writer
 var writerThreaten *kafka.Writer
 var writerAlarm *kafka.Writer
 var writerSyslog *kafka.Writer
 
-// 处于程序底层的包，init 初始化的代码段的执行会优先于上层代码，因此这里读取配置项不能使用全局配置项变量
-func init() {
-	fmt.Println("kakfa_v2 producer---------------------------------------------------------")
-	configYml = yml_config.CreateYamlFactory("kafka_v2")
-	getWriterConfig()
+func CreateProducerFactory() {
+	config := getWriterConfig()
 
-	writerCommon = newProducer("TopicComm")
+	writerCommon = newProducer(TopicCommon, config)
 }
 
-func newProducer(name string) *kafka.Writer {
-	topic := configYml.GetString("KafkaV2.TopicList." + name + ".Name")
-	//partition := configYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
-
-	// 配置消费者
-	return &kafka.Writer{
-		Addr:         kafka.TCP(configWriter.Addr...),
-		Topic:        topic,
-		Balancer:     configWriter.Balancer,
-		WriteTimeout: configWriter.WriteTimeout * time.Second,
-		BatchSize:    configWriter.BatchSize,
-		BatchTimeout: configWriter.BatchTimeout * time.Millisecond,
-		RequiredAcks: kafka.RequiredAcks(configWriter.RequiredAcks),
-		Async:        configWriter.Async,
-		Logger:       log.New(os.Stdout, "kafka-go: ", log.LstdFlags),
-	}
-}
-
-func getWriterConfig() {
-	addr := configYml.GetString("KafkaV2.Addr")
+func getWriterConfig() writerConfig {
+	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
 
-	b := configYml.GetString("KafkaV2.Producer.Balancer")
+	b := variable.ConfigYml.GetString("KafkaV2.Producer.Balancer")
 	var balancer kafka.Balancer
 	if b == "hash" {
 		balancer = &kafka.Hash{}
 	} else {
 		balancer = &kafka.LeastBytes{}
 	}
-	configWriter = &writerConfigWrite{
+	return writerConfig{
 		Addr:         brokers,
 		Balancer:     balancer,
-		WriteTimeout: configYml.GetDuration("KafkaV2.Producer.WriteTimeout"),
-		BatchSize:    configYml.GetInt("KafkaV2.Producer.BatchSize"),
-		BatchTimeout: configYml.GetDuration("KafkaV2.Producer.BatchTimeout"),
-		RequiredAcks: configYml.GetInt("KafkaV2.Producer.RequiredAcks"),
-		Async:        configYml.GetBool("KafkaV2.Producer.Async"),
+		WriteTimeout: variable.ConfigYml.GetDuration("KafkaV2.Producer.WriteTimeout"),
+		BatchSize:    variable.ConfigYml.GetInt("KafkaV2.Producer.BatchSize"),
+		BatchTimeout: variable.ConfigYml.GetDuration("KafkaV2.Producer.BatchTimeout"),
+		RequiredAcks: variable.ConfigYml.GetInt("KafkaV2.Producer.RequiredAcks"),
+		Async:        variable.ConfigYml.GetBool("KafkaV2.Producer.Async"),
 	}
 }
 
-// 生产消息,发送user信息
+func newProducer(name string, c writerConfig) *kafka.Writer {
+	topic := variable.ConfigYml.GetString("KafkaV2.TopicList." + name + ".Name")
+	//partition := variable.ConfigYml.GetInt("KafkaV2.TopicList." + name + ".Partition")
+
+	// 配置消费者
+	return &kafka.Writer{
+		Addr:         kafka.TCP(c.Addr...),
+		Topic:        topic,
+		Balancer:     c.Balancer,
+		WriteTimeout: c.WriteTimeout * time.Second,
+		BatchSize:    c.BatchSize,
+		BatchTimeout: c.BatchTimeout * time.Millisecond,
+		RequiredAcks: kafka.RequiredAcks(c.RequiredAcks),
+		Async:        c.Async,
+		Logger:       log.New(os.Stdout, "kafka-go: ", log.LstdFlags),
+	}
+}
+
+// 生产消息
 func writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error {
 
 	err := w.WriteMessages(ctx, msg)
@@ -94,7 +84,7 @@ func writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error
 	return err
 }
 
-func ProduceCommon(ctx context.Context, data *model.MessageStruct) {
+func ProduceCommon(ctx context.Context, data *MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf(
@@ -111,7 +101,7 @@ func ProduceCommon(ctx context.Context, data *model.MessageStruct) {
 	}
 }
 
-func ProduceProcess(ctx context.Context, data *model.MessageStruct) {
+func ProduceProcess(ctx context.Context, data *MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf(
@@ -128,7 +118,7 @@ func ProduceProcess(ctx context.Context, data *model.MessageStruct) {
 	}
 }
 
-func ProduceThreaten(ctx context.Context, data *model.MessageStruct) {
+func ProduceThreaten(ctx context.Context, data *MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf(
@@ -145,7 +135,7 @@ func ProduceThreaten(ctx context.Context, data *model.MessageStruct) {
 	}
 }
 
-func ProduceAlarm(ctx context.Context, data *model.MessageStruct) {
+func ProduceAlarm(ctx context.Context, data *MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf(
@@ -162,7 +152,7 @@ func ProduceAlarm(ctx context.Context, data *model.MessageStruct) {
 	}
 }
 
-func ProduceSyslog(ctx context.Context, data *model.MessageStruct) {
+func ProduceSyslog(ctx context.Context, data *MessageStruct) {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf(
