@@ -32,14 +32,14 @@ func (m *AgentTypeModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			id int NOT NULL COMMENT '自增id',
+			id int NOT NULL DEFAULT '0' COMMENT '自增id',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
-			create_id int(128) NOT NULL DEFAULT '' COMMENT '创建人(admin.id)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NULL
 		)
 		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(uuid) BUCKETS 1 
+		DISTRIBUTED BY HASH(id) BUCKETS 1 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'
