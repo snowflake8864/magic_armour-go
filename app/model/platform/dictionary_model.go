@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model"
 )
 
-// 创建 CreateDictionaryFactory
+// 创建 数据字典表
 
 func CreateDictionaryFactory() *DictionaryModel {
 	return &DictionaryModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}

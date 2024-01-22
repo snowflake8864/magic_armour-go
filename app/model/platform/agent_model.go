@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model"
 )
 
-// 创建 CreateAgentFactory
+// 终端表
 
 func CreateAgentFactory() *AgentModel {
 	return &AgentModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}

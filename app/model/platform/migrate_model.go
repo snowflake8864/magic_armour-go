@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-// 创建调用工厂
+// 数据迁移表
 
 func CreateMigrateFactory() *MigrateModel {
 	return &MigrateModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}

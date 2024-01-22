@@ -92,19 +92,25 @@ func initTables() {
 
 	//获取迁移表数据
 	getMigrationMap()
-	//下面开始创建表
 
+	//下面开始创建表 (platform库)
 	if !existMigration("db_platform_create_table_agent") {
 		_ = modelPlatform.CreateAgentFactory().CreateTable()
+	}
+
+	if !existMigration("db_platform_create_table_agent_type") {
+		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table_dictionary") {
 		_ = modelPlatform.CreateDictionaryFactory().CreateTable()
 	}
 
+	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_create_table_process") {
 		_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
 	}
 
+	//下面开始创建表 (syslog库)
 	if !existMigration("db_syslog_create_table_dns") {
 		_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
 	}
