@@ -106,6 +106,9 @@ func initTables() {
 	if !existMigration("db_platform_create_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_role") {
+		_ = modelPlatform.CreateRoleFactory().CreateTable()
+	}
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_create_table_process") {
