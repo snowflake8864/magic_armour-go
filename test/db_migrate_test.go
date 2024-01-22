@@ -25,7 +25,7 @@ func TestDbMigrate(t *testing.T) {
 	/*syslogDnsFact := modelSyslog.CreateSyslogDnsFactory()
 	syslogDnsFact.CreateTable()*/
 
-	_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
+	_ = modelPlatform.CreateAdminFactory().CreateTable()
 }
 
 func TestInsertOne(t *testing.T) {

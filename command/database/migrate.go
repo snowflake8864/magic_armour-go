@@ -97,12 +97,14 @@ func initTables() {
 	if !existMigration("db_platform_create_table_agent") {
 		_ = modelPlatform.CreateAgentFactory().CreateTable()
 	}
-
 	if !existMigration("db_platform_create_table_agent_type") {
 		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table_dictionary") {
-		_ = modelPlatform.CreateDictionaryFactory().CreateTable()
+	if !existMigration("db_platform_create_table_agent_type") {
+		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_admin") {
+		_ = modelPlatform.CreateAdminFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)
