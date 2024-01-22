@@ -24,28 +24,28 @@ func CreateConsumerFactory() {
 func getReaderConfig() kafka.ReaderConfig {
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
-	//groupId := variable.ConfigYml.GetString("KafkaV2.Consumer.GroupId")
+	groupId := variable.ConfigYml.GetString("KafkaV2.Consumer.GroupId")
 	commitInterval := variable.ConfigYml.GetDuration("KafkaV2.Consumer.CommitInterval")
 	startOffset := variable.ConfigYml.GetInt64("KafkaV2.Consumer.StartOffset")
 
 	return kafka.ReaderConfig{
-		Brokers: brokers,
-		//GroupID:        groupId,
+		Brokers:        brokers,
+		GroupID:        groupId,
 		CommitInterval: commitInterval,
-		StartOffset:    startOffset, //kafka.FirstOffset
-		MinBytes:       0,           // 最小读取字节数
-		MaxBytes:       10e6,        // 最大读取字节数
+		GroupBalancers: []kafka.GroupBalancer{
+			&kafka.RangeGroupBalancer{},
+		},
+		StartOffset: startOffset, //kafka.FirstOffset
+		MinBytes:    0,           // 最小读取字节数
+		MaxBytes:    10e6,        // 最大读取字节数
 	}
 
 }
 
 func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
 	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
-	//partition := variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
-
 	// 配置消费者
 	configReader.Topic = topic
-	configReader.Partition = 2
 	return kafka.NewReader(configReader)
 }
 

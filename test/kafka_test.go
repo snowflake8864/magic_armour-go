@@ -70,7 +70,3 @@ func TestReadCommon(t *testing.T) {
 	kafka_go.CreateConsumerFactory()
 	kafka_go.ConsumeCommon()
 }
-
-func TestConsumerGroup(t *testing.T) {
-
-}
