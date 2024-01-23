@@ -27,7 +27,7 @@ type RoleModel struct {
 // 表名
 
 func (m *RoleModel) TableName() string {
-	return "p_admins"
+	return "p_roles"
 }
 
 func (m *RoleModel) CreateTable() bool {
@@ -41,7 +41,7 @@ func (m *RoleModel) CreateTable() bool {
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NULL,
-			INDEX index_username (title) USING INVERTED
+			INDEX index_name (name) USING INVERTED
 		)
 		UNIQUE KEY(id) 
 		DISTRIBUTED BY HASH(id) BUCKETS 1 
