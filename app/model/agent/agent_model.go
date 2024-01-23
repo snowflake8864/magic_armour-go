@@ -1,4 +1,4 @@
-package modelPlatform
+package modelAgent
 
 import (
 	"goskeleton/app/global/variable"

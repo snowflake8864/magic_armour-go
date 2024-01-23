@@ -10,21 +10,6 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	/*migrateFact := modelPlatform.CreateMigrateFactory()
-	migrateFact.CreateTable()
-
-	agentFact := modelPlatform.CreateAgentFactory()
-	agentFact.CreateTable()
-
-	dictionaryFact := modelPlatform.CreateDictionaryFactory()
-	dictionaryFact.CreateTable()
-
-	alarmProcessFact := modelAlarm.CreateAlarmProcessFactory()
-	alarmProcessFact.CreateTable()
-
-	/*syslogDnsFact := modelSyslog.CreateSyslogDnsFactory()
-	syslogDnsFact.CreateTable()*/
-
 	_ = modelPlatform.CreateRoleFactory().CreateTable()
 }
 

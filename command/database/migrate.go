@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
+	modelAgent "goskeleton/app/model/agent"
 	modelAlarm "goskeleton/app/model/alarm"
 	modelPlatform "goskeleton/app/model/platform"
 	modelSyslog "goskeleton/app/model/syslog"
@@ -95,13 +96,10 @@ func initTables() {
 
 	//下面开始创建表 (platform库)
 	if !existMigration("db_platform_create_table_agent") {
-		_ = modelPlatform.CreateAgentFactory().CreateTable()
+		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table_agent_type") {
-		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
-	}
-	if !existMigration("db_platform_create_table_agent_type") {
-		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
+		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
