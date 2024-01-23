@@ -17,7 +17,7 @@ type AdminModel struct {
 	model.BaseModel
 	Id              int    `gorm:"primaryKey" json:"id"`
 	Username        string `json:"username"`
-	RoleId          int    `gorm:"column:RoleId" json:"role_id"`
+	RoleId          int64  `gorm:"column:RoleId" json:"role_id"`
 	Email           string `json:"email"`
 	Phone           string `json:"phone"`
 	PhoneLoginCheck int    `gorm:"column:PhoneLoginCheck" json:"phone_login_check"`
