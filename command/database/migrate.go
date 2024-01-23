@@ -95,26 +95,37 @@ func initTables() {
 	getMigrationMap()
 
 	//下面开始创建表 (platform库)
-	if !existMigration("db_platform_create_table_agent") {
+	//终端相关表
+	if !existMigration("db_platform_create_table-a_agent") {
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table_agent_type") {
+	if !existMigration("db_platform_create_table-a_agent_type") {
 		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_admin") {
+	//平台相关表
+	if !existMigration("db_platform_create-p_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_role") {
+	if !existMigration("db_platform_create_table-p_department") {
+		_ = modelPlatform.CreateDepartmentFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_dictionary") {
+		_ = modelPlatform.CreateDictionaryFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_menu") {
+		_ = modelPlatform.CreateMenuFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_role") {
 		_ = modelPlatform.CreateRoleFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)
-	if !existMigration("db_alarm_create_table_process") {
+	if !existMigration("db_alarm_create_table-a_process") {
 		_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)
-	if !existMigration("db_syslog_create_table_dns") {
+	if !existMigration("db_syslog_create_table-a_dns") {
 		_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
 	}
 }
