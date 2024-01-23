@@ -117,7 +117,8 @@ func initTables() {
 	}
 	if !existMigration("db_platform_create_table-p_operate_log") {
 		_ = modelPlatform.CreateOperateLogFactory().CreateTable()
-	}if !existMigration("db_platform_create_table-p_role") {
+	}
+	if !existMigration("db_platform_create_table-p_role") {
 		_ = modelPlatform.CreateRoleFactory().CreateTable()
 	}
 
