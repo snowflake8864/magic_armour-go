@@ -10,7 +10,7 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	_ = modelPlatform.CreateThreatenCacheFactory().CreateTable()
+	_ = modelPlatform.CreateThreatenPushFactory().CreateTable()
 }
 
 func TestInsertOne(t *testing.T) {
