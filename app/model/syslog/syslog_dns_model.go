@@ -35,7 +35,7 @@ func (m *SyslogDnsModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			agent_id INT NOT NULL DEFAULT '0' COMMENT '终端(agent.id)',
+			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			created_at DATETIME NULL,
 			id BIGINT NOT NULL DEFAULT '0',
 			agent_at DATETIME NULL COMMENT '终端时间',

@@ -40,7 +40,7 @@ func (m *AlarmProcessModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			agent_id INT NOT NULL DEFAULT '0' COMMENT '终端(agent.id)',
+			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			type SMALLINT NOT NULL DEFAULT '0' COMMENT '类型',
 			created_at DATETIME NULL,
 			handle_status TINYINT NOT NULL DEFAULT '0' COMMENT '处理状态(0未处理，1已处理)',
