@@ -51,7 +51,7 @@ func (m *OperateLogModel) CreateTable() bool {
 			method varchar(8)  NOT NULL DEFAULT '' COMMENT '方法',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			input text NULL COMMENT '输入参数',
-			status tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
+			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
 			response text NULL COMMENT '返回结果'
 		)
 		DUPLICATE  KEY(created_at,module,path, admin_id) 

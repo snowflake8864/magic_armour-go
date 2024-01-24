@@ -124,6 +124,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-p_role") {
 		_ = modelPlatform.CreateRoleFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-p_sms_log") {
+		_ = modelPlatform.CreateSmsLogFactory().CreateTable()
+	}
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_create_table-a_process") {
