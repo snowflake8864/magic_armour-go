@@ -18,6 +18,7 @@ type RoleModel struct {
 	Id         int    `gorm:"primaryKey" json:"id"`
 	Name       string `json:"name"`
 	Remark     string `json:"remark"`
+	Menus      string `json:"menus"`
 	IsDefault  int    `gorm:"column:IsDefault" json:"is_default"`
 	CreateId   int    `gorm:"column:CreateId" json:"create_id"`
 	CreateName string `gorm:"column:CreateName" json:"create_name"`
@@ -37,6 +38,7 @@ func (m *RoleModel) CreateTable() bool {
             id int NOT NULL DEFAULT '0' COMMENT '自增id',
 			name varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '邮箱',
+			menus text NULL DEFAULT '' COMMENT '邮箱',
 			is_default tinyint NOT NULL DEFAULT '0' COMMENT '是否默认(0否,1是)',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
