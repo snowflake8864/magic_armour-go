@@ -25,7 +25,7 @@ type DepartmentModel struct {
 	Sort       int    `json:"sort"`
 	CreateId   int    `gorm:"column:CreateId" json:"create_id"`
 	CreateName string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt  string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
 }
 
 // 表名

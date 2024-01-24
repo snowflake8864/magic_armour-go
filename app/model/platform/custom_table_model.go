@@ -18,7 +18,7 @@ type CustomTableModel struct {
 	CreateId  int    `gorm:"column:CreateId" json:"create_id"`
 	Route     string `json:"route"`
 	Cols      string `json:"Cols"`
-	CreatedAt string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt string `gorm:"column:CreatedAt" json:"created_at"`
 }
 
 // 表名

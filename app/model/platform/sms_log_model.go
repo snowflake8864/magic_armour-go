@@ -15,7 +15,7 @@ func CreateSmsLogFactory() *SmsLogModel {
 
 type SmsLogModel struct {
 	model.BaseModel
-	CreatedAt string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt string `gorm:"column:createdAt" json:"created_at"`
 	Phone     string `json:"phone"`
 	Msg       string `json:"msg"`
 	Code      string `json:"code"`

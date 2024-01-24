@@ -15,7 +15,7 @@ func CreateOperateLogFactory() *OperateLogModel {
 
 type OperateLogModel struct {
 	model.BaseModel
-	CreatedAt string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt string `gorm:"column:CreatedAt" json:"created_at"`
 	Module    string `json:"module"`
 	Path      string `json:"path"`
 	AdminId   int    `gorm:"column:AdminId" json:"admin_id"`

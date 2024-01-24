@@ -15,7 +15,7 @@ func CreateSyslogDnsFactory() *SyslogDnsModel {
 type SyslogDnsModel struct {
 	model.BaseModel
 	AgentId    string `gorm:"column:agent_id" json:"agent_id"`
-	CreatedAt  string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
 	Id         int64  `gorm:"primaryKey" json:"id"`
 	AgentAt    string `gorm:"column:agent_at" json:"agent_at"`
 	ProcHash   string `gorm:"column:proc_hash" json:"proc_hash"`

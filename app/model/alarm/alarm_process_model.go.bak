@@ -17,7 +17,7 @@ type AlarmProcessModel struct {
 	model.BaseModel
 	AgentId      string `gorm:"column:agent_id" json:"agent_id"`
 	Type         int    `json:"type"`
-	CreatedAt    string `gorm:"column:created_at" json:"created_at"`
+	CreatedAt    string `gorm:"column:CreatedAt" json:"created_at"`
 	Level        int    `json:"level"`
 	Id           int64  `gorm:"primaryKey" json:"id"`
 	AgentAt      string `gorm:"column:agent_at" json:"agent_at"`
