@@ -130,6 +130,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-p_sms_log") {
 		_ = modelPlatform.CreateSmsLogFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-p_software") {
+		_ = modelPlatform.CreateSoftwareFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-p_threaten_cache") {
 		_ = modelPlatform.CreateThreatenCacheFactory().CreateTable()
 	}

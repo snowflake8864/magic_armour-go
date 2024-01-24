@@ -10,7 +10,7 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	_ = modelPlatform.CreateUploadFactory().CreateTable()
+	_ = modelPlatform.CreateSoftwareFactory().CreateTable()
 }
 
 func TestInsertOne(t *testing.T) {
