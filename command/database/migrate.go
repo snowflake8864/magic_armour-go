@@ -106,6 +106,9 @@ func initTables() {
 	if !existMigration("db_platform_create-p_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create-p_custom_table") {
+		_ = modelPlatform.CreateCustomTableFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-p_department") {
 		_ = modelPlatform.CreateDepartmentFactory().CreateTable()
 	}
