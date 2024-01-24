@@ -37,7 +37,7 @@ func (m *SoftwareModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			  id int NOT NULL DEFAULT '0' COMMENT '自增id',
+            id int NOT NULL DEFAULT '0' COMMENT '自增id',
 			upload_id int NOT NULL DEFAULT '0' COMMENT '(upload.id)',
             ver varchar(64)  NOT NULL DEFAULT '' COMMENT '版本号(0.0.0.0)',
 			platform_type tinyint NOT NULL DEFAULT '0' COMMENT '平台类型(win|linxu, 统一定义)',
