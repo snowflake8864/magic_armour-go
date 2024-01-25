@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/variable"
+	modelAgent "goskeleton/app/model/agent"
 	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
@@ -10,7 +11,8 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
+	//_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
+	_ = modelAgent.CreateDllFactory().CreateTable()
 }
 
 func TestInsertOne(t *testing.T) {

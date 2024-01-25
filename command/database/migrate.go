@@ -102,6 +102,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_agent_type") {
 		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_dll") {
+		_ = modelAgent.CreateDllFactory().CreateTable()
+	}
 	//平台相关表
 	if !existMigration("db_platform_create-p_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
