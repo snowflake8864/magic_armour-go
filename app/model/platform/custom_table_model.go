@@ -15,10 +15,12 @@ func CreateCustomTableFactory() *CustomTableModel {
 
 type CustomTableModel struct {
 	model.BaseModel
-	CreateId  int    `gorm:"column:CreateId" json:"create_id"`
-	Route     string `json:"route"`
-	Cols      string `json:"Cols"`
-	CreatedAt string `gorm:"column:CreatedAt" json:"created_at"`
+	Id         int64  `gorm:"primaryKey" json:"id"`
+	Route      string `json:"route"`
+	Cols       string `json:"Cols"`
+	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
+	CreateName string `gorm:"column:CreateName" json:"create_name"`
+	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
 }
 
 // 表名
@@ -31,17 +33,15 @@ func (m *CustomTableModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			route varchar(128) NOT NULL DEFAULT '' COMMENT '路由',
-			cols text  NULL COMMENT '用户自定义列(json)',
-			created_at datetime NULL
-		)
-		UNIQUE KEY(create_id, route) 
-		DISTRIBUTED BY HASH(create_id) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
+			route varchar(64) NOT NULL DEFAULT '' COMMENT '路由',
+			cols text DEFAULT NULL COMMENT '用户自定义列(json)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_index (create_id, route)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='自定义表格表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

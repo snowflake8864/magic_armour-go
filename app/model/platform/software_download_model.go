@@ -15,8 +15,8 @@ func CreateSoftwareDownloadFactory() *SoftwareDownloadModel {
 
 type SoftwareDownloadModel struct {
 	model.BaseModel
-	CreateId    int    `gorm:"column:CreateId" json:"create_id"`
-	SoftwareId  int    `gorm:"column:SoftwareId" json:"software_id"`
+	Id          int64  `gorm:"primaryKey" json:"id"`
+	SoftwareId  int64  `gorm:"column:SoftwareId" json:"software_id"`
 	ServiceIp   string `gorm:"column:ServiceIp" json:"service_ip"`
 	Alias       string `json:"alias"`
 	FullPath    string `gorm:"column:FullPath" json:"full_path"`
@@ -24,6 +24,7 @@ type SoftwareDownloadModel struct {
 	FileHash    string `gorm:"column:FileHash" json:"file_hash"`
 	FileSize    int    `gorm:"column:FileSize" json:"file_size"`
 	Remark      string `json:"remark"`
+	CreateId    int64  `gorm:"column:CreateId" json:"create_id"`
 	CreateName  string `gorm:"column:CreateName"json:"create_name"`
 	CreatedAt   string `gorm:"column:CreatedAt" json:"created_at"`
 }
@@ -37,25 +38,22 @@ func (m *SoftwareDownloadModel) TableName() string {
 func (m *SoftwareDownloadModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
-		(
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			software_id int NOT NULL DEFAULT '0' COMMENT '软件编号(software.id)',
+		(	
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			software_id int(11) NOT NULL DEFAULT '0' COMMENT '软件编号(software.id)',
             service_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '服务器地址',
             alias varchar(128)  NOT NULL DEFAULT '' COMMENT '别名',
 			full_path varchar(2048)  NOT NULL DEFAULT '' COMMENT '全路径',
 			storage_path varchar(1024)  NOT NULL DEFAULT '' COMMENT '存储相对路径(项目下)',
             file_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '文件hash值',
-			file_size int NOT NULL DEFAULT '0' COMMENT '文件大小',
+			file_size int(11) NOT NULL DEFAULT '0' COMMENT '文件大小',
             remark varchar(512)  NOT NULL COMMENT '备注',
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
-			created_at datetime NOT NULL
-		)
-		UNIQUE KEY(create_id, software_id, service_ip) 
-		DISTRIBUTED BY HASH(software_id) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+		 	KEY index_software_create_service (software_id,create_id,service_ip)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='软件下载表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

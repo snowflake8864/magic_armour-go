@@ -15,9 +15,9 @@ func CreateDictionaryFactory() *DictionaryModel {
 
 type DictionaryModel struct {
 	model.BaseModel
-	Uuid   string `gorm:"primaryKey" json:"uuid"`
+	Id     string `gorm:"primaryKey" json:"id"`
 	Module string `json:"module"`
-	Value  string `json:"value"`
+	Val    string `json:"val"`
 	Remark string `json:"remark"`
 }
 
@@ -31,17 +31,13 @@ func (m *DictionaryModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			uuid varchar(64) NOT NULL DEFAULT '' COMMENT '标识',
+			Id varchar(64) NOT NULL DEFAULT '' COMMENT '标识',
 			module varchar(32)  NOT NULL DEFAULT '' COMMENT '模块',
-			value varchar(1024)  NOT NULL DEFAULT '' COMMENT '值',
-			remark varchar(128)   NOT NULL DEFAULT '' COMMENT '备注'
-		)
-		UNIQUE KEY(uuid) 
-		DISTRIBUTED BY HASH(uuid) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			val varchar(1024)  NOT NULL DEFAULT '' COMMENT '值',
+			remark varchar(128)   NOT NULL DEFAULT '' COMMENT '备注',
+			PRIMARY KEY (id),
+			KEY index_module (module)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='数据字典表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

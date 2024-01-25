@@ -15,12 +15,13 @@ func CreateSmsLogFactory() *SmsLogModel {
 
 type SmsLogModel struct {
 	model.BaseModel
-	CreatedAt string `gorm:"column:createdAt" json:"created_at"`
+	Id        int64  `gorm:"primaryKey" json:"id"`
 	Phone     string `json:"phone"`
 	Msg       string `json:"msg"`
 	Code      string `json:"code"`
 	Resp      string `json:"resp"`
 	Status    int    `json:"status"`
+	CreatedAt string `gorm:"column:createdAt" json:"created_at"`
 }
 
 // 表名
@@ -33,18 +34,16 @@ func (m *SmsLogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			phone varchar(16)  NOT NULL DEFAULT '' COMMENT '业务模块',
-			created_at datetime NULL,
-			msg varchar(256)  NOT NULL DEFAULT '' COMMENT '路径',
-			code varchar(256)  NOT NULL DEFAULT '' COMMENT '路径',
-			resp varchar(512)  NOT NULL DEFAULT '' COMMENT '路径',
-			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)'
-		)
-		DUPLICATE  KEY(phone, created_at) 
-		DISTRIBUTED BY HASH(phone) BUCKETS 1 
-		PROPERTIES (
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			msg varchar(256)  NOT NULL DEFAULT '' COMMENT '内容',
+			code varchar(256)  NOT NULL DEFAULT '' COMMENT '验证码',
+			resp varchar(512)  NOT NULL DEFAULT '' COMMENT '结果',
+			status tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			KEY index_phone (phone)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='短信日志表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

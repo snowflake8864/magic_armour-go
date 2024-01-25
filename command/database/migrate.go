@@ -95,16 +95,7 @@ func initTables() {
 	getMigrationMap()
 
 	//下面开始创建表 (platform库)
-	//终端相关表
-	if !existMigration("db_platform_create_table-a_agent") {
-		_ = modelAgent.CreateAgentFactory().CreateTable()
-	}
-	if !existMigration("db_platform_create_table-a_agent_type") {
-		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
-	}
-	if !existMigration("db_platform_create_table-a_dll") {
-		_ = modelAgent.CreateDllFactory().CreateTable()
-	}
+
 	//平台相关表
 	if !existMigration("db_platform_create-p_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
@@ -133,20 +124,31 @@ func initTables() {
 	if !existMigration("db_platform_create_table-p_sms_log") {
 		_ = modelPlatform.CreateSmsLogFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_software_download") {
-		_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
-	}
 	if !existMigration("db_platform_create_table-p_software") {
 		_ = modelPlatform.CreateSoftwareFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_threaten_cache") {
-		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
-	}
-	if !existMigration("db_platform_create_table-p_threaten_push") {
-		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
+	if !existMigration("db_platform_create_table-p_software_download") {
+		_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_upload") {
 		_ = modelPlatform.CreateUploadFactory().CreateTable()
+	}
+
+	//下面开始创建表 (agent库)
+	if !existMigration("db_platform_create_table-a_agent") {
+		_ = modelAgent.CreateAgentFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_agent_type") {
+		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_dll") {
+		_ = modelAgent.CreateDllFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_threaten_cache") {
+		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_threaten_push") {
+		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)

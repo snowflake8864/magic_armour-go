@@ -19,7 +19,7 @@ type AgentModel struct {
 	HostName             string `gorm:"column:HostName" json:"host_name"`
 	MacId                string `gorm:"column:MacId" json:"mac_id"`
 	Ip                   string `json:"ip"`
-	ClientIp             string `gorm:"column:ClientIp" json:"client_ip"`
+	NetIp                string `gorm:"column:NetIp" json:"net_ip"`
 	OsName               string `gorm:"column:OsName" json:"os_name"`
 	PlatformType         string `gorm:"column:PlatformType" json:"platform_type"`
 	OsType               string `gorm:"column:OsType" json:"os_type"`
@@ -88,8 +88,8 @@ func (m *AgentModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 			host_name varchar(128)  NOT NULL DEFAULT '' COMMENT '主机名',
 			mac_id varchar(255)  NOT NULL DEFAULT '' COMMENT '物理地址',
-			ip varchar(255)  NOT NULL DEFAULT '' COMMENT '全部ip',
-			client_ip varchar(32)  NOT NULL DEFAULT '' COMMENT '连接ip',
+			ip varchar(255)  NOT NULL DEFAULT '' COMMENT '终端ip',
+			net_ip varchar(32)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linxu, 统一定义)',
 			os_type smallint NOT NULL DEFAULT '0' COMMENT '系统类别(参考ubuntu|centos等,统一定义)',

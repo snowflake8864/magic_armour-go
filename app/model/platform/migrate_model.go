@@ -36,7 +36,7 @@ func (m *MigrateModel) CreateTable() bool {
 		(
 			id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			migration varchar(128) NOT NULL DEFAULT '',
-			created_at datetime NULL,
+			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
 			UNIQUE KEY unique_index (migration)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

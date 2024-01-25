@@ -15,7 +15,7 @@ func CreateAdminFactory() *AdminModel {
 
 type AdminModel struct {
 	model.BaseModel
-	Id              int    `gorm:"primaryKey" json:"id"`
+	Id              int64  `gorm:"primaryKey" json:"id"`
 	Username        string `json:"username"`
 	RoleId          int64  `gorm:"column:RoleId" json:"role_id"`
 	Email           string `json:"email"`
@@ -43,30 +43,25 @@ func (m *AdminModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-            id int NOT NULL DEFAULT '0' COMMENT '自增id',
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			username varchar(128) NOT NULL DEFAULT '' COMMENT '用户名',
-			role_id int NOT NULL DEFAULT '0' COMMENT '角色(role.id)',
+			role_id int(11) NOT NULL DEFAULT '0' COMMENT '角色(role.id)',
 			email varchar(128)  NOT NULL DEFAULT '' COMMENT '邮箱',
             phone varchar(16)  NOT NULL DEFAULT '' COMMENT '手机',
-            phone_login_check tinyint NOT NULL DEFAULT '0' COMMENT '手机登录验证(0否,1是)',
+            phone_login_check tinyint(1) NOT NULL DEFAULT '0' COMMENT '手机登录验证(0否,1是)',
 			pw varchar(128)  NOT NULL DEFAULT '' COMMENT '密码',
-			pw_error_num smallint NOT NULL DEFAULT '0' COMMENT '密码错误次数',
-			last_login_at datetime NULL COMMENT '最后登录时间',
-			is_default tinyint NOT NULL DEFAULT '0' COMMENT '是否默认(0否,1是)',
-			is_root tinyint NOT NULL DEFAULT '0' COMMENT '是否超管(0否,1是)',
-			is_visible tinyint NOT NULL DEFAULT '0' COMMENT '是否可见(0否,1是)',
-			is_agent tinyint NOT NULL DEFAULT '0' COMMENT '是否看全部终端(0否,1是)',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
+			pw_error_num smallint(4) NOT NULL DEFAULT '0' COMMENT '密码错误次数',
+			last_login_at datetime NOT NULL COMMENT '最后登录时间',
+			is_default tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认(0否,1是)',
+			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否超管(0否,1是)',
+			is_visible tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可见(0否,1是)',
+			is_agent tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否看全部终端(0否,1是)',
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
-			created_at datetime NULL,
-			INDEX index_username (username) USING INVERTED
-		)
-		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_index (username)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

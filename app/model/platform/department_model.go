@@ -15,15 +15,15 @@ func CreateDepartmentFactory() *DepartmentModel {
 
 type DepartmentModel struct {
 	model.BaseModel
-	Id         int    `gorm:"primaryKey" json:"id"`
-	ParentId   int    `gorm:"column:ParentId" json:"parent_id"`
+	Id         int64  `gorm:"primaryKey" json:"id"`
+	ParentId   int64  `gorm:"column:ParentId" json:"parent_id"`
 	Name       string `json:"name"`
 	FullCode   string `gorm:"column:FullCode" json:"full_code"`
 	FullName   string `gorm:"column:FullName" json:"full_name"`
 	Ip         string `json:"ip"`
 	Level      int    `json:"level"`
 	Sort       int    `json:"sort"`
-	CreateId   int    `gorm:"column:CreateId" json:"create_id"`
+	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
 	CreateName string `gorm:"column:CreateName"json:"create_name"`
 	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
 }
@@ -38,26 +38,21 @@ func (m *DepartmentModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-            id int NOT NULL DEFAULT '0' COMMENT '自增id',
-			parent_id int NOT NULL DEFAULT '0' COMMENT '父级id',
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			name varchar(128)  NOT NULL DEFAULT '' COMMENT '名称',
 			full_code varchar(128)  NOT NULL DEFAULT '' COMMENT '完整编号(根,父,本级)',
 			full_name varchar(2056)  NOT NULL DEFAULT '' COMMENT '完整名称(json)',
 			ip varchar(512)  NOT NULL DEFAULT '' COMMENT 'IP段',
-			level smallint NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
-			sort int NOT NULL DEFAULT '1' COMMENT '排序',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
+			level smallint(4) NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
+			sort int(11) NOT NULL DEFAULT '1' COMMENT '排序',
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
-			created_at datetime NULL,
-			INDEX index_parent (parent_id) USING INVERTED,
-			INDEX index_full_code (full_code) USING INVERTED
-		)
-		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			created_at datetime NOT NULL,
+			PRIMARY KEY (id),
+			KEY index_parent (parent_id),
+			KEY index_full_code (full_code)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='组织架构表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {
