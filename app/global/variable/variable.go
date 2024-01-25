@@ -30,10 +30,10 @@ var (
 	//gorm 数据库客户端，如果您操作数据库使用的是gorm，请取消以下注释，在 bootstrap>init 文件，进行初始化即可使用
 	GormDbPlatform *gorm.DB       // 全局gorm的客户端连接
 	GormDbAlarm    *gorm.DB       // 全局gorm的客户端连接
-	GormDbSyslog   *gorm.DB       // 全局gorm的客户端连接
+	GormDbAgent    *gorm.DB       // 全局gorm的客户端连接
 	DbNamePlatform = "DbPlatform" //数据库名称
 	DbNameAlarm    = "DbAlarm"    //数据库名称
-	DbNameSyslog   = "DbSyslog"   //数据库名称
+	DbNameAgent    = "DbAgent"    //数据库名称
 
 	//雪花算法全局变量
 	SnowFlake snowflake_interf.InterfaceSnowFlake

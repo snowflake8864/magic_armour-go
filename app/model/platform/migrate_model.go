@@ -18,8 +18,9 @@ func CreateMigrateFactory() *MigrateModel {
 
 type MigrateModel struct {
 	model.BaseModel
-	Migration string `gorm:"primaryKey" json:"migration"`
-	CreatedAt string `json:"created_at"`
+	Id        int64  `gorm:"primaryKey" json:"id"`
+	Migration string `gorm:"uniqueIndex" json:"migration"`
+	CreatedAt string `gorm:"column:CreatedAt" json:"created_at"`
 }
 
 // 表名
@@ -33,14 +34,12 @@ func (m *MigrateModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			migration varchar(128) NOT NULL DEFAULT '',
-			created_at datetime NULL
-		)
-		UNIQUE KEY(migration)
-		DISTRIBUTED BY HASH(migration) BUCKETS 1
-		PROPERTIES (
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			created_at datetime NULL,
+			PRIMARY KEY (id),
+			UNIQUE KEY unique_index (migration)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

@@ -8,11 +8,11 @@ Gormv2: # 只针对 gorm  操作数据库有效
     PrepareStmt: false  #  doris只支持查询预处理, 新增
     Write:
       Host: "192.168.17.251"
-      DataBase: "magic_armour_platform"
-      Port: 9030
+      DataBase: "magic_armour"
+      Port: 3306
       Prefix: ""   #  目前没有用到该配置项
       User: "root"
-      Pass: "veda!2023"
+      Pass: "veda*2023NB"
       Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
@@ -26,11 +26,30 @@ Gormv2: # 只针对 gorm  操作数据库有效
       Port: 9030                        #注意，非3306，请自行调整
       Prefix: "9030"
       User: "root"
-      Pass: "veda!2023"
+      Pass: "veda*2023NB"
       Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128
       SetConnMaxLifetime: 60
+  DbAgent:
+    IsInitGlobalGormMysql: 1
+    SlowThreshold: 30
+    DriveType: "mysql"
+    PrepareStmt: false
+    Write:
+      Host: "192.168.17.251"
+      DataBase: "magic_armour_agent"
+      Port: 9030
+      Prefix: ""
+      User: "root"
+      Pass: "veda*2023NB"
+      Charset: "utf8"
+      SetMaxIdleConns: 10
+      SetMaxOpenConns: 128
+      SetConnMaxLifetime: 60
+      ReConnectInterval: 1
+      PingFailRetryTimes: 3
+    IsOpenReadDb: 0
   DbAlarm:
     IsInitGlobalGormMysql: 1
     SlowThreshold: 30
@@ -42,26 +61,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       Port: 9030
       Prefix: ""
       User: "root"
-      Pass: "veda!2023"
-      Charset: "utf8"
-      SetMaxIdleConns: 10
-      SetMaxOpenConns: 128
-      SetConnMaxLifetime: 60
-      ReConnectInterval: 1
-      PingFailRetryTimes: 3
-    IsOpenReadDb: 0
-  DbSyslog:
-    IsInitGlobalGormMysql: 1
-    SlowThreshold: 30
-    DriveType: "mysql"
-    PrepareStmt: false
-    Write:
-      Host: "192.168.17.251"
-      DataBase: "magic_armour_syslog"
-      Port: 9030
-      Prefix: ""
-      User: "root"
-      Pass: "veda!2023"
+      Pass: "veda*2023NB"
       Charset: "utf8"
       SetMaxIdleConns: 10
       SetMaxOpenConns: 128

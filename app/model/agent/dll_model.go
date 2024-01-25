@@ -8,7 +8,7 @@ import (
 // 模块表
 
 func CreateDllFactory() *DllModel {
-	return &DllModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+	return &DllModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体

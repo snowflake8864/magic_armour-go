@@ -1,4 +1,4 @@
-package modelPlatform
+package modelAgent
 
 import (
 	"goskeleton/app/global/variable"
@@ -8,7 +8,7 @@ import (
 // 威胁情报缓存表
 
 func CreateThreatenCacheFactory() *ThreatenCacheModel {
-	return &ThreatenCacheModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+	return &ThreatenCacheModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
@@ -30,7 +30,7 @@ type ThreatenCacheModel struct {
 // 表名
 
 func (m *ThreatenCacheModel) TableName() string {
-	return "p_threaten_cache"
+	return "a_threaten_cache"
 }
 
 func (m *ThreatenCacheModel) CreateTable() bool {

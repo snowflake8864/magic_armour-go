@@ -140,10 +140,10 @@ func initTables() {
 		_ = modelPlatform.CreateSoftwareFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_threaten_cache") {
-		_ = modelPlatform.CreateThreatenCacheFactory().CreateTable()
+		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_threaten_push") {
-		_ = modelPlatform.CreateThreatenPushFactory().CreateTable()
+		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_upload") {
 		_ = modelPlatform.CreateUploadFactory().CreateTable()

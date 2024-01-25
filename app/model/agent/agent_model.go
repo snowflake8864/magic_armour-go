@@ -8,7 +8,7 @@ import (
 // 终端表
 
 func CreateAgentFactory() *AgentModel {
-	return &AgentModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+	return &AgentModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体

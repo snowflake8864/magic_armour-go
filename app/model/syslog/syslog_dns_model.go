@@ -8,7 +8,7 @@ import (
 // 创建 CreateSyslogDnsFactory
 
 func CreateSyslogDnsFactory() *SyslogDnsModel {
-	return &SyslogDnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
+	return &SyslogDnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 // 结构体
