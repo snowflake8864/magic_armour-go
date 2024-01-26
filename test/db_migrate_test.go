@@ -11,10 +11,6 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	//_ = modelPlatform.CreateUploadFactory().CreateTable()
-	//_ = modelAgent.CreateThreatenPushFactory().CreateTable()
-	//_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
-	//_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
 	database.TestInit()
 }
 

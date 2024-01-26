@@ -24,7 +24,7 @@ type DictionaryModel struct {
 // 表名
 
 func (m *DictionaryModel) TableName() string {
-	return "p_dictionaries"
+	return "p_dictionary"
 }
 
 func (m *DictionaryModel) CreateTable() bool {

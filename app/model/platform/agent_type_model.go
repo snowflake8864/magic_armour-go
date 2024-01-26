@@ -15,9 +15,9 @@ func CreateAgentTypeFactory() *AgentTypeModel {
 
 type AgentTypeModel struct {
 	model.BaseModel
-	Id         int    `json:"id" gorm:"primaryKey"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	Title      string `json:"title"`
-	CreateId   int    `json:"create_id"`
+	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
 }

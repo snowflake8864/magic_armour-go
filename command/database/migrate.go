@@ -99,7 +99,7 @@ func initTables() {
 	getMigrationMap()
 
 	//下面开始创建表 (platform库)
-	if !existMigration("db_platform_create-p_admin") {
+	if !existMigration("db_platform_create-p_admins") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_agent_type") {
@@ -108,25 +108,34 @@ func initTables() {
 	if !existMigration("db_platform_create-p_custom_table") {
 		_ = modelPlatform.CreateCustomTableFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_department") {
+	if !existMigration("db_platform_create_table-p_departments") {
 		_ = modelPlatform.CreateDepartmentFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_dictionary") {
 		_ = modelPlatform.CreateDictionaryFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_menu") {
+	if !existMigration("db_platform_create_table-p_grants") {
+		_ = modelPlatform.CreateGrantFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_grant_module") {
+		_ = modelPlatform.CreateGrantModuleFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_grant_used") {
+		_ = modelPlatform.CreateGrantUsedFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_menus") {
 		_ = modelPlatform.CreateMenuFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_operate_log") {
+	if !existMigration("db_platform_create_table-p_operate_logs") {
 		_ = modelPlatform.CreateOperateLogFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_role") {
+	if !existMigration("db_platform_create_table-p_roles") {
 		_ = modelPlatform.CreateRoleFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_server_monitor") {
 		_ = modelPlatform.CreateServerMonitorFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_sms_log") {
+	if !existMigration("db_platform_create_table-p_sms_logs") {
 		_ = modelPlatform.CreateSmsLogFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_software") {
@@ -135,32 +144,31 @@ func initTables() {
 	if !existMigration("db_platform_create_table-p_software_download") {
 		_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-p_upload") {
+	if !existMigration("db_platform_create_table-p_uploads") {
 		_ = modelPlatform.CreateUploadFactory().CreateTable()
 	}
 
 	//下面开始创建表 (agent库)
-	if !existMigration("db_platform_create_table-a_agent") {
+	if !existMigration("db_platform_create_table-a_agents") {
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
-
-	if !existMigration("db_platform_create_table-a_dll") {
+	if !existMigration("db_platform_create_table-a_dlls") {
 		_ = modelAgent.CreateDllFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-a_threaten_push") {
+	if !existMigration("db_platform_create_table-a_threaten_pushes") {
 		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)
-	if !existMigration("db_alarm_create_table-a_process") {
+	if !existMigration("db_alarm_create_table-a_alarm_process") {
 		_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)
-	if !existMigration("db_syslog_create_table-a_dns") {
+	if !existMigration("db_syslog_create_table-a_syslog_dns") {
 		_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
 	}
 }

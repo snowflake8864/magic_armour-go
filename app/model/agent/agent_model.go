@@ -111,6 +111,7 @@ func (m *AgentModel) CreateTable() bool {
 			alias_name varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
 			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
+			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权配置(json)',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式(0监控,1保护)',

@@ -41,7 +41,7 @@ func (m *DllModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
+			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			dll_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '模块:hash',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(agent_id+dll_hash)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:路径',
