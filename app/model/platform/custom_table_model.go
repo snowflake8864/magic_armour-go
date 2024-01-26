@@ -15,12 +15,12 @@ func CreateCustomTableFactory() *CustomTableModel {
 
 type CustomTableModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	Route      string `json:"route"`
-	Cols       string `json:"Cols"`
-	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName" json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	Cols       string `json:"cols"`
+	CreateId   int64  `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

@@ -15,22 +15,22 @@ func CreateAdminFactory() *AdminModel {
 
 type AdminModel struct {
 	model.BaseModel
-	Id              int64  `gorm:"primaryKey" json:"id"`
+	Id              int64  `json:"id" gorm:"primaryKey"`
 	Username        string `json:"username"`
-	RoleId          int64  `gorm:"column:RoleId" json:"role_id"`
+	RoleId          int64  `json:"role_id"`
 	Email           string `json:"email"`
 	Phone           string `json:"phone"`
-	PhoneLoginCheck int    `gorm:"column:PhoneLoginCheck" json:"phone_login_check"`
+	PhoneLoginCheck int    `json:"phone_login_check"`
 	Pw              string `json:"pw"`
-	PwErrorNum      int    `gorm:"column:PwErrorNum" json:"pw_error_num"`
-	LastLoginAt     string `gorm:"column:LastLoginAt" json:"last_login_at"`
-	IsDefault       int    `gorm:"column:IsDefault" json:"is_default"`
-	IsRoot          int    `gorm:"column:IsRoot" json:"is_root"`
-	IsVisible       int    `gorm:"column:IsVisible" json:"is_visible"`
-	IsAgent         int    `gorm:"column:IsAgent" json:"is_agent"`
-	CreateId        int    `gorm:"column:CreateId" json:"create_id"`
-	CreateName      string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt       string `gorm:"column:CreatedAt" json:"created_at"`
+	PwErrorNum      int    `json:"pw_error_num"`
+	LastLoginAt     string `json:"last_login_at"`
+	IsDefault       int    `json:"is_default"`
+	IsRoot          int    `json:"is_root"`
+	IsVisible       int    `json:"is_visible"`
+	IsAgent         int    `json:"is_agent"`
+	CreateId        int    `json:"create_id"`
+	CreateName      string `json:"create_name"`
+	CreatedAt       string `json:"created_at"`
 }
 
 // 表名

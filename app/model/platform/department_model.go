@@ -15,17 +15,17 @@ func CreateDepartmentFactory() *DepartmentModel {
 
 type DepartmentModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
-	ParentId   int64  `gorm:"column:ParentId" json:"parent_id"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
+	ParentId   int64  `json:"parent_id"`
 	Name       string `json:"name"`
-	FullCode   string `gorm:"column:FullCode" json:"full_code"`
-	FullName   string `gorm:"column:FullName" json:"full_name"`
+	FullCode   string `json:"full_code"`
+	FullName   string `json:"full_name"`
 	Ip         string `json:"ip"`
 	Level      int    `json:"level"`
 	Sort       int    `json:"sort"`
-	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId   int64  `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

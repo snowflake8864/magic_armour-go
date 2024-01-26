@@ -15,18 +15,18 @@ func CreateMenuFactory() *MenuModel {
 
 type MenuModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
-	ParentId   int64  `gorm:"column:ParentId" json:"parent_id"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
+	ParentId   int64  `json:"parent_id"`
 	Position   int    `json:"position"`
 	Title      string `json:"title"`
-	WebCode    string `gorm:"column:WebCode" json:"web_code"`
+	WebCode    string `json:"web_code"`
 	Sort       int    `json:"sort"`
-	IsShow     int    `gorm:"column:IsShow" json:"is_show"`
-	IsRoot     int    `gorm:"column:IsRoot" json:"is_root"`
+	IsShow     int    `json:"is_show"`
+	IsRoot     int    `json:"is_root"`
 	Remark     string `json:"remark"`
-	ServiceApi string `gorm:"column:ServiceApi" json:"service_api"`
+	ServiceApi string `json:"service_api"`
 	Level      int    `json:"level"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

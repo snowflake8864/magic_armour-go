@@ -70,7 +70,7 @@ func saveMigrations() {
 		return
 	}
 	migrateFact := modelPlatform.CreateMigrateFactory()
-	_ = migrateFact.InsertItems(&notExistMigrateList)
+	_ = migrateFact.InsertBatch(&notExistMigrateList)
 }
 
 func existMigration(migration string) bool {
@@ -84,6 +84,10 @@ func existMigration(migration string) bool {
 	}
 	notExistMigrateList = append(notExistMigrateList, st)
 	return false
+}
+
+func TestInit() {
+	start("init")
 }
 
 func initTables() {

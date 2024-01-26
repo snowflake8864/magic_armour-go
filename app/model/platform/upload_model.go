@@ -15,17 +15,17 @@ func CreateUploadFactory() *UploadModel {
 
 type UploadModel struct {
 	model.BaseModel
-	Id           int64  `gorm:"primaryKey" json:"id"`
+	Id           int64  `json:"id" gorm:"primaryKey"`
 	Type         string `json:"type"`
-	OriginalName string `gorm:"column:OriginalName" json:"original_name"`
-	StoragePath  string `gorm:"column:StoragePath" json:"storage_path"`
-	StorageName  string `gorm:"column:StorageName" json:"storage_name"`
-	FullPath     string `gorm:"column:FullPath" json:"full_path"`
-	FileHash     string `gorm:"column:FileHash" json:"file_hash"`
+	OriginalName string `json:"original_name"`
+	StoragePath  string `json:"storage_path"`
+	StorageName  string `json:"storage_name"`
+	FullPath     string `json:"full_path"`
+	FileHash     string `json:"file_hash"`
 	Size         string `json:"size"`
-	CreateId     int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName   string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt    string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId     int64  `json:"create_id"`
+	CreateName   string `json:"create_name"`
+	CreatedAt    string `json:"created_at"`
 }
 
 // 表名

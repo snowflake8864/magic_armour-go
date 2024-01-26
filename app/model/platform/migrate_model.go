@@ -18,9 +18,9 @@ func CreateMigrateFactory() *MigrateModel {
 
 type MigrateModel struct {
 	model.BaseModel
-	Id        int64  `gorm:"primaryKey" json:"id"`
-	Migration string `gorm:"uniqueIndex" json:"migration"`
-	CreatedAt string `gorm:"column:CreatedAt" json:"created_at"`
+	Id        int64  `json:"id" gorm:"primaryKey"`
+	Migration string `gorm:"column:migration" json:"migration"`
+	CreatedAt string `json:"created_at"`
 }
 
 // 表名
@@ -50,7 +50,26 @@ func (m *MigrateModel) CreateTable() bool {
 
 }
 
+func (m *MigrateModel) InsertOne(s *MigrateModel) bool {
+	result := m.Create(s)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *MigrateModel) InsertBatch(list *[]MigrateModel) bool {
+	result := m.Create(list)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *MigrateModel) InsertItem(s *MigrateModel) bool {
+
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(&MigrateModel{}).Create(s)
 	})

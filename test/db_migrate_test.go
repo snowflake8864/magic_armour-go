@@ -5,13 +5,17 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/database"
 	"testing"
 	"time"
 )
 
 func TestDbMigrate(t *testing.T) {
-	_ = modelPlatform.CreateUploadFactory().CreateTable()
-	//_ = modelAgent.CreateDllFactory().CreateTable()
+	//_ = modelPlatform.CreateUploadFactory().CreateTable()
+	//_ = modelAgent.CreateThreatenPushFactory().CreateTable()
+	//_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
+	//_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
+	database.TestInit()
 }
 
 func TestInsertOne(t *testing.T) {
@@ -38,19 +42,7 @@ func TestInsertMany(t *testing.T) {
 			CreatedAt: time.Now().Format(variable.DateFormat),
 		},
 	}
-	result := modelFact.InsertItems(st)
-
-	var list []modelPlatform.MigrateModel
-	var s1 = modelPlatform.MigrateModel{
-		Migration: "20240108000001_init_paltforma333333333",
-		CreatedAt: time.Now().Format(variable.DateFormat),
-	}
-	var s2 = modelPlatform.MigrateModel{
-		Migration: "20240108000001_init_paltform44444444",
-		CreatedAt: time.Now().Format(variable.DateFormat),
-	}
-	list = append(list, s1, s2)
-	result = modelFact.InsertItems(&list)
+	result := modelFact.InsertBatch(st)
 	fmt.Println(result)
 }
 

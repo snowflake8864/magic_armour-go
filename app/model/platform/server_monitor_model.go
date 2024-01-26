@@ -14,13 +14,13 @@ func CreateServerMonitorFactory() *ServerMonitorModel {
 // 结构体
 type ServerMonitorModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
-	MonitorDay string `gorm:"column:MonitorDay" json:"monitor_day"`
-	ServerCode string `gorm:"column:ServerCode" json:"server_code"`
-	CpuUsage   string `gorm:"column:CpuUsage" json:"cpu_usage"`
-	MemUsage   string `gorm:"column:MemUsage" json:"mem_usage"`
-	HdUsage    string `gorm:"column:HdUsage" json:"hd_usage"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
+	MonitorDay string `json:"monitor_day"`
+	ServerCode string `json:"server_code"`
+	CpuUsage   string `json:"cpu_usage"`
+	MemUsage   string `json:"mem_usage"`
+	HdUsage    string `json:"hd_usage"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

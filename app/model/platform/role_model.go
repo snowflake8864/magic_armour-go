@@ -15,14 +15,14 @@ func CreateRoleFactory() *RoleModel {
 
 type RoleModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	Name       string `json:"name"`
 	Remark     string `json:"remark"`
 	Menus      string `json:"menus"`
-	IsDefault  int    `gorm:"column:IsDefault" json:"is_default"`
-	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName" json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	IsDefault  int    `json:"is_default"`
+	CreateId   int64  `json:"create_id"`
+	CreateName string `son:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

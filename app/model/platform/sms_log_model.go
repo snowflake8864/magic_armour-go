@@ -15,13 +15,13 @@ func CreateSmsLogFactory() *SmsLogModel {
 
 type SmsLogModel struct {
 	model.BaseModel
-	Id        int64  `gorm:"primaryKey" json:"id"`
+	Id        int64  `json:"id" gorm:"primaryKey"`
 	Phone     string `json:"phone"`
 	Msg       string `json:"msg"`
 	Code      string `json:"code"`
 	Resp      string `json:"resp"`
 	Status    int    `json:"status"`
-	CreatedAt string `gorm:"column:createdAt" json:"created_at"`
+	CreatedAt string `json:"created_at"`
 }
 
 // 表名

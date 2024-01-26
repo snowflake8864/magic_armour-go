@@ -15,18 +15,18 @@ func CreateOperateLogFactory() *OperateLogModel {
 
 type OperateLogModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	Module     string `json:"module"`
 	Path       string `json:"path"`
-	AgentId    string `gorm:"column:AgentId" json:"agent_id"`
+	AgentId    string `json:"agent_id"`
 	Method     string `json:"method"`
 	Ip         string `json:"ip"`
 	Input      string `json:"input"`
 	Status     int    `json:"status"`
 	Response   string `json:"response"`
-	CreateId   int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId   int64  `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名

@@ -15,7 +15,7 @@ func CreateDictionaryFactory() *DictionaryModel {
 
 type DictionaryModel struct {
 	model.BaseModel
-	Id     string `gorm:"primaryKey" json:"id"`
+	Id     string `json:"id" gorm:"primaryKey"`
 	Module string `json:"module"`
 	Val    string `json:"val"`
 	Remark string `json:"remark"`

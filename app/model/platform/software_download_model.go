@@ -15,18 +15,18 @@ func CreateSoftwareDownloadFactory() *SoftwareDownloadModel {
 
 type SoftwareDownloadModel struct {
 	model.BaseModel
-	Id          int64  `gorm:"primaryKey" json:"id"`
-	SoftwareId  int64  `gorm:"column:SoftwareId" json:"software_id"`
-	ServiceIp   string `gorm:"column:ServiceIp" json:"service_ip"`
+	Id          int64  `json:"id" gorm:"primaryKey"`
+	SoftwareId  int64  `json:"software_id"`
+	ServiceIp   string `json:"service_ip"`
 	Alias       string `json:"alias"`
-	FullPath    string `gorm:"column:FullPath" json:"full_path"`
-	StoragePath string `gorm:"column:StoragePath" json:"storage_path"`
-	FileHash    string `gorm:"column:FileHash" json:"file_hash"`
-	FileSize    int    `gorm:"column:FileSize" json:"file_size"`
+	FullPath    string `json:"full_path"`
+	StoragePath string `json:"storage_path"`
+	FileHash    string `json:"file_hash"`
+	FileSize    int    `json:"file_size"`
 	Remark      string `json:"remark"`
-	CreateId    int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName  string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt   string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId    int64  `json:"create_id"`
+	CreateName  string `json:"create_name"`
+	CreatedAt   string `json:"created_at"`
 }
 
 // 表名

@@ -15,16 +15,16 @@ func CreateSoftwareFactory() *SoftwareModel {
 
 type SoftwareModel struct {
 	model.BaseModel
-	Id           int64  `gorm:"primaryKey" json:"id"`
-	UploadId     int64  `gorm:"column:UploadId" json:"upload_id"`
+	Id           int64  `json:"id" gorm:"primaryKey"`
+	UploadId     int64  `json:"upload_id"`
 	Ver          string `json:"ver"`
-	PlatformType int    `gorm:"column:PlatformType" json:"platform_type"`
-	OsType       string `gorm:"column:OsType" json:"os_type"`
-	IsPublish    int    `gorm:"column:IsPublish" json:"is_publish"`
+	PlatformType int    `json:"platform_type"`
+	OsType       string `json:"os_type"`
+	IsPublish    int    `json:"is_publish"`
 	Remark       string `json:"remark"`
-	CreateId     int64  `gorm:"column:CreateId" json:"create_id"`
-	CreateName   string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt    string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId     int64  `json:"create_id"`
+	CreateName   string `json:"create_name"`
+	CreatedAt    string `json:"created_at"`
 }
 
 // 表名
