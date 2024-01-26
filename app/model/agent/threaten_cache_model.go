@@ -15,16 +15,16 @@ func CreateThreatenCacheFactory() *ThreatenCacheModel {
 
 type ThreatenCacheModel struct {
 	model.BaseModel
-	Id        string `gorm:"primaryKey" json:"id"`
+	Id        string `json:"id" gorm:"primaryKey"`
 	Level     int    `json:"level"`
 	Source    int    `json:"source"`
 	Dir       string `json:"dir"`
-	ParentDir string `gorm:"column:ParentDir" json:"parent_dir"`
+	ParentDir string `json:"parent_dir"`
 	Os        string `json:"os"`
 	Attribute string `json:"attribute"`
-	DataFrom  int    `gorm:"column:DataFrom" json:"data_from"`
-	CheckAt   string `gorm:"column:CheckAt" json:"check_at"`
-	CreatedAt string `gorm:"column:createdAt" json:"created_at"`
+	DataFrom  int    `json:"data_from"`
+	CheckAt   string `json:"check_at"`
+	CreatedAt string `json:"created_at"`
 }
 
 // 表名
@@ -52,7 +52,7 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS 1 
+		DISTRIBUTED BY HASH(id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

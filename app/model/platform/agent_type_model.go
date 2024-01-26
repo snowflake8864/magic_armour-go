@@ -1,4 +1,4 @@
-package modelAgent
+package modelPlatform
 
 import (
 	"goskeleton/app/global/variable"
@@ -8,42 +8,37 @@ import (
 // 终端类型表
 
 func CreateAgentTypeFactory() *AgentTypeModel {
-	return &AgentTypeModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+	return &AgentTypeModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
 type AgentTypeModel struct {
 	model.BaseModel
-	Id         int    `gorm:"primaryKey" json:"id"`
+	Id         int    `json:"id" gorm:"primaryKey"`
 	Title      string `json:"title"`
-	CreateId   int    `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	CreateId   int    `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名
 
 func (m *AgentTypeModel) TableName() string {
-	return "a_agent_type"
+	return "p_agent_type"
 }
 
 func (m *AgentTypeModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			id int NOT NULL DEFAULT '0' COMMENT '自增id',
+            id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
-			created_at datetime NULL
-		)
-		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS 1 
-		PROPERTIES (
-			'enable_unique_key_merge_on_write' = 'true',
-			'replication_allocation' = 'tag.location.default: 1'
-		);
+			created_at datetime NULL,
+            PRIMARY KEY (id)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='终端类型表';
 		`
 	result := m.Exec(m.TrimCreateTable(sql))
 	if result.RowsAffected > 0 {

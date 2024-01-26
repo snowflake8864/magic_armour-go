@@ -15,19 +15,20 @@ func CreateDllFactory() *DllModel {
 
 type DllModel struct {
 	model.BaseModel
-	AgentId         string `gorm:"column:AgentId" json:"agent_id"`
-	DllHash         string `gorm:"column:DllHash" json:"dll_hash"`
+	Id              string `json:"id" gorm:"primaryKey"`
+	AgentId         string `json:"agent_id"`
+	DllHash         string `json:"dll_hash"`
 	Dir             string `json:"dir"`
 	Status          int    `json:"status"`
-	SyncStatusAt    string `gorm:"column:SyncStatusAt" json:"sync_status_at"`
-	GlobalStatus    int    `gorm:"column:GlobalStatus" json:"global_status"`
-	SelfStatus      int    `gorm:"column:SelfStatus" json:"self_status"`
-	ThreatenStatus  int    `gorm:"column:ThreatenStatus" json:"threaten_status"`
-	AutoWhiteSwitch int    `gorm:"column:AutoWhiteSwitch" json:"auto_white_switch"`
+	SyncStatusAt    string `json:"sync_status_at"`
+	GlobalStatus    int    `json:"global_status"`
+	SelfStatus      int    `json:"self_status"`
+	ThreatenStatus  int    `json:"threaten_status"`
+	AutoWhiteSwitch int    `json:"auto_white_switch"`
 	Introduce       string `json:"introduce"`
 	Copyright       string `json:"copyright"`
 	Attribute       string `json:"attribute"`
-	CreatedAt       string `gorm:"column:CreatedAt" json:"created_at"`
+	CreatedAt       string `json:"created_at"`
 }
 
 // 表名
@@ -42,6 +43,7 @@ func (m *DllModel) CreateTable() bool {
 		(
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 			dll_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '模块:hash',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(agent_id+dll_hash)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:路径',
 			status smallint NOT NULL DEFAULT '0' COMMENT '模块状态(文件中宏定义)',
 			sync_status_at datetime NULL COMMENT '同步状态时间(黑白名单下发agent用)',

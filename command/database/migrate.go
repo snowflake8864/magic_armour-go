@@ -99,10 +99,11 @@ func initTables() {
 	getMigrationMap()
 
 	//下面开始创建表 (platform库)
-
-	//平台相关表
 	if !existMigration("db_platform_create-p_admin") {
 		_ = modelPlatform.CreateAdminFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-p_agent_type") {
+		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create-p_custom_table") {
 		_ = modelPlatform.CreateCustomTableFactory().CreateTable()
@@ -142,9 +143,7 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_agent") {
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
-	if !existMigration("db_platform_create_table-a_agent_type") {
-		_ = modelAgent.CreateAgentTypeFactory().CreateTable()
-	}
+
 	if !existMigration("db_platform_create_table-a_dll") {
 		_ = modelAgent.CreateDllFactory().CreateTable()
 	}

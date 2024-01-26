@@ -15,19 +15,19 @@ func CreateAlarmProcessFactory() *AlarmProcessModel {
 
 type AlarmProcessModel struct {
 	model.BaseModel
-	AgentId      string `gorm:"column:agent_id" json:"agent_id"`
+	Id           int64  `json:"id" gorm:"primaryKey"`
+	AgentId      string `json:"agent_id"`
 	Type         int    `json:"type"`
-	CreatedAt    string `gorm:"column:CreatedAt" json:"created_at"`
 	Level        int    `json:"level"`
-	Id           int64  `gorm:"primaryKey" json:"id"`
-	AgentAt      string `gorm:"column:agent_at" json:"agent_at"`
-	HandleStatus int    `gorm:"column:handle_status" json:"handle_status"`
-	HandleRemark string `gorm:"column:handle_remark" json:"handle_remark"`
-	HandleUser   string `gorm:"column:handle_user" json:"handle_user"`
-	HandleAt     string `gorm:"column:handle_at" json:"handle_at"`
-	ProcHash     string `gorm:"column:proc_hash" json:"proc_hash"`
-	ProcDir      string `gorm:"column:proc_dir" json:"proc_dir"`
-	ProcParam    string `gorm:"column:proc_param" json:"proc_param"`
+	AgentAt      string `json:"agent_at"`
+	HandleStatus int    `json:"handle_status"`
+	HandleRemark string `json:"handle_remark"`
+	HandleUser   string `json:"handle_user"`
+	HandleAt     string `json:"handle_at"`
+	CreatedAt    string `json:"created_at"`
+	ProcHash     string `json:"proc_hash"`
+	ProcDir      string `json:"proc_dir"`
+	ProcParam    string `json:"proc_param"`
 }
 
 // 表名
@@ -58,7 +58,7 @@ func (m *AlarmProcessModel) CreateTable() bool {
 			INDEX index_proc_hash (proc_hash) USING INVERTED,
 			INDEX index_proc_dir (proc_dir) USING INVERTED
 		)
-		DUPLICATE  KEY(agent_id, type, created_at, handle_status)
+		DUPLICATE  KEY(agent_id, type, created_at, handle_status,level)
 		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'

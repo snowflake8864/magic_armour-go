@@ -14,15 +14,15 @@ func CreateSyslogDnsFactory() *SyslogDnsModel {
 // 结构体
 type SyslogDnsModel struct {
 	model.BaseModel
-	AgentId    string `gorm:"column:agent_id" json:"agent_id"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
-	Id         int64  `gorm:"primaryKey" json:"id"`
-	AgentAt    string `gorm:"column:agent_at" json:"agent_at"`
-	ProcHash   string `gorm:"column:proc_hash" json:"proc_hash"`
-	ProcId     int32  `gorm:"column:proc_id" json:"proc_id"`
-	ProcDir    string `gorm:"column:proc_dir" json:"proc_dir"`
-	DomainName string `gorm:"column:domain_name" json:"domain_name"`
-	ResIp      string `gorm:"column:res_ip" json:"res_ip"`
+	Id         int64  `json:"id" gorm:"primaryKey" `
+	AgentId    string `json:"agent_id"`
+	AgentAt    string `json:"agent_at"`
+	CreatedAt  string `json:"created_at"`
+	ProcHash   string `json:"proc_hash"`
+	ProcId     int32  `json:"proc_id"`
+	ProcDir    string `json:"proc_dir"`
+	DomainName string `json:"domain_name"`
+	ResIp      string `json:"res_ip"`
 }
 
 // 表名

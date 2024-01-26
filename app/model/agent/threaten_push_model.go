@@ -15,20 +15,20 @@ func CreateThreatenPushFactory() *ThreatenPushModel {
 
 type ThreatenPushModel struct {
 	model.BaseModel
-	Id         string `gorm:"primaryKey" json:"id"`
+	Id         string `json:"id" gorm:"primaryKey"`
 	Level      int    `json:"level"`
 	Dir        string `json:"dir"`
-	ParentDir  string `gorm:"column:ParentDir" json:"parent_dir"`
+	ParentDir  string `json:"parent_dir"`
 	Os         string `json:"os"`
 	Introduce  string `json:"introduce"`
 	Copyright  string `json:"copyright"`
 	Attribute  string `json:"attribute"`
-	DataFrom   int    `gorm:"column:DataFrom" json:"data_from"`
-	PushStatus int    `gorm:"column:PushStatus" json:"push_status"`
-	PushAt     string `gorm:"column:PushAt" json:"push_at"`
-	CreateId   int    `gorm:"column:CreateId" json:"create_id"`
-	CreateName string `gorm:"column:CreateName"json:"create_name"`
-	CreatedAt  string `gorm:"column:CreatedAt" json:"created_at"`
+	DataFrom   int    `json:"data_from"`
+	PushStatus int    `json:"push_status"`
+	PushAt     string `json:"push_at"`
+	CreateId   int    `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
 }
 
 // 表名
@@ -60,7 +60,7 @@ func (m *ThreatenPushModel) CreateTable() bool {
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS 1 
+		DISTRIBUTED BY HASH(id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'
