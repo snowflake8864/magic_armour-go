@@ -158,6 +158,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_dll_running") {
 		_ = modelAgent.CreateDllRunningFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_errors") {
+		_ = modelAgent.CreateErrorFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
