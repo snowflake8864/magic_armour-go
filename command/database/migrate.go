@@ -41,11 +41,11 @@ func start(action string) {
 	switch action {
 	case "init":
 		initTables()
+		saveMigrations()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
 	}
 
-	saveMigrations()
 }
 
 // 迁移数据
@@ -167,6 +167,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_errors") {
 		_ = modelAgent.CreateErrorFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_outreach_global") {
+		_ = modelAgent.CreateOutreachGlobalFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
@@ -183,4 +186,5 @@ func initTables() {
 	if !existMigration("db_syslog_create_table-a_syslog_dns") {
 		_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
 	}
+
 }
