@@ -152,6 +152,12 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_agents") {
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_blackmail_group") {
+		_ = modelAgent.CreateBlackmailGroupFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_blackmail_policy") {
+		_ = modelAgent.CreateBlackmailPolicyFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_dlls") {
 		_ = modelAgent.CreateDllFactory().CreateTable()
 	}
