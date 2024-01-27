@@ -206,12 +206,17 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_tamper_policy") {
 		_ = modelAgent.CreateTamperPolicyFactory().CreateTable()
 	}
-
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-a_threaten_pushes") {
 		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_trust_global") {
+		_ = modelAgent.CreateTrustGlobalFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_trust_policy") {
+		_ = modelAgent.CreateTrustPolicyFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)

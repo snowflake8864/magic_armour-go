@@ -43,9 +43,9 @@ func (m *TamperGlobalModel) CreateTable() bool {
 	sql += `
 		(
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(统一定义)',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			type tinyint NOT NULL DEFAULT '0' COMMENT '类型(1文件夹 2单文件)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			protect_rw int NOT NULL DEFAULT '0' COMMENT '保护权限(1读,2写,4删除,8重命名,16新建)',
 			include_suffix varchar(256)  NOT NULL DEFAULT '' COMMENT '包含文件类型(|隔开)',
 			exclude_suffix varchar(256)  NOT NULL DEFAULT '' COMMENT '排除文件类型(|隔开)',
@@ -57,10 +57,9 @@ func (m *TamperGlobalModel) CreateTable() bool {
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,
 			updated_at datetime NULL,
-			INDEX index_id (id) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(platform_type, type, dir) 
+		UNIQUE KEY(platform_type, id) 
 		DISTRIBUTED BY HASH(platform_type) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
