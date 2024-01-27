@@ -218,6 +218,15 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_trust_policy") {
 		_ = modelAgent.CreateTrustPolicyFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_usb") {
+		_ = modelAgent.CreateUsbFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_usb_global") {
+		_ = modelAgent.CreateUsbGlobalFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_usb_logs") {
+		_ = modelAgent.CreateUsbLogFactory().CreateTable()
+	}
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_create_table-a_alarm_process") {

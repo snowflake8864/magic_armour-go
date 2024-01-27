@@ -54,7 +54,6 @@ func (m *AlarmProcessModel) CreateTable() bool {
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			proc_param VARCHAR(2048) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
 			INDEX index_proc_hash (proc_hash) USING INVERTED,
 			INDEX index_proc_dir (proc_dir) USING INVERTED
 		)

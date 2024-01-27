@@ -45,7 +45,6 @@ func (m *SyslogDnsModel) CreateTable() bool {
 			domain_name VARCHAR(512) NOT NULL DEFAULT '' COMMENT '域名',
 			res_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '解析ip',
 			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
 			INDEX index_proc_hash (proc_hash) USING INVERTED,
 			INDEX index_domain_name (domain_name) USING INVERTED
 		)

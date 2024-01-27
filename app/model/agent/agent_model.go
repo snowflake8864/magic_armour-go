@@ -37,7 +37,7 @@ type AgentModel struct {
 	AdminId              int64  `json:"admin_id"`
 	DeptId               int64  `json:"dept_id"`
 	AgentTypeId          int64  `json:"agent_type_id"`
-	AliasName            string `json:"alias_name"`
+	Alias                string `json:"alias"`
 	ContactName          string `json:"contact_name"`
 	ContactTel           string `json:"contact_tel"`
 	Remark               string `json:"remark"`
@@ -108,7 +108,7 @@ func (m *AgentModel) CreateTable() bool {
 			admin_id int NOT NULL DEFAULT '0' COMMENT '管理员编号(admin.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			agent_type_id int NOT NULL DEFAULT '0' COMMENT '终端类型(agent_type.id)',
-			alias_name varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
+			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
 			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
 			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权配置(json)',
