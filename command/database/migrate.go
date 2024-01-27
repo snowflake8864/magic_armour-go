@@ -200,6 +200,12 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_processes") {
 		_ = modelAgent.CreateProcessFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_tamper_global") {
+		_ = modelAgent.CreateTamperGlobalFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_tamper_policy") {
+		_ = modelAgent.CreateTamperPolicyFactory().CreateTable()
+	}
 
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
