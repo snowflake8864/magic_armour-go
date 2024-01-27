@@ -32,7 +32,7 @@ func (m *OutreachGlobalModel) TableName() string {
 func (m *OutreachGlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
-		(	
+		(
 			ip varchar(128) NOT NULL DEFAULT '' COMMENT 'ip+掩码',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(ip)',
 			type tinyint NOT NULL DEFAULT '0' COMMENT '类型(1白 2黑)',
