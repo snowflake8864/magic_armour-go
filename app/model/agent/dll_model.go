@@ -27,6 +27,7 @@ type DllModel struct {
 	AutoWhiteSwitch int    `json:"auto_white_switch"`
 	Introduce       string `json:"introduce"`
 	Copyright       string `json:"copyright"`
+	Signature       string `json:"signature"`
 	Attribute       string `json:"attribute"`
 	CreatedAt       string `json:"created_at"`
 	UpdatedAt       string `json:"updated_at"`
@@ -51,7 +52,7 @@ func (m *DllModel) CreateTable() bool {
 			global_status tinyint NOT NULL DEFAULT '0' COMMENT '在全局名单中(0未设置 1白名单 2黑名单)',
 			self_status tinyint NOT NULL DEFAULT '0' COMMENT '本身状态(0未设置 1白名单 2黑名单)',
 			threaten_status tinyint NOT NULL DEFAULT '0' COMMENT '在威胁情报中心中(0未设置 1白名单 2黑名单)',
-			auto_white_switch tinyint NOT NULL DEFAULT '0' COMMENT '自动匹配白名单开关(冗余的agent_config.auto_white_switch)',
+			auto_white_switch tinyint NOT NULL DEFAULT '0' COMMENT '冗余的agent.auto_white_switch',
 			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:描述',
 			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:版权',
 			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:签名',

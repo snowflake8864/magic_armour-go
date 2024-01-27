@@ -194,6 +194,12 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_proc_samples") {
 		_ = modelAgent.CreateProcSampleFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_process_running") {
+		_ = modelAgent.CreateProcessRunningFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_processes") {
+		_ = modelAgent.CreateProcessFactory().CreateTable()
+	}
 
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()

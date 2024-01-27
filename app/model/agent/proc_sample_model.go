@@ -20,7 +20,7 @@ type ProcSampleModel struct {
 	Dir          string `json:"dir"`
 	Introduce    string `json:"introduce"`
 	Copyright    string `json:"copyright"`
-	Attribute    string `json:"attribute"`
+	Signature    string `json:"signature"`
 	DataFrom     int    `json:"data_from"`
 	Status       int    `json:"status"`
 	OriginalName string `json:"original_name"`
