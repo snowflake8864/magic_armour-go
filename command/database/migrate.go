@@ -167,6 +167,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_errors") {
 		_ = modelAgent.CreateErrorFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_monitor") {
+		_ = modelAgent.CreateMonitorFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_outreach_global") {
 		_ = modelAgent.CreateOutreachGlobalFactory().CreateTable()
 	}
