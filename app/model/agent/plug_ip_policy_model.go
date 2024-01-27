@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model"
 )
 
-// 表: 封堵IP策略
+// 表: 终端封堵IP名单库
 
 func CreatePlugIpPolicyFactory() *PlugIpPolicyModel {
 	return &PlugIpPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}

@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model"
 )
 
-// 表: 端口虚开策略
+// 表: 终端端口虚开策略
 
 func CreatePortVirtualPolicyFactory() *PortVirtualPolicyModel {
 	return &PortVirtualPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}

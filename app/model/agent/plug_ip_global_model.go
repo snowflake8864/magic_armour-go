@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model"
 )
 
-// 表: 全局封堵IP
+// 表: 全局封堵IP名单库
 
 func CreatePlugIpGlobalFactory() *PlugIpGlobalModel {
 	return &PlugIpGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
