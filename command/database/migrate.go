@@ -188,6 +188,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_port_working") {
 		_ = modelAgent.CreatePortWorkingFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_proc_global") {
+		_ = modelAgent.CreateProcGlobalFactory().CreateTable()
+	}
 
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
