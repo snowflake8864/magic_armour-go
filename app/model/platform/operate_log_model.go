@@ -23,7 +23,7 @@ type OperateLogModel struct {
 	Ip         string `json:"ip"`
 	Input      string `json:"input"`
 	Status     int    `json:"status"`
-	Response   string `json:"response"`
+	resp       string `json:"resp"`
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
@@ -47,7 +47,7 @@ func (m *OperateLogModel) CreateTable() bool {
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT '操作ip',
 			input text NULL COMMENT '输入参数',
 			status tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
-			response text NULL COMMENT '返回结果',
+			resp text NULL COMMENT '返回结果',
 			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,

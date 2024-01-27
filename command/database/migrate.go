@@ -149,6 +149,9 @@ func initTables() {
 	}
 
 	//下面开始创建表 (agent库)
+	if !existMigration("db_platform_create_table-a_access_logs") {
+		_ = modelAgent.CreateAccessLogFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_agents") {
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 	}
