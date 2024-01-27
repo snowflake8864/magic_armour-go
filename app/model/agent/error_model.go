@@ -33,7 +33,7 @@ func (m *ErrorModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(created_at+agent_id)',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			original_name varchar(128)  NOT NULL DEFAULT '' COMMENT '原文件名',
 			storage_path varchar(512)  NOT NULL DEFAULT '' COMMENT '存储相对路径(项目下)',

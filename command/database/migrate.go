@@ -170,6 +170,15 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_outreach_global") {
 		_ = modelAgent.CreateOutreachGlobalFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_plug_dynamic") {
+		_ = modelAgent.CreatePlugDynamicFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_plug_ip_global") {
+		_ = modelAgent.CreatePlugIpGlobalFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_plug_ip_policy") {
+		_ = modelAgent.CreatePlugIpPolicyFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}

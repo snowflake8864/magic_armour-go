@@ -44,7 +44,7 @@ func (m *DllRunningModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			dll_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '模块:hash',
 			proc_id int NOT NULL DEFAULT '0'  COMMENT '进程:id',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(agent_id+dll_hash)',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			dll_dir varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:路径',
             proc_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '进程:hash',
             proc_dir varchar(512)  NOT NULL DEFAULT '' COMMENT '进程:路径',

@@ -21,6 +21,7 @@ type BlackmailGroupModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	UpdatedAt  string `json:"updated_at"`
 }
 
 // 表名
@@ -33,12 +34,13 @@ func (m *BlackmailGroupModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(title+create_id+created_at)',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
 			suffix varchar(128)  NOT NULL DEFAULT '' COMMENT '后缀,英文逗号隔开',
             create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,
+			updated_at datetime NOT NULL,
 			INDEX index_title (title) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)

@@ -29,6 +29,7 @@ type DllModel struct {
 	Copyright       string `json:"copyright"`
 	Attribute       string `json:"attribute"`
 	CreatedAt       string `json:"created_at"`
+	UpdatedAt       string `json:"updated_at"`
 }
 
 // 表名
@@ -43,7 +44,7 @@ func (m *DllModel) CreateTable() bool {
 		(
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			dll_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '模块:hash',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5(agent_id+dll_hash)',
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:路径',
 			status smallint NOT NULL DEFAULT '0' COMMENT '模块状态(文件中宏定义)',
 			sync_status_at datetime NULL COMMENT '同步状态时间(黑白名单下发agent用)',
