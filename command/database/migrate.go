@@ -179,6 +179,13 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_plug_ip_policy") {
 		_ = modelAgent.CreatePlugIpPolicyFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_port_virtual_global") {
+		_ = modelAgent.CreatePortVirtualGlobalFactory().CreateTable()
+	}
+	if !existMigration("db_platform_create_table-a_port_virtual_policy") {
+		_ = modelAgent.CreatePortVirtualPolicyFactory().CreateTable()
+	}
+
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
