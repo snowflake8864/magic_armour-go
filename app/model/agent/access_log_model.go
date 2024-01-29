@@ -17,7 +17,7 @@ type AccessLogModel struct {
 	model.BaseModel
 	AgentId   string `json:"agent_id"`
 	Path      string `json:"path"`
-	Ip        string `json:"ip"`
+	NetIp     string `json:"net_ip"`
 	Input     string `json:"input"`
 	Status    int    `json:"status"`
 	Resp      string `json:"resp"`
@@ -37,7 +37,7 @@ func (m *AccessLogModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			path varchar(128)  NOT NULL DEFAULT '' COMMENT '路径',
 			created_at datetime NULL,
-			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
+			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			input text NULL COMMENT '输入参数',
 			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
 			resp string NOT NULL DEFAULT '' COMMENT '返回结果'

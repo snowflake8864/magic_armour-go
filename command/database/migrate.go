@@ -212,6 +212,9 @@ func initTables() {
 	if !existMigration("db_platform_create_table-a_tamper_policy") {
 		_ = modelAgent.CreateTamperPolicyFactory().CreateTable()
 	}
+	if !existMigration("db_platform_create_table-a_tasks") {
+		_ = modelAgent.CreateTaskFactory().CreateTable()
+	}
 	if !existMigration("db_platform_create_table-a_threaten_cache") {
 		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
 	}
