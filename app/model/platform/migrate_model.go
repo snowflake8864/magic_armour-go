@@ -41,7 +41,7 @@ func (m *MigrateModel) CreateTable() bool {
 			UNIQUE KEY unique_index (migration)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

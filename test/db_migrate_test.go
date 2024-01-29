@@ -11,7 +11,7 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	database.TestInit()
+	database.TestStart()
 }
 
 func TestInsertOne(t *testing.T) {

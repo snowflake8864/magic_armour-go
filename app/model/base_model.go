@@ -44,7 +44,7 @@ func UseDbConn(selectDb string) *gorm.DB {
 	return db
 }
 
-func (m *BaseModel) TrimCreateTable(sql string) string {
+func (m *BaseModel) TrimSql(sql string) string {
 	sql = strings.Replace(sql, "	", " ", -1)
 	sql = strings.Replace(sql, "\t", "", -1)
 	sql = strings.Replace(sql, "\n", "", -1)

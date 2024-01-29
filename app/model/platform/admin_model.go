@@ -3,6 +3,7 @@ package modelPlatform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"time"
 )
 
 // 管理员表
@@ -63,7 +64,34 @@ func (m *AdminModel) CreateTable() bool {
 			UNIQUE KEY unique_index (username)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理员表';
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *AdminModel) InitData() bool {
+	curTime := time.Now().Format(variable.DateFormat)
+	sql := " INSERT INTO " + m.TableName() +
+		"(`id`, `username`, `role_id`, `email`, `phone`, `phone_login_check`," +
+		" `pw`, " +
+		"`pw_error_num`, `last_login_at`, `is_default`, `is_root`, `is_visible`, `is_agent`, " +
+		"`create_id`, `create_name`, `created_at`)"
+	sql += "VALUES ("
+	sql += "1, 'root', 0, '', '', 0, " +
+		"'18464611f92f2a687aa0636486d4aa2f49a2546860af4208bc83fc42e7a5c603de52e3c886b290676d26b2714f09deb53f6366c085a7833e5177ce9444bc042d', " +
+		"0, '" + curTime + "', 1, 1, 0, 1, " +
+		"0, '', '" + curTime + "'"
+	sql += "), ("
+	sql += "2, 'admin', 0, '', '', 0, " +
+		"'2806f9ee82bf9b27357f2fb88259b8858acf6c3b6939dadb27cc3e8bff709f8154d41976ebf64f71cfa9547c624dff812b48a7376f96e38a8b82924fb98c2585', " +
+		"0, '" + curTime + "', 1, 0, 1, 1, " +
+		"0, '', '" + curTime + "'"
+	sql += ");"
+
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

@@ -55,7 +55,7 @@ func (m *SoftwareDownloadModel) CreateTable() bool {
 		 	KEY index_software_create_service (software_id,create_id,service_ip)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='软件下载表';
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

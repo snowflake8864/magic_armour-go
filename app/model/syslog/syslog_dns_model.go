@@ -62,7 +62,7 @@ func (m *SyslogDnsModel) CreateTable() bool {
 			'dynamic_partition.history_partition_num' = '-1'
 		);
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

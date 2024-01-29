@@ -86,7 +86,7 @@ func existMigration(migration string) bool {
 	return false
 }
 
-func TestInit() {
+func TestStart() {
 	start("init")
 }
 
@@ -100,7 +100,9 @@ func initTables() {
 
 	//下面开始创建表 (platform库)
 	if !existMigration("db_platform_create-p_admins") {
-		_ = modelPlatform.CreateAdminFactory().CreateTable()
+		adminFact := modelPlatform.CreateAdminFactory()
+		_ = adminFact.CreateTable()
+		_ = adminFact.InitData()
 	}
 	if !existMigration("db_platform_create_table-p_agent_type") {
 		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()

@@ -43,7 +43,7 @@ func (m *CustomTableModel) CreateTable() bool {
 			UNIQUE KEY unique_index (create_id, route)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='自定义表格表';
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

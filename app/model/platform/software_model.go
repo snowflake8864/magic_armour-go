@@ -54,7 +54,7 @@ func (m *SoftwareModel) CreateTable() bool {
 			KEY index_os_type (os_type)
 		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='软甲表';
 		`
-	result := m.Exec(m.TrimCreateTable(sql))
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {
