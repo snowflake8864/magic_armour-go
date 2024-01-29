@@ -85,7 +85,7 @@ func (m *AdminModel) InitData() bool {
 		"0, '" + curTime + "', 1, 1, 0, 1, " +
 		"0, '', '" + curTime + "'"
 	sql += "), ("
-	sql += "2, 'admin', 0, '', '', 0, " +
+	sql += "2, 'admin', 1, '', '', 0, " +
 		"'2806f9ee82bf9b27357f2fb88259b8858acf6c3b6939dadb27cc3e8bff709f8154d41976ebf64f71cfa9547c624dff812b48a7376f96e38a8b82924fb98c2585', " +
 		"0, '" + curTime + "', 1, 0, 1, 1, " +
 		"0, '', '" + curTime + "'"

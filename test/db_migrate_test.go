@@ -11,7 +11,10 @@ import (
 )
 
 func TestDbMigrate(t *testing.T) {
-	database.TestStart()
+
+	database.TestStart("init")
+	//_ = modelAgent.CreateOutreachGlobalFactory().InitData()
+	//modelPlatform.CreateRoleFactory().InitData()
 }
 
 func TestInsertOne(t *testing.T) {

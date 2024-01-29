@@ -3,6 +3,7 @@ package modelPlatform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"time"
 )
 
 // 角色表
@@ -47,6 +48,22 @@ func (m *RoleModel) CreateTable() bool {
             KEY index_name (name)
 		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色表';
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *RoleModel) InitData() bool {
+	curTime := time.Now().Format(variable.DateFormat)
+	sql := " INSERT INTO " + m.TableName() +
+		"(`id`, `name`, `remark`, `menus`, `is_default`, " +
+		"`create_id`, `create_name`, `created_at`)"
+	sql += "VALUES "
+	sql += "(1, '管理员', '系统默认', '[]', 1, 0, '',  '" + curTime + "');"
+
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

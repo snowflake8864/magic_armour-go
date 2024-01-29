@@ -86,8 +86,8 @@ func existMigration(migration string) bool {
 	return false
 }
 
-func TestStart() {
-	start("init")
+func TestStart(action string) {
+	start(action)
 }
 
 func initTables() {
@@ -132,7 +132,9 @@ func initTables() {
 		_ = modelPlatform.CreateOperateLogFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_roles") {
-		_ = modelPlatform.CreateRoleFactory().CreateTable()
+		roleFact := modelPlatform.CreateRoleFactory()
+		_ = roleFact.CreateTable()
+		_ = roleFact.CreateTable()
 	}
 	if !existMigration("db_platform_create_table-p_server_monitor") {
 		_ = modelPlatform.CreateServerMonitorFactory().CreateTable()
@@ -176,7 +178,9 @@ func initTables() {
 		_ = modelAgent.CreateMonitorFactory().CreateTable()
 	}
 	if !existMigration("db_platform_create_table-a_outreach_global") {
-		_ = modelAgent.CreateOutreachGlobalFactory().CreateTable()
+		outreachGlobalFact := modelAgent.CreateOutreachGlobalFactory()
+		_ = outreachGlobalFact.CreateTable()
+		_ = outreachGlobalFact.InitData()
 	}
 	if !existMigration("db_platform_create_table-a_plug_dynamic") {
 		_ = modelAgent.CreatePlugDynamicFactory().CreateTable()
