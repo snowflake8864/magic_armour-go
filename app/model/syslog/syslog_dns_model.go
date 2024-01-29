@@ -22,7 +22,7 @@ type SyslogDnsModel struct {
 	ProcId     int32  `json:"proc_id"`
 	ProcDir    string `json:"proc_dir"`
 	DomainName string `json:"domain_name"`
-	ResIp      string `json:"res_ip"`
+	TargetIp   string `json:"target_ip"`
 }
 
 // 表名
@@ -43,7 +43,7 @@ func (m *SyslogDnsModel) CreateTable() bool {
 			proc_id INT NOT NULL DEFAULT '0' COMMENT '进程:ID',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			domain_name VARCHAR(512) NOT NULL DEFAULT '' COMMENT '域名',
-			res_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '解析ip',
+			target_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '解析ip',
 			INDEX index_id (id) USING INVERTED,
 			INDEX index_proc_hash (proc_hash) USING INVERTED,
 			INDEX index_domain_name (domain_name) USING INVERTED

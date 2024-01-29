@@ -40,7 +40,7 @@ func init() {
 func start(action string) {
 	switch action {
 	case "init":
-		initTables()
+		initTableAndData()
 		saveMigrations()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
@@ -90,7 +90,7 @@ func TestStart(action string) {
 	start(action)
 }
 
-func initTables() {
+func initTableAndData() {
 	//初始化迁移表
 	migrateFact := modelPlatform.CreateMigrateFactory()
 	migrateFact.CreateTable()
