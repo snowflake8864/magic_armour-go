@@ -43,7 +43,7 @@ func (m *AccessLogModel) CreateTable() bool {
 			resp string NOT NULL DEFAULT '' COMMENT '返回结果'
 			
 		)
-		DUPLICATE  KEY(agent_id, path, created_at,ip)
+		DUPLICATE  KEY(agent_id, path, created_at,net_ip)
 		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'
