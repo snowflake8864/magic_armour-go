@@ -130,7 +130,7 @@ func initTableAndData() {
 	}
 
 	//下面开始创建表 (agent库)
-	if !existMigration("db_platform_init_tables") {
+	if !existMigration("db_agent_init_tables") {
 		_ = modelAgent.CreateAccessLogFactory().CreateTable()
 		_ = modelAgent.CreateAgentFactory().CreateTable()
 		_ = modelAgent.CreateBlackmailGroupFactory().CreateTable()

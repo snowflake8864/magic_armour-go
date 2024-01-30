@@ -1,8 +1,11 @@
 package test
 
 import (
+	"encoding/json"
 	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -12,17 +15,31 @@ import (
 )
 
 func TestDbMigrateType(t *testing.T) {
-	val := enums.GETFirstIsStringReturnSliceOfString(enums.DictionaryModuleAdmin, enums.EnumDictionarySlice)
+	val := enums.GETFirstIsStringReturnSliceOfString(enum_dictionary.ModuleAdmin, enum_dictionary.EnumSlice)
 	fmt.Println(val)
+
+	c := enum_plug.PlugPortConfig{
+		Switch:   1,
+		PlugTime: 40,
+	}
+	c.Format()
+	jsonPlugPort, _ := json.Marshal(c)
+	fmt.Println(string(jsonPlugPort))
+
+	d := enum_plug.PlugLoginConfig{
+		Switch:   1,
+		Type:     2,
+		PlugTime: 20,
+	}
+	d.Format()
+	fmt.Println(d)
 }
 
 func TestDbMigrate(t *testing.T) {
 
-	//database.TestStart("init")
+	database.TestStart("init")
 	database.TestStart("menu")
 	database.TestStart("dictionary")
-	//_ = modelAgent.CreateOutreachGlobalFactory().InitData()
-	//modelPlatform.CreateRoleFactory().InitData()
 }
 
 func TestInsertOne(t *testing.T) {
