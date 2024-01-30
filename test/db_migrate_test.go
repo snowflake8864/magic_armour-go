@@ -15,8 +15,12 @@ import (
 )
 
 func TestDbMigrateType(t *testing.T) {
-	val := enums.GETFirstIsStringReturnSliceOfString(enum_dictionary.ModuleAdmin, enum_dictionary.EnumSlice)
-	fmt.Println(val)
+
+	fmt.Println(enums.GET1stIsStrReturnSliceOfStr(enum_dictionary.ModuleAdmin, enum_dictionary.EnumSlice))
+
+	fmt.Println(enums.GET1stIsStrAnd2ndIsIntReturnStr("ip_type", 1, enum_plug.EnumMap))
+	fmt.Println(enums.GET1stIsStrAnd2ndIsIntReturnStr("ip_type", 3, enum_plug.EnumMap))
+	fmt.Println(enums.GET1stIsStrAnd2ndIsIntReturnStr("ip_type_test", 3, enum_plug.EnumMap))
 
 	c := enum_plug.PlugPortConfig{
 		Switch:   1,

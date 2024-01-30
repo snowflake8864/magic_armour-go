@@ -2,7 +2,7 @@ package enum_plug
 
 import "goskeleton/app/global/enums"
 
-// 数据字典
+// 封堵
 
 const (
 	IpTypeWhite int = 1 //IP策略类型:白名单
