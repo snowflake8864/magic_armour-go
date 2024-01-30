@@ -20,6 +20,7 @@ func TestDbMigrate(t *testing.T) {
 
 	//database.TestStart("init")
 	database.TestStart("menu")
+	database.TestStart("dictionary")
 	//_ = modelAgent.CreateOutreachGlobalFactory().InitData()
 	//modelPlatform.CreateRoleFactory().InitData()
 }
