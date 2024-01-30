@@ -36,12 +36,18 @@ func init() {
 	DbMigrate.Flags().StringVarP(&Action, "Action", "A", "init", "-A 指定参数,例如：-A init")
 }
 
+func TestStart(action string) {
+	start(action)
+}
+
 // 开始执行业务
 func start(action string) {
 	switch action {
 	case "init":
 		initTableAndData()
 		saveMigrations()
+	case "menu":
+		_ = modelPlatform.CreateMenuFactory().InitData()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
 	}
@@ -84,10 +90,6 @@ func existMigration(migration string) bool {
 	}
 	notExistMigrateList = append(notExistMigrateList, st)
 	return false
-}
-
-func TestStart(action string) {
-	start(action)
 }
 
 func initTableAndData() {

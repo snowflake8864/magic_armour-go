@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -10,9 +11,15 @@ import (
 	"time"
 )
 
+func TestDbMigrateType(t *testing.T) {
+	val := enums.GETFirstIsStringReturnSliceOfString(enums.DictionaryModuleAdmin, enums.EnumDictionarySlice)
+	fmt.Println(val)
+}
+
 func TestDbMigrate(t *testing.T) {
 
-	database.TestStart("init")
+	//database.TestStart("init")
+	database.TestStart("menu")
 	//_ = modelAgent.CreateOutreachGlobalFactory().InitData()
 	//modelPlatform.CreateRoleFactory().InitData()
 }
