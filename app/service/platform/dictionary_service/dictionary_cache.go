@@ -4,7 +4,7 @@ import (
 	"goskeleton/app/utils/redis_factory"
 )
 
-func CreateCacheFactory(userId int64) *dictionaryCache {
+func CreateCacheFactory() *dictionaryCache {
 	redCli := redis_factory.GetOneRedisClient()
 	if redCli == nil {
 		return nil
@@ -24,14 +24,22 @@ type dictionaryCache struct {
 func (cache *dictionaryCache) Rebuild() bool {
 	curdFact := CreateDictionaryCurdFactory()
 	items := curdFact.GetAll()
-
-	var list []string
-	for _, obj := range items {
-		list = append(list, obj.Id, obj.Val)
-	}
-
-	if _, err := cache.redisClient.Execute("HMSET", u.userTokenKey); err == nil {
+	total := len(items)
+	if total == 0 {
 		return true
+	} else {
+		fieldsAndValues := make(map[string]string)
+		for _, obj := range items {
+			fieldsAndValues[obj.Id] = obj.Val
+		}
+		err := cache.redisClient.HmSet(cache.cacheKey, fieldsAndValues)
+		if err == nil {
+			return true
+		}
+		return false
 	}
-	return false
+}
+
+func (cache *dictionaryCache) GetMapByIds(ids []string) map[string]string {
+	return cache.redisClient.HmGet(cache.cacheKey, ids)
 }

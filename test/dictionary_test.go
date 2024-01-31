@@ -27,3 +27,15 @@ func TestUpdate(t *testing.T) {
 	fmt.Println(fact.UpdateValById("agent_save_access_log", "1"))
 	fmt.Println(fact.UpdateValById("agent_save_access_log_test", "1"))
 }
+
+func TestRebuildCache(t *testing.T) {
+	fact := dictionary_service.CreateCacheFactory()
+	fmt.Println("------------------------------")
+	fmt.Println(fact.Rebuild())
+}
+
+func TestGetMapByIds(t *testing.T) {
+	fact := dictionary_service.CreateCacheFactory()
+	fmt.Println("------------------------------")
+	fmt.Println(fact.GetMapByIds([]string{"admin_login_lock_duration", "ffffff", "admin_pw_length_max", "agent_test"}))
+}

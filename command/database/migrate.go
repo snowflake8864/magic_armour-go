@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/model_alarm"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/model/model_syslog"
+	"goskeleton/app/service/platform/dictionary_service"
 	"time"
 )
 
@@ -50,6 +51,7 @@ func start(action string) {
 		_ = model_platform.CreateMenuFactory().InitData()
 	case "dictionary":
 		_ = model_platform.CreateDictionaryFactory().InitData()
+		_ = dictionary_service.CreateCacheFactory().Rebuild()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
 	}

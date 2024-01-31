@@ -1,6 +1,7 @@
 package redis_factory
 
 import (
+	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"goskeleton/app/core/event_manage"
@@ -92,14 +93,63 @@ func (r *RedisClient) Execute(cmd string, args ...interface{}) (interface{}, err
 	return r.client.Do(cmd, args...)
 }
 
-// 释放连接到连接池
+// 下面是Key相关
+
+func (r *RedisClient) Exists(key string) bool {
+	exists, err := r.Bool(r.client.Do("EXISTS", key))
+	if err != nil {
+		return false
+	}
+	return exists
+}
+
+func (r *RedisClient) Expire(key string, second int) error {
+	_, err := r.client.Do("EXPIRE", second)
+	return err
+}
+
+func (r *RedisClient) Del(key string) error {
+	_, err := r.client.Do("DEL", key)
+	return err
+}
+
+//下面是Hash相关
+
+func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) error {
+	_, err := r.client.Do("HMSET", redis.Args{}.Add(key).AddFlat(fieldsAndValues)...)
+	return err
+}
+
+func (r *RedisClient) HmGet(key string, fields []string) map[string]string {
+	items, err := r.Strings(r.client.Do("HMGET", redis.Args{}.Add(key).AddFlat(fields)...))
+	if err != nil {
+		return nil
+	}
+	result := make(map[string]string)
+	for i, value := range items {
+		result[fields[i]] = value
+	}
+
+	return result
+}
+
+func (r *RedisClient) HGetAll(key string) map[string]string {
+	result, err := r.StringMap(r.client.Do("HGETALL", key))
+	fmt.Println(result)
+	if err != nil {
+		return nil
+	}
+	return result
+}
+
+// ReleaseOneRedisClient 释放连接到连接池
 func (r *RedisClient) ReleaseOneRedisClient() {
 	_ = r.client.Close()
 }
 
 //  封装几个数据类型转换的函数
 
-// bool 类型转换
+// Bool 类型转换
 func (r *RedisClient) Bool(reply interface{}, err error) (bool, error) {
 	return redis.Bool(reply, err)
 }
@@ -109,12 +159,12 @@ func (r *RedisClient) String(reply interface{}, err error) (string, error) {
 	return redis.String(reply, err)
 }
 
-// string map 类型转换
+// StringMap 类型转换
 func (r *RedisClient) StringMap(reply interface{}, err error) (map[string]string, error) {
 	return redis.StringMap(reply, err)
 }
 
-// strings 类型转换
+// Strings 类型转换
 func (r *RedisClient) Strings(reply interface{}, err error) ([]string, error) {
 	return redis.Strings(reply, err)
 }
@@ -124,17 +174,17 @@ func (r *RedisClient) Float64(reply interface{}, err error) (float64, error) {
 	return redis.Float64(reply, err)
 }
 
-// int 类型转换
+// Int 类型转换
 func (r *RedisClient) Int(reply interface{}, err error) (int, error) {
 	return redis.Int(reply, err)
 }
 
-// int64 类型转换
+// Int64 类型转换
 func (r *RedisClient) Int64(reply interface{}, err error) (int64, error) {
 	return redis.Int64(reply, err)
 }
 
-// int map 类型转换
+// IntMap 类型转换
 func (r *RedisClient) IntMap(reply interface{}, err error) (map[string]int, error) {
 	return redis.IntMap(reply, err)
 }
@@ -144,12 +194,12 @@ func (r *RedisClient) Int64Map(reply interface{}, err error) (map[string]int64, 
 	return redis.Int64Map(reply, err)
 }
 
-// int64s 类型转换
+// Int64s 类型转换
 func (r *RedisClient) Int64s(reply interface{}, err error) ([]int64, error) {
 	return redis.Int64s(reply, err)
 }
 
-// uint64 类型转换
+// Uint64 类型转换
 func (r *RedisClient) Uint64(reply interface{}, err error) (uint64, error) {
 	return redis.Uint64(reply, err)
 }
