@@ -38,7 +38,7 @@ func GET1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[
 	return val
 }
 
-// GET1stIsStrAnd2ndIsIntReturnStr 如是第一级是string串且第二级是int,返回对应的string
+// GET1stIsStrAnd2ndIsIntReturnInt 如是第一级是string串且第二级是int,返回对应的string
 func GET1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[int]int) int {
 	val, ok := s[first][second]
 	if ok == false {

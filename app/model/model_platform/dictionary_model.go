@@ -126,9 +126,17 @@ func (m *DictionaryModel) InitData() bool {
 	}
 }
 
-func (m *DictionaryModel) GetItemsByModule(module string) []DictionaryModel {
-	var items []DictionaryModel
-
+func (m *DictionaryModel) GetItemsByModule(module string) (items []DictionaryModel) {
 	m.Where("module=?", module).Find(&items)
 	return items
+}
+
+func (m *DictionaryModel) GetAll() (items []DictionaryModel) {
+	m.Find(&items)
+	return items
+}
+
+func (m *DictionaryModel) UpdateValById(id, val string) error {
+	result := m.Model(&m).Where("id=?", id).Update("val", val)
+	return result.Error
 }

@@ -87,7 +87,7 @@ type RedisClient struct {
 	client redis.Conn
 }
 
-// 为redis-go 客户端封装统一操作函数入口
+// Execute  为redis-go 客户端封装统一操作函数入口
 func (r *RedisClient) Execute(cmd string, args ...interface{}) (interface{}, error) {
 	return r.client.Do(cmd, args...)
 }
