@@ -126,7 +126,9 @@ func (m *DictionaryModel) InitData() bool {
 	}
 }
 
-func (m *DictionaryModel) GetItemsByModule(module string) (list []DictionaryModel) {
-	m.Where("module=?", module).Find(&list)
-	return list
+func (m *DictionaryModel) GetItemsByModule(module string) []DictionaryModel {
+	var items []DictionaryModel
+
+	m.Where("module=?", module).Find(&items)
+	return items
 }

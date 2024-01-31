@@ -1,18 +1,21 @@
 package dictionary_service
 
 import (
-	modelPlatform "goskeleton/app/model/model_platform"
+	"goskeleton/app/model/model_platform"
 )
 
 func CreateDictionaryCurdFactory() *DictionaryCurd {
-	return &DictionaryCurd{modelPlatform.CreateDictionaryFactory()}
+	return &DictionaryCurd{model_platform.CreateDictionaryFactory()}
 }
 
 type DictionaryCurd struct {
-	masterModel *modelPlatform.DictionaryModel
+	masterModel *model_platform.DictionaryModel
 }
 
-func (crd *DictionaryCurd) GetItemsById(id string) (result *modelPlatform.DictionaryModel) {
-	result, _ = crd.masterModel.GetItemById(id)
+func (crd *DictionaryCurd) GetMapByModule(module string) (result map[string]string) {
+	items := crd.masterModel.GetItemsByModule(module)
+	for _, obj := range items {
+		result[obj.Id] = obj.Val
+	}
 	return result
 }
