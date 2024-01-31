@@ -3,10 +3,10 @@ package database
 import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
-	modelAgent "goskeleton/app/model/agent"
-	modelAlarm "goskeleton/app/model/alarm"
-	modelPlatform "goskeleton/app/model/platform"
-	modelSyslog "goskeleton/app/model/syslog"
+	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/model_alarm"
+	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/model_syslog"
 	"time"
 )
 
@@ -47,9 +47,9 @@ func start(action string) {
 	case "init":
 		initTableAndData()
 	case "menu":
-		_ = modelPlatform.CreateMenuFactory().InitData()
+		_ = model_platform.CreateMenuFactory().InitData()
 	case "dictionary":
-		_ = modelPlatform.CreateDictionaryFactory().InitData()
+		_ = model_platform.CreateDictionaryFactory().InitData()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
 	}
@@ -60,11 +60,11 @@ func start(action string) {
 var migrateMap map[string]string
 
 // 不在迁移表中
-var notExistMigrateList []modelPlatform.MigrateModel
+var notExistMigrateList []model_platform.MigrateModel
 
 // 获取迁移数据
 func getMigrationMap() {
-	migrateFact := modelPlatform.CreateMigrateFactory()
+	migrateFact := model_platform.CreateMigrateFactory()
 	migrateMap, _ = migrateFact.GetAllMaps()
 	if migrateMap == nil {
 		variable.ZapLog.Sugar().Debug("migrate GetAllMaps fail")
@@ -77,7 +77,7 @@ func saveMigrations() {
 		variable.ZapLog.Sugar().Debug("本次迁移数据为空")
 		return
 	}
-	migrateFact := modelPlatform.CreateMigrateFactory()
+	migrateFact := model_platform.CreateMigrateFactory()
 	_ = migrateFact.InsertBatch(&notExistMigrateList)
 }
 
@@ -86,7 +86,7 @@ func existMigration(migration string) bool {
 	if ok {
 		return true
 	}
-	var st = modelPlatform.MigrateModel{
+	var st = model_platform.MigrateModel{
 		Migration: migration,
 		CreatedAt: time.Now().Format(variable.DateFormat),
 	}
@@ -96,7 +96,7 @@ func existMigration(migration string) bool {
 
 func initTableAndData() {
 	//初始化迁移表
-	migrateFact := modelPlatform.CreateMigrateFactory()
+	migrateFact := model_platform.CreateMigrateFactory()
 	migrateFact.CreateTable()
 
 	//获取迁移表数据
@@ -104,76 +104,76 @@ func initTableAndData() {
 
 	//下面开始创建表 (platform库)
 	if !existMigration("db_platform_init_tables") {
-		adminFact := modelPlatform.CreateAdminFactory()
+		adminFact := model_platform.CreateAdminFactory()
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
 
-		_ = modelPlatform.CreateAgentTypeFactory().CreateTable()
-		_ = modelPlatform.CreateCustomTableFactory().CreateTable()
-		_ = modelPlatform.CreateDepartmentFactory().CreateTable()
-		_ = modelPlatform.CreateDictionaryFactory().CreateTable()
-		_ = modelPlatform.CreateGrantFactory().CreateTable()
-		_ = modelPlatform.CreateGrantModuleFactory().CreateTable()
-		_ = modelPlatform.CreateGrantUsedFactory().CreateTable()
-		_ = modelPlatform.CreateMenuFactory().CreateTable()
-		_ = modelPlatform.CreateOperateLogFactory().CreateTable()
+		_ = model_platform.CreateAgentTypeFactory().CreateTable()
+		_ = model_platform.CreateCustomTableFactory().CreateTable()
+		_ = model_platform.CreateDepartmentFactory().CreateTable()
+		_ = model_platform.CreateDictionaryFactory().CreateTable()
+		_ = model_platform.CreateGrantFactory().CreateTable()
+		_ = model_platform.CreateGrantModuleFactory().CreateTable()
+		_ = model_platform.CreateGrantUsedFactory().CreateTable()
+		_ = model_platform.CreateMenuFactory().CreateTable()
+		_ = model_platform.CreateOperateLogFactory().CreateTable()
 
-		roleFact := modelPlatform.CreateRoleFactory()
+		roleFact := model_platform.CreateRoleFactory()
 		_ = roleFact.CreateTable()
 		_ = roleFact.InitData()
 
-		_ = modelPlatform.CreateServerMonitorFactory().CreateTable()
-		_ = modelPlatform.CreateSmsLogFactory().CreateTable()
-		_ = modelPlatform.CreateSoftwareFactory().CreateTable()
-		_ = modelPlatform.CreateSoftwareDownloadFactory().CreateTable()
-		_ = modelPlatform.CreateUploadFactory().CreateTable()
+		_ = model_platform.CreateServerMonitorFactory().CreateTable()
+		_ = model_platform.CreateSmsLogFactory().CreateTable()
+		_ = model_platform.CreateSoftwareFactory().CreateTable()
+		_ = model_platform.CreateSoftwareDownloadFactory().CreateTable()
+		_ = model_platform.CreateUploadFactory().CreateTable()
 	}
 
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
-		_ = modelAgent.CreateAccessLogFactory().CreateTable()
-		_ = modelAgent.CreateAgentFactory().CreateTable()
-		_ = modelAgent.CreateBlackmailGroupFactory().CreateTable()
-		_ = modelAgent.CreateBlackmailPolicyFactory().CreateTable()
-		_ = modelAgent.CreateDllFactory().CreateTable()
-		_ = modelAgent.CreateDllRunningFactory().CreateTable()
-		_ = modelAgent.CreateErrorFactory().CreateTable()
-		_ = modelAgent.CreateMonitorFactory().CreateTable()
+		_ = model_agent.CreateAccessLogFactory().CreateTable()
+		_ = model_agent.CreateAgentFactory().CreateTable()
+		_ = model_agent.CreateBlackmailGroupFactory().CreateTable()
+		_ = model_agent.CreateBlackmailPolicyFactory().CreateTable()
+		_ = model_agent.CreateDllFactory().CreateTable()
+		_ = model_agent.CreateDllRunningFactory().CreateTable()
+		_ = model_agent.CreateErrorFactory().CreateTable()
+		_ = model_agent.CreateMonitorFactory().CreateTable()
 
-		outreachGlobalFact := modelAgent.CreateOutreachGlobalFactory()
+		outreachGlobalFact := model_agent.CreateOutreachGlobalFactory()
 		_ = outreachGlobalFact.CreateTable()
 		_ = outreachGlobalFact.InitData()
 
-		_ = modelAgent.CreatePlugDynamicFactory().CreateTable()
-		_ = modelAgent.CreatePlugIpGlobalFactory().CreateTable()
-		_ = modelAgent.CreatePlugIpPolicyFactory().CreateTable()
-		_ = modelAgent.CreatePortVirtualGlobalFactory().CreateTable()
-		_ = modelAgent.CreatePortVirtualPolicyFactory().CreateTable()
-		_ = modelAgent.CreatePortWorkingFactory().CreateTable()
-		_ = modelAgent.CreateProcGlobalFactory().CreateTable()
-		_ = modelAgent.CreateProcSampleFactory().CreateTable()
-		_ = modelAgent.CreateProcessRunningFactory().CreateTable()
-		_ = modelAgent.CreateProcessFactory().CreateTable()
-		_ = modelAgent.CreateTamperGlobalFactory().CreateTable()
-		_ = modelAgent.CreateTamperPolicyFactory().CreateTable()
-		_ = modelAgent.CreateTaskFactory().CreateTable()
-		_ = modelAgent.CreateThreatenCacheFactory().CreateTable()
-		_ = modelAgent.CreateThreatenPushFactory().CreateTable()
-		_ = modelAgent.CreateTrustGlobalFactory().CreateTable()
-		_ = modelAgent.CreateTrustPolicyFactory().CreateTable()
-		_ = modelAgent.CreateUsbFactory().CreateTable()
-		_ = modelAgent.CreateUsbGlobalFactory().CreateTable()
-		_ = modelAgent.CreateUsbLogFactory().CreateTable()
+		_ = model_agent.CreatePlugDynamicFactory().CreateTable()
+		_ = model_agent.CreatePlugIpGlobalFactory().CreateTable()
+		_ = model_agent.CreatePlugIpPolicyFactory().CreateTable()
+		_ = model_agent.CreatePortVirtualGlobalFactory().CreateTable()
+		_ = model_agent.CreatePortVirtualPolicyFactory().CreateTable()
+		_ = model_agent.CreatePortWorkingFactory().CreateTable()
+		_ = model_agent.CreateProcGlobalFactory().CreateTable()
+		_ = model_agent.CreateProcSampleFactory().CreateTable()
+		_ = model_agent.CreateProcessRunningFactory().CreateTable()
+		_ = model_agent.CreateProcessFactory().CreateTable()
+		_ = model_agent.CreateTamperGlobalFactory().CreateTable()
+		_ = model_agent.CreateTamperPolicyFactory().CreateTable()
+		_ = model_agent.CreateTaskFactory().CreateTable()
+		_ = model_agent.CreateThreatenCacheFactory().CreateTable()
+		_ = model_agent.CreateThreatenPushFactory().CreateTable()
+		_ = model_agent.CreateTrustGlobalFactory().CreateTable()
+		_ = model_agent.CreateTrustPolicyFactory().CreateTable()
+		_ = model_agent.CreateUsbFactory().CreateTable()
+		_ = model_agent.CreateUsbGlobalFactory().CreateTable()
+		_ = model_agent.CreateUsbLogFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_init_tables") {
-		_ = modelAlarm.CreateAlarmProcessFactory().CreateTable()
+		_ = model_alarm.CreateAlarmProcessFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)
 	if !existMigration("db_syslog_init_tables") {
-		_ = modelSyslog.CreateSyslogDnsFactory().CreateTable()
+		_ = model_syslog.CreateSyslogDnsFactory().CreateTable()
 	}
 
 	//保存迁移数据

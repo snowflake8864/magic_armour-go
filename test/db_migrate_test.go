@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/database"
 	"testing"
