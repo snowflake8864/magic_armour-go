@@ -37,11 +37,11 @@ func (cache *dictionaryCache) Rebuild() bool {
 	}
 }
 
-func (cache *dictionaryCache) GetMapByIds(ids []string) map[string]string {
-	return cache.redisClient.HmGet(cache.cacheKey, ids)
+func (cache *dictionaryCache) GetValById(id string) string {
+	val, _ := cache.redisClient.HGet(cache.cacheKey, id)
+	return val
 }
 
-func (cache *dictionaryCache) Lock() bool {
-	isOK, _ := cache.redisClient.Lock("ggg_test", "fff", 300)
-	return isOK
+func (cache *dictionaryCache) GetMapByIds(ids []string) map[string]string {
+	return cache.redisClient.HmGet(cache.cacheKey, ids)
 }

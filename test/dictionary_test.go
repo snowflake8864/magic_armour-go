@@ -38,6 +38,4 @@ func TestGetMapByIds(t *testing.T) {
 	fact := dictionary_service.CreateCacheFactory()
 	fmt.Println("------------------------------")
 	fmt.Println(fact.GetMapByIds([]string{"admin_login_lock_duration", "ffffff", "admin_pw_length_max", "agent_test"}))
-	fmt.Println(fact.Lock())
-	fmt.Println(fact.Lock())
 }

@@ -172,6 +172,15 @@ func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) (bool
 	return false, err
 }
 
+func (r *RedisClient) HGet(key string, field string) (string, error) {
+	val, err := r.String(r.client.Do("HGET", field))
+	if err != nil {
+		return "", err
+	}
+
+	return val, nil
+}
+
 func (r *RedisClient) HmGet(key string, fields []string) map[string]string {
 	items, err := r.Strings(r.client.Do("HMGET", redis.Args{}.Add(key).AddFlat(fields)...))
 	if err != nil {

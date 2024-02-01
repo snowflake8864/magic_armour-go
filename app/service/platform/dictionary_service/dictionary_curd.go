@@ -37,5 +37,17 @@ func (crd *DictionaryCurd) UpdateValById(id, val string) bool {
 	if err != nil {
 		return false
 	}
+	_ = CreateCacheFactory().Rebuild()
+	return true
+}
+
+// BatchUpdate 批量修改
+func (crd *DictionaryCurd) BatchUpdate(idAndVal map[string]string) bool {
+	for id, val := range idAndVal {
+		_ = crd.masterModel.UpdateValById(id, val)
+	}
+
+	_ = CreateCacheFactory().Rebuild()
+
 	return true
 }
