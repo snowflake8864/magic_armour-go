@@ -1,7 +1,6 @@
 package redis_factory
 
 import (
-	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"goskeleton/app/core/event_manage"
@@ -95,29 +94,82 @@ func (r *RedisClient) Execute(cmd string, args ...interface{}) (interface{}, err
 
 // 下面是Key相关
 
-func (r *RedisClient) Exists(key string) bool {
+func (r *RedisClient) Exists(key string) (bool, error) {
 	exists, err := r.Bool(r.client.Do("EXISTS", key))
 	if err != nil {
-		return false
+		return false, err
 	}
-	return exists
+	return exists, err
 }
 
-func (r *RedisClient) Expire(key string, second int) error {
-	_, err := r.client.Do("EXPIRE", second)
-	return err
+func (r *RedisClient) Expire(key string, second int) (bool, error) {
+	isOK, err := r.Bool(r.client.Do("EXPIRE", key, second))
+	if err != nil {
+		return false, err
+	}
+	return isOK, err
 }
 
-func (r *RedisClient) Del(key string) error {
-	_, err := r.client.Do("DEL", key)
-	return err
+func (r *RedisClient) Del(key string) (int, error) {
+	num, err := r.Int(r.client.Do("DEL", key))
+	if err != nil {
+		return 0, err
+	}
+	return num, err
+}
+
+//下面是String相关
+
+func (r *RedisClient) Set(key, val string) (bool, error) {
+	ok, err := r.client.Do("SET", key, val)
+	if err != nil {
+		return false, err
+	}
+	if ok == "ok" {
+		return true, err
+	}
+	return false, err
+}
+
+func (r *RedisClient) SetEx(key, val string, second int) (bool, error) {
+	ok, err := r.client.Do("SETEX", key, second, val)
+	if err != nil {
+		return false, err
+	}
+	if ok == "ok" {
+		return true, err
+	}
+	return false, err
+}
+
+func (r *RedisClient) Lock(key, val string, second int) (bool, error) {
+	ok, err := r.client.Do("SET", key, val, "NX", "EX", second)
+
+	if err != nil {
+		return false, err
+	}
+	if ok == "ok" {
+		return true, err
+	}
+	return false, err
+}
+
+func (r *RedisClient) Get(key string) string {
+	val, _ := r.String(r.client.Do("GET", key))
+	return val
 }
 
 //下面是Hash相关
 
-func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) error {
-	_, err := r.client.Do("HMSET", redis.Args{}.Add(key).AddFlat(fieldsAndValues)...)
-	return err
+func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) (bool, error) {
+	ok, err := r.client.Do("HMSET", redis.Args{}.Add(key).AddFlat(fieldsAndValues)...)
+	if err != nil {
+		return false, err
+	}
+	if ok == "ok" {
+		return true, err
+	}
+	return false, err
 }
 
 func (r *RedisClient) HmGet(key string, fields []string) map[string]string {
@@ -135,11 +187,52 @@ func (r *RedisClient) HmGet(key string, fields []string) map[string]string {
 
 func (r *RedisClient) HGetAll(key string) map[string]string {
 	result, err := r.StringMap(r.client.Do("HGETALL", key))
-	fmt.Println(result)
 	if err != nil {
 		return nil
 	}
 	return result
+}
+
+func (r *RedisClient) HDel(key string, fields []string) (int, error) {
+	num, err := r.Int(r.client.Do("HDEL", redis.Args{}.Add(key).AddFlat(fields)...))
+	if err != nil {
+		return 0, err
+	}
+	return num, err
+}
+
+// 下面是set相关
+
+func (r *RedisClient) SAddByInt(key string, values []int) (bool, error) {
+	_, err := r.client.Do("SADD", redis.Args{}.Add(key).AddFlat(values)...)
+	if err != nil {
+		return false, err
+	}
+	return true, err
+}
+
+func (r *RedisClient) SMembersByInt(key string) ([]int, error) {
+	members, err := r.Ints(r.client.Do("SMEMBERS", key))
+	if err != nil {
+		return nil, err
+	}
+	return members, err
+}
+
+func (r *RedisClient) SRemByInt(key string, values []int) ([]int, error) {
+	members, err := r.Ints(r.client.Do("SREM", redis.Args{}.Add(key).AddFlat(values)...))
+	if err != nil {
+		return nil, err
+	}
+	return members, err
+}
+
+func (r *RedisClient) SCard(key string) (int, error) {
+	total, err := r.Int(r.client.Do("SCARD", key))
+	if err != nil {
+		return 0, err
+	}
+	return total, err
 }
 
 // ReleaseOneRedisClient 释放连接到连接池
@@ -192,6 +285,11 @@ func (r *RedisClient) IntMap(reply interface{}, err error) (map[string]int, erro
 // Int64Map 类型转换
 func (r *RedisClient) Int64Map(reply interface{}, err error) (map[string]int64, error) {
 	return redis.Int64Map(reply, err)
+}
+
+// Ints 类型转换
+func (r *RedisClient) Ints(reply interface{}, err error) ([]int, error) {
+	return redis.Ints(reply, err)
 }
 
 // Int64s 类型转换

@@ -32,14 +32,16 @@ func (cache *dictionaryCache) Rebuild() bool {
 		for _, obj := range items {
 			fieldsAndValues[obj.Id] = obj.Val
 		}
-		err := cache.redisClient.HmSet(cache.cacheKey, fieldsAndValues)
-		if err == nil {
-			return true
-		}
-		return false
+		isOK, _ := cache.redisClient.HmSet(cache.cacheKey, fieldsAndValues)
+		return isOK
 	}
 }
 
 func (cache *dictionaryCache) GetMapByIds(ids []string) map[string]string {
 	return cache.redisClient.HmGet(cache.cacheKey, ids)
+}
+
+func (cache *dictionaryCache) Lock() bool {
+	isOK, _ := cache.redisClient.Lock("ggg_test", "fff", 300)
+	return isOK
 }
