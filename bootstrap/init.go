@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/http/validator/common/register_validator"
 	"goskeleton/app/service/sys_log_hook"
 	"goskeleton/app/utils/gorm_v2"
+	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/snow_flake"
 	"goskeleton/app/utils/validator_translation"
 	"goskeleton/app/utils/yml_config"
@@ -88,6 +89,9 @@ func init() {
 
 	// 7.雪花算法全局变量
 	variable.SnowFlake = snow_flake.CreateSnowflakeFactory()
+
+	//8. kafka Producer
+	kafka_go.CreateProducerFactory()
 
 	//10.全局注册 validator 错误翻译器,zh 代表中文，en 代表英语
 	if err := validator_translation.InitTrans("zh"); err != nil {

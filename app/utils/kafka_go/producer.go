@@ -32,6 +32,10 @@ func CreateProducerFactory() {
 	config := getWriterConfig()
 
 	writerCommon = newProducer(TopicCommon, config)
+	writerProcess = newProducer(TopicProcess, config)
+	writerThreaten = newProducer(TopicThreaten, config)
+	writerAlarm = newProducer(TopicAlarm, config)
+	writerSyslog = newProducer(TopicSyslog, config)
 }
 
 func getWriterConfig() writerConfig {
