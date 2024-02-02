@@ -2,6 +2,7 @@ package consts
 
 // 这里定义的常量，一般是具有错误代码+错误说明组成，一般用于接口返回
 const (
+	VersionNumber string = "MA_6.0.0.0"
 	// 进程被结束
 	ProcessKilled string = "收到信号，进程被结束"
 	// 表单验证器前缀
@@ -32,8 +33,9 @@ const (
 	TimestampShift = SequenceBits + MachineIdBits     //时间戳左移位数
 
 	// CURD 常用业务状态码
-	CurdStatusOkCode         int    = 200
-	CurdStatusOkMsg          string = "Success"
+	CurdStatusOkCode string = "000000"
+	CurdStatusOkMsg  string = "Success"
+
 	CurdCreatFailCode        int    = -400200
 	CurdCreatFailMsg         string = "新增失败"
 	CurdUpdateFailCode       int    = -400201
@@ -48,6 +50,12 @@ const (
 	CurdLoginFailMsg         string = "登录失败"
 	CurdRefreshTokenFailCode int    = -400206
 	CurdRefreshTokenFailMsg  string = "刷新Token失败"
+
+	CurdBaseCode             int    = -1
+	PlatformLoginExpiredCode int    = 500003  //平台:登录过期
+	AgentParamErrorCode      int    = 1000002 //终端：参数错误
+	AgentINSTALLCode         string = "410"   //终端：卸载
+	AgentLoginExpiredCode    string = "401"   //终端：登录过期
 
 	//文件上传
 	FilesUploadFailCode            int    = -400250

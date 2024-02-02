@@ -6,11 +6,12 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-type Home struct {
+// Software 软件相关
+type Software struct {
 }
 
-// 1.门户类首页新闻
-func (u *Home) News(context *gin.Context) {
+// Published 获取已发布的
+func (u *Software) Published(context *gin.Context) {
 
 	//  由于本项目骨架已经将表单验证器的字段(成员)绑定在上下文，因此可以按照 GetString()、GetInt64()、GetFloat64（）等快捷获取需要的数据类型
 	// 当然也可以通过gin框架的上下文原原始方法获取，例如： context.PostForm("name") 获取，这样获取的数据格式为文本，需要自己继续转换
@@ -30,4 +31,9 @@ func (u *Home) News(context *gin.Context) {
 		"content":  "门户新闻内容001",
 		"referer":  ref,
 	})
+}
+
+// Download 获取已发布的
+func (u *Software) Download(context *gin.Context) {
+
 }

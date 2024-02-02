@@ -104,7 +104,7 @@ func InitWebRouter() *gin.Engine {
 				// 更新
 				users.POST("edit", validatorFactory.Create(consts.ValidatorPrefix+"UsersUpdate"))
 				// 删除
-				users.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"UsersDestroy"))
+				users.POST("deleteOne", validatorFactory.Create(consts.ValidatorPrefix+"UsersDestroy"))
 			}
 			//文件上传公共路由
 			uploadFiles := backend.Group("upload/")

@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
+	"goskeleton/app/utils/response"
 	"net/http"
 )
 
@@ -50,24 +51,27 @@ func InitApiRouter() *gin.Engine {
 	}
 
 	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Api 模块接口 hello word！")
+		context.String(http.StatusOK, "Api接口: "+consts.VersionNumber)
 	})
 
-	//处理静态资源（不建议gin框架处理静态资源，参见 Public/readme.md 说明 ）
-	router.Static("/public", "./public") //  定义静态资源路由与实际目录映射关系
-	//router.StaticFile("/abcd", "./public/readme.md") // 可以根据文件名绑定需要返回的文件名
-
 	//  创建一个门户类接口路由组
-	vApi := router.Group("/api/v1/")
+	vApi := router.Group("/api/v5/")
 	{
-		// 模拟一个首页路由
-		home := vApi.Group("home/")
+		vApi.GET("getVersion", func(ctx *gin.Context) {
+			response.SuccessReturnData(ctx, consts.VersionNumber)
+		})
+
+		// 软件版本相关
+		software := vApi.Group("software/")
 		{
-			// 第二个参数说明：
-			// 1.它是一个表单参数验证器函数代码段，该函数从容器中解析，整个代码段略显复杂，但是对于使用者，您只需要了解用法即可，使用很简单，看下面 ↓↓↓
-			// 2.编写该接口的验证器，位置：app/http/validator/api/home/news.go
-			// 3.将以上验证器注册在容器：app/http/validator/common/register_validator/api_register_validator.go  18 行为注册时的键（consts.ValidatorPrefix + "HomeNews"）。那么获取的时候就用该键即可从容器获取
-			home.GET("news", validatorFactory.Create(consts.ValidatorPrefix+"HomeNews"))
+			software.POST("published", validatorFactory.Create(consts.ValidatorPrefix+"SoftwarePublished"))
+			software.POST("download", validatorFactory.Create(consts.ValidatorPrefix+"SoftwareDownload"))
+		}
+
+		// 软件版本相关
+		hs := vApi.Group("hs/")
+		{
+			hs.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"HuanshiAuth"))
 		}
 	}
 	return router
