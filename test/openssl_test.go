@@ -20,7 +20,7 @@ func TestTime(t *testing.T) {
 	fmt.Println("diff:", diff)
 }
 
-func TestEncrypt(t *testing.T) {
+func TestAesEncrypt(t *testing.T) {
 	key := []byte(variable.AES256CbcKey)
 	iv := []byte(variable.AES256CbcIv)
 
@@ -29,7 +29,7 @@ func TestEncrypt(t *testing.T) {
 	fmt.Println("Encrypted:", str)
 }
 
-func TestDecrypt(t *testing.T) {
+func TestAesDecrypt(t *testing.T) {
 
 	key := []byte(variable.AES256CbcKey)
 	iv := []byte(variable.AES256CbcIv)
