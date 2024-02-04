@@ -20,6 +20,7 @@ require (
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
+	github.com/wumansgy/goEncrypt v1.1.0 // indirect
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.17.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect

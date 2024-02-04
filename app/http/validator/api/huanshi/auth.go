@@ -9,8 +9,8 @@ import (
 )
 
 type Auth struct {
-	Time   int    `form:"time" json:"time"  binding:"required,min=1"`     //  验证规则：必填，最小长度为1
-	Secret string `form:"secret" json:"secret"  binding:"required,min=1"` //  验证规则：必填，最小长度为1
+	Time   int    `form:"time" json:"time"  binding:"required,min=1600000000"` //  验证规则：必填，最小长度为1
+	Secret string `form:"secret" json:"secret"  binding:"required,len=32"`     //  验证规则：必填，最小长度为1
 }
 
 func (n Auth) CheckParams(context *gin.Context) {
@@ -27,7 +27,7 @@ func (n Auth) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "HuanshiAuth表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&api.Huanshi{}).Auth(extraAddBindDataContext)
+		(&api.HuanshiController{}).Auth(extraAddBindDataContext)
 	}
 
 }

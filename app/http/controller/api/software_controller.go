@@ -6,23 +6,23 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-// Software 软件相关
-type Software struct {
+// SoftwareController 软件相关
+type SoftwareController struct {
 }
 
 // Published 获取已发布的
-func (u *Software) Published(context *gin.Context) {
+func (u *SoftwareController) Published(ctx *gin.Context) {
 
 	//  由于本项目骨架已经将表单验证器的字段(成员)绑定在上下文，因此可以按照 GetString()、GetInt64()、GetFloat64（）等快捷获取需要的数据类型
-	// 当然也可以通过gin框架的上下文原原始方法获取，例如： context.PostForm("name") 获取，这样获取的数据格式为文本，需要自己继续转换
-	newsType := context.GetString(consts.ValidatorPrefix + "newsType")
-	page := context.GetFloat64(consts.ValidatorPrefix + "page")
-	limit := context.GetFloat64(consts.ValidatorPrefix + "limit")
-	userIp := context.ClientIP()
-	ref := context.GetHeader("Referer")
+	// 当然也可以通过gin框架的上下文原原始方法获取，例如： ctx.PostForm("name") 获取，这样获取的数据格式为文本，需要自己继续转换
+	newsType := ctx.GetString(consts.ValidatorPrefix + "newsType")
+	page := ctx.GetFloat64(consts.ValidatorPrefix + "page")
+	limit := ctx.GetFloat64(consts.ValidatorPrefix + "limit")
+	userIp := ctx.ClientIP()
+	ref := ctx.GetHeader("Referer")
 
 	// 这里随便模拟一条数据返回
-	response.Success(context, "ok", gin.H{
+	response.Success(ctx, "ok", gin.H{
 		"newsType": newsType,
 		"page":     page,
 		"limit":    limit,
@@ -34,6 +34,6 @@ func (u *Software) Published(context *gin.Context) {
 }
 
 // Download 获取已发布的
-func (u *Software) Download(context *gin.Context) {
+func (u *SoftwareController) Download(ctx *gin.Context) {
 
 }
