@@ -55,7 +55,7 @@ func InitApiRouter() *gin.Engine {
 	})
 
 	//  创建一个门户类接口路由组
-	vApi := router.Group("/api/v5/")
+	vApi := router.Group("/api/")
 	{
 		vApi.GET("getVersion", func(ctx *gin.Context) {
 			response.SuccessReturnData(ctx, consts.VersionNumber)
