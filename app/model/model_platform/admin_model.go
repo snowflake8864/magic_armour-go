@@ -81,12 +81,12 @@ func (m *AdminModel) InitData() bool {
 		"`create_id`, `create_name`, `created_at`)"
 	sql += "VALUES ("
 	sql += "1, 'root', 0, '', '', 0, " +
-		"'18464611f92f2a687aa0636486d4aa2f49a2546860af4208bc83fc42e7a5c603de52e3c886b290676d26b2714f09deb53f6366c085a7833e5177ce9444bc042d', " +
+		"'6d030b0eaac5a116f605dc23c5a970e3', " +
 		"0, '" + curTime + "', 1, 1, 0, 1, " +
 		"0, '', '" + curTime + "'"
 	sql += "), ("
 	sql += "2, 'admin', 1, '', '', 0, " +
-		"'2806f9ee82bf9b27357f2fb88259b8858acf6c3b6939dadb27cc3e8bff709f8154d41976ebf64f71cfa9547c624dff812b48a7376f96e38a8b82924fb98c2585', " +
+		"'24c6cd74d6091357e392c22d87a47f0c', " +
 		"0, '" + curTime + "', 1, 0, 1, 1, " +
 		"0, '', '" + curTime + "'"
 	sql += ");"

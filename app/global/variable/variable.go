@@ -23,9 +23,6 @@ var (
 	HuanshiTokenExpire = 7200                  //幻势:口令有效期(秒)
 	TaskCacheExpire    = 24                    //任务缓存过期时间(时)
 
-	AES256CbcKey = "15538976891f8de623b12d55af7a0f4a" //AES-256-CBC: 令牌
-	AES256CbcIv  = "1234560123456796"                 //AES-256-CBC: 向量
-
 	// 全局日志指针
 	ZapLog *zap.Logger
 	// 全局配置文件

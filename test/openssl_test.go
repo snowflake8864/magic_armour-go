@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	goEncryptAes "github.com/wumansgy/goEncrypt/aes"
 	goEncryptRsa "github.com/wumansgy/goEncrypt/rsa"
-	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/openssl_encrypt"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"log"
 	"testing"
@@ -26,8 +26,8 @@ func TestTime(t *testing.T) {
 }
 
 func TestAesEncrypt(t *testing.T) {
-	key := []byte(variable.AES256CbcKey)
-	iv := []byte(variable.AES256CbcIv)
+	key := []byte("15538976891f8de623b12d55af7a0f4a")
+	iv := []byte("1234560123456796")
 
 	data := "{\"o\":\"1\",\"u\":\"1\",\"t\":1695717588}"
 	str, _ := goEncryptAes.AesCbcEncryptBase64([]byte(data), key, iv)
@@ -36,8 +36,8 @@ func TestAesEncrypt(t *testing.T) {
 
 func TestAesDecrypt(t *testing.T) {
 
-	key := []byte(variable.AES256CbcKey)
-	iv := []byte(variable.AES256CbcIv)
+	key := []byte("15538976891f8de623b12d55af7a0f4a")
+	iv := []byte("1234560123456796")
 
 	data := "sa+7XiHnKKDWXWMizcCwEtg6wlsNbuU3xfNiIbTBtCqlftXUjZSUEs4+Jwil0tFK"
 
@@ -130,4 +130,41 @@ func TestRsaEncrypt(t *testing.T) {
 	fmt.Println(string(pubPEM))
 	fmt.Println("私钥:")
 	fmt.Println(string(privPEM))
+}
+
+func TestRsaCrypt(t *testing.T) {
+	rsaFct := openssl_encrypt.CreateRsaFactory()
+	encrypted, err := rsaFct.EncryptToBase64("root")
+	assert.Nil(t, err)
+	fmt.Println("加密:")
+	fmt.Println(encrypted)
+
+	decrypted, err := rsaFct.DecryptByBase64(encrypted)
+	assert.Nil(t, err)
+	fmt.Println("解密:")
+	fmt.Println(decrypted)
+}
+
+func TestAesCrypt(t *testing.T) {
+	data := "{\"o\":\"1\",\"u\":\"1\",\"t\":1695717588}"
+
+	aesFct := openssl_encrypt.CreateAesFactory()
+	encrypted, err := aesFct.CbcEncryptToBase64(data)
+	assert.Nil(t, err)
+	fmt.Println("加密:")
+	fmt.Println(encrypted)
+
+	decrypted, err := aesFct.CbcDecryptByBase64(encrypted)
+	assert.Nil(t, err)
+	fmt.Println("解密:")
+	fmt.Println(decrypted)
+
+	encrypted, err = aesFct.CbcEncryptToHex("root2020")
+	assert.Nil(t, err)
+	fmt.Println("加密:")
+	fmt.Println(encrypted)
+	decrypted, err = aesFct.AesCbcDecryptByHex(encrypted)
+	assert.Nil(t, err)
+	fmt.Println("解密:")
+	fmt.Println(decrypted)
 }
