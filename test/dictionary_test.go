@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetItems(t *testing.T) {
-	fact := dictionary_service.CreateDictionaryCurdFactory()
+	fact := dictionary_service.CreateCurdFactory()
 	fmt.Println("------------------------------")
 	fmt.Println(fact.GetMapByModule("admin"))
 	fmt.Println("------------------------------")
@@ -22,7 +22,7 @@ func TestGetItems(t *testing.T) {
 }
 
 func TestUpdate(t *testing.T) {
-	fact := dictionary_service.CreateDictionaryCurdFactory()
+	fact := dictionary_service.CreateCurdFactory()
 	fmt.Println("------------------------------")
 	fmt.Println(fact.UpdateValById("agent_save_access_log", "1"))
 	fmt.Println(fact.UpdateValById("agent_save_access_log_test", "1"))

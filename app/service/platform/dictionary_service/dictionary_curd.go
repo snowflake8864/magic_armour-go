@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model/model_platform"
 )
 
-func CreateDictionaryCurdFactory() *DictionaryCurd {
+func CreateCurdFactory() *DictionaryCurd {
 	return &DictionaryCurd{model_platform.CreateDictionaryFactory()}
 }
 

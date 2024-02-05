@@ -125,7 +125,7 @@ func (r *RedisClient) Set(key, val string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if ok == "ok" {
+	if ok == "OK" {
 		return true, err
 	}
 	return false, err
@@ -136,7 +136,7 @@ func (r *RedisClient) SetEx(key, val string, second int) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if ok == "ok" {
+	if ok == "OK" {
 		return true, err
 	}
 	return false, err
@@ -148,7 +148,7 @@ func (r *RedisClient) Lock(key, val string, second int) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if ok == "ok" {
+	if ok == "OK" {
 		return true, err
 	}
 	return false, err
@@ -166,14 +166,14 @@ func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) (bool
 	if err != nil {
 		return false, err
 	}
-	if ok == "ok" {
+	if ok == "OK" {
 		return true, err
 	}
 	return false, err
 }
 
 func (r *RedisClient) HGet(key string, field string) (string, error) {
-	val, err := r.String(r.client.Do("HGET", field))
+	val, err := r.String(r.client.Do("HGET", key, field))
 	if err != nil {
 		return "", err
 	}

@@ -22,7 +22,7 @@ type dictionaryCache struct {
 
 // Rebuild 重构数据库缓存
 func (cache *dictionaryCache) Rebuild() bool {
-	curdFact := CreateDictionaryCurdFactory()
+	curdFact := CreateCurdFactory()
 	items := curdFact.GetAll()
 	total := len(items)
 	if total == 0 {
