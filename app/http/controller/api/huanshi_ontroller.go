@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -36,6 +37,6 @@ func (u *HuanshiController) Auth(ctx *gin.Context) {
 	if err != nil {
 		response.FailRoutine(ctx, 10002, err.Error())
 	}
-
+	fmt.Println(token)
 	response.SuccessReturnData(ctx, token)
 }

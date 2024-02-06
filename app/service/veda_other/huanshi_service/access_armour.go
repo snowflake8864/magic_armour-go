@@ -37,7 +37,7 @@ func (aa *accessArmour) GenerateSecret(timestamp int64) string {
 func (aa *accessArmour) CheckSecret(timestamp int64, secret string) (bool, string) {
 	currentTime := time.Now()
 
-	if diff := currentTime.Unix() - timestamp; diff > 600 || diff < -600 {
+	if diff := currentTime.Unix() - timestamp; diff > 6000 || diff < -6000 {
 		return false, "秘钥已无效"
 	}
 	if aa.GenerateSecret(timestamp) != secret {
@@ -48,9 +48,9 @@ func (aa *accessArmour) CheckSecret(timestamp int64, secret string) (bool, strin
 }
 
 type AccessGenerateToken struct {
-	secret string
-	expire int
-	token  string
+	Secret string `json:"secret"`
+	Expire int    `json:"expire"`
+	Token  string `json:"token"`
 }
 
 // 生成口令
@@ -62,5 +62,5 @@ func (aa *accessArmour) GenerateToken(secret string) (AccessGenerateToken, error
 		return AccessGenerateToken{}, err
 	}
 
-	return AccessGenerateToken{secret: secret, expire: aa.cacheExpire, token: token}, nil
+	return AccessGenerateToken{Secret: secret, Expire: aa.cacheExpire, Token: token}, nil
 }
