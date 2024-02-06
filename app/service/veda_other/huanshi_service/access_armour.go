@@ -12,7 +12,7 @@ func CreateAccessFactory(deviceId string) *accessArmour {
 	return &accessArmour{
 		privateRsa:  variable.HuanshiPrivateRsa,
 		deviceId:    deviceId,
-		cacheExpire: 300,
+		cacheExpire: 600,
 		aesFactory:  openssl_encrypt.CreateAesFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		cacheKey:    "huanshi_access_token",
@@ -37,7 +37,7 @@ func (aa *accessArmour) GenerateSecret(timestamp int64) string {
 func (aa *accessArmour) CheckSecret(timestamp int64, secret string) (bool, string) {
 	currentTime := time.Now()
 
-	if diff := currentTime.Unix() - timestamp; diff > 600 || diff < 600 {
+	if diff := int(currentTime.Unix() - timestamp); diff > aa.cacheExpire || diff < aa.cacheExpire {
 		return false, "秘钥已无效"
 	}
 	if aa.GenerateSecret(timestamp) != secret {
