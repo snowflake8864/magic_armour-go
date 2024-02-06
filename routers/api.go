@@ -13,7 +13,7 @@ import (
 	"net/http"
 )
 
-// 该路由主要设置门户类网站等前台路由
+// 该路由主要设置内部接口路由
 
 func InitApiRouter() *gin.Engine {
 	var router *gin.Engine
@@ -54,7 +54,7 @@ func InitApiRouter() *gin.Engine {
 		context.String(http.StatusOK, "Api接口: "+consts.VersionNumber)
 	})
 
-	//  创建一个门户类接口路由组
+	//  创建一个路由组
 	vApi := router.Group("/api/")
 	{
 		vApi.GET("getVersion", func(ctx *gin.Context) {
