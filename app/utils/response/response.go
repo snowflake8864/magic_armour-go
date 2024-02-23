@@ -56,7 +56,7 @@ func FailSimplify(c *gin.Context, msg string) {
 }
 
 // FailRoutine 失败的业务逻辑： 日常使用
-func FailRoutine(c *gin.Context, dataCode int, msg string) {
+func FailRoutine(c *gin.Context, dataCode interface{}, msg string) {
 	ReturnJson(c, http.StatusBadRequest, dataCode, msg, "")
 	c.Abort()
 }

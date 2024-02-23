@@ -46,3 +46,12 @@ func GET1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[
 	}
 	return val
 }
+
+// GET1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回对应的[]int
+func GET1stIsStrAnd2ndIsIntReturnSliceInt(first string, second int, s map[string]map[int][]int) []int {
+	val, ok := s[first][second]
+	if ok == false {
+		return nil
+	}
+	return val
+}

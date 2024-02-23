@@ -3,14 +3,29 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/controller/agent"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
 type Login struct {
-	uuid      int    `form:"uuid" json:"uuid"  binding:"required,min=1600000000"`
-	host_name string `form:"host_name" json:"host_name"  binding:"required,len=32"`
+	Uuid         string `form:"uuid" json:"uuid"`
+	HostName     string `form:"host_name" json:"host_name"`
+	MacId        string `form:"macid" json:"macid"`
+	AgentIp      string `form:"ip" json:"ip"`
+	Ver          string `form:"ver" json:"ver"`
+	PlatformType int    `form:"type" json:"type"`
+	OsName       string `form:"os" json:"os"`
+	MemSize      string `form:"memsize" json:"memsize"`
+	Cpu          string `form:"cpu" json:"cpu"`
+	HdSize       string `form:"hdsize" json:"hdsize"`
+	AsStartTime  string `form:"asstarttime" json:"asstarttime"`
+	OsStartTime  string `form:"osstarttime" json:"osstarttime"`
+	Auth         string `form:"auth" json:"auth"`
+	UserId       int    `form:"userid" json:"userid"`
 }
 
 func (n Login) CheckParams(context *gin.Context) {
@@ -18,6 +33,32 @@ func (n Login) CheckParams(context *gin.Context) {
 	if err := context.ShouldBind(&n); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
 		response.ValidatorError(context, err)
+		return
+	}
+
+	if helpers.IsEmptyString(n.Uuid) {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Uuid] not empty")
+		return
+	}
+	if helpers.IsEmptyString(n.MacId) {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [MacId] not empty")
+		return
+	}
+	if helpers.IsEmptyString(n.Ver) {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Ver] not empty")
+		return
+	}
+	if helpers.IsEmptyString(n.Auth) {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Auth] error")
+		return
+	}
+	if n.UserId == 0 {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [UserId] error")
+		return
+	}
+
+	if label := enums.GET1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); helpers.IsEmptyString(label) {
+		response.FailRoutine(context, consts.AgentINSTALLCode, "param [PlatformType] error")
 		return
 	}
 
