@@ -3,38 +3,64 @@ package agent
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/service/veda_other/huanshi_service"
+	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/model/model_agent"
+	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
+	"strings"
 )
 
-// AuthController 幻势相关
+// AuthController 安全验证相关
 type AuthController struct {
 }
 
 // Auth 通过秘钥获取口令
 func (u *AuthController) Auth(ctx *gin.Context) {
-	timestamp := int64(ctx.GetFloat64(consts.ValidatorPrefix + "time"))
-	secret := ctx.GetString(consts.ValidatorPrefix + "secret")
+	var param = model_agent.AgentModel{}
 
-	//获取备标识码
-	dictCacheFact := dictionary_service.CreateCacheFactory()
-	deviceId := dictCacheFact.GetValById(enum_dictionary.SystemDeviceId)
-	if deviceId == "" {
-		response.FailRoutine(ctx, 10000, "设备标识码没有初始化")
+	param.AgentId = strings.ToLower(ctx.GetString(consts.ValidatorPrefix + "uid"))
+	param.HostName = ctx.GetString(consts.ValidatorPrefix + "host_name")
+	param.HostName = helpers.ConvertToString(param.HostName, "gbk", "utf-8")
+	param.HostName = helpers.ConvertToString(param.HostName, "GB2312", "utf-8")
+	param.HostName = helpers.ConvertToString(param.HostName, "BIG5", "utf-8")
+	param.MacId = ctx.GetString(consts.ValidatorPrefix + "macid")
+	param.AgentIp = ctx.GetString(consts.ValidatorPrefix + "ip")
+	param.Ver = ctx.GetString(consts.ValidatorPrefix + "ver")
+	param.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefix + "type"))
+	param.OsName = ctx.GetString(consts.ValidatorPrefix + "os")
+	param.MemSize = ctx.GetString(consts.ValidatorPrefix + "memsize")
+	param.CpuSize = ctx.GetString(consts.ValidatorPrefix + "cpu")
+	param.HdSize = ctx.GetString(consts.ValidatorPrefix + "hdsize")
+	param.AgentStartAt = ctx.GetString(consts.ValidatorPrefix + "asstarttime")
+	param.Auth = ctx.GetString(consts.ValidatorPrefix + "auth")
+	param.AdminId = int(ctx.GetFloat64(consts.ValidatorPrefix + "userid"))
+	param.NetIp = ctx.ClientIP()
+
+	if helpers.IsEmptyString(param.AgentIp) {
+		param.AgentIp = param.NetIp
 	}
 
-	//验证秘钥
-	hsAccessFact := huanshi_service.CreateAccessFactory(deviceId)
-	if isOk, errMsg := hsAccessFact.CheckSecret(timestamp, secret); !isOk {
-		response.FailRoutine(ctx, 10001, errMsg)
+	//兼容处理，参考bug 6181
+	if helpers.IsEmptyString(param.OsName) {
+		if param.PlatformType == enum_software.PlatformTypeWindows {
+			param.OsName = "windows"
+		} else {
+			param.OsName = "centos"
+		}
 	}
 
-	//生成口令
-	token, err := hsAccessFact.GenerateToken(secret)
-	if err != nil {
-		response.FailRoutine(ctx, 10002, err.Error())
+	//系统类型
+	param.OsType = enum_software.GetOsTypeByName(param.OsName)
+	if param.OsType == 0 {
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "未知的系统类型")
+		return
 	}
-	response.SuccessReturnData(ctx, token)
+
+	isOk, data := agent_service.CreateLoginFactory().RegisterOrLogin(&param)
+	if !isOk {
+		response.FailSimplify(ctx, data)
+	}
+
+	response.SuccessReturnData(ctx, gin.H{"token": data})
 }

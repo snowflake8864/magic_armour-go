@@ -46,17 +46,6 @@ func TestDbMigrate(t *testing.T) {
 	database.TestStart("dictionary")
 }
 
-func TestInsertOne(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
-	var st = &model_platform.MigrateModel{
-		Migration: "20240108000001_init_paltform111",
-		CreatedAt: time.Now().Format(variable.DateFormat),
-	}
-
-	result := modelFact.InsertItem(st)
-	fmt.Println(result)
-}
-
 func TestInsertMany(t *testing.T) {
 	modelFact := model_platform.CreateMigrateFactory()
 
@@ -72,31 +61,6 @@ func TestInsertMany(t *testing.T) {
 	}
 	result := modelFact.InsertBatch(st)
 	fmt.Println(result)
-}
-
-func TestShowOne(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
-
-	item, err := modelFact.ShowOneItem()
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Println(item)
-
-}
-
-func TestShowAll(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
-
-	items, err := modelFact.GetALLItems()
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	for key, value := range items {
-		fmt.Println(key)
-		fmt.Println(value.Migration)
-	}
 }
 
 func TestShowAllMAP(t *testing.T) {

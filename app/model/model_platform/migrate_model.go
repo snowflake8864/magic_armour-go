@@ -50,82 +50,12 @@ func (m *MigrateModel) CreateTable() bool {
 
 }
 
-func (m *MigrateModel) InsertOne(s *MigrateModel) bool {
-	result := m.Create(s)
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
 func (m *MigrateModel) InsertBatch(list *[]MigrateModel) bool {
 	result := m.Create(list)
 	if result.RowsAffected > 0 {
 		return true
 	} else {
 		return false
-	}
-}
-
-func (m *MigrateModel) InsertItem(s *MigrateModel) bool {
-
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(&MigrateModel{}).Create(s)
-	})
-	fmt.Println(sql)
-	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (m *MigrateModel) InsertItems(list *[]MigrateModel) bool {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(&MigrateModel{}).Create(list)
-	})
-	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (m *MigrateModel) ShowOneItem() (*MigrateModel, error) {
-	sql := "SELECT  * FROM  `p_migrations`  WHERE Migration='20240108000001_init_paltform111' LIMIT 1"
-	result := m.Raw(sql).First(m)
-	if result.Error == nil {
-		return m, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-func (m *MigrateModel) GetALLItems() (temp []MigrateModel, err error) {
-	sql := "SELECT  * FROM  `p_migrations`"
-	result := m.Raw(sql).Find(&temp)
-	if result.Error == nil {
-		return temp, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-func (m *MigrateModel) GetAllMap() (map[string]MigrateModel, error) {
-	var items []MigrateModel
-	sql := "SELECT  * FROM  `p_migrations`"
-	result := m.Raw(sql).Find(&items)
-	if result.Error == nil {
-		res := make(map[string]MigrateModel)
-		for _, obj := range items {
-			res[obj.Migration] = obj
-		}
-		return res, nil
-	} else {
-		return nil, result.Error
 	}
 }
 
@@ -162,6 +92,7 @@ func (m *MigrateModel) TestToSQL() bool {
 		return tx.Model(&MigrateModel{}).Raw(st, "20240108000001_init_paltform111")
 	})
 	fmt.Println(sql)
+
 	fmt.Println("\n INSERT--------------------------------------------------")
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(&MigrateModel{}).Exec("INSERT  INTO p_migrations (Migration,  created_at) VALUES (?, ?)",

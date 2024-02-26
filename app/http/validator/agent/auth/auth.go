@@ -12,7 +12,7 @@ import (
 )
 
 type Login struct {
-	Uuid         string `form:"uuid" json:"uuid"`
+	Uuid         string `form:"uid" json:"uid"`
 	HostName     string `form:"host_name" json:"host_name"`
 	MacId        string `form:"macid" json:"macid"`
 	AgentIp      string `form:"ip" json:"ip"`

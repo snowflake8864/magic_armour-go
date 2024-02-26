@@ -52,16 +52,13 @@ func (m *DictionaryModel) CreateTable() bool {
 }
 
 func (m *DictionaryModel) InitData() bool {
-	plugPortConfig := enum_plug.PlugPortConfig{}
-	plugPortConfig.Format()
+	plugPortConfig := enum_plug.PlugPortConfig.Format
 	jsonPlugPort, _ := json.Marshal(plugPortConfig)
 
-	plugLoginConfig := enum_plug.PlugLoginConfig{}
-	plugLoginConfig.Format()
-	jsonLoginPort, _ := json.Marshal(plugLoginConfig)
+	plugLoginConfig := enum_plug.PlugLoginConfig.Format
+	jsonPlugLogin, _ := json.Marshal(plugLoginConfig)
 
-	loginSolveConfig := enum_login_solve.LoginSolveConfig{}
-	loginSolveConfig.Format()
+	loginSolveConfig := enum_login_solve.LoginSolveConfig.Format
 	jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
 
 	//
@@ -77,7 +74,7 @@ func (m *DictionaryModel) InitData() bool {
 			('agent', '` + enum_dictionary.AgentLogSendProto + `', '2','终端:日志发送协议(1udp 2tcp)'),
 			('agent', '` + enum_dictionary.AgentSaveAccessLog + `', '0','终端：是否保存访问日志(0|1)'),
 			('agent', '` + enum_dictionary.AgentGlobalPlugPortConfig + `', '` + string(jsonPlugPort) + `','终端:全局封堵-端口虚开配置'),
-			('agent', '` + enum_dictionary.AgentGlobalPlugLoginConfig + `', '` + string(jsonLoginPort) + `','终端：全局封堵-登录破解配置'),
+			('agent', '` + enum_dictionary.AgentGlobalPlugLoginConfig + `', '` + string(jsonPlugLogin) + `','终端：全局封堵-登录破解配置'),
 			('agent', '` + enum_dictionary.AgentGlobalLoginSolveConfig + `', '` + string(jsonLoginSolve) + `','终端：全局登录口令暴力破解告警配置'),
 
 			('threaten', '` + enum_dictionary.ThreatenSwitch + `', '0','威胁情报:开关'),

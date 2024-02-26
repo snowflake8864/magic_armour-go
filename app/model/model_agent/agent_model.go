@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -21,8 +22,8 @@ type AgentModel struct {
 	AgentIp              string `json:"agent_ip"`
 	NetIp                string `json:"net_ip"`
 	OsName               string `json:"os_name"`
-	PlatformType         string `json:"platform_type"`
-	OsType               string `json:"os_type"`
+	PlatformType         int    `json:"platform_type"`
+	OsType               int    `json:"os_type"`
 	MemSize              string `json:"mem_size"`
 	HdSize               string `json:"hd_size"`
 	CpuSize              string `json:"cpu_size"`
@@ -34,13 +35,14 @@ type AgentModel struct {
 	OnlineAt             string `json:"online_at"`
 	LiveAt               string `json:"live_at"`
 	UpgradeVer           string `json:"upgrade_ver"`
-	AdminId              int64  `json:"admin_id"`
-	DeptId               int64  `json:"dept_id"`
-	AgentTypeId          int64  `json:"agent_type_id"`
+	AdminId              int    `json:"admin_id"`
+	DeptId               int    `json:"dept_id"`
+	AgentTypeId          int    `json:"agent_type_id"`
 	Alias                string `json:"alias"`
 	ContactName          string `json:"contact_name"`
 	ContactTel           string `json:"contact_tel"`
 	Remark               string `json:"remark"`
+	GrantConfig          string `json:"grant_config"`
 	ProcessSwitch        int    `json:"process_switch"`
 	ProcessMode          int    `json:"process_mode"`
 	DllSwitch            int    `json:"dll_switch"`
@@ -55,7 +57,7 @@ type AgentModel struct {
 	PlugLoginConfig      string `json:"plug_login_config"`
 	UsbSwitch            int    `json:"usb_switch"`
 	UsbMode              int    `json:"usb_mode"`
-	SyslogDnSwitch       int    `json:"syslog_dns_switch"`
+	SyslogDnsSwitch      int    `json:"syslog_dns_switch"`
 	SyslogOuterSwitch    int    `json:"syslog_outer_switch"`
 	SyslogInnerSwitch    int    `json:"syslog_inner_switch"`
 	SyslogProcessSwitch  int    `json:"syslog_process_switch"`
@@ -69,10 +71,11 @@ type AgentModel struct {
 	AlarmAiSwitch        int    `json:"alarm_ai_switch"`
 	LoginSolveSwitch     int    `json:"login_solve_switch"`
 	LoginSolveConfig     string `json:"login_solve_config"`
-	HardwareSwitch       string `json:"hardware_switch"`
-	HardwareTime         string `json:"hardware_time"`
+	HardwareSwitch       int    `json:"hardware_switch"`
+	HardwareTime         int    `json:"hardware_time"`
 	ProcessFlushAt       string `json:"process_flush_at"`
 	DllFlushAt           string `json:"dll_flush_at"`
+	CreatedAt            string `json:"created_at"`
 }
 
 // 表名
@@ -165,5 +168,55 @@ func (m *AgentModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *AgentModel) InsertItem(s *AgentModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("agent_id=?", agentId).Updates(updates)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *AgentModel) UpdateByIds(agentIds []string, updates map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("agent_id IN ?", agentIds).Updates(updates)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *AgentModel) GetOneById(agentId, column string) (*AgentModel, error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id = ?"
+		return tx.Model(m).Raw(st, agentId)
+	})
+	result := m.Raw(sql).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
 	}
 }
