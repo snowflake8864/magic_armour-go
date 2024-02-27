@@ -26,7 +26,7 @@ type AgentModel struct {
 	OsType               int    `json:"os_type"`
 	MemSize              string `json:"mem_size"`
 	HdSize               string `json:"hd_size"`
-	CpuSize              string `json:"cpu_size"`
+	Cpu                  string `json:"cpu"`
 	AgentStartAt         string `json:"agent_start_at"`
 	OsStartAt            string `json:"os_start_at"`
 	Ver                  string `json:"ver"`

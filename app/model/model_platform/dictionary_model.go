@@ -52,13 +52,16 @@ func (m *DictionaryModel) CreateTable() bool {
 }
 
 func (m *DictionaryModel) InitData() bool {
-	plugPortConfig := enum_plug.PlugPortConfig.Format
+	plugPortConfig := enum_plug.PlugPortConfig{}
+	plugPortConfig.Format()
 	jsonPlugPort, _ := json.Marshal(plugPortConfig)
 
-	plugLoginConfig := enum_plug.PlugLoginConfig.Format
+	plugLoginConfig := enum_plug.PlugLoginConfig{}
+	plugLoginConfig.Format()
 	jsonPlugLogin, _ := json.Marshal(plugLoginConfig)
 
-	loginSolveConfig := enum_login_solve.LoginSolveConfig.Format
+	loginSolveConfig := enum_login_solve.LoginSolveConfig{}
+	loginSolveConfig.Format()
 	jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
 
 	//

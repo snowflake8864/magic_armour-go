@@ -12,7 +12,9 @@ import (
 )
 
 func CreateLoginFactory() *AgentLogin {
-	return &AgentLogin{model_agent.CreateAgentFactory()}
+	return &AgentLogin{
+		masterModel: model_agent.CreateAgentFactory(),
+	}
 }
 
 type AgentLogin struct {
@@ -23,18 +25,22 @@ type AgentLogin struct {
 func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
 	column := "agent_id,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
 	agentModel, _ := crd.masterModel.GetOneById(param.AgentId, column)
-	fmt.Println(agentModel)
-	nowDate := helpers.GetNowDate()
+	fmt.Println("agentModel.AgentId=====================================")
+	fmt.Println(agentModel.AgentId)
+	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
 
-	if agentModel == nil {
-		plugPortConfig := enum_plug.PlugPortConfig.Format
+	if helpers.IsEmptyString(agentModel.AgentId) {
+		plugPortConfig := enum_plug.PlugPortConfig{}
+		plugPortConfig.Format()
 		jsonPlugPort, _ := json.Marshal(plugPortConfig)
 
-		plugLoginConfig := enum_plug.PlugLoginConfig.Format
+		plugLoginConfig := enum_plug.PlugLoginConfig{}
+		plugLoginConfig.Format()
 		jsonPlugLogin, _ := json.Marshal(plugLoginConfig)
 
-		loginSolveConfig := enum_login_solve.LoginSolveConfig.Format
+		loginSolveConfig := enum_login_solve.LoginSolveConfig{}
+		loginSolveConfig.Format()
 		jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
 
 		param.IsOnline = enums.IsYes
@@ -85,6 +91,9 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 			return false, "新建数据失败"
 		}
 
+		//添加任务
+		crd.addTask(param)
+
 		//自动授权
 		crd.autoGrant(param.AgentId, param.AdminId)
 
@@ -99,7 +108,7 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 			"os_type":        param.OsType,
 			"mem_size":       param.MemSize,
 			"hd_size":        param.HdSize,
-			"cpu_size":       param.CpuSize,
+			"cpu":            param.Cpu,
 			"agent_start_at": param.AgentStartAt,
 			"os_start_at":    param.OsStartAt,
 			"ver":            param.Ver,
@@ -112,6 +121,9 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 			return false, "更新数据失败"
 		}
 
+		//添加任务
+		crd.addTask(agentModel)
+
 		//有组织架构
 		if agentModel.DeptId > 0 {
 			isAllocateDept = false
@@ -123,7 +135,10 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 
 	}
 
-	return true, ""
+	//生成token
+	token := CreateCacheFactory().EncryptByLogin(param)
+
+	return true, token
 }
 
 // autoGrant 自动授权
@@ -133,5 +148,10 @@ func (crd *AgentLogin) autoGrant(agentId string, adminId int) {
 
 // autoAllocateDept 自动分配组织架构
 func (crd *AgentLogin) autoAllocateDept(agentId string, adminId int) {
+
+}
+
+// addTask 新增任务
+func (crd *AgentLogin) addTask(param *model_agent.AgentModel) {
 
 }
