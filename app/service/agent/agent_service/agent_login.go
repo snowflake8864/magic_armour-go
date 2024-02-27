@@ -132,7 +132,7 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 
 	//自动分配组织架构
 	if isAllocateDept {
-
+		crd.autoAllocateDept(param.AgentId, param.AdminId)
 	}
 
 	//生成token

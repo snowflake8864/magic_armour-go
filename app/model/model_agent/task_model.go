@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -49,6 +50,18 @@ func (m *TaskModel) CreateTable() bool {
 		);
 		`
 	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *TaskModel) InsertBatch(list *[]TaskModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
 		return true
 	} else {

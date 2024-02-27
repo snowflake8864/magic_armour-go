@@ -228,10 +228,10 @@ func (r *RedisClient) SMembersByInt(key string) ([]int, error) {
 	return members, err
 }
 
-func (r *RedisClient) SRemByInt(key string, values []int) ([]int, error) {
-	members, err := r.Ints(r.client.Do("SREM", redis.Args{}.Add(key).AddFlat(values)...))
+func (r *RedisClient) SRemByInt(key string, values []int) (int, error) {
+	members, err := r.Int(r.client.Do("SREM", redis.Args{}.Add(key).AddFlat(values)...))
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	return members, err
 }

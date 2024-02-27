@@ -8,6 +8,7 @@ require (
 	github.com/Shopify/sarama v1.38.1 // indirect
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 // indirect
 	github.com/bsm/sarama-cluster v2.1.15+incompatible // indirect
+	github.com/deckarep/golang-set v1.8.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.1-0.20210802184156-9742bd7fca1c+incompatible
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-contrib/pprof v1.4.0
