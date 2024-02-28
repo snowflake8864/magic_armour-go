@@ -63,6 +63,8 @@ func InitAgentRouter() *gin.Engine {
 		vAgent.Use(authorization.CheckAgentToken())
 		{
 			vAgent.POST("gettask", validatorFactory.Create(consts.ValidatorPrefix+"TaskGet"))
+			vAgent.POST("closetask", validatorFactory.Create(consts.ValidatorPrefix+"TaskClose"))
+
 		}
 	}
 	return router

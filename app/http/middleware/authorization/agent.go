@@ -12,7 +12,7 @@ type AgentParams struct {
 // CheckAgentToken 检查终端token完整性、有效性中间件
 func CheckAgentToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		variable.ZapLog.Info("查终端token完整性、有效性中间件----------------")
+		variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
 		c.Next()
 	}
 }

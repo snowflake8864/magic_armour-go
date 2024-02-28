@@ -14,3 +14,9 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	response.SuccessReturnData(ctx, "")
 }
+
+// Close 关闭任务
+func (u *TaskController) Close(ctx *gin.Context) {
+
+	response.SuccessReturnData(ctx, "")
+}

@@ -22,4 +22,7 @@ func AgentRegisterValidator() {
 	//任务相关
 	key = consts.ValidatorPrefix + "TaskGet"
 	containers.Set(key, task.Get{})
+	//任务相关
+	key = consts.ValidatorPrefix + "TaskClose"
+	containers.Set(key, task.Close{})
 }
