@@ -2,15 +2,17 @@ package agent_service
 
 import (
 	"encoding/json"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_grant"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/platform/department_service"
+	"goskeleton/app/service/platform/grant_service"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -26,10 +28,8 @@ type AgentLogin struct {
 
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	column := "agent_id,platform_type,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
+	column := "agent_id,dept_id,platform_type,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
 	agentModel, _ := crd.masterModel.GetOneById(param.AgentId, column)
-	fmt.Println("agentModel.AgentId=====================================")
-	fmt.Println(agentModel.AgentId)
 	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
 
@@ -46,6 +46,10 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 		loginSolveConfig.Format()
 		jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
 
+		grantConfig := enum_grant.AgentGrantConfig{}
+		grantConfig.Default()
+		jsonGrantConfig, _ := json.Marshal(grantConfig)
+
 		param.IsOnline = enums.IsYes
 		param.OnlineAt = nowDate
 		param.LiveAt = nowDate
@@ -56,7 +60,7 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 		param.ContactName = ""
 		param.ContactTel = ""
 		param.Remark = ""
-		param.GrantConfig = ""
+		param.GrantConfig = string(jsonGrantConfig)
 		param.ProcessSwitch = enums.SwitchOff
 		param.ProcessMode = enum_agent.ModeMonitor
 		param.DllSwitch = enums.SwitchOff
@@ -98,7 +102,7 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 		crd.addTask(param)
 
 		//自动授权
-		crd.autoGrant(param.AgentId, param.AdminId)
+		crd.autoGrant(param.AgentId)
 
 	} else {
 		updates := map[string]interface{}{
@@ -135,7 +139,7 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 
 	//自动分配组织架构
 	if isAllocateDept {
-		crd.autoAllocateDept(param.AgentId, param.AdminId)
+		crd.autoAllocateDept(param.AdminId, param.AgentId, param.AgentIp)
 	}
 
 	//生成token
@@ -145,13 +149,13 @@ func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, str
 }
 
 // autoGrant 自动授权
-func (crd *AgentLogin) autoGrant(agentId string, adminId int) {
-
+func (crd *AgentLogin) autoGrant(agentId string) {
+	go grant_service.CreateCurdFactory().AutoGrant(agentId)
 }
 
 // autoAllocateDept 自动分配组织架构
-func (crd *AgentLogin) autoAllocateDept(agentId string, adminId int) {
-
+func (crd *AgentLogin) autoAllocateDept(adminId int, agentId, agentIp string) {
+	go department_service.CreateCurdFactory().AutoAllocate(adminId, agentId, agentIp)
 }
 
 // addTask 新增任务

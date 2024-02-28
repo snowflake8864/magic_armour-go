@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"github.com/axgle/mahonia"
 	"strings"
 )
@@ -17,6 +18,7 @@ func ConvertToString(src string, srcCode string, tagCode string) string {
 	tagCoder := mahonia.NewDecoder(tagCode)
 	_, cdata, _ := tagCoder.Translate([]byte(srcResult), true)
 	result := string(cdata)
+	fmt.Println(result)
 	return result
 
 }

@@ -53,11 +53,10 @@ func InitAgentRouter() *gin.Engine {
 		context.String(http.StatusOK, "Agent接口: "+consts.VersionNumber)
 	})
 
-	//  创建一个门户类接口路由组
-	vApi := router.Group("/v1/")
+	//  创建一个接口路由组
+	vAgent := router.Group("/v1/")
 	{
-
-		vApi.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
+		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
 
 	}
 	return router

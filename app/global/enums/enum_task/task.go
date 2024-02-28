@@ -11,7 +11,7 @@ const (
 	TypeDirStructureUpload        int = 2  //任务类型:上传目录结构
 	TypeProcessWhiteDownload      int = 3  //任务类型:下载进程白名单库
 	TypeTamperPolicyDownload      int = 4  //任务类型:下载防篡改策略
-	TypelistUploadConfig          int = 5  //任务类型:上传当前配置信息 （没有使用）
+	TypeUploadConfig              int = 5  //任务类型:上传当前配置信息 （没有使用）
 	TypeAgentConfigDownload       int = 6  //任务类型:下载终端配置信息
 	TypeProcessBlackDownload      int = 7  //任务类型:下载进程黑名单库
 	TypePortWorkingUpload         int = 9  //任务类型:上传正常业务端口

@@ -59,3 +59,7 @@ func TestAgentDecrypt(t *testing.T) {
 	d := agent_service.CreateCacheFactory().DecryptByLogin("c94a8b121a3686e25685d59c64b33015", true)
 	fmt.Println(d.AgentId)
 }
+
+func TestHostName(t *testing.T) {
+
+}

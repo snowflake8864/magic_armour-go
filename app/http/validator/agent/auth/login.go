@@ -25,7 +25,7 @@ type Login struct {
 	AsStartTime  string `form:"asstarttime" json:"asstarttime"`
 	OsStartTime  string `form:"osstarttime" json:"osstarttime"`
 	Auth         string `form:"auth" json:"auth"`
-	UserId       int    `form:"userid" json:"userid"`
+	UserId       string `form:"userid" json:"userid"`
 }
 
 func (n Login) CheckParams(context *gin.Context) {
@@ -52,7 +52,7 @@ func (n Login) CheckParams(context *gin.Context) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Auth] error")
 		return
 	}
-	if n.UserId == 0 {
+	if helpers.IsEmptyString(n.UserId) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [UserId] error")
 		return
 	}
@@ -68,7 +68,7 @@ func (n Login) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "HuanshiAuth表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&agent.AuthController{}).Auth(extraAddBindDataContext)
+		(&agent.AuthController{}).Login(extraAddBindDataContext)
 	}
 
 }

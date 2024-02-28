@@ -15,15 +15,12 @@ import (
 type AuthController struct {
 }
 
-// Auth 通过秘钥获取口令
-func (u *AuthController) Auth(ctx *gin.Context) {
+// Login 登录
+func (u *AuthController) Login(ctx *gin.Context) {
 	var param = model_agent.AgentModel{}
 
 	param.AgentId = strings.ToLower(ctx.GetString(consts.ValidatorPrefix + "uid"))
 	param.HostName = ctx.GetString(consts.ValidatorPrefix + "host_name")
-	param.HostName = helpers.ConvertToString(param.HostName, "gbk", "utf-8")
-	param.HostName = helpers.ConvertToString(param.HostName, "GB2312", "utf-8")
-	param.HostName = helpers.ConvertToString(param.HostName, "BIG5", "utf-8")
 	param.MacId = ctx.GetString(consts.ValidatorPrefix + "macid")
 	param.AgentIp = ctx.GetString(consts.ValidatorPrefix + "ip")
 	param.Ver = ctx.GetString(consts.ValidatorPrefix + "ver")
