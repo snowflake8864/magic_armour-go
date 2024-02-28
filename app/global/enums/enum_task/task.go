@@ -22,7 +22,7 @@ const (
 	TypePlugIpWhiteDownload       int = 14 //任务类型:下载封堵ip白名单（不在使用）
 	TypePlugIpBlackDownload       int = 15 //任务类型:下载封堵ip黑名单
 	TypeUsbUpload                 int = 16 //任务类型: 上传外设列表
-	TypeExtortionPolicyDownload   int = 19 //任务类型:  下载勒索防护策略
+	TypeBlackmailPolicyDownload   int = 19 //任务类型:  下载勒索防护策略
 	TypeProcessCollectDll         int = 21 //任务类型: 收集指定进程并相关模块
 	TypeDllRefresh                int = 22 //任务类型: 刷新模块
 	TypeDllWhiteDownload          int = 23 //任务类型: 下载模块白名单
@@ -59,7 +59,7 @@ var EnumMap = map[string]map[int]string{
 		TypeDllBlackDownload:          "下发模块黑名单",
 		TypeDirStructureUpload:        "获取目录结构",
 		TypeTamperPolicyDownload:      "下发防篡改策略",
-		TypeExtortionPolicyDownload:   "下发勒索防护策略",
+		TypeBlackmailPolicyDownload:   "下发勒索防护策略",
 		TypePortWorkingUpload:         "获取系统正常业务端口",
 		TypePortVirtualPolicyDownload: "下发端口虚开策略",
 		TypePluggingDownload:          "下发动态封堵策略",
@@ -95,7 +95,7 @@ var EnumSlice = map[string][]int{
 		TypeDllWhiteDownload,
 		TypeDllBlackDownload,
 		TypeTamperPolicyDownload,
-		TypeExtortionPolicyDownload,
+		TypeBlackmailPolicyDownload,
 		TypeUsbWhiteDownload,
 		TypeUsbBlackDownload,
 	},

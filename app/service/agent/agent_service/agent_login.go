@@ -7,7 +7,10 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/model_agent"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -23,7 +26,7 @@ type AgentLogin struct {
 
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentLogin) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	column := "agent_id,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
+	column := "agent_id,platform_type,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
 	agentModel, _ := crd.masterModel.GetOneById(param.AgentId, column)
 	fmt.Println("agentModel.AgentId=====================================")
 	fmt.Println(agentModel.AgentId)
@@ -153,5 +156,52 @@ func (crd *AgentLogin) autoAllocateDept(agentId string, adminId int) {
 
 // addTask 新增任务
 func (crd *AgentLogin) addTask(param *model_agent.AgentModel) {
+	tasks := []int{
+		enum_task.TypeAgentConfigDownload,
+		enum_task.TypeTrustDir,
+	}
 
+	//进程开启
+	if param.ProcessSwitch == enums.SwitchOn {
+		tasks = append(tasks, enum_task.TypeProcessWhiteDownload, enum_task.TypeProcessBlackDownload)
+	}
+	//模块开启
+	if param.DllSwitch == enums.SwitchOn {
+		//todo linux不支持模块 http://192.168.19.9/zentao/story-view-636.html
+		if param.PlatformType == enum_software.PlatformTypeWindows {
+			tasks = append(tasks, enum_task.TypeDllWhiteDownload, enum_task.TypeDllBlackDownload)
+		}
+	}
+	//防篡改开启
+	if param.TamperSwitch == enums.SwitchOn {
+		tasks = append(tasks, enum_task.TypeTamperPolicyDownload)
+	}
+
+	//勒索开启
+	if param.BlackmailSwitch == enums.SwitchOn {
+		tasks = append(tasks, enum_task.TypeBlackmailPolicyDownload)
+	}
+
+	//端口虚开开启
+	if param.PortSwitch == enums.SwitchOn {
+		//windows XP和2003  不支持
+		if param.OsType == enum_software.OsTypeWinXp {
+			tasks = append(tasks, enum_task.TypePortWorkingUpload, enum_task.TypePortVirtualPolicyDownload)
+		}
+	}
+
+	//动态封堵开启
+	if param.PlugSwitch == enums.SwitchOn {
+		//windows XP和2003  不支持
+		if param.OsType == enum_software.OsTypeWinXp {
+			tasks = append(tasks, enum_task.TypePluggingDownload, enum_task.TypePlugIpBlackDownload)
+		}
+	}
+
+	//外设开机
+	if param.UsbSwitch == enums.SwitchOn {
+		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
+	}
+
+	task_service.CreateCurdFactory().AddTasksForAgent(param.AgentId, tasks, "login")
 }
