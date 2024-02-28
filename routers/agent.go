@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
@@ -58,6 +59,11 @@ func InitAgentRouter() *gin.Engine {
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
 
+		// 【需要token】中间件验证的路由
+		vAgent.Use(authorization.CheckAgentToken())
+		{
+			vAgent.POST("gettask", validatorFactory.Create(consts.ValidatorPrefix+"TaskGet"))
+		}
 	}
 	return router
 }
