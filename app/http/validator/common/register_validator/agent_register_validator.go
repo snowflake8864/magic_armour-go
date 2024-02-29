@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/validator/agent/auth"
 	"goskeleton/app/http/validator/agent/blackmail"
 	"goskeleton/app/http/validator/agent/dll"
+	"goskeleton/app/http/validator/agent/port"
 	"goskeleton/app/http/validator/agent/proc_sample"
 	"goskeleton/app/http/validator/agent/process"
 	Syslog "goskeleton/app/http/validator/agent/syslog"
@@ -97,9 +98,9 @@ func AgentRegisterValidator() {
 
 	//端口相关
 	key = consts.ValidatorPrefix + "PortWorkingPut"
-	containers.Set(key, task.Close{})
+	containers.Set(key, port.WorkingPut{})
 	key = consts.ValidatorPrefix + "PortVirtualGet"
-	containers.Set(key, task.Close{})
+	containers.Set(key, port.VirtualGet{})
 
 	// 封堵相关
 	key = consts.ValidatorPrefix + "PlugDynamicGet"
