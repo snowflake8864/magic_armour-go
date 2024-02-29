@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/http/validator/agent/agent"
 	"goskeleton/app/http/validator/agent/alarm"
 	"goskeleton/app/http/validator/agent/auth"
+	"goskeleton/app/http/validator/agent/blackmail"
 	"goskeleton/app/http/validator/agent/dll"
 	"goskeleton/app/http/validator/agent/proc_sample"
 	"goskeleton/app/http/validator/agent/process"
@@ -92,7 +93,7 @@ func AgentRegisterValidator() {
 
 	//勒索相关
 	key = consts.ValidatorPrefix + "BlackmailPolicyGet"
-	containers.Set(key, task.Close{})
+	containers.Set(key, blackmail.PolicyGet{})
 
 	//端口相关
 	key = consts.ValidatorPrefix + "PortWorkingPut"
