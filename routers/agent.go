@@ -63,8 +63,8 @@ func InitAgentRouter() *gin.Engine {
 		vAgent.Use(authorization.CheckAgentToken())
 		{
 			//终端相关
-			vAgent.Any("getconf", validatorFactory.Create(consts.ValidatorPrefix+"AgentGetConfig"))           // 下载配置信息
-			vAgent.POST("getinfo", validatorFactory.Create(consts.ValidatorPrefix+"AgentGetInfo"))            //终端信息(调试用)
+			vAgent.Any("getconf", validatorFactory.Create(consts.ValidatorPrefix+"AgentConfigGet"))           // 获取配置信息
+			vAgent.POST("getinfo", validatorFactory.Create(consts.ValidatorPrefix+"AgentInfoGet"))            //获取终端信息(调试用)
 			vAgent.Any("download", validatorFactory.Create(consts.ValidatorPrefix+"AgentUpgrade"))            //升级
 			vAgent.Any("uninstall", validatorFactory.Create(consts.ValidatorPrefix+"AgentUninstall"))         //卸载
 			vAgent.Any("gettrustdir", validatorFactory.Create(consts.ValidatorPrefix+"TrustDirGet"))          //获取信任目录

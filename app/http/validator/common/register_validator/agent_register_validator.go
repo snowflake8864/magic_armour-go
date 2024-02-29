@@ -3,6 +3,7 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/validator/agent/agent"
 	"goskeleton/app/http/validator/agent/auth"
 	"goskeleton/app/http/validator/agent/task"
 )
@@ -19,10 +20,25 @@ func AgentRegisterValidator() {
 	key = consts.ValidatorPrefix + "AuthLogin"
 	containers.Set(key, auth.Login{})
 
+	//终端相关
+	key = consts.ValidatorPrefix + "AgentConfigGet"
+	containers.Set(key, agent.ConfigGet{})
+	key = consts.ValidatorPrefix + "AgentInfoGet"
+	containers.Set(key, agent.InfoGet{})
+	key = consts.ValidatorPrefix + "AgentUpgrade"
+	containers.Set(key, agent.Upgrade{})
+	key = consts.ValidatorPrefix + "AgentUninstall"
+	containers.Set(key, agent.Uninstall{})
+	key = consts.ValidatorPrefix + "TrustDirGet"
+	containers.Set(key, agent.GetTrustDir{})
+	key = consts.ValidatorPrefix + "ErrorFileUpload"
+	containers.Set(key, agent.UploadErrorFile{})
+	key = consts.ValidatorPrefix + "HardwareMonitor"
+	containers.Set(key, agent.Uninstall{})
+
 	//任务相关
 	key = consts.ValidatorPrefix + "TaskGet"
 	containers.Set(key, task.Get{})
-	//任务相关
 	key = consts.ValidatorPrefix + "TaskClose"
 	containers.Set(key, task.Close{})
 }
