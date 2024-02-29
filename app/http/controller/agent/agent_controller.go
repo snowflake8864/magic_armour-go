@@ -5,8 +5,8 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-// AgentController 终端相关
-type AgentController struct {
+// Agent1Controller 终端相关
+type Agent1Controller struct {
 }
 
 // GetConfig 获取配置信息

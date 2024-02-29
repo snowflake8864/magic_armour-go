@@ -76,52 +76,54 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("closetask", validatorFactory.Create(consts.ValidatorPrefix+"TaskClose"))
 
 			//进程相关
-			vAgent.POST("upload/suffix/exe", validatorFactory.Create(consts.ValidatorPrefix+"ProcessUploadAll"))     //上传全部进程
-			vAgent.POST("uploadproc", validatorFactory.Create(consts.ValidatorPrefix+"ProcessUploadRunning"))        //上传运行中进程
-			vAgent.POST("autouploadprocess", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAutoUpload"))    //主动上传进程
-			vAgent.Any("getprocwl", validatorFactory.Create(consts.ValidatorPrefix+"ProcessWhiteGet"))               //下载进程白名单
-			vAgent.Any("getprocbl", validatorFactory.Create(consts.ValidatorPrefix+"ProcessBlackGet"))               //下载进程黑名单
-			vAgent.Any("module/process", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAssignGet"))         //指定进程:下载信息
-			vAgent.POST("upload/proc/module", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAssignUpload")) //指定进程:上传对应模块
-			vAgent.Any("getdraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcessSampleGet"))                //进程样本:下载信息
-			vAgent.POST("uploaddraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcessSampleUpload"))         //指定进程:上传对应模块
+			vAgent.POST("upload/suffix/exe", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAllPut"))     //上传全部进程
+			vAgent.POST("uploadproc", validatorFactory.Create(consts.ValidatorPrefix+"ProcessRunningPut"))        //上传运行中进程
+			vAgent.POST("autouploadprocess", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAutoPut"))    //主动上传进程
+			vAgent.Any("getprocwl", validatorFactory.Create(consts.ValidatorPrefix+"ProcessWhiteGet"))            //下载进程白名单
+			vAgent.Any("getprocbl", validatorFactory.Create(consts.ValidatorPrefix+"ProcessBlackGet"))            //下载进程黑名单
+			vAgent.Any("module/process", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAssignGet"))      //指定进程:下载信息
+			vAgent.POST("upload/proc/module", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAssignPut")) //指定进程:上传对应模块
 
 			//模块相关
-			vAgent.POST("upload/suffix/dll", validatorFactory.Create(consts.ValidatorPrefix+"DllUploadAll"))         //上传全部模块
-			vAgent.POST("upload/allproc/module", validatorFactory.Create(consts.ValidatorPrefix+"DllUploadRunning")) //上传运行中模块
-			vAgent.POST("auto/upload/module", validatorFactory.Create(consts.ValidatorPrefix+"DllAutoUpload"))       //主动上传模块
-			vAgent.Any("module/white/list", validatorFactory.Create(consts.ValidatorPrefix+"DllWhiteGet"))           //下载模块白名单
-			vAgent.Any("module/black/list", validatorFactory.Create(consts.ValidatorPrefix+"DllBlackGet"))           //下载模块黑名单
+			vAgent.POST("upload/suffix/dll", validatorFactory.Create(consts.ValidatorPrefix+"DllAllPut"))         //上传全部模块
+			vAgent.POST("upload/allproc/module", validatorFactory.Create(consts.ValidatorPrefix+"DllRunningPut")) //上传运行中模块
+			vAgent.POST("auto/upload/module", validatorFactory.Create(consts.ValidatorPrefix+"DllAutoPut"))       //主动上传模块
+			vAgent.Any("module/white/list", validatorFactory.Create(consts.ValidatorPrefix+"DllWhiteGet"))        //下载模块白名单
+			vAgent.Any("module/black/list", validatorFactory.Create(consts.ValidatorPrefix+"DllBlackGet"))        //下载模块黑名单
+
+			//进程或模块样本
+			vAgent.Any("getdraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleGet"))        //进程样本:下载信息
+			vAgent.POST("uploaddraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleUpload")) //指定进程:上传对应模块
 
 			//防篡改相关
-			vAgent.Any("getdirinfo", validatorFactory.Create(consts.ValidatorPrefix+"-DirGet"))           //获取查询目录
-			vAgent.POST("putdir", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirUpload"))      //上传目录信息
+			vAgent.Any("getdirinfo", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirGet"))      //获取查询目录
+			vAgent.POST("putdir", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirPut"))         //上传目录信息
 			vAgent.Any("getdirpolicy", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyGet")) //下载防篡改保护策略
 
 			//勒索相关
-			vAgent.Any("getprotect", validatorFactory.Create(consts.ValidatorPrefix+"Blackmail`PolicyGet")) //下载防篡改保护策略
+			vAgent.Any("getprotect", validatorFactory.Create(consts.ValidatorPrefix+"BlackmailPolicyGet")) //下载防篡改保护策略
 
 			//端口相关
-			vAgent.POST("upserviceport", validatorFactory.Create(consts.ValidatorPrefix+"PortWorkingUpload")) //上传业务端口列表
-			vAgent.Any("getvirtualport", validatorFactory.Create(consts.ValidatorPrefix+"PortVirtualGet"))    //下载虚开端口
+			vAgent.POST("upserviceport", validatorFactory.Create(consts.ValidatorPrefix+"PortWorkingPut")) //上传业务端口列表
+			vAgent.Any("getvirtualport", validatorFactory.Create(consts.ValidatorPrefix+"PortVirtualGet")) //下载虚开端口
 
 			// 封堵相关
 			vAgent.Any("getPlugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicGet"))    // 下载动态封堵
 			vAgent.Any("getipblacklist", validatorFactory.Create(consts.ValidatorPrefix+"PlugIpBlackGet")) // 下载封堵ip黑名单
 			vAgent.Any("getipwhitelist", validatorFactory.Create(consts.ValidatorPrefix+"PlugIpWhiteGet")) // 下载封堵ip白名单(不在使用)
-			vAgent.POST("upplugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicUpload")) // 上传动态封堵(调试用)
+			vAgent.POST("upplugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicPut"))    // 上传动态封堵(调试用)
 
 			//外设相关
-			vAgent.Any("addperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbUpload"))        // 外接设备添加
-			vAgent.Any("getwhiteperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbBlackGet")) // 获取外设信任列表
-			vAgent.Any("getblackperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbWhiteGet")) // 获取外设禁止列表
+			vAgent.Any("addperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbPut"))           // 外接设备添加
+			vAgent.Any("getwhiteperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbWhiteGet")) // 获取外设信任列表
+			vAgent.Any("getblackperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbBlackGet")) // 获取外设禁止列表
 
 			//告警相关
-			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefix+"AlarmMasterUpload")) //上传报警信息(除端口虚开外)
-			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefix+"AlarmPortUpload"))    //端口虚开告警上传
+			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefix+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
+			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefix+"AlarmPortPut"))    //端口虚开告警上传
 
 			//通讯日志相关
-			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefix+"SyslogUpload")) //端口虚开告警上传
+			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefix+"SyslogPut")) //端口虚开告警上传
 		}
 	}
 	return router
