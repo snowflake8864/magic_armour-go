@@ -20,8 +20,6 @@ var (
 	ConfigKeyPrefix    = "Config_"             //  配置文件键值缓存时，键的前缀
 	DateFormat         = "2006-01-02 15:04:05" //  设置全局日期时间格式
 	HuanshiPrivateRsa  = "LWX919787"           //幻势:私钥
-	HuanshiTokenExpire = 7200                  //幻势:口令有效期(秒)
-	TaskCacheExpire    = 24                    //任务缓存过期时间(时)
 
 	// 全局日志指针
 	ZapLog *zap.Logger
