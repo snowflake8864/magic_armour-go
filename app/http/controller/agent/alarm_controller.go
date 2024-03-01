@@ -9,14 +9,14 @@ import (
 type AlarmController struct {
 }
 
-// PutMaster 卸载回调
+// PutMaster 上传报警信息(除端口虚开外)
 func (u *AlarmController) PutMaster(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传报警信息(除端口虚开外)")
 }
 
-// PutPort 卸载回调
+// PutPort 上传端口虚开告警
 func (u *AlarmController) PutPort(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传端口虚开告警")
 }

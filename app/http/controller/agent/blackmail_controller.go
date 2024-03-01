@@ -9,8 +9,8 @@ import (
 type BlackmailController struct {
 }
 
-// PutAll 卸载回调
+// GetPolicy 下载勒索保护策略
 func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载勒索保护策略")
 }

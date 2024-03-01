@@ -9,8 +9,8 @@ import (
 type SyslogController struct {
 }
 
-// Put 卸载回调
+// Put 上传通讯日志
 func (u *SyslogController) Put(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传通讯日志")
 }

@@ -9,14 +9,14 @@ import (
 type PortController struct {
 }
 
-// PutAll 卸载回调
+// GetVirtual 下载虚开端口
 func (u *PortController) GetVirtual(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载虚开端口")
 }
 
-// PutAll 卸载回调
+// PutWorking 上传业务端口
 func (u *PortController) PutWorking(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传业务端口")
 }

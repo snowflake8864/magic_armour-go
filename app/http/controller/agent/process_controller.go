@@ -9,44 +9,44 @@ import (
 type ProcessController struct {
 }
 
-// PutAll 卸载回调
+// PutAll 上传全部进程
 func (u *ProcessController) PutAll(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传全部进程")
 }
 
-// PutAll 卸载回调
+// PutRunning 上传运行中进程
 func (u *ProcessController) PutRunning(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传运行中进程")
 }
 
-// PutAll 卸载回调
+// PutAuto 主动上传进程
 func (u *ProcessController) PutAuto(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "主动上传进程")
 }
 
-// GetWhite 卸载回调
+// GetWhite 下载进程白名单
 func (u *ProcessController) GetWhite(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载进程白名单")
 }
 
-// PutAll 卸载回调
+// GetBlack 下载进程黑名单
 func (u *ProcessController) GetBlack(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载进程黑名单")
 }
 
-// PutAll 卸载回调
+// GetAssign 指定进程:下载信息
 func (u *ProcessController) GetAssign(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "定进程:下载信息")
 }
 
-// PutAll 卸载回调
+// PutAssign 指定进程:上传对应模块
 func (u *ProcessController) PutAssign(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "指定进程:上传对应模块")
 }

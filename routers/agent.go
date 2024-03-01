@@ -92,16 +92,16 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("module/black/list", validatorFactory.Create(consts.ValidatorPrefix+"DllBlackGet"))        //下载模块黑名单
 
 			//进程或模块样本
-			vAgent.Any("getdraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleGet"))        //进程样本:下载信息
+			vAgent.Any("getdraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleGet"))        //进程样本:获取信息
 			vAgent.POST("uploaddraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleUpload")) //指定进程:上传对应模块
 
 			//防篡改相关
 			vAgent.Any("getdirinfo", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirGet"))      //获取查询目录
 			vAgent.POST("putdir", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirPut"))         //上传目录信息
-			vAgent.Any("getdirpolicy", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyGet")) //下载防篡改保护策略
+			vAgent.Any("getdirpolicy", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyGet")) //下载防篡改策略
 
 			//勒索相关
-			vAgent.Any("getprotect", validatorFactory.Create(consts.ValidatorPrefix+"BlackmailPolicyGet")) //下载防篡改保护策略
+			vAgent.Any("getprotect", validatorFactory.Create(consts.ValidatorPrefix+"BlackmailPolicyGet")) //下载勒索保护策略
 
 			//端口相关
 			vAgent.POST("upserviceport", validatorFactory.Create(consts.ValidatorPrefix+"PortWorkingPut")) //上传业务端口列表
@@ -120,10 +120,10 @@ func InitAgentRouter() *gin.Engine {
 
 			//告警相关
 			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefix+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
-			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefix+"AlarmPortPut"))    //端口虚开告警上传
+			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefix+"AlarmPortPut"))    //上传端口虚开告警
 
 			//通讯日志相关
-			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefix+"SyslogPut")) //端口虚开告警上传
+			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefix+"SyslogPut")) //上传通讯日志
 		}
 	}
 	return router

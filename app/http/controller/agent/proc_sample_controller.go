@@ -9,14 +9,14 @@ import (
 type ProcSampleController struct {
 }
 
-// PutAll 卸载回调
+// Get 获取信息
 func (u *ProcSampleController) Get(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "获取信息")
 }
 
-// PutAll 卸载回调
+// Upload 上传对应模块
 func (u *ProcSampleController) Upload(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传对应模块")
 }

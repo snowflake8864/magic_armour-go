@@ -12,11 +12,11 @@ type TaskController struct {
 // Get 获取任务
 func (u *TaskController) Get(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "获取任务")
 }
 
 // Close 关闭任务
 func (u *TaskController) Close(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "关闭任务")
 }

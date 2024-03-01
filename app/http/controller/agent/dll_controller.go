@@ -9,32 +9,32 @@ import (
 type DllController struct {
 }
 
-// PutAll 卸载回调
+// PutAll 上传全部模块
 func (u *DllController) PutAll(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传全部模块")
 }
 
-// PutAll 卸载回调
+// PutRunning 上传运行中模块
 func (u *DllController) PutRunning(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "上传运行中模块")
 }
 
-// PutAll 卸载回调
+// PutAuto 主动上传模块
 func (u *DllController) PutAuto(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "主动上传模块")
 }
 
-// GetWhite 卸载回调
+// GetWhite 下载模块白名单
 func (u *DllController) GetWhite(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载模块白名单")
 }
 
-// PutAll 卸载回调
+// GetBlack 下载模块黑名单
 func (u *DllController) GetBlack(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载模块黑名单")
 }
