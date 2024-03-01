@@ -109,9 +109,9 @@ func InitAgentRouter() *gin.Engine {
 
 			// 封堵相关
 			vAgent.Any("getPlugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicGet"))    // 下载动态封堵
+			vAgent.POST("upplugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicPut"))    // 上传动态封堵(调试用)
 			vAgent.Any("getipblacklist", validatorFactory.Create(consts.ValidatorPrefix+"PlugIpBlackGet")) // 下载封堵ip黑名单
 			vAgent.Any("getipwhitelist", validatorFactory.Create(consts.ValidatorPrefix+"PlugIpWhiteGet")) // 下载封堵ip白名单(不在使用)
-			vAgent.POST("upplugging", validatorFactory.Create(consts.ValidatorPrefix+"PlugDynamicPut"))    // 上传动态封堵(调试用)
 
 			//外设相关
 			vAgent.Any("addperipherals", validatorFactory.Create(consts.ValidatorPrefix+"UsbPut"))           // 外接设备添加

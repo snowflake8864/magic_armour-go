@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/validator/agent/auth"
 	"goskeleton/app/http/validator/agent/blackmail"
 	"goskeleton/app/http/validator/agent/dll"
+	"goskeleton/app/http/validator/agent/plug"
 	"goskeleton/app/http/validator/agent/port"
 	"goskeleton/app/http/validator/agent/proc_sample"
 	"goskeleton/app/http/validator/agent/process"
@@ -104,13 +105,13 @@ func AgentRegisterValidator() {
 
 	// 封堵相关
 	key = consts.ValidatorPrefix + "PlugDynamicGet"
-	containers.Set(key, task.Close{})
-	key = consts.ValidatorPrefix + "PlugIpBlackGet"
-	containers.Set(key, task.Close{})
-	key = consts.ValidatorPrefix + "PlugIpWhiteGet"
-	containers.Set(key, task.Close{})
+	containers.Set(key, plug.DynamicGet{})
 	key = consts.ValidatorPrefix + "PlugDynamicPut"
-	containers.Set(key, task.Close{})
+	containers.Set(key, plug.DynamicPut{})
+	key = consts.ValidatorPrefix + "PlugIpBlackGet"
+	containers.Set(key, plug.IpBlackGet{})
+	key = consts.ValidatorPrefix + "PlugIpWhiteGet"
+	containers.Set(key, plug.IpWhiteGet{})
 
 	//外设相关
 	key = consts.ValidatorPrefix + "UsbPut"
