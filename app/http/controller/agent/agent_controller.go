@@ -2,6 +2,7 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -17,8 +18,8 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 // GetInfo 获取终端信息(调试用)
 func (u *AgentController) GetInfo(ctx *gin.Context) {
-
-	response.SuccessReturnData(ctx, "获取终端信息(调试用)")
+	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
+	response.SuccessReturnData(ctx, currentAgent)
 }
 
 // Upgrade 升级

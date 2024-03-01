@@ -68,6 +68,12 @@ func ErrorTokenBaseInfo(c *gin.Context) {
 	c.Abort()
 }
 
+// ErrorTokenFail 口令错误
+func ErrorTokenFail(c *gin.Context, dataCode, wrongParam interface{}) {
+	ReturnJson(c, http.StatusUnauthorized, dataCode, consts.ValidatorParamsCheckFailMsg, wrongParam)
+	c.Abort()
+}
+
 // ErrorTokenAuthFail token 权限校验失败
 func ErrorTokenAuthFail(c *gin.Context) {
 	ReturnJson(c, http.StatusUnauthorized, http.StatusUnauthorized, my_errors.ErrorsNoAuthorization, "")
