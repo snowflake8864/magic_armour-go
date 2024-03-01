@@ -3,7 +3,7 @@
 >   2.更详细的语法参与参见官方文档：`https://godoc.org/github.com/go-playground/validator`       
 
 #### 1.我们以用户注册代码块为例进行介绍.  
->   1.[用户注册代码详情](../app/http/validator/web/users/register.go), 摘取表单参数验证部分.        
+>   1.[用户注册代码详情](../app/http/validator/platform/users/register.go), 摘取表单参数验证部分.        
 >   2.以下语法虽然看似简单，实际上已经覆盖了绝大部分常用场景的需求.    
 ```code  
 // 给出一些最常用的验证规则：

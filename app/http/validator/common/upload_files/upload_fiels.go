@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/http/controller/web"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/response"
 	"strconv"
@@ -53,6 +53,6 @@ func (u UpFiles) CheckParams(context *gin.Context) {
 	if !isPass {
 		response.Fail(context, consts.FilesUploadMimeTypeFailCode, consts.FilesUploadMimeTypeFailMsg, "")
 	} else {
-		(&web.Upload{}).StartUpload(context)
+		(&platform.Upload{}).StartUpload(context)
 	}
 }

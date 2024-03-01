@@ -52,7 +52,7 @@
 >   1.ip、端口使用本项目默认配置，即：`http://127.0.0.1:20201`，后端管理类系统通用。  
 
 ####    1.用户注册   
-> 表单参数验证器: [register](../app/http/validator/web/users/register.go) 
+> 表单参数验证器: [register](../app/http/validator/platform/users/register.go) 
 >    <font color=#FF4500>*post*，/admin/users/register   </font>
 
 参数字段|参数属性|类型|选项|默认值
@@ -69,7 +69,7 @@ pass|form-data|string|必填|goskeleton1.4
 ```  
 
 ####    2.用户登录     
-> 表单参数验证器: [login](../app/http/validator/web/users/login.go) 
+> 表单参数验证器: [login](../app/http/validator/platform/users/login.go) 
 >    <font color=#FF4500>*post*，/admin/users/login   </font>
 
 参数字段|参数属性|类型|选项|默认值
@@ -96,7 +96,7 @@ captcha_value|form-data|string|如果登录接口使用了验证码中间件，�
 ```  
 
 ####    3.根据关键词查询用户表   
-> 表单参数验证器: [index](../app/http/validator/web/users/show.go)    
+> 表单参数验证器: [index](../app/http/validator/platform/users/show.go)    
 >    <font color=#FF4500>*get*，/admin/users/index </font>  ，注意该接口需要token鉴权，请在 `header` 头添加 `Authorization` 字段值，注意：该字段的值格式：Bearer (token)之间有一个空格, 这个是行业标准，网页端显示换行，不要被误导! 
 >   CURD相关的其他接口格式与本接口基本一致，例如：/admin/users/create、/admin/users/edit、/admin/users/delete，只不过表单参数不一致。    
 
@@ -134,7 +134,7 @@ limit|form-data|int|必填|20
 ```  
 
 ####    4.新增用户  
-> 表单参数验证器: [create](../app/http/validator/web/users/store.go)  
+> 表单参数验证器: [create](../app/http/validator/platform/users/store.go)  
 >    <font color=#FF4500>*post*，/admin/users/create  </font> ，注意该接口需要token鉴权，请在 `header` 头添加 `Authorization` 字段值，注意：该字段的值格式：Bearer (token)之间有一个空格, 这个是行业标准，网页端显示换行，不要被误导!  
 
 参数字段|参数属性|类型|选项|默认值
@@ -155,7 +155,7 @@ remark|form-data|string|非必填|备注信息
 ```  
 
 ####    5.更新用户  
-> 表单参数验证器: [edit](../app/http/validator/web/users/update.go)  
+> 表单参数验证器: [edit](../app/http/validator/platform/users/update.go)  
 >    <font color=#FF4500>*post*，/admin/users/edit  </font> ，注意该接口需要token鉴权，请在 `header` 头添加 `Authorization` 字段值，注意：该字段的值格式：Bearer (token)之间有一个空格, 这个是行业标准，网页端显示换行，不要被误导!  
 
 参数字段|参数属性|类型|选项|默认值
@@ -176,7 +176,7 @@ remark|form-data|string|非必填|备注信息
 }
 ```  
 ####    6.删除用户  
-> 表单参数验证器: [delete](../app/http/validator/web/users/destroy.go)  
+> 表单参数验证器: [delete](../app/http/validator/platform/users/destroy.go)  
 >    <font color=#FF4500>*post*，/admin/users/delete  </font> ，注意该接口需要token鉴权，请在 `header` 头添加 `Authorization` 字段值，注意：该字段的值格式：Bearer (token)之间有一个空格, 这个是行业标准，网页端显示换行，不要被误导!  
 
 参数字段|参数属性|类型|选项|默认值
@@ -193,7 +193,7 @@ id|form-data|int|必填|51
 ```  
 
 ####    7.token刷新 ，请将旧token放置在header头参数直接提交更新         
-> 表单参数验证器: [refresh_token](../app/http/validator/web/users/refresh_token.go)  
+> 表单参数验证器: [refresh_token](../app/http/validator/platform/users/refresh_token.go)  
 >    <font color=#FF4500>*post*，/admin/users/refreshtoken</font>    
 
 参数字段|参数属性|类型|选项|默认值
