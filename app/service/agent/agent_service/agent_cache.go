@@ -31,7 +31,9 @@ type AgentCacheLogin struct {
 	AgentId      string `json:"agent_id"`
 	PlatformType int    `json:"platform_type"`
 	OsType       int    `json:"os_type"`
-	CreatedAt    string `json:"created_at"`
+	AgentIp      string `json:"agent_ip"`
+	NetIp        string `json:"net_ip"`
+	LoginAt      string `json:"login_at"`
 }
 
 func (crd *AgentCache) getKeyByLogin(val string) string {
@@ -44,7 +46,9 @@ func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 	loginInfo.AgentId = param.AgentId
 	loginInfo.PlatformType = param.PlatformType
 	loginInfo.OsType = param.OsType
-	loginInfo.CreatedAt = helpers.GetDatetime()
+	loginInfo.AgentIp = param.AgentIp
+	loginInfo.NetIp = param.NetIp
+	loginInfo.LoginAt = helpers.GetDatetime()
 
 	jsonByte, _ := json.Marshal(loginInfo)
 	jsonStr := string(jsonByte)
