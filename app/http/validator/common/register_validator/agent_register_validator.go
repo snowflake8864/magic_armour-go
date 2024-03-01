@@ -15,6 +15,7 @@ import (
 	Syslog "goskeleton/app/http/validator/agent/syslog"
 	"goskeleton/app/http/validator/agent/tamper"
 	"goskeleton/app/http/validator/agent/task"
+	"goskeleton/app/http/validator/agent/usb"
 )
 
 // 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -115,11 +116,11 @@ func AgentRegisterValidator() {
 
 	//外设相关
 	key = consts.ValidatorPrefix + "UsbPut"
-	containers.Set(key, task.Close{})
+	containers.Set(key, usb.Put{})
 	key = consts.ValidatorPrefix + "UsbBlackGet"
-	containers.Set(key, task.Close{})
+	containers.Set(key, usb.BlackGet{})
 	key = consts.ValidatorPrefix + "UsbWhiteGet"
-	containers.Set(key, task.Close{})
+	containers.Set(key, usb.WhiteGet{})
 
 	//告警相关
 	key = consts.ValidatorPrefix + "AlarmMasterPut"

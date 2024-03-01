@@ -12,7 +12,7 @@ type PlugController struct {
 // GetDynamic 下载动态封堵
 func (u *PlugController) GetDynamic(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "")
+	response.SuccessReturnData(ctx, "下载动态封堵")
 }
 
 // PutDynamic 上传动态封堵(调试用)

@@ -18,5 +18,5 @@ func (u *ProcSampleController) Get(ctx *gin.Context) {
 // Upload 上传对应模块
 func (u *ProcSampleController) Upload(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "上传对应模块")
+	response.SuccessReturnData(ctx, "上传")
 }

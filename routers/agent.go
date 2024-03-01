@@ -93,7 +93,7 @@ func InitAgentRouter() *gin.Engine {
 
 			//进程或模块样本
 			vAgent.Any("getdraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleGet"))        //进程样本:获取信息
-			vAgent.POST("uploaddraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleUpload")) //指定进程:上传对应模块
+			vAgent.POST("uploaddraw", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleUpload")) //进程样本:上传
 
 			//防篡改相关
 			vAgent.Any("getdirinfo", validatorFactory.Create(consts.ValidatorPrefix+"TamperDirGet"))      //获取查询目录
