@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-// Agent1Controller 终端相关
+// AgentController 终端相关
 type AgentController struct {
 }
 

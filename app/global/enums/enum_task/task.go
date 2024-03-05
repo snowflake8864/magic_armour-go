@@ -71,32 +71,3 @@ var EnumMap = map[string]map[int]string{
 		TypeAgentUninstall:            "卸载终端",
 	},
 }
-
-var EnumSlice = map[string][]int{
-	//windows xp 不支持的任务
-	"win_xp_not_support": {
-		TypePortWorkingUpload,
-		TypePortVirtualPolicyDownload,
-		TypePluggingDownload,
-		TypePlugIpBlackDownload,
-	},
-	//linux 不支持的任务
-	"linux_not_support": {
-		TypeDllRefresh,
-		TypeDllWhiteDownload,
-		TypeDllBlackDownload,
-		TypeDllSuffixIsDll,
-		TypeProcessCollectDll,
-	},
-	//在保护模式(配置中有开启保护模式)之前下发的任务
-	"before_project_mode": {
-		TypeProcessWhiteDownload,
-		TypeProcessBlackDownload,
-		TypeDllWhiteDownload,
-		TypeDllBlackDownload,
-		TypeTamperPolicyDownload,
-		TypeBlackmailPolicyDownload,
-		TypeUsbWhiteDownload,
-		TypeUsbBlackDownload,
-	},
-}
