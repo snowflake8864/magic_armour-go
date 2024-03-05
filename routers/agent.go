@@ -55,7 +55,7 @@ func InitAgentRouter() *gin.Engine {
 	})
 
 	//  创建一个接口路由组
-	vAgent := router.Group("/v1/").Use(authorization.SaveAgentAccess())
+	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(authorization.SaveAgentAccess())
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
 

@@ -44,26 +44,26 @@ func CheckAgentToken() gin.HandlerFunc {
 // SaveAgentAccess 保存终端访问信息
 func SaveAgentAccess() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		bodyLogWriter := &bodyLogWriter{body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
+		bodyLogWriter := &responseBody{body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
 		//开始时间
 		startTime := time.Now()
-
+		//上下文
 		context.Next()
 
 		go func(c *gin.Context) {
 			// 结束时间
 			endTime := time.Now()
 
+			//返回参数
 			responseBody := bodyLogWriter.body.String()
 
 			variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
-
 			variable.ZapLog.Info(fmt.Sprintf("请求时间：%s", startTime.Local().Format(variable.DateFormat)))
 			variable.ZapLog.Info(fmt.Sprintf("请求地址：%s", c.Request.RequestURI))
 			variable.ZapLog.Info(fmt.Sprintf("请求方式：%s", c.Request.Method))
 			variable.ZapLog.Info(fmt.Sprintf("请求IP：%s", c.ClientIP()))
-			//variable.ZapLog.Info(fmt.Sprintf("求数据：%s", helpers.JsonEncodeStr(c)))
+			variable.ZapLog.Info(fmt.Sprintf("请求参数：%s", GetRequestParams(c)))
 			variable.ZapLog.Info(fmt.Sprintf("响应状态：%d", bodyLogWriter.ResponseWriter.Status()))
 			variable.ZapLog.Info(fmt.Sprintf("响应数据：%s", responseBody))
 			variable.ZapLog.Info(fmt.Sprintf("请求耗时：%d ms", endTime.Sub(startTime).Milliseconds()))

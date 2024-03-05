@@ -2,7 +2,8 @@ package helpers
 
 import "encoding/json"
 
-func JsonEncodeStr(param interface{}) string {
+// JsonEncode 转换成json
+func JsonEncode(param interface{}) string {
 	jsonByte, err := json.Marshal(param)
 	if err != nil {
 		return ""
