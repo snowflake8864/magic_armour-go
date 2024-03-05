@@ -10,6 +10,7 @@ import (
 	access_log_service "goskeleton/app/service/agent/access_log"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"net/http"
 	"strings"
@@ -67,6 +68,9 @@ func SaveAgentAccess() gin.HandlerFunc {
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.body.String()
 			param.Status = enums.IsNot
+			if param.HttpCode == http.StatusOK {
+				param.Status = enums.IsYes
+			}
 
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
@@ -79,13 +83,9 @@ func SaveAgentAccess() gin.HandlerFunc {
 				param.AgentId = loginInfo.AgentId
 			}
 
-			//状态
-			if param.HttpCode == http.StatusOK {
-				param.Status = enums.IsYes
+			if !helpers.IsEmptyString(param.AgentId) {
+				access_log_service.CreateCurdFactory().Add(&param)
 			}
-
-			access_log_service.CreateCurdFactory().Add(&param)
-
 			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
 			variable.ZapLog.Info(helpers.JsonEncode(param))
 			variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")*/
