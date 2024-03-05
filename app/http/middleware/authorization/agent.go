@@ -2,12 +2,17 @@ package authorization
 
 import (
 	"bytes"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/model_agent"
+	access_log_service "goskeleton/app/service/agent/access_log"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
+	"net/http"
+	"strings"
 	"time"
 )
 
@@ -52,22 +57,38 @@ func SaveAgentAccess() gin.HandlerFunc {
 		context.Next()
 
 		go func(c *gin.Context) {
-			// 结束时间
-			endTime := time.Now()
+			var param = model_agent.AccessLogModel{}
+			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
+			param.Path = c.Request.RequestURI
+			param.NetIp = c.ClientIP()
+			param.Method = c.Request.Method
+			param.Input = GetRequestParams(c)
+			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
+			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
+			param.Resp = bodyLogWriter.body.String()
+			param.Status = enums.IsNot
 
-			//返回参数
-			responseBody := bodyLogWriter.body.String()
+			//忽略验证的请求地址
+			ignoreAuth := map[string]struct{}{
+				"/v1/auth": {},
+			}
+			if _, exist := ignoreAuth[param.Path]; exist {
+				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefix + "uid"))
+			} else {
+				loginInfo := cur_userinfo.GetCurrentAgent(c)
+				param.AgentId = loginInfo.AgentId
+			}
 
-			variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
-			variable.ZapLog.Info(fmt.Sprintf("请求时间：%s", startTime.Local().Format(variable.DateFormat)))
-			variable.ZapLog.Info(fmt.Sprintf("请求地址：%s", c.Request.RequestURI))
-			variable.ZapLog.Info(fmt.Sprintf("请求方式：%s", c.Request.Method))
-			variable.ZapLog.Info(fmt.Sprintf("请求IP：%s", c.ClientIP()))
-			variable.ZapLog.Info(fmt.Sprintf("请求参数：%s", GetRequestParams(c)))
-			variable.ZapLog.Info(fmt.Sprintf("响应状态：%d", bodyLogWriter.ResponseWriter.Status()))
-			variable.ZapLog.Info(fmt.Sprintf("响应数据：%s", responseBody))
-			variable.ZapLog.Info(fmt.Sprintf("请求耗时：%d ms", endTime.Sub(startTime).Milliseconds()))
-			variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")
+			//状态
+			if param.HttpCode == http.StatusOK {
+				param.Status = enums.IsYes
+			}
+
+			access_log_service.CreateCurdFactory().Add(&param)
+
+			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
+			variable.ZapLog.Info(helpers.JsonEncode(param))
+			variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")*/
 		}(context.Copy())
 
 	}
