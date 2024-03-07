@@ -3,6 +3,7 @@ package helpers
 import (
 	"fmt"
 	"github.com/axgle/mahonia"
+	"strconv"
 	"strings"
 )
 
@@ -21,4 +22,14 @@ func ConvertToString(src string, srcCode string, tagCode string) string {
 	fmt.Println(result)
 	return result
 
+}
+
+// String2Int 字符串转成int
+func String2Int(str string) int {
+	num, err := strconv.Atoi(str)
+	if err != nil {
+		return 0
+	} else {
+		return num
+	}
 }

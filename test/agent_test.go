@@ -61,10 +61,13 @@ func TestAgentDecrypt(t *testing.T) {
 }
 
 func TestGetMapsByAgents(t *testing.T) {
-	agentIds := []string{"win2010_test_001", "win2003_test_001", "win2004_test_001"}
-	column := "agent_id,process_switch,process_mode,dll_switch,dll_mode,tamper_switch,tamper_mode,blackmail_switch,blackmail_mode,usb_switch,usb_mode"
-	maps := agent_service.CreateCurdFactory().GetMapsByAgents(agentIds, column)
-	fmt.Println(helpers.JsonEncode(maps))
+
+	agentCurdFact := agent_service.CreateCurdFactory()
+	agentModel := agentCurdFact.GetItemByAgent("win2010_test_001", agentCurdFact.ColumnConfig(true))
+	fmt.Println(helpers.JsonEncode(agentModel))
+	fmt.Println("==========================")
+	fmt.Println(agentModel.ProcessSwitch)
+
 }
 
 func TestSetLivingByAgent(t *testing.T) {

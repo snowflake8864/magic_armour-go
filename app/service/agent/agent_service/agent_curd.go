@@ -1,7 +1,6 @@
 package agent_service
 
 import (
-	"encoding/json"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
@@ -33,9 +32,9 @@ func (crd *AgentCurd) ColumnConfig(needId bool) string {
 	}
 	column = column +
 		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
-		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode," +
-		"syslog_dns_switch, syslog_outer_switch,syslog_inner_switch,syslog_process_switch,syslog_login_switch" +
-		"outreach_alarm_switch, self_protection_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch" +
+		"blackmail_switch, blackmail_mode, port_switch, plug_switch, usb_switch, usb_mode," +
+		"syslog_dns_switch, syslog_outer_switch, syslog_inner_switch, syslog_process_switch, syslog_login_switch," +
+		"outreach_alarm_switch, self_protect_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch," +
 		"login_solve_switch, hardware_switch, hardware_time, common_time,fast_time"
 	return column
 }
@@ -54,7 +53,7 @@ func (crd *AgentCurd) ColumnSwitchAndModeForAlarm(needId bool) string {
 
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	column := "agent_id,dept_id,platform_type, os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
+	column := "agent_id,dept_id,platform_type,os_type,process_switch,dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
 	agentModel := crd.GetItemByAgent(param.AgentId, column)
 	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
@@ -62,19 +61,19 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 	if helpers.IsEmptyString(agentModel.AgentId) {
 		plugPortConfig := enum_plug.PlugPortConfig{}
 		plugPortConfig.Format()
-		jsonPlugPort, _ := json.Marshal(plugPortConfig)
+		jsonPlugPort := helpers.JsonEncode(plugPortConfig)
 
 		plugLoginConfig := enum_plug.PlugLoginConfig{}
 		plugLoginConfig.Format()
-		jsonPlugLogin, _ := json.Marshal(plugLoginConfig)
+		jsonPlugLogin := helpers.JsonEncode(plugLoginConfig)
 
 		loginSolveConfig := enum_login_solve.LoginSolveConfig{}
 		loginSolveConfig.Format()
-		jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
+		jsonLoginSolve := helpers.JsonEncode(loginSolveConfig)
 
 		grantConfig := enum_grant.AgentGrantConfig{}
 		grantConfig.Default()
-		jsonGrantConfig, _ := json.Marshal(grantConfig)
+		jsonGrant := helpers.JsonEncode(grantConfig)
 
 		param.IsOnline = enums.IsYes
 		param.OnlineAt = nowDate
@@ -86,7 +85,7 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.ContactName = ""
 		param.ContactTel = ""
 		param.Remark = ""
-		param.GrantConfig = string(jsonGrantConfig)
+		param.GrantConfig = jsonGrant
 		param.ProcessSwitch = enums.SwitchOff
 		param.ProcessMode = enum_agent.ModeMonitor
 		param.DllSwitch = enums.SwitchOff
@@ -97,24 +96,24 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.BlackmailMode = enum_agent.ModeMonitor
 		param.PortSwitch = enums.SwitchOff
 		param.PlugSwitch = enums.SwitchOff
-		param.PlugPortConfig = string(jsonPlugPort)
-		param.PlugLoginConfig = string(jsonPlugLogin)
+		param.PlugPortConfig = jsonPlugPort
+		param.PlugLoginConfig = jsonPlugLogin
 		param.UsbSwitch = enums.SwitchOff
 		param.UsbMode = enum_agent.ModeMonitor
 		param.SyslogDnsSwitch = enums.SwitchOff
 		param.SyslogOuterSwitch = enums.SwitchOff
 		param.SyslogInnerSwitch = enums.SwitchOff
 		param.SyslogProcessSwitch = enums.SwitchOff
-		param.SyslogLoginSwitch = enums.SwitchOff
+		param.SyslogLoginSwitch = enums.SwitchOn
 		param.OutreachAlarmSwitch = enums.SwitchOff
-		param.SelfProtectionSwitch = enums.SwitchOn
+		param.SelfProtectSwitch = enums.SwitchOn
 		param.KernelUpgradeSwitch = enums.SwitchOn
 		param.CommonTime = enum_agent.HeartbeatCommonTime
 		param.FastTime = enum_agent.HeartbeatFastTime
-		param.AutoWhiteSwitch = enums.SwitchOff
-		param.AlarmAiSwitch = enums.SwitchOff
+		param.AutoWhiteSwitch = enums.SwitchOn
+		param.AlarmAiSwitch = enums.SwitchOn
 		param.LoginSolveSwitch = enums.SwitchOff
-		param.LoginSolveConfig = string(jsonLoginSolve)
+		param.LoginSolveConfig = jsonLoginSolve
 		param.HardwareSwitch = enums.SwitchOn
 		param.HardwareTime = enum_agent.HardwareTime
 		param.CreatedAt = nowDate

@@ -17,66 +17,66 @@ func CreateAgentFactory() *AgentModel {
 
 type AgentModel struct {
 	model.BaseModel
-	AgentId              string `json:"agent_id" gorm:"primaryKey"`
-	HostName             string `json:"host_name"`
-	MacId                string `json:"mac_id"`
-	AgentIp              string `json:"agent_ip"`
-	NetIp                string `json:"net_ip"`
-	OsName               string `json:"os_name"`
-	PlatformType         int    `json:"platform_type"`
-	OsType               int    `json:"os_type"`
-	MemSize              string `json:"mem_size"`
-	HdSize               string `json:"hd_size"`
-	Cpu                  string `json:"cpu"`
-	AgentStartAt         string `json:"agent_start_at"`
-	OsStartAt            string `json:"os_start_at"`
-	Ver                  string `json:"ver"`
-	Auth                 string `json:"auth"`
-	IsOnline             int    `json:"is_online"`
-	OnlineAt             string `json:"online_at"`
-	LiveAt               string `json:"live_at"`
-	UpgradeVer           string `json:"upgrade_ver"`
-	AdminId              int    `json:"admin_id"`
-	DeptId               int    `json:"dept_id"`
-	AgentTypeId          int    `json:"agent_type_id"`
-	Alias                string `json:"alias"`
-	ContactName          string `json:"contact_name"`
-	ContactTel           string `json:"contact_tel"`
-	Remark               string `json:"remark"`
-	GrantConfig          string `json:"grant_config"`
-	ProcessSwitch        int    `json:"process_switch"`
-	ProcessMode          int    `json:"process_mode"`
-	DllSwitch            int    `json:"dll_switch"`
-	DllMode              int    `json:"dll_mode"`
-	TamperSwitch         int    `json:"tamper_switch"`
-	TamperMode           int    `json:"tamper_mode"`
-	BlackmailSwitch      int    `json:"blackmail_switch"`
-	BlackmailMode        int    `json:"blackmail_mode"`
-	PortSwitch           int    `json:"port_switch"`
-	PlugSwitch           int    `json:"plug_switch"`
-	PlugPortConfig       string `json:"plug_port_config"`
-	PlugLoginConfig      string `json:"plug_login_config"`
-	UsbSwitch            int    `json:"usb_switch"`
-	UsbMode              int    `json:"usb_mode"`
-	SyslogDnsSwitch      int    `json:"syslog_dns_switch"`
-	SyslogOuterSwitch    int    `json:"syslog_outer_switch"`
-	SyslogInnerSwitch    int    `json:"syslog_inner_switch"`
-	SyslogProcessSwitch  int    `json:"syslog_process_switch"`
-	SyslogLoginSwitch    int    `json:"syslog_login_switch"`
-	OutreachAlarmSwitch  int    `json:"outreach_alarm_switch"`
-	SelfProtectionSwitch int    `json:"self_protection_switch"`
-	KernelUpgradeSwitch  int    `json:"kernel_upgrade_switch"`
-	CommonTime           int    `json:"common_time"`
-	FastTime             int    `json:"fast_time"`
-	AutoWhiteSwitch      int    `json:"auto_white_switch"`
-	AlarmAiSwitch        int    `json:"alarm_ai_switch"`
-	LoginSolveSwitch     int    `json:"login_solve_switch"`
-	LoginSolveConfig     string `json:"login_solve_config"`
-	HardwareSwitch       int    `json:"hardware_switch"`
-	HardwareTime         int    `json:"hardware_time"`
-	ProcessFlushAt       string `json:"process_flush_at"`
-	DllFlushAt           string `json:"dll_flush_at"`
-	CreatedAt            string `json:"created_at"`
+	AgentId             string `json:"agent_id" gorm:"primaryKey"`
+	HostName            string `json:"host_name"`
+	MacId               string `json:"mac_id"`
+	AgentIp             string `json:"agent_ip"`
+	NetIp               string `json:"net_ip"`
+	OsName              string `json:"os_name"`
+	PlatformType        int    `json:"platform_type"`
+	OsType              int    `json:"os_type"`
+	MemSize             string `json:"mem_size"`
+	HdSize              string `json:"hd_size"`
+	Cpu                 string `json:"cpu"`
+	AgentStartAt        string `json:"agent_start_at"`
+	OsStartAt           string `json:"os_start_at"`
+	Ver                 string `json:"ver"`
+	Auth                string `json:"auth"`
+	IsOnline            int    `json:"is_online"`
+	OnlineAt            string `json:"online_at"`
+	LiveAt              string `json:"live_at"`
+	UpgradeVer          string `json:"upgrade_ver"`
+	AdminId             int    `json:"admin_id"`
+	DeptId              int    `json:"dept_id"`
+	AgentTypeId         int    `json:"agent_type_id"`
+	Alias               string `json:"alias"`
+	ContactName         string `json:"contact_name"`
+	ContactTel          string `json:"contact_tel"`
+	Remark              string `json:"remark"`
+	GrantConfig         string `json:"grant_config"`
+	ProcessSwitch       int    `json:"process_switch"`
+	ProcessMode         int    `json:"process_mode"`
+	DllSwitch           int    `json:"dll_switch"`
+	DllMode             int    `json:"dll_mode"`
+	TamperSwitch        int    `json:"tamper_switch"`
+	TamperMode          int    `json:"tamper_mode"`
+	BlackmailSwitch     int    `json:"blackmail_switch"`
+	BlackmailMode       int    `json:"blackmail_mode"`
+	PortSwitch          int    `json:"port_switch"`
+	PlugSwitch          int    `json:"plug_switch"`
+	PlugPortConfig      string `json:"plug_port_config"`
+	PlugLoginConfig     string `json:"plug_login_config"`
+	UsbSwitch           int    `json:"usb_switch"`
+	UsbMode             int    `json:"usb_mode"`
+	SyslogDnsSwitch     int    `json:"syslog_dns_switch"`
+	SyslogOuterSwitch   int    `json:"syslog_outer_switch"`
+	SyslogInnerSwitch   int    `json:"syslog_inner_switch"`
+	SyslogProcessSwitch int    `json:"syslog_process_switch"`
+	SyslogLoginSwitch   int    `json:"syslog_login_switch"`
+	OutreachAlarmSwitch int    `json:"outreach_alarm_switch"`
+	SelfProtectSwitch   int    `json:"self_protect_switch"`
+	KernelUpgradeSwitch int    `json:"kernel_upgrade_switch"`
+	CommonTime          int    `json:"common_time"`
+	FastTime            int    `json:"fast_time"`
+	AutoWhiteSwitch     int    `json:"auto_white_switch"`
+	AlarmAiSwitch       int    `json:"alarm_ai_switch"`
+	LoginSolveSwitch    int    `json:"login_solve_switch"`
+	LoginSolveConfig    string `json:"login_solve_config"`
+	HardwareSwitch      int    `json:"hardware_switch"`
+	HardwareTime        int    `json:"hardware_time"`
+	ProcessFlushAt      string `json:"process_flush_at"`
+	DllFlushAt          string `json:"dll_flush_at"`
+	CreatedAt           string `json:"created_at"`
 }
 
 // 表名
@@ -135,7 +135,7 @@ func (m *AgentModel) CreateTable() bool {
 			syslog_process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '通信日志:进程启动开关',
 			syslog_login_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '通信日志:登录日志开关',
 			outreach_alarm_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '外联告警:开关',
-			self_protection_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自我保护:开关',
+			self_protect_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自我保护:开关',
 			kernel_upgrade_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '内核升级:开关',
 			common_time int(11) NOT NULL DEFAULT '60' COMMENT ' 心跳间隔:普通(秒)',
 			fast_time int(11) NOT NULL DEFAULT '5' COMMENT '心跳间隔:快速(秒)',
@@ -214,10 +214,12 @@ func (m *AgentModel) GetItemById(agentId, column string) (*AgentModel, error) {
 		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id = ?"
 		return tx.Model(m).Raw(st, agentId)
 	})
+	fmt.Println(sql)
 	result := m.Raw(sql).First(m)
 	if result.Error == nil {
 		return m, nil
 	} else {
+		fmt.Println(result.Error)
 		return nil, result.Error
 	}
 }
@@ -227,7 +229,6 @@ func (m *AgentModel) GetItemsByIds(agentIds []string, column string) (items []Ag
 		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id IN ?"
 		return tx.Model(m).Raw(st, agentIds)
 	})
-	fmt.Println(sql)
 	result := m.Raw(sql).Find(&items)
 	if result.Error == nil {
 		return items, nil
