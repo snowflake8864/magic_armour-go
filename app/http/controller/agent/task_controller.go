@@ -109,8 +109,8 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 // 验证终端是否有保护模式
 func (u *TaskController) checkAgentHasProject(agentId string) bool {
-	column := "agent_id,process_switch,process_mode,dll_switch,dll_mode,tamper_switch,tamper_mode,blackmail_switch,blackmail_mode,usb_switch,usb_mode"
-	agentModel := agent_service.CreateCurdFactory().GetItemByAgent(agentId, column)
+	agentCurdFact := agent_service.CreateCurdFactory()
+	agentModel := agentCurdFact.GetItemByAgent(agentId, agentCurdFact.ColumnSwitchAndModeForAlarm(true))
 	if agentModel.ProcessSwitch == enums.SwitchOn && agentModel.ProcessMode == enum_agent.ModeProject {
 		return true
 	}

@@ -25,9 +25,36 @@ type AgentCurd struct {
 	masterModel *model_agent.AgentModel
 }
 
+// ColumnConfig 字段:全部配置相关
+func (crd *AgentCurd) ColumnConfig(needId bool) string {
+	column := ""
+	if needId {
+		column = "agent_id,"
+	}
+	column = column +
+		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
+		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode," +
+		"syslog_dns_switch, syslog_outer_switch,syslog_inner_switch,syslog_process_switch,syslog_login_switch" +
+		"outreach_alarm_switch, self_protection_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch" +
+		"login_solve_switch, hardware_switch, hardware_time, common_time,fast_time"
+	return column
+}
+
+// ColumnSwitchAndModeForAlarm 字段:告警需求的开关和模式
+func (crd *AgentCurd) ColumnSwitchAndModeForAlarm(needId bool) string {
+	column := ""
+	if needId {
+		column = "agent_id,"
+	}
+	column = column +
+		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
+		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode"
+	return column
+}
+
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	column := "agent_id,dept_id,platform_type,os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
+	column := "agent_id,dept_id,platform_type, os_type, process_switch, dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
 	agentModel := crd.GetItemByAgent(param.AgentId, column)
 	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
