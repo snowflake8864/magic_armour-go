@@ -2,6 +2,7 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
@@ -172,6 +173,11 @@ func (u *TaskController) hasProjectModeBefore(task int) bool {
 
 // Close 关闭任务
 func (u *TaskController) Close(ctx *gin.Context) {
+	taskType := int(ctx.GetFloat64(consts.ValidatorPrefix + "tasklist"))
+	types := []int{taskType}
+
+	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
+	go task_service.CreateCurdFactory().CloseTasks(currentAgent.AgentId, types, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "关闭任务")
 

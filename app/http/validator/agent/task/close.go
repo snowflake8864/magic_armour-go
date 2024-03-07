@@ -9,6 +9,7 @@ import (
 )
 
 type Close struct {
+	Tasklist int `form:"tasklist" json:"tasklist" binding:"required"`
 }
 
 func (n Close) CheckParams(context *gin.Context) {
@@ -25,7 +26,7 @@ func (n Close) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[agent task Close]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&agent.TaskController{}).Get(extraAddBindDataContext)
+		(&agent.TaskController{}).Close(extraAddBindDataContext)
 	}
 
 }
