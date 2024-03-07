@@ -55,7 +55,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
-	isOk, data := agent_service.CreateLoginFactory().RegisterOrLogin(&param)
+	isOk, data := agent_service.CreateCurdFactory().RegisterOrLogin(&param)
 	if !isOk {
 		response.FailSimplify(ctx, data)
 	}

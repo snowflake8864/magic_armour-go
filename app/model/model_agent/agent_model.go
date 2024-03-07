@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -188,6 +189,7 @@ func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("agent_id=?", agentId).Updates(updates)
 	})
+	fmt.Println(sql)
 	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
 		return true
@@ -208,7 +210,7 @@ func (m *AgentModel) UpdateByIds(agentIds []string, updates map[string]interface
 	}
 }
 
-func (m *AgentModel) GetOneById(agentId, column string) (*AgentModel, error) {
+func (m *AgentModel) GetItemById(agentId, column string) (*AgentModel, error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id = ?"
 		return tx.Model(m).Raw(st, agentId)
@@ -216,6 +218,20 @@ func (m *AgentModel) GetOneById(agentId, column string) (*AgentModel, error) {
 	result := m.Raw(sql).First(m)
 	if result.Error == nil {
 		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *AgentModel) GetItemsByIds(agentIds []string, column string) (items []AgentModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id IN ?"
+		return tx.Model(m).Raw(st, agentIds)
+	})
+	fmt.Println(sql)
+	result := m.Raw(sql).Find(&items)
+	if result.Error == nil {
+		return items, nil
 	} else {
 		return nil, result.Error
 	}

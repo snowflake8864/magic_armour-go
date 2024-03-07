@@ -4,6 +4,8 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/md5_encrypt"
+	"strconv"
 )
 
 func CreateCurdFactory() *TaskCurd {
@@ -37,6 +39,7 @@ func (crd *TaskCurd) AddTasksForAgent(agentId string, types []int, remark string
 		if _, has := unfinishedMap[val]; !has {
 			caches = append(caches, val)
 			inserts = append(inserts, model_agent.TaskModel{
+				Id:        md5_encrypt.MD5(agentId + strconv.Itoa(val) + nowDate),
 				AgentId:   agentId,
 				Type:      val,
 				Remark:    remark,
@@ -56,4 +59,22 @@ func (crd *TaskCurd) AddTasksForAgent(agentId string, types []int, remark string
 	cacheFact.AddUnfinished(agentId, caches)
 	//入库
 	crd.masterModel.InsertBatch(&inserts)
+}
+
+// CloseTasks 关闭任务
+func (crd *TaskCurd) CloseTasks(agentId string, types []int, netIp string) {
+	CreateCacheFactory().RemUnfinished(agentId, types)
+
+	conditions := map[string]interface{}{
+		"agent_id": agentId,
+		"type":     types,
+		"status":   enum_task.StatusStart,
+	}
+	updates := map[string]interface{}{
+		"status":       enum_task.StatusFinish,
+		"net_ip":       netIp,
+		"completed_at": helpers.GetDatetime(),
+	}
+	//入库
+	crd.masterModel.UpdateByCondition(conditions, updates)
 }

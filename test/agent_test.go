@@ -51,15 +51,22 @@ func TestAgentLogin(t *testing.T) {
 	//data, _ := json.Marshal(param)
 	fmt.Println(param)
 	fmt.Println("RegisterOrLogin---------------------------------------------")
-	isOk, data := agent_service.CreateLoginFactory().RegisterOrLogin(&param)
+	isOk, data := agent_service.CreateCurdFactory().RegisterOrLogin(&param)
 	fmt.Println(isOk)
 	fmt.Println(data)
 }
 func TestAgentDecrypt(t *testing.T) {
-	d := agent_service.CreateCacheFactory().DecryptByLogin("c94a8b121a3686e25685d59c64b33015", true)
+	d, _ := agent_service.CreateCacheFactory().DecryptByLogin("c94a8b121a3686e25685d59c64b33015", true)
 	fmt.Println(d.AgentId)
 }
 
-func TestHostName(t *testing.T) {
+func TestGetMapsByAgents(t *testing.T) {
+	agentIds := []string{"win2010_test_001", "win2003_test_001", "win2004_test_001"}
+	column := "agent_id,process_switch,process_mode,dll_switch,dll_mode,tamper_switch,tamper_mode,blackmail_switch,blackmail_mode,usb_switch,usb_mode"
+	maps := agent_service.CreateCurdFactory().GetMapsByAgents(agentIds, column)
+	fmt.Println(helpers.JsonEncode(maps))
+}
 
+func TestSetLivingByAgent(t *testing.T) {
+	agent_service.CreateCurdFactory().SetLivingByAgent("win2004_test_001")
 }
