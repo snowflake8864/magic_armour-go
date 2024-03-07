@@ -33,15 +33,15 @@ func CheckAgentToken() gin.HandlerFunc {
 		}
 		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
 		loginInfo, err := agent_service.CreateCacheFactory().DecryptByLogin(headerParams.Authorization, true)
+		// token验证通过，同时绑定在请求上下文
+		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
+		context.Set(key, loginInfo)
+
 		if err != nil {
 			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, err.Error())
 			return
 		}
 		//variable.ZapLog.Info("loginInfo:" + loginInfo.AgentId)
-
-		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
-		// token验证通过，同时绑定在请求上下文
-		context.Set(key, loginInfo)
 
 		context.Next()
 	}

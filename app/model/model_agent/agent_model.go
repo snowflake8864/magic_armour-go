@@ -189,7 +189,6 @@ func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("agent_id=?", agentId).Updates(updates)
 	})
-	fmt.Println(sql)
 	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
 		return true
