@@ -49,12 +49,12 @@ const (
 	HuanshiAlarmSwitchSelf      string = "huanshi_alarm_switch_self"      //幻势:告警开关-自保
 
 	SystemDeviceId        string = "system_device_id"         //系统:设备标识码
-	SystemPlatformUrl     string = "system_platform_url"      //系统:平台访问地址
-	SystemPlatformIp      string = "system_platform_ip"       //系统:平台IP地址
-	SystemPlatformPort    string = "system_platform_port"     //系统:平台开放端口
-	SystemAgentUrl        string = "system_agent_url"         //系统:终端使用的访问地址
-	SystemAgentIp         string = "system_agent_ip"          //系统:终端使用的IP地址
-	SystemAgentPort       string = "system_agent_port"        //系统:终端使用的开放端口
+	SystemPlatformProto   string = "system_platform_proto"    //系统:平台访问协议
+	SystemPlatformIp      string = "system_platform_ip"       //系统:平台访问IP
+	SystemPlatformPort    string = "system_platform_port"     //系统:平台访问端口
+	SystemAgentProto      string = "system_agent_proto"       //系统:终端访问协议
+	SystemAgentIp         string = "system_agent_ip"          //系统:终端访问IP
+	SystemAgentPort       string = "system_agent_port"        //系统:终端使访问端口
 	SystemGrantAutoSwitch string = "system_grant_auto_switch" //系统:自动授权开关
 	SystemAlarmExpire     string = "system_alarm_expire"      //系统:告警失效时间(天)，最大180
 	SystemSyslogExpire    string = "system_syslog_expire"     //系统:通信日志保留时长(天),最大180
@@ -108,10 +108,10 @@ var EnumSlice = map[string][]string{
 	},
 	ModuleSystem: {
 		SystemDeviceId,
-		SystemPlatformUrl,
+		SystemPlatformProto,
 		SystemPlatformIp,
 		SystemPlatformPort,
-		SystemAgentUrl,
+		SystemAgentProto,
 		SystemAgentIp,
 		SystemAgentPort,
 		SystemGrantAutoSwitch,

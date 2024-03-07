@@ -32,7 +32,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//数据字典
 	dictIds := []string{
 		enum_dictionary.AgentLogSendProto,
-		enum_dictionary.SystemAgentUrl,
+		enum_dictionary.SystemAgentProto,
 		enum_dictionary.SystemAgentIp,
 		enum_dictionary.SystemAgentPort,
 	}
@@ -40,7 +40,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 	mapConf := make(map[string]interface{})
 	//服务器地址
-	mapConf["serveripport"] = mapDict[enum_dictionary.SystemAgentUrl]
+	mapConf["serveripport"] = mapDict[enum_dictionary.SystemAgentProto] + "://" + mapDict[enum_dictionary.SystemAgentIp] + ":" + mapDict[enum_dictionary.SystemAgentPort]
 	//暂时无使用
 	mapConf["logipport"] = ""
 	mapConf["logproto"] = helpers.String2Int(mapDict[enum_dictionary.AgentLogSendProto])

@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
@@ -29,6 +30,8 @@ func TestUpdate(t *testing.T) {
 }
 
 func TestRebuildCache(t *testing.T) {
+	model_platform.CreateDictionaryFactory().InitData()
+
 	fact := dictionary_service.CreateCacheFactory()
 	fmt.Println("------------------------------")
 	fmt.Println(fact.Rebuild())
