@@ -1,7 +1,6 @@
 package model_agent
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -214,12 +213,10 @@ func (m *AgentModel) GetItemById(agentId, column string) (*AgentModel, error) {
 		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id = ?"
 		return tx.Model(m).Raw(st, agentId)
 	})
-	fmt.Println(sql)
 	result := m.Raw(sql).First(m)
 	if result.Error == nil {
 		return m, nil
 	} else {
-		fmt.Println(result.Error)
 		return nil, result.Error
 	}
 }

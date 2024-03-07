@@ -77,7 +77,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		if len(unfinishedTasks) > 0 || hasConfig {
 			hasUnfinishedTask = true
 		}
-
+		
 		//设置心跳并判断是否需要追加修改配置的任务
 		appendConfig := taskCacheFact.SetHeartbeat(currentAgent.AgentId, hasUnfinishedTask)
 		//需追加配置 && 这次没有配置任务
@@ -104,6 +104,9 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		go taskCurdFact.CloseTasks(currentAgent.AgentId, notSupportTasks, ctx.ClientIP())
 	}
 
+	if unfinishedTasks == nil {
+		unfinishedTasks = []int{}
+	}
 	response.SuccessReturnData(ctx, gin.H{"tasklist": unfinishedTasks})
 }
 
