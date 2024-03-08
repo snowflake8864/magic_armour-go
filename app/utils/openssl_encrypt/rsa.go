@@ -2,6 +2,7 @@ package openssl_encrypt
 
 import (
 	goEncryptRsa "github.com/wumansgy/goEncrypt/rsa"
+	"strings"
 )
 
 func CreateRsaFactory() *rsaCrypt {
@@ -72,6 +73,7 @@ func (a *rsaCrypt) EncryptToBase64(data string) (result string, err error) {
 
 // DecryptByBase64 解密 EncryptToBase64
 func (a *rsaCrypt) DecryptByBase64(data string) (string, error) {
+	data = strings.Replace(data, " ", "+", -1)
 	plainText, err := goEncryptRsa.RsaDecryptByBase64(data, a.base64PriKey2048)
 	if err != nil {
 		return "", err

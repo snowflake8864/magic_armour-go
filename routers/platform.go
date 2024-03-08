@@ -59,15 +59,27 @@ func InitPlatformRouter() *gin.Engine {
 	{
 		vPlatform.Use(authorization.RequestParams).Use(authorization.SavePlatformOperate())
 		{
-			//安装认证
+			//登录认证
 			auth := vPlatform.Group("auth/")
 			{
 				auth.POST("checkUser", validatorFactory.Create(consts.ValidatorPrefix+"AuthCheckUser"))
 				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefix+"AuthGetSliderCode"))
 				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefix+"AuthSendSms"))
-				auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
+				auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"AuthNormalLogin"))
 				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogout"))
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefix+"AuthHsLogin"))
+			}
+
+			// 【需要token】中间件验证的路由
+			vPlatform.Use(authorization.CheckPlatformPToken())
+			{
+				//首页
+				auth := vPlatform.Group("home/")
+				{
+					auth.POST("getAgentStat", func(context *gin.Context) {
+						context.String(http.StatusOK, "Platform接口: "+consts.VersionNumber)
+					})
+				}
 			}
 		}
 	}

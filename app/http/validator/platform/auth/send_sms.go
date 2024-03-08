@@ -3,7 +3,7 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/http/controller/agent"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
@@ -26,7 +26,7 @@ func (n SendSms) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[platform auth logon]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&agent.AuthController{}).Login(extraAddBindDataContext)
+		(&platform.AuthController{}).SendSms(extraAddBindDataContext)
 	}
 
 }

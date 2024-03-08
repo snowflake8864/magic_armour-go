@@ -22,7 +22,7 @@ func PlatformRegisterValidator() {
 	containers.Set(key, auth.GetSliderCode{})
 	key = consts.ValidatorPrefix + "AuthSendSms"
 	containers.Set(key, auth.SendSms{})
-	key = consts.ValidatorPrefix + "AuthLogin"
+	key = consts.ValidatorPrefix + "AuthNormalLogin"
 	containers.Set(key, auth.Login{})
 	key = consts.ValidatorPrefix + "AuthLogout"
 	containers.Set(key, auth.Logout{})

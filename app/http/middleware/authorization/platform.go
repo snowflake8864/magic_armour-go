@@ -12,7 +12,6 @@ import (
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -76,7 +75,6 @@ func SavePlatformOperate() gin.HandlerFunc {
 				"/v1/auth": {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
-				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefix + "uid"))
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAgent(c)
 				param.AgentId = loginInfo.AgentId
@@ -84,9 +82,9 @@ func SavePlatformOperate() gin.HandlerFunc {
 
 			if !helpers.IsEmptyString(param.AgentId) {
 			}
-			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
+			variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
 			variable.ZapLog.Info(helpers.JsonEncode(param))
-			variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")*/
+			variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")
 		}(context.Copy())
 
 	}

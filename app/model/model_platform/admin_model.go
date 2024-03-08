@@ -35,9 +35,28 @@ type AdminModel struct {
 }
 
 // 表名
-
 func (m *AdminModel) TableName() string {
 	return "p_admins"
+}
+
+func (m *AdminModel) Columns() []string {
+	return []string{
+		"id",
+		"username",
+		"role_id",
+		"email",
+		"phone",
+		"phone_login_check",
+		"pw_error_num",
+		"last_login_at",
+		"is_default",
+		"is_root",
+		"is_visible",
+		"is_agent",
+		"create_id",
+		"create_name",
+		"created_at",
+	}
 }
 
 func (m *AdminModel) CreateTable() bool {
@@ -96,5 +115,32 @@ func (m *AdminModel) InitData() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *AdminModel) GetItemById(id int) (*AdminModel, error) {
+	result := m.Select(m.Columns()).Where("id=?", id).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *AdminModel) GetItemByUsername(username string) (*AdminModel, error) {
+	result := m.Select(m.Columns()).Where("username=?", username).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (*AdminModel, error) {
+	result := m.Select(m.Columns()).Where("username=?", username).Where("pw=?", pw).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
 	}
 }
