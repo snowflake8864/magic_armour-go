@@ -33,8 +33,8 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "AuthController GetSliderCode")
 }
 
-// Login 登录
-func (u *AuthController) Login(ctx *gin.Context) {
+// NormalLogin 登录
+func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "AuthController Login")
 }
 

@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_platform"
-	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
@@ -30,7 +30,7 @@ func CheckPlatformPToken() gin.HandlerFunc {
 			return
 		}
 		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
-		loginInfo, err := agent_service.CreateCacheFactory().DecryptByLogin(headerParams.Authorization, true)
+		loginInfo, err := admin_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, true)
 		// token验证通过，同时绑定在请求上下文
 		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
 		context.Set(key, loginInfo)
@@ -39,7 +39,7 @@ func CheckPlatformPToken() gin.HandlerFunc {
 			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, err.Error())
 			return
 		}
-		//variable.ZapLog.Info("loginInfo:" + loginInfo.AgentId)
+		variable.ZapLog.Info("loginInfo:" + loginInfo.Username)
 
 		context.Next()
 	}
@@ -72,16 +72,21 @@ func SavePlatformOperate() gin.HandlerFunc {
 
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
-				"/v1/auth": {},
+				"/platform/auth/checkUser":     {},
+				"/platform/auth/getSliderCode": {},
+				"/platform/auth/sendSms":       {},
+				"/platform/auth/normalLogin":   {},
+				"/platform/auth/logout":        {},
+				"/platform/auth/hsLogin":       {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
+
 			} else {
-				loginInfo := cur_userinfo.GetCurrentAgent(c)
-				param.AgentId = loginInfo.AgentId
+				loginInfo := cur_userinfo.GetCurrentAdmin(c)
+				param.CreateId = loginInfo.AdminId
+				param.CreateName = loginInfo.Username
 			}
 
-			if !helpers.IsEmptyString(param.AgentId) {
-			}
 			variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
 			variable.ZapLog.Info(helpers.JsonEncode(param))
 			variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")

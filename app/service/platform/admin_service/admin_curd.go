@@ -1,4 +1,4 @@
-package agent_service
+package admin_service
 
 import (
 	"goskeleton/app/model/model_platform"

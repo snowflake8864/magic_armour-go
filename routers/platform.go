@@ -65,7 +65,7 @@ func InitPlatformRouter() *gin.Engine {
 				auth.POST("checkUser", validatorFactory.Create(consts.ValidatorPrefix+"AuthCheckUser"))
 				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefix+"AuthGetSliderCode"))
 				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefix+"AuthSendSms"))
-				auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"AuthNormalLogin"))
+				auth.POST("normalLogin", validatorFactory.Create(consts.ValidatorPrefix+"AuthNormalLogin"))
 				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogout"))
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefix+"AuthHsLogin"))
 			}
