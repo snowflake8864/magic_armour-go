@@ -134,15 +134,26 @@ func TestRsaEncrypt(t *testing.T) {
 
 func TestRsaCrypt(t *testing.T) {
 	rsaFct := openssl_encrypt.CreateRsaFactory()
-	encrypted, err := rsaFct.EncryptToBase64("root")
-	assert.Nil(t, err)
-	fmt.Println("加密:")
-	fmt.Println(encrypted)
 
-	decrypted, err := rsaFct.DecryptByBase64(encrypted)
-	assert.Nil(t, err)
-	fmt.Println("解密:")
-	fmt.Println(decrypted)
+	strList := []string{
+		"root",
+		"veda@2022",
+		"admin",
+		"root2020",
+	}
+
+	for _, val := range strList {
+		fmt.Println("加密:" + val)
+		encrypted, err := rsaFct.EncryptToBase64("root")
+		assert.Nil(t, err)
+		fmt.Println(encrypted)
+
+		decrypted, err := rsaFct.DecryptByBase64(encrypted)
+		assert.Nil(t, err)
+		fmt.Println("解密:")
+		fmt.Println(decrypted)
+	}
+
 }
 
 func TestAesCrypt(t *testing.T) {
