@@ -6,7 +6,9 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
+	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
 	"net/http"
 )
@@ -55,12 +57,18 @@ func InitPlatformRouter() *gin.Engine {
 	//  创建一个接口路由组
 	vPlatform := router.Group("/platform/")
 	{
-		//安全认证
-		auth := vPlatform.Group("auth/")
+		vPlatform.Use(authorization.RequestParams).Use(authorization.SavePlatformOperate())
 		{
-			auth.POST("getSliderCode/", func(context *gin.Context) {
-				context.String(http.StatusOK, "Platform接口: "+consts.VersionNumber)
-			})
+			//安装认证
+			auth := vPlatform.Group("auth/")
+			{
+				auth.POST("checkUser", validatorFactory.Create(consts.ValidatorPrefix+"AuthCheckUser"))
+				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefix+"AuthGetSliderCode"))
+				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefix+"AuthSendSms"))
+				auth.POST("login", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogin"))
+				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefix+"AuthLogout"))
+				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefix+"AuthHsLogin"))
+			}
 		}
 	}
 	return router
