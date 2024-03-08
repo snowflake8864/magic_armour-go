@@ -1,5 +1,6 @@
 package authorization
 
+import "C"
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
@@ -80,7 +81,18 @@ func SavePlatformOperate() gin.HandlerFunc {
 				"/platform/auth/hsLogin":       {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
-
+				/*//获取参数中登录名
+				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefix + "name"))
+				if helpers.IsEmptyString(param.CreateName) {
+					return
+				}
+				//获取管理员
+				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
+				if helpers.IsEmptyString(adminModel.Username) {
+					return
+				}
+				param.CreateId = adminModel.Id
+				*/
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAdmin(c)
 				param.CreateId = loginInfo.AdminId
