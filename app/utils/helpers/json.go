@@ -11,8 +11,8 @@ func JsonEncode(param interface{}) string {
 	return string(jsonByte)
 }
 
-// JsonToMap json还原成map
-func JsonToMap(jsonStr string) map[string]interface{} {
+// Json2Map json还原成map
+func Json2Map(jsonStr string) map[string]interface{} {
 	var data map[string]interface{}
 
 	// 进行反序列化操作
@@ -23,8 +23,8 @@ func JsonToMap(jsonStr string) map[string]interface{} {
 	return data
 }
 
-// JsonToStruct json还原Struct
+// Json2Struct json还原Struct
 // 用法：err := JsonToStruct([]byte(jsonStr), &person);println("Name: ", person.Name)
-func JsonToStruct(data []byte, val interface{}) error {
+func Json2Struct(data []byte, val interface{}) error {
 	return json.Unmarshal(data, &val)
 }

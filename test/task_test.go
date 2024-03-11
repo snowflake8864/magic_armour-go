@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/ali_sms"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
 )
@@ -15,4 +16,8 @@ func TestCloseTask(t *testing.T) {
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(unfinishedTasks), cap(unfinishedTasks), unfinishedTasks)
 
 	task_service.CreateCurdFactory().CloseTasks("20240108000001_init_paltforma' or '2'='2", unfinishedTasks, "168.10.1.1")
+}
+
+func TestSendSms(t *testing.T) {
+	ali_sms.SendAuthCode("18210632349", "6541")
 }

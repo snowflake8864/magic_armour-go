@@ -12,8 +12,8 @@ func StringIsEmpty(s string) bool {
 	return len(strings.TrimSpace(s)) == 0
 }
 
-// ConvertToString 字符串转码
-func ConvertToString(src string, srcCode string, tagCode string) string {
+// StringConvertCoder	 字符串转码
+func StringConvertCoder(src string, srcCode string, tagCode string) string {
 	srcCoder := mahonia.NewDecoder(srcCode)
 	srcResult := srcCoder.ConvertString(src)
 	tagCoder := mahonia.NewDecoder(tagCode)

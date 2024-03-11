@@ -6,6 +6,7 @@ require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
 	github.com/IBM/sarama v1.42.1
 	github.com/Shopify/sarama v1.38.1 // indirect
+	github.com/aliyun/alibaba-cloud-sdk-go v1.62.690 // indirect
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 // indirect
 	github.com/bsm/sarama-cluster v2.1.15+incompatible // indirect
 	github.com/deckarep/golang-set v1.8.0 // indirect
