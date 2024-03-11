@@ -46,7 +46,13 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 
 // GetSliderCode 获取滑块码
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController GetSliderCode")
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	if helpers.StringIsEmpty(name) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+	code := admin_service.CreateAuthFactory().GenerateBySlider(name)
+	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
 // NormalLogin 登录

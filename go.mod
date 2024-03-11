@@ -17,6 +17,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/gomodule/redigo v1.8.9
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/qifengzhang007/goCurl v1.4.0
 	github.com/segmentio/kafka-go v0.4.47

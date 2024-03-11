@@ -98,7 +98,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 				//获取管理员
 				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
 				if helpers.StringIsEmpty(adminModel.Username) {
-					variable.ZapLog.Error("SavePlatformOperate param name is empty,NAME: IP: " + param.NetIp)
+					variable.ZapLog.Error("SavePlatformOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
 					return
 				}
 				param.CreateId = adminModel.Id

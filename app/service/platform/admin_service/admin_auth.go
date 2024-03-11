@@ -3,26 +3,25 @@ package admin_service
 import (
 	"encoding/json"
 	"errors"
-	"goskeleton/app/model/model_platform"
+	"github.com/google/uuid"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/redis_factory"
+	"strings"
 )
 
 func CreateAuthFactory() *AdminAuth {
 	return &AdminAuth{
-		masterModel:   model_platform.CreateAdminFactory(),
 		redisClient:   redis_factory.GetOneRedisClient(),
 		tokenPrefix:   "admin_auth_token_",
 		lockingPrefix: "admin_auth_locking_",
 		sliderPrefix:  "admin_auth_slider_",
-		sliderExpire:  300,
+		sliderExpire:  180,
 		smsPrefix:     "admin_auth_sms_",
-		smsExpire:     180,
+		smsExpire:     300,
 	}
 }
 
 type AdminAuth struct {
-	masterModel   *model_platform.AdminModel
 	redisClient   *redis_factory.RedisClient
 	tokenPrefix   string
 	lockingPrefix string
@@ -52,6 +51,15 @@ func (crd *AdminAuth) keyBySlider(val string) string {
 
 func (crd *AdminAuth) keyBySms(val string) string {
 	return crd.smsPrefix + val
+}
+
+// GenerateBySlider  生成滑块码
+func (crd *AdminAuth) GenerateBySlider(username string) (code string) {
+	code = uuid.New().String()
+	code = strings.Replace(code, "-", "", -1)
+	crd.redisClient.SetEx(crd.keyBySlider(username), code, crd.sliderExpire)
+
+	return
 }
 
 // LoginByPw 密码登录
