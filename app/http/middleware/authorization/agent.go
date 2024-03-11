@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_agent"
-	access_log_service "goskeleton/app/service/agent/access_log"
+	accessLogService "goskeleton/app/service/agent/access_log"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
@@ -84,7 +84,7 @@ func SaveAgentAccess() gin.HandlerFunc {
 			}
 
 			if !helpers.IsEmptyString(param.AgentId) {
-				access_log_service.CreateCurdFactory().Add(&param)
+				accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
 			variable.ZapLog.Info(helpers.JsonEncode(param))

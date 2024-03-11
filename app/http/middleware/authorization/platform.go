@@ -1,6 +1,5 @@
 package authorization
 
-import "C"
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
@@ -11,6 +10,7 @@ import (
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 	"net/http"
 	"time"
@@ -22,22 +22,22 @@ type PlatformParams struct {
 
 // CheckPlatformPToken 检查平台token完整性、有效性中间件
 func CheckPlatformPToken() gin.HandlerFunc {
-	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
+	variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
 	return func(context *gin.Context) {
-		headerParams := AgentParams{}
+		headerParams := PlatformParams{}
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
+			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
 			return
 		}
-		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
+		variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
 		loginInfo, err := admin_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, true)
 		// token验证通过，同时绑定在请求上下文
 		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
 		context.Set(key, loginInfo)
 
 		if err != nil {
-			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, err.Error())
+			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, err.Error())
 			return
 		}
 		variable.ZapLog.Info("loginInfo:" + loginInfo.Username)
@@ -81,7 +81,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 				"/platform/auth/hsLogin":       {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
-				/*//获取参数中登录名
+				//获取参数中登录名
 				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefix + "name"))
 				if helpers.IsEmptyString(param.CreateName) {
 					return
@@ -92,7 +92,6 @@ func SavePlatformOperate() gin.HandlerFunc {
 					return
 				}
 				param.CreateId = adminModel.Id
-				*/
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAdmin(c)
 				param.CreateId = loginInfo.AdminId
