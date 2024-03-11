@@ -31,6 +31,11 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 		response.FailSimplify(ctx, "用户名或密码错误")
 		return
 	}
+	if admin_service.CreateAuthFactory().IsLocking(name) {
+		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+		return
+	}
+
 	phoneCheck := 0
 	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.PhoneLoginCheck == enums.IsYes {
 		phoneCheck = 1
@@ -41,7 +46,30 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 
 // SendSms 发送短信
 func (u *AuthController) SendSms(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController SendSms")
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	if helpers.StringIsEmpty(name) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
+	if adminModel.Id == 0 {
+		response.FailSimplify(ctx, "用户名或密码错误")
+		return
+	}
+	if admin_service.CreateAuthFactory().IsLocking(name) {
+		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+		return
+	}
+	if helpers.StringIsEmpty(adminModel.Phone) {
+		response.FailRoutine(ctx, -97, "没有添加手机号码")
+		return
+	}
+	if adminModel.PhoneLoginCheck == enums.IsNot {
+		response.FailRoutine(ctx, -98, "没有开启双因子验证")
+		return
+	}
+	code := admin_service.CreateAuthFactory().GenerateBySms(adminModel.Phone)
+	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
 // GetSliderCode 获取滑块码
@@ -49,6 +77,10 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
 	if helpers.StringIsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+	if admin_service.CreateAuthFactory().IsLocking(name) {
+		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
 		return
 	}
 	code := admin_service.CreateAuthFactory().GenerateBySlider(name)

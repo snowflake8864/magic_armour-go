@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
+	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/redis_factory"
 	"strings"
@@ -60,6 +61,21 @@ func (crd *AdminAuth) GenerateBySlider(username string) (code string) {
 	crd.redisClient.SetEx(crd.keyBySlider(username), code, crd.sliderExpire)
 
 	return
+}
+
+// GenerateBySms  生成短信验证码
+func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
+	code = helpers.IntRandom2Str(1000, 9999)
+	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
+
+	go ali_sms.SendAuthCode(phone, code)
+	return code
+}
+
+// IsLocking  是否锁定中
+func (crd *AdminAuth) IsLocking(username string) (isOk bool) {
+	isOk, _ = crd.redisClient.Exists(crd.keyByLocking(username))
+	return isOk
 }
 
 // LoginByPw 密码登录
