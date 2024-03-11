@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -26,13 +27,14 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+	if admin_service.CreateAuthFactory().IsLocking(name) {
+		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+		return
+	}
+
 	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
 	if adminModel.Id == 0 {
 		response.FailSimplify(ctx, "用户名或密码错误")
-		return
-	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
 		return
 	}
 
@@ -51,15 +53,17 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+	if admin_service.CreateAuthFactory().IsLocking(name) {
+		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+		return
+	}
+
 	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
 	if adminModel.Id == 0 {
 		response.FailSimplify(ctx, "用户名或密码错误")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
-		return
-	}
+
 	if helpers.StringIsEmpty(adminModel.Phone) {
 		response.FailRoutine(ctx, -97, "没有添加手机号码")
 		return
@@ -89,7 +93,25 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 
 // NormalLogin 登录
 func (u *AuthController) NormalLogin(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController Login")
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "pw"))
+	sliderCode := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "sliderCode"))
+	smsCode := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "pw"))
+	variable.ZapLog.Debug("name: " + name)
+	variable.ZapLog.Debug("pw: " + pw)
+	variable.ZapLog.Debug("sliderCode: " + sliderCode)
+	variable.ZapLog.Debug("smsCode: " + smsCode)
+
+	if helpers.StringIsEmpty(name) || helpers.StringIsEmpty(pw) || helpers.StringIsEmpty(sliderCode) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+
+	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // HsLogin 幻势登录

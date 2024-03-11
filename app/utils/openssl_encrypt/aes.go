@@ -2,6 +2,7 @@ package openssl_encrypt
 
 import (
 	goEncryptAes "github.com/wumansgy/goEncrypt/aes"
+	"strings"
 )
 
 func CreateAesFactory() *AesCrypt {
@@ -27,6 +28,7 @@ func (a *AesCrypt) CbcEncryptToBase64(data string) (result string, err error) {
 
 // CbcDecryptByBase64 解密 CbcEncryptToBase64
 func (a *AesCrypt) CbcDecryptByBase64(data string) (string, error) {
+	data = strings.Replace(data, " ", "+", -1)
 	plainText, err := goEncryptAes.AesCbcDecryptByBase64(data, a.key, a.iv)
 	if err != nil {
 		return "", err

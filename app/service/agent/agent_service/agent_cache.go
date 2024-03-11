@@ -50,8 +50,7 @@ func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 	loginInfo.NetIp = param.NetIp
 	loginInfo.LoginAt = helpers.GetDatetime()
 
-	jsonByte, _ := json.Marshal(loginInfo)
-	jsonStr := string(jsonByte)
+	jsonStr := helpers.JsonEncode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
 
 	crd.redisClient.SetEx(crd.getKeyByLogin(token), jsonStr, crd.authExpire)

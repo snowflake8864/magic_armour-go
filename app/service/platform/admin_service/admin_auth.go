@@ -4,9 +4,16 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/model/model_platform"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/md5_encrypt"
+	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
+	"strconv"
 	"strings"
 )
 
@@ -14,6 +21,7 @@ func CreateAuthFactory() *AdminAuth {
 	return &AdminAuth{
 		redisClient:   redis_factory.GetOneRedisClient(),
 		tokenPrefix:   "admin_auth_token_",
+		tokenExpire:   1800,
 		lockingPrefix: "admin_auth_locking_",
 		sliderPrefix:  "admin_auth_slider_",
 		sliderExpire:  180,
@@ -25,6 +33,7 @@ func CreateAuthFactory() *AdminAuth {
 type AdminAuth struct {
 	redisClient   *redis_factory.RedisClient
 	tokenPrefix   string
+	tokenExpire   int
 	lockingPrefix string
 	sliderPrefix  string
 	sliderExpire  int
@@ -35,6 +44,8 @@ type AdminAuth struct {
 type AdminCacheLogin struct {
 	AdminId  int64  `json:"admin_id"`
 	Username string `json:"username"`
+	RoleId   int64  `json:"role_id"`
+	IsRoot   int    `json:"is_root"`
 	LoginAt  string `json:"login_at"`
 }
 
@@ -63,7 +74,16 @@ func (crd *AdminAuth) GenerateBySlider(username string) (code string) {
 	return
 }
 
-// GenerateBySms  生成短信验证码
+// checkBySlider  验证滑块码
+func (crd *AdminAuth) checkBySlider(username, code string) bool {
+	cacheCode := crd.redisClient.Get(crd.keyBySlider(username))
+	if cacheCode == code {
+		return true
+	}
+	return false
+}
+
+// GenerateBySms  生成短信码
 func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
 	code = helpers.IntRandom2Str(1000, 9999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
@@ -72,15 +92,115 @@ func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
 	return code
 }
 
+// checkBySms  验证短信码
+func (crd *AdminAuth) checkBySms(phone, code string) bool {
+	cacheCode := crd.redisClient.Get(crd.keyBySms(phone))
+	if cacheCode == code {
+		return true
+	}
+	return false
+}
+
+// deleteBySms  删除短信码
+func (crd *AdminAuth) deleteBySms(phone string) {
+	crd.redisClient.Del(crd.keyBySms(phone))
+}
+
 // IsLocking  是否锁定中
 func (crd *AdminAuth) IsLocking(username string) (isOk bool) {
 	isOk, _ = crd.redisClient.Exists(crd.keyByLocking(username))
 	return isOk
 }
 
-// LoginByPw 密码登录
-func (crd *AdminAuth) LoginByPw(username, pw string) {
+// setLocking  设置锁定中
+func (crd *AdminAuth) setLocking(username string, second int) (isOk bool) {
+	isOk, _ = crd.redisClient.SetEx(crd.keyByLocking(username), "veda", second)
+	return isOk
+}
 
+// LoginByPw 密码登录
+func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
+	if !crd.checkBySlider(username, slider) {
+		return nil, -88, errors.New("滑块不正确")
+	}
+	if !crd.IsLocking(username) {
+		return nil, -1, errors.New("用户已经被锁定，请稍后在试")
+	}
+
+	curdFact := CreateCurdFactory()
+	adminModel := curdFact.GetItemByUsername(username)
+	if adminModel.Id == 0 {
+		return nil, -1, errors.New("用户名或密码错误")
+	}
+
+	//短信验证
+	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.PhoneLoginCheck == enums.IsYes {
+		if helpers.StringIsEmpty(sms) {
+			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
+		}
+		if !crd.checkBySms(adminModel.Phone, sms) {
+			return nil, -99, errors.New("短信验证码不一致")
+		}
+		crd.deleteBySms(adminModel.Phone)
+	}
+
+	//用户名和密码不一致
+	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	if !curdFact.HasByUsernameAndPw(username, pw) {
+		//错误次数加1
+		curdFact.IncrPwErrorNum(adminModel.Id)
+
+		//数据字典
+		dictIds := []string{
+			enum_dictionary.AdminLoginErrorRemind,
+			enum_dictionary.AdminLoginExpire,
+			enum_dictionary.AdminLoginLockDuration,
+			enum_dictionary.AdminLoginErrorMax,
+		}
+		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+		//达到登录错误最大次数
+		diff := helpers.String2Int(mapDict[enum_dictionary.AdminLoginErrorMax]) - adminModel.PwErrorNum - 1
+		if diff <= 0 {
+			//设置锁定
+			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.AdminLoginLockDuration])*60)
+			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
+				mapDict[enum_dictionary.AdminLoginLockDuration] + "分钟，请稍后在试")
+		} else if diff < helpers.String2Int(mapDict[enum_dictionary.AdminLoginErrorRemind]) {
+			return result, -2, errors.New("用户名或密码错误, 还有" +
+				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.AdminLoginLockDuration] + "分钟")
+		} else {
+			return nil, -2, errors.New("用户名或密码错误")
+		}
+	}
+
+	curdFact.loginSuccess(adminModel.Id)
+
+	result = crd.loginAfter(adminModel)
+
+	return result, 0, nil
+}
+
+// loginAfter
+func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) (result map[string]interface{}) {
+	loginInfo := AdminCacheLogin{
+		AdminId:  adminModel.Id,
+		Username: adminModel.Username,
+		IsRoot:   adminModel.IsRoot,
+		RoleId:   adminModel.RoleId,
+		LoginAt:  helpers.GetDatetime(),
+	}
+
+	//缓存
+	jsonStr := helpers.JsonEncode(loginInfo)
+	token := md5_encrypt.MD5(jsonStr)
+	crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
+
+	//
+	result["username"] = adminModel.Username
+	result["is_root"] = adminModel.IsRoot
+	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
+	result["token"] = encryptToken
+	return result
 }
 
 // DecryptByLogin 登录信息解密
