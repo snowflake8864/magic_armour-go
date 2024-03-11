@@ -61,7 +61,7 @@ func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 // DecryptByLogin 登录信息解密
 func (crd *AgentCache) DecryptByLogin(token string, isDelay bool) (loginInfo AgentCacheLogin, err error) {
 	jsonStr := crd.redisClient.Get(crd.getKeyByLogin(token))
-	if helpers.IsEmptyString(jsonStr) {
+	if helpers.StringIsEmpty(jsonStr) {
 		return AgentCacheLogin{}, errors.New("token expired")
 	}
 	err = json.Unmarshal([]byte(jsonStr), &loginInfo)

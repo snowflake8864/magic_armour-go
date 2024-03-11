@@ -42,8 +42,8 @@ func (m *OperateLogModel) CreateTable() bool {
 		(	
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			path varchar(128)  NOT NULL DEFAULT '' COMMENT '路径',
-			module int(11) NOT NULL DEFAULT '0' COMMENT '业务模块',
-			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
+			module varchar(32) NOT NULL DEFAULT '' COMMENT '业务模块',
+			net_ip varchar(128) NOT NULL DEFAULT '' COMMENT '通讯ip',
 			input text NULL COMMENT '请求参数',
 			agent_id varchar(128) NOT NULL DEFAULT ''COMMENT '终端id(agent.id)',
 			method varchar(8) NULL COMMENT '请求方法',

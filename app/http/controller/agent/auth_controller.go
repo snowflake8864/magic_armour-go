@@ -35,12 +35,12 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.AdminId = int(ctx.GetFloat64(consts.ValidatorPrefix + "userid"))
 	param.NetIp = ctx.ClientIP()
 
-	if helpers.IsEmptyString(param.AgentIp) {
+	if helpers.StringIsEmpty(param.AgentIp) {
 		param.AgentIp = param.NetIp
 	}
 
 	//兼容处理，参考bug 6181
-	if helpers.IsEmptyString(param.OsName) {
+	if helpers.StringIsEmpty(param.OsName) {
 		if param.PlatformType == enum_software.PlatformTypeWindows {
 			param.OsName = "windows"
 		} else {

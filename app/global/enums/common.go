@@ -10,8 +10,8 @@ const (
 
 )
 
-// GET1stIsStrReturnSliceOfStr 如是第一级是string,返回对应的string类型切片
-func GET1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {
+// Get1stIsStrReturnSliceOfStr 如是第一级是string,返回对应的string类型切片
+func Get1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {
 	val, ok := s[first]
 	if ok == false {
 		return nil
@@ -19,8 +19,8 @@ func GET1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {
 	return val
 }
 
-// GET1stIsStrReturnSliceOfInt 如是第一级是string,返回对应的int类型切片
-func GET1stIsStrReturnSliceOfInt(first string, s map[string][]int) []int {
+// Get1stIsStrReturnSliceOfInt 如是第一级是string,返回对应的int类型切片
+func Get1stIsStrReturnSliceOfInt(first string, s map[string][]int) []int {
 	val, ok := s[first]
 	if ok == false {
 		return nil
@@ -28,8 +28,8 @@ func GET1stIsStrReturnSliceOfInt(first string, s map[string][]int) []int {
 	return val
 }
 
-// GET1stIsStrAnd2ndIsIntReturnStr 如是第一级是string串且第二级是int,返回对应的string
-func GET1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[int]string) string {
+// Get1stIsStrAnd2ndIsIntReturnStr 如是第一级是string串且第二级是int,返回对应的string
+func Get1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[int]string) string {
 	val, ok := s[first][second]
 	if ok == false {
 		return ""
@@ -37,8 +37,8 @@ func GET1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[
 	return val
 }
 
-// GET1stIsStrAnd2ndIsIntReturnInt 如是第一级是string串且第二级是int,返回对应的string
-func GET1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[int]int) int {
+// Get1stIsStrAnd2ndIsIntReturnInt 如是第一级是string串且第二级是int,返回对应的string
+func Get1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[int]int) int {
 	val, ok := s[first][second]
 	if ok == false {
 		return 0
@@ -46,8 +46,8 @@ func GET1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[
 	return val
 }
 
-// GET1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回对应的[]int
-func GET1stIsStrAnd2ndIsIntReturnSliceInt(first string, second int, s map[string]map[int][]int) []int {
+// Get1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回对应的[]int
+func Get1stIsStrAnd2ndIsIntReturnSliceInt(first string, second int, s map[string]map[int][]int) []int {
 	val, ok := s[first][second]
 	if ok == false {
 		return nil

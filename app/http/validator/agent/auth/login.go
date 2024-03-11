@@ -36,28 +36,28 @@ func (n Login) CheckParams(context *gin.Context) {
 		return
 	}
 
-	if helpers.IsEmptyString(n.Uuid) {
+	if helpers.StringIsEmpty(n.Uuid) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Uuid] not empty")
 		return
 	}
-	if helpers.IsEmptyString(n.MacId) {
+	if helpers.StringIsEmpty(n.MacId) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [MacId] not empty")
 		return
 	}
-	if helpers.IsEmptyString(n.Ver) {
+	if helpers.StringIsEmpty(n.Ver) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Ver] not empty")
 		return
 	}
-	if helpers.IsEmptyString(n.Auth) {
+	if helpers.StringIsEmpty(n.Auth) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Auth] error")
 		return
 	}
-	if helpers.IsEmptyString(n.UserId) {
+	if helpers.StringIsEmpty(n.UserId) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [UserId] error")
 		return
 	}
 
-	if label := enums.GET1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); helpers.IsEmptyString(label) {
+	if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); helpers.StringIsEmpty(label) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [PlatformType] error")
 		return
 	}

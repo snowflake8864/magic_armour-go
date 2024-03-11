@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/admin_service"
@@ -71,6 +72,13 @@ func SavePlatformOperate() gin.HandlerFunc {
 				param.Status = enums.IsYes
 			}
 
+			//是否需要记录
+			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
+			if helpers.StringIsEmpty(param.Module) {
+				variable.ZapLog.Error("SavePlatformOperate path error: " + param.Path)
+				return
+			}
+
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
 				"/platform/auth/checkUser":     {},
@@ -83,12 +91,14 @@ func SavePlatformOperate() gin.HandlerFunc {
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
 				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefix + "name"))
-				if helpers.IsEmptyString(param.CreateName) {
+				if helpers.StringIsEmpty(param.CreateName) {
+					variable.ZapLog.Error("SavePlatformOperate param name is empty, IP: " + param.NetIp)
 					return
 				}
 				//获取管理员
 				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
-				if helpers.IsEmptyString(adminModel.Username) {
+				if helpers.StringIsEmpty(adminModel.Username) {
+					variable.ZapLog.Error("SavePlatformOperate param name is empty,NAME: IP: " + param.NetIp)
 					return
 				}
 				param.CreateId = adminModel.Id

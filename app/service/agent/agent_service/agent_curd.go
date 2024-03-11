@@ -58,7 +58,7 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
 
-	if helpers.IsEmptyString(agentModel.AgentId) {
+	if helpers.StringIsEmpty(agentModel.AgentId) {
 		plugPortConfig := enum_plug.PlugPortConfig{}
 		plugPortConfig.Format()
 		jsonPlugPort := helpers.JsonEncode(plugPortConfig)

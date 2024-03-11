@@ -28,12 +28,12 @@ func TestAgentLogin(t *testing.T) {
 	param.Auth = "123123"
 	param.AdminId = 1
 	param.NetIp = "192.168.4.6"
-	if helpers.IsEmptyString(param.AgentIp) {
+	if helpers.StringIsEmpty(param.AgentIp) {
 		param.AgentIp = param.NetIp
 	}
 
 	//兼容处理，参考bug 6181
-	if helpers.IsEmptyString(param.OsName) {
+	if helpers.StringIsEmpty(param.OsName) {
 		if param.PlatformType == enum_software.PlatformTypeWindows {
 			param.OsName = "windows"
 		} else {

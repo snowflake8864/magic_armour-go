@@ -62,7 +62,7 @@ func (crd *AdminAuth) LoginByPw(username, pw string) {
 // DecryptByLogin 登录信息解密
 func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo AdminCacheLogin, err error) {
 	jsonStr := crd.redisClient.Get(crd.keyByToken(token))
-	if helpers.IsEmptyString(jsonStr) {
+	if helpers.StringIsEmpty(jsonStr) {
 		return AdminCacheLogin{}, errors.New("token expired")
 	}
 	err = json.Unmarshal([]byte(jsonStr), &loginInfo)

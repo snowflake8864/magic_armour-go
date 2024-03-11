@@ -83,7 +83,7 @@ func SaveAgentAccess() gin.HandlerFunc {
 				param.AgentId = loginInfo.AgentId
 			}
 
-			if !helpers.IsEmptyString(param.AgentId) {
+			if !helpers.StringIsEmpty(param.AgentId) {
 				accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")

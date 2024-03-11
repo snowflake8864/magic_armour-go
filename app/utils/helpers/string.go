@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-// IsEmptyString 字符串去掉空格后是否为空, 空返回true
-func IsEmptyString(s string) bool {
+// StringIsEmpty 字符串去掉空格后是否为空, 空返回true
+func StringIsEmpty(s string) bool {
 	return len(strings.TrimSpace(s)) == 0
 }
 
