@@ -1,12 +1,12 @@
 package model_platform
 
 import (
-	"encoding/json"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // 创建 数据字典表
@@ -52,17 +52,18 @@ func (m *DictionaryModel) CreateTable() bool {
 }
 
 func (m *DictionaryModel) InitData() bool {
+
 	plugPortConfig := enum_plug.PlugPortConfig{}
 	plugPortConfig.Format()
-	jsonPlugPort, _ := json.Marshal(plugPortConfig)
+	jsonPlugPort := helpers.JsonEncode(plugPortConfig)
 
 	plugLoginConfig := enum_plug.PlugLoginConfig{}
 	plugLoginConfig.Format()
-	jsonPlugLogin, _ := json.Marshal(plugLoginConfig)
+	jsonPlugLogin := helpers.JsonEncode(plugLoginConfig)
 
 	loginSolveConfig := enum_login_solve.LoginSolveConfig{}
 	loginSolveConfig.Format()
-	jsonLoginSolve, _ := json.Marshal(loginSolveConfig)
+	jsonLoginSolve := helpers.JsonEncode(loginSolveConfig)
 
 	//
 	sql := `INSERT IGNORE INTO ` + m.TableName() + `(module, id, val, remark) VALUES`
@@ -76,9 +77,9 @@ func (m *DictionaryModel) InitData() bool {
 
 			('agent', '` + enum_dictionary.AgentLogSendProto + `', '2','终端:日志发送协议(1udp 2tcp)'),
 			('agent', '` + enum_dictionary.AgentSaveAccessLog + `', '0','终端：是否保存访问日志(0|1)'),
-			('agent', '` + enum_dictionary.AgentGlobalPlugPortConfig + `', '` + string(jsonPlugPort) + `','终端:全局封堵-端口虚开配置'),
-			('agent', '` + enum_dictionary.AgentGlobalPlugLoginConfig + `', '` + string(jsonPlugLogin) + `','终端：全局封堵-登录破解配置'),
-			('agent', '` + enum_dictionary.AgentGlobalLoginSolveConfig + `', '` + string(jsonLoginSolve) + `','终端：全局登录口令暴力破解告警配置'),
+			('agent', '` + enum_dictionary.AgentGlobalPlugPortConfig + `', '` + jsonPlugPort + `','终端:全局封堵-端口虚开配置'),
+			('agent', '` + enum_dictionary.AgentGlobalPlugLoginConfig + `', '` + jsonPlugLogin + `','终端：全局封堵-登录破解配置'),
+			('agent', '` + enum_dictionary.AgentGlobalLoginSolveConfig + `', '` + jsonLoginSolve + `','终端：全局登录口令暴力破解告警配置'),
 
 			('threaten', '` + enum_dictionary.ThreatenSwitch + `', '0','威胁情报:开关'),
 			('threaten', '` + enum_dictionary.ThreatenUrl + `', '','威胁情报:服务器地址'),

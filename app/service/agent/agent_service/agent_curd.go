@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_grant"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
@@ -12,6 +13,7 @@ import (
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/department_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/grant_service"
 	"goskeleton/app/utils/helpers"
 )
@@ -59,18 +61,34 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 	isAllocateDept := true //是否分配组织架构
 
 	if helpers.StringIsEmpty(agentModel.AgentId) {
-		plugPortConfig := enum_plug.PlugPortConfig{}
-		plugPortConfig.Format()
-		jsonPlugPort := helpers.JsonEncode(plugPortConfig)
+		//新终端默认使用全局配置
+		dictIds := []string{
+			enum_dictionary.AgentGlobalPlugPortConfig,
+			enum_dictionary.AgentGlobalPlugLoginConfig,
+			enum_dictionary.AgentGlobalLoginSolveConfig,
+		}
+		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+		var isExist bool
+		jsonPlugPort, isExist := mapDict[enum_dictionary.AgentGlobalPlugPortConfig]
+		if !isExist || helpers.StringIsEmpty(jsonPlugPort) {
+			plugPortConfig := enum_plug.PlugPortConfig{}
+			plugPortConfig.Format()
+			jsonPlugPort = helpers.JsonEncode(plugPortConfig)
+		}
+		jsonPlugLogin, isExist := mapDict[enum_dictionary.AgentGlobalPlugLoginConfig]
+		if !isExist || helpers.StringIsEmpty(jsonPlugLogin) {
+			plugLoginConfig := enum_plug.PlugLoginConfig{}
+			plugLoginConfig.Format()
+			jsonPlugLogin = helpers.JsonEncode(plugLoginConfig)
+		}
+		jsonLoginSolve, isExist := mapDict[enum_dictionary.AgentGlobalPlugLoginConfig]
+		if !isExist || helpers.StringIsEmpty(jsonPlugLogin) {
+			loginSolveConfig := enum_login_solve.LoginSolveConfig{}
+			loginSolveConfig.Format()
+			jsonLoginSolve = helpers.JsonEncode(loginSolveConfig)
+		}
 
-		plugLoginConfig := enum_plug.PlugLoginConfig{}
-		plugLoginConfig.Format()
-		jsonPlugLogin := helpers.JsonEncode(plugLoginConfig)
-
-		loginSolveConfig := enum_login_solve.LoginSolveConfig{}
-		loginSolveConfig.Format()
-		jsonLoginSolve := helpers.JsonEncode(loginSolveConfig)
-
+		//授权配置
 		grantConfig := enum_grant.AgentGrantConfig{}
 		grantConfig.Default()
 		jsonGrant := helpers.JsonEncode(grantConfig)
