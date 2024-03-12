@@ -74,11 +74,10 @@ func InitPlatformRouter() *gin.Engine {
 			vPlatform.Use(authorization.CheckPlatformPToken())
 			{
 				//首页
-				auth := vPlatform.Group("home/")
+				home := vPlatform.Group("home/")
 				{
-					auth.POST("getAgentStat", func(context *gin.Context) {
-						context.String(http.StatusOK, "Platform接口: "+consts.VersionNumber)
-					})
+					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefix+"HomeGetAgentStatistic"))
+					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefix+"HomeGetAlarmStatistic"))
 				}
 			}
 		}

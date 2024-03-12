@@ -2,6 +2,7 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/utils/response"
 )
 
 // HomeController 首页相关
@@ -9,7 +10,11 @@ type HomeController struct {
 	ControllerBase
 }
 
-// Login 登录
-func (u *HomeController) Login(ctx *gin.Context) {
+func (u *HomeController) GetAgentStatistic(ctx *gin.Context) {
+	loginInfo := u.GetLogin(ctx)
+	response.SuccessReturnData(ctx, loginInfo)
+}
 
+func (u *HomeController) GetAlarmStatistic(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "GetAlarmStatistic")
 }
