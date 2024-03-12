@@ -68,3 +68,12 @@ func (m *OperateLogModel) CreateTable() bool {
 		return false
 	}
 }
+
+func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
+	result := m.Create(s)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}

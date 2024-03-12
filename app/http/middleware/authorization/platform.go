@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/service/platform/operate_log_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -23,7 +24,7 @@ type PlatformParams struct {
 
 // CheckPlatformPToken 检查平台token完整性、有效性中间件
 func CheckPlatformPToken() gin.HandlerFunc {
-	variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
+	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
 	return func(context *gin.Context) {
 		headerParams := PlatformParams{}
 		//  推荐使用 ShouldBindHeader 方式获取头参数
@@ -31,7 +32,7 @@ func CheckPlatformPToken() gin.HandlerFunc {
 			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
 			return
 		}
-		variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
+		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
 		loginInfo, err := admin_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, true)
 		// token验证通过，同时绑定在请求上下文
 		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
@@ -41,7 +42,7 @@ func CheckPlatformPToken() gin.HandlerFunc {
 			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, err.Error())
 			return
 		}
-		variable.ZapLog.Info("loginInfo:" + loginInfo.Username)
+		//variable.ZapLog.Info("loginInfo:" + loginInfo.Username)
 
 		context.Next()
 	}
@@ -108,9 +109,13 @@ func SavePlatformOperate() gin.HandlerFunc {
 				param.CreateName = loginInfo.Username
 			}
 
-			variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
+			if !helpers.StringIsEmpty(param.CreateName) {
+				operate_log_service.CreateCurdFactory().Add(&param)
+			}
+
+			/*variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
 			variable.ZapLog.Info(helpers.JsonEncode(param))
-			variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")
+			variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")*/
 		}(context.Copy())
 
 	}

@@ -73,6 +73,9 @@ var EnumMap = map[string]map[string]string{
 var pathModuleLabel = map[string][]string{
 	"/platform/auth/checkUser":     {ModuleAuth, "校验用户"},
 	"/platform/auth/getSliderCode": {ModuleAuth, "获取滑块码"},
+	"/platform/auth/sendSms":       {ModuleAuth, "发送短信验证码"},
+	"/platform/auth/normalLogin":   {ModuleAuth, "密码登录"},
+	"/platform/auth/hsLogin":       {ModuleAuth, "幻势登录"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
