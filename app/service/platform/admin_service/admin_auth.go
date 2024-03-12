@@ -222,7 +222,7 @@ func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo Admi
 	}
 
 	if isDelay {
-		_, _ = crd.redisClient.Expire(crd.keyByToken(token), 60)
+		_, _ = crd.redisClient.Expire(crd.keyByToken(token), crd.tokenExpire)
 	}
 	return loginInfo, nil
 }
