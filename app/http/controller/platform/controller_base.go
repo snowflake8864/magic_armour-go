@@ -2,7 +2,7 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
 )
 
@@ -11,6 +11,6 @@ type ControllerBase struct {
 }
 
 // GetLogin 获取登录数据
-func (u *ControllerBase) GetLogin(ctx *gin.Context) agent_service.AgentCacheLogin {
-	return cur_userinfo.GetCurrentAgent(ctx)
+func (u *ControllerBase) GetLogin(ctx *gin.Context) admin_service.AdminCacheLogin {
+	return cur_userinfo.GetCurrentAdmin(ctx)
 }

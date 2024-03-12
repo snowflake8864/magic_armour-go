@@ -75,7 +75,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 			//是否需要记录
 			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
 			if helpers.StringIsEmpty(param.Module) {
-				variable.ZapLog.Error("SavePlatformOperate path error: " + param.Path)
+				variable.ZapLog.Debug("SavePlatformOperate path error: " + param.Path)
 				return
 			}
 
