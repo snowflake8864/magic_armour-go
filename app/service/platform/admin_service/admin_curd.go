@@ -24,7 +24,7 @@ func (crd *AdminCurd) GetItemByUsername(name string) (model *model_platform.Admi
 func (crd *AdminCurd) HasByUsernameAndPw(name, pw string) bool {
 	adminModel, _ := crd.masterModel.GetItemByUsernameAndPw(name, pw)
 	if adminModel.Id > 0 {
-		return false
+		return true
 	}
 	return false
 }

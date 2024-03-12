@@ -24,7 +24,7 @@ func Json2Map(jsonStr string) map[string]interface{} {
 }
 
 // Json2Struct json还原Struct
-// 用法：err := JsonToStruct([]byte(jsonStr), &person);println("Name: ", person.Name)
+// 用法：err := Json2Struct([]byte(jsonStr), &person);println("Name: ", person.Name)
 func Json2Struct(data []byte, val interface{}) error {
 	return json.Unmarshal(data, &val)
 }

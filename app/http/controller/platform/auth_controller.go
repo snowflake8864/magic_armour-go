@@ -95,8 +95,8 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
 	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "pw"))
-	sliderCode := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "sliderCode"))
-	smsCode := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "pw"))
+	sliderCode := ctx.GetString(consts.ValidatorPrefix + "sliderCode")
+	smsCode := ctx.GetString(consts.ValidatorPrefix + "smsCode")
 	variable.ZapLog.Debug("name: " + name)
 	variable.ZapLog.Debug("pw: " + pw)
 	variable.ZapLog.Debug("sliderCode: " + sliderCode)
@@ -110,6 +110,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
+		return
 	}
 	response.SuccessReturnData(ctx, result)
 }

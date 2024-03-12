@@ -1,11 +1,11 @@
 package admin_service
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
@@ -85,7 +85,7 @@ func (crd *AdminAuth) checkBySlider(username, code string) bool {
 
 // GenerateBySms  生成短信码
 func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
-	code = helpers.IntRandom2Str(1000, 9999)
+	code = helpers.IntRandom2Str(100000, 999999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
 
 	go ali_sms.SendAuthCode(phone, code)
@@ -123,7 +123,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 	if !crd.checkBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
-	if !crd.IsLocking(username) {
+	if crd.IsLocking(username) {
 		return nil, -1, errors.New("用户已经被锁定，请稍后在试")
 	}
 
@@ -146,6 +146,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 
 	//用户名和密码不一致
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	variable.ZapLog.Debug("pw: " + pw)
 	if !curdFact.HasByUsernameAndPw(username, pw) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(adminModel.Id)
@@ -181,7 +182,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 }
 
 // loginAfter
-func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) (result map[string]interface{}) {
+func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[string]interface{} {
 	loginInfo := AdminCacheLogin{
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,
@@ -196,6 +197,7 @@ func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) (result 
 	crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
 	//
+	result := make(map[string]interface{})
 	result["username"] = adminModel.Username
 	result["is_root"] = adminModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
@@ -205,11 +207,16 @@ func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) (result 
 
 // DecryptByLogin 登录信息解密
 func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo AdminCacheLogin, err error) {
+	token, err = openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(token)
+	if err != nil {
+		return AdminCacheLogin{}, errors.New("token fail")
+	}
+
 	jsonStr := crd.redisClient.Get(crd.keyByToken(token))
 	if helpers.StringIsEmpty(jsonStr) {
 		return AdminCacheLogin{}, errors.New("token expired")
 	}
-	err = json.Unmarshal([]byte(jsonStr), &loginInfo)
+	err = helpers.Json2Struct([]byte(jsonStr), &loginInfo)
 	if err != nil {
 		return AdminCacheLogin{}, errors.New("token json fail")
 	}
