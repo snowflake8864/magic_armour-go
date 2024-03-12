@@ -7,6 +7,7 @@ import (
 
 // AlarmController 告警相关
 type AlarmController struct {
+	ControllerBase
 }
 
 // PutMaster 上传报警信息(除端口虚开外)

@@ -7,6 +7,7 @@ import (
 
 // ProcSampleController 进程或模块样本相关
 type ProcSampleController struct {
+	ControllerBase
 }
 
 // Get 获取信息

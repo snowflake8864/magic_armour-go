@@ -7,6 +7,7 @@ import (
 
 // BlackmailController 勒索相关
 type BlackmailController struct {
+	ControllerBase
 }
 
 // GetPolicy 下载勒索保护策略

@@ -7,6 +7,7 @@ import (
 
 // TamperController 防篡改相关
 type TamperController struct {
+	ControllerBase
 }
 
 // GetDir 获取查询目录

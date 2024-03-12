@@ -10,24 +10,24 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
 // AgentController 终端相关
 type AgentController struct {
+	ControllerBase
 }
 
 // GetConfig 获取配置信息
 func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//关闭任务
-	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(currentAgent.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
+	loginInfo := u.GetLogin(ctx)
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
 
 	//终端配置
 	agentCurdFact := agent_service.CreateCurdFactory()
-	agentModel := agentCurdFact.GetItemByAgent(currentAgent.AgentId, agentCurdFact.ColumnConfig(true))
+	agentModel := agentCurdFact.GetItemByAgent(loginInfo.AgentId, agentCurdFact.ColumnConfig(true))
 
 	//数据字典
 	dictIds := []string{
@@ -83,18 +83,18 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["hardware_time"] = agentModel.HardwareTime
 
 	//linux不支持的功能
-	if currentAgent.PlatformType == enum_software.PlatformTypeLinux {
+	if loginInfo.PlatformType == enum_software.PlatformTypeLinux {
 		mapConf["module_switch"] = enums.SwitchOff
 		mapConf["module_protect"] = enum_agent.ModeMonitor
 	}
 	//win xp 不支持的功能
-	if currentAgent.OsType == enum_software.OsTypeWinXp {
+	if loginInfo.OsType == enum_software.OsTypeWinXp {
 		mapConf["open_port_switch"] = enums.SwitchOff
 		mapConf["dynamic_switch"] = enum_agent.ModeMonitor
 	}
 
 	//心跳间隔时间(秒)
-	if heartFlag := task_service.CreateCacheFactory().GetHeartbeatFlag(currentAgent.AgentId); heartFlag {
+	if heartFlag := task_service.CreateCacheFactory().GetHeartbeatFlag(loginInfo.AgentId); heartFlag {
 		mapConf["crontime"] = agentModel.CommonTime
 	} else {
 		mapConf["crontime"] = agentModel.FastTime
@@ -105,8 +105,8 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 // GetInfo 获取终端信息(调试用)
 func (u *AgentController) GetInfo(ctx *gin.Context) {
-	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
-	response.SuccessReturnData(ctx, currentAgent)
+	loginInfo := u.GetLogin(ctx)
+	response.SuccessReturnData(ctx, loginInfo)
 }
 
 // Upgrade 升级

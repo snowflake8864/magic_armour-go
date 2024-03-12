@@ -7,6 +7,7 @@ import (
 
 // PortController 端口相关
 type PortController struct {
+	ControllerBase
 }
 
 // GetVirtual 下载虚开端口

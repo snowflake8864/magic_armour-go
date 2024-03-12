@@ -9,17 +9,17 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
-	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
 // TaskController 任务相关
 type TaskController struct {
+	ControllerBase
 }
 
 // Get 获取任务
 func (u *TaskController) Get(ctx *gin.Context) {
-	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
+	loginInfo := u.GetLogin(ctx)
 
 	//未完成的任务, 不支持的任务
 	var unfinishedTasks, notSupportTasks []int
@@ -28,7 +28,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	taskCacheFact := task_service.CreateCacheFactory()
 	//缓存中的任务
-	cacheTasks := taskCacheFact.GetUnfinished(currentAgent.AgentId)
+	cacheTasks := taskCacheFact.GetUnfinished(loginInfo.AgentId)
 	if len(cacheTasks) > 0 {
 		for _, val := range cacheTasks {
 			//是否有配置任务
@@ -42,12 +42,12 @@ func (u *TaskController) Get(ctx *gin.Context) {
 				break
 			}
 			//win xp 不支持的功能
-			if currentAgent.OsType == enum_software.OsTypeWinXp && u.checkWinXpNotSupport(val) {
+			if loginInfo.OsType == enum_software.OsTypeWinXp && u.checkWinXpNotSupport(val) {
 				notSupportTasks = append(notSupportTasks, val)
 				continue
 			}
 			//linux不支持的功能
-			if currentAgent.PlatformType == enum_software.PlatformTypeLinux && u.checkLinuxNotSupport(val) {
+			if loginInfo.PlatformType == enum_software.PlatformTypeLinux && u.checkLinuxNotSupport(val) {
 				notSupportTasks = append(notSupportTasks, val)
 				continue
 			}
@@ -70,16 +70,16 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		notSupportTasks = append(notSupportTasks, enum_task.TypeAgentUninstall)
 	} else {
 		//设置存活状态
-		go agent_service.CreateCurdFactory().SetLivingByAgent(currentAgent.AgentId)
+		go agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.AgentId)
 
 		//是否有未完成的任务
 		var hasUnfinishedTask bool
 		if len(unfinishedTasks) > 0 || hasConfig {
 			hasUnfinishedTask = true
 		}
-		
+
 		//设置心跳并判断是否需要追加修改配置的任务
-		appendConfig := taskCacheFact.SetHeartbeat(currentAgent.AgentId, hasUnfinishedTask)
+		appendConfig := taskCacheFact.SetHeartbeat(loginInfo.AgentId, hasUnfinishedTask)
 		//需追加配置 && 这次没有配置任务
 		if appendConfig && !hasConfig {
 			hasConfig = true
@@ -90,7 +90,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 			//@todo 如果指令集中同时存在保护模式和相关内容，配置暂缓下发，等待获取相关内容完成
 			if hasProjectModeBefore {
 				//全是监控模式
-				if !u.checkAgentHasProject(currentAgent.AgentId) {
+				if !u.checkAgentHasProject(loginInfo.AgentId) {
 					unfinishedTasks = append(unfinishedTasks, enum_task.TypeAgentConfigDownload)
 				}
 			} else {
@@ -101,7 +101,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	//不支持的任务直接关闭
 	if len(notSupportTasks) > 0 {
-		go taskCurdFact.CloseTasks(currentAgent.AgentId, notSupportTasks, ctx.ClientIP())
+		go taskCurdFact.CloseTasks(loginInfo.AgentId, notSupportTasks, ctx.ClientIP())
 	}
 
 	if unfinishedTasks == nil {
@@ -179,8 +179,8 @@ func (u *TaskController) Close(ctx *gin.Context) {
 	taskType := int(ctx.GetFloat64(consts.ValidatorPrefix + "tasklist"))
 	types := []int{taskType}
 
-	currentAgent := cur_userinfo.GetCurrentAgent(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(currentAgent.AgentId, types, ctx.ClientIP())
+	loginInfo := u.GetLogin(ctx)
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.AgentId, types, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "关闭任务")
 

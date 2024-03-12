@@ -7,6 +7,7 @@ import (
 
 // UsbController 外设相关
 type UsbController struct {
+	ControllerBase
 }
 
 // Put 添加设备

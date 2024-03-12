@@ -7,6 +7,7 @@ import (
 
 // PlugController 封堵相关
 type PlugController struct {
+	ControllerBase
 }
 
 // GetDynamic 下载动态封堵

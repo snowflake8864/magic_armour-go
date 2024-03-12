@@ -7,6 +7,7 @@ import (
 
 // ProcessController 进程相关
 type ProcessController struct {
+	ControllerBase
 }
 
 // PutAll 上传全部进程

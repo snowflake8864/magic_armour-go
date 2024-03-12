@@ -7,6 +7,7 @@ import (
 
 // SyslogController 通信日志相关
 type SyslogController struct {
+	ControllerBase
 }
 
 // Put 上传通讯日志

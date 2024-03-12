@@ -7,6 +7,7 @@ import (
 
 // DllController 模块相关
 type DllController struct {
+	ControllerBase
 }
 
 // PutAll 上传全部模块
