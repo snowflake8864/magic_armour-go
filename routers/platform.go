@@ -79,6 +79,42 @@ func InitPlatformRouter() *gin.Engine {
 					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefix+"HomeGetAgentStatistic"))
 					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefix+"HomeGetAlarmStatistic"))
 				}
+				//菜单
+				menu := vPlatform.Group("menu/")
+				{
+					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefix+"MenuTree"))
+					menu.POST("add", validatorFactory.Create(consts.ValidatorPrefix+"MenuAdd"))
+					menu.POST("edit", validatorFactory.Create(consts.ValidatorPrefix+"MenuEdit"))
+					menu.POST("sort", validatorFactory.Create(consts.ValidatorPrefix+"MenuSort"))
+					menu.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"MenuDelete"))
+				}
+				//角色
+				role := vPlatform.Group("role/")
+				{
+					manage := role.Group("manage/")
+					{
+						manage.POST("all", validatorFactory.Create(consts.ValidatorPrefix+"RoleManageAll"))
+						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefix+"RoleManageAdd"))
+						manage.POST("edit", validatorFactory.Create(consts.ValidatorPrefix+"RoleManageEdit"))
+						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"RoleManageDelete"))
+					}
+					power := role.Group("power/")
+					{
+						power.POST("loginMenuTree", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerLoginMenuTree"))       //用户登录后的菜单树
+						power.POST("editableMenuTree", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerEditableMenuTree")) //可编辑的菜单树
+						power.POST("getSelectedMenus", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerGetSelectedMenus")) //获取已选中的菜单集合
+						power.POST("setSelectedMenus", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerSetSelectedMenus")) //保存已选中的菜单集合
+					}
+				}
+				//组织架构
+				department := vPlatform.Group("department/")
+				{
+					department.POST("tree", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentTree"))
+					department.POST("add", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentAdd"))
+					department.POST("edit", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentEdit"))
+					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentDelete"))
+				}
+
 			}
 		}
 	}
