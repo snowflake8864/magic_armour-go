@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/validator/platform/auth"
+	"goskeleton/app/http/validator/platform/department"
 	"goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/menu"
 )
@@ -69,12 +70,12 @@ func PlatformRegisterValidator() {
 
 	//组织架构
 	key = consts.ValidatorPrefix + "DepartmentTree"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, department.Tree{})
 	key = consts.ValidatorPrefix + "DepartmentAdd"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, department.Add{})
 	key = consts.ValidatorPrefix + "DepartmentEdit"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, department.Edit{})
 	key = consts.ValidatorPrefix + "DepartmentDelete"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, department.Delete{})
 
 }
