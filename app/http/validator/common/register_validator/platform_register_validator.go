@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/http/validator/platform/department"
 	"goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/menu"
+	"goskeleton/app/http/validator/platform/role"
 )
 
 // PlatformRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -52,21 +53,21 @@ func PlatformRegisterValidator() {
 
 	//角色
 	key = consts.ValidatorPrefix + "RoleManageAll"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.ManageAll{})
 	key = consts.ValidatorPrefix + "RoleManageAdd"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.ManageAdd{})
 	key = consts.ValidatorPrefix + "RoleManageEdit"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.ManageEdit{})
 	key = consts.ValidatorPrefix + "RoleManageDelete"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.ManageDelete{})
 	key = consts.ValidatorPrefix + "RolePowerLoginMenuTree"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.PowerLoginMenuTree{})
 	key = consts.ValidatorPrefix + "RolePowerEditableMenuTree"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.PowerEditableMenuTree{})
 	key = consts.ValidatorPrefix + "RolePowerGetSelectedMenus"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.GetSelectedMenus{})
 	key = consts.ValidatorPrefix + "RolePowerSetSelectedMenus"
-	containers.Set(key, home.GetAgentStatistic{})
+	containers.Set(key, role.SetSelectedMenus{})
 
 	//组织架构
 	key = consts.ValidatorPrefix + "DepartmentTree"

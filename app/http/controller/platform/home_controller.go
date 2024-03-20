@@ -11,7 +11,7 @@ type HomeController struct {
 }
 
 func (u *HomeController) GetAgentStatistic(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	response.SuccessReturnData(ctx, loginInfo)
 }
 

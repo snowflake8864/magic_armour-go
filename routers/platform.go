@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
@@ -115,6 +116,20 @@ func InitPlatformRouter() *gin.Engine {
 					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentDelete"))
 				}
 
+				//角色
+				agent := vPlatform.Group("agent/")
+				{
+					public := agent.Group("public/")
+					{
+						public.POST("onlineStatus", (&platform.AgentController{}).OnlineStatus)
+						public.POST("safeStatus", (&platform.AgentController{}).SafeStatus)
+						public.POST("countOnline", (&platform.AgentController{}).CountOnline)
+					}
+					manage := agent.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"AgentManagePage"))
+					}
+				}
 			}
 		}
 	}
