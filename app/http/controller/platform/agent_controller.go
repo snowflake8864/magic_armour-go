@@ -24,3 +24,8 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 func (u *AgentController) CountOnline(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CountOnline")
 }
+
+// TypeList 类型列表
+func (u *AgentController) TypeList(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "TypeList")
+}

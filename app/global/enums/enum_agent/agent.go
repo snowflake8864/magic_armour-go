@@ -21,3 +21,14 @@ const (
 	LogProtoTcp int = 2 //日志协议:TCP
 
 )
+
+var EnumIntMap = map[string]map[int]string{
+	"agent_type": {
+		1: "服务器",
+		2: "业务系统",
+		3: "办公终端",
+		4: "笔记本",
+		5: "台式机",
+		6: "其它",
+	},
+}
