@@ -154,6 +154,10 @@ func InitPlatformRouter() *gin.Engine {
 						monitor.POST("list", validatorFactory.Create(consts.ValidatorPrefix+"AgentMonitorList"))
 						monitor.POST("info", validatorFactory.Create(consts.ValidatorPrefix+"AgentMonitorInfo"))
 					}
+					errorV := agent.Group("error")
+					{
+						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"AgentErrorPage"))
+					}
 				}
 			}
 		}

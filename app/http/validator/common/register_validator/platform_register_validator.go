@@ -3,6 +3,7 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/validator/platform/agent"
 	"goskeleton/app/http/validator/platform/auth"
 	"goskeleton/app/http/validator/platform/department"
 	"goskeleton/app/http/validator/platform/home"
@@ -78,5 +79,37 @@ func PlatformRegisterValidator() {
 	containers.Set(key, department.Edit{})
 	key = consts.ValidatorPrefix + "DepartmentDelete"
 	containers.Set(key, department.Delete{})
+
+	//终端
+	key = consts.ValidatorPrefix + "AgentManagePage"
+	containers.Set(key, agent.ManagePage{})
+	key = consts.ValidatorPrefix + "AgentManageDelete"
+	containers.Set(key, agent.ManageDelete{})
+	key = consts.ValidatorPrefix + "AgentManageUninstall"
+	containers.Set(key, agent.ManageUninstall{})
+	key = consts.ValidatorPrefix + "AgentManageUpgrade"
+	containers.Set(key, agent.ManageUpgrade{})
+	key = consts.ValidatorPrefix + "AgentManageBatchDelete"
+	containers.Set(key, agent.ManageBatchDelete{})
+	key = consts.ValidatorPrefix + "AgentManageBatchUninstall"
+	containers.Set(key, agent.ManageBatchUninstall{})
+	key = consts.ValidatorPrefix + "AgentManageBatchUpgrade"
+	containers.Set(key, agent.ManageBatchUninstall{})
+	key = consts.ValidatorPrefix + "AgentManageBatchSetConfig"
+	containers.Set(key, agent.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefix + "AgentBasicGet"
+	containers.Set(key, agent.BasicGet{})
+	key = consts.ValidatorPrefix + "AgentBasicSave"
+	containers.Set(key, agent.BasicSave{})
+	key = consts.ValidatorPrefix + "AgentConfigGet"
+	containers.Set(key, agent.ConfigGet{})
+	key = consts.ValidatorPrefix + "AgentConfigSave"
+	containers.Set(key, agent.ConfigSave{})
+	key = consts.ValidatorPrefix + "AgentMonitorList"
+	containers.Set(key, agent.MonitorList{})
+	key = consts.ValidatorPrefix + "AgentMonitorInfo"
+	containers.Set(key, agent.MonitorInfo{})
+	key = consts.ValidatorPrefix + "AgentErrorPage"
+	containers.Set(key, agent.ErrorPage{})
 
 }
