@@ -20,34 +20,29 @@ func (u *ProcessController) ChangeStatus(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "ChangeStatus")
 }
 
-// CountOnline 统计在线和离线数量
-func (u *ProcessController) CountOnline(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "CountOnline")
-}
-
-// TypeList 类型列表
-func (u *ProcessController) TypeList(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "TypeList")
-}
-
 // PageForManage 管理: 分页
 func (u *ProcessController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "PageForManage")
 }
 
-// DeleteForManage 管理: 删除
-func (u *ProcessController) DeleteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForManage")
+// SetSwitchForManage 管理: 设置开关
+func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SetSwitchForManage")
 }
 
-// UninstallForManage 管理: 卸载
-func (u *ProcessController) UninstallForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UninstallForManage")
+// SetModeForManage 管理: 设置模式
+func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SetModeForManage")
 }
 
-// UpgradeForManage 管理: 升级
-func (u *ProcessController) UpgradeForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UpgradeForManage")
+// BatchSetConfigForManage 管理: 批量设置配置
+func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "BatchSetConfigForManage")
+}
+
+// BatchSetWhiteForManage 管理: 批量把终端下未设置变成白名单
+func (u *ProcessController) BatchSetWhiteForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "BatchSetWhiteForManage")
 }
 
 // BatchDeleteForManage 管理: 批量删除
@@ -63,11 +58,6 @@ func (u *ProcessController) BatchUninstallForManage(ctx *gin.Context) {
 // BatchUpgradeForManage 管理: 批量升级
 func (u *ProcessController) BatchUpgradeForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "BatchUpgradeForManage")
-}
-
-// BatchSetConfigForManage 管理: 批量设置配置
-func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchSetConfigForManage")
 }
 
 // GetForBasic 基本信息：获取
