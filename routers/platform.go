@@ -128,6 +128,30 @@ func InitPlatformRouter() *gin.Engine {
 					manage := agent.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"AgentManagePage"))
+						//manage.POST("import", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageImport"))
+						//manage.POST("export", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageExport"))
+						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageDelete"))
+						manage.POST("uninstall", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageUninstall"))
+						manage.POST("upgrade", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageUpgrade"))
+						manage.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageBatchDelete"))
+						manage.POST("batchUninstall", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageBatchUninstall"))
+						manage.POST("batchUpgrade", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageBatchUpgrade"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefix+"AgentManageBatchSetConfig"))
+					}
+					basic := agent.Group("basic/")
+					{
+						basic.POST("get", validatorFactory.Create(consts.ValidatorPrefix+"AgentBasicGet"))
+						basic.POST("save", validatorFactory.Create(consts.ValidatorPrefix+"AgentBasicSave"))
+					}
+					config := agent.Group("config/")
+					{
+						config.POST("get", validatorFactory.Create(consts.ValidatorPrefix+"AgentConfigGet"))
+						config.POST("save", validatorFactory.Create(consts.ValidatorPrefix+"AgentConfigSave"))
+					}
+					monitor := agent.Group("monitor/")
+					{
+						monitor.POST("list", validatorFactory.Create(consts.ValidatorPrefix+"AgentMonitorList"))
+						monitor.POST("info", validatorFactory.Create(consts.ValidatorPrefix+"AgentMonitorInfo"))
 					}
 				}
 			}
