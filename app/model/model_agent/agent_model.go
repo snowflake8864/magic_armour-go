@@ -16,26 +16,26 @@ func CreateAgentFactory() *AgentModel {
 
 type AgentModel struct {
 	model.BaseModel
-	AgentId      string `json:"agent_id" gorm:"primaryKey"`
-	HostName     string `json:"host_name"`
-	MacId        string `json:"mac_id"`
-	AgentIp      string `json:"agent_ip"`
-	NetIp        string `json:"net_ip"`
-	OsName       string `json:"os_name"`
-	PlatformType int    `json:"platform_type"`
-	OsType       int    `json:"os_type"`
-	MemDesc      string `json:"mem_desc"`
-	HdDesc       string `json:"hd_desc"`
-	CpuDesc      string `json:"cpu_desc"`
-	NetworkCard  string `json:"network_card"`
-	AgentStartAt string `json:"agent_start_at"`
-	OsStartAt    string `json:"os_start_at"`
-	
+	AgentId             string `json:"agent_id" gorm:"primaryKey"`
+	HostName            string `json:"host_name"`
+	MacId               string `json:"mac_id"`
+	AgentIp             string `json:"agent_ip"`
+	NetIp               string `json:"net_ip"`
+	OsName              string `json:"os_name"`
+	PlatformType        int    `json:"platform_type"`
+	OsType              int    `json:"os_type"`
+	MemDesc             string `json:"mem_desc"`
+	HdDesc              string `json:"hd_desc"`
+	CpuDesc             string `json:"cpu_desc"`
+	NetworkCard         string `json:"network_card"`
+	AgentStartAt        string `json:"agent_start_at"`
+	OsStartAt           string `json:"os_start_at"`
 	Ver                 string `json:"ver"`
 	Auth                string `json:"auth"`
 	IsOnline            int    `json:"is_online"`
 	OnlineAt            string `json:"online_at"`
 	LiveAt              string `json:"live_at"`
+	IsSafe              int    `json:"is_safe"`
 	UpgradeVer          string `json:"upgrade_ver"`
 	AdminId             int    `json:"admin_id"`
 	DeptId              int    `json:"dept_id"`
@@ -131,6 +131,8 @@ func (m *AgentModel) CreateTable() bool {
 			blackmail_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '勒索:模式(0监控,1保护)',
 			port_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '端口虚开:开关',
 			plug_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '封堵:开关',
+			plug_port_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:端口虚开策略(json)',
+			plug_login_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:口令破解策略(json)',
 			usb_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '外设:开关',
 			usb_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '外设:模式(0监控,1保护)',
 			syslog_dns_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '通信日志:dns开关',
@@ -146,11 +148,9 @@ func (m *AgentModel) CreateTable() bool {
 			auto_white_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自动匹配白名单:开关',
 			alarm_ai_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警智能处理:开关',
 			login_solve_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '口令破解:开关',
+			login_solve_config varchar(256)  NOT NULL DEFAULT '' COMMENT '口令破解:策略(json)',
 			hardware_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上传硬件资源:开关',
 			hardware_time int(11) NOT NULL DEFAULT '300' COMMENT '上传硬件资源:快速(秒)',
-			plug_port_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:端口虚开策略(json)',
-			plug_login_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:口令破解策略(json)',
-			login_solve_config varchar(256)  NOT NULL DEFAULT '' COMMENT '口令破解:策略(json)',
 			process_flush_at datetime NULL COMMENT '进程刷新时间',
 			dll_flush_at datetime NULL COMMENT '模块刷新时间',
 			created_at datetime NULL,

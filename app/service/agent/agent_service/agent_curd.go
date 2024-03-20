@@ -96,12 +96,14 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.IsOnline = enums.IsYes
 		param.OnlineAt = nowDate
 		param.LiveAt = nowDate
+		param.IsSafe = enums.IsYes
 		param.UpgradeVer = ""
 		param.DeptId = 0
-		param.AgentTypeId = 0
+		param.AgentType = 0
 		param.Alias = ""
 		param.ContactName = ""
 		param.ContactTel = ""
+		param.Position = ""
 		param.Remark = ""
 		param.GrantConfig = jsonGrant
 		param.ProcessSwitch = enums.SwitchOff
@@ -156,9 +158,10 @@ func (crd *AgentCurd) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 			"os_name":        param.OsName,
 			"platform_type":  param.PlatformType,
 			"os_type":        param.OsType,
-			"mem_size":       param.MemSize,
-			"hd_size":        param.HdSize,
-			"cpu":            param.Cpu,
+			"mem_desc":       param.MemDesc,
+			"hd_desc":        param.HdDesc,
+			"cpu_desc":       param.CpuDesc,
+			"network_card":   param.NetworkCard,
 			"agent_start_at": param.AgentStartAt,
 			"os_start_at":    param.OsStartAt,
 			"ver":            param.Ver,
