@@ -116,7 +116,7 @@ func InitPlatformRouter() *gin.Engine {
 					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"DepartmentDelete"))
 				}
 
-				//角色
+				//终端
 				agent := vPlatform.Group("agent/")
 				{
 					public := agent.Group("public/")
@@ -157,6 +157,20 @@ func InitPlatformRouter() *gin.Engine {
 					errorV := agent.Group("error")
 					{
 						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"AgentErrorPage"))
+					}
+				}
+
+				//进程
+				process := vPlatform.Group("process/")
+				{
+					public := process.Group("public/")
+					{
+						public.POST("searchStatus", (&platform.ProcessController{}).SearchStatus)
+						public.POST("changeStatus", (&platform.ProcessController{}).ChangeStatus)
+					}
+					manage := process.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManagePage"))
 					}
 				}
 			}

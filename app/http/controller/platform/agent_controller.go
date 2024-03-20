@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-// AgentController 角色相关
+// AgentController 终端相关
 type AgentController struct {
 	ControllerBase
 }
