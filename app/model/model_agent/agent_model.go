@@ -16,19 +16,21 @@ func CreateAgentFactory() *AgentModel {
 
 type AgentModel struct {
 	model.BaseModel
-	AgentId             string `json:"agent_id" gorm:"primaryKey"`
-	HostName            string `json:"host_name"`
-	MacId               string `json:"mac_id"`
-	AgentIp             string `json:"agent_ip"`
-	NetIp               string `json:"net_ip"`
-	OsName              string `json:"os_name"`
-	PlatformType        int    `json:"platform_type"`
-	OsType              int    `json:"os_type"`
-	MemSize             string `json:"mem_size"`
-	HdSize              string `json:"hd_size"`
-	Cpu                 string `json:"cpu"`
-	AgentStartAt        string `json:"agent_start_at"`
-	OsStartAt           string `json:"os_start_at"`
+	AgentId      string `json:"agent_id" gorm:"primaryKey"`
+	HostName     string `json:"host_name"`
+	MacId        string `json:"mac_id"`
+	AgentIp      string `json:"agent_ip"`
+	NetIp        string `json:"net_ip"`
+	OsName       string `json:"os_name"`
+	PlatformType int    `json:"platform_type"`
+	OsType       int    `json:"os_type"`
+	MemDesc      string `json:"mem_desc"`
+	HdDesc       string `json:"hd_desc"`
+	CpuDesc      string `json:"cpu_desc"`
+	NetworkCard  string `json:"network_card"`
+	AgentStartAt string `json:"agent_start_at"`
+	OsStartAt    string `json:"os_start_at"`
+	
 	Ver                 string `json:"ver"`
 	Auth                string `json:"auth"`
 	IsOnline            int    `json:"is_online"`
@@ -37,10 +39,11 @@ type AgentModel struct {
 	UpgradeVer          string `json:"upgrade_ver"`
 	AdminId             int    `json:"admin_id"`
 	DeptId              int    `json:"dept_id"`
-	AgentTypeId         int    `json:"agent_type_id"`
+	AgentType           int    `json:"agent_type"`
 	Alias               string `json:"alias"`
 	ContactName         string `json:"contact_name"`
 	ContactTel          string `json:"contact_tel"`
+	Position            string `json:"position"`
 	Remark              string `json:"remark"`
 	GrantConfig         string `json:"grant_config"`
 	ProcessSwitch       int    `json:"process_switch"`
@@ -92,13 +95,14 @@ func (m *AgentModel) CreateTable() bool {
 			host_name varchar(128)  NOT NULL DEFAULT '' COMMENT '主机名',
 			mac_id varchar(512)  NOT NULL DEFAULT '' COMMENT '物理地址',
 			agent_ip varchar(512)  NOT NULL DEFAULT '' COMMENT '终端ip',
-			net_ip varchar(32)  NOT NULL DEFAULT '' COMMENT '通讯ip',
-			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
-			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linxu, 统一定义)',
+			net_ip varchar(64)  NOT NULL DEFAULT '' COMMENT '通讯ip',
+			os_name varchar(64)  NOT NULL DEFAULT '' COMMENT '系统名称',
+			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linux, 统一定义)',
 			os_type smallint NOT NULL DEFAULT '0' COMMENT '系统类别(参考ubuntu|centos等,统一定义)',
-			mem_size varchar(16)  NOT NULL DEFAULT '' COMMENT '内存',
-			hd_size varchar(16)  NOT NULL DEFAULT '' COMMENT '硬盘',
-			cpu varchar(16)  NOT NULL DEFAULT '' COMMENT 'cpu',
+			mem_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '内存',
+			hd_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '硬盘',
+			cpu_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '处理器',
+			network_card varchar(256)  NOT NULL DEFAULT '' COMMENT '网卡',
 			agent_start_at datetime NOT NULL COMMENT '终端启动时间',
 			os_start_at datetime NOT NULL COMMENT '系统启动时间',
 			ver varchar(32)  NOT NULL DEFAULT '' COMMENT '终端版本号',
@@ -110,12 +114,13 @@ func (m *AgentModel) CreateTable() bool {
 			upgrade_ver varchar(32)  NOT NULL DEFAULT '' COMMENT '要升级版本号',
 			admin_id int NOT NULL DEFAULT '0' COMMENT '管理员编号(admin.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
-			agent_type_id int NOT NULL DEFAULT '0' COMMENT '终端类型(agent_type.id)',
+			agent_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '终端类型',
 			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
 			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
+			position varchar(128)  NOT NULL DEFAULT '' COMMENT '位置',
+			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注',
 			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权配置(json)',
-			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式(0监控,1保护)',
 			dll_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '模块:开关',
