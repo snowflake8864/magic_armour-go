@@ -180,6 +180,18 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchCollect"))
 						manage.POST("batchPushThreatenWhite", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchPushThreatenWhite"))
 					}
+					agentV2 := process.Group("agent/")
+					{
+						agentV2.POST("pageAll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentPageAll"))
+						agentV2.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentPageRunning"))
+						agentV2.POST("setStatus", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentSetStatus"))
+						agentV2.POST("cancel", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentCancel"))
+						agentV2.POST("clearAll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentClearAll"))
+						agentV2.POST("clearRunning", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentClearRunning"))
+						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRefresh"))
+						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentCollect"))
+						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRepeatPage"))
+					}
 				}
 			}
 		}
