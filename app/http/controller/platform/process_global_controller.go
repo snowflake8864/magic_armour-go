@@ -30,7 +30,7 @@ func (u *ProcessGlobalController) BatchWhiteFromDll(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "BatchWhiteFromDll")
 }
 
-// BatchBlackFromDll 批量黑来源模块
+// BatchBlackFromDll 批量黑来来源模块
 func (u *ProcessGlobalController) BatchBlackFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchBlackFromDll")
+	response.SuccessReturnData(ctx, "Dll")
 }

@@ -15,16 +15,6 @@ func (u *ProcSampleController) Page(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "Page")
 }
 
-// Add 添加
-func (u *ProcSampleController) Add(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Add")
-}
-
-// Edit 编辑
-func (u *ProcSampleController) Edit(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Edit")
-}
-
 // Delete 删除
 func (u *ProcSampleController) Delete(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "Delete")
@@ -33,4 +23,19 @@ func (u *ProcSampleController) Delete(ctx *gin.Context) {
 // Clear 清空
 func (u *ProcSampleController) Clear(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "Clear")
+}
+
+// Download 下载
+func (u *ProcSampleController) Download(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "Download")
+}
+
+// AddFromProcess 添加来源进程
+func (u *ProcSampleController) AddFromProcess(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AddFromProcess")
+}
+
+// AddFromDll 添加来源模块
+func (u *ProcSampleController) AddFromDll(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AddFromDll")
 }

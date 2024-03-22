@@ -106,7 +106,7 @@ func InitPlatformRouter() *gin.Engine {
 						power.POST("getSelectedMenus", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerGetSelectedMenus")) //获取已选中的菜单集合
 						power.POST("setSelectedMenus", validatorFactory.Create(consts.ValidatorPrefix+"RolePowerSetSelectedMenus")) //保存已选中的菜单集合
 					}
-				}
+				} //角色
 				//组织架构
 				department := vPlatform.Group("department/")
 				{
@@ -158,7 +158,7 @@ func InitPlatformRouter() *gin.Engine {
 					{
 						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"AgentErrorPage"))
 					}
-				}
+				} //终端
 
 				//进程
 				process := vPlatform.Group("process/")
@@ -190,9 +190,10 @@ func InitPlatformRouter() *gin.Engine {
 						agentV2.POST("clearRunning", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentClearRunning"))
 						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRefresh"))
 						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentCollect"))
-						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRepeatPage"))
 						agentV2.POST("extractRunningDll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentExtractRunningDll"))
 						agentV2.POST("showRunningDll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentShowRunningDll"))
+						agentV2.POST("allWhite", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentAllWhite"))
+						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRepeatPage"))
 
 						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefix+""))
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalAdd"))
@@ -217,7 +218,55 @@ func InitPlatformRouter() *gin.Engine {
 						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefix+""))
 						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefix+""))
 					}
-				}
+				} //进程
+
+				//进程和模块样本
+				procSample := vPlatform.Group("procSample/")
+				{
+					procSample.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"ProcSamplePage"))
+					procSample.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleDelete"))
+					procSample.POST("clear", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleClear"))
+					procSample.POST("download", validatorFactory.Create(consts.ValidatorPrefix+"ProcSampleDownload"))
+				} //进程和模块样本
+
+				//防篡改
+				tamper := vPlatform.Group("tamper/")
+				{
+					public := tamper.Group("public/")
+					{
+						public.POST("FilePower", (&platform.TamperController{}).FilePower)
+						public.POST("FolderPower", (&platform.TamperController{}).FolderPower)
+					}
+					manage := tamper.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"TamperManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefix+"TamperManageSetSwitch"))
+						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefix+"TamperManageSetMode"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefix+"TamperManageBatchSetConfig"))
+					}
+
+					policy := tamper.Group("policy/")
+					{
+						policy.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyPage"))
+						policy.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicySetSwitch"))
+						policy.POST("addFolder", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyAddFolder"))
+						policy.POST("addFile", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyAddFile"))
+						policy.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyEditFolder"))
+						policy.POST("editFile", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyEditFile"))
+						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"TamperPolicyDelete"))
+					}
+
+					global := tamper.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalPage"))
+						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalSetSwitch"))
+						global.POST("addFolder", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalAddFolder"))
+						global.POST("addFile", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalAddFile"))
+						global.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalEditFolder"))
+						global.POST("editFile", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalEditFile"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"TamperGlobalDelete"))
+					}
+				} //防篡改
 			}
 		}
 	}
