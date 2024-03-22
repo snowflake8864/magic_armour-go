@@ -55,9 +55,9 @@ func (u *ProcessController) BatchCollectForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "batchCollectForManage")
 }
 
-// BatchPushThreatenWhiteForManage 管理页: 批量把终端的进程推送到威胁情报白名单
-func (u *ProcessController) BatchPushThreatenWhiteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchPushThreatenWhiteForManage")
+// BatchThreatenWhiteForManage 管理页: 批量把终端的进程推送到威胁情报白名单
+func (u *ProcessController) BatchThreatenWhiteForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "BatchThreatenWhiteForManage")
 }
 
 // PageAllForAgent 单终端: 全部进程
@@ -103,4 +103,19 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 // RepeatPageForAgent 单终端: 重复进程
 func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "RepeatPageForAgent")
+}
+
+// ExtractRunningDllForAgent 单终端: 提取运行中模块
+func (u *ProcessController) ExtractRunningDllForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "ExtractRunningDllForAgent")
+}
+
+// ShowRunningDllForAgent 单终端: 展示运行中模块
+func (u *ProcessController) ShowRunningDllForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "ShowRunningDllForAgent")
+}
+
+// PageForSearch 搜索: 分页
+func (u *ProcessController) PageForSearch(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "PageForSearch")
 }

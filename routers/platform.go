@@ -178,7 +178,7 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchRefresh"))
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchCollect"))
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchCollect"))
-						manage.POST("batchPushThreatenWhite", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchPushThreatenWhite"))
+						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefix+"ProcessManageBatchThreatenWhite"))
 					}
 					agentV2 := process.Group("agent/")
 					{
@@ -191,6 +191,31 @@ func InitPlatformRouter() *gin.Engine {
 						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRefresh"))
 						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentCollect"))
 						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentRepeatPage"))
+						agentV2.POST("extractRunningDll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentExtractRunningDll"))
+						agentV2.POST("showRunningDll", validatorFactory.Create(consts.ValidatorPrefix+"ProcessAgentShowRunningDll"))
+
+						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefix+""))
+						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalAdd"))
+						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefix+""))
+						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefix+""))
+						manage.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefix+""))
+
+					}
+
+					global := process.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalPage"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalAdd"))
+						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalEdit"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalDelete"))
+						global.POST("clear", validatorFactory.Create(consts.ValidatorPrefix+"ProcessGlobalClear"))
+					}
+
+					search := process.Group("search/")
+					{
+						search.POST("page", validatorFactory.Create(consts.ValidatorPrefix+"ProcessSearchPage"))
+						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefix+""))
+						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefix+""))
 					}
 				}
 			}
