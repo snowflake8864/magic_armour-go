@@ -8,6 +8,8 @@ import (
 	"goskeleton/app/http/validator/platform/department"
 	"goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/menu"
+	"goskeleton/app/http/validator/platform/proc_global"
+	"goskeleton/app/http/validator/platform/proc_sample"
 	"goskeleton/app/http/validator/platform/process"
 	"goskeleton/app/http/validator/platform/role"
 )
@@ -130,4 +132,41 @@ func PlatformRegisterValidator() {
 	containers.Set(key, process.ManageBatchCollect{})
 	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchThreatenWhite"
 	containers.Set(key, process.ManageBatchThreatenWhite{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentPageAll"
+	containers.Set(key, process.AgentPageAll{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentPageRunning"
+	containers.Set(key, process.AgentPageRunning{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetStatus"
+	containers.Set(key, process.AgentSetStatus{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentCancel"
+	containers.Set(key, process.AgentCancel{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentClearAll"
+	containers.Set(key, process.AgentClearAll{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentClearRunning"
+	containers.Set(key, process.AgentClearRunning{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentRefresh"
+	containers.Set(key, process.AgentRefresh{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentCollect"
+	containers.Set(key, process.AgentCollect{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentShowRunningDll"
+	containers.Set(key, process.AgentShowRunningDll{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchWhite"
+	containers.Set(key, process.AgentBatchWhite{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractSample"
+	containers.Set(key, proc_sample.AddFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetGlobal"
+	containers.Set(key, proc_global.AddFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
+	containers.Set(key, proc_global.BatchWhiteFromProcess{})
+
+	//进程和模块样本
+	key = consts.ValidatorPrefixPlatform + "ProcSamplePage"
+	containers.Set(key, proc_sample.Page{})
+	key = consts.ValidatorPrefixPlatform + "ProcSampleDelete"
+	containers.Set(key, proc_sample.Delete{})
+	key = consts.ValidatorPrefixPlatform + "ProcSampleClear"
+	containers.Set(key, proc_sample.Clear{})
+	key = consts.ValidatorPrefixPlatform + "ProcSampleDownload"
+	containers.Set(key, proc_sample.Download{})
+
 }

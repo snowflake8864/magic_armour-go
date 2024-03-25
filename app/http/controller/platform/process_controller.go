@@ -75,6 +75,11 @@ func (u *ProcessController) SetStatusForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "SetStatusForAgent")
 }
 
+// BatchWhiteForAgent 单终端: 批量白名单
+func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "BatchWhiteForAgent")
+}
+
 // CancelForAgent 单终端: 取消
 func (u *ProcessController) CancelForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CancelForAgent")
