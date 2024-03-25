@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/validator/platform/department"
 	"goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/menu"
+	"goskeleton/app/http/validator/platform/process"
 	"goskeleton/app/http/validator/platform/role"
 )
 
@@ -112,4 +113,21 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "AgentErrorPage"
 	containers.Set(key, agent.ErrorPage{})
 
+	//进程
+	key = consts.ValidatorPrefixPlatform + "ProcessManagePage"
+	containers.Set(key, process.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageSetSwitch"
+	containers.Set(key, process.ManageSetSwitch{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageSetMode"
+	containers.Set(key, process.ManageSetMode{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchSetConfig"
+	containers.Set(key, process.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchSetWhite"
+	containers.Set(key, process.ManageBatchSetWhite{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchRefresh"
+	containers.Set(key, process.ManageBatchRefresh{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchCollect"
+	containers.Set(key, process.ManageBatchCollect{})
+	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchThreatenWhite"
+	containers.Set(key, process.ManageBatchThreatenWhite{})
 }

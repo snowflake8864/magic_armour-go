@@ -177,7 +177,6 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("batchSetWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchSetWhite"))
 						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchRefresh"))
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchCollect"))
-						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchCollect"))
 						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchThreatenWhite"))
 					}
 					agentV2 := process.Group("agent/")
