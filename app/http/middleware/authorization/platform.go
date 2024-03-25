@@ -91,7 +91,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
-				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefix + "name"))
+				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefixPlatform + "name"))
 				if helpers.StringIsEmpty(param.CreateName) {
 					variable.ZapLog.Error("SavePlatformOperate param name is empty, IP: " + param.NetIp)
 					return

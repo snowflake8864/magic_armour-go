@@ -22,7 +22,7 @@ func (u *AuthController) decrypt(data string) (result string) {
 
 // CheckUser 验证用户
 func (u *AuthController) CheckUser(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
 	if helpers.StringIsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
@@ -48,7 +48,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 
 // SendSms 发送短信
 func (u *AuthController) SendSms(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
 	if helpers.StringIsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
@@ -78,7 +78,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 
 // GetSliderCode 获取滑块码
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
 	if helpers.StringIsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
@@ -93,10 +93,10 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 
 // NormalLogin 登录
 func (u *AuthController) NormalLogin(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "name"))
-	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefix + "pw"))
-	sliderCode := ctx.GetString(consts.ValidatorPrefix + "sliderCode")
-	smsCode := ctx.GetString(consts.ValidatorPrefix + "smsCode")
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
+	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "pw"))
+	sliderCode := ctx.GetString(consts.ValidatorPrefixPlatform + "sliderCode")
+	smsCode := ctx.GetString(consts.ValidatorPrefixPlatform + "smsCode")
 	variable.ZapLog.Debug("name: " + name)
 	variable.ZapLog.Debug("pw: " + pw)
 	variable.ZapLog.Debug("sliderCode: " + sliderCode)

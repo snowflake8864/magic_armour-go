@@ -21,95 +21,95 @@ func PlatformRegisterValidator() {
 	var key string
 
 	//安全认证
-	key = consts.ValidatorPrefix + "AuthCheckUser"
+	key = consts.ValidatorPrefixPlatform + "AuthCheckUser"
 	containers.Set(key, auth.CheckUser{})
-	key = consts.ValidatorPrefix + "AuthGetSliderCode"
+	key = consts.ValidatorPrefixPlatform + "AuthGetSliderCode"
 	containers.Set(key, auth.GetSliderCode{})
-	key = consts.ValidatorPrefix + "AuthSendSms"
+	key = consts.ValidatorPrefixPlatform + "AuthSendSms"
 	containers.Set(key, auth.SendSms{})
-	key = consts.ValidatorPrefix + "AuthNormalLogin"
+	key = consts.ValidatorPrefixPlatform + "AuthNormalLogin"
 	containers.Set(key, auth.NormalLogin{})
-	key = consts.ValidatorPrefix + "AuthLogout"
+	key = consts.ValidatorPrefixPlatform + "AuthLogout"
 	containers.Set(key, auth.Logout{})
-	key = consts.ValidatorPrefix + "AuthHsLogin"
+	key = consts.ValidatorPrefixPlatform + "AuthHsLogin"
 	containers.Set(key, auth.HsLogin{})
 
 	//首页
-	key = consts.ValidatorPrefix + "HomeGetAgentStatistic"
+	key = consts.ValidatorPrefixPlatform + "HomeGetAgentStatistic"
 	containers.Set(key, home.GetAgentStatistic{})
-	key = consts.ValidatorPrefix + "HomeGetAlarmStatistic"
+	key = consts.ValidatorPrefixPlatform + "HomeGetAlarmStatistic"
 	containers.Set(key, home.GetAlarmStatistic{})
 
 	//菜单
-	key = consts.ValidatorPrefix + "MenuTree"
+	key = consts.ValidatorPrefixPlatform + "MenuTree"
 	containers.Set(key, menu.Tree{})
-	key = consts.ValidatorPrefix + "MenuAdd"
+	key = consts.ValidatorPrefixPlatform + "MenuAdd"
 	containers.Set(key, menu.Add{})
-	key = consts.ValidatorPrefix + "MenuEdit"
+	key = consts.ValidatorPrefixPlatform + "MenuEdit"
 	containers.Set(key, menu.Edit{})
-	key = consts.ValidatorPrefix + "MenuSort"
+	key = consts.ValidatorPrefixPlatform + "MenuSort"
 	containers.Set(key, menu.Sort{})
-	key = consts.ValidatorPrefix + "MenuDelete"
+	key = consts.ValidatorPrefixPlatform + "MenuDelete"
 	containers.Set(key, menu.Delete{})
 
 	//角色
-	key = consts.ValidatorPrefix + "RoleManageAll"
+	key = consts.ValidatorPrefixPlatform + "RoleManageAll"
 	containers.Set(key, role.ManageAll{})
-	key = consts.ValidatorPrefix + "RoleManageAdd"
+	key = consts.ValidatorPrefixPlatform + "RoleManageAdd"
 	containers.Set(key, role.ManageAdd{})
-	key = consts.ValidatorPrefix + "RoleManageEdit"
+	key = consts.ValidatorPrefixPlatform + "RoleManageEdit"
 	containers.Set(key, role.ManageEdit{})
-	key = consts.ValidatorPrefix + "RoleManageDelete"
+	key = consts.ValidatorPrefixPlatform + "RoleManageDelete"
 	containers.Set(key, role.ManageDelete{})
-	key = consts.ValidatorPrefix + "RolePowerLoginMenuTree"
+	key = consts.ValidatorPrefixPlatform + "RolePowerLoginMenuTree"
 	containers.Set(key, role.PowerLoginMenuTree{})
-	key = consts.ValidatorPrefix + "RolePowerEditableMenuTree"
+	key = consts.ValidatorPrefixPlatform + "RolePowerEditableMenuTree"
 	containers.Set(key, role.PowerEditableMenuTree{})
-	key = consts.ValidatorPrefix + "RolePowerGetSelectedMenus"
+	key = consts.ValidatorPrefixPlatform + "RolePowerGetSelectedMenus"
 	containers.Set(key, role.GetSelectedMenus{})
-	key = consts.ValidatorPrefix + "RolePowerSetSelectedMenus"
+	key = consts.ValidatorPrefixPlatform + "RolePowerSetSelectedMenus"
 	containers.Set(key, role.SetSelectedMenus{})
 
 	//组织架构
-	key = consts.ValidatorPrefix + "DepartmentTree"
+	key = consts.ValidatorPrefixPlatform + "DepartmentTree"
 	containers.Set(key, department.Tree{})
-	key = consts.ValidatorPrefix + "DepartmentAdd"
+	key = consts.ValidatorPrefixPlatform + "DepartmentAdd"
 	containers.Set(key, department.Add{})
-	key = consts.ValidatorPrefix + "DepartmentEdit"
+	key = consts.ValidatorPrefixPlatform + "DepartmentEdit"
 	containers.Set(key, department.Edit{})
-	key = consts.ValidatorPrefix + "DepartmentDelete"
+	key = consts.ValidatorPrefixPlatform + "DepartmentDelete"
 	containers.Set(key, department.Delete{})
 
 	//终端
-	key = consts.ValidatorPrefix + "AgentManagePage"
+	key = consts.ValidatorPrefixPlatform + "AgentManagePage"
 	containers.Set(key, agent.ManagePage{})
-	key = consts.ValidatorPrefix + "AgentManageDelete"
+	key = consts.ValidatorPrefixPlatform + "AgentManageDelete"
 	containers.Set(key, agent.ManageDelete{})
-	key = consts.ValidatorPrefix + "AgentManageUninstall"
+	key = consts.ValidatorPrefixPlatform + "AgentManageUninstall"
 	containers.Set(key, agent.ManageUninstall{})
-	key = consts.ValidatorPrefix + "AgentManageUpgrade"
+	key = consts.ValidatorPrefixPlatform + "AgentManageUpgrade"
 	containers.Set(key, agent.ManageUpgrade{})
-	key = consts.ValidatorPrefix + "AgentManageBatchDelete"
+	key = consts.ValidatorPrefixPlatform + "AgentManageBatchDelete"
 	containers.Set(key, agent.ManageBatchDelete{})
-	key = consts.ValidatorPrefix + "AgentManageBatchUninstall"
+	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUninstall"
 	containers.Set(key, agent.ManageBatchUninstall{})
-	key = consts.ValidatorPrefix + "AgentManageBatchUpgrade"
+	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUpgrade"
 	containers.Set(key, agent.ManageBatchUninstall{})
-	key = consts.ValidatorPrefix + "AgentManageBatchSetConfig"
+	key = consts.ValidatorPrefixPlatform + "AgentManageBatchSetConfig"
 	containers.Set(key, agent.ManageBatchSetConfig{})
-	key = consts.ValidatorPrefix + "AgentBasicGet"
+	key = consts.ValidatorPrefixPlatform + "AgentBasicGet"
 	containers.Set(key, agent.BasicGet{})
-	key = consts.ValidatorPrefix + "AgentBasicSave"
+	key = consts.ValidatorPrefixPlatform + "AgentBasicSave"
 	containers.Set(key, agent.BasicSave{})
-	key = consts.ValidatorPrefix + "AgentConfigGet"
+	key = consts.ValidatorPrefixPlatform + "AgentConfigGet"
 	containers.Set(key, agent.ConfigGet{})
-	key = consts.ValidatorPrefix + "AgentConfigSave"
+	key = consts.ValidatorPrefixPlatform + "AgentConfigSave"
 	containers.Set(key, agent.ConfigSave{})
-	key = consts.ValidatorPrefix + "AgentMonitorList"
+	key = consts.ValidatorPrefixPlatform + "AgentMonitorList"
 	containers.Set(key, agent.MonitorList{})
-	key = consts.ValidatorPrefix + "AgentMonitorInfo"
+	key = consts.ValidatorPrefixPlatform + "AgentMonitorInfo"
 	containers.Set(key, agent.MonitorInfo{})
-	key = consts.ValidatorPrefix + "AgentErrorPage"
+	key = consts.ValidatorPrefixPlatform + "AgentErrorPage"
 	containers.Set(key, agent.ErrorPage{})
 
 }
