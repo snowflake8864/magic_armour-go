@@ -15,8 +15,8 @@ type HuanshiController struct {
 
 // Auth 通过秘钥获取口令
 func (u *HuanshiController) Auth(ctx *gin.Context) {
-	timestamp := int64(ctx.GetFloat64(consts.ValidatorPrefix + "time"))
-	secret := ctx.GetString(consts.ValidatorPrefix + "secret")
+	timestamp := int64(ctx.GetFloat64(consts.ValidatorPrefixApi + "time"))
+	secret := ctx.GetString(consts.ValidatorPrefixApi + "secret")
 
 	//获取备标识码
 	dictCacheFact := dictionary_service.CreateCacheFactory()

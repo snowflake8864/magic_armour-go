@@ -16,12 +16,12 @@ func ApiRegisterValidator() {
 	var key string
 
 	//软件
-	key = consts.ValidatorPrefix + "SoftwarePublished"
+	key = consts.ValidatorPrefixApi + "SoftwarePublished"
 	containers.Set(key, software.Published{})
-	key = consts.ValidatorPrefix + "SoftwareDownload"
+	key = consts.ValidatorPrefixApi + "SoftwareDownload"
 	containers.Set(key, software.Download{})
 
 	//幻势
-	key = consts.ValidatorPrefix + "HuanshiAuth"
+	key = consts.ValidatorPrefixApi + "HuanshiAuth"
 	containers.Set(key, huanshi.Auth{})
 }

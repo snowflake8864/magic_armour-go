@@ -64,14 +64,14 @@ func InitApiRouter() *gin.Engine {
 		// 软件版本相关
 		software := vApi.Group("software/")
 		{
-			software.POST("published", validatorFactory.Create(consts.ValidatorPrefix+"SoftwarePublished"))
-			software.POST("download", validatorFactory.Create(consts.ValidatorPrefix+"SoftwareDownload"))
+			software.POST("published", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwarePublished"))
+			software.POST("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
 		}
 
 		// 软件版本相关
 		hs := vApi.Group("hs/")
 		{
-			hs.POST("auth", validatorFactory.Create(consts.ValidatorPrefix+"HuanshiAuth"))
+			hs.POST("auth", validatorFactory.Create(consts.ValidatorPrefixApi+"HuanshiAuth"))
 		}
 	}
 	return router
