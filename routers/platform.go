@@ -213,8 +213,8 @@ func InitPlatformRouter() *gin.Engine {
 					search := process.Group("search/")
 					{
 						search.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchPage"))
-						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+""))
-						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+""))
+						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchBatchGlobalWhite"))
+						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchBatchGlobalBlack"))
 					}
 				} //进程
 

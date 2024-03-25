@@ -177,6 +177,10 @@ func PlatformRegisterValidator() {
 	containers.Set(key, proc_global.ClearFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessSearchPage"
 	containers.Set(key, process.SearchPage{})
+	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalWhite"
+	containers.Set(key, proc_global.BatchWhiteFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalBlack"
+	containers.Set(key, proc_global.BatchBlackFromProcess{})
 
 	//进程和模块样本
 	key = consts.ValidatorPrefixPlatform + "ProcSamplePage"
