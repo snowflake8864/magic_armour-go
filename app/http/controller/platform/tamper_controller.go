@@ -20,9 +20,9 @@ func (u *TamperController) FolderPower(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "FolderPower")
 }
 
-// Page 分页
-func (u *TamperController) Page(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Page")
+// PageForManage 分页
+func (u *TamperController) PageForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "PageForManage")
 }
 
 // SetSwitchForManage 管理页: 设置开关
@@ -50,24 +50,14 @@ func (u *TamperController) SetSwitchForPolicy(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "SetSwitchForPolicy")
 }
 
-// AddFolderForPolicy 终端策略: 添加文件夹
-func (u *TamperController) AddFolderForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFolderForPolicy")
+// AddForPolicy 终端策略: 添加
+func (u *TamperController) AddForPolicy(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AddForPolicy")
 }
 
-// AddFilForPolicy 终端策略: 添加文件
-func (u *TamperController) AddFilForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFilForPolicy")
-}
-
-// EditFolderForPolicy 终端策略: 编辑文件夹
-func (u *TamperController) EditFolderForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFolderForPolicy")
-}
-
-// EditFilForPolicy 终端策略: 编辑文件
-func (u *TamperController) EditFilForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditFilForPolicy")
+// EditForPolicy 终端策略: 编辑
+func (u *TamperController) EditForPolicy(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "EditForPolicy")
 }
 
 // DeleteForPolicy 终端策略: 删除
@@ -85,24 +75,14 @@ func (u *TamperController) SetSwitchForGlobal(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "SetSwitchForGlobal")
 }
 
-// AddFolderForGlobal 全局策略: 添加文件夹
-func (u *TamperController) AddFolderForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFolderForGlobal")
+// AddForGlobal 全局策略: 添加
+func (u *TamperController) AddForGlobal(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AddForGlobal")
 }
 
-// AddFilForGlobal 全局策略: 添加文件
-func (u *TamperController) AddFilForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFilForGlobal")
-}
-
-// EditFolderForGlobal 全局策略: 编辑文件夹
-func (u *TamperController) EditFolderForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFolderForGlobal")
-}
-
-// EditFilForGlobal 全局策略: 编辑文件
-func (u *TamperController) EditFilForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditFilForGlobal")
+// EditForGlobal 全局策略: 编辑
+func (u *TamperController) EditForGlobal(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "EditForGlobal")
 }
 
 // DeleteForGlobal 全局策略: 删除

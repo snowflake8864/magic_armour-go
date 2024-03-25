@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/http/validator/platform/proc_sample"
 	"goskeleton/app/http/validator/platform/process"
 	"goskeleton/app/http/validator/platform/role"
+	"goskeleton/app/http/validator/platform/tamper"
 	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
@@ -192,4 +193,41 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "ProcSampleDownload"
 	containers.Set(key, proc_sample.Download{})
 
+	//防篡改
+	key = consts.ValidatorPrefixPlatform + "TamperManagePage"
+	containers.Set(key, tamper.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "TamperManageSetSwitch"
+	containers.Set(key, tamper.ManageSetSwitch{})
+	key = consts.ValidatorPrefixPlatform + "TamperManageSetMode"
+	containers.Set(key, tamper.ManageSetMode{})
+	key = consts.ValidatorPrefixPlatform + "TamperManageBatchSetConfig"
+	containers.Set(key, tamper.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyPage"
+	containers.Set(key, tamper.PolicyPage{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicySetSwitch"
+	containers.Set(key, tamper.PolicySetSwitch{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyAddFolder"
+	containers.Set(key, tamper.PolicyAddFolder{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyAddFile"
+	containers.Set(key, tamper.PolicyAddFile{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyEditFolder"
+	containers.Set(key, tamper.PolicyEditFolder{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyEditFile"
+	containers.Set(key, tamper.PolicyEditFile{})
+	key = consts.ValidatorPrefixPlatform + "TamperPolicyDelete"
+	containers.Set(key, tamper.PolicyDelete{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalPage"
+	containers.Set(key, tamper.GlobalPage{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalSetSwitch"
+	containers.Set(key, tamper.GlobalSetSwitch{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalAddFolder"
+	containers.Set(key, tamper.GlobalAddFolder{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalAddFile"
+	containers.Set(key, tamper.GlobalAddFile{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalEditFolder"
+	containers.Set(key, tamper.GlobalEditFolder{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalEditFile"
+	containers.Set(key, tamper.GlobalEditFile{})
+	key = consts.ValidatorPrefixPlatform + "TamperGlobalDelete"
+	containers.Set(key, tamper.GlobalDelete{})
 }
