@@ -197,8 +197,8 @@ func InitPlatformRouter() *gin.Engine {
 						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentExtractSample"))
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchGlobalWhite"))
-						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenWhite"))
-						manage.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenBlack"))
+						agentV2.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenWhite"))
+						agentV2.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenBlack"))
 					}
 
 					global := process.Group("global/")

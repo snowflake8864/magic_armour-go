@@ -150,6 +150,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, process.AgentRefresh{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentCollect"
 	containers.Set(key, process.AgentCollect{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractRunningDll"
+	containers.Set(key, process.AgentExtractRunningDll{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentShowRunningDll"
 	containers.Set(key, process.AgentShowRunningDll{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchWhite"
