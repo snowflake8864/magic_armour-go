@@ -20,7 +20,7 @@ func (n GetTrustDir) CheckParams(context *gin.Context) {
 	}
 
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）
-	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefix, context)
+	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixAgent, context)
 	if extraAddBindDataContext == nil {
 		response.FailSimplify(context, "[agent agent get_info]表单验证器json化失败")
 	} else {

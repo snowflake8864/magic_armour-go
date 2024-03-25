@@ -176,7 +176,7 @@ func (u *TaskController) hasProjectModeBefore(task int) bool {
 
 // Close 关闭任务
 func (u *TaskController) Close(ctx *gin.Context) {
-	taskType := int(ctx.GetFloat64(consts.ValidatorPrefix + "tasklist"))
+	taskType := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "tasklist"))
 	types := []int{taskType}
 
 	loginInfo := u.GetLogin(ctx)

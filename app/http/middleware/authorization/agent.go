@@ -77,7 +77,7 @@ func SaveAgentAccess() gin.HandlerFunc {
 				"/v1/auth": {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
-				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefix + "uid"))
+				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefixAgent + "uid"))
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAgent(c)
 				param.AgentId = loginInfo.AgentId
