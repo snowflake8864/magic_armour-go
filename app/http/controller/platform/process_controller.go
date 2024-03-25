@@ -105,9 +105,9 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CollectForAgent")
 }
 
-// RepeatPageForAgent 单终端: 重复进程
-func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RepeatPageForAgent")
+// RepeatHashForAgent 单终端: 重复进程
+func (u *ProcessController) RepeatHashForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "RepeatHashForAgent")
 }
 
 // ExtractRunningDllForAgent 单终端: 提取运行中模块

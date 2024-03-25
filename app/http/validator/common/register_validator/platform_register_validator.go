@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/http/validator/platform/proc_sample"
 	"goskeleton/app/http/validator/platform/process"
 	"goskeleton/app/http/validator/platform/role"
+	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
 // PlatformRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -151,13 +152,31 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentShowRunningDll"
 	containers.Set(key, process.AgentShowRunningDll{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchWhite"
-	containers.Set(key, process.AgentBatchWhite{})
+	containers.Set(key, process.AgentShowRunningDll{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentRepeatPage"
+	containers.Set(key, process.AgentRepeatHash{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractSample"
 	containers.Set(key, proc_sample.AddFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetGlobal"
 	containers.Set(key, proc_global.AddFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
 	containers.Set(key, proc_global.BatchWhiteFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenWhite"
+	containers.Set(key, threaten_push.BatchWhiteFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenBlack"
+	containers.Set(key, threaten_push.BatchBlackFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessGlobalPage"
+	containers.Set(key, proc_global.PageFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessGlobalAdd"
+	containers.Set(key, proc_global.AddFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessGlobalEdit"
+	containers.Set(key, proc_global.Edit{})
+	key = consts.ValidatorPrefixPlatform + "ProcessGlobalDelete"
+	containers.Set(key, proc_global.Delete{})
+	key = consts.ValidatorPrefixPlatform + "ProcessGlobalClear"
+	containers.Set(key, proc_global.ClearFromProcess{})
+	key = consts.ValidatorPrefixPlatform + "ProcessSearchPage"
+	containers.Set(key, process.SearchPage{})
 
 	//进程和模块样本
 	key = consts.ValidatorPrefixPlatform + "ProcSamplePage"

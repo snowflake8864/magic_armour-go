@@ -192,14 +192,13 @@ func InitPlatformRouter() *gin.Engine {
 						agentV2.POST("extractRunningDll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentExtractRunningDll"))
 						agentV2.POST("showRunningDll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentShowRunningDll"))
 						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchWhite"))
-						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentRepeatPage"))
+						agentV2.POST("repeatHash", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentRepeatPage"))
 
 						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentExtractSample"))
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchGlobalWhite"))
-						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+""))
-						manage.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+""))
-
+						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenWhite"))
+						manage.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenBlack"))
 					}
 
 					global := process.Group("global/")
