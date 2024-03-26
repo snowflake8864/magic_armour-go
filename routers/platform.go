@@ -80,7 +80,7 @@ func InitPlatformRouter() *gin.Engine {
 					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGetAgentStatistic"))
 					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGetAlarmStatistic"))
 				}
-				//菜单
+				//菜单 - 隐藏页
 				menu := vPlatform.Group("menu/")
 				{
 					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuTree"))

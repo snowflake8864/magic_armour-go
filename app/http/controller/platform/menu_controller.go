@@ -2,6 +2,10 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	enum_enum "goskeleton/app/global/enums/enum_menu"
+	"goskeleton/app/model/model_platform"
+	"goskeleton/app/service/platform/munu_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -17,7 +21,24 @@ func (u *MenuController) Tree(ctx *gin.Context) {
 
 // Add 添加
 func (u *MenuController) Add(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "add")
+	var param = model_platform.MenuModel{
+		ParentId:   int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
+		Position:   enum_enum.PositionLeft,
+		Title:      ctx.GetString(consts.ValidatorPrefixPlatform + "name"),
+		WebCode:    ctx.GetString(consts.ValidatorPrefixPlatform + "code"),
+		Sort:       int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
+		IsShow:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isShow")),
+		IsRoot:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
+		Remark:     ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
+		ServiceApi: "",
+	}
+
+	errCode, err := munu_service.CreateCurdFactory().Add(&param)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // Edit 编辑

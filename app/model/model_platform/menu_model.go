@@ -1,6 +1,7 @@
 package model_platform
 
 import (
+	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -15,7 +16,7 @@ func CreateMenuFactory() *MenuModel {
 
 type MenuModel struct {
 	model.BaseModel
-	Id         int64  `json:"id" gorm:"primaryKey"`
+	Id         int64  `gorm:"primaryKey" json:"id"`
 	ParentId   int64  `json:"parent_id"`
 	Position   int    `json:"position"`
 	Title      string `json:"title"`
@@ -39,7 +40,7 @@ func (m *MenuModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			id int(11) NOT NULL DEFAULT '0' COMMENT '自增id',
+			id int(11) NOT NULL DEFAULT '0' AUTO_INCREMENT,
 			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			position tinyint(1) NOT NULL DEFAULT '1' COMMENT '方位(1左,2右,3顶部)',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1菜单,2按钮,3链接)',
@@ -53,7 +54,8 @@ func (m *MenuModel) CreateTable() bool {
 			level smallint(4) NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
-			KEY index_parent (parent_id)
+			KEY index_parent (parent_id),
+			KEY index_level (level)
 		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='菜单表';
 		`
 	result := m.Exec(m.TrimSql(sql))
@@ -86,5 +88,54 @@ func (m *MenuModel) InitData() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *MenuModel) InsertItem(s *MenuModel) bool {
+	result := m.Create(s)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		fmt.Println(result.Error)
+		return false
+	}
+}
+
+func (m *MenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
+	result := m.Where("id=?", id).Updates(updates)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *MenuModel) GetItemById(id int64) (*MenuModel, error) {
+	result := m.Where("id=?", id).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *MenuModel) GetItemsByIds(ids []int64) ([]MenuModel, error) {
+	var items []MenuModel
+
+	result := m.Where("id IN ?", ids).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *MenuModel) GetItemsByConditions(condition map[string]interface{}) ([]MenuModel, error) {
+	var items []MenuModel
+	result := m.Where(condition).Find(&items).Order("level ASC, sort ASC")
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
 	}
 }
