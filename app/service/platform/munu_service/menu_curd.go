@@ -2,6 +2,7 @@ package munu_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/utils/helpers"
 )
@@ -34,4 +35,14 @@ func (crd *MenuCurd) Add(param *model_platform.MenuModel) (errCode int, err erro
 		return -1, errors.New("添加失败")
 	}
 	return errCode, err
+}
+
+func (crd *MenuCurd) GetAll(isRoot int) []model_platform.MenuModel {
+	condition := make(map[string]interface{})
+	if isRoot > 0 {
+		condition["is_root"] = enums.IsYes
+	}
+
+	list, _ := crd.masterModel.GetItemsByConditions(condition)
+	return list
 }

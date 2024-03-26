@@ -1,7 +1,6 @@
 package model_platform
 
 import (
-	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -16,18 +15,18 @@ func CreateMenuFactory() *MenuModel {
 
 type MenuModel struct {
 	model.BaseModel
-	Id         int64  `gorm:"primaryKey" json:"id"`
-	ParentId   int64  `json:"parent_id"`
-	Position   int    `json:"position"`
-	Title      string `json:"title"`
-	WebCode    string `json:"web_code"`
-	Sort       int    `json:"sort"`
-	IsShow     int    `json:"is_show"`
-	IsRoot     int    `json:"is_root"`
-	Remark     string `json:"remark"`
-	ServiceApi string `json:"service_api"`
-	Level      int    `json:"level"`
-	CreatedAt  string `json:"created_at"`
+	Id        int64  `gorm:"primaryKey" json:"id"`
+	ParentId  int64  `json:"parent_id"`
+	Position  int    `json:"position"`
+	Name      string `json:"name"`
+	Code      string `json:"code"`
+	Sort      int    `json:"sort"`
+	IsShow    int    `json:"is_show"`
+	IsRoot    int    `json:"is_root"`
+	Remark    string `json:"remark"`
+	Api       string `json:"api"`
+	Level     int    `json:"level"`
+	CreatedAt string `json:"created_at"`
 }
 
 // 表名
@@ -44,13 +43,13 @@ func (m *MenuModel) CreateTable() bool {
 			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			position tinyint(1) NOT NULL DEFAULT '1' COMMENT '方位(1左,2右,3顶部)',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1菜单,2按钮,3链接)',
-			title varchar(128)  NOT NULL DEFAULT '' COMMENT '标题',
-			web_code varchar(128)  NOT NULL DEFAULT '' COMMENT '前端页面:标识',
+			name varchar(128)  NOT NULL DEFAULT '' COMMENT '标题',
+			code varchar(128)  NOT NULL DEFAULT '' COMMENT '页面标识',
 			sort int(11) NOT NULL DEFAULT '1' COMMENT '排序',
 			is_show tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示(0否,1是),前端判断用',
 			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '仅超管可用(0否,1是),后端判断用',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
-			service_api text  NOT NULL COMMENT '服务端对应接口(,)隔开',
+			api text  NOT NULL COMMENT '服务端对应接口(,)隔开',
 			level smallint(4) NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
@@ -96,7 +95,6 @@ func (m *MenuModel) InsertItem(s *MenuModel) bool {
 	if result.RowsAffected > 0 {
 		return true
 	} else {
-		fmt.Println(result.Error)
 		return false
 	}
 }
