@@ -31,6 +31,7 @@ func (u *MenuController) Tree(ctx *gin.Context) {
 			ParentId: model.ParentId,
 			Data: map[string]interface{}{
 				"name":       model.Name,
+				"type":       model.Type,
 				"code":       model.Code,
 				"sort":       model.Sort,
 				"is_show":    model.IsShow,
@@ -50,8 +51,9 @@ func (u *MenuController) Tree(ctx *gin.Context) {
 // Add 添加
 func (u *MenuController) Add(ctx *gin.Context) {
 	var param = model_platform.MenuModel{
-		ParentId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
 		Position: enum_menu.PositionLeft,
+		ParentId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
+		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
 		Name:     ctx.GetString(consts.ValidatorPrefixPlatform + "name"),
 		Code:     ctx.GetString(consts.ValidatorPrefixPlatform + "code"),
 		Sort:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
@@ -71,7 +73,22 @@ func (u *MenuController) Add(ctx *gin.Context) {
 
 // Edit 编辑
 func (u *MenuController) Edit(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "edit")
+	var param = model_platform.MenuModel{
+		Id:     int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		Type:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
+		Name:   ctx.GetString(consts.ValidatorPrefixPlatform + "name"),
+		Code:   ctx.GetString(consts.ValidatorPrefixPlatform + "code"),
+		Sort:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
+		IsShow: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isShow")),
+		IsRoot: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
+		Remark: ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
+	}
+	errCode, err := munu_service.CreateCurdFactory().UpdateById(&param)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // Sort 排序

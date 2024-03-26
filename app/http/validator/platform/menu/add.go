@@ -9,7 +9,7 @@ import (
 )
 
 type Add struct {
-	ParentId *int   `form:"parentId" json:"parentId" binding:"required,min=0,max=10000"`
+	ParentId *int   `form:"parentId" json:"parentId" binding:"required,min=0"`
 	Type     int    `form:"type" json:"type" binding:"required,max=10000"`
 	Name     string `form:"name" json:"name" binding:"required,max=100"`
 	Code     string `form:"code" json:"code" binding:"required,max=100"`

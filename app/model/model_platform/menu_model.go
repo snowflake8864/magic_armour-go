@@ -18,6 +18,7 @@ type MenuModel struct {
 	Id        int64  `gorm:"primaryKey" json:"id"`
 	ParentId  int64  `json:"parent_id"`
 	Position  int    `json:"position"`
+	Type      int    `json:"type"`
 	Name      string `json:"name"`
 	Code      string `json:"code"`
 	Sort      int    `json:"sort"`
@@ -100,8 +101,8 @@ func (m *MenuModel) InsertItem(s *MenuModel) bool {
 }
 
 func (m *MenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Where("id=?", id).Updates(updates)
-	if result.RowsAffected > 0 {
+	result := m.Table(m.TableName()).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
 		return true
 	} else {
 		return false

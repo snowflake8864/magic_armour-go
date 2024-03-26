@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -97,11 +96,6 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "pw"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixPlatform + "sliderCode")
 	smsCode := ctx.GetString(consts.ValidatorPrefixPlatform + "smsCode")
-	variable.ZapLog.Debug("name: " + name)
-	variable.ZapLog.Debug("pw: " + pw)
-	variable.ZapLog.Debug("sliderCode: " + sliderCode)
-	variable.ZapLog.Debug("smsCode: " + smsCode)
-
 	if helpers.StringIsEmpty(name) || helpers.StringIsEmpty(pw) || helpers.StringIsEmpty(sliderCode) {
 		response.FailSimplify(ctx, "参数不正确")
 		return

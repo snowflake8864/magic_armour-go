@@ -1,5 +1,28 @@
 package tree
 
+/**
+var nodes []*tree.Node
+for _, model := range models {
+	nodes = append(nodes, &tree.Node{
+		ID:       model.Id,
+		ParentId: model.ParentId,
+		Data: map[string]interface{}{
+			"name":       model.Name,
+			"code":       model.Code,
+			"sort":       model.Sort,
+			"is_show":    model.IsShow,
+			"is_root":    model.IsRoot,
+			"remark":     model.Remark,
+			"api":        model.Api,
+			"level":      model.Level,
+			"created_at": model.CreatedAt,
+		},
+		Child: []*tree.Node{},
+	})
+}
+tree.RealTree(nodes)
+*/
+
 type Node struct {
 	ID       int64                  `json:"id"`
 	ParentId int64                  `json:"parentId"`

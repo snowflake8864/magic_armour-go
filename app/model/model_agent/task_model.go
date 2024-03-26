@@ -77,7 +77,7 @@ func (m *TaskModel) UpdateByCondition(conditions, updates map[string]interface{}
 		return tx.Model(m).Where(conditions).Updates(updates)
 	})
 	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
+	if result.Error == nil {
 		return true
 	} else {
 		return false

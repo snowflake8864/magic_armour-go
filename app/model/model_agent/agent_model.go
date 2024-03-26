@@ -194,7 +194,7 @@ func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) 
 		return tx.Model(m).Where("agent_id=?", agentId).Updates(updates)
 	})
 	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
+	if result.Error == nil {
 		return true
 	} else {
 		return false
@@ -206,7 +206,7 @@ func (m *AgentModel) UpdateByIds(agentIds []string, updates map[string]interface
 		return tx.Model(m).Where("agent_id IN ?", agentIds).Updates(updates)
 	})
 	result := m.Exec(sql)
-	if result.RowsAffected > 0 {
+	if result.Error == nil {
 		return true
 	} else {
 		return false

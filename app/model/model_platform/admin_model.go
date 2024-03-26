@@ -146,8 +146,8 @@ func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (*AdminModel, e
 }
 
 func (m *AdminModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Where("id=?", id).Updates(updates)
-	if result.RowsAffected > 0 {
+	result := m.Table(m.TableName()).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
 		return true
 	} else {
 		return false
