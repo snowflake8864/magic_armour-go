@@ -35,7 +35,7 @@ func (m *DictionaryModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			Id varchar(64) NOT NULL DEFAULT '' COMMENT '标识',
+			id varchar(64) NOT NULL DEFAULT '' COMMENT '标识',
 			module varchar(32)  NOT NULL DEFAULT '' COMMENT '模块',
 			val varchar(1024)  NOT NULL DEFAULT '' COMMENT '值',
 			remark varchar(128)   NOT NULL DEFAULT '' COMMENT '备注',

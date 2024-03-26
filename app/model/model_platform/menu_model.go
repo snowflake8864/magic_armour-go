@@ -40,7 +40,7 @@ func (m *MenuModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			id int(11) NOT NULL DEFAULT '0' AUTO_INCREMENT,
+			id int(11) int(11) unsigned NOT NULL AUTO_INCREMENT,
 			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			position tinyint(1) NOT NULL DEFAULT '1' COMMENT '方位(1左,2右,3顶部)',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1菜单,2按钮,3链接)',
