@@ -2,6 +2,9 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,12 +15,14 @@ type AgentController struct {
 
 // OnlineStatus 在线状态
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "OnlineStatus")
+	list := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
+	response.SuccessReturnData(ctx, (&platform_trans.Common{}).FormatMapIntStr2List(list, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SafeStatus")
+	list := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
+	response.SuccessReturnData(ctx, (&platform_trans.Common{}).FormatMapIntStr2List(list, true))
 }
 
 // CountOnline 统计在线和离线数量

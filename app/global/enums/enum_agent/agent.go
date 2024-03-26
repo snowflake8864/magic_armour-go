@@ -1,5 +1,7 @@
 package enum_agent
 
+import "goskeleton/app/global/enums"
+
 // 终端
 
 const (
@@ -30,5 +32,13 @@ var EnumIntMap = map[string]map[int]string{
 		4: "笔记本",
 		5: "台式机",
 		6: "其它",
+	},
+	"is_online": {
+		enums.IsYes: "在线",
+		enums.IsNot: "离线",
+	},
+	"is_safe": {
+		enums.IsYes: "正常",
+		enums.IsNot: "异常",
 	},
 }

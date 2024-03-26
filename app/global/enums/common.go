@@ -10,7 +10,7 @@ const (
 
 )
 
-// Get1stIsStrReturnSliceOfStr 如是第一级是string,返回对应的string类型切片
+// Get1stIsStrReturnSliceOfStr 如是第一级是string,返回相应[]string
 func Get1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {
 	val, ok := s[first]
 	if ok == false {
@@ -19,7 +19,7 @@ func Get1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {
 	return val
 }
 
-// Get1stIsStrReturnSliceOfInt 如是第一级是string,返回对应的int类型切片
+// Get1stIsStrReturnSliceOfInt 如是第一级是string,返回相应[]int
 func Get1stIsStrReturnSliceOfInt(first string, s map[string][]int) []int {
 	val, ok := s[first]
 	if ok == false {
@@ -28,7 +28,16 @@ func Get1stIsStrReturnSliceOfInt(first string, s map[string][]int) []int {
 	return val
 }
 
-// Get1stIsStrAnd2ndIsIntReturnStr 如是第一级是string串且第二级是int,返回对应的string
+// Get1stIsStrReturnMapIntOfStr 如是第一级是string,返回相应map[int]string
+func Get1stIsStrReturnMapIntOfStr(first string, s map[string]map[int]string) map[int]string {
+	val, ok := s[first]
+	if ok == false {
+		return nil
+	}
+	return val
+}
+
+// Get1stIsStrAnd2ndIsIntReturnStr 如是第一级是string串且第二级是int,返回相应string
 func Get1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[int]string) string {
 	val, ok := s[first][second]
 	if ok == false {
@@ -37,7 +46,7 @@ func Get1stIsStrAnd2ndIsIntReturnStr(first string, second int, s map[string]map[
 	return val
 }
 
-// Get1stIsStrAnd2ndIsIntReturnInt 如是第一级是string串且第二级是int,返回对应的string
+// Get1stIsStrAnd2ndIsIntReturnInt 如是第一级是string串且第二级是int,返回相应string
 func Get1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[int]int) int {
 	val, ok := s[first][second]
 	if ok == false {
@@ -46,7 +55,7 @@ func Get1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[
 	return val
 }
 
-// Get1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回对应的[]int
+// Get1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回相应[]int
 func Get1stIsStrAnd2ndIsIntReturnSliceInt(first string, second int, s map[string]map[int][]int) []int {
 	val, ok := s[first][second]
 	if ok == false {
