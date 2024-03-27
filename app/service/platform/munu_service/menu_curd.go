@@ -2,7 +2,6 @@ package munu_service
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/utils/helpers"
@@ -57,7 +56,6 @@ func (crd *MenuCurd) UpdateById(param *model_platform.MenuModel) (errCode int, e
 	updates["is_show"] = param.IsShow
 	updates["is_root"] = param.IsRoot
 	updates["remark"] = param.Remark
-	fmt.Println(helpers.JsonEncode(updates))
 
 	isOk := crd.masterModel.UpdateById(param.Id, updates)
 	if !isOk {
