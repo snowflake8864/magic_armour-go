@@ -86,7 +86,7 @@ func InitPlatformRouter() *gin.Engine {
 					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuTree"))
 					menu.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuAdd"))
 					menu.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuEdit"))
-					menu.POST("sort", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuSort"))
+					//menu.POST("sort", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuSort"))
 					menu.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuDelete"))
 				}
 				//角色

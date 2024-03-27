@@ -109,8 +109,26 @@ func (m *MenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
 	}
 }
 
+func (m *MenuModel) DeleteById(id int64) bool {
+	result := m.Where("id=?", id).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *MenuModel) GetItemById(id int64) (*MenuModel, error) {
 	result := m.Where("id=?", id).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *MenuModel) GetItemByParent(id int64) (*MenuModel, error) {
+	result := m.Where("parent_id=?", id).First(m)
 	if result.Error == nil {
 		return m, nil
 	} else {

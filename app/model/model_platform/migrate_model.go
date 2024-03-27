@@ -179,5 +179,9 @@ func (m *MigrateModel) TestToSQL() bool {
 		return tx.Model(&MigrateModel{}).Delete(&MigrateModel{}, 5)
 	})
 	fmt.Println(sql)
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Where("migration LIKE ?", "%jinzhu%").Delete(&MigrateModel{})
+	})
+	fmt.Println(sql)
 	return true
 }

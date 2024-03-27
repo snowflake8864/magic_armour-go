@@ -19,7 +19,7 @@ type MenuCurd struct {
 func (crd *MenuCurd) Add(param *model_platform.MenuModel) (errCode int, err error) {
 
 	if param.ParentId > 0 {
-		if hasModel, _ := crd.masterModel.GetItemById(param.ParentId); hasModel != nil {
+		if hasModel, _ := crd.masterModel.GetItemById(param.ParentId); hasModel != nil && hasModel.Id > 0 {
 			param.Level = hasModel.Level + 1
 		} else {
 			return -1, errors.New("父级菜单不存在")
@@ -37,6 +37,7 @@ func (crd *MenuCurd) Add(param *model_platform.MenuModel) (errCode int, err erro
 	return errCode, err
 }
 
+// GetAll 获取全部
 func (crd *MenuCurd) GetAll(isRoot int) []model_platform.MenuModel {
 	condition := make(map[string]interface{})
 	if isRoot > 0 {
@@ -47,6 +48,7 @@ func (crd *MenuCurd) GetAll(isRoot int) []model_platform.MenuModel {
 	return list
 }
 
+// UpdateById 修改
 func (crd *MenuCurd) UpdateById(param *model_platform.MenuModel) (errCode int, err error) {
 	updates := make(map[string]interface{})
 	updates["type"] = param.Type
@@ -60,6 +62,18 @@ func (crd *MenuCurd) UpdateById(param *model_platform.MenuModel) (errCode int, e
 	isOk := crd.masterModel.UpdateById(param.Id, updates)
 	if !isOk {
 		return -1, errors.New("修改失败")
+	}
+	return errCode, err
+}
+
+// DeleteById 删除
+func (crd *MenuCurd) DeleteById(id int64) (errCode int, err error) {
+	if hasModel, _ := crd.masterModel.GetItemByParent(id); hasModel != nil && hasModel.Id > 0 {
+		return -1, errors.New("有子菜单或按钮，不能被删除")
+	}
+	isOk := crd.masterModel.DeleteById(id)
+	if !isOk {
+		return -1, errors.New("删除失败")
 	}
 	return errCode, err
 }

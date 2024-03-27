@@ -98,5 +98,11 @@ func (u *MenuController) Sort(ctx *gin.Context) {
 
 // Delete 删除
 func (u *MenuController) Delete(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "delete")
+	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
+	errCode, err := munu_service.CreateCurdFactory().DeleteById(id)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
