@@ -131,6 +131,7 @@ func (m *MigrateModel) TestToSQL() bool {
 		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", variable.DateFormat, "20240108000001_init_paltforma", variable.DateFormat)
 	})
 	fmt.Println(sql)
+
 	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		// 定义更新字段的map， 键值对
 		var relaValue = map[string]interface{}{
@@ -138,6 +139,16 @@ func (m *MigrateModel) TestToSQL() bool {
 			"created_at": time.Now().Format(variable.DateFormat),
 		}
 		return tx.Model(&MigrateModel{}).Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
+	})
+	fmt.Println(sql)
+
+	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		// 定义更新字段的map， 键值对
+		var relaValue = map[string]interface{}{
+			"Migration":  "192.168.6.66",
+			"created_at": time.Now().Format(variable.DateFormat),
+		}
+		return tx.Table("p_migrations").Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
 	})
 	fmt.Println(sql)
 
