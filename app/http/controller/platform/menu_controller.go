@@ -93,7 +93,9 @@ func (u *MenuController) Edit(ctx *gin.Context) {
 
 // Sort 排序
 func (u *MenuController) Sort(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "sort")
+	//ids := []int64{1, 2, 4, 5, 6}
+	list := munu_service.CreateCurdFactory().GetAll(0)
+	response.SuccessReturnData(ctx, list)
 }
 
 // Delete 删除
