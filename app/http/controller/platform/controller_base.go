@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
@@ -20,46 +21,47 @@ func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogi
 }
 
 // getAgentSearchConditions 获取终端查询条件
-func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (map[string]interface{}, error) {
-	conditions := make(map[string]interface{})
+func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_service.SearchConditions, error) {
 
 	//页面上传
-	conditions["agentId"] = ctx.GetString(consts.ValidatorPrefixPlatform + "agentId")
-	conditions["hostName"] = ctx.GetString(consts.ValidatorPrefixPlatform + "hostName")
-	conditions["agentIp"] = ctx.GetString(consts.ValidatorPrefixPlatform + "agentIp")
-	conditions["netIp"] = ctx.GetString(consts.ValidatorPrefixPlatform + "netIp")
-	conditions["alias"] = ctx.GetString(consts.ValidatorPrefixPlatform + "alias")
-	conditions["contactName"] = ctx.GetString(consts.ValidatorPrefixPlatform + "contactName")
+	searchConditions := agent_service.SearchConditions{}
+	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixPlatform + "agentId")
+	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixPlatform + "hostName")
+	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixPlatform + "agentIp")
+	searchConditions.NetIp = ctx.GetString(consts.ValidatorPrefixPlatform + "netIp")
+	searchConditions.Alias = ctx.GetString(consts.ValidatorPrefixPlatform + "alias")
+	searchConditions.ContactName = ctx.GetString(consts.ValidatorPrefixPlatform + "contactName")
+	searchConditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
+	searchConditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
+
 	var reqDeptIds []int
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
 		reqDeptIds = helpers.SliceAny2Int(tmp)
 	}
-	conditions["isOnline"] = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
-	conditions["isSafe"] = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
 
 	//用户管理的组织架构
 	if isAgent, departments := u.getCurrAdminDepartments(ctx); !isAgent {
 		if departments == nil || len(departments) == 0 {
-			return conditions, errors.New("没有需要负责的组织架构")
+			return searchConditions, errors.New("没有需要负责的组织架构")
 		}
 		//没有查询组织架构
 		if len(reqDeptIds) == 0 {
-			conditions["deptIds"] = departments
+			searchConditions.DeptIds = departments
 		} else {
 			//用户管理组织架构与查询组织架构交集
 			intersection := helpers.SliceIntIntersect(reqDeptIds, departments)
 			if intersection == nil || len(intersection) == 0 {
-				return conditions, errors.New("暂无数据")
+				return searchConditions, errors.New("暂无数据")
 			} else {
-				conditions["deptIds"] = intersection
+				searchConditions.DeptIds = intersection
 			}
 		}
 	} else {
-		conditions["deptIds"] = reqDeptIds
+		searchConditions.DeptIds = reqDeptIds
 	}
-	return conditions, nil
+	return searchConditions, nil
 }
 
 // getCurrAdminDepartments 获取当前用户的管理部门

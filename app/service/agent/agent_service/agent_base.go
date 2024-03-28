@@ -1,14 +1,64 @@
 package agent_service
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/helpers"
 )
 
+type SearchConditions struct {
+	AgentId      string
+	HostName     string
+	AgentIp      string
+	NetIp        string
+	PlatformType int
+	IsOnline     int
+	IsSafe       int
+	Alias        string
+	ContactName  string
+	DeptIds      []int
+}
+
 type AgentBase struct {
+}
+
+// search2Where 查询条件转化
+func (crd *AgentBase) search2Where(search SearchConditions) (wheres map[string]interface{}) {
+	if !helpers.StringIsEmpty(search.AgentId) {
+		wheres["agent_id"] = search.AgentId
+	}
+	if !helpers.StringIsEmpty(search.HostName) {
+		wheres["host_name"] = search.HostName
+	}
+	if !helpers.StringIsEmpty(search.NetIp) {
+		wheres["net_ip"] = search.NetIp
+	}
+	if !helpers.StringIsEmpty(search.AgentIp) {
+		wheres["agent_ip"] = gorm.Expr("LIKE ?", "%"+search.AgentIp+"%")
+	}
+	if search.PlatformType > 0 {
+		wheres["platform_type"] = search.PlatformType
+	}
+	if search.IsOnline != enums.SearchAll {
+		wheres["is_online"] = search.IsOnline
+	}
+	if search.IsSafe != enums.SearchAll {
+		wheres["is_safe"] = search.IsSafe
+	}
+	if !helpers.StringIsEmpty(search.ContactName) {
+		wheres["contact_name"] = search.ContactName
+	}
+	if !helpers.StringIsEmpty(search.Alias) {
+		wheres["alias"] = search.Alias
+	}
+	if search.DeptIds != nil && len(search.DeptIds) > 0 {
+		wheres["dept_id"] = search.DeptIds
+	}
+	return wheres
 }
 
 // ColumnConfig 字段:全部配置相关

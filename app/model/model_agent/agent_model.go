@@ -214,11 +214,7 @@ func (m *AgentModel) UpdateByIds(agentIds []string, updates map[string]interface
 }
 
 func (m *AgentModel) GetItemById(agentId, column string) (*AgentModel, error) {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id = ?"
-		return tx.Model(m).Raw(st, agentId)
-	})
-	result := m.Raw(sql).First(m)
+	result := m.Select(column).Where("agent_id=?", agentId).First(m)
 	if result.Error == nil {
 		return m, nil
 	} else {
@@ -227,14 +223,34 @@ func (m *AgentModel) GetItemById(agentId, column string) (*AgentModel, error) {
 }
 
 func (m *AgentModel) GetItemsByIds(agentIds []string, column string) (items []AgentModel, err error) {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "SELECT " + column + " FROM " + m.TableName() + " WHERE agent_id IN ?"
-		return tx.Model(m).Raw(st, agentIds)
-	})
-	result := m.Raw(sql).Find(&items)
+	result := m.Select(column).Where("agent_id In ?", agentIds).Find(items)
 	if result.Error == nil {
 		return items, nil
 	} else {
 		return nil, result.Error
+	}
+}
+
+func (m *AgentModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	result := m.Where(condition).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+func (m *AgentModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []AgentModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+
+	result := m.Where(condition).Offset(offset).Limit(limit).Order(order).Find(items)
+	if result.Error == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

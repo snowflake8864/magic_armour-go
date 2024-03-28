@@ -3,6 +3,7 @@ package agent_service
 import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/utils/helpers"
 )
@@ -38,20 +39,15 @@ func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[stri
 	return result
 }
 
-// search2Where 查询条件转化
-func (crd *AgentCurd) search2Where(search map[string]interface{}) (wheres map[string]interface{}) {
-	if val, ok := search["agentId"]; ok {
-		wheres["agent_id"] = val
+func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []model_agent.AgentModel) {
+	where := crd.search2Where(search)
+	order := ""
+	if orderField == enum_agent.OrderFieldDefault {
+		order = "is_online DESC, is_safe ASC, created_at DESC"
+	} else {
+		order = "created_at DESC"
 	}
-	if val, ok := search["hostName"]; ok {
-		wheres["agent_id"] = val
-	}
-
-	return wheres
-}
-
-func (crd *AgentCurd) Page(search map[string]interface{}, offset, pageSize int, orderField, orderSort string) (total int, items []model_agent.AgentModel) {
-
+	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
 }
 
