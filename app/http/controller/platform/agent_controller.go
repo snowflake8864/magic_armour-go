@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -37,12 +38,18 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 
 // PageForManage 管理: 分页
 func (u *AgentController) PageForManage(ctx *gin.Context) {
+	//查询条件
 	conditions, err := u.getAgentSearchConditions(ctx)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
-	response.SuccessReturnData(ctx, conditions)
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
+
+	total, agentModels := agent_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, nil, nil))
 }
 
 // DeleteForManage 管理: 删除

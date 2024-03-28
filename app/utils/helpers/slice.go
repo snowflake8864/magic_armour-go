@@ -1,6 +1,8 @@
 package helpers
 
-import "strconv"
+import (
+	"strconv"
+)
 
 // SliceString2Map  slice 转为 map[string]struct{}
 func SliceString2Map(sl []string) map[string]struct{} {
@@ -27,6 +29,8 @@ func SliceAny2Int(sl []interface{}) []int {
 		switch v := item.(type) {
 		case int:
 			intSlice = append(intSlice, v)
+		case float64:
+			intSlice = append(intSlice, int(v))
 		case string:
 			num, err := strconv.Atoi(v)
 			if err == nil {

@@ -5,11 +5,13 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/validator/common/agent_search"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type ManagePage struct {
+	data_type.Page
 	agent_search.Conditions
 }
 

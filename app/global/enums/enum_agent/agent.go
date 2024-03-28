@@ -22,6 +22,7 @@ const (
 	LogProtoUdp int = 1 //日志协议:TDP
 	LogProtoTcp int = 2 //日志协议:TCP
 
+	OrderFieldDefault string = "id" //默认排序字段
 )
 
 var EnumIntMap = map[string]map[int]string{

@@ -32,7 +32,9 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (map[string]
 	conditions["contactName"] = ctx.GetString(consts.ValidatorPrefixPlatform + "contactName")
 	var reqDeptIds []int
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + "deptId"); isOk {
-		reqDeptIds, _ = deptIds.([]int)
+		var tmp []interface{}
+		tmp, _ = deptIds.([]interface{})
+		reqDeptIds = helpers.SliceAny2Int(tmp)
 	}
 	conditions["isOnline"] = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
 	conditions["isSafe"] = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
@@ -57,7 +59,6 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (map[string]
 	} else {
 		conditions["deptIds"] = reqDeptIds
 	}
-
 	return conditions, nil
 }
 
@@ -70,4 +71,31 @@ func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int)
 
 	departments := helpers.Json2SliceInt(loginInfo.Departments)
 	return false, departments
+}
+
+// getPageAndSort 获取分页参数和排序参数
+func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, orderField, orderSort string) {
+	page := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "page"))
+	pageSize = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "pageSize"))
+	orderField = ctx.GetString(consts.ValidatorPrefixPlatform + "field")
+	orderSort = ctx.GetString(consts.ValidatorPrefixPlatform + "sort")
+	if page <= 0 {
+		page = 1
+	}
+	if pageSize <= 1 {
+		page = 20
+	}
+	offset = (page - 1) * pageSize
+
+	if helpers.StringIsEmpty(orderField) {
+		if helpers.StringIsEmpty(defaultField) {
+			orderField = "created_at"
+		} else {
+			orderField = defaultField
+		}
+	}
+	if helpers.StringIsEmpty(orderSort) {
+		orderSort = "DESC"
+	}
+	return offset, pageSize, orderField, orderSort
 }
