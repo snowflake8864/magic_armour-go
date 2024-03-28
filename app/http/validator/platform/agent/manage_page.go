@@ -4,11 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/agent_search"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type ManagePage struct {
+	agent_search.Conditions
 }
 
 func (n ManagePage) CheckParams(context *gin.Context) {

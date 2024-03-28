@@ -42,11 +42,13 @@ type AdminAuth struct {
 }
 
 type AdminCacheLogin struct {
-	AdminId  int64  `json:"admin_id"`
-	Username string `json:"username"`
-	RoleId   int64  `json:"role_id"`
-	IsRoot   int    `json:"is_root"`
-	LoginAt  string `json:"login_at"`
+	AdminId     int64  `json:"admin_id"`
+	Username    string `json:"username"`
+	RoleId      int64  `json:"role_id"`
+	IsRoot      int    `json:"is_root"`
+	IsAgent     int    `json:"is_agent"`
+	Departments string `json:"departments"`
+	LoginAt     string `json:"login_at"`
 }
 
 func (crd *AdminAuth) keyByToken(val string) string {
@@ -184,11 +186,13 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 // loginAfter
 func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[string]interface{} {
 	loginInfo := AdminCacheLogin{
-		AdminId:  adminModel.Id,
-		Username: adminModel.Username,
-		IsRoot:   adminModel.IsRoot,
-		RoleId:   adminModel.RoleId,
-		LoginAt:  helpers.GetDatetime(),
+		AdminId:     adminModel.Id,
+		Username:    adminModel.Username,
+		IsRoot:      adminModel.IsRoot,
+		IsAgent:     adminModel.IsAgent,
+		Departments: adminModel.Departments,
+		RoleId:      adminModel.RoleId,
+		LoginAt:     helpers.GetDatetime(),
 	}
 
 	//缓存
@@ -216,7 +220,7 @@ func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo Admi
 	if helpers.StringIsEmpty(jsonStr) {
 		return AdminCacheLogin{}, errors.New("token expired")
 	}
-	err = helpers.Json2Struct([]byte(jsonStr), &loginInfo)
+	err = helpers.Json2Struct(jsonStr, &loginInfo)
 	if err != nil {
 		return AdminCacheLogin{}, errors.New("token json fail")
 	}

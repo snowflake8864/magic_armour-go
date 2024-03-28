@@ -37,7 +37,12 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 
 // PageForManage 管理: 分页
 func (u *AgentController) PageForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForManage")
+	conditions, err := u.getAgentSearchConditions(ctx)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessReturnData(ctx, conditions)
 }
 
 // DeleteForManage 管理: 删除
