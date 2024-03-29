@@ -5,8 +5,10 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
 )
@@ -75,7 +77,16 @@ func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 
 // UninstallForManage 管理: 卸载
 func (u *AgentController) UninstallForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UninstallForManage")
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
+	response.SuccessSimplify(ctx)
 }
 
 // UpgradeForManage 管理: 升级
@@ -96,7 +107,17 @@ func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 
 // BatchUninstallForManage 管理: 批量卸载
 func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchUninstallForManage")
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
+	response.SuccessSimplify(ctx)
 }
 
 // BatchUpgradeForManage 管理: 批量升级
