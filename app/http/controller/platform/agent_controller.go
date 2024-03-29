@@ -85,7 +85,13 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 
 // BatchDeleteForManage 管理: 批量删除
 func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchDeleteForManage")
+	agentIds := ctx.GetStringSlice(consts.ValidatorPrefixPlatform + "agentIds")
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchUninstallForManage 管理: 批量卸载
