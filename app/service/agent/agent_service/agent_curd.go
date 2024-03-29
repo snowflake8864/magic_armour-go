@@ -1,11 +1,14 @@
 package agent_service
 
 import (
+	"context"
+	"errors"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/kafka_go"
 )
 
 func CreateCurdFactory() *AgentCurd {
@@ -18,14 +21,14 @@ type AgentCurd struct {
 }
 
 // GetItemByAgent 通过终端id获取一条记录
-func (crd *AgentCurd) GetItemByAgent(agentId, column string) (model *model_agent.AgentModel) {
-	model, _ = crd.masterModel.GetItemById(agentId, column)
+func (crd *AgentCurd) GetItemByAgent(id, column string) (model *model_agent.AgentModel) {
+	model, _ = crd.masterModel.GetItemById(id, column)
 	return model
 }
 
 // GetMapsByAgents 通过终端ids获取多条记录, 有映射关系
-func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[string]*model_agent.AgentModel {
-	models, err := crd.masterModel.GetItemsByIds(agentIds, column)
+func (crd *AgentCurd) GetMapsByAgents(ids []string, column string) map[string]*model_agent.AgentModel {
+	models, err := crd.masterModel.GetItemsByIds(ids, column)
 	if err != nil {
 		return nil
 	}
@@ -39,6 +42,7 @@ func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[stri
 	return result
 }
 
+// Page 分页
 func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.AgentModel) {
 	where := crd.search2Where(search)
 	order := ""
@@ -52,7 +56,7 @@ func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderF
 }
 
 // SetLivingByAgent 设置终端活动中
-func (crd *AgentCurd) SetLivingByAgent(agentId string) bool {
+func (crd *AgentCurd) SetLivingByAgent(id string) bool {
 	nowDate := helpers.GetDatetime()
 
 	updates := map[string]interface{}{
@@ -60,5 +64,40 @@ func (crd *AgentCurd) SetLivingByAgent(agentId string) bool {
 		"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
 		"is_online": enums.IsYes,
 	}
-	return crd.masterModel.UpdateById(agentId, updates)
+	return crd.masterModel.UpdateById(id, updates)
+}
+
+// BatchDelete 批量删除
+func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
+	var validIds []string
+	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id"); err == nil {
+		for _, model := range agentModels {
+			validIds = append(validIds, model.AgentId)
+		}
+	}
+	if len(validIds) == 0 {
+		return -1, errors.New("终端不能存在")
+	}
+
+	if isOK := crd.masterModel.DeleteByIds(validIds); !isOK {
+		return -1, errors.New("删除失败")
+	}
+
+	//丢入队列
+	ctx := context.Background()
+	for _, val := range validIds {
+		msg := &kafka_go.MessageStruct{
+			Sign: kafka_go.SignAgent,
+			Type: kafka_go.TypeAgentDelete,
+			Data: val,
+		}
+		kafka_go.ProduceCommon(ctx, msg)
+	}
+
+	return errCode, err
+}
+
+// DeleteCallback 删除回调
+func (crd *AgentCurd) DeleteCallback(id string) {
+	crd.masterModel.DeleteById(id)
 }

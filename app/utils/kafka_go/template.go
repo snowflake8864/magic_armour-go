@@ -5,3 +5,8 @@ type MessageStruct struct {
 	Type string
 	Data interface{}
 }
+
+const (
+	SignAgent       string = "agent"
+	TypeAgentDelete string = "agent_delete"
+)

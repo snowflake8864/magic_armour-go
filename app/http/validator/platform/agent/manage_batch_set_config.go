@@ -4,11 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type ManageBatchSetConfig struct {
+	data_type.AgentBatch
 }
 
 func (n ManageBatchSetConfig) CheckParams(context *gin.Context) {

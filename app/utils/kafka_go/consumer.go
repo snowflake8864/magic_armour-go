@@ -67,14 +67,13 @@ func readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
 	}
 }
 
-// 消费主题： Common
-
+// ConsumeCommon 消费主题： Common
 func ConsumeCommon() {
 	for {
 		s, err := readMessage(context.Background(), readerCommon)
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
-		variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%v", s))
+		variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", s))
 	}
 }

@@ -2,6 +2,7 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer/platform_trans"
@@ -61,7 +62,15 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 
 // DeleteForManage 管理: 删除
 func (u *AgentController) DeleteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForManage")
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // UninstallForManage 管理: 卸载

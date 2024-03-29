@@ -20,9 +20,9 @@ func TestAgentLogin(t *testing.T) {
 	param.Ver = "2.0.0.20"
 	param.PlatformType = 2
 	param.OsName = ""
-	param.MemSize = "16g"
-	param.Cpu = "16u"
-	param.HdSize = "931g"
+	param.MemDesc = "16g"
+	param.CpuDesc = "16u"
+	param.HdDesc = "931g"
 	param.AgentStartAt = helpers.TimestampToDatetime(int64(1632465410))
 	param.OsStartAt = helpers.TimestampToDatetime(int64(1632465310))
 	param.Auth = "123123"
@@ -51,7 +51,7 @@ func TestAgentLogin(t *testing.T) {
 	//data, _ := json.Marshal(param)
 	fmt.Println(param)
 	fmt.Println("RegisterOrLogin---------------------------------------------")
-	isOk, data := agent_service.CreateCurdFactory().RegisterOrLogin(&param)
+	isOk, data := agent_service.CreateAuthFactory().RegisterOrLogin(&param)
 	fmt.Println(isOk)
 	fmt.Println(data)
 }

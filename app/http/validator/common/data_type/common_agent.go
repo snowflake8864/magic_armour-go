@@ -1,7 +1,7 @@
-package agent_search
+package data_type
 
-// Conditions 终端条件
-type Conditions struct {
+// AgentSearch 终端查询条件
+type AgentSearch struct {
 	AgentId     string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
 	DeptIds     []int  `form:"deptId" json:"deptId" binding:"omitempty,dive"`
 	HostName    string `form:"hostName" json:"hostName" binding:"omitempty,min=1"`
@@ -11,4 +11,14 @@ type Conditions struct {
 	ContactName string `form:"contactName" json:"contactName" binding:"omitempty,min=1"`
 	IsOnline    int    `form:"isOnline" json:"isOnline"`
 	IsSafe      int    `form:"isSafe" json:"isSafe"`
+}
+
+// AgentSingle 终端单个
+type AgentSingle struct {
+	AgentId string `form:"agentId" json:"agentId" binding:"required,min=8,max=32"`
+}
+
+// AgentBatch 终端批量
+type AgentBatch struct {
+	AgentIds []string `form:"agentIds" json:"agentIds" binding:"required,gt=0,dive,min=8,max=32"`
 }
