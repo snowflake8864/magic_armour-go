@@ -55,12 +55,12 @@ func TestWriteCommon(t *testing.T) {
 	ctx := context.Background()
 
 	msg := &kafka_go.MessageStruct{
-		Sign: "agent",
-		Type: "safe",
-		Data: "data",
+		Sign: kafka_go.SignAgent,
+		Type: kafka_go.TypeAgentDelete,
+		Data: "123333",
 	}
 	kafka_go.CreateProducerFactory()
-	for i := 0; i <= 100; i++ {
+	for i := 0; i <= 2; i++ {
 		kafka_go.ProduceCommon(ctx, msg)
 	}
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/jobs/agent_job"
 	"strings"
 )
 
@@ -70,10 +71,20 @@ func readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
 // ConsumeCommon 消费主题： Common
 func ConsumeCommon() {
 	for {
-		s, err := readMessage(context.Background(), readerCommon)
+		data, err := readMessage(context.Background(), readerCommon)
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
-		variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", s))
+
+		switch data.Sign {
+		case SignAgent:
+			if data.Type == TypeAgentDelete {
+				if agentId, ok := data.Data.(string); ok {
+					agent_job.Delete(agentId)
+				}
+			}
+		default:
+			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
+		}
 	}
 }
