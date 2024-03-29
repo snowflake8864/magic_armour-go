@@ -82,9 +82,3 @@ func TestShowAllMAP(t *testing.T) {
 		fmt.Println(value)
 	}
 }
-
-func TestToSql(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
-	_ = modelFact.TestToSQL()
-
-}

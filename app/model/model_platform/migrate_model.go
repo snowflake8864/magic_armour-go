@@ -1,11 +1,8 @@
 package model_platform
 
 import (
-	"fmt"
-	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"time"
 )
 
 // 数据迁移表
@@ -73,115 +70,4 @@ func (m *MigrateModel) GetAllMaps() (map[string]string, error) {
 	} else {
 		return nil, result.Error
 	}
-}
-
-func (m *MigrateModel) TestToSQL() bool {
-	fmt.Println("\n SELECT--------------------------------------------------")
-	sql := ""
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(&MigrateModel{}).Where("Migration = ?", "20240108000001_init_paltform111").Limit(10).Order("age desc").Find(&[]MigrateModel{})
-	})
-	fmt.Println(sql)
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "SELECT * FROM p_migrations WHERE Migration = ?"
-		return tx.Model(&MigrateModel{}).Raw(st, "20240108000001_init_paltform111")
-	})
-	fmt.Println(sql)
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "SELECT * FROM p_migrations WHERE Migration = ?"
-		return tx.Model(&MigrateModel{}).Raw(st, "20240108000001_init_paltform111")
-	})
-	fmt.Println(sql)
-
-	fmt.Println("\n INSERT--------------------------------------------------")
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(&MigrateModel{}).Exec("INSERT  INTO p_migrations (Migration,  created_at) VALUES (?, ?)",
-			"20240108000001_init_paltforma' or '1'='1",
-			"2024-01-08 00:00:01")
-	})
-	fmt.Println(sql)
-
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		var st = &MigrateModel{
-			Migration: "20240108000001_init_paltforma' or '1'='1",
-			CreatedAt: time.Now().Format(variable.DateFormat),
-		}
-		return tx.Model(&MigrateModel{}).Create(st)
-	})
-	fmt.Println(sql)
-
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		var st = &[]MigrateModel{
-			{
-				Migration: "20240108000001_init_paltforma' or '2'='2",
-				CreatedAt: time.Now().Format(variable.DateFormat),
-			},
-			{
-				Migration: "20240108000001_init_paltforma' or '3'='3",
-				CreatedAt: time.Now().Format(variable.DateFormat),
-			},
-		}
-		return tx.Model(&MigrateModel{}).Create(st)
-	})
-	fmt.Println(sql)
-
-	fmt.Println("\n update--------------------------------------------------")
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "update p_migrations set Migration=?,  created_at=?  WHERE Migration=? AND created_at=?"
-		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", variable.DateFormat, "20240108000001_init_paltforma", variable.DateFormat)
-	})
-	fmt.Println(sql)
-
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		// 定义更新字段的map， 键值对
-		var relaValue = map[string]interface{}{
-			"Migration":  "192.168.6.66",
-			"created_at": time.Now().Format(variable.DateFormat),
-		}
-		return tx.Model(&MigrateModel{}).Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
-	})
-	fmt.Println(sql)
-
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		// 定义更新字段的map， 键值对
-		var relaValue = map[string]interface{}{
-			"Migration":  "192.168.6.66",
-			"created_at": time.Now().Format(variable.DateFormat),
-		}
-		return tx.Table("p_migrations").Select("Migration", "created_at").Where("Migration=?", 13).Updates(relaValue)
-	})
-	fmt.Println(sql)
-
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		var st = &MigrateModel{
-			Migration: "20240108000001_init_paltforma' or '1'='1",
-			CreatedAt: time.Now().Format(variable.DateFormat),
-		}
-		return tx.Model(&MigrateModel{}).Save(st)
-	})
-	fmt.Println(sql)
-
-	fmt.Println("\n delete--------------------------------------------------")
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		st := "DELETE FROM  p_migrations WHERE Migration=? AND created_at=?"
-		return tx.Model(&MigrateModel{}).Exec(st, "20240108000001_init_paltforma", variable.DateFormat)
-	})
-	fmt.Println(sql)
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		var st = &MigrateModel{
-			Migration: "20240108000001_init_paltforma' or '2'='2",
-			CreatedAt: time.Now().Format(variable.DateFormat),
-		}
-		return tx.Model(&MigrateModel{}).Delete(st)
-	})
-	fmt.Println(sql)
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(&MigrateModel{}).Delete(&MigrateModel{}, 5)
-	})
-	fmt.Println(sql)
-	sql = m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Where("migration LIKE ?", "%jinzhu%").Delete(&MigrateModel{})
-	})
-	fmt.Println(sql)
-	return true
 }

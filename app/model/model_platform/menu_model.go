@@ -136,9 +136,7 @@ func (m *MenuModel) GetItemByParent(id int64) (*MenuModel, error) {
 	}
 }
 
-func (m *MenuModel) GetItemsByIds(ids []int64) ([]MenuModel, error) {
-	var items []MenuModel
-
+func (m *MenuModel) GetItemsByIds(ids []int64) (items []*MenuModel, err error) {
 	result := m.Where("id IN ?", ids).Find(&items)
 	if result.Error == nil {
 		return items, nil
@@ -147,8 +145,7 @@ func (m *MenuModel) GetItemsByIds(ids []int64) ([]MenuModel, error) {
 	}
 }
 
-func (m *MenuModel) GetItemsByConditions(condition map[string]interface{}) ([]MenuModel, error) {
-	var items []MenuModel
+func (m *MenuModel) GetItemsByConditions(condition map[string]interface{}) (items []*MenuModel, err error) {
 	result := m.Where(condition).Find(&items).Order("level ASC, sort ASC")
 	if result.Error == nil {
 		return items, nil

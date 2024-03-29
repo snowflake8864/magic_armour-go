@@ -25,7 +25,7 @@ func (crd *DictionaryCurd) GetMapByModule(module string) map[string]string {
 }
 
 // GetAll 获取全部
-func (crd *DictionaryCurd) GetAll() (items []model_platform.DictionaryModel) {
+func (crd *DictionaryCurd) GetAll() (items []*model_platform.DictionaryModel) {
 	items = crd.masterModel.GetAll()
 	return items
 }

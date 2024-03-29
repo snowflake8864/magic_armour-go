@@ -38,7 +38,7 @@ func (crd *MenuCurd) Add(param *model_platform.MenuModel) (errCode int, err erro
 }
 
 // GetAll 获取全部
-func (crd *MenuCurd) GetAll(isRoot int) []model_platform.MenuModel {
+func (crd *MenuCurd) GetAll(isRoot int) []*model_platform.MenuModel {
 	condition := make(map[string]interface{})
 	if isRoot == 0 {
 		condition["is_root"] = enums.IsYes
@@ -49,7 +49,7 @@ func (crd *MenuCurd) GetAll(isRoot int) []model_platform.MenuModel {
 }
 
 // GetItemsByIds 通过id获取
-func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []model_platform.MenuModel {
+func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*model_platform.MenuModel {
 	condition := make(map[string]interface{})
 	condition["id"] = ids
 	if isRoot == 0 {

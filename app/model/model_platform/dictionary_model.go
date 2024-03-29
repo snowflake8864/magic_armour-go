@@ -127,12 +127,12 @@ func (m *DictionaryModel) InitData() bool {
 	}
 }
 
-func (m *DictionaryModel) GetItemsByModule(module string) (items []DictionaryModel) {
+func (m *DictionaryModel) GetItemsByModule(module string) (items []*DictionaryModel) {
 	m.Where("module=?", module).Find(&items)
 	return items
 }
 
-func (m *DictionaryModel) GetAll() (items []DictionaryModel) {
+func (m *DictionaryModel) GetAll() (items []*DictionaryModel) {
 	m.Find(&items)
 	return items
 }
