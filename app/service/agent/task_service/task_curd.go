@@ -76,5 +76,5 @@ func (crd *TaskCurd) CloseTasks(agentId string, types []int, netIp string) {
 		"completed_at": helpers.GetDatetime(),
 	}
 	//入库
-	crd.masterModel.UpdateByCondition(conditions, updates)
+	crd.masterModel.UpdateByConditions(conditions, updates)
 }

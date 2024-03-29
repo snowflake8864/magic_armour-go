@@ -205,9 +205,9 @@ func (m *AgentModel) InsertBatch(list *[]AgentModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) bool {
+func (m *AgentModel) UpdateById(id string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id=?", agentId).Updates(updates)
+		return tx.Model(m).Where("agent_id=?", id).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -218,9 +218,9 @@ func (m *AgentModel) UpdateById(agentId string, updates map[string]interface{}) 
 }
 
 // UpdateByIds 通过id集合修改
-func (m *AgentModel) UpdateByIds(agentIds []string, updates map[string]interface{}) bool {
+func (m *AgentModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", agentIds).Updates(updates)
+		return tx.Model(m).Where("agent_id IN ?", ids).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -244,9 +244,9 @@ func (m *AgentModel) UpdateByConditions(condition map[string]interface{}, update
 }
 
 // DeleteById 通过id删除
-func (m *AgentModel) DeleteById(agentId string) bool {
+func (m *AgentModel) DeleteById(id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id=?", agentId).Delete(m)
+		return tx.Model(m).Where("agent_id=?", id).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -257,9 +257,9 @@ func (m *AgentModel) DeleteById(agentId string) bool {
 }
 
 // DeleteByIds 通过id集合删除
-func (m *AgentModel) DeleteByIds(agentIds []string) bool {
+func (m *AgentModel) DeleteByIds(ids []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", agentIds).Delete(m)
+		return tx.Model(m).Where("agent_id IN ?", ids).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -283,9 +283,9 @@ func (m *AgentModel) DeleteByConditions(condition map[string]interface{}) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *AgentModel) GetItemById(agentId, column string) (item *AgentModel, err error) {
+func (m *AgentModel) GetItemById(id, column string) (item *AgentModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("agent_id=?", agentId).First(&item)
+		return tx.Model(m).Select(column).Where("agent_id=?", id).First(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).First(&item)
 	if result.Error == nil {
@@ -296,9 +296,9 @@ func (m *AgentModel) GetItemById(agentId, column string) (item *AgentModel, err 
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *AgentModel) GetItemsByIds(agentIds []string, column string) (items []*AgentModel, err error) {
+func (m *AgentModel) GetItemsByIds(ids []string, column string) (items []*AgentModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("agent_id IN ?", agentIds).Find(&items)
+		return tx.Model(m).Select(column).Where("agent_id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
