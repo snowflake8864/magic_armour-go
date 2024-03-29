@@ -3,6 +3,7 @@ package model_platform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // 组织架构表
@@ -59,5 +60,74 @@ func (m *DepartmentModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *DepartmentModel) InsertItem(s *DepartmentModel) bool {
+	result := m.Model(m).Create(s)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateById 通过id修改
+func (m *DepartmentModel) UpdateById(id int64, updates map[string]interface{}) bool {
+	result := m.Model(m).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *DepartmentModel) DeleteByConditions(condition map[string]interface{}) bool {
+	result := m.Model(m).Where(condition).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *DepartmentModel) GetItemById(id int64) (item *DepartmentModel, err error) {
+	result := m.Model(m).Where("id=?", id).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemsByIds 通过id集合获取多条记录
+func (m *DepartmentModel) GetItemsByIds(ids []int64) (items []*DepartmentModel, err error) {
+	result := m.Model(m).Where("id IN ?", ids).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *DepartmentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*DepartmentModel, err error) {
+	tmp := m.Model(m).Where(condition)
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !helpers.StringIsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := m.Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
 	}
 }

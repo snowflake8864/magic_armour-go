@@ -32,7 +32,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.AgentStartAt = helpers.TimestampToDatetime(int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "asstarttime")))
 	param.OsStartAt = helpers.TimestampToDatetime(int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "osstarttime")))
 	param.Auth = ctx.GetString(consts.ValidatorPrefixAgent + "auth")
-	param.AdminId = int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "userid"))
+	param.AdminId = int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "userid"))
 	param.NetIp = ctx.ClientIP()
 
 	if helpers.StringIsEmpty(param.AgentIp) {

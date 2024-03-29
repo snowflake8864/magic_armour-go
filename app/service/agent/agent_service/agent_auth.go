@@ -170,6 +170,6 @@ func (crd *AgentAuth) autoGrant(agentId string) {
 }
 
 // autoAllocateDept 自动分配组织架构
-func (crd *AgentAuth) autoAllocateDept(adminId int, agentId, agentIp string) {
+func (crd *AgentAuth) autoAllocateDept(adminId int64, agentId, agentIp string) {
 	go department_service.CreateCurdFactory().AutoAllocate(adminId, agentId, agentIp)
 }

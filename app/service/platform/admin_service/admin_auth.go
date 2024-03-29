@@ -5,7 +5,6 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
@@ -148,7 +147,6 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 
 	//用户名和密码不一致
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
-	variable.ZapLog.Debug("pw: " + pw)
 	if !curdFact.HasByUsernameAndPw(username, pw) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(adminModel.Id)

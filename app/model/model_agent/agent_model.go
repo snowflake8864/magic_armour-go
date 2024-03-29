@@ -38,8 +38,8 @@ type AgentModel struct {
 	LiveAt              string `json:"live_at"`
 	IsSafe              int    `json:"is_safe"`
 	UpgradeVer          string `json:"upgrade_ver"`
-	AdminId             int    `json:"admin_id"`
-	DeptId              int    `json:"dept_id"`
+	AdminId             int64  `json:"admin_id"`
+	DeptId              int64  `json:"dept_id"`
 	AgentType           int    `json:"agent_type"`
 	Alias               string `json:"alias"`
 	ContactName         string `json:"contact_name"`

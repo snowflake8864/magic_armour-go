@@ -20,7 +20,7 @@ type SearchConditions struct {
 	IsSafe       int
 	Alias        string
 	ContactName  string
-	DeptIds      []int
+	DeptIds      []int64
 }
 
 type AgentBase struct {

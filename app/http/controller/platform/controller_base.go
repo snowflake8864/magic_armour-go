@@ -5,8 +5,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
 )
@@ -34,11 +37,11 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_servi
 	searchConditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
 	searchConditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
 
-	var reqDeptIds []int
+	var reqDeptIds []int64
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		reqDeptIds = helpers.SliceAny2Int(tmp)
+		reqDeptIds = helpers.SliceAny2Int64(tmp)
 	}
 
 	//用户管理的组织架构
@@ -51,7 +54,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_servi
 			searchConditions.DeptIds = departments
 		} else {
 			//用户管理组织架构与查询组织架构交集
-			intersection := helpers.SliceIntIntersect(reqDeptIds, departments)
+			intersection := helpers.SliceInt64Intersect(reqDeptIds, departments)
 			if intersection == nil || len(intersection) == 0 {
 				return searchConditions, errors.New("暂无数据")
 			} else {
@@ -65,13 +68,13 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_servi
 }
 
 // getCurrAdminDepartments 获取当前用户的管理部门
-func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int) {
+func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int64) {
 	loginInfo := u.getLogin(ctx)
 	if loginInfo.IsAgent == enums.IsYes {
 		return true, nil
 	}
 
-	departments := helpers.Json2SliceInt(loginInfo.Departments)
+	departments := helpers.Json2SliceInt64(loginInfo.Departments)
 	return false, departments
 }
 
@@ -100,4 +103,29 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 		orderSort = "DESC"
 	}
 	return offset, pageSize, orderField, orderSort
+}
+
+// parseAgentModels 解析终端集合并拿到相关数据
+// 返回 agentIds 终端集合
+// 返回 departments 组织架构集合
+func (u *ControllerBase) parseAgentModels(agentModels []*model_agent.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_platform.DepartmentModel) {
+	if agentModels == nil || len(agentModels) == 0 {
+		return nil, nil
+	}
+	deptStruct := make(map[int64]struct{})
+	var deptIds []int64
+	for _, model := range agentModels {
+		agentIds = append(agentIds, model.AgentId)
+
+		if _, isOk := deptStruct[model.DeptId]; model.DeptId > 0 && !isOk {
+			deptStruct[model.DeptId] = struct{}{}
+			deptIds = append(deptIds, model.DeptId)
+		}
+	}
+
+	if needDepartment && len(deptIds) > 0 {
+		departments = department_service.CreateCurdFactory().GetMapsByIds(deptIds)
+	}
+
+	return agentIds, departments
 }

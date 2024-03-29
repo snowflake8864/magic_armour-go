@@ -11,7 +11,7 @@ type Agent struct {
 	Common
 }
 
-func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[string]*model_platform.DepartmentModel) map[string]interface{} {
+func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64]*model_platform.DepartmentModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
@@ -29,8 +29,8 @@ func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[strin
 	data["grant_config"] = helpers.Json2Map(model.GrantConfig)
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
-	if dept, ok := departments[model.AgentId]; ok && !helpers.StringIsEmpty(dept.FullName) {
-		data["dept_fullname"] = helpers.Json2Map(model.GrantConfig)
+	if deptModel, ok := departments[model.DeptId]; ok && !helpers.StringIsEmpty(deptModel.FullName) {
+		data["dept_fullname"] = helpers.Json2Map(deptModel.FullName)
 	}
 	data["process_switch"] = model.ProcessSwitch
 	data["process_mode"] = model.ProcessMode
@@ -51,7 +51,7 @@ func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[strin
 }
 
 // TransAgentManagePage 转换成管理页需要的数据
-func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[string]*model_platform.DepartmentModel, softwareNewest map[int]string) interface{} {
+func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[int64]*model_platform.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

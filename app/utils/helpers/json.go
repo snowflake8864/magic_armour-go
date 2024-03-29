@@ -40,3 +40,15 @@ func Json2SliceInt(jsonStr string) []int {
 	}
 	return numbers
 }
+
+// Json2SliceInt64 json还原[]int
+func Json2SliceInt64(jsonStr string) []int64 {
+	var numbers []int64
+
+	// 进行反序列化操作
+	err := json.Unmarshal([]byte(jsonStr), &numbers)
+	if err != nil {
+		return nil
+	}
+	return numbers
+}
