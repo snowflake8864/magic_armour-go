@@ -69,7 +69,7 @@ func (m *MenuModel) CreateTable() bool {
 func (m *MenuModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
-	if result.RowsAffected > 0 {
+	if result.Error == nil {
 		return true
 	} else {
 		return false

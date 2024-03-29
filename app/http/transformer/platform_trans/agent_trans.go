@@ -2,6 +2,7 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/utils/helpers"
@@ -56,7 +57,12 @@ func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentMod
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model, departments)
-			tmp["can_upgrade"] = 0
+
+			canUpgrade := 0
+			if isOk := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
+				return 1
+			}
+			tmp["can_upgrade"] = canUpgrade
 			items = append(items, tmp)
 		}
 	}

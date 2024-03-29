@@ -3,6 +3,7 @@ package model_platform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // 软件表
@@ -19,7 +20,7 @@ type SoftwareModel struct {
 	UploadId     int64  `json:"upload_id"`
 	Ver          string `json:"ver"`
 	PlatformType int    `json:"platform_type"`
-	OsType       string `json:"os_type"`
+	OsType       int    `json:"os_type"`
 	IsPublish    int    `json:"is_publish"`
 	Remark       string `json:"remark"`
 	CreateId     int64  `json:"create_id"`
@@ -59,5 +60,87 @@ func (m *SoftwareModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *SoftwareModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *SoftwareModel) GetItemById(id int64) (*SoftwareModel, error) {
+	result := m.Where("id=?", id).First(m)
+	if result.Error == nil {
+		return m, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+func (m *SoftwareModel) UpdateById(id int64, updates map[string]interface{}) bool {
+	result := m.Table(m.TableName()).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteById 通过id删除
+func (m *SoftwareModel) DeleteById(id int64) bool {
+	result := m.Model(m).Where("id=?", id).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*SoftwareModel, err error) {
+	tmp := m.Model(m).Where(condition)
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !helpers.StringIsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := m.Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *SoftwareModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *SoftwareModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*SoftwareModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

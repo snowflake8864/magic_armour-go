@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -48,9 +49,14 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	//分页参数和排序参数
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
 
+	//终端分页
 	total, agentModels := agent_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	//转化数据
+	_, departmentMaps := u.parseAgentModels(agentModels, true)
+	//软件最新发布
+	softwareNewest := software_service.CreateCurdFactory().GetMapsByPublished()
 
-	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, nil, nil))
+	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps, softwareNewest))
 }
 
 // DeleteForManage 管理: 删除

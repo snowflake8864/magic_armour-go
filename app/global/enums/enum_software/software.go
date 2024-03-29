@@ -161,3 +161,26 @@ func GetOsTypeByName(name string) int {
 		return 0
 	}
 }
+
+// CanUpgradeDirect 直接比较版本号是否能升级
+// 参数: newest 新版本号
+// 参数: original 原版本号
+// 返回: 如果newest大于original为真
+func CanUpgradeDirect(newest, original string) bool {
+	if newest != original {
+		return true
+	}
+	return false
+}
+
+// CanUpgradeIndirect 间接比较版本号是否能升级
+func CanUpgradeIndirect(newestMap map[int]string, agentOsType int, agentVer string) bool {
+	if newestMap == nil || len(newestMap) == 0 {
+		return false
+	}
+	if newest, isOk := newestMap[agentOsType]; isOk {
+		return CanUpgradeDirect(newest, agentVer)
+	} else {
+		return false
+	}
+}
