@@ -27,7 +27,8 @@ type AgentBase struct {
 }
 
 // search2Where 查询条件转化
-func (crd *AgentBase) search2Where(search SearchConditions) (wheres map[string]interface{}) {
+func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface{} {
+	wheres := make(map[string]interface{})
 	if !helpers.StringIsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}

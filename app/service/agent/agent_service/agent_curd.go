@@ -24,7 +24,7 @@ func (crd *AgentCurd) GetItemByAgent(agentId, column string) (model *model_agent
 }
 
 // GetMapsByAgents 通过终端ids获取多条记录, 有映射关系
-func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[string]model_agent.AgentModel {
+func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[string]*model_agent.AgentModel {
 	models, err := crd.masterModel.GetItemsByIds(agentIds, column)
 	if err != nil {
 		return nil
@@ -32,14 +32,14 @@ func (crd *AgentCurd) GetMapsByAgents(agentIds []string, column string) map[stri
 	if models == nil {
 		return nil
 	}
-	result := make(map[string]model_agent.AgentModel)
+	result := make(map[string]*model_agent.AgentModel)
 	for _, model := range models {
 		result[model.AgentId] = model
 	}
 	return result
 }
 
-func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []model_agent.AgentModel) {
+func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.AgentModel) {
 	where := crd.search2Where(search)
 	order := ""
 	if orderField == enum_agent.OrderFieldDefault {

@@ -44,6 +44,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+
 	//分页参数和排序参数
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
 
