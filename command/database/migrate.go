@@ -135,6 +135,7 @@ func initTableAndData() {
 	if !existMigration("db_agent_init_tables") {
 		_ = model_agent.CreateAccessLogFactory().CreateTable()
 		_ = model_agent.CreateAgentFactory().CreateTable()
+		_ = model_agent.CreateAgentExtendFactory().CreateTable()
 		_ = model_agent.CreateBlackmailGroupFactory().CreateTable()
 		_ = model_agent.CreateBlackmailPolicyFactory().CreateTable()
 		_ = model_agent.CreateDllFactory().CreateTable()

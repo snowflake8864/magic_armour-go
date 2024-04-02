@@ -3,13 +3,9 @@ package agent_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
-	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_grant"
-	"goskeleton/app/global/enums/enum_login_solve"
-	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/platform/department_service"
-	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/grant_service"
 	"goskeleton/app/utils/helpers"
 )
@@ -31,33 +27,6 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 	isAllocateDept := true //是否分配组织架构
 
 	if helpers.StringIsEmpty(agentModel.AgentId) {
-		//新终端默认使用全局配置
-		dictIds := []string{
-			enum_dictionary.AgentGlobalPlugPortConfig,
-			enum_dictionary.AgentGlobalPlugLoginConfig,
-			enum_dictionary.AgentGlobalLoginSolveConfig,
-		}
-		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
-		var isExist bool
-		jsonPlugPort, isExist := mapDict[enum_dictionary.AgentGlobalPlugPortConfig]
-		if !isExist || helpers.StringIsEmpty(jsonPlugPort) {
-			plugPortConfig := enum_plug.PlugPortConfig{}
-			plugPortConfig.Format()
-			jsonPlugPort = helpers.JsonEncode(plugPortConfig)
-		}
-		jsonPlugLogin, isExist := mapDict[enum_dictionary.AgentGlobalPlugLoginConfig]
-		if !isExist || helpers.StringIsEmpty(jsonPlugLogin) {
-			plugLoginConfig := enum_plug.PlugLoginConfig{}
-			plugLoginConfig.Format()
-			jsonPlugLogin = helpers.JsonEncode(plugLoginConfig)
-		}
-		jsonLoginSolve, isExist := mapDict[enum_dictionary.AgentGlobalPlugLoginConfig]
-		if !isExist || helpers.StringIsEmpty(jsonPlugLogin) {
-			loginSolveConfig := enum_login_solve.LoginSolveConfig{}
-			loginSolveConfig.Format()
-			jsonLoginSolve = helpers.JsonEncode(loginSolveConfig)
-		}
-
 		//授权配置
 		grantConfig := enum_grant.AgentGrantConfig{}
 		grantConfig.Default()
@@ -86,8 +55,6 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.BlackmailMode = enum_agent.ModeMonitor
 		param.PortSwitch = enums.SwitchOff
 		param.PlugSwitch = enums.SwitchOff
-		param.PlugPortConfig = jsonPlugPort
-		param.PlugLoginConfig = jsonPlugLogin
 		param.UsbSwitch = enums.SwitchOff
 		param.UsbMode = enum_agent.ModeMonitor
 		param.SyslogDnsSwitch = enums.SwitchOff
@@ -103,7 +70,6 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.AutoWhiteSwitch = enums.SwitchOn
 		param.AlarmAiSwitch = enums.SwitchOn
 		param.LoginSolveSwitch = enums.SwitchOff
-		param.LoginSolveConfig = jsonLoginSolve
 		param.HardwareSwitch = enums.SwitchOn
 		param.HardwareTime = enum_agent.HardwareTime
 		param.CreatedAt = nowDate
@@ -112,6 +78,9 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		if !isOk {
 			return false, "新建数据失败"
 		}
+
+		//添加扩展数据
+		CreateExtendFactory().AddDefault(param.AgentId)
 
 		//添加任务
 		crd.addTask(param)

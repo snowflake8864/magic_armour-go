@@ -48,7 +48,6 @@ func (m *AccessLogModel) CreateTable() bool {
 			http_code smallint NOT NULL DEFAULT '0' COMMENT 'http状态码',
 			delay_time int NOT NULL DEFAULT '0' COMMENT '延迟时间(ms)',
 			resp string NOT NULL DEFAULT '' COMMENT '返回结果'
-			
 		)
 		DUPLICATE  KEY(agent_id, path, created_at,net_ip)
 		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 

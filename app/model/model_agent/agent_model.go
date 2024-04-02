@@ -57,8 +57,6 @@ type AgentModel struct {
 	BlackmailMode       int    `json:"blackmail_mode"`
 	PortSwitch          int    `json:"port_switch"`
 	PlugSwitch          int    `json:"plug_switch"`
-	PlugPortConfig      string `json:"plug_port_config"`
-	PlugLoginConfig     string `json:"plug_login_config"`
 	UsbSwitch           int    `json:"usb_switch"`
 	UsbMode             int    `json:"usb_mode"`
 	SyslogDnsSwitch     int    `json:"syslog_dns_switch"`
@@ -74,11 +72,8 @@ type AgentModel struct {
 	AutoWhiteSwitch     int    `json:"auto_white_switch"`
 	AlarmAiSwitch       int    `json:"alarm_ai_switch"`
 	LoginSolveSwitch    int    `json:"login_solve_switch"`
-	LoginSolveConfig    string `json:"login_solve_config"`
 	HardwareSwitch      int    `json:"hardware_switch"`
 	HardwareTime        int    `json:"hardware_time"`
-	ProcessFlushAt      string `json:"process_flush_at"`
-	DllFlushAt          string `json:"dll_flush_at"`
 	CreatedAt           string `json:"created_at"`
 }
 
@@ -132,8 +127,6 @@ func (m *AgentModel) CreateTable() bool {
 			blackmail_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '勒索:模式(0监控,1保护)',
 			port_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '端口虚开:开关',
 			plug_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '封堵:开关',
-			plug_port_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:端口虚开策略(json)',
-			plug_login_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:口令破解策略(json)',
 			usb_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '外设:开关',
 			usb_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '外设:模式(0监控,1保护)',
 			syslog_dns_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '通信日志:dns开关',
@@ -149,11 +142,8 @@ func (m *AgentModel) CreateTable() bool {
 			auto_white_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自动匹配白名单:开关',
 			alarm_ai_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '告警智能处理:开关',
 			login_solve_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '口令破解:开关',
-			login_solve_config varchar(256)  NOT NULL DEFAULT '' COMMENT '口令破解:策略(json)',
 			hardware_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上传硬件资源:开关',
 			hardware_time int(11) NOT NULL DEFAULT '300' COMMENT '上传硬件资源:快速(秒)',
-			process_flush_at datetime NULL COMMENT '进程刷新时间',
-			dll_flush_at datetime NULL COMMENT '模块刷新时间',
 			created_at datetime NULL,
 			INDEX index_agent_ip (agent_ip) USING INVERTED,
 			INDEX index_admin_id (admin_id) USING INVERTED ,
