@@ -4,13 +4,8 @@ go 1.15
 
 require (
 	github.com/BurntSushi/toml v1.1.0 // indirect
-	github.com/IBM/sarama v1.42.1
-	github.com/Shopify/sarama v1.38.1 // indirect
-	github.com/aliyun/alibaba-cloud-sdk-go v1.62.690 // indirect
-	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 // indirect
-	github.com/bsm/sarama-cluster v2.1.15+incompatible // indirect
-	github.com/deckarep/golang-set v1.8.0 // indirect
-	github.com/dgrijalva/jwt-go v3.2.1-0.20210802184156-9742bd7fca1c+incompatible
+	github.com/aliyun/alibaba-cloud-sdk-go v1.62.690
+	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/fsnotify/fsnotify v1.7.0
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.1
@@ -18,13 +13,15 @@ require (
 	github.com/go-playground/universal-translator v0.18.1
 	github.com/go-playground/validator/v10 v10.16.0
 	github.com/gomodule/redigo v1.8.9
-	github.com/google/uuid v1.6.0 // indirect
+	github.com/google/uuid v1.6.0
 	github.com/natefinch/lumberjack v2.0.0+incompatible
+	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/qifengzhang007/goCurl v1.4.0
 	github.com/segmentio/kafka-go v0.4.47
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
-	github.com/wumansgy/goEncrypt v1.1.0 // indirect
+	github.com/stretchr/testify v1.8.4
+	github.com/wumansgy/goEncrypt v1.1.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.17.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect

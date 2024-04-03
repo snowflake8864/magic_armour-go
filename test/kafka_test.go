@@ -17,7 +17,7 @@ func TestCreateTopic(t *testing.T) {
 }
 
 func TestShowTopic(t *testing.T) {
-	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
+	conn, err := kafka.Dial("tcp", "192.168.16.251:9092")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -39,7 +39,7 @@ func TestShowTopic(t *testing.T) {
 }
 
 func TestDeleteTopic(t *testing.T) {
-	conn, err := kafka.Dial("tcp", "192.168.17.251:9092")
+	conn, err := kafka.Dial("tcp", "192.168.16.251:9092")
 	if err != nil {
 		panic(err.Error())
 	}
