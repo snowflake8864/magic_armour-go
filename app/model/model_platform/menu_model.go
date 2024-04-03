@@ -79,7 +79,7 @@ func (m *MenuModel) TruncateTable() bool {
 func (m *MenuModel) InitData() bool {
 	_ = m.TruncateTable()
 
-	sql := `INSERT INTO ` + m.TableName() + `(id, parent_id, position, type, title, web_code, sort, is_show, is_root, remark, service_api, level, created_at) VALUES`
+	sql := `INSERT INTO ` + m.TableName() + `(id, parent_id, position, type, name, web_code, sort, is_show, is_root, remark, service_api, level, created_at) VALUES`
 	sql += `
 			(1, 1, 1, 1, 'title', 'web_code', 1, 0, 0, 'ff', '', 1, '2024-01-30 00:00:00');
 		`
