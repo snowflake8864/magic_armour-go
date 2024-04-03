@@ -27,7 +27,7 @@ type AgentExtendModel struct {
 // 表名
 
 func (m *AgentExtendModel) TableName() string {
-	return "a_agents"
+	return "a_agent_extend"
 }
 
 func (m *AgentExtendModel) CreateTable() bool {

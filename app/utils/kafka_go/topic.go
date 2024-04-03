@@ -18,20 +18,24 @@ const (
 
 func CreateTopic() {
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
+	variable.ZapLog.Info(addr)
 	conn, err := kafka.Dial("tcp", addr)
 	if err != nil {
-		panic(err.Error())
+		variable.ZapLog.Info(err.Error())
+		return
 	}
 	defer conn.Close()
 
 	controller, err := conn.Controller()
 	if err != nil {
-		panic(err.Error())
+		variable.ZapLog.Info(err.Error())
+		return
 	}
 	var controllerConn *kafka.Conn
 	controllerConn, err = kafka.Dial("tcp", net.JoinHostPort(controller.Host, strconv.Itoa(controller.Port)))
 	if err != nil {
-		panic(err.Error())
+		variable.ZapLog.Info(err.Error())
+		return
 	}
 	defer controllerConn.Close()
 
@@ -54,6 +58,7 @@ func CreateTopic() {
 	fmt.Println(topicConfigs)
 	err = controllerConn.CreateTopics(topicConfigs...)
 	if err != nil {
-		panic(err.Error())
+		variable.ZapLog.Info(err.Error())
+		return
 	}
 }
