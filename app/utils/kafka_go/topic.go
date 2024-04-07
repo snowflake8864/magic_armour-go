@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers"
 	"net"
 	"strconv"
 )
@@ -27,6 +28,7 @@ func CreateTopic() {
 	defer conn.Close()
 
 	controller, err := conn.Controller()
+	variable.ZapLog.Info(helpers.JsonEncode(controller))
 	if err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
