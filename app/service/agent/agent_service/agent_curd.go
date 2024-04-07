@@ -6,7 +6,11 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/model_agent"
+	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/kafka_go"
 )
@@ -97,7 +101,24 @@ func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
 	return errCode, err
 }
 
-// DeleteCallback 删除回调
-func (crd *AgentCurd) DeleteCallback(id string) {
-	crd.masterModel.DeleteById(id)
+// BatchUpgrade 批量升级
+func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
+	softwareMaps := software_service.CreateCurdFactory().GetMapsByPublished()
+	if softwareMaps == nil || len(softwareMaps) == 0 {
+		return errCode, err
+	}
+	var validIds []string
+	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id, os_type, ver"); err == nil {
+		for _, model := range agentModels {
+			if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
+				validIds = append(validIds, model.AgentId)
+			}
+		}
+
+	}
+
+	//添加任务
+	task_service.CreateCurdFactory().AddTasksForAgents(validIds, []int{enum_task.TypeAgentUpgrade}, "")
+
+	return errCode, err
 }

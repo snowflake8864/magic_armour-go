@@ -91,7 +91,15 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 
 // UpgradeForManage 管理: 升级
 func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UpgradeForManage")
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchDeleteForManage 管理: 批量删除
@@ -122,7 +130,13 @@ func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
 
 // BatchUpgradeForManage 管理: 批量升级
 func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchUpgradeForManage")
+	agentIds := ctx.GetStringSlice(consts.ValidatorPrefixPlatform + "agentIds")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchSetConfigForManage 管理: 批量设置配置

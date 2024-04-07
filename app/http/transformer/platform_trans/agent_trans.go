@@ -59,7 +59,7 @@ func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentMod
 			tmp := t.pageGeneral(model, departments)
 
 			canUpgrade := 0
-			if isOk := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
+			if isOk, _ := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
 				return 1
 			}
 			tmp["can_upgrade"] = canUpgrade

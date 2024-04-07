@@ -174,13 +174,18 @@ func CanUpgradeDirect(newest, original string) bool {
 }
 
 // CanUpgradeIndirect 间接比较版本号是否能升级
-func CanUpgradeIndirect(newestMap map[int]string, agentOsType int, agentVer string) bool {
+// @return 是否能实际, 对应升级版本号
+func CanUpgradeIndirect(newestMap map[int]string, agentOsType int, agentVer string) (bool, string) {
 	if newestMap == nil || len(newestMap) == 0 {
-		return false
+		return false, ""
 	}
-	if newest, isOk := newestMap[agentOsType]; isOk {
-		return CanUpgradeDirect(newest, agentVer)
+	if newestVer, isOk := newestMap[agentOsType]; isOk {
+		if CanUpgradeDirect(newestVer, agentVer) {
+			return false, newestVer
+		} else {
+			return false, ""
+		}
 	} else {
-		return false
+		return false, ""
 	}
 }
