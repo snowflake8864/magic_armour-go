@@ -117,8 +117,9 @@ func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
 
 	}
 
-	//添加任务
-	task_service.CreateCurdFactory().AddTasksForAgents(validIds, []int{enum_task.TypeAgentUpgrade}, "")
-
+	if len(validIds) > 0 {
+		//添加任务
+		task_service.CreateCurdFactory().AddTasksForAgents(validIds, []int{enum_task.TypeAgentUpgrade}, "")
+	}
 	return errCode, err
 }

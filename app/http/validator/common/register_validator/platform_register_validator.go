@@ -99,7 +99,7 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUninstall"
 	containers.Set(key, agent.ManageBatchUninstall{})
 	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUpgrade"
-	containers.Set(key, agent.ManageBatchUninstall{})
+	containers.Set(key, agent.ManageBatchUpgrade{})
 	key = consts.ValidatorPrefixPlatform + "AgentManageBatchSetConfig"
 	containers.Set(key, agent.ManageBatchSetConfig{})
 	key = consts.ValidatorPrefixPlatform + "AgentBasicGet"
