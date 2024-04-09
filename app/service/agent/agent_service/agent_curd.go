@@ -74,13 +74,13 @@ func (crd *AgentCurd) SetLivingByAgent(id string) bool {
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
 	var validIds []string
-	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id"); err == nil {
+	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id"); err != nil || len(agentModels) == 0 {
 		for _, model := range agentModels {
 			validIds = append(validIds, model.AgentId)
 		}
 	}
 	if len(validIds) == 0 {
-		return -1, errors.New("终端不能存在")
+		return -1, errors.New("终端不存在")
 	}
 
 	if isOK := crd.masterModel.DeleteByIds(validIds); !isOK {
@@ -108,18 +108,27 @@ func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
 		return errCode, err
 	}
 	var validIds []string
-	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id, os_type, ver"); err == nil {
+	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id, os_type, ver"); err != nil || len(agentModels) == 0 {
 		for _, model := range agentModels {
 			if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
 				validIds = append(validIds, model.AgentId)
 			}
 		}
-
 	}
 
 	if len(validIds) > 0 {
 		//添加任务
 		task_service.CreateCurdFactory().AddTasksForAgents(validIds, []int{enum_task.TypeAgentUpgrade}, "")
 	}
+	return errCode, err
+}
+
+// BatchUpdate 批量修改
+func (crd *AgentCurd) BatchUpdate(ids []string, updateColumn map[string]struct{}, param *model_agent.AgentModel, remark string) (errCode int, err error) {
+	agentModels, err := crd.masterModel.GetItemsByIds(ids, "*")
+	if err != nil || len(agentModels) == 0 {
+		return -1, errors.New("终端不存在")
+	}
+	
 	return errCode, err
 }

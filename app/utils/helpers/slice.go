@@ -71,6 +71,22 @@ func SliceAny2Int64(sl []interface{}) []int64 {
 	return intSlice
 }
 
+// SliceAny2String 将[]interface{} 转成 []int64
+func SliceAny2String(sl []interface{}) []string {
+	strSlice := make([]string, 0, len(sl))
+	for _, item := range sl {
+		switch v := item.(type) {
+		case int64:
+			strSlice = append(strSlice, strconv.FormatInt(v, 10))
+		case int:
+			strSlice = append(strSlice, strconv.Itoa(v))
+		case string:
+			strSlice = append(strSlice, v)
+		}
+	}
+	return strSlice
+}
+
 // SliceIntIntersect 2个数字类型slice的交集
 func SliceIntIntersect(s1, s2 []int) (intersection []int) {
 	if s1 == nil || s2 == nil || len(s1) == 0 || len(s2) == 0 {

@@ -90,10 +90,12 @@ func (crd *AgentCurd) ColumnSwitchAndModeForAlarm(needId bool) string {
 }
 
 // addTask 新增任务
-func (crd *AgentBase) addTask(param *model_agent.AgentModel) {
+func (crd *AgentBase) addTask(param *model_agent.AgentModel, isTrustDir bool, remark string) {
 	tasks := []int{
 		enum_task.TypeAgentConfigDownload,
-		enum_task.TypeTrustDir,
+	}
+	if isTrustDir {
+		tasks = append(tasks, enum_task.TypeTrustDir)
 	}
 
 	//进程开启
@@ -138,5 +140,5 @@ func (crd *AgentBase) addTask(param *model_agent.AgentModel) {
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
 	}
 
-	task_service.CreateCurdFactory().AddTasksForAgent(param.AgentId, tasks, "login")
+	task_service.CreateCurdFactory().AddTasksForAgent(param.AgentId, tasks, remark)
 }

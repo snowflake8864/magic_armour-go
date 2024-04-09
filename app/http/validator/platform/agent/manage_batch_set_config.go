@@ -11,6 +11,14 @@ import (
 
 type ManageBatchSetConfig struct {
 	data_type.AgentBatch
+	SyslogDnsSwitch     *int `form:"syslogDnsSwitch" json:"syslogDnsSwitch" binding:"required,oneof=-100 0 1"`
+	SyslogOuterSwitch   *int `form:"syslogOuterSwitch" json:"syslogOuterSwitch" binding:"required,oneof=-100 0 1"`
+	SyslogInnerSwitch   *int `form:"syslogInnerSwitch" json:"syslogInnerSwitch" binding:"required,oneof=-100 0 1"`
+	SyslogProcessSwitch *int `form:"syslogProcessSwitch" json:"syslogProcessSwitch" binding:"required,oneof=-100 0 1"`
+	SyslogLoginSwitch   *int `form:"syslogLoginSwitch" json:"syslogLoginSwitch" binding:"required,oneof=-100 0 1"`
+	OutreachAlarmSwitch *int `form:"outreachAlarmSwitch" json:"outreachAlarmSwitch" binding:"required,oneof=-100 0 1"`
+	SelfProtectSwitch   *int `form:"selfProtectSwitch" json:"selfProtectSwitch" binding:"required,oneof=-100 0 1"`
+	AutoWhiteSwitch     *int `form:"autoWhiteSwitch" json:"autoWhiteSwitch" binding:"required,oneof=-100 0 1"`
 }
 
 func (n ManageBatchSetConfig) CheckParams(context *gin.Context) {

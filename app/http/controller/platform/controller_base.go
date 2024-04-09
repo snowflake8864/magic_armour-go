@@ -129,3 +129,14 @@ func (u *ControllerBase) parseAgentModels(agentModels []*model_agent.AgentModel,
 
 	return agentIds, departments
 }
+
+// getAgentIdsFromGin 从gin上下文获取终端id集合
+// 参数agentIds([]string) 在中间件经过 data_transfer.DataAddContext转义成([]interface{})
+func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string) {
+	if val, ok := ctx.Get(consts.ValidatorPrefixPlatform + "agentIds"); ok && val != nil {
+		var tmp []interface{}
+		tmp, _ = val.([]interface{})
+		agentIds = helpers.SliceAny2String(tmp)
+	}
+	return agentIds
+}

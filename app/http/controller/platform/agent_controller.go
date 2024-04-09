@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -104,7 +105,7 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 
 // BatchDeleteForManage 管理: 批量删除
 func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
-	agentIds := ctx.GetStringSlice(consts.ValidatorPrefixPlatform + "agentIds")
+	agentIds := u.getAgentIdsFromGin(ctx)
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
@@ -115,9 +116,7 @@ func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 
 // BatchUninstallForManage 管理: 批量卸载
 func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
-	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
-	}
+	agentIds := u.getAgentIdsFromGin(ctx)
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
@@ -130,7 +129,7 @@ func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
 
 // BatchUpgradeForManage 管理: 批量升级
 func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
-	agentIds := ctx.GetStringSlice(consts.ValidatorPrefixPlatform + "agentIds")
+	agentIds := u.getAgentIdsFromGin(ctx)
 	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
@@ -141,7 +140,33 @@ func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
 
 // BatchSetConfigForManage 管理: 批量设置配置
 func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchSetConfigForManage")
+	agentIds := u.getAgentIdsFromGin(ctx)
+	updateColumn := map[string]struct{}{
+		"syslog_dns_switch":     struct{}{},
+		"syslog_outer_switch":   struct{}{},
+		"syslog_inner_switch":   struct{}{},
+		"syslog_process_switch": struct{}{},
+		"syslog_login_switch":   struct{}{},
+		"outreach_alarm_switch": struct{}{},
+		"self_protect_switch":   struct{}{},
+		"auto_white_switch":     struct{}{},
+	}
+	var param = model_agent.AgentModel{}
+	param.SyslogDnsSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogDnsSwitch"))
+	param.SyslogOuterSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogOuterSwitch"))
+	param.SyslogInnerSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogInnerSwitch"))
+	param.SyslogProcessSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogProcessSwitch"))
+	param.SyslogLoginSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogLoginSwitch"))
+	param.OutreachAlarmSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "outreachAlarmSwitch"))
+	param.SelfProtectSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "selfProtectSwitch"))
+	param.AutoWhiteSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "autoWhiteSwitch"))
+
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(agentIds, updateColumn, &param, "终端管理")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // GetForBasic 基本信息：获取
