@@ -10,6 +10,7 @@ const (
 	ValidatorPrefixPlatform      string = "Platform_Validator_"
 	ValidatorPrefixAgent         string = "Agent_Validator_"
 	ValidatorPrefixApi           string = "Api_Validator_"
+	ValidatorPrefixOrganization  string = "Org_Validator_"
 	ValidatorParamsCheckFailCode int    = -400300
 	ValidatorParamsCheckFailMsg  string = "参数校验失败"
 

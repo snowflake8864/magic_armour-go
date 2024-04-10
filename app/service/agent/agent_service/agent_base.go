@@ -69,7 +69,7 @@ func (crd *AgentCurd) ColumnConfig(needId bool) string {
 		column = "agent_id,"
 	}
 	column = column +
-		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
+		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
 		"blackmail_switch, blackmail_mode, port_switch, plug_switch, usb_switch, usb_mode," +
 		"syslog_dns_switch, syslog_outer_switch, syslog_inner_switch, syslog_process_switch, syslog_login_switch," +
 		"outreach_alarm_switch, self_protect_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch," +

@@ -125,10 +125,10 @@ func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
 
 // BatchUpdate 批量修改
 func (crd *AgentCurd) BatchUpdate(ids []string, updateColumn map[string]struct{}, param *model_agent.AgentModel, remark string) (errCode int, err error) {
-	agentModels, err := crd.masterModel.GetItemsByIds(ids, "*")
+	agentModels, err := crd.masterModel.GetItemsByIds(ids, crd.ColumnConfig(true))
 	if err != nil || len(agentModels) == 0 {
 		return -1, errors.New("终端不存在")
 	}
-	
+
 	return errCode, err
 }
