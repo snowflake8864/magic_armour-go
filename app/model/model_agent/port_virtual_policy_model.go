@@ -16,6 +16,7 @@ func CreatePortVirtualPolicyFactory() *PortVirtualPolicyModel {
 type PortVirtualPolicyModel struct {
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
+	OrgId       int64  `json:"org_id"`
 	AgentId     string `json:"agent_id"`
 	Type        string `json:"type"`
 	Protocol    string `json:"protocol"`
@@ -42,6 +43,7 @@ func (m *PortVirtualPolicyModel) CreateTable() bool {
 	sql += `
 		(
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			protocol varchar(8)  NOT NULL DEFAULT '' COMMENT '传输协议(tcp,udp)',
@@ -51,8 +53,8 @@ func (m *PortVirtualPolicyModel) CreateTable() bool {
 			forward_port varchar(64)  NOT NULL DEFAULT '' COMMENT '转发端口',
 			alarm_level tinyint NOT NULL DEFAULT '0' COMMENT '告警级别',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			updated_at datetime NOT NULL,
 			INDEX index_agent_id (agent_id) USING INVERTED,

@@ -16,6 +16,7 @@ func CreateDllRunningFactory() *DllRunningModel {
 type DllRunningModel struct {
 	model.BaseModel
 	Id              string `json:"id" gorm:"primaryKey"`
+	OrgId           int64  `json:"org_id"`
 	AgentId         string `json:"agent_id"`
 	DllHash         string `json:"dll_hash"`
 	Dir             string `json:"dir"`
@@ -41,6 +42,7 @@ func (m *DllRunningModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			dll_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '模块:hash',
 			proc_id int NOT NULL DEFAULT '0'  COMMENT '进程:id',
@@ -52,8 +54,8 @@ func (m *DllRunningModel) CreateTable() bool {
 			INDEX index_dll_hash (dll_hash) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(agent_id, dll_hash, proc_id) 
-		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO
+		UNIQUE KEY(org_id, agent_id, dll_hash, proc_id) 
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

@@ -15,6 +15,7 @@ func CreateUsbLogFactory() *UsbLogModel {
 
 type UsbLogModel struct {
 	model.BaseModel
+	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
 	UsbHash    string `json:"usb_hash"`
 	Name       string `json:"name"`
@@ -33,6 +34,7 @@ func (m *UsbLogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			usb_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '设备:hash',
 			created_at datetime NULL,
@@ -40,8 +42,8 @@ func (m *UsbLogModel) CreateTable() bool {
 			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(冗余)',
 			plug_status tinyint NOT NULL DEFAULT '1' COMMENT '插拔状态(1拔出 2插入)'
 		)
-		DUPLICATE  KEY(agent_id, usb_hash, created_at)
-		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
+		DUPLICATE KEY(org_id,agent_id, usb_hash, created_at)
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'
 		);

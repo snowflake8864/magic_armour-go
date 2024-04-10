@@ -17,6 +17,7 @@ func CreateAgentExtendFactory() *AgentExtendModel {
 type AgentExtendModel struct {
 	model.BaseModel
 	AgentId          string `json:"agent_id" gorm:"primaryKey"`
+	OrgId            int64  `json:"org_id"`
 	PlugPortConfig   string `json:"plug_port_config"`
 	PlugLoginConfig  string `json:"plug_login_config"`
 	LoginSolveConfig string `json:"login_solve_config"`
@@ -34,15 +35,17 @@ func (m *AgentExtendModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 			plug_port_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:端口虚开策略(json)',
 			plug_login_config varchar(256)  NOT NULL DEFAULT '' COMMENT '封堵:口令破解策略(json)',
 			login_solve_config varchar(256)  NOT NULL DEFAULT '' COMMENT '口令破解:策略(json)',
 			process_flush_at datetime NULL COMMENT '进程刷新时间',
-			dll_flush_at datetime NULL COMMENT '模块刷新时间'
+			dll_flush_at datetime NULL COMMENT '模块刷新时间',
+			INDEX index_org_id (org_id) USING INVERTED
 		)
-		UNIQUE KEY(agent_id)
-		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO
+		UNIQUE KEY(org_id, agent_id)
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

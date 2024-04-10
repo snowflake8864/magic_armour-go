@@ -18,6 +18,7 @@ func CreateAgentFactory() *AgentModel {
 type AgentModel struct {
 	model.BaseModel
 	AgentId             string `json:"agent_id" gorm:"primaryKey"`
+	OrgId               int64  `json:"org_id"`
 	HostName            string `json:"host_name"`
 	MacId               string `json:"mac_id"`
 	AgentIp             string `json:"agent_ip"`
@@ -87,6 +88,7 @@ func (m *AgentModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 			host_name varchar(128)  NOT NULL DEFAULT '' COMMENT '主机名',
 			mac_id varchar(512)  NOT NULL DEFAULT '' COMMENT '物理地址',
@@ -146,14 +148,13 @@ func (m *AgentModel) CreateTable() bool {
 			hardware_time int(11) NOT NULL DEFAULT '300' COMMENT '上传硬件资源:快速(秒)',
 			created_at datetime NULL,
 			INDEX index_agent_ip (agent_ip) USING INVERTED,
-			INDEX index_admin_id (admin_id) USING INVERTED ,
 			INDEX index_dept_id (dept_id) USING INVERTED ,
 			INDEX index_os_name (os_name) USING INVERTED,
 			INDEX index_platform_type (platform_type) ,
 			INDEX index_created_at (created_at)
 		)
-		UNIQUE KEY(agent_id)
-		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO
+		UNIQUE KEY(org_id, agent_id)
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

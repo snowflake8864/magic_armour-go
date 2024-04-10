@@ -16,6 +16,7 @@ func CreateErrorFactory() *ErrorModel {
 type ErrorModel struct {
 	model.BaseModel
 	Id           string `json:"id" gorm:"primaryKey"`
+	OrgId        int64  `json:"org_id"`
 	AgentId      string `json:"agent_id"`
 	OriginalName string `json:"original_name"`
 	StoragePath  string `json:"storage_path"`
@@ -33,6 +34,7 @@ func (m *ErrorModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			original_name varchar(128)  NOT NULL DEFAULT '' COMMENT '原文件名',
@@ -41,8 +43,8 @@ func (m *ErrorModel) CreateTable() bool {
 			created_at DATETIME NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(id) 
-		DISTRIBUTED  BY HASH(id) BUCKETS AUTO 
+		UNIQUE KEY(org_id,id) 
+		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

@@ -16,6 +16,7 @@ func CreateUsbFactory() *UsbModel {
 type UsbModel struct {
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
+	OrgId     int64  `json:"org_id"`
 	AgentId   string `json:"agent_id"`
 	UsbHash   string `json:"usb_hash"`
 	Name      string `json:"name"`
@@ -39,6 +40,7 @@ func (m *UsbModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			usb_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '设备:hash',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
@@ -54,8 +56,8 @@ func (m *UsbModel) CreateTable() bool {
 			INDEX index_id (id) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(agent_id, usb_hash) 
-		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO
+		UNIQUE KEY(org_id,agent_id, usb_hash) 
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

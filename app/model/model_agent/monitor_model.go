@@ -15,6 +15,8 @@ func CreateMonitorFactory() *MonitorModel {
 
 type MonitorModel struct {
 	model.BaseModel
+	Id         string `json:"id" gorm:"primaryKey"`
+	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
 	MonitorDay string `json:"monitor_day"`
 	CpuNumber  string `json:"cpu_number"`
@@ -39,9 +41,11 @@ func (m *MonitorModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			monitor_day dateV2 NULL  COMMENT '监控日期(天)',
 			created_at datetime NULL,
+			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			cpu_number varchar(64)  NOT NULL  DEFAULT '' COMMENT 'cpu:核数',
 			cpu_usage varchar(64)  NOT NULL  DEFAULT '' COMMENT 'cpu:用量%',
 			cpu_tops string  NOT NULL  DEFAULT '' COMMENT 'cpu:占用资源最多进程(json)',
@@ -52,8 +56,8 @@ func (m *MonitorModel) CreateTable() bool {
 			hd_usage varchar(64)  NOT NULL  DEFAULT '' COMMENT '硬盘:用量%',
 			self_stat string  DEFAULT '' COMMENT '本身统计(json)'
 		)
-		DUPLICATE  KEY(agent_id, monitor_day, created_at)
-		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
+		DUPLICATE  KEY(org_id, agent_id, monitor_day, created_at)
+		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'
 		);

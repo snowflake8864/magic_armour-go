@@ -18,6 +18,7 @@ func CreateTaskFactory() *TaskModel {
 type TaskModel struct {
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
+	OrgId       int64  `json:"org_id"`
 	AgentId     string `json:"agent_id"`
 	Type        int    `json:"type"`
 	Remark      string `json:"remark"`
@@ -37,6 +38,7 @@ func (m *TaskModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			type smallint  NOT NULL DEFAULT '0' COMMENT '类型',
 			created_at datetime NULL,
@@ -46,8 +48,8 @@ func (m *TaskModel) CreateTable() bool {
 			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			completed_at datetime NULL COMMENT '任务完成时间'
 		)
-		UNIQUE KEY(agent_id, type, created_at)
-		DISTRIBUTED  BY HASH(agent_id) BUCKETS AUTO 
+		UNIQUE KEY(org_id, agent_id, type, created_at)
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

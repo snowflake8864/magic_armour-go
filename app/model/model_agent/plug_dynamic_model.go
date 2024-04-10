@@ -16,6 +16,7 @@ func CreatePlugDynamicFactory() *PlugDynamicModel {
 type PlugDynamicModel struct {
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
+	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
 	PlugType   int    `json:"plug_type"`
 	Source     int    `json:"source"`
@@ -39,6 +40,7 @@ func (m *PlugDynamicModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			created_at datetime NULL,
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
@@ -53,8 +55,8 @@ func (m *PlugDynamicModel) CreateTable() bool {
 			updated_at datetime NOT NULL,
 			INDEX index_id (id) USING INVERTED
 		)
-		UNIQUE KEY(agent_id, created_at) 
-		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO
+		UNIQUE KEY(org_id, agent_id, created_at) 
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

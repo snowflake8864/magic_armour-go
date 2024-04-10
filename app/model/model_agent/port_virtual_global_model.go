@@ -16,6 +16,7 @@ func CreatePortVirtualGlobalFactory() *PortVirtualGlobalModel {
 type PortVirtualGlobalModel struct {
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
+	OrgId       int64  `json:"org_id"`
 	Type        string `json:"type"`
 	Protocol    string `json:"protocol"`
 	SourceIp    string `json:"source_ip"`
@@ -40,6 +41,7 @@ func (m *PortVirtualGlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			protocol varchar(8)  NOT NULL DEFAULT '' COMMENT '传输协议(tcp,udp)',
@@ -49,14 +51,14 @@ func (m *PortVirtualGlobalModel) CreateTable() bool {
 			forward_port varchar(64)  NOT NULL DEFAULT '' COMMENT '转发端口',
 			alarm_level tinyint NOT NULL DEFAULT '0' COMMENT '告警级别',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			updated_at datetime NOT NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(id) 
-		DISTRIBUTED BY HASH(id) BUCKETS AUTO
+		UNIQUE KEY(org_id,id) 
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'
