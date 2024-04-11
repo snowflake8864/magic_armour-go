@@ -29,7 +29,9 @@ type AlarmOutreachModel struct {
 	CreatedAt    string `json:"created_at"`
 	ProcHash     string `json:"proc_hash"`
 	ProcDir      string `json:"proc_dir"`
-	FileDir      string `json:"file_dir"`
+	ProcId       int    `json:"proc_id"`
+	DomainName   string `json:"domain_name"`
+	TargetIp     string `json:"target_ip"`
 }
 
 // 表名
