@@ -28,6 +28,7 @@ type AlarmProcessModel struct {
 	HandleAt     string `json:"handle_at"`
 	CreatedAt    string `json:"created_at"`
 	ProcHash     string `json:"proc_hash"`
+	ProcId       string `json:"proc_id"`
 	ProcDir      string `json:"proc_dir"`
 	ProcParam    string `json:"proc_param"`
 }
@@ -54,6 +55,7 @@ func (m *AlarmProcessModel) CreateTable() bool {
 			handle_remark VARCHAR(512) NOT NULL DEFAULT '' COMMENT '处理备注',
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
+			proc_id INT NOT NULL DEFAULT '0' COMMENT '进程:ID',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			proc_param text NULL COMMENT '进程:参数',
 			INDEX index_id (id) USING INVERTED,
@@ -154,7 +156,7 @@ func (m *AlarmProcessModel) GetItemsByConditions(condition map[string]interface{
 func (m *AlarmProcessModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("agent_id").Where(condition).Count(&total)
+		return tx.Model(m).Select("id").Where(condition).Count(&total)
 	})
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {

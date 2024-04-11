@@ -158,7 +158,7 @@ func (m *AlarmSelfModel) GetItemsByConditions(condition map[string]interface{}, 
 func (m *AlarmSelfModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("agent_id").Where(condition).Count(&total)
+		return tx.Model(m).Select("id").Where(condition).Count(&total)
 	})
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
