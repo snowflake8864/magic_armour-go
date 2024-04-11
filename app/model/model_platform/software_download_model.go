@@ -48,8 +48,8 @@ func (m *SoftwareDownloadModel) CreateTable() bool {
             file_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '文件hash值',
 			file_size int(11) NOT NULL DEFAULT '0' COMMENT '文件大小',
             remark varchar(512)  NOT NULL COMMENT '备注',
-			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
 		 	KEY index_software_create_service (software_id,create_id,service_ip)

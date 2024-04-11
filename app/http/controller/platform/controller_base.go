@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_agent"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
@@ -108,7 +108,7 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 // parseAgentModels 解析终端集合并拿到相关数据
 // 返回 agentIds 终端集合
 // 返回 departments 组织架构集合
-func (u *ControllerBase) parseAgentModels(agentModels []*model_agent.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_platform.DepartmentModel) {
+func (u *ControllerBase) parseAgentModels(agentModels []*model_agent.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
 	if agentModels == nil || len(agentModels) == 0 {
 		return nil, nil
 	}

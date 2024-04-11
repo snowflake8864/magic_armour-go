@@ -5,15 +5,14 @@ import (
 	"goskeleton/app/model"
 )
 
-// 菜单表
-
-func CreateMenuFactory() *MenuModel {
-	return &MenuModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+// CreateOrgMenuFactory 企业用的菜单表
+func CreateOrgMenuFactory() *OrgMenuModel {
+	return &OrgMenuModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
-type MenuModel struct {
+type OrgMenuModel struct {
 	model.BaseModel
 	Id        int64  `gorm:"primaryKey" json:"id"`
 	ParentId  int64  `json:"parent_id"`
@@ -24,6 +23,7 @@ type MenuModel struct {
 	Sort      int    `json:"sort"`
 	IsShow    int    `json:"is_show"`
 	IsRoot    int    `json:"is_root"`
+	UsageVer  int    `json:"usage_ver"`
 	Remark    string `json:"remark"`
 	Api       string `json:"api"`
 	Level     int    `json:"level"`
@@ -32,11 +32,11 @@ type MenuModel struct {
 
 // 表名
 
-func (m *MenuModel) TableName() string {
-	return "p_menus"
+func (m *OrgMenuModel) TableName() string {
+	return "p_org_menus"
 }
 
-func (m *MenuModel) CreateTable() bool {
+func (m *OrgMenuModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -49,6 +49,7 @@ func (m *MenuModel) CreateTable() bool {
 			sort int(11) NOT NULL DEFAULT '1' COMMENT '排序',
 			is_show tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示(0否,1是),前端判断用',
 			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '仅超管可用(0否,1是),后端判断用',
+			usage_ver tinyint(1) NOT NULL DEFAULT '0' COMMENT '使用版本，二进制表示(1离线版本,2在线版本)',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
 			api text  NOT NULL COMMENT '服务端对应接口(,)隔开',
 			level smallint(4) NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
@@ -66,7 +67,7 @@ func (m *MenuModel) CreateTable() bool {
 	}
 }
 
-func (m *MenuModel) TruncateTable() bool {
+func (m *OrgMenuModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -76,12 +77,14 @@ func (m *MenuModel) TruncateTable() bool {
 	}
 }
 
-func (m *MenuModel) InitData() bool {
+func (m *OrgMenuModel) InitData() bool {
 	_ = m.TruncateTable()
 
-	sql := `INSERT INTO ` + m.TableName() + `(id, parent_id, position, type, name, code, sort, is_show, is_root, remark, api, level, created_at) VALUES`
+	sql := `INSERT INTO ` + m.TableName()
+	sql += ` (id, parent_id, position, type, name, code, sort, is_show, is_root, usage_ver, remark, api, level, created_at)`
+	sql += ` VALUES `
 	sql += `
-			(1, 1, 1, 1, 'name', 'code', 1, 0, 0, 'remark', 'api', 1, '2024-01-30 00:00:00');
+			(1, 1, 1, 1, 'name', 'code', 1, 0, 0, 3,  'remark', 'api', 1, '2024-01-30 00:00:00');
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
@@ -91,7 +94,7 @@ func (m *MenuModel) InitData() bool {
 	}
 }
 
-func (m *MenuModel) InsertItem(s *MenuModel) bool {
+func (m *OrgMenuModel) InsertItem(s *OrgMenuModel) bool {
 	result := m.Create(s)
 	if result.RowsAffected > 0 {
 		return true
@@ -100,7 +103,7 @@ func (m *MenuModel) InsertItem(s *MenuModel) bool {
 	}
 }
 
-func (m *MenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
+func (m *OrgMenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
 	result := m.Table(m.TableName()).Where("id=?", id).Updates(updates)
 	if result.Error == nil {
 		return true
@@ -109,7 +112,7 @@ func (m *MenuModel) UpdateById(id int64, updates map[string]interface{}) bool {
 	}
 }
 
-func (m *MenuModel) DeleteById(id int64) bool {
+func (m *OrgMenuModel) DeleteById(id int64) bool {
 	result := m.Where("id=?", id).Delete(m)
 	if result.Error == nil {
 		return true
@@ -118,7 +121,7 @@ func (m *MenuModel) DeleteById(id int64) bool {
 	}
 }
 
-func (m *MenuModel) GetItemById(id int64) (*MenuModel, error) {
+func (m *OrgMenuModel) GetItemById(id int64) (*OrgMenuModel, error) {
 	result := m.Where("id=?", id).First(m)
 	if result.Error == nil {
 		return m, nil
@@ -127,7 +130,7 @@ func (m *MenuModel) GetItemById(id int64) (*MenuModel, error) {
 	}
 }
 
-func (m *MenuModel) GetItemByParent(id int64) (*MenuModel, error) {
+func (m *OrgMenuModel) GetItemByParent(id int64) (*OrgMenuModel, error) {
 	result := m.Where("parent_id=?", id).First(m)
 	if result.Error == nil {
 		return m, nil
@@ -136,7 +139,7 @@ func (m *MenuModel) GetItemByParent(id int64) (*MenuModel, error) {
 	}
 }
 
-func (m *MenuModel) GetItemsByIds(ids []int64) (items []*MenuModel, err error) {
+func (m *OrgMenuModel) GetItemsByIds(ids []int64) (items []*OrgMenuModel, err error) {
 	result := m.Where("id IN ?", ids).Find(&items)
 	if result.Error == nil {
 		return items, nil
@@ -145,7 +148,7 @@ func (m *MenuModel) GetItemsByIds(ids []int64) (items []*MenuModel, err error) {
 	}
 }
 
-func (m *MenuModel) GetItemsByConditions(condition map[string]interface{}) (items []*MenuModel, err error) {
+func (m *OrgMenuModel) GetItemsByConditions(condition map[string]interface{}) (items []*OrgMenuModel, err error) {
 	result := m.Where(condition).Find(&items).Order("level ASC, sort ASC")
 	if result.Error == nil {
 		return items, nil

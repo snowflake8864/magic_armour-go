@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_alarm"
+	"goskeleton/app/model/model_organization"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/model/model_syslog"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -110,9 +111,9 @@ func initTableAndData() {
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
 
-		_ = model_platform.CreateAgentTypeFactory().CreateTable()
-		_ = model_platform.CreateCustomTableFactory().CreateTable()
-		_ = model_platform.CreateDepartmentFactory().CreateTable()
+		_ = model_organization.CreateAgentTypeFactory().CreateTable()
+		_ = model_organization.CreateCustomTableFactory().CreateTable()
+		_ = model_organization.CreateDepartmentFactory().CreateTable()
 		_ = model_platform.CreateDictionaryFactory().CreateTable()
 		_ = model_platform.CreateGrantFactory().CreateTable()
 		_ = model_platform.CreateGrantModuleFactory().CreateTable()

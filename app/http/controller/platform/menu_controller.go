@@ -50,7 +50,7 @@ func (u *MenuController) Tree(ctx *gin.Context) {
 
 // Add 添加
 func (u *MenuController) Add(ctx *gin.Context) {
-	var param = model_platform.MenuModel{
+	var param = model_platform.OrgMenuModel{
 		Position: enum_menu.PositionLeft,
 		ParentId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
 		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
@@ -73,7 +73,7 @@ func (u *MenuController) Add(ctx *gin.Context) {
 
 // Edit 编辑
 func (u *MenuController) Edit(ctx *gin.Context) {
-	var param = model_platform.MenuModel{
+	var param = model_platform.OrgMenuModel{
 		Id:     int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
 		Type:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
 		Name:   ctx.GetString(consts.ValidatorPrefixPlatform + "name"),

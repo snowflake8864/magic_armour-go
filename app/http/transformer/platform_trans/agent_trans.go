@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/model_agent"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/model_organization"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -12,7 +12,7 @@ type Agent struct {
 	Common
 }
 
-func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64]*model_platform.DepartmentModel) map[string]interface{} {
+func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64]*model_organization.DepartmentModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
@@ -52,7 +52,7 @@ func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64
 }
 
 // TransAgentManagePage 转换成管理页需要的数据
-func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[int64]*model_platform.DepartmentModel, softwareNewest map[int]string) interface{} {
+func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[int64]*model_organization.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
