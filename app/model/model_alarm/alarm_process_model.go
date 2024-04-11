@@ -7,8 +7,7 @@ import (
 	"goskeleton/app/utils/helpers"
 )
 
-// 创建 CreateAlarmProcessFactory
-
+// CreateAlarmProcessFactory 告警: 进程
 func CreateAlarmProcessFactory() *AlarmProcessModel {
 	return &AlarmProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }

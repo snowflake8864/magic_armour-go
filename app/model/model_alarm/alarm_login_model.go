@@ -7,8 +7,7 @@ import (
 	"goskeleton/app/utils/helpers"
 )
 
-// 创建 CreateAlarmLoginFactory
-
+// CreateAlarmLoginFactory 告警: 登录破解
 func CreateAlarmLoginFactory() *AlarmLoginModel {
 	return &AlarmLoginModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }

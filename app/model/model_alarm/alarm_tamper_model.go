@@ -7,8 +7,7 @@ import (
 	"goskeleton/app/utils/helpers"
 )
 
-// 创建 CreateAlarmTamperFactory
-
+// CreateAlarmTamperFactory 告警: 防篡改
 func CreateAlarmTamperFactory() *AlarmTamperModel {
 	return &AlarmTamperModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }

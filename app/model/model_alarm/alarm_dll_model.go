@@ -7,8 +7,7 @@ import (
 	"goskeleton/app/utils/helpers"
 )
 
-// 创建 CreateAlarmDllFactory
-
+// CreateAlarmDllFactory  告警: 模块
 func CreateAlarmDllFactory() *AlarmDllModel {
 	return &AlarmDllModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
