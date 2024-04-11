@@ -50,10 +50,10 @@ func (m *AlarmOutreachModel) CreateTable() bool {
 			domain_name VARCHAR(512) NOT NULL DEFAULT '' COMMENT '域名',
 			target_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '目标ip',
 			created_at DATETIME NULL,
+			agent_at DATETIME NULL COMMENT '终端时间',
 			id BIGINT NOT NULL DEFAULT '0',
 			type SMALLINT NOT NULL DEFAULT '0' COMMENT '类型',
 			level TINYINT NOT NULL DEFAULT '0' COMMENT '级别',
-			agent_at DATETIME NULL COMMENT '终端时间',
 			handle_status TINYINT NOT NULL DEFAULT '0' COMMENT '处理状态(0未处理，1已处理)',
 			handle_remark VARCHAR(512) NOT NULL DEFAULT '' COMMENT '处理备注',
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
@@ -64,7 +64,7 @@ func (m *AlarmOutreachModel) CreateTable() bool {
 			INDEX index_created_at (created_at) USING INVERTED,
 			INDEX index_proc_dir (proc_dir) USING INVERTED
 		)
-		UNIQUE KEY(org_id, agent_id,proc_hash,domain_name,target_ip,created_at)
+		UNIQUE KEY(org_id, agent_id,proc_hash,domain_name,target_ip,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
