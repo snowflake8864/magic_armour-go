@@ -1,0 +1,142 @@
+package model_organization
+
+import (
+	"goskeleton/app/global/variable"
+	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
+)
+
+// 企业日志构表
+
+func CreateOrgLogFactory() *OrgLogModel {
+	return &OrgLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+}
+
+//结构体
+
+type OrgLogModel struct {
+	model.BaseModel
+	Id         int64  `json:"id" gorm:"primaryKey"`
+	Module     string `json:"module"`
+	NetIp      string `json:"net_ip"`
+	OrgId      int64  `json:"org_id"`
+	OrgName    string `json:"org_name"`
+	UserId     int64  `json:"user_id"`
+	UserName   string `json:"user_name"`
+	UserEmail  string `json:"user_email"`
+	UserPhone  string `json:"user_phone"`
+	Content    string `json:"content"`
+	Source     int    `json:"source"`
+	CreateId   int64  `json:"create_id"`
+	CreateName string `json:"create_name"`
+	CreatedAt  string `json:"created_at"`
+}
+
+// 表名
+
+func (m *OrgLogModel) TableName() string {
+	return "o_org_logs"
+}
+
+func (m *OrgLogModel) CreateTable() bool {
+	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
+	sql += `
+		(
+         id int(11) unsigned NOT NULL AUTO_INCREMENT,
+		 module int(11) NOT NULL DEFAULT '0' COMMENT '业务模块',
+         net_ip varchar(128) NOT NULL DEFAULT '' COMMENT '通讯ip',
+		 org_id int(11) NOT NULL DEFAULT '0' COMMENT '企业(o_organization.id)',
+		 org_name varchar(128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.id)',
+		 user_id int(11) NOT NULL DEFAULT '0' COMMENT '默认管理用户(o_user.id)',
+		 user_name varchar(128) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.name)',
+		 user_email varchar(64) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.email)',
+		 user_phone varchar(16) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.phone)',
+		 content text COMMENT '内容',
+		 source tinyint(1) NOT NULL DEFAULT '0' COMMENT '来源(1企业 2平台)',
+		 create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(p_admin.id)',
+		 create_name varchar(128) NOT NULL DEFAULT '' COMMENT '创建人(p_admin.name)',
+         created_at datetime DEFAULT NULL,
+		 PRIMARY KEY (id),
+		 KEY module (module),
+		 KEY org_id (org_id),
+		 KEY org_name (org_name),
+		 KEY user_name (user_name),
+		 KEY user_phone (user_phone)
+	   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:企业日志';
+		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
+	result := m.Model(m).Create(s)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateById 通过id修改
+func (m *OrgLogModel) UpdateById(id int64, updates map[string]interface{}) bool {
+	result := m.Model(m).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *OrgLogModel) DeleteByConditions(condition map[string]interface{}) bool {
+	result := m.Model(m).Where(condition).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *OrgLogModel) GetItemById(id int64) (item *OrgLogModel, err error) {
+	result := m.Model(m).Where("id=?", id).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemsByIds 通过id集合获取多条记录
+func (m *OrgLogModel) GetItemsByIds(ids []int64) (items []*OrgLogModel, err error) {
+	result := m.Model(m).Where("id IN ?", ids).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrgLogModel, err error) {
+	tmp := m.Model(m).Where(condition)
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !helpers.StringIsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := m.Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
