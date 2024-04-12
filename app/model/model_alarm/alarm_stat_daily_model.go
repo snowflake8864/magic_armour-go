@@ -18,7 +18,8 @@ type AlarmStatDailyModel struct {
 	model.BaseModel
 	OrgId               int64  `json:"org_id"`
 	AgentId             string `json:"agent_id"`
-	StatDay             int64  `json:"stat_day"`
+	StatDay             string `json:"stat_day"`
+	StatMonth           int    `json:"stat_month"`
 	ProcessTotal        int    `json:"process_total"`
 	ProcessHandled      int    `json:"process_handled"`
 	ProcessAddTotal     int    `json:"process_add_total"`
@@ -74,6 +75,7 @@ func (m *AlarmStatDailyModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
+            stat_month int(11) NOT NUL COMMENT '统计：日期',
 			stat_day DATE NOT NUL COMMENT '统计：日期',
 			process_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-总数',
 			process_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-已处理数',
@@ -117,7 +119,7 @@ func (m *AlarmStatDailyModel) CreateTable() bool {
 			self_add_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:自保-新增-已处理数',
 			created_at datetime NULL
 		)
-		UNIQUE KEY(org_id, agent_id,stat_day)
+		UNIQUE KEY(org_id, agent_id,stat_month,stat_day)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
