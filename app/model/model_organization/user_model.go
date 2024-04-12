@@ -65,7 +65,7 @@ func (m *UserModel) CreateTable() bool {
 			KEY org_id (org_id),
 			KEY email (email),
 			KEY phone (phone)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:用户';
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:用户';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {

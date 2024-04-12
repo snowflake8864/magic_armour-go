@@ -111,11 +111,9 @@ func initTableAndData() {
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
 		_ = model_platform.CreateDictionaryFactory().CreateTable()
-		_ = model_platform.CreateGrantFactory().CreateTable()
-		_ = model_platform.CreateGrantModuleFactory().CreateTable()
-		_ = model_platform.CreateGrantUsedFactory().CreateTable()
-		_ = model_platform.CreateOrgMenuFactory().CreateTable()
 		_ = model_platform.CreateOperateLogFactory().CreateTable()
+		_ = model_platform.CreateOrgMenuFactory().CreateTable()
+		_ = model_platform.CreateProductFactory().CreateTable()
 		_ = model_platform.CreateServerMonitorFactory().CreateTable()
 		_ = model_platform.CreateSmsLogFactory().CreateTable()
 		_ = model_platform.CreateSoftwareFactory().CreateTable()
@@ -127,8 +125,17 @@ func initTableAndData() {
 		_ = model_organization.CreateAgentTypeFactory().CreateTable()
 		_ = model_organization.CreateCustomTableFactory().CreateTable()
 		_ = model_organization.CreateDepartmentFactory().CreateTable()
+		_ = model_organization.CreateOperateLogFactory().CreateTable()
+		_ = model_organization.CreateOrderGrantFactory().CreateTable()
+		_ = model_organization.CreateOrderGrantUsedFactory().CreateTable()
+		_ = model_organization.CreateOrderLogFactory().CreateTable()
+		_ = model_organization.CreateOrderFactory().CreateTable()
+		_ = model_organization.CreateOrgExtendFactory().CreateTable()
+		_ = model_organization.CreateOrgLogFactory().CreateTable()
+		_ = model_organization.CreateOrgStatDailyFactory().CreateTable()
 		_ = model_organization.CreateOrganizationFactory().CreateTable()
 		_ = model_organization.CreateRoleFactory().CreateTable()
+		_ = model_organization.CreateUserFactory().CreateTable()
 	}
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
@@ -141,11 +148,7 @@ func initTableAndData() {
 		_ = model_agent.CreateDllRunningFactory().CreateTable()
 		_ = model_agent.CreateErrorFactory().CreateTable()
 		_ = model_agent.CreateMonitorFactory().CreateTable()
-
-		outreachGlobalFact := model_agent.CreateOutreachGlobalFactory()
-		_ = outreachGlobalFact.CreateTable()
-		_ = outreachGlobalFact.InitData()
-
+		_ = model_agent.CreateOutreachGlobalFactory().CreateTable()
 		_ = model_agent.CreatePlugDynamicFactory().CreateTable()
 		_ = model_agent.CreatePlugIpGlobalFactory().CreateTable()
 		_ = model_agent.CreatePlugIpPolicyFactory().CreateTable()
@@ -170,12 +173,26 @@ func initTableAndData() {
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_init_tables") {
+		_ = model_alarm.CreateAlarmBlackmailFactory().CreateTable()
+		_ = model_alarm.CreateAlarmDllFactory().CreateTable()
+		_ = model_alarm.CreateAlarmLoginFactory().CreateTable()
+		_ = model_alarm.CreateAlarmOutreachFactory().CreateTable()
+		_ = model_alarm.CreateAlarmPlugFactory().CreateTable()
+		_ = model_alarm.CreateAlarmPortFactory().CreateTable()
 		_ = model_alarm.CreateAlarmProcessFactory().CreateTable()
+		_ = model_alarm.CreateAlarmSelfFactory().CreateTable()
+		_ = model_alarm.CreateAlarmStatDailyFactory().CreateTable()
+		_ = model_alarm.CreateAlarmTamperFactory().CreateTable()
+		_ = model_alarm.CreateAlarmUsbFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)
 	if !existMigration("db_syslog_init_tables") {
 		_ = model_syslog.CreateSyslogDnsFactory().CreateTable()
+		_ = model_syslog.CreateSyslogInnerFactory().CreateTable()
+		_ = model_syslog.CreateSyslogLoginFactory().CreateTable()
+		_ = model_syslog.CreateSyslogOuterFactory().CreateTable()
+		_ = model_syslog.CreateSyslogProcessFactory().CreateTable()
 	}
 
 	//保存迁移数据

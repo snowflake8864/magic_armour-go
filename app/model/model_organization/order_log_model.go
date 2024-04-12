@@ -30,7 +30,7 @@ type OrderLogModel struct {
 // 表名
 
 func (m *OrderLogModel) TableName() string {
-	return "o_order_log"
+	return "o_order_logs"
 }
 
 func (m *OrderLogModel) CreateTable() bool {
