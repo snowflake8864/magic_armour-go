@@ -16,8 +16,7 @@ func CreateOrderFactory() *OrderModel {
 
 type OrderModel struct {
 	model.BaseModel
-	Id            int64   `json:"id" gorm:"primaryKey"`
-	OrderNo       string  `json:"order_no"`
+	OrderNo       string  `json:"order_no" gorm:"primaryKey"`
 	OrgId         int64   `json:"org_id"`
 	OrgName       string  `json:"org_name"`
 	ProductId     int64   `json:"product_id"`
@@ -58,8 +57,7 @@ func (m *OrderModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-          id int (11) unsigned NOT NULL AUTO_INCREMENT,
-          order_no varchar (128) NOT NULL DEFAULT '' COMMENT '订单编号',
+          order_no VARCHAR(128) NOT NULL DEFAULT '' COMMENT '订单编号',
           org_id int (11) NOT NULL DEFAULT '0' COMMENT '企业(o_organization.id)',
           org_name varchar (128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.id)',
           product_id int (11) NOT NULL DEFAULT '0' COMMENT '产品id(p_products.id)',
@@ -88,8 +86,7 @@ func (m *OrderModel) CreateTable() bool {
           complete_at datetime DEFAULT NULL COMMENT '完成时间',
           cancel_at datetime DEFAULT NULL COMMENT '取消',
           source tinyint (1) NOT NULL DEFAULT '0' COMMENT '来源',
-          PRIMARY KEY (id),
-          UNIQUE KEY order_no (order_no),
+          PRIMARY KEY (order_no),
           KEY org_expire (org_id, is_expire),
           KEY org_name (org_name),
           KEY pay_order_no (pay_order_no),
