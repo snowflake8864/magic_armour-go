@@ -26,7 +26,7 @@ type AgentTypeModel struct {
 // 表名
 
 func (m *AgentTypeModel) TableName() string {
-	return "p_agent_type"
+	return "o_agent_type"
 }
 
 func (m *AgentTypeModel) CreateTable() bool {
@@ -36,12 +36,12 @@ func (m *AgentTypeModel) CreateTable() bool {
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NULL,
             PRIMARY KEY (id),
-			KEY index_org (org_id),
-		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='终端类型表';
+			KEY index_org (org_id)
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='企业:终端类型表';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {

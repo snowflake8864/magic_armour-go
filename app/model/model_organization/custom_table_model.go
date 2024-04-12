@@ -27,7 +27,7 @@ type CustomTableModel struct {
 // 表名
 
 func (m *CustomTableModel) TableName() string {
-	return "p_custom_table"
+	return "o_custom_table"
 }
 
 func (m *CustomTableModel) CreateTable() bool {
@@ -43,7 +43,7 @@ func (m *CustomTableModel) CreateTable() bool {
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
 			UNIQUE KEY unique_index (org_id,create_id, route)
-		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='自定义表格表';
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='企业:自定义表格表';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {

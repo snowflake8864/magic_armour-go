@@ -48,6 +48,9 @@ type AgentModel struct {
 	Position            string `json:"position"`
 	Remark              string `json:"remark"`
 	GrantConfig         string `json:"grant_config"`
+	GrantOrderNo        string `json:"grant_order_no"`
+	GrantExpireAt       string `json:"grant_expire_at"`
+	GrantStatus         int    `json:"grant_status"`
 	ProcessSwitch       int    `json:"process_switch"`
 	ProcessMode         int    `json:"process_mode"`
 	DllSwitch           int    `json:"dll_switch"`
@@ -118,7 +121,10 @@ func (m *AgentModel) CreateTable() bool {
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
 			position varchar(128)  NOT NULL DEFAULT '' COMMENT '位置',
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注',
-			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权配置(json)',
+			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权:配置(json)',
+			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
+			grant_expire_at datetime NOT NULL  COMMENT '授权:过期时间',
+			grant_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:状态',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式(0监控,1保护)',
 			dll_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '模块:开关',

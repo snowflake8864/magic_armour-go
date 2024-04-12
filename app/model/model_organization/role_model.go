@@ -1,4 +1,4 @@
-package model_platform
+package model_organization
 
 import (
 	"goskeleton/app/global/variable"
@@ -17,6 +17,7 @@ func CreateRoleFactory() *RoleModel {
 type RoleModel struct {
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
+	OrgId      int64  `json:"org_id"`
 	Name       string `json:"name"`
 	Remark     string `json:"remark"`
 	Menus      string `json:"menus"`
@@ -29,7 +30,7 @@ type RoleModel struct {
 // 表名
 
 func (m *RoleModel) TableName() string {
-	return "p_roles"
+	return "o_roles"
 }
 
 func (m *RoleModel) CreateTable() bool {
@@ -37,16 +38,18 @@ func (m *RoleModel) CreateTable() bool {
 	sql += `
 		(
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			name varchar(128) NOT NULL DEFAULT '' COMMENT '名称',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '邮箱',
 			menus text DEFAULT NULL COMMENT '邮箱',
 			is_default tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认(0否,1是)',
-			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
-			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
+			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
+			KEY index_org (org_id),
             KEY index_name (name)
-		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='角色表';
+		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='企业:角色表';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {

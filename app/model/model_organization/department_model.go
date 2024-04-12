@@ -33,7 +33,7 @@ type DepartmentModel struct {
 // 表名
 
 func (m *DepartmentModel) TableName() string {
-	return "p_departments"
+	return "o_departments"
 }
 
 func (m *DepartmentModel) CreateTable() bool {
@@ -56,7 +56,7 @@ func (m *DepartmentModel) CreateTable() bool {
 			KEY index_org (org_id),
 			KEY index_parent (parent_id),
 			KEY index_full_code (full_code)
-		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='组织架构表';
+		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='企业:组织架构表';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {

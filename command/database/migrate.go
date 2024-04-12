@@ -49,7 +49,7 @@ func start(action string) {
 	case "init":
 		initTableAndData()
 	case "menu":
-		_ = model_platform.CreateMenuFactory().InitData()
+		_ = model_platform.CreateOrgMenuFactory().InitData()
 	case "dictionary":
 		_ = model_platform.CreateDictionaryFactory().InitData()
 		_ = dictionary_service.CreateCacheFactory().Rebuild()
@@ -110,28 +110,26 @@ func initTableAndData() {
 		adminFact := model_platform.CreateAdminFactory()
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
-
-		_ = model_organization.CreateAgentTypeFactory().CreateTable()
-		_ = model_organization.CreateCustomTableFactory().CreateTable()
-		_ = model_organization.CreateDepartmentFactory().CreateTable()
 		_ = model_platform.CreateDictionaryFactory().CreateTable()
 		_ = model_platform.CreateGrantFactory().CreateTable()
 		_ = model_platform.CreateGrantModuleFactory().CreateTable()
 		_ = model_platform.CreateGrantUsedFactory().CreateTable()
-		_ = model_platform.CreateMenuFactory().CreateTable()
+		_ = model_platform.CreateOrgMenuFactory().CreateTable()
 		_ = model_platform.CreateOperateLogFactory().CreateTable()
-
-		roleFact := model_platform.CreateRoleFactory()
-		_ = roleFact.CreateTable()
-		_ = roleFact.InitData()
-
 		_ = model_platform.CreateServerMonitorFactory().CreateTable()
 		_ = model_platform.CreateSmsLogFactory().CreateTable()
 		_ = model_platform.CreateSoftwareFactory().CreateTable()
 		_ = model_platform.CreateSoftwareDownloadFactory().CreateTable()
 		_ = model_platform.CreateUploadFactory().CreateTable()
 	}
-
+	//下面开始创建表 (organization库)
+	if !existMigration("db_organization_init_tables") {
+		_ = model_organization.CreateAgentTypeFactory().CreateTable()
+		_ = model_organization.CreateCustomTableFactory().CreateTable()
+		_ = model_organization.CreateDepartmentFactory().CreateTable()
+		_ = model_organization.CreateOrganizationFactory().CreateTable()
+		_ = model_organization.CreateRoleFactory().CreateTable()
+	}
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
 		_ = model_agent.CreateAccessLogFactory().CreateTable()

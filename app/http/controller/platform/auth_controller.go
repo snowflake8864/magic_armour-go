@@ -38,7 +38,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 	}
 
 	phoneCheck := 0
-	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.PhoneLoginCheck == enums.IsYes {
+	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
 		phoneCheck = 1
 	}
 
@@ -67,7 +67,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		response.FailRoutine(ctx, -97, "没有添加手机号码")
 		return
 	}
-	if adminModel.PhoneLoginCheck == enums.IsNot {
+	if adminModel.LoginPhoneCheck == enums.IsNot {
 		response.FailRoutine(ctx, -98, "没有开启双因子验证")
 		return
 	}

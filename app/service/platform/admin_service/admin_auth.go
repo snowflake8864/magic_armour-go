@@ -135,7 +135,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 	}
 
 	//短信验证
-	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.PhoneLoginCheck == enums.IsYes {
+	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
 		if helpers.StringIsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
