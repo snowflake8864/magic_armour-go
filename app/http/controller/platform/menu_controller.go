@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_menu"
 	"goskeleton/app/model/model_platform"
-	"goskeleton/app/service/platform/munu_service"
+	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/tree"
 )
@@ -18,7 +18,7 @@ type MenuController struct {
 // Tree 树形列表
 func (u *MenuController) Tree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	models := munu_service.CreateCurdFactory().GetAll(loginInfo.IsRoot)
+	models := org_menu_service.CreateCurdFactory().GetAll(loginInfo.IsRoot)
 	if models == nil {
 		response.FailSimplify(ctx, "没有数据")
 		return
@@ -63,7 +63,7 @@ func (u *MenuController) Add(ctx *gin.Context) {
 		Api:      "",
 	}
 
-	errCode, err := munu_service.CreateCurdFactory().Add(&param)
+	errCode, err := org_menu_service.CreateCurdFactory().Add(&param)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -83,7 +83,7 @@ func (u *MenuController) Edit(ctx *gin.Context) {
 		IsRoot: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
 		Remark: ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
 	}
-	errCode, err := munu_service.CreateCurdFactory().UpdateById(&param)
+	errCode, err := org_menu_service.CreateCurdFactory().UpdateById(&param)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -99,7 +99,7 @@ func (u *MenuController) Sort(ctx *gin.Context) {
 // Delete 删除
 func (u *MenuController) Delete(ctx *gin.Context) {
 	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
-	errCode, err := munu_service.CreateCurdFactory().DeleteById(id)
+	errCode, err := org_menu_service.CreateCurdFactory().DeleteById(id)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

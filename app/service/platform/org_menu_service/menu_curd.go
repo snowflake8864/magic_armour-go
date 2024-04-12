@@ -1,4 +1,4 @@
-package munu_service
+package org_menu_service
 
 import (
 	"errors"
@@ -8,7 +8,7 @@ import (
 )
 
 func CreateCurdFactory() *MenuCurd {
-	return &MenuCurd{masterModel: model_platform.CreateMenuFactory()}
+	return &MenuCurd{masterModel: model_platform.CreateOrgMenuFactory()}
 }
 
 type MenuCurd struct {

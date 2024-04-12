@@ -6,7 +6,6 @@ import (
 	"goskeleton/app/global/enums/enum_grant"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/platform/department_service"
-	"goskeleton/app/service/platform/grant_service"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -135,7 +134,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 
 // autoGrant 自动授权
 func (crd *AgentAuth) autoGrant(agentId string) {
-	go grant_service.CreateCurdFactory().AutoGrant(agentId)
+
 }
 
 // autoAllocateDept 自动分配组织架构
