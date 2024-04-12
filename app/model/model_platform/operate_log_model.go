@@ -20,7 +20,6 @@ type OperateLogModel struct {
 	Module     string `json:"module"`
 	NetIp      string `json:"net_ip"`
 	Input      string `json:"input"`
-	AgentId    string `json:"agent_id"`
 	Method     string `json:"method"`
 	Status     int    `json:"status"`
 	HttpCode   int    `json:"http_code"`
@@ -45,7 +44,6 @@ func (m *OperateLogModel) CreateTable() bool {
 			module varchar(32) NOT NULL DEFAULT '' COMMENT '业务模块',
 			net_ip varchar(128) NOT NULL DEFAULT '' COMMENT '通讯ip',
 			input text NULL COMMENT '请求参数',
-			agent_id varchar(128) NOT NULL DEFAULT ''COMMENT '终端id(agent.id)',
 			method varchar(8) NULL COMMENT '请求方法',
 			status tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
 			http_code smallint(4) NOT NULL DEFAULT '0' COMMENT 'http状态码',
