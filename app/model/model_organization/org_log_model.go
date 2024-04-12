@@ -16,20 +16,20 @@ func CreateOrgLogFactory() *OrgLogModel {
 
 type OrgLogModel struct {
 	model.BaseModel
-	Id         int64  `json:"id" gorm:"primaryKey"`
-	Module     string `json:"module"`
-	NetIp      string `json:"net_ip"`
-	OrgId      int64  `json:"org_id"`
-	OrgName    string `json:"org_name"`
-	UserId     int64  `json:"user_id"`
-	UserName   string `json:"user_name"`
-	UserEmail  string `json:"user_email"`
-	UserPhone  string `json:"user_phone"`
-	Content    string `json:"content"`
-	Source     int    `json:"source"`
-	CreateId   int64  `json:"create_id"`
-	CreateName string `json:"create_name"`
-	CreatedAt  string `json:"created_at"`
+	Id            int64  `json:"id" gorm:"primaryKey"`
+	Module        string `json:"module"`
+	NetIp         string `json:"net_ip"`
+	OrgId         int64  `json:"org_id"`
+	OrgName       string `json:"org_name"`
+	UserId        int64  `json:"user_id"`
+	UserName      string `json:"user_name"`
+	UserEmail     string `json:"user_email"`
+	UserPhone     string `json:"user_phone"`
+	Content       string `json:"content"`
+	OperateSource int    `json:"operate_source"`
+	OperateId     int64  `json:"operate_id"`
+	OperateName   string `json:"operate_name"`
+	CreatedAt     string `json:"created_at"`
 }
 
 // 表名
@@ -52,9 +52,9 @@ func (m *OrgLogModel) CreateTable() bool {
 		 user_email varchar(64) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.email)',
 		 user_phone varchar(16) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.phone)',
 		 content text COMMENT '内容',
-		 source tinyint(1) NOT NULL DEFAULT '0' COMMENT '来源(1企业 2平台)',
-		 create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(p_admin.id)',
-		 create_name varchar(128) NOT NULL DEFAULT '' COMMENT '创建人(p_admin.name)',
+		 operate_source tinyint (1) NOT NULL DEFAULT '0' COMMENT '操作:来源',
+		 operate_id int (11) NOT NULL DEFAULT '0' COMMENT '操作用户:编号',
+         operate_name varchar (128) NOT NULL DEFAULT '' COMMENT '操作用户:名称',
          created_at datetime DEFAULT NULL,
 		 PRIMARY KEY (id),
 		 KEY module (module),

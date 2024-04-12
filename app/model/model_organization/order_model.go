@@ -1,0 +1,204 @@
+package model_organization
+
+import (
+	"goskeleton/app/global/variable"
+	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
+)
+
+// 订单表
+
+func CreateOrderFactory() *OrderModel {
+	return &OrderModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+}
+
+//结构体
+
+type OrderModel struct {
+	model.BaseModel
+	Id            int64   `json:"id" gorm:"primaryKey"`
+	OrderNo       string  `json:"order_no"`
+	OrgId         int64   `json:"org_id"`
+	OrgName       string  `json:"org_name"`
+	ProductId     int64   `json:"product_id"`
+	ProductTitle  string  `json:"product_title"`
+	GrantType     int     `json:"grant_type"`
+	GrantModule   string  `json:"grant_module"`
+	GrantDuration int     `json:"grant_duration"`
+	SalePrice     float64 `json:"sale_price"`
+	BuyNumber     int     `json:"buy_number"`
+	TotalAmount   float64 `json:"total_amount"`
+	DeclineAmount float64 `json:"decline_amount"`
+	RealAmount    float64 `json:"real_amount"`
+	OrderStatus   int     `json:"order_status"`
+	IsExpire      int     `json:"is_expire"`
+	ExpireAt      string  `json:"expire_at"`
+	PayMethod     string  `json:"pay_method"`
+	PayInfo       string  `json:"pay_info"`
+	PayOrderNo    string  `json:"pay_order_no"`
+	CreateId      int64   `json:"create_id"`
+	CreateName    string  `json:"create_name"`
+	CreatePhone   string  `json:"create_phone"`
+	CreatedAt     string  `json:"created_at"`
+	DeclineAt     string  `json:"decline_at"`
+	DeclineRemark string  `json:"decline_remark"`
+	PayAt         string  `json:"pay_at"`
+	CompleteAt    string  `json:"complete_at"`
+	CancelAt      string  `json:"cancel_at"`
+	Source        int     `json:"source"`
+}
+
+// 表名
+
+func (m *OrderModel) TableName() string {
+	return "o_orders"
+}
+
+func (m *OrderModel) CreateTable() bool {
+	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
+	sql += `
+		(
+          id int (11) unsigned NOT NULL AUTO_INCREMENT,
+          order_no varchar (128) NOT NULL DEFAULT '' COMMENT '订单编号',
+          org_id int (11) NOT NULL DEFAULT '0' COMMENT '企业(o_organization.id)',
+          org_name varchar (128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.id)',
+          product_id int (11) NOT NULL DEFAULT '0' COMMENT '产品id(p_products.id)',
+          product_title varchar (128) NOT NULL DEFAULT '' COMMENT '产品标题(p_products.title)',
+          grant_type tinyint (1) NOT NULL DEFAULT '0' COMMENT '授权类型',
+          grant_module varchar (1024) NOT NULL DEFAULT '' COMMENT '授权模块(json)',
+          grant_duration int (11) NOT NULL DEFAULT '0' COMMENT '授权时长',
+          sale_price decimal (6, 2) NOT NULL DEFAULT '0.00' COMMENT '产品售价',
+          buy_number int (11) NOT NULL DEFAULT '0' COMMENT '购买数量',
+          total_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '总计金额',
+          decline_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '直降金额',
+          real_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '真实金额',
+          order_status SMALLINT (4) NOT NULL DEFAULT '1' COMMENT '订单状态',
+          is_expire TINYINT (1) NOT NULL DEFAULT '0' COMMENT '是否过期',
+          expire_at DATE DEFAULT NULL COMMENT '过期时间',
+          pay_method tinyint (1) NOT NULL DEFAULT '0' COMMENT '支付方法',
+          pay_info text COMMENT '支付信息',
+          pay_order_no varchar (128) NOT NULL DEFAULT '' COMMENT '支付订单号(三方)',
+          create_id int (11) NOT NULL DEFAULT '0' COMMENT '创建人(o_user.id)',
+          create_name varchar (64) NOT NULL DEFAULT '' COMMENT '创建人(o_user.username)',
+          create_phone varchar (16) NOT NULL DEFAULT '' COMMENT '创建人(o_user.phone)',
+          create_at datetime DEFAULT NULL COMMENT '创建时间',
+          decline_at datetime DEFAULT NULL COMMENT '直降时间',
+          decline_remark varchar (255) NOT NULL DEFAULT '' COMMENT '直降备注',
+          pay_at datetime DEFAULT NULL COMMENT '支付时间',
+          complete_at datetime DEFAULT NULL COMMENT '完成时间',
+          cancel_at datetime DEFAULT NULL COMMENT '取消',
+          source tinyint (1) NOT NULL DEFAULT '0' COMMENT '来源',
+          PRIMARY KEY (id),
+          UNIQUE KEY order_no (order_no),
+          KEY org_expire (org_id, is_expire),
+          KEY org_name (org_name),
+          KEY pay_order_no (pay_order_no),
+          KEY product_id (product_id),
+          KEY order_status (order_status),
+          KEY create_name (create_name),
+          KEY create_at (create_at),
+          KEY pay_at (pay_at),
+          KEY complete_at (complete_at)
+        ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '企业:订单';
+		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *OrderModel) InsertItem(s *OrderModel) bool {
+	result := m.Model(m).Create(s)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateById 通过id修改
+func (m *OrderModel) UpdateById(id int64, updates map[string]interface{}) bool {
+	result := m.Model(m).Where("id=?", id).Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *OrderModel) DeleteByConditions(condition map[string]interface{}) bool {
+	result := m.Model(m).Where(condition).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *OrderModel) GetItemById(id int64) (item *OrderModel, err error) {
+	result := m.Model(m).Where("id=?", id).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemsByIds 通过id集合获取多条记录
+func (m *OrderModel) GetItemsByIds(ids []int64) (items []*OrderModel, err error) {
+	result := m.Model(m).Where("id IN ?", ids).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderModel, err error) {
+	tmp := m.Model(m).Where(condition)
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !helpers.StringIsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := m.Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *OrderModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *OrderModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrderModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
+	}
+}
