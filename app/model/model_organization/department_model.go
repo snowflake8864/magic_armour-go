@@ -17,6 +17,7 @@ func CreateDepartmentFactory() *DepartmentModel {
 type DepartmentModel struct {
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
+	OrgId      int64  `json:"org_id"`
 	ParentId   int64  `json:"parent_id"`
 	Name       string `json:"name"`
 	FullCode   string `json:"full_code"`
@@ -40,6 +41,7 @@ func (m *DepartmentModel) CreateTable() bool {
 	sql += `
 		(
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
+			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			name varchar(128)  NOT NULL DEFAULT '' COMMENT '名称',
 			full_code varchar(128)  NOT NULL DEFAULT '' COMMENT '完整编号(根,父,本级)',
@@ -51,6 +53,7 @@ func (m *DepartmentModel) CreateTable() bool {
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
+			KEY index_org (org_id),
 			KEY index_parent (parent_id),
 			KEY index_full_code (full_code)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='组织架构表';

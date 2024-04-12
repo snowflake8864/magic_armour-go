@@ -39,7 +39,7 @@ type AgentModel struct {
 	LiveAt              string `json:"live_at"`
 	IsSafe              int    `json:"is_safe"`
 	UpgradeVer          string `json:"upgrade_ver"`
-	AdminId             int64  `json:"admin_id"`
+	AdminId             int64  `json:"user_id"`
 	DeptId              int64  `json:"dept_id"`
 	AgentType           int    `json:"agent_type"`
 	Alias               string `json:"alias"`
@@ -110,7 +110,7 @@ func (m *AgentModel) CreateTable() bool {
 			live_at datetime NOT NULL COMMENT '最近活动时间',
 			is_safe tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否安全(0不安全,1安全)',
 			upgrade_ver varchar(32)  NOT NULL DEFAULT '' COMMENT '要升级版本号',
-			admin_id int NOT NULL DEFAULT '0' COMMENT '管理员编号(admin.id)',
+			user_id int NOT NULL DEFAULT '0' COMMENT '管理员编号(user.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			agent_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '终端类型',
 			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',

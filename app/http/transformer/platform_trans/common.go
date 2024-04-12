@@ -14,7 +14,7 @@ func (t *Common) FormatMapIntStr2List(s map[int]string, appendAll bool) (result 
 	}
 	if appendAll {
 		result = append(result, map[string]interface{}{
-			"val":   enums.SearchAll,
+			"val":   enums.AllDefault,
 			"label": "全部",
 		})
 	}

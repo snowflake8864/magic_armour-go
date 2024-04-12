@@ -2,11 +2,11 @@ package enums
 
 // 数据字典
 const (
-	SearchAll int = -100
-	IsNot     int = 0 //是否状态: 否
-	IsYes     int = 1 //是否状态: 是
-	SwitchOn  int = 1 //开关状态: 开
-	SwitchOff int = 0 //开关状态: 否
+	AllDefault int = -100
+	IsNot      int = 0 //是否状态: 否
+	IsYes      int = 1 //是否状态: 是
+	SwitchOn   int = 1 //开关状态: 开
+	SwitchOff  int = 0 //开关状态: 否
 
 )
 
