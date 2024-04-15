@@ -31,7 +31,7 @@ type ProductModel struct {
 // 表名
 
 func (m *ProductModel) TableName() string {
-	return "p_grants"
+	return "p_products"
 }
 
 func (m *ProductModel) CreateTable() bool {
