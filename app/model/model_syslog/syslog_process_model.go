@@ -31,7 +31,6 @@ type SyslogProcessModel struct {
 }
 
 // 表名
-
 func (m *SyslogProcessModel) TableName() string {
 	return "a_syslog_process"
 }

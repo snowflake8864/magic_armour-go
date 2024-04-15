@@ -28,7 +28,6 @@ type SyslogDnsModel struct {
 }
 
 // 表名
-
 func (m *SyslogDnsModel) TableName() string {
 	return "a_syslog_dns"
 }

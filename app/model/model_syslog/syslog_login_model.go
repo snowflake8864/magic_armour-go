@@ -27,7 +27,6 @@ type SyslogLoginModel struct {
 }
 
 // 表名
-
 func (m *SyslogLoginModel) TableName() string {
 	return "a_syslog_login"
 }

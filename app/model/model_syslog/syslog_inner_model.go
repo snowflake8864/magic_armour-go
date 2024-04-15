@@ -32,7 +32,6 @@ type SyslogInnerModel struct {
 }
 
 // 表名
-
 func (m *SyslogInnerModel) TableName() string {
 	return "a_syslog_inner"
 }

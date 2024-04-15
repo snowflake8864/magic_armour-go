@@ -32,7 +32,6 @@ type SyslogOuterModel struct {
 }
 
 // 表名
-
 func (m *SyslogOuterModel) TableName() string {
 	return "a_syslog_outer"
 }
