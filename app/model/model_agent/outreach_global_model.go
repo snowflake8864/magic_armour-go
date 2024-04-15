@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"time"
@@ -82,6 +83,33 @@ func (m *OutreachGlobalModel) InitData() bool {
 
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *OutreachGlobalModel) InsertItem(s *OutreachGlobalModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertBatch 插入多条
+func (m *OutreachGlobalModel) InsertBatch(list *[]OutreachGlobalModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
 		return true
 	} else {
 		return false

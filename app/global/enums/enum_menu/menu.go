@@ -1,6 +1,6 @@
 package enum_menu
 
-// 封堵
+// 菜单
 
 const (
 	PositionLeft  int = 1 //方位: 左侧
