@@ -22,11 +22,12 @@ const (
 	AgentHttpUrl          string = "agent_http_url"           //终端:http请求地址(无端口)
 	AgentHttpPort         string = "agent_http_port"          //终端:http请求端口
 	AgentLogSendProto     string = "agent_log_send_proto"     //终端:日志发送协议(1udp 2tcp)
-	AgentSaveAccessLog    string = "agent_save_access_log"    //终端:任务缓存过期时间(时)
+	AgentSaveAccessLog    string = "agent_save_access_log"    //终端:是否保存访问记录(0|1)
 	AgentConfigExpire     string = "agent_config_expire"      //终端:配置文件有效期(小时)
 	AgentAutoDeleteExpire string = "agent_auto_delete_expire" //终端:自动删除有效期(天)
 	AgentAlarmExpire      string = "agent_alarm_expire"       //终端:告警保留时长(天)
 	AgentSyslogExpire     string = "agent_syslog_expire"      //终端:通讯日志保留时长(天)
+	AgentProcGlobalSwitch string = "agent_proc_global_switch" //终端:进程全局名单是否下发给终端开关
 	AgentProcGlobalLimit  string = "agent_proc_global_limit"  //终端:进程全局名单限制数目
 
 	ThreatenSwitch      string = "threaten_switch"       //威胁情报:开关
@@ -85,6 +86,7 @@ var EnumSlice = map[string][]string{
 		AgentAutoDeleteExpire,
 		AgentAlarmExpire,
 		AgentSyslogExpire,
+		AgentProcGlobalSwitch,
 		AgentProcGlobalLimit,
 	},
 
