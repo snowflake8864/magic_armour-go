@@ -117,5 +117,11 @@ var EnumSlice = map[string][]string{
 		HuanshiAlarmSwitchOutreach,
 		HuanshiAlarmSwitchSelf,
 	},
-	ModuleOrder: {},
+	ModuleOrder: {
+		OrderBankcardNo,
+		OrderBankcardName,
+		OrderBankcardBank,
+		OrderPayingTel,
+		OrderExpireDays,
+	},
 }
