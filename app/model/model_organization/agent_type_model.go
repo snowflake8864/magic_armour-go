@@ -24,7 +24,6 @@ type AgentTypeModel struct {
 }
 
 // 表名
-
 func (m *AgentTypeModel) TableName() string {
 	return "o_agent_type"
 }

@@ -36,7 +36,6 @@ type OrgStatDailyModel struct {
 }
 
 // 表名
-
 func (m *OrgStatDailyModel) TableName() string {
 	return "a_alarm_stat_daily"
 }

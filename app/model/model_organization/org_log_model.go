@@ -33,7 +33,6 @@ type OrgLogModel struct {
 }
 
 // 表名
-
 func (m *OrgLogModel) TableName() string {
 	return "o_org_logs"
 }

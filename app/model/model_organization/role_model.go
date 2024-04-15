@@ -28,7 +28,6 @@ type RoleModel struct {
 }
 
 // 表名
-
 func (m *RoleModel) TableName() string {
 	return "o_roles"
 }

@@ -25,7 +25,6 @@ type CustomTableModel struct {
 }
 
 // 表名
-
 func (m *CustomTableModel) TableName() string {
 	return "o_custom_table"
 }

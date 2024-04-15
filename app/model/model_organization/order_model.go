@@ -48,7 +48,6 @@ type OrderModel struct {
 }
 
 // 表名
-
 func (m *OrderModel) TableName() string {
 	return "o_orders"
 }

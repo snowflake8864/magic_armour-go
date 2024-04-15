@@ -23,7 +23,6 @@ type OrderGrantModel struct {
 }
 
 // 表名
-
 func (m *OrderGrantModel) TableName() string {
 	return "o_order_grant"
 }

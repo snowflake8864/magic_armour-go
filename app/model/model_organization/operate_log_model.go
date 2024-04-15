@@ -35,10 +35,10 @@ type OperateLogModel struct {
 }
 
 // 表名
-
 func (m *OperateLogModel) TableName() string {
 	return "o_operate_logs"
 }
+
 func (m *OperateLogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `

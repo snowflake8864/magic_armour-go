@@ -39,7 +39,6 @@ type OrganizationModel struct {
 }
 
 // 表名
-
 func (m *OrganizationModel) TableName() string {
 	return "o_organizations"
 }

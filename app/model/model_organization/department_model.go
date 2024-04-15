@@ -31,7 +31,6 @@ type DepartmentModel struct {
 }
 
 // 表名
-
 func (m *DepartmentModel) TableName() string {
 	return "o_departments"
 }

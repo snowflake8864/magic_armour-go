@@ -38,7 +38,6 @@ type OrgExtendModel struct {
 }
 
 // 表名
-
 func (m *OrgExtendModel) TableName() string {
 	return "o_org_extend"
 }

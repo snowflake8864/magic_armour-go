@@ -35,7 +35,6 @@ type UserModel struct {
 }
 
 // 表名
-
 func (m *UserModel) TableName() string {
 	return "o_users"
 }

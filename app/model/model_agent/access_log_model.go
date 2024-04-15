@@ -31,7 +31,6 @@ type AccessLogModel struct {
 }
 
 // 表名
-
 func (m *AccessLogModel) TableName() string {
 	return "a_access_logs"
 }
