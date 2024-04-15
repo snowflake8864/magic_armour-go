@@ -4,7 +4,6 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/agent/agent_service"
@@ -69,13 +68,16 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_servi
 
 // getCurrAdminDepartments 获取当前用户的管理部门
 func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int64) {
-	loginInfo := u.getLogin(ctx)
-	if loginInfo.IsAgent == enums.IsYes {
-		return true, nil
-	}
 
-	departments := helpers.Json2SliceInt64(loginInfo.Departments)
-	return false, departments
+	return true, nil
+	/*
+		loginInfo := u.getLogin(ctx)
+		if loginInfo.IsAgent == enums.IsYes {
+			return true, nil
+		}
+		departments := helpers.Json2SliceInt64(loginInfo.Departments)
+		return false, departments
+	*/
 }
 
 // getPageAndSort 获取分页参数和排序参数

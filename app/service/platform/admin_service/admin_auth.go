@@ -183,13 +183,11 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 // loginAfter
 func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[string]interface{} {
 	loginInfo := AdminCacheLogin{
-		AdminId:     adminModel.Id,
-		Username:    adminModel.Username,
-		IsRoot:      adminModel.IsRoot,
-		IsAgent:     adminModel.IsAgent,
-		Departments: adminModel.Departments,
-		RoleId:      adminModel.RoleId,
-		LoginAt:     helpers.GetDatetime(),
+		AdminId:  adminModel.Id,
+		Username: adminModel.Username,
+		IsRoot:   adminModel.IsRoot,
+		RoleId:   adminModel.RoleId,
+		LoginAt:  helpers.GetDatetime(),
 	}
 
 	//缓存

@@ -9,7 +9,7 @@ import (
 
 // CreateOrgStatDailyFactory 企业统计: 每天的
 func CreateOrgStatDailyFactory() *OrgStatDailyModel {
-	return &OrgStatDailyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &OrgStatDailyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
@@ -37,7 +37,7 @@ type OrgStatDailyModel struct {
 
 // 表名
 func (m *OrgStatDailyModel) TableName() string {
-	return "a_alarm_stat_daily"
+	return "o_org_stat_daily"
 }
 
 func (m *OrgStatDailyModel) CreateTable() bool {

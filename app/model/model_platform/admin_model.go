@@ -28,8 +28,6 @@ type AdminModel struct {
 	IsDefault       int    `json:"is_default"`
 	IsRoot          int    `json:"is_root"`
 	IsVisible       int    `json:"is_visible"`
-	IsAgent         int    `json:"is_agent"`
-	Departments     string `json:"departments"`
 	CreateId        int    `json:"create_id"`
 	CreateName      string `json:"create_name"`
 	CreatedAt       string `json:"created_at"`
@@ -53,7 +51,6 @@ func (m *AdminModel) Columns() []string {
 		"is_default",
 		"is_root",
 		"is_visible",
-		"is_agent",
 		"create_id",
 		"create_name",
 		"created_at",
@@ -76,7 +73,6 @@ func (m *AdminModel) CreateTable() bool {
 			is_default tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否默认(0否,1是)',
 			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否超管(0否,1是)',
 			is_visible tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否可见(0否,1是)',
-			is_agent tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否看全部终端(0否,1是)',
 			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,
@@ -94,19 +90,26 @@ func (m *AdminModel) CreateTable() bool {
 
 func (m *AdminModel) InitData() bool {
 	curTime := time.Now().Format(variable.DateFormat)
-	sql := " INSERT INTO " + m.TableName() +
-		"(`id`, `username`, `role_id`, `email`, `phone`, `login_phone_check`," +
-		" `pw`, `pw_error_num`, " +
-		"`last_login_at`, `is_default`, `is_root`, `is_visible`, `is_agent`, `departments`, " +
-		"`create_id`, `create_name`, `created_at`)"
-	sql += "VALUES ("
-	sql += "1, 'root', 0, '', '', 0, " +
-		"'6d030b0eaac5a116f605dc23c5a970e3', 0, " +
-		"'" + curTime + "', 1, 1, 0, 1, '[]'," +
-		"0, '', '" + curTime + "'"
-	sql += ");"
-
-	result := m.Exec(m.TrimSql(sql))
+	list := []AdminModel{
+		{
+			Id:              1,
+			Username:        "root",
+			RoleId:          0,
+			Email:           "",
+			Phone:           "",
+			LoginPhoneCheck: 0,
+			Pw:              "6d030b0eaac5a116f605dc23c5a970e3",
+			PwErrorNum:      0,
+			LastLoginAt:     curTime,
+			IsDefault:       1,
+			IsRoot:          1,
+			IsVisible:       1,
+			CreateId:        0,
+			CreateName:      "",
+			CreatedAt:       curTime,
+		},
+	}
+	result := m.Create(&list)
 	if result.RowsAffected > 0 {
 		return true
 	} else {
