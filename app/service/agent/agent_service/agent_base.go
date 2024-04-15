@@ -141,4 +141,5 @@ func (crd *AgentBase) addTask(param *model_agent.AgentModel, isTrustDir bool, re
 	}
 
 	task_service.CreateCurdFactory().AddTasksForAgent(param.AgentId, tasks, remark)
+
 }
