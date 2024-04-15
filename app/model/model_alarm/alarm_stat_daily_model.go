@@ -74,8 +74,8 @@ func (m *AlarmStatDailyModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-            stat_month int(11) NOT NUL COMMENT '统计：日期',
-			stat_day DATE NOT NUL COMMENT '统计：日期',
+            stat_month int(11) NOT NULL COMMENT '统计：日期',
+			stat_day DATEV2 NOT NULL COMMENT '统计：日期',
 			process_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-总数',
 			process_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-已处理数',
 			process_add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-新增-总数',
@@ -110,7 +110,7 @@ func (m *AlarmStatDailyModel) CreateTable() bool {
 			outreach_add_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:外联-新增-已处理数',
 			login_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:登录破解-总数',
 			login_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:登录破解-已处理数',
-			login_add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:登录破解-新增-总数',0
+			login_add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:登录破解-新增-总数',
 			login_add_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:登录破解-新增-已处理数',
 			self_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:自保-总数',
 			self_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:自保-已处理数',

@@ -54,8 +54,7 @@ func (m *AlarmLoginModel) CreateTable() bool {
 			handle_at DATETIME NULL COMMENT '处理时间',
 			solve_total INT NOT NULL DEFAULT '0' COMMENT '破解次数',
 			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
-			INDEX index_proc_dir (proc_dir) USING INVERTED
+			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,source_ip,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

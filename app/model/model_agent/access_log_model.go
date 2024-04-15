@@ -52,7 +52,7 @@ func (m *AccessLogModel) CreateTable() bool {
 			delay_time int NOT NULL DEFAULT '0' COMMENT '延迟时间(ms)',
 			resp string NOT NULL DEFAULT '' COMMENT '返回结果'
 		)
-		DUPLICATE  KEY(org_id, agent_id, path, created_at,net_ip)
+		DUPLICATE  KEY(org_id, agent_id, path, created_at)
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'

@@ -2,8 +2,6 @@ package test
 
 import (
 	"fmt"
-	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_service"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
@@ -12,8 +10,7 @@ import (
 
 func TestAccess(t *testing.T) {
 	//获取备标识码
-	dictCacheFact := dictionary_service.CreateCacheFactory()
-	deviceId := dictCacheFact.GetValById(enum_dictionary.SystemDeviceId)
+	deviceId := ""
 	fmt.Println("deviceId:", deviceId)
 
 	currentTime := time.Now().Unix()

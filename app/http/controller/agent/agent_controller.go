@@ -31,21 +31,20 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 	//数据字典
 	dictIds := []string{
+		enum_dictionary.AgentHttpUrl,
+		enum_dictionary.AgentHttpPort,
 		enum_dictionary.AgentLogSendProto,
-		enum_dictionary.SystemAgentProto,
-		enum_dictionary.SystemAgentIp,
-		enum_dictionary.SystemAgentPort,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
 	mapConf := make(map[string]interface{})
 	//服务器地址
-	mapConf["serveripport"] = mapDict[enum_dictionary.SystemAgentProto] + "://" + mapDict[enum_dictionary.SystemAgentIp] + ":" + mapDict[enum_dictionary.SystemAgentPort]
+	mapConf["serveripport"] = mapDict[enum_dictionary.AgentHttpUrl] + ":" + mapDict[enum_dictionary.AgentHttpPort]
 	//暂时无使用
 	mapConf["logipport"] = ""
 	mapConf["logproto"] = helpers.String2Int(mapDict[enum_dictionary.AgentLogSendProto])
 	mapConf["logsent"] = 0
-	mapConf["api_port"] = helpers.String2Int(mapDict[enum_dictionary.SystemAgentPort])
+	mapConf["api_port"] = helpers.String2Int(mapDict[enum_dictionary.AgentHttpPort])
 	mapConf["syslog_port"] = 0
 
 	//进程

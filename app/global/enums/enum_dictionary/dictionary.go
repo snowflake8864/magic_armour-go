@@ -78,7 +78,6 @@ var EnumSlice = map[string][]string{
 	},
 	ModuleAgent: {
 		AgentHttpUrl,
-		AgentLogSendProto,
 		AgentHttpPort,
 		AgentLogSendProto,
 		AgentSaveAccessLog,

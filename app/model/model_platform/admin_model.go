@@ -47,7 +47,7 @@ func (m *AdminModel) Columns() []string {
 		"role_id",
 		"email",
 		"phone",
-		"phone_login_check",
+		"login_phone_check",
 		"pw_error_num",
 		"last_login_at",
 		"is_default",
@@ -95,7 +95,7 @@ func (m *AdminModel) CreateTable() bool {
 func (m *AdminModel) InitData() bool {
 	curTime := time.Now().Format(variable.DateFormat)
 	sql := " INSERT INTO " + m.TableName() +
-		"(`id`, `username`, `role_id`, `email`, `phone`, `phone_login_check`," +
+		"(`id`, `username`, `role_id`, `email`, `phone`, `login_phone_check`," +
 		" `pw`, `pw_error_num`, " +
 		"`last_login_at`, `is_default`, `is_root`, `is_visible`, `is_agent`, `departments`, " +
 		"`create_id`, `create_name`, `created_at`)"

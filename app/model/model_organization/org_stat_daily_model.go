@@ -46,8 +46,8 @@ func (m *OrgStatDailyModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-            stat_month int(11) NOT NUL COMMENT '统计：日期',
-			stat_day DATE NOT NUL COMMENT '统计：日期',
+            stat_month int(11) NOT NULL COMMENT '统计：日期',
+			stat_day dateV2 NOT NULL COMMENT '统计：日期',
 			user_total int(11) NOT NULL DEFAULT '0' COMMENT '用户:总数',
 			user_online int(11) NOT NULL DEFAULT '0' COMMENT '用户:在线数',
 			user_add int(11) NOT NULL DEFAULT '0' COMMENT '用户:新增数',

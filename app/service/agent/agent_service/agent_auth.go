@@ -79,7 +79,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		}
 
 		//添加扩展数据
-		CreateExtendFactory().AddDefault(param.AgentId)
+		CreateExtendFactory().AddDefault(param.OrgId, param.AgentId)
 
 		//添加任务
 		crd.addTask(param, true, "终端验证不存在")

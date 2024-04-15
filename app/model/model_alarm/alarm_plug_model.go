@@ -64,7 +64,7 @@ func (m *AlarmPlugModel) CreateTable() bool {
 			INDEX index_id (id) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, agent_id,proc_hash,file_dir,created_at)
+		UNIQUE KEY(org_id, agent_id,ip,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
