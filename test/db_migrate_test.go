@@ -16,7 +16,7 @@ import (
 
 func TestDbMigrateType(t *testing.T) {
 
-	fmt.Println(enums.Get1stIsStrReturnSliceOfStr(enum_dictionary.ModuleAdmin, enum_dictionary.EnumSlice))
+	fmt.Println(enums.Get1stIsStrReturnSliceOfStr(enum_dictionary.ModulePlatform, enum_dictionary.EnumSlice))
 
 	fmt.Println(enums.Get1stIsStrAnd2ndIsIntReturnStr("ip_type", 1, enum_plug.EnumMap))
 	fmt.Println(enums.Get1stIsStrAnd2ndIsIntReturnStr("ip_type", 3, enum_plug.EnumMap))

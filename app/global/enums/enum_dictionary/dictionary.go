@@ -3,24 +3,31 @@ package enum_dictionary
 // 数据字典
 
 const (
-	ModuleAdmin    string = "admin"    //模块：管路员
-	ModuleAgent    string = "agent"    //模块：终端
-	ModuleThreaten string = "threaten" //模块：终端
-	ModuleHuanshi  string = "huanshi"  //模块：幻势
-	ModuleSystem   string = "system"   //模块：系统
+	ModulePlatform     string = "platform"     //模块：平台
+	ModuleOrganization string = "organization" //模块：系统
+	ModuleAgent        string = "agent"        //模块：终端
+	ModuleThreaten     string = "threaten"     //模块：威胁情报
+	ModuleHuanshi      string = "huanshi"      //模块：幻势
+	ModuleOrder        string = "order"        //模块：订单
 
-	AdminLoginExpire       string = "admin_login_expire"        //管理员:登录有效期(时)
-	AdminPwLengthMin       string = "admin_pw_length_min"       //管理员:密码长度最小值(6)
-	AdminPwLengthMax       string = "admin_pw_length_max"       //管理员:密码长度最小值(18)
-	AdminLoginErrorMax     string = "admin_login_error_max"     //管理员:登录错误次数最大值(100)
-	AdminLoginErrorRemind  string = "admin_login_error_remind"  //管理员:登录错误次数提醒
-	AdminLoginLockDuration string = "admin_login_lock_duration" // 管理员:登录锁定时长(分)
+	PlatformLoginErrorMax     string = "platform_login_error_max"     //平台:登录错误次数最大值(100)
+	PlatformLoginErrorRemind  string = "platform_login_error_remind"  //平台:登录错误次数提醒
+	PlatformLoginLockDuration string = "platform_login_lock_duration" //平台:登录锁定时长(分)
+	PlatformSshSwitch         string = "platform_ssh_switch"          //平台:ssh开关
 
-	AgentLogSendProto           string = "agent_log_send_proto"            //终端:日志发送协议(1udp 2tcp)
-	AgentSaveAccessLog          string = "agent_save_access_log"           //终端:任务缓存过期时间(时)
-	AgentGlobalPlugPortConfig   string = "agent_global_plug_port_config"   //终端:全局封堵-端口虚开配置
-	AgentGlobalPlugLoginConfig  string = "agent_global_plug_login_config"  //终端：全局封堵-登录破解配置
-	AgentGlobalLoginSolveConfig string = "agent_global_Login_solve_config" //终端：全局登录口令暴力破解告警配置
+	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
+	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
+	OrganizationLoginLockDuration string = "org_login_lock_duration" //企业:登录锁定时长(分)
+
+	AgentHttpUrl          string = "agent_http_url"           //终端:http请求地址(无端口)
+	AgentHttpPort         string = "agent_http_port"          //终端:http请求端口
+	AgentLogSendProto     string = "agent_log_send_proto"     //终端:日志发送协议(1udp 2tcp)
+	AgentSaveAccessLog    string = "agent_save_access_log"    //终端:任务缓存过期时间(时)
+	AgentConfigExpire     string = "agent_config_expire"      //终端:配置文件有效期(小时)
+	AgentAutoDeleteExpire string = "agent_auto_delete_expire" //终端:自动删除有效期(天)
+	AgentAlarmExpire      string = "agent_alarm_expire"       //终端:告警保留时长(天)
+	AgentSyslogExpire     string = "agent_syslog_expire"      //终端:通讯日志保留时长(天)
+	AgentProcGlobalLimit  string = "agent_proc_global_limit"  //终端:进程全局名单限制数目
 
 	ThreatenSwitch      string = "threaten_switch"       //威胁情报:开关
 	ThreatenUrl         string = "threaten_url"          //威胁情报:服务器地址
@@ -28,6 +35,8 @@ const (
 	ThreatenAppKey      string = "threaten_app_key"      //威胁情报:应用key
 	ThreatenCacheExpire string = "threaten_cache_expire" //威胁情报:缓存结果保留周期(天)
 
+	HuanshiCallbackUrl          string = "huanshi_callback_url"           //幻势:回调地址(有端口)
+	HuanshiCallIp               string = "huanshi_callback_ip"            //幻势:回调ip
 	HuanshiSwitch               string = "huanshi_switch"                 //幻势:开关
 	HuanshiUrl                  string = "huanshi_url"                    //幻势:服务器地址
 	HuanshiAlarmSwitch          string = "huanshi_alarm_switch"           //幻势:告警开关
@@ -36,7 +45,6 @@ const (
 	HuanshiLogSwitch            string = "huanshi_log_switch"             //幻势:日志开关
 	HuanshiLogIp                string = "huanshi_log_ip"                 //幻势:日志ip
 	HuanshiLogPort              string = "huanshi_log_port"               //幻势:日志端口
-	HuanshiDefaultVisitor       string = "huanshi_default_visitor"        //幻势:默认访客
 	HuanshiAlarmSwitchProcess   string = "huanshi_alarm_switch_process"   //幻势:告警开关-进程
 	HuanshiAlarmSwitchDll       string = "huanshi_alarm_switch_dll"       //幻势:告警开关-模块
 	HuanshiAlarmSwitchTamper    string = "huanshi_alarm_switch_tamper"    //幻势:告警开关-防篡改
@@ -48,36 +56,38 @@ const (
 	HuanshiAlarmSwitchOutreach  string = "huanshi_alarm_switch_outreach"  //幻势:告警开关-外联
 	HuanshiAlarmSwitchSelf      string = "huanshi_alarm_switch_self"      //幻势:告警开关-自保
 
-	SystemDeviceId        string = "system_device_id"         //系统:设备标识码
-	SystemPlatformProto   string = "system_platform_proto"    //系统:平台访问协议
-	SystemPlatformIp      string = "system_platform_ip"       //系统:平台访问IP
-	SystemPlatformPort    string = "system_platform_port"     //系统:平台访问端口
-	SystemAgentProto      string = "system_agent_proto"       //系统:终端访问协议
-	SystemAgentIp         string = "system_agent_ip"          //系统:终端访问IP
-	SystemAgentPort       string = "system_agent_port"        //系统:终端使访问端口
-	SystemGrantAutoSwitch string = "system_grant_auto_switch" //系统:自动授权开关
-	SystemAlarmExpire     string = "system_alarm_expire"      //系统:告警失效时间(天)，最大180
-	SystemSyslogExpire    string = "system_syslog_expire"     //系统:通信日志保留时长(天),最大180
-	SystemSshSwitch       string = "system_ssh_switch"        //系统:ssh开关
-
+	OrderBankcardNo   string = "order_bankcard_no"   //订单： 银行卡-卡号
+	OrderBankcardName string = "order_bankcard_name" //订单： 银行卡-卡名
+	OrderBankcardBank string = "order_bankcard_bank" // 订单：银行卡-开户行
+	OrderPayingTel    string = "order_paying_tel"    //订单： 支付时联系电话
+	OrderExpireDays   string = "order_expire_days"   //订单： 过期天数
 )
 
 var EnumSlice = map[string][]string{
-	ModuleAdmin: {
-		AdminLoginExpire,
-		AdminPwLengthMin,
-		AdminPwLengthMax,
-		AdminLoginErrorMax,
-		AdminLoginErrorRemind,
-		AdminLoginLockDuration,
+	ModulePlatform: {
+		PlatformLoginErrorMax,
+		PlatformLoginErrorRemind,
+		PlatformLoginLockDuration,
+		PlatformSshSwitch,
+	},
+	ModuleOrganization: {
+		OrganizationLoginErrorMax,
+		OrganizationLoginErrorRemind,
+		OrganizationLoginLockDuration,
 	},
 	ModuleAgent: {
+		AgentHttpUrl,
+		AgentLogSendProto,
+		AgentHttpPort,
 		AgentLogSendProto,
 		AgentSaveAccessLog,
-		AgentGlobalPlugPortConfig,
-		AgentGlobalPlugLoginConfig,
-		AgentGlobalLoginSolveConfig,
+		AgentConfigExpire,
+		AgentAutoDeleteExpire,
+		AgentAlarmExpire,
+		AgentSyslogExpire,
+		AgentProcGlobalLimit,
 	},
+
 	ModuleThreaten: {
 		ThreatenSwitch,
 		ThreatenUrl,
@@ -86,6 +96,8 @@ var EnumSlice = map[string][]string{
 		ThreatenCacheExpire,
 	},
 	ModuleHuanshi: {
+		HuanshiCallbackUrl,
+		HuanshiCallIp,
 		HuanshiSwitch,
 		HuanshiUrl,
 		HuanshiAlarmSwitch,
@@ -94,7 +106,6 @@ var EnumSlice = map[string][]string{
 		HuanshiLogSwitch,
 		HuanshiLogIp,
 		HuanshiLogPort,
-		HuanshiDefaultVisitor,
 		HuanshiAlarmSwitchProcess,
 		HuanshiAlarmSwitchDll,
 		HuanshiAlarmSwitchTamper,
@@ -106,17 +117,5 @@ var EnumSlice = map[string][]string{
 		HuanshiAlarmSwitchOutreach,
 		HuanshiAlarmSwitchSelf,
 	},
-	ModuleSystem: {
-		SystemDeviceId,
-		SystemPlatformProto,
-		SystemPlatformIp,
-		SystemPlatformPort,
-		SystemAgentProto,
-		SystemAgentIp,
-		SystemAgentPort,
-		SystemGrantAutoSwitch,
-		SystemAlarmExpire,
-		SystemSyslogExpire,
-		SystemSshSwitch,
-	},
+	ModuleOrder: {},
 }
