@@ -33,7 +33,6 @@ type AlarmUsbModel struct {
 }
 
 // 表名
-
 func (m *AlarmUsbModel) TableName() string {
 	return "a_alarm_usb"
 }

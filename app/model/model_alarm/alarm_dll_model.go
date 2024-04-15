@@ -33,7 +33,6 @@ type AlarmDllModel struct {
 }
 
 // 表名
-
 func (m *AlarmDllModel) TableName() string {
 	return "a_alarm_dll"
 }

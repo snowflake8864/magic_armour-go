@@ -35,7 +35,6 @@ type AlarmSelfModel struct {
 }
 
 // 表名
-
 func (m *AlarmSelfModel) TableName() string {
 	return "a_alarm_self"
 }

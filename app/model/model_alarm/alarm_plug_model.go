@@ -36,7 +36,6 @@ type AlarmPlugModel struct {
 }
 
 // 表名
-
 func (m *AlarmPlugModel) TableName() string {
 	return "a_alarm_plug"
 }

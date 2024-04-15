@@ -33,7 +33,6 @@ type AlarmTamperModel struct {
 }
 
 // 表名
-
 func (m *AlarmTamperModel) TableName() string {
 	return "a_alarm_tamper"
 }

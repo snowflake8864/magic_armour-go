@@ -35,7 +35,6 @@ type AlarmOutreachModel struct {
 }
 
 // 表名
-
 func (m *AlarmOutreachModel) TableName() string {
 	return "a_alarm_outreach"
 }

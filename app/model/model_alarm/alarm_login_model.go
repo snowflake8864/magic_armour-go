@@ -32,9 +32,8 @@ type AlarmLoginModel struct {
 }
 
 // 表名
-
 func (m *AlarmLoginModel) TableName() string {
-	return "a_alarm_blackmail"
+	return "a_alarm_login"
 }
 
 func (m *AlarmLoginModel) CreateTable() bool {

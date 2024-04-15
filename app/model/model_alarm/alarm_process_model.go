@@ -34,7 +34,6 @@ type AlarmProcessModel struct {
 }
 
 // 表名
-
 func (m *AlarmProcessModel) TableName() string {
 	return "a_alarm_process"
 }

@@ -37,7 +37,6 @@ type AlarmPortModel struct {
 }
 
 // 表名
-
 func (m *AlarmPortModel) TableName() string {
 	return "a_alarm_port"
 }
