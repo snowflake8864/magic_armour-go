@@ -10,11 +10,13 @@ type HomeController struct {
 	ControllerBase
 }
 
-func (u *HomeController) GetAgentStatistic(ctx *gin.Context) {
+// 告警: 今天统计
+func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	response.SuccessReturnData(ctx, loginInfo)
 }
 
-func (u *HomeController) GetAlarmStatistic(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetAlarmStatistic")
+// 终端: 每天在线
+func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AgentDailyOnline")
 }

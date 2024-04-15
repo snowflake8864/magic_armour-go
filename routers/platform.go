@@ -68,7 +68,6 @@ func InitPlatformRouter() *gin.Engine {
 				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthSendSms"))
 				auth.POST("normalLogin", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthNormalLogin"))
 				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthLogout"))
-				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthHsLogin"))
 			}
 
 			// 【需要token】中间件验证的路由
@@ -77,43 +76,21 @@ func InitPlatformRouter() *gin.Engine {
 				//首页
 				home := vPlatform.Group("home/")
 				{
-					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGetAgentStatistic"))
-					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGetAlarmStatistic"))
+					home.POST("alarmTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAlarmTodayStat"))
+					home.POST("agentTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAgentTodayStat"))
+					home.POST("agentDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAgentDailyOnline"))
+					home.POST("userTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserTodayStat"))
+					home.POST("userDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserDailyOnline"))
+					home.POST("userNewestLogs", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserNewestLogs"))
+					home.POST("grantUsedStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGrantUsedStat"))
 				}
 				//菜单 - 隐藏页
-				menu := vPlatform.Group("menu/")
+				menu := vPlatform.Group("orgMenu/")
 				{
-					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuTree"))
-					menu.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuAdd"))
-					menu.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuEdit"))
-					menu.POST("sort", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuSort"))
-					menu.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"MenuDelete"))
-				}
-				//角色
-				role := vPlatform.Group("role/")
-				{
-					manage := role.Group("manage/")
-					{
-						manage.POST("all", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RoleManageAll"))
-						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RoleManageAdd"))
-						manage.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RoleManageEdit"))
-						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RoleManageDelete"))
-					}
-					power := role.Group("power/")
-					{
-						power.POST("loginMenuTree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RolePowerLoginMenuTree"))       //用户登录后的菜单树
-						power.POST("editableMenuTree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RolePowerEditableMenuTree")) //可编辑的菜单树
-						power.POST("getSelectedMenus", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RolePowerGetSelectedMenus")) //获取已选中的菜单集合
-						power.POST("setSelectedMenus", validatorFactory.Create(consts.ValidatorPrefixPlatform+"RolePowerSetSelectedMenus")) //保存已选中的菜单集合
-					}
-				} //角色
-				//组织架构
-				department := vPlatform.Group("department/")
-				{
-					department.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DepartmentTree"))
-					department.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DepartmentAdd"))
-					department.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DepartmentEdit"))
-					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DepartmentDelete"))
+					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuTree"))
+					menu.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuAdd"))
+					menu.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuEdit"))
+					menu.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuDelete"))
 				}
 
 				//终端
@@ -124,147 +101,14 @@ func InitPlatformRouter() *gin.Engine {
 						public.POST("onlineStatus", (&platform.AgentController{}).OnlineStatus)
 						public.POST("safeStatus", (&platform.AgentController{}).SafeStatus)
 						public.POST("countOnline", (&platform.AgentController{}).CountOnline)
-						public.POST("typeList", (&platform.AgentController{}).TypeList)
 					}
 					manage := agent.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManagePage"))
-						//manage.POST("import", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageImport"))
-						//manage.POST("export", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageExport"))
-						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageDelete"))
-						manage.POST("uninstall", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageUninstall"))
-						manage.POST("upgrade", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageUpgrade"))
-						manage.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageBatchDelete"))
-						manage.POST("batchUninstall", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageBatchUninstall"))
-						manage.POST("batchUpgrade", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageBatchUpgrade"))
-						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentManageBatchSetConfig"))
+
 					}
-					basic := agent.Group("basic/")
-					{
-						basic.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentBasicGet"))
-						basic.POST("save", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentBasicSave"))
-					}
-					config := agent.Group("config/")
-					{
-						config.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentConfigGet"))
-						config.POST("save", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentConfigSave"))
-					}
-					monitor := agent.Group("monitor/")
-					{
-						monitor.POST("list", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentMonitorList"))
-						monitor.POST("info", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentMonitorInfo"))
-					}
-					errorV := agent.Group("error")
-					{
-						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentErrorPage"))
-					}
+
 				} //终端
-
-				//进程
-				process := vPlatform.Group("process/")
-				{
-					public := process.Group("public/")
-					{
-						public.POST("searchStatus", (&platform.ProcessController{}).SearchStatus)
-						public.POST("changeStatus", (&platform.ProcessController{}).ChangeStatus)
-					}
-					manage := process.Group("manage/")
-					{
-						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManagePage"))
-						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageSetSwitch"))
-						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageSetMode"))
-						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchSetConfig"))
-						manage.POST("batchSetWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchSetWhite"))
-						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchRefresh"))
-						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchCollect"))
-						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessManageBatchThreatenWhite"))
-					}
-					agentV2 := process.Group("agent/")
-					{
-						agentV2.POST("pageAll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentPageAll"))
-						agentV2.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentPageRunning"))
-						agentV2.POST("setStatus", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentSetStatus"))
-						agentV2.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentCancel"))
-						agentV2.POST("clearAll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentClearAll"))
-						agentV2.POST("clearRunning", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentClearRunning"))
-						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentRefresh"))
-						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentCollect"))
-						agentV2.POST("extractRunningDll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentExtractRunningDll"))
-						agentV2.POST("showRunningDll", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentShowRunningDll"))
-						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchWhite"))
-						agentV2.POST("repeatHash", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentRepeatPage"))
-
-						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentExtractSample"))
-						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentSetGlobal"))
-						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchGlobalWhite"))
-						agentV2.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenWhite"))
-						agentV2.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessAgentBatchThreatenBlack"))
-					}
-
-					global := process.Group("global/")
-					{
-						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessGlobalPage"))
-						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessGlobalAdd"))
-						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessGlobalEdit"))
-						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessGlobalDelete"))
-						global.POST("clear", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessGlobalClear"))
-					}
-
-					search := process.Group("search/")
-					{
-						search.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchPage"))
-						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchBatchGlobalWhite"))
-						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcessSearchBatchGlobalBlack"))
-					}
-				} //进程
-
-				//进程和模块样本
-				procSample := vPlatform.Group("procSample/")
-				{
-					procSample.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcSamplePage"))
-					procSample.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcSampleDelete"))
-					procSample.POST("clear", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcSampleClear"))
-					procSample.POST("download", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProcSampleDownload"))
-				} //进程和模块样本
-
-				//防篡改
-				tamper := vPlatform.Group("tamper/")
-				{
-					public := tamper.Group("public/")
-					{
-						public.POST("FilePower", (&platform.TamperController{}).FilePower)
-						public.POST("FolderPower", (&platform.TamperController{}).FolderPower)
-					}
-					manage := tamper.Group("manage/")
-					{
-						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperManagePage"))
-						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperManageSetSwitch"))
-						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperManageSetMode"))
-						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperManageBatchSetConfig"))
-					}
-
-					policy := tamper.Group("policy/")
-					{
-						policy.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyPage"))
-						policy.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicySetSwitch"))
-						policy.POST("addFolder", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyAddFolder"))
-						policy.POST("addFile", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyAddFile"))
-						policy.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyEditFolder"))
-						policy.POST("editFile", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyEditFile"))
-						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperPolicyDelete"))
-					}
-
-					global := tamper.Group("global/")
-					{
-						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalPage"))
-						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalSetSwitch"))
-						global.POST("addFolder", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalAddFolder"))
-						global.POST("addFile", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalAddFile"))
-						global.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalEditFolder"))
-						global.POST("editFile", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalEditFile"))
-						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"TamperGlobalDelete"))
-					}
-				} //防篡改
 			}
 		}
 	}

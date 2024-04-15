@@ -41,13 +41,10 @@ type AdminAuth struct {
 }
 
 type AdminCacheLogin struct {
-	AdminId     int64  `json:"admin_id"`
-	Username    string `json:"username"`
-	RoleId      int64  `json:"role_id"`
-	IsRoot      int    `json:"is_root"`
-	IsAgent     int    `json:"is_agent"`
-	Departments string `json:"departments"`
-	LoginAt     string `json:"login_at"`
+	AdminId  int64  `json:"admin_id"`
+	Username string `json:"username"`
+	IsRoot   int    `json:"is_root"`
+	LoginAt  string `json:"login_at"`
 }
 
 func (crd *AdminAuth) keyByToken(val string) string {
@@ -186,7 +183,6 @@ func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[stri
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,
 		IsRoot:   adminModel.IsRoot,
-		RoleId:   adminModel.RoleId,
 		LoginAt:  helpers.GetDatetime(),
 	}
 

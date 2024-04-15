@@ -1,4 +1,4 @@
-package menu
+package org_menu
 
 import (
 	"github.com/gin-gonic/gin"
@@ -9,14 +9,8 @@ import (
 )
 
 type Edit struct {
-	Id     int    `form:"id" json:"id" binding:"required,min=0"`
-	Type   int    `form:"type" json:"type" binding:"required,max=10000"`
-	Name   string `form:"name" json:"name" binding:"required,max=100"`
-	Code   string `form:"code" json:"code" binding:"required,max=100"`
-	Sort   *int   `form:"sort" json:"sort" binding:"required,min=0,max=9999"`
-	IsShow *int   `form:"isShow" json:"isShow" binding:"required,min=0,max=1"`
-	IsRoot *int   `form:"isRoot" json:"isRoot" binding:"required,min=0,max=1"`
-	Remark string `form:"remark" json:"remark" binding:"omitempty,max=100"`
+	Id int `form:"id" json:"id" binding:"required,min=0"`
+	Common
 }
 
 func (n Edit) CheckParams(context *gin.Context) {
@@ -30,7 +24,7 @@ func (n Edit) CheckParams(context *gin.Context) {
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）
 	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixPlatform, context)
 	if extraAddBindDataContext == nil {
-		response.FailSimplify(context, "[platform menu Edit]表单验证器json化失败")
+		response.FailSimplify(context, "[platform org_menu Edit]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
 		(&platform.MenuController{}).Edit(extraAddBindDataContext)
