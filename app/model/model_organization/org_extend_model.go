@@ -15,26 +15,13 @@ func CreateOrgExtendFactory() *OrgExtendModel {
 
 type OrgExtendModel struct {
 	model.BaseModel
-	Id                int64  `json:"id" gorm:"primaryKey"`
-	Name              string `json:"name"`
-	Type              int    `json:"type"`
-	UserId            int64  `json:"user_id"`
-	UserName          string `json:"user_name"`
-	UserEmail         string `json:"user_email"`
-	UserPhone         string `json:"user_phone"`
-	Address           string `json:"address"`
-	Icon              string `json:"icon"`
-	Status            int    `json:"status"`
-	IsClean           int    `json:"is_clean"`
-	IsDel             int    `json:"is_del"`
-	Remark            string `json:"remark"`
-	LoginPhoneCheck   int    `json:"login_phone_check"`
-	HuanshiSwitch     int    `json:"huanshi_switch"`
-	TrusteeshipSwitch int    `json:"trusteeship_switch"`
-	Source            int    `json:"source"`
-	CreateId          int64  `json:"create_id"`
-	CreateName        string `json:"create_name"`
-	CreatedAt         string `json:"created_at"`
+	Id                   int64  `json:"id" gorm:"primaryKey"`
+	PlugPortConfig       string `json:"plug_port_config"`
+	PlugLoginConfig      string `json:"plug_login_config"`
+	LoginSolveConfig     string `json:"login_solve_config"`
+	AlarmNoticeConfig    string `json:"alarm_notice_config"`
+	HardwareNoticeConfig string `json:"hardware_notice_config"`
+	UpdatedAt            string `json:"updated_at"`
 }
 
 // 表名

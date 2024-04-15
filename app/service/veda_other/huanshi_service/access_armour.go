@@ -48,9 +48,10 @@ func (aa *accessArmour) CheckSecret(timestamp int64, secret string) (bool, strin
 }
 
 type AccessGenerateToken struct {
-	Secret string `json:"secret"`
-	Expire int    `json:"expire"`
-	Token  string `json:"token"`
+	Secret   string `json:"secret"`
+	Expire   int    `json:"expire"`
+	Token    string `json:"token"`
+	DeviceId string `json:"device_id"`
 }
 
 // 生成口令
@@ -62,5 +63,5 @@ func (aa *accessArmour) GenerateToken(secret string) (AccessGenerateToken, error
 		return AccessGenerateToken{}, err
 	}
 
-	return AccessGenerateToken{Secret: secret, Expire: aa.cacheExpire, Token: token}, nil
+	return AccessGenerateToken{Secret: secret, Expire: aa.cacheExpire, Token: token, DeviceId: aa.deviceId}, nil
 }

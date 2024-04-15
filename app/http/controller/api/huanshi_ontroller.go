@@ -3,8 +3,6 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_service"
 	"goskeleton/app/utils/response"
 )
@@ -17,13 +15,7 @@ type HuanshiController struct {
 func (u *HuanshiController) Auth(ctx *gin.Context) {
 	timestamp := int64(ctx.GetFloat64(consts.ValidatorPrefixApi + "time"))
 	secret := ctx.GetString(consts.ValidatorPrefixApi + "secret")
-
-	//获取备标识码
-	dictCacheFact := dictionary_service.CreateCacheFactory()
-	deviceId := dictCacheFact.GetValById(enum_dictionary.SystemDeviceId)
-	if deviceId == "" {
-		response.FailRoutine(ctx, 10000, "设备标识码没有初始化")
-	}
+	deviceId := ctx.GetString(consts.ValidatorPrefixApi + "deviceId")
 
 	//验证秘钥
 	hsAccessFact := huanshi_service.CreateAccessFactory(deviceId)

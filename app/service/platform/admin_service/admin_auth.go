@@ -153,22 +153,21 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 
 		//数据字典
 		dictIds := []string{
-			enum_dictionary.AdminLoginErrorRemind,
-			enum_dictionary.AdminLoginExpire,
-			enum_dictionary.AdminLoginLockDuration,
-			enum_dictionary.AdminLoginErrorMax,
+			enum_dictionary.PlatformLoginErrorMax,
+			enum_dictionary.PlatformLoginLockDuration,
+			enum_dictionary.PlatformLoginErrorRemind,
 		}
 		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 		//达到登录错误最大次数
-		diff := helpers.String2Int(mapDict[enum_dictionary.AdminLoginErrorMax]) - adminModel.PwErrorNum - 1
+		diff := helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorMax]) - adminModel.PwErrorNum - 1
 		if diff <= 0 {
 			//设置锁定
-			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.AdminLoginLockDuration])*60)
+			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
 			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
-				mapDict[enum_dictionary.AdminLoginLockDuration] + "分钟，请稍后在试")
-		} else if diff < helpers.String2Int(mapDict[enum_dictionary.AdminLoginErrorRemind]) {
+				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
+		} else if diff < helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
 			return result, -2, errors.New("用户名或密码错误, 还有" +
-				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.AdminLoginLockDuration] + "分钟")
+				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟")
 		} else {
 			return nil, -2, errors.New("用户名或密码错误")
 		}
