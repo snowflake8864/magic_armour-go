@@ -10,10 +10,10 @@ import (
 	proc_global2 "goskeleton/app/http/validator/organization/proc_global"
 	proc_sample2 "goskeleton/app/http/validator/organization/proc_sample"
 	process2 "goskeleton/app/http/validator/organization/process"
-	role2 "goskeleton/app/http/validator/organization/role"
 	tamper2 "goskeleton/app/http/validator/organization/tamper"
-	threaten_push2 "goskeleton/app/http/validator/organization/threaten_push"
 	"goskeleton/app/http/validator/platform/menu"
+	"goskeleton/app/http/validator/platform/role"
+	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
 // PlatformRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -59,21 +59,21 @@ func PlatformRegisterValidator() {
 
 	//角色
 	key = consts.ValidatorPrefixPlatform + "RoleManageAll"
-	containers.Set(key, role2.ManageAll{})
+	containers.Set(key, role.ManageAll{})
 	key = consts.ValidatorPrefixPlatform + "RoleManageAdd"
-	containers.Set(key, role2.ManageAdd{})
+	containers.Set(key, role.ManageAdd{})
 	key = consts.ValidatorPrefixPlatform + "RoleManageEdit"
-	containers.Set(key, role2.ManageEdit{})
+	containers.Set(key, role.ManageEdit{})
 	key = consts.ValidatorPrefixPlatform + "RoleManageDelete"
-	containers.Set(key, role2.ManageDelete{})
+	containers.Set(key, role.ManageDelete{})
 	key = consts.ValidatorPrefixPlatform + "RolePowerLoginMenuTree"
-	containers.Set(key, role2.PowerLoginMenuTree{})
+	containers.Set(key, role.PowerLoginMenuTree{})
 	key = consts.ValidatorPrefixPlatform + "RolePowerEditableMenuTree"
-	containers.Set(key, role2.PowerEditableMenuTree{})
+	containers.Set(key, role.PowerEditableMenuTree{})
 	key = consts.ValidatorPrefixPlatform + "RolePowerGetSelectedMenus"
-	containers.Set(key, role2.GetSelectedMenus{})
+	containers.Set(key, role.GetSelectedMenus{})
 	key = consts.ValidatorPrefixPlatform + "RolePowerSetSelectedMenus"
-	containers.Set(key, role2.SetSelectedMenus{})
+	containers.Set(key, role.SetSelectedMenus{})
 
 	//组织架构
 	key = consts.ValidatorPrefixPlatform + "DepartmentTree"
@@ -165,9 +165,9 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
 	containers.Set(key, proc_global2.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenWhite"
-	containers.Set(key, threaten_push2.BatchWhiteFromProcess{})
+	containers.Set(key, threaten_push.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenBlack"
-	containers.Set(key, threaten_push2.BatchBlackFromProcess{})
+	containers.Set(key, threaten_push.BatchBlackFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalPage"
 	containers.Set(key, proc_global2.PageFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalAdd"

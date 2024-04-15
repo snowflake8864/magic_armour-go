@@ -11,7 +11,7 @@ import (
 	proc_sample2 "goskeleton/app/http/validator/organization/proc_sample"
 	process2 "goskeleton/app/http/validator/organization/process"
 	tamper2 "goskeleton/app/http/validator/organization/tamper"
-	threaten_push2 "goskeleton/app/http/validator/organization/threaten_push"
+	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
 // OrganizationRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -133,9 +133,9 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
 	containers.Set(key, proc_global2.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenWhite"
-	containers.Set(key, threaten_push2.BatchWhiteFromProcess{})
+	containers.Set(key, threaten_push.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchThreatenBlack"
-	containers.Set(key, threaten_push2.BatchBlackFromProcess{})
+	containers.Set(key, threaten_push.BatchBlackFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalPage"
 	containers.Set(key, proc_global2.PageFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalAdd"

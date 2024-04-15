@@ -3,13 +3,14 @@ package platform_trans
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/utils/helpers"
 )
 
 type Agent struct {
-	Common
+	transformer.Common
 }
 
 func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64]*model_organization.DepartmentModel) map[string]interface{} {

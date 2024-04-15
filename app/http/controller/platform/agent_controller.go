@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
@@ -22,13 +23,13 @@ type AgentController struct {
 // OnlineStatus 在线状态
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&platform_trans.Common{}).FormatMapIntStr2List(list, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&platform_trans.Common{}).FormatMapIntStr2List(list, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
 }
 
 // CountOnline 统计在线和离线数量
