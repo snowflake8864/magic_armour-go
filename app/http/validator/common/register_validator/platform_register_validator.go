@@ -3,9 +3,11 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
-	auth2 "goskeleton/app/http/validator/platform/auth"
-	home2 "goskeleton/app/http/validator/platform/home"
+	agent4 "goskeleton/app/http/validator/platform/agent"
+	auth4 "goskeleton/app/http/validator/platform/auth"
+	home4 "goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/org_menu"
+	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
 // PlatformRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -19,21 +21,19 @@ func PlatformRegisterValidator() {
 
 	//安全认证
 	key = consts.ValidatorPrefixPlatform + "AuthCheckUser"
-	containers.Set(key, auth2.CheckUser{})
+	containers.Set(key, auth4.CheckUser{})
 	key = consts.ValidatorPrefixPlatform + "AuthGetSliderCode"
-	containers.Set(key, auth2.GetSliderCode{})
+	containers.Set(key, auth4.GetSliderCode{})
 	key = consts.ValidatorPrefixPlatform + "AuthSendSms"
-	containers.Set(key, auth2.SendSms{})
+	containers.Set(key, auth4.SendSms{})
 	key = consts.ValidatorPrefixPlatform + "AuthNormalLogin"
-	containers.Set(key, auth2.NormalLogin{})
-	key = consts.ValidatorPrefixPlatform + "AuthLogout"
-	containers.Set(key, auth2.Logout{})
+	containers.Set(key, auth4.NormalLogin{})
 
 	//首页
 	key = consts.ValidatorPrefixPlatform + "HomeAgentDailyOnline"
-	containers.Set(key, home2.AgentDailyOnline{})
+	containers.Set(key, home4.AgentDailyOnline{})
 	key = consts.ValidatorPrefixPlatform + "HomeUserDailyOnline"
-	containers.Set(key, home2.UserDailyOnline{})
+	containers.Set(key, home4.UserDailyOnline{})
 
 	//菜单
 	key = consts.ValidatorPrefixPlatform + "OrgMenuTree"
@@ -47,5 +47,9 @@ func PlatformRegisterValidator() {
 
 	//终端
 	key = consts.ValidatorPrefixPlatform + "AgentManagePage"
+	containers.Set(key, agent4.ManagePage{})
 
+	//威胁情报
+	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"
+	containers.Set(key, threaten_push.Page{})
 }

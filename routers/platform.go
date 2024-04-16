@@ -67,7 +67,7 @@ func InitPlatformRouter() *gin.Engine {
 				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthGetSliderCode"))
 				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthSendSms"))
 				auth.POST("normalLogin", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthNormalLogin"))
-				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AuthLogout"))
+				auth.POST("logout", (&platform.AuthController{}).Logout)
 			}
 
 			// 【需要token】中间件验证的路由
@@ -115,6 +115,11 @@ func InitPlatformRouter() *gin.Engine {
 					public := threaten.Group("public/")
 					{
 						public.POST("levels", (&platform.ThreatenCacheController{}).Levels)
+					}
+					push := threaten.Group("push/")
+					{
+						push.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenPushPage"))
+						push.POST("clear", (&platform.ThreatenPushController{}).Clear)
 					}
 				} //终端
 			}

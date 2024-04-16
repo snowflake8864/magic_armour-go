@@ -7,8 +7,8 @@ import (
 	auth2 "goskeleton/app/http/validator/organization/auth"
 	department2 "goskeleton/app/http/validator/organization/department"
 	home2 "goskeleton/app/http/validator/organization/home"
-	proc_global2 "goskeleton/app/http/validator/organization/proc_global"
-	proc_sample2 "goskeleton/app/http/validator/organization/proc_sample"
+	procGlobal2 "goskeleton/app/http/validator/organization/proc_global"
+	procSample2 "goskeleton/app/http/validator/organization/proc_sample"
 	process2 "goskeleton/app/http/validator/organization/process"
 	tamper2 "goskeleton/app/http/validator/organization/tamper"
 )
@@ -124,37 +124,37 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentRepeatPage"
 	containers.Set(key, process2.AgentRepeatHash{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractSample"
-	containers.Set(key, proc_sample2.AddFromProcess{})
+	containers.Set(key, procSample2.AddFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetGlobal"
-	containers.Set(key, proc_global2.AddFromProcess{})
+	containers.Set(key, procGlobal2.AddFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
-	containers.Set(key, proc_global2.BatchWhiteFromProcess{})
+	containers.Set(key, procGlobal2.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalPage"
-	containers.Set(key, proc_global2.PageFromProcess{})
+	containers.Set(key, procGlobal2.PageFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalAdd"
-	containers.Set(key, proc_global2.AddFromProcess{})
+	containers.Set(key, procGlobal2.AddFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalEdit"
-	containers.Set(key, proc_global2.Edit{})
+	containers.Set(key, procGlobal2.Edit{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalDelete"
-	containers.Set(key, proc_global2.Delete{})
+	containers.Set(key, procGlobal2.Delete{})
 	key = consts.ValidatorPrefixPlatform + "ProcessGlobalClear"
-	containers.Set(key, proc_global2.ClearFromProcess{})
+	containers.Set(key, procGlobal2.ClearFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessSearchPage"
 	containers.Set(key, process2.SearchPage{})
 	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalWhite"
-	containers.Set(key, proc_global2.BatchWhiteFromProcess{})
+	containers.Set(key, procGlobal2.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalBlack"
-	containers.Set(key, proc_global2.BatchBlackFromProcess{})
+	containers.Set(key, procGlobal2.BatchBlackFromProcess{})
 
 	//进程和模块样本
 	key = consts.ValidatorPrefixPlatform + "ProcSamplePage"
-	containers.Set(key, proc_sample2.Page{})
+	containers.Set(key, procSample2.Page{})
 	key = consts.ValidatorPrefixPlatform + "ProcSampleDelete"
-	containers.Set(key, proc_sample2.Delete{})
+	containers.Set(key, procSample2.Delete{})
 	key = consts.ValidatorPrefixPlatform + "ProcSampleClear"
-	containers.Set(key, proc_sample2.Clear{})
+	containers.Set(key, procSample2.Clear{})
 	key = consts.ValidatorPrefixPlatform + "ProcSampleDownload"
-	containers.Set(key, proc_sample2.Download{})
+	containers.Set(key, procSample2.Download{})
 
 	//防篡改
 	key = consts.ValidatorPrefixPlatform + "TamperManagePage"
