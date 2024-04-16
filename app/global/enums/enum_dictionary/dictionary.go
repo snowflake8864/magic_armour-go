@@ -18,6 +18,7 @@ const (
 	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
 	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
 	OrganizationLoginLockDuration string = "org_login_lock_duration" //企业:登录锁定时长(分)
+	OrganizationLoginSmsSwitch    string = "org_login_sms_switch"    //企业:登录短信验证开关
 
 	AgentHttpUrl          string = "agent_http_url"           //终端:http请求地址(无端口)
 	AgentHttpPort         string = "agent_http_port"          //终端:http请求端口
@@ -75,6 +76,7 @@ var EnumSlice = map[string][]string{
 		OrganizationLoginErrorMax,
 		OrganizationLoginErrorRemind,
 		OrganizationLoginLockDuration,
+		OrganizationLoginSmsSwitch,
 	},
 	ModuleAgent: {
 		AgentHttpUrl,
