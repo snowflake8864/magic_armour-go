@@ -26,7 +26,8 @@ func TestAgentLogin(t *testing.T) {
 	param.AgentStartAt = helpers.TimestampToDatetime(int64(1632465410))
 	param.OsStartAt = helpers.TimestampToDatetime(int64(1632465310))
 	param.Auth = "123123"
-	param.AdminId = 1
+	param.OrgId = 1
+	param.UserId = 1
 	param.NetIp = "192.168.4.6"
 	if helpers.StringIsEmpty(param.AgentIp) {
 		param.AgentIp = param.NetIp
