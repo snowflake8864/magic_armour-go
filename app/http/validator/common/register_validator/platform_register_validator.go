@@ -3,8 +3,8 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
-	home2 "goskeleton/app/http/validator/organization/home"
 	auth2 "goskeleton/app/http/validator/platform/auth"
+	home2 "goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/org_menu"
 )
 
@@ -31,9 +31,9 @@ func PlatformRegisterValidator() {
 
 	//首页
 	key = consts.ValidatorPrefixPlatform + "HomeAgentDailyOnline"
-	containers.Set(key, home2.GetAgentStatistic{})
+	containers.Set(key, home2.AgentDailyOnline{})
 	key = consts.ValidatorPrefixPlatform + "HomeUserDailyOnline"
-	containers.Set(key, home2.GetAlarmStatistic{})
+	containers.Set(key, home2.UserDailyOnline{})
 
 	//菜单
 	key = consts.ValidatorPrefixPlatform + "OrgMenuTree"

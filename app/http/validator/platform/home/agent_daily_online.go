@@ -9,6 +9,7 @@ import (
 )
 
 type AgentDailyOnline struct {
+	Month string `form:"month" json:"month" binding:"required,min=202401,max=205W012"`
 }
 
 func (n AgentDailyOnline) CheckParams(context *gin.Context) {
@@ -20,7 +21,7 @@ func (n AgentDailyOnline) CheckParams(context *gin.Context) {
 	}
 
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）
-	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixOrganization, context)
+	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixPlatform, context)
 	if extraAddBindDataContext == nil {
 		response.FailSimplify(context, "[platform home AgentDailyOnline]表单验证器json化失败")
 	} else {

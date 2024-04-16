@@ -2,11 +2,15 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
 )
@@ -33,6 +37,11 @@ func (u *AgentController) CountOnline(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CountOnline")
 }
 
+// TypeList 类型列表
+func (u *AgentController) TypeList(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "TypeList")
+}
+
 // PageForManage 管理: 分页
 func (u *AgentController) PageForManage(ctx *gin.Context) {
 	//查询条件
@@ -53,4 +62,145 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	softwareNewest := software_service.CreateCurdFactory().GetMapsByPublished()
 
 	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps, softwareNewest))
+}
+
+// DeleteForManage 管理: 删除
+func (u *AgentController) DeleteForManage(ctx *gin.Context) {
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// UninstallForManage 管理: 卸载
+func (u *AgentController) UninstallForManage(ctx *gin.Context) {
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
+	response.SuccessSimplify(ctx)
+}
+
+// UpgradeForManage 管理: 升级
+func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
+	agentIds := []string{
+		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// BatchDeleteForManage 管理: 批量删除
+func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
+	agentIds := u.getAgentIdsFromGin(ctx)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// BatchUninstallForManage 管理: 批量卸载
+func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
+	agentIds := u.getAgentIdsFromGin(ctx)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
+	response.SuccessSimplify(ctx)
+}
+
+// BatchUpgradeForManage 管理: 批量升级
+func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
+	agentIds := u.getAgentIdsFromGin(ctx)
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// BatchSetConfigForManage 管理: 批量设置配置
+func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
+	agentIds := u.getAgentIdsFromGin(ctx)
+	updateColumn := map[string]struct{}{
+		"syslog_dns_switch":     struct{}{},
+		"syslog_outer_switch":   struct{}{},
+		"syslog_inner_switch":   struct{}{},
+		"syslog_process_switch": struct{}{},
+		"syslog_login_switch":   struct{}{},
+		"outreach_alarm_switch": struct{}{},
+		"self_protect_switch":   struct{}{},
+		"auto_white_switch":     struct{}{},
+	}
+	var param = model_agent.AgentModel{}
+	param.SyslogDnsSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogDnsSwitch"))
+	param.SyslogOuterSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogOuterSwitch"))
+	param.SyslogInnerSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogInnerSwitch"))
+	param.SyslogProcessSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogProcessSwitch"))
+	param.SyslogLoginSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogLoginSwitch"))
+	param.OutreachAlarmSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "outreachAlarmSwitch"))
+	param.SelfProtectSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "selfProtectSwitch"))
+	param.AutoWhiteSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "autoWhiteSwitch"))
+
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(agentIds, updateColumn, &param, "终端管理")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// GetForBasic 基本信息：获取
+func (u *AgentController) GetForBasic(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "GetForBasic")
+}
+
+// SaveForBasic 基本信息：保存
+func (u *AgentController) SaveForBasic(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SaveForBasic")
+}
+
+// GetForConfig 配置信息：获取
+func (u *AgentController) GetForConfig(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "GetForConfig")
+}
+
+// SaveForConfig 配置信息：保存
+func (u *AgentController) SaveForConfig(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SaveForConfig")
+}
+
+// ListForMonitor 监控：列表
+func (u *AgentController) ListForMonitor(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "ListForMonitor")
+}
+
+// InfoForMonitor 监控：信息
+func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "InfoForMonitor")
+}
+
+// PageForError 错误文件：分页
+func (u *AgentController) PageForError(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "PageForError")
 }

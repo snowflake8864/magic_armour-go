@@ -76,13 +76,13 @@ func InitPlatformRouter() *gin.Engine {
 				//首页
 				home := vPlatform.Group("home/")
 				{
-					home.POST("alarmTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAlarmTodayStat"))
-					home.POST("agentTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAgentTodayStat"))
+					home.POST("alarmTodayStat", (&platform.HomeController{}).AlarmTodayStat)
+					home.POST("agentTodayStat", (&platform.HomeController{}).AlarmTodayStat)
 					home.POST("agentDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAgentDailyOnline"))
-					home.POST("userTodayStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserTodayStat"))
+					home.POST("userTodayStat", (&platform.HomeController{}).AlarmTodayStat)
 					home.POST("userDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserDailyOnline"))
-					home.POST("userNewestLogs", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserNewestLogs"))
-					home.POST("grantUsedStat", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeGrantUsedStat"))
+					home.POST("userNewestLogs", (&platform.HomeController{}).UserNewestLogs)
+					home.POST("grantUsedStat", (&platform.HomeController{}).GrantUsedStat)
 				}
 				//菜单 - 隐藏页
 				menu := vPlatform.Group("orgMenu/")
