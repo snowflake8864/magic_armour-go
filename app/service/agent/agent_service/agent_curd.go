@@ -30,15 +30,9 @@ func (crd *AgentCurd) GetItemByOrgAndAgent(orgId int64, agentId, column string) 
 	return model
 }
 
-// GetItemByAgent 通过终端id获取一条记录
-func (crd *AgentCurd) GetItemByAgent(id, column string) (model *model_agent.AgentModel) {
-	model, _ = crd.masterModel.GetItemById(id, column)
-	return model
-}
-
-// GetMapsByAgents 通过终端ids获取多条记录, 有映射关系
-func (crd *AgentCurd) GetMapsByAgents(ids []string, column string) map[string]*model_agent.AgentModel {
-	models, err := crd.masterModel.GetItemsByIds(ids, column)
+// GetMapsByOrgAndAgents 通过企业id和终端ids获取多条记录, 有映射关系
+func (crd *AgentCurd) GetMapsByOrgAndAgents(orgId int64, agentId []string, column string) map[string]*model_agent.AgentModel {
+	models, err := crd.masterModel.GetItemsByOrgAndAgents(orgId, agentId, column)
 	if err != nil {
 		return nil
 	}

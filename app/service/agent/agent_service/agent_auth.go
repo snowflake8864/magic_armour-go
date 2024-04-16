@@ -84,7 +84,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		crd.addTask(param, true, "终端验证不存在")
 
 		//自动授权
-		crd.autoGrant(param.AgentId)
+		crd.autoGrant(param.OrgId, param.AgentId)
 
 	} else {
 		updates := map[string]interface{}{
@@ -106,7 +106,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 			"online_at":      nowDate,
 			"live_at":        nowDate,
 		}
-		isOk := crd.masterModel.UpdateById(param.AgentId, updates)
+		isOk := crd.masterModel.UpdateByOrgAndAgent(param.OrgId, param.AgentId, updates)
 		if !isOk {
 			return false, "更新数据失败"
 		}
@@ -132,7 +132,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 }
 
 // autoGrant 自动授权
-func (crd *AgentAuth) autoGrant(agentId string) {
+func (crd *AgentAuth) autoGrant(orgId int64, agentId string) {
 
 }
 

@@ -63,7 +63,7 @@ func TestAgentDecrypt(t *testing.T) {
 func TestGetMapsByAgents(t *testing.T) {
 
 	agentCurdFact := agent_service.CreateCurdFactory()
-	agentModel := agentCurdFact.GetItemByAgent("win2010_test_001", agentCurdFact.ColumnConfig(true))
+	agentModel := agentCurdFact.GetItemByOrgAndAgent(1, "win2010_test_001", agentCurdFact.ColumnConfig(true))
 	fmt.Println(helpers.JsonEncode(agentModel))
 	fmt.Println("==========================")
 	fmt.Println(agentModel.ProcessSwitch)

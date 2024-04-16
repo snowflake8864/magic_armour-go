@@ -28,7 +28,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	taskCacheFact := task_service.CreateCacheFactory()
 	//缓存中的任务
-	cacheTasks := taskCacheFact.GetUnfinished(loginInfo.AgentId)
+	cacheTasks := taskCacheFact.GetUnfinished(loginInfo.OrgId, loginInfo.AgentId)
 	if len(cacheTasks) > 0 {
 		for _, val := range cacheTasks {
 			//是否有配置任务
@@ -79,7 +79,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		}
 
 		//设置心跳并判断是否需要追加修改配置的任务
-		appendConfig := taskCacheFact.SetHeartbeat(loginInfo.AgentId, hasUnfinishedTask)
+		appendConfig := taskCacheFact.SetHeartbeat(loginInfo.OrgId, loginInfo.AgentId, hasUnfinishedTask)
 		//需追加配置 && 这次没有配置任务
 		if appendConfig && !hasConfig {
 			hasConfig = true
@@ -90,7 +90,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 			//@todo 如果指令集中同时存在保护模式和相关内容，配置暂缓下发，等待获取相关内容完成
 			if hasProjectModeBefore {
 				//全是监控模式
-				if !u.checkAgentHasProject(loginInfo.AgentId) {
+				if !u.checkAgentHasProject(loginInfo.OrgId, loginInfo.AgentId) {
 					unfinishedTasks = append(unfinishedTasks, enum_task.TypeAgentConfigDownload)
 				}
 			} else {
@@ -101,7 +101,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	//不支持的任务直接关闭
 	if len(notSupportTasks) > 0 {
-		go taskCurdFact.CloseTasks(loginInfo.AgentId, notSupportTasks, ctx.ClientIP())
+		go taskCurdFact.CloseTasks(loginInfo.OrgId, loginInfo.AgentId, notSupportTasks, ctx.ClientIP())
 	}
 
 	if unfinishedTasks == nil {
@@ -111,9 +111,9 @@ func (u *TaskController) Get(ctx *gin.Context) {
 }
 
 // 验证终端是否有保护模式
-func (u *TaskController) checkAgentHasProject(agentId string) bool {
+func (u *TaskController) checkAgentHasProject(orgId int64, agentId string) bool {
 	agentCurdFact := agent_service.CreateCurdFactory()
-	agentModel := agentCurdFact.GetItemByAgent(agentId, agentCurdFact.ColumnSwitchAndModeForAlarm(true))
+	agentModel := agentCurdFact.GetItemByOrgAndAgent(orgId, agentId, agentCurdFact.ColumnSwitchAndModeForAlarm(true))
 	if agentModel.ProcessSwitch == enums.SwitchOn && agentModel.ProcessMode == enum_agent.ModeProject {
 		return true
 	}
@@ -180,7 +180,7 @@ func (u *TaskController) Close(ctx *gin.Context) {
 	types := []int{taskType}
 
 	loginInfo := u.GetLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.AgentId, types, ctx.ClientIP())
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, types, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "关闭任务")
 

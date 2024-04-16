@@ -13,6 +13,7 @@ import (
 type SearchConditions struct {
 	OrgId        int64
 	AgentId      string
+	AgentIds     []string
 	HostName     string
 	AgentIp      string
 	NetIp        string
@@ -35,6 +36,9 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 	}
 	if !helpers.StringIsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
+	}
+	if search.AgentIds != nil && len(search.AgentIds) > 0 {
+		wheres["agent_id"] = search.AgentIds
 	}
 	if !helpers.StringIsEmpty(search.HostName) {
 		wheres["host_name"] = search.HostName

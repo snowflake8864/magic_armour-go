@@ -27,7 +27,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 	//终端配置
 	agentCurdFact := agent_service.CreateCurdFactory()
-	agentModel := agentCurdFact.GetItemByAgent(loginInfo.AgentId, agentCurdFact.ColumnConfig(true))
+	agentModel := agentCurdFact.GetItemByOrgAndAgent(loginInfo.OrgId, loginInfo.AgentId, agentCurdFact.ColumnConfig(true))
 
 	//数据字典
 	dictIds := []string{
