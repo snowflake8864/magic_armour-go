@@ -45,8 +45,8 @@ func (a *AesCrypt) CbcEncryptToHex(data string) (result string, err error) {
 	return result, nil
 }
 
-// AesCbcDecryptByHex 解密 CbcEncryptToHex
-func (a *AesCrypt) AesCbcDecryptByHex(data string) (string, error) {
+// CbcDecryptByHex 解密 CbcEncryptToHex
+func (a *AesCrypt) CbcDecryptByHex(data string) (string, error) {
 	plainText, err := goEncryptAes.AesCbcDecryptByHex(data, a.key, a.iv)
 	if err != nil {
 		return "", err

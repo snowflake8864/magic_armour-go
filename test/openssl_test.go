@@ -174,7 +174,7 @@ func TestAesCrypt(t *testing.T) {
 	assert.Nil(t, err)
 	fmt.Println("加密:")
 	fmt.Println(encrypted)
-	decrypted, err = aesFct.AesCbcDecryptByHex(encrypted)
+	decrypted, err = aesFct.CbcDecryptByHex(encrypted)
 	assert.Nil(t, err)
 	fmt.Println("解密:")
 	fmt.Println(decrypted)
