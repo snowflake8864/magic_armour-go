@@ -109,6 +109,14 @@ func InitPlatformRouter() *gin.Engine {
 					}
 
 				} //终端
+				//威胁情报
+				threaten := vPlatform.Group("threaten/")
+				{
+					public := threaten.Group("public/")
+					{
+						public.POST("levels", (&platform.ThreatenCacheController{}).Levels)
+					}
+				} //终端
 			}
 		}
 	}

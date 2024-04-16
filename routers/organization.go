@@ -143,7 +143,6 @@ func InitOrganizationRouter() *gin.Engine {
 						manage.POST("batchSetWhite", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessManageBatchSetWhite"))
 						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessManageBatchRefresh"))
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessManageBatchCollect"))
-						manage.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessManageBatchThreatenWhite"))
 					}
 					agentV2 := process.Group("agent/")
 					{
@@ -163,8 +162,6 @@ func InitOrganizationRouter() *gin.Engine {
 						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessAgentExtractSample"))
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessAgentBatchGlobalWhite"))
-						agentV2.POST("batchThreatenWhite", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessAgentBatchThreatenWhite"))
-						agentV2.POST("batchThreatenBlack", validatorFactory.Create(consts.ValidatorPrefixOrganization+"ProcessAgentBatchThreatenBlack"))
 					}
 
 					global := process.Group("global/")
