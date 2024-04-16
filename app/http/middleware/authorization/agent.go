@@ -74,7 +74,8 @@ func SaveAgentAccess() gin.HandlerFunc {
 
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
-				"/v1/auth": {},
+				"/v1/auth":      {},
+				"/v1/getuserid": {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefixAgent + "uid"))

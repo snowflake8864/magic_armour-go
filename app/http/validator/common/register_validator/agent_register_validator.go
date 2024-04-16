@@ -28,7 +28,7 @@ func AgentRegisterValidator() {
 
 	//登录验证
 	key = consts.ValidatorPrefixAgent + "AuthMakeUserid"
-	containers.Set(key, auth.Login{})
+	containers.Set(key, auth.MakeUserid{})
 	key = consts.ValidatorPrefixAgent + "AuthLogin"
 	containers.Set(key, auth.Login{})
 

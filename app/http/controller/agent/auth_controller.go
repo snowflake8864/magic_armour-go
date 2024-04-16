@@ -87,20 +87,21 @@ func (u *AuthController) Login(ctx *gin.Context) {
 			return
 		}
 	}
+	errOrg := helpers.Int64ToStr(userInfo.OrgId) + "+" + helpers.Int64ToStr(userInfo.UserId)
 	//验证企业
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(userInfo.OrgId)
 	if orgModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业不存在")
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业不存在:"+errOrg)
 		return
 	}
 	if orgModel.Status != enum_organization.StatusNormal {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业状态异常")
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业状态异常:"+errOrg)
 		return
 	}
 	//验证用户
 	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
 	if userModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "用户不存在")
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "用户不存在:"+errOrg)
 		return
 	}
 

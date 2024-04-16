@@ -24,6 +24,7 @@ type AgentConfig struct {
 }
 
 // EncryptConfig 加密配置
+// 底层限制长度不能超过260
 func (crd *SoftwareDownload) EncryptConfig(OrgId, UserId int64) string {
 
 	//从数据字典中获取过期时间
@@ -40,16 +41,15 @@ func (crd *SoftwareDownload) EncryptConfig(OrgId, UserId int64) string {
 		Expire: helpers.AddTimestampByHour(hour),
 	}
 	jsonStr := helpers.JsonEncode(loginInfo)
-
 	//加密
-	cryptStr, _ := openssl_encrypt.CreateAesFactory().CbcDecryptByHex(jsonStr)
+	cryptStr, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(jsonStr)
 	return cryptStr
 }
 
 // DecryptConfig 解密配置
 func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConfig, err error) {
 	//解密成json
-	jsonStr, err := openssl_encrypt.CreateAesFactory().CbcDecryptByHex(cryptStr)
+	jsonStr, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(cryptStr)
 	if err != nil {
 		return AgentConfig{}, errors.New("userid decrypt fail")
 	}
