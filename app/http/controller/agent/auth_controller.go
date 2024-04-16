@@ -23,6 +23,13 @@ import (
 type AuthController struct {
 }
 
+// MakeUserid 生成用户秘钥
+func (u *AuthController) MakeUserid(ctx *gin.Context) {
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "orgId"))
+	userId := int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "userId"))
+	response.SuccessReturnData(ctx, software_service.CreateDownloadFactory().EncryptConfig(orgId, userId))
+}
+
 // Login 登录
 func (u *AuthController) Login(ctx *gin.Context) {
 	var param = model_agent.AgentModel{}

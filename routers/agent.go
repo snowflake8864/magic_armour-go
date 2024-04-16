@@ -58,6 +58,7 @@ func InitAgentRouter() *gin.Engine {
 	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(authorization.SaveAgentAccess())
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthLogin"))
+		vAgent.POST("getuserid", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthMakeUserid"))
 
 		// 【需要token】中间件验证的路由
 		vAgent.Use(authorization.CheckAgentToken())
