@@ -42,7 +42,7 @@ func PlatformRegisterValidator() {
 	containers.Set(key, org_menu.Add{})
 	key = consts.ValidatorPrefixPlatform + "OrgMenuEdit"
 	containers.Set(key, org_menu.Edit{})
-	key = consts.ValidatorPrefixPlatform + "MenuDelete"
+	key = consts.ValidatorPrefixPlatform + "OrgMenuDelete"
 	containers.Set(key, org_menu.Delete{})
 
 	//终端

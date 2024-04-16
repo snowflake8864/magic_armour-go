@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -72,7 +73,8 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		return
 	}
 	code := admin_service.CreateAuthFactory().GenerateBySms(adminModel.Phone)
-	response.SuccessReturnData(ctx, gin.H{"code": code})
+	variable.ZapLog.Debug("platform SendSms code: " + code)
+	response.SuccessSimplify(ctx)
 }
 
 // GetSliderCode 获取滑块码
