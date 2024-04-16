@@ -1,13 +1,14 @@
-package platform
+package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // TamperController 防篡改相关
 type TamperController struct {
-	ControllerBase
+	platform.ControllerBase
 }
 
 // FilePower 文件权限

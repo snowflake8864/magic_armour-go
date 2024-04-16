@@ -1,13 +1,14 @@
-package platform
+package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // ProcessGlobalController 进程全局名单相关
 type ProcessGlobalController struct {
-	ControllerBase
+	platform.ControllerBase
 }
 
 // PageFromProcess 分页

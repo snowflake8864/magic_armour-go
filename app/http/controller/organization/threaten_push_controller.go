@@ -1,13 +1,14 @@
-package platform
+package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // ThreatenPushController 威胁情报推送相关
 type ThreatenPushController struct {
-	ControllerBase
+	platform.ControllerBase
 }
 
 // Page 分页

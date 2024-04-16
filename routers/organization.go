@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
@@ -130,8 +131,8 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					public := process.Group("public/")
 					{
-						public.POST("searchStatus", (&platform.ProcessController{}).SearchStatus)
-						public.POST("changeStatus", (&platform.ProcessController{}).ChangeStatus)
+						public.POST("searchStatus", (&organization.ProcessController{}).SearchStatus)
+						public.POST("changeStatus", (&organization.ProcessController{}).ChangeStatus)
 					}
 					manage := process.Group("manage/")
 					{
@@ -197,8 +198,8 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					public := tamper.Group("public/")
 					{
-						public.POST("FilePower", (&platform.TamperController{}).FilePower)
-						public.POST("FolderPower", (&platform.TamperController{}).FolderPower)
+						public.POST("FilePower", (&organization.TamperController{}).FilePower)
+						public.POST("FolderPower", (&organization.TamperController{}).FolderPower)
 					}
 					manage := tamper.Group("manage/")
 					{

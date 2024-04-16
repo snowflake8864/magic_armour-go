@@ -1,13 +1,14 @@
-package platform
+package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // ProcSampleController 进程或模块样本相关
 type ProcSampleController struct {
-	ControllerBase
+	platform.ControllerBase
 }
 
 // Page 分页

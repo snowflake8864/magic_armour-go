@@ -2,12 +2,13 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // DepartmentController 组织架构相关
 type DepartmentController struct {
-	ControllerBase
+	platform.ControllerBase
 }
 
 // Tree 树形列表

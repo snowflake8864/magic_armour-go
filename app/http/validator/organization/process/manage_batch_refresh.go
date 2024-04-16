@@ -3,7 +3,7 @@ package process
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
@@ -25,7 +25,7 @@ func (n ManageBatchRefresh) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[organization process ManageBatchRefresh]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&platform.ProcessController{}).BatchRefreshForManage(extraAddBindDataContext)
+		(&organization.ProcessController{}).BatchRefreshForManage(extraAddBindDataContext)
 	}
 
 }
