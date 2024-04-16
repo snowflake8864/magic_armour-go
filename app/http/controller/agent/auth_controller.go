@@ -64,7 +64,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	}
 
 	//解密用户信息
-	loginInfo, err := software_service.CreateDownloadFactory().DecryptConfig(userId)
+	userInfo, err := software_service.CreateDownloadFactory().DecryptConfig(userId)
 	if err != nil {
 		//@todo 兼容以前离线版本
 		if cur_app.GetAppUsageVersion() == enums.AppUsageVersionOffline {
@@ -73,15 +73,15 @@ func (u *AuthController) Login(ctx *gin.Context) {
 				enum_dictionary.AgentCompatibleDefaultUser,
 			}
 			mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
-			loginInfo.OrgId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultOrg])
-			loginInfo.UserId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultUser])
+			userInfo.OrgId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultOrg])
+			userInfo.UserId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultUser])
 		} else {
 			response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
 			return
 		}
 	}
 	//验证企业
-	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(loginInfo.OrgId)
+	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(userInfo.OrgId)
 	if orgModel.Id == 0 {
 		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业不存在")
 		return
@@ -91,15 +91,15 @@ func (u *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 	//验证用户
-	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
+	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
 	if userModel.Id == 0 {
 		response.FailRoutine(ctx, consts.AgentINSTALLCode, "用户不存在")
 		return
 	}
 
 	//新增或修改终端
-	param.OrgId = loginInfo.OrgId
-	param.UserId = loginInfo.OrgId
+	param.OrgId = userInfo.OrgId
+	param.UserId = userInfo.OrgId
 	isOk, data := agent_service.CreateAuthFactory().RegisterOrLogin(&param)
 	if !isOk {
 		response.FailSimplify(ctx, data)
