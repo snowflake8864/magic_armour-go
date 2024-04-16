@@ -28,6 +28,7 @@ type AgentCache struct {
 }
 
 type AgentCacheLogin struct {
+	OrgId        int64  `json:"org_id"`
 	AgentId      string `json:"agent_id"`
 	PlatformType int    `json:"platform_type"`
 	OsType       int    `json:"os_type"`
@@ -43,6 +44,7 @@ func (crd *AgentCache) getKeyByLogin(val string) string {
 // EncryptByLogin 登录信息加密并缓存
 func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 	var loginInfo AgentCacheLogin
+	loginInfo.OrgId = param.OrgId
 	loginInfo.AgentId = param.AgentId
 	loginInfo.PlatformType = param.PlatformType
 	loginInfo.OsType = param.OsType

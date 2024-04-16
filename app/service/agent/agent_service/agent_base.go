@@ -144,6 +144,6 @@ func (crd *AgentBase) addTask(param *model_agent.AgentModel, isTrustDir bool, re
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
 	}
 
-	task_service.CreateCurdFactory().AddTasksForAgent(param.AgentId, tasks, remark)
+	task_service.CreateCurdFactory().AddTasksForAgent(param.OrgId, param.AgentId, tasks, remark)
 
 }

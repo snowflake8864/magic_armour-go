@@ -108,7 +108,7 @@ func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
 }
 
 // BatchUpgrade 批量升级
-func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
+func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err error) {
 	softwareMaps := software_service.CreateCurdFactory().GetMapsByPublished()
 	if softwareMaps == nil || len(softwareMaps) == 0 {
 		return errCode, err
@@ -124,7 +124,7 @@ func (crd *AgentCurd) BatchUpgrade(ids []string) (errCode int, err error) {
 
 	if len(validIds) > 0 {
 		//添加任务
-		task_service.CreateCurdFactory().AddTasksForAgents(validIds, []int{enum_task.TypeAgentUpgrade}, "")
+		task_service.CreateCurdFactory().AddTasksForAgents(orgId, validIds, []int{enum_task.TypeAgentUpgrade}, "")
 	}
 	return errCode, err
 }

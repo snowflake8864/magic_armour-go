@@ -13,5 +13,11 @@ func IntRandom(minInt, maxInt int) int {
 // IntRandom2Str 随机数
 func IntRandom2Str(minInt, maxInt int) string {
 	randomInt := IntRandom(minInt, maxInt)
+
 	return strconv.Itoa(randomInt)
+}
+
+// Int64ToStr Int64转成字符串
+func Int64ToStr(num int64) string {
+	return strconv.FormatInt(num, 10)
 }

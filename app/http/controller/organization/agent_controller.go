@@ -87,7 +87,7 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
+	task_service.CreateCurdFactory().AddTasksForAgents(0, agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
 	response.SuccessSimplify(ctx)
 }
 
@@ -96,7 +96,7 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(0, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -124,14 +124,14 @@ func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
 		return
 	}
 
-	task_service.CreateCurdFactory().AddTasksForAgents(agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
+	task_service.CreateCurdFactory().AddTasksForAgents(0, agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
 	response.SuccessSimplify(ctx)
 }
 
 // BatchUpgradeForManage 管理: 批量升级
 func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(0, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

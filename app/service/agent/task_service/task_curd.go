@@ -17,17 +17,17 @@ type TaskCurd struct {
 }
 
 // AddTasksForAgents 多个终端添加任务
-func (crd *TaskCurd) AddTasksForAgents(agentIds []string, types []int, remark string) {
+func (crd *TaskCurd) AddTasksForAgents(orgId int64, agentIds []string, types []int, remark string) {
 	for _, agentId := range agentIds {
-		crd.AddTasksForAgent(agentId, types, remark)
+		crd.AddTasksForAgent(orgId, agentId, types, remark)
 	}
 }
 
 // AddTasksForAgent 单个终端添加任务
-func (crd *TaskCurd) AddTasksForAgent(agentId string, types []int, remark string) {
+func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, remark string) {
 	//未完成的任务
 	cacheFact := CreateCacheFactory()
-	unfinishedMap := helpers.SliceInt2Map(cacheFact.GetUnfinished(agentId))
+	unfinishedMap := helpers.SliceInt2Map(cacheFact.GetUnfinished(orgId, agentId))
 
 	//需要缓存列表
 	var caches []int
@@ -40,6 +40,7 @@ func (crd *TaskCurd) AddTasksForAgent(agentId string, types []int, remark string
 			caches = append(caches, val)
 			inserts = append(inserts, model_agent.TaskModel{
 				Id:        md5_encrypt.MD5(agentId + strconv.Itoa(val) + nowDate),
+				OrgId:     orgId,
 				AgentId:   agentId,
 				Type:      val,
 				Remark:    remark,
@@ -56,16 +57,17 @@ func (crd *TaskCurd) AddTasksForAgent(agentId string, types []int, remark string
 	}
 
 	//缓存
-	cacheFact.AddUnfinished(agentId, caches)
+	cacheFact.AddUnfinished(orgId, agentId, caches)
 	//入库
 	crd.masterModel.InsertBatch(&inserts)
 }
 
 // CloseTasks 关闭任务
-func (crd *TaskCurd) CloseTasks(agentId string, types []int, netIp string) {
-	CreateCacheFactory().RemUnfinished(agentId, types)
+func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp string) {
+	CreateCacheFactory().RemUnfinished(orgId, agentId, types)
 
 	conditions := map[string]interface{}{
+		"org_id":   orgId,
 		"agent_id": agentId,
 		"type":     types,
 		"status":   enum_task.StatusStart,

@@ -23,7 +23,7 @@ type AgentController struct {
 func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.GetLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
 
 	//终端配置
 	agentCurdFact := agent_service.CreateCurdFactory()
@@ -93,7 +93,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	}
 
 	//心跳间隔时间(秒)
-	if heartFlag := task_service.CreateCacheFactory().GetHeartbeatFlag(loginInfo.AgentId); heartFlag {
+	if heartFlag := task_service.CreateCacheFactory().GetHeartbeatFlag(loginInfo.OrgId, loginInfo.AgentId); heartFlag {
 		mapConf["crontime"] = agentModel.CommonTime
 	} else {
 		mapConf["crontime"] = agentModel.FastTime

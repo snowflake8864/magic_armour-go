@@ -15,7 +15,7 @@ func TestCloseTask(t *testing.T) {
 	unfinishedTasks = []int{10, 11}
 	fmt.Printf("len=%d cap=%d slice=%v\n", len(unfinishedTasks), cap(unfinishedTasks), unfinishedTasks)
 
-	task_service.CreateCurdFactory().CloseTasks("20240108000001_init_paltforma' or '2'='2", unfinishedTasks, "168.10.1.1")
+	task_service.CreateCurdFactory().CloseTasks(0, "20240108000001_init_paltforma' or '2'='2", unfinishedTasks, "168.10.1.1")
 }
 
 func TestSendSms(t *testing.T) {

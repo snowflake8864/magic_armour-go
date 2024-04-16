@@ -28,27 +28,27 @@ type TaskCache struct {
 	emptyNumberThreshold int
 }
 
-func (crd *TaskCache) getKeyByEmptyTask(val string) string {
-	return crd.emptyNumberPrefix + val
+func (crd *TaskCache) keyByEmptyTask(orgId int64, agentId string) string {
+	return crd.emptyNumberPrefix + helpers.Int64ToStr(orgId) + agentId
 }
 
-func (crd *TaskCache) getKeyByUnfinished(val string) string {
-	return crd.unfinishedPrefix + val
+func (crd *TaskCache) keyByUnfinished(orgId int64, agentId string) string {
+	return crd.unfinishedPrefix + helpers.Int64ToStr(orgId) + agentId
 }
 
-func (crd *TaskCache) GetUnfinished(agentId string) []int {
-	data, _ := crd.redisClient.SMembersByInt(crd.getKeyByUnfinished(agentId))
+func (crd *TaskCache) GetUnfinished(orgId int64, agentId string) []int {
+	data, _ := crd.redisClient.SMembersByInt(crd.keyByUnfinished(orgId, agentId))
 	return data
 }
 
-func (crd *TaskCache) AddUnfinished(agentId string, tasks []int) bool {
-	isOk, _ := crd.redisClient.SAddByInt(crd.getKeyByUnfinished(agentId), tasks)
-	crd.redisClient.Expire(crd.getKeyByUnfinished(agentId), crd.cacheExpire)
+func (crd *TaskCache) AddUnfinished(orgId int64, agentId string, tasks []int) bool {
+	isOk, _ := crd.redisClient.SAddByInt(crd.keyByUnfinished(orgId, agentId), tasks)
+	crd.redisClient.Expire(crd.keyByUnfinished(orgId, agentId), crd.cacheExpire)
 	return isOk
 }
 
-func (crd *TaskCache) RemUnfinished(agentId string, tasks []int) bool {
-	_, err := crd.redisClient.SRemByInt(crd.getKeyByUnfinished(agentId), tasks)
+func (crd *TaskCache) RemUnfinished(orgId int64, agentId string, tasks []int) bool {
+	_, err := crd.redisClient.SRemByInt(crd.keyByUnfinished(orgId, agentId), tasks)
 	if err == nil {
 		return true
 	}
@@ -57,8 +57,8 @@ func (crd *TaskCache) RemUnfinished(agentId string, tasks []int) bool {
 
 // SetHeartbeat 设置心跳,并判断是否需要追加修改配置的任务
 // 【新需求 6705】1分钟没有任务下发，主动调整回连频率为2分钟一次
-func (crd *TaskCache) SetHeartbeat(agentId string, hasUnfinishedTask bool) (appendConf bool) {
-	cacheKey := crd.getKeyByEmptyTask(agentId)
+func (crd *TaskCache) SetHeartbeat(orgId int64, agentId string, hasUnfinishedTask bool) (appendConf bool) {
+	cacheKey := crd.keyByEmptyTask(orgId, agentId)
 	//原空任务次数
 
 	oldNumber := helpers.String2Int(crd.redisClient.Get(cacheKey))
@@ -89,8 +89,8 @@ func (crd *TaskCache) SetHeartbeat(agentId string, hasUnfinishedTask bool) (appe
 
 // GetHeartbeatFlag 获取心跳标志
 // @return bool true:普通, false:快速
-func (crd *TaskCache) GetHeartbeatFlag(agentId string) bool {
-	cacheKey := crd.getKeyByEmptyTask(agentId)
+func (crd *TaskCache) GetHeartbeatFlag(orgId int64, agentId string) bool {
+	cacheKey := crd.keyByEmptyTask(orgId, agentId)
 	//原空任务次数
 	oldNumber := helpers.String2Int(crd.redisClient.Get(cacheKey))
 	//空任务次数是否大于等于阀值
