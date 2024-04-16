@@ -10,13 +10,13 @@ import (
 	"goskeleton/app/utils/tree"
 )
 
-// MenuController 角色相关
-type MenuController struct {
+// OrgMenuController 企业相关
+type OrgMenuController struct {
 	ControllerBase
 }
 
 // Tree 树形列表
-func (u *MenuController) Tree(ctx *gin.Context) {
+func (u *OrgMenuController) Tree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	models := org_menu_service.CreateCurdFactory().GetAll(loginInfo.IsRoot)
 	if models == nil {
@@ -49,7 +49,7 @@ func (u *MenuController) Tree(ctx *gin.Context) {
 }
 
 // Add 添加
-func (u *MenuController) Add(ctx *gin.Context) {
+func (u *OrgMenuController) Add(ctx *gin.Context) {
 	var param = model_platform.OrgMenuModel{
 		Position: enum_menu.PositionLeft,
 		ParentId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
@@ -72,7 +72,7 @@ func (u *MenuController) Add(ctx *gin.Context) {
 }
 
 // Edit 编辑
-func (u *MenuController) Edit(ctx *gin.Context) {
+func (u *OrgMenuController) Edit(ctx *gin.Context) {
 	var param = model_platform.OrgMenuModel{
 		Id:     int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
 		Type:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
@@ -92,12 +92,12 @@ func (u *MenuController) Edit(ctx *gin.Context) {
 }
 
 // Sort 排序
-func (u *MenuController) Sort(ctx *gin.Context) {
+func (u *OrgMenuController) Sort(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "sort")
 }
 
 // Delete 删除
-func (u *MenuController) Delete(ctx *gin.Context) {
+func (u *OrgMenuController) Delete(ctx *gin.Context) {
 	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
 	errCode, err := org_menu_service.CreateCurdFactory().DeleteById(id)
 	if err != nil {
