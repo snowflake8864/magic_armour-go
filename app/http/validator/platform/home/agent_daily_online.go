@@ -9,7 +9,7 @@ import (
 )
 
 type AgentDailyOnline struct {
-	Month string `form:"month" json:"month" binding:"required,min=202401,max=205W012"`
+	Month int `form:"month" json:"month" binding:"required,min=202401,max=205012"`
 }
 
 func (n AgentDailyOnline) CheckParams(context *gin.Context) {

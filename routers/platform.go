@@ -77,9 +77,9 @@ func InitPlatformRouter() *gin.Engine {
 				home := vPlatform.Group("home/")
 				{
 					home.POST("alarmTodayStat", (&platform.HomeController{}).AlarmTodayStat)
-					home.POST("agentTodayStat", (&platform.HomeController{}).AlarmTodayStat)
+					home.POST("agentTodayStat", (&platform.HomeController{}).AgentTodayStat)
 					home.POST("agentDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeAgentDailyOnline"))
-					home.POST("userTodayStat", (&platform.HomeController{}).AlarmTodayStat)
+					home.POST("userTodayStat", (&platform.HomeController{}).UserTodayStat)
 					home.POST("userDailyOnline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"HomeUserDailyOnline"))
 					home.POST("userNewestLogs", (&platform.HomeController{}).UserNewestLogs)
 					home.POST("grantUsedStat", (&platform.HomeController{}).GrantUsedStat)
