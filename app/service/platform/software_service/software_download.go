@@ -51,7 +51,7 @@ func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConf
 	//解密成json
 	jsonStr, err := openssl_encrypt.CreateAesFactory().CbcDecryptByHex(cryptStr)
 	if err != nil {
-		return AgentConfig{}, errors.New("userid decrypt  fail")
+		return AgentConfig{}, errors.New("userid decrypt fail")
 	}
 
 	//转成登录结构体

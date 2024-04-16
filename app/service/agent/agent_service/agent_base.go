@@ -11,6 +11,7 @@ import (
 )
 
 type SearchConditions struct {
+	OrgId        int64
 	AgentId      string
 	HostName     string
 	AgentIp      string
@@ -29,6 +30,9 @@ type AgentBase struct {
 // search2Where 查询条件转化
 func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
+	if search.OrgId > 0 {
+		wheres["org_id"] = search.OrgId
+	}
 	if !helpers.StringIsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}
@@ -63,10 +67,10 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 }
 
 // ColumnConfig 字段:全部配置相关
-func (crd *AgentCurd) ColumnConfig(needId bool) string {
+func (crd *AgentBase) ColumnConfig(needId bool) string {
 	column := ""
 	if needId {
-		column = "agent_id,"
+		column = "org_id, agent_id,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
@@ -78,13 +82,13 @@ func (crd *AgentCurd) ColumnConfig(needId bool) string {
 }
 
 // ColumnSwitchAndModeForAlarm 字段:告警需求的开关和模式
-func (crd *AgentCurd) ColumnSwitchAndModeForAlarm(needId bool) string {
+func (crd *AgentBase) ColumnSwitchAndModeForAlarm(needId bool) string {
 	column := ""
 	if needId {
-		column = "agent_id,"
+		column = "org_id, agent_id,"
 	}
 	column = column +
-		"process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
+		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
 		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode"
 	return column
 }
@@ -135,7 +139,7 @@ func (crd *AgentBase) addTask(param *model_agent.AgentModel, isTrustDir bool, re
 		}
 	}
 
-	//外设开机
+	//外设开启
 	if param.UsbSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
 	}

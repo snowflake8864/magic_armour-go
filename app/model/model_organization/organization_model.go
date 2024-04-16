@@ -125,6 +125,15 @@ func (m *OrganizationModel) GetItemById(id int64) (item *OrganizationModel, err 
 	}
 }
 
+func (m *OrganizationModel) GetItemByName(name string) (item *OrganizationModel, err error) {
+	result := m.Model(m).Where("name=?", name).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
 // GetItemsByIds 通过id集合获取多条记录
 func (m *OrganizationModel) GetItemsByIds(ids []int64) (items []*OrganizationModel, err error) {
 	result := m.Model(m).Where("id IN ?", ids).Find(&items)

@@ -20,8 +20,7 @@ type AgentAuth struct {
 
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	column := "agent_id,dept_id,platform_type,os_type,process_switch,dll_switch,tamper_switch,blackmail_switch,port_switch,plug_switch,usb_switch"
-	agentModel := CreateCurdFactory().GetItemByAgent(param.AgentId, column)
+	agentModel := CreateCurdFactory().GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.ColumnSwitchAndModeForAlarm(true))
 	nowDate := helpers.GetDatetime()
 	isAllocateDept := true //是否分配组织架构
 
@@ -29,7 +28,6 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		//授权配置
 		grantConfig := enum_grant.AgentGrantConfig{}
 		grantConfig.Default()
-		jsonGrant := helpers.JsonEncode(grantConfig)
 
 		param.IsOnline = enums.IsYes
 		param.OnlineAt = nowDate
@@ -43,7 +41,8 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		param.ContactTel = ""
 		param.Position = ""
 		param.Remark = ""
-		param.GrantConfig = jsonGrant
+		param.GrantConfig = helpers.JsonEncode(grantConfig)
+		param.GrantStatus = enums.IsNot
 		param.ProcessSwitch = enums.SwitchOff
 		param.ProcessMode = enum_agent.ModeMonitor
 		param.DllSwitch = enums.SwitchOff
@@ -121,9 +120,9 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 		}
 	}
 
-	//自动分配组织架构
+	//自动分配组织架构,使用通信IP
 	if isAllocateDept {
-		crd.autoAllocateDept(param.AdminId, param.AgentId, param.AgentIp)
+		crd.autoAllocateDept(param.OrgId, param.AgentId, param.NetIp)
 	}
 
 	//生成token
@@ -138,6 +137,6 @@ func (crd *AgentAuth) autoGrant(agentId string) {
 }
 
 // autoAllocateDept 自动分配组织架构
-func (crd *AgentAuth) autoAllocateDept(adminId int64, agentId, agentIp string) {
-	go department_service.CreateCurdFactory().AutoAllocate(adminId, agentId, agentIp)
+func (crd *AgentAuth) autoAllocateDept(orgId int64, agentId, agentIp string) {
+	go department_service.CreateCurdFactory().AutoAllocate(orgId, agentId, agentIp)
 }

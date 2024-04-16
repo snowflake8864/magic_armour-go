@@ -24,6 +24,12 @@ type AgentCurd struct {
 	masterModel *model_agent.AgentModel
 }
 
+// GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
+func (crd *AgentCurd) GetItemByOrgAndAgent(orgId int64, agentId, column string) (model *model_agent.AgentModel) {
+	model, _ = crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, column)
+	return model
+}
+
 // GetItemByAgent 通过终端id获取一条记录
 func (crd *AgentCurd) GetItemByAgent(id, column string) (model *model_agent.AgentModel) {
 	model, _ = crd.masterModel.GetItemById(id, column)

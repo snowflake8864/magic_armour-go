@@ -114,6 +114,25 @@ func (m *UserModel) GetItemById(id int64) (item *UserModel, err error) {
 	}
 }
 
+func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, err error) {
+	result := m.Model(m).Where("id=?", userId).Where("org_id=?", orgId).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemByName 通过名称获取一条记录
+func (m *UserModel) GetItemByName(name string) (item *UserModel, err error) {
+	result := m.Model(m).Where("username=?", name).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
 // GetItemsByIds 通过id集合获取多条记录
 func (m *UserModel) GetItemsByIds(ids []int64) (items []*UserModel, err error) {
 	result := m.Model(m).Where("id IN ?", ids).Find(&items)

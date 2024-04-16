@@ -8,6 +8,8 @@ const (
 	SwitchOn   int = 1 //开关状态: 开
 	SwitchOff  int = 0 //开关状态: 否
 
+	AppUsageVersionOffline int = 1 //程序使用版本:离线
+	AppUsageVersionCloud   int = 2 //程序使用版本:云
 )
 
 // Get1stIsStrReturnSliceOfStr 如是第一级是string,返回相应[]string

@@ -38,6 +38,6 @@ func (crd *DepartmentCurd) GetMapsByIds(ids []int64) map[int64]*model_organizati
 }
 
 // AutoAllocate 自动分配
-func (crd *DepartmentCurd) AutoAllocate(adminId int64, agentId, agentIp string) {
+func (crd *DepartmentCurd) AutoAllocate(orgId int64, agentId, agentIp string) {
 	variable.ZapLog.Info("自动分配组织架构----------------")
 }

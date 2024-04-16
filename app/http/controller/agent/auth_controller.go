@@ -3,9 +3,17 @@ package agent
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"strings"
@@ -32,8 +40,8 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.AgentStartAt = helpers.TimestampToDatetime(int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "asstarttime")))
 	param.OsStartAt = helpers.TimestampToDatetime(int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "osstarttime")))
 	param.Auth = ctx.GetString(consts.ValidatorPrefixAgent + "auth")
-	param.AdminId = int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "userid"))
 	param.NetIp = ctx.ClientIP()
+	userId := ctx.GetString(consts.ValidatorPrefixAgent + "userid")
 
 	if helpers.StringIsEmpty(param.AgentIp) {
 		param.AgentIp = param.NetIp
@@ -55,6 +63,43 @@ func (u *AuthController) Login(ctx *gin.Context) {
 		return
 	}
 
+	//解密用户信息
+	loginInfo, err := software_service.CreateDownloadFactory().DecryptConfig(userId)
+	if err != nil {
+		//@todo 兼容以前离线版本
+		if cur_app.GetAppUsageVersion() == enums.AppUsageVersionOffline {
+			dictIds := []string{
+				enum_dictionary.AgentCompatibleDefaultOrg,
+				enum_dictionary.AgentCompatibleDefaultUser,
+			}
+			mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+			loginInfo.OrgId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultOrg])
+			loginInfo.UserId = helpers.String2Int64(mapDict[enum_dictionary.AgentCompatibleDefaultUser])
+		} else {
+			response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+			return
+		}
+	}
+	//验证企业
+	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(loginInfo.OrgId)
+	if orgModel.Id == 0 {
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业不存在")
+		return
+	}
+	if orgModel.Status != enum_organization.StatusNormal {
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业状态异常")
+		return
+	}
+	//验证用户
+	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
+	if userModel.Id == 0 {
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "用户不存在")
+		return
+	}
+
+	//新增或修改终端
+	param.OrgId = loginInfo.OrgId
+	param.UserId = loginInfo.OrgId
 	isOk, data := agent_service.CreateAuthFactory().RegisterOrLogin(&param)
 	if !isOk {
 		response.FailSimplify(ctx, data)

@@ -39,7 +39,7 @@ type AgentModel struct {
 	LiveAt              string `json:"live_at"`
 	IsSafe              int    `json:"is_safe"`
 	UpgradeVer          string `json:"upgrade_ver"`
-	AdminId             int64  `json:"user_id"`
+	UserId              int64  `json:"user_id"`
 	DeptId              int64  `json:"dept_id"`
 	AgentType           int    `json:"agent_type"`
 	Alias               string `json:"alias"`
@@ -123,7 +123,7 @@ func (m *AgentModel) CreateTable() bool {
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注',
 			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权:配置(json)',
 			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
-			grant_expire_at datetime NOT NULL  COMMENT '授权:过期时间',
+			grant_expire_at datetime NULL  COMMENT '授权:过期时间',
 			grant_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:状态',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式(0监控,1保护)',
@@ -302,6 +302,19 @@ func (m *AgentModel) GetItemsByIds(ids []string, column string) (items []*AgentM
 		return items, nil
 	} else {
 		return nil, result.Error
+	}
+}
+
+// GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
+func (m *AgentModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Select(column).Where("org_id=?", orgId).Where("agent_id=?", agentId).First(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
 	}
 }
 

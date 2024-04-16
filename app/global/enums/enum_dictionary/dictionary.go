@@ -20,16 +20,18 @@ const (
 	OrganizationLoginLockDuration string = "org_login_lock_duration" //企业:登录锁定时长(分)
 	OrganizationLoginSmsSwitch    string = "org_login_sms_switch"    //企业:登录短信验证开关
 
-	AgentHttpUrl          string = "agent_http_url"           //终端:http请求地址(无端口)
-	AgentHttpPort         string = "agent_http_port"          //终端:http请求端口
-	AgentLogSendProto     string = "agent_log_send_proto"     //终端:日志发送协议(1udp 2tcp)
-	AgentSaveAccessLog    string = "agent_save_access_log"    //终端:是否保存访问记录(0|1)
-	AgentConfigExpire     string = "agent_config_expire"      //终端:配置文件有效期(小时)
-	AgentAutoDeleteExpire string = "agent_auto_delete_expire" //终端:自动删除有效期(天)
-	AgentAlarmExpire      string = "agent_alarm_expire"       //终端:告警保留时长(天)
-	AgentSyslogExpire     string = "agent_syslog_expire"      //终端:通讯日志保留时长(天)
-	AgentProcGlobalSwitch string = "agent_proc_global_switch" //终端:进程全局名单是否下发给终端开关
-	AgentProcGlobalLimit  string = "agent_proc_global_limit"  //终端:进程全局名单限制数目
+	AgentHttpUrl               string = "agent_http_url"                //终端:http请求地址(无端口)
+	AgentHttpPort              string = "agent_http_port"               //终端:http请求端口
+	AgentLogSendProto          string = "agent_log_send_proto"          //终端:日志发送协议(1udp 2tcp)
+	AgentSaveAccessLog         string = "agent_save_access_log"         //终端:是否保存访问记录(0|1)
+	AgentConfigExpire          string = "agent_config_expire"           //终端:配置文件有效期(小时)
+	AgentAutoDeleteExpire      string = "agent_auto_delete_expire"      //终端:自动删除有效期(天)
+	AgentAlarmExpire           string = "agent_alarm_expire"            //终端:告警保留时长(天)
+	AgentSyslogExpire          string = "agent_syslog_expire"           //终端:通讯日志保留时长(天)
+	AgentProcGlobalSwitch      string = "agent_proc_global_switch"      //终端:进程全局名单是否下发给终端开关
+	AgentProcGlobalLimit       string = "agent_proc_global_limit"       //终端:进程全局名单限制数目
+	AgentCompatibleDefaultOrg  string = "agent_compatible_default_org"  //终端:兼容以前离线版本默认企业编号
+	AgentCompatibleDefaultUser string = "agent_compatible_default_user" //终端:兼容以前离线版本默认用户编号
 
 	ThreatenSwitch      string = "threaten_switch"       //威胁情报:开关
 	ThreatenUrl         string = "threaten_url"          //威胁情报:服务器地址
@@ -89,6 +91,8 @@ var EnumSlice = map[string][]string{
 		AgentSyslogExpire,
 		AgentProcGlobalSwitch,
 		AgentProcGlobalLimit,
+		AgentCompatibleDefaultOrg,
+		AgentCompatibleDefaultUser,
 	},
 
 	ModuleThreaten: {
