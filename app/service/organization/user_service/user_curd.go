@@ -2,6 +2,7 @@ package user_service
 
 import (
 	"goskeleton/app/model/model_organization"
+	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateCurdFactory() *UserCurd {
@@ -10,6 +11,15 @@ func CreateCurdFactory() *UserCurd {
 
 type UserCurd struct {
 	masterModel *model_organization.UserModel
+}
+
+// Register 注册
+func (crd *UserCurd) Register(param *model_organization.UserModel) bool {
+	param.RoleId = 0
+	param.PwErrorNum = 0
+	pw, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToHex(param.Password)
+	param.Password = pw
+	return crd.masterModel.InsertItem(param)
 }
 
 // GetItemById 通过用户编号获取

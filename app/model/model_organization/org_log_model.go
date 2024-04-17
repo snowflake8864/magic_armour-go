@@ -1,6 +1,7 @@
 package model_organization
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -17,11 +18,10 @@ func CreateOrgLogFactory() *OrgLogModel {
 type OrgLogModel struct {
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
-	Module        string `json:"module"`
+	Module        int    `json:"module"`
 	NetIp         string `json:"net_ip"`
 	OrgId         int64  `json:"org_id"`
 	OrgName       string `json:"org_name"`
-	UserId        int64  `json:"user_id"`
 	UserName      string `json:"user_name"`
 	UserEmail     string `json:"user_email"`
 	UserPhone     string `json:"user_phone"`
@@ -46,7 +46,6 @@ func (m *OrgLogModel) CreateTable() bool {
          net_ip varchar(128) NOT NULL DEFAULT '' COMMENT '通讯ip',
 		 org_id int(11) NOT NULL DEFAULT '0' COMMENT '企业(o_organization.id)',
 		 org_name varchar(128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.id)',
-		 user_id int(11) NOT NULL DEFAULT '0' COMMENT '默认管理用户(o_user.id)',
 		 user_name varchar(128) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.name)',
 		 user_email varchar(64) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.email)',
 		 user_phone varchar(16) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.phone)',
@@ -81,46 +80,6 @@ func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
 	}
 }
 
-// UpdateById 通过id修改
-func (m *OrgLogModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("id=?", id).Updates(updates)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// DeleteByConditions 通过条件删除
-func (m *OrgLogModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// GetItemById 通过id获取一条记录
-func (m *OrgLogModel) GetItemById(id int64) (item *OrgLogModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
-	if result.Error == nil {
-		return item, nil
-	} else {
-		return item, result.Error
-	}
-}
-
-// GetItemsByIds 通过id集合获取多条记录
-func (m *OrgLogModel) GetItemsByIds(ids []int64) (items []*OrgLogModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrgLogModel, err error) {
 	tmp := m.Model(m).Where(condition)
@@ -137,5 +96,33 @@ func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, off
 		return items, nil
 	} else {
 		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *OrgLogModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Select("id").Where(condition).Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *OrgLogModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrgLogModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

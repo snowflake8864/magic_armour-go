@@ -1,7 +1,6 @@
 package platform
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -10,7 +9,6 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/organize_service"
-	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -80,6 +78,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	orgParam.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	orgParam.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")
 	orgParam.UserEmail = ctx.GetString(consts.ValidatorPrefixPlatform + "UserEmail")
+	orgParam.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 	orgParam.Type = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgType"))
 	orgParam.Source = enum_organization.SourcePlatform
 	orgParam.CreateId = loginInfo.AdminId
@@ -93,8 +92,10 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	userParam.Password = ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")
 	userParam.IsRoot = enums.IsYes
 
-	fmt.Println(helpers.JsonEncode(orgParam))
-	fmt.Println(helpers.JsonEncode(userParam))
-
+	errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, ctx.ClientIP())
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 	response.SuccessSimplify(ctx)
 }

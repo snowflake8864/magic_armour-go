@@ -38,7 +38,6 @@ func (crd *OrgExtend) AddDefault(orgId int64) bool {
 		HardwareNoticeConfig: helpers.JsonEncode(hardwareNoticeConfig),
 		UpdatedAt:            helpers.GetDatetime(),
 	}
-
 	return crd.masterModel.InsertItem(&param)
 }
 

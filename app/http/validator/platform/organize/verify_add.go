@@ -16,6 +16,7 @@ type VerifyAdd struct {
 	UserPw    string `form:"userPw"   json:"userPw" binding:"required,min=8,max=16"`
 	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,number,len=11"`
 	UserEmail string `form:"userEmail" json:"userEmail" binding:"omitempty,email,max=64"`
+	Remark    string `form:"remark" json:"remark" binding:"omitempty,max=200"`
 }
 
 func (n VerifyAdd) CheckParams(context *gin.Context) {
