@@ -28,6 +28,7 @@ func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[strin
 	data["is_clean"] = model.IsClean
 	data["is_del"] = model.IsDel
 	data["huanshi_switch"] = model.HuanshiSwitch
+	data["trusteeship_switch"] = model.TrusteeshipSwitch
 	data["login_phone_check"] = model.LoginPhoneCheck
 	data["source"] = model.Source
 	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_organization.EnumMap)

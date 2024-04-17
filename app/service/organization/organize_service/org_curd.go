@@ -1,7 +1,6 @@
 package organize_service
 
 import (
-	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/model/model_organization"
 )
 
@@ -29,12 +28,7 @@ func (crd *OrgCurd) GetItemByName(name string) (model *model_organization.Organi
 // Page 分页
 func (crd *OrgCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrganizationModel) {
 	where := crd.search2Where(search)
-	order := ""
-	if orderField == enum_agent.OrderFieldDefault {
-		order = "is_online DESC, is_safe ASC, created_at DESC"
-	} else {
-		order = "created_at DESC"
-	}
+	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
 }
