@@ -19,7 +19,6 @@ func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[strin
 	data["name"] = model.Name
 	data["type"] = model.Type
 	data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_organization.EnumMap)
-	data["user_id"] = model.UserId
 	data["user_name"] = model.UserName
 	data["user_email"] = model.UserEmail
 	data["user_phone"] = model.UserPhone

@@ -21,7 +21,6 @@ type OrganizationModel struct {
 	Code              string `json:"code"`
 	Name              string `json:"name"`
 	Type              int    `json:"type"`
-	UserId            int64  `json:"user_id"`
 	UserName          string `json:"user_name"`
 	UserEmail         string `json:"user_email"`
 	UserPhone         string `json:"user_phone"`
@@ -53,7 +52,6 @@ func (m *OrganizationModel) CreateTable() bool {
 		 code varchar(64) DEFAULT NULL COMMENT '标识码',
 		 name varchar(128) DEFAULT NULL COMMENT '名称',
 		 type tinyint(1) NOT NULL DEFAULT '1' COMMENT '类型:(1企业 2个人)',
-		 user_id int(11) NOT NULL DEFAULT '0' COMMENT '默认管理用户(o_user.id)',
 		 user_name varchar(128) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.name)',
 		 user_email varchar(64) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.email)',
 		 user_phone varchar(16) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_user.phone)',

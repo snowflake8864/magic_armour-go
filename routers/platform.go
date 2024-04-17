@@ -107,6 +107,7 @@ func InitPlatformRouter() *gin.Engine {
 					verify := organize.Group("verify/")
 					{
 						verify.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeVerifyPage"))
+						verify.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeVerifyAdd"))
 					}
 
 				} //企业

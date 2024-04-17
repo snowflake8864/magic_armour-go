@@ -5,7 +5,7 @@ type OrganizeSearch struct {
 	OrgType   int    `form:"orgType" json:"orgType" binding:"required"`
 	OraName   string `form:"oraName" json:"oraName" binding:"omitempty,min=2,max=128"`
 	UserName  string `form:"userName" json:"userName" binding:"omitempty,min=2,max=128"`
-	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,min=8,max=11"`
+	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,len=11"`
 }
 
 // OrganizeSingle 企业单个

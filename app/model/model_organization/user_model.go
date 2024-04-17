@@ -57,6 +57,7 @@ func (m *UserModel) CreateTable() bool {
 			last_login_at datetime DEFAULT NULL COMMENT '最后登录时间',
 			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否管理员(0否,1是)',
 			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人id(o_users.id)',
+            create_name varchar(128) NOT NULL DEFAULT '' COMMENT '创建人(o_users.username)',
 			created_at datetime NOT NULL,
 			updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),

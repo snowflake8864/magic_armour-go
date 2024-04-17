@@ -1,12 +1,16 @@
 package platform
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -64,4 +68,33 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOrgManagePage(total, orgModels))
+}
+
+// AddForVerify 审核: 分页
+func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	//企业信息
+	orgParam := model_organization.OrganizationModel{}
+	orgParam.Name = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	orgParam.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
+	orgParam.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")
+	orgParam.UserEmail = ctx.GetString(consts.ValidatorPrefixPlatform + "UserEmail")
+	orgParam.Type = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgType"))
+	orgParam.Source = enum_organization.SourcePlatform
+	orgParam.CreateId = loginInfo.AdminId
+	orgParam.CreateName = loginInfo.Username
+
+	//用户信息
+	userParam := model_organization.UserModel{}
+	userParam.Username = orgParam.Name
+	userParam.Phone = orgParam.UserPhone
+	userParam.Email = orgParam.UserEmail
+	userParam.Password = ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")
+	userParam.IsRoot = enums.IsYes
+
+	fmt.Println(helpers.JsonEncode(orgParam))
+	fmt.Println(helpers.JsonEncode(userParam))
+
+	response.SuccessSimplify(ctx)
 }
