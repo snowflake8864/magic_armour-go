@@ -36,6 +36,7 @@ func (u *OrgMenuController) Tree(ctx *gin.Context) {
 				"sort":       model.Sort,
 				"is_show":    model.IsShow,
 				"is_root":    model.IsRoot,
+				"usage_ver":  model.UsageVer,
 				"remark":     model.Remark,
 				"api":        model.Api,
 				"level":      model.Level,
@@ -59,6 +60,7 @@ func (u *OrgMenuController) Add(ctx *gin.Context) {
 		Sort:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
 		IsShow:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isShow")),
 		IsRoot:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
+		UsageVer: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "usageVer")),
 		Remark:   ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
 		Api:      "",
 	}
@@ -74,14 +76,15 @@ func (u *OrgMenuController) Add(ctx *gin.Context) {
 // Edit 编辑
 func (u *OrgMenuController) Edit(ctx *gin.Context) {
 	var param = model_platform.OrgMenuModel{
-		Id:     int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
-		Type:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
-		Name:   ctx.GetString(consts.ValidatorPrefixPlatform + "name"),
-		Code:   ctx.GetString(consts.ValidatorPrefixPlatform + "code"),
-		Sort:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
-		IsShow: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isShow")),
-		IsRoot: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
-		Remark: ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
+		Id:       int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
+		Name:     ctx.GetString(consts.ValidatorPrefixPlatform + "name"),
+		Code:     ctx.GetString(consts.ValidatorPrefixPlatform + "code"),
+		Sort:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "sort")),
+		IsShow:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isShow")),
+		IsRoot:   int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isRoot")),
+		UsageVer: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "usageVer")),
+		Remark:   ctx.GetString(consts.ValidatorPrefixPlatform + "remark"),
 	}
 	errCode, err := org_menu_service.CreateCurdFactory().UpdateById(&param)
 	if err != nil {

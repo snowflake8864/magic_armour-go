@@ -69,6 +69,7 @@ func (crd *MenuCurd) UpdateById(param *model_platform.OrgMenuModel) (errCode int
 	updates["sort"] = param.Sort
 	updates["is_show"] = param.IsShow
 	updates["is_root"] = param.IsRoot
+	updates["usage_ver"] = param.UsageVer
 	updates["remark"] = param.Remark
 
 	isOk := crd.masterModel.UpdateById(param.Id, updates)
