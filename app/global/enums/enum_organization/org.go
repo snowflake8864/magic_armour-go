@@ -15,7 +15,7 @@ const (
 var EnumMap = map[string]map[int]string{
 	"type": {
 		TypeOrg:    "企业",
-		TypePerson: "企业",
+		TypePerson: "个人",
 	},
 	"status": {
 		StatusVerifying: "审核中",

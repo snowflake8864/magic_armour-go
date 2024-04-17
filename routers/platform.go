@@ -93,6 +93,21 @@ func InitPlatformRouter() *gin.Engine {
 					menu.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuDelete"))
 				}
 
+				//企业
+				organize := vPlatform.Group("organize/")
+				{
+					public := organize.Group("public/")
+					{
+						public.POST("types", (&platform.OrganizeController{}).Types)
+					}
+					manage := organize.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManagePage"))
+
+					}
+
+				} //企业
+
 				//终端
 				agent := vPlatform.Group("agent/")
 				{

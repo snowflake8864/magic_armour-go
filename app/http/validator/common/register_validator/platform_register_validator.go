@@ -7,6 +7,7 @@ import (
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	home4 "goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/org_menu"
+	organize4 "goskeleton/app/http/validator/platform/organize"
 	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
@@ -44,6 +45,10 @@ func PlatformRegisterValidator() {
 	containers.Set(key, org_menu.Edit{})
 	key = consts.ValidatorPrefixPlatform + "OrgMenuDelete"
 	containers.Set(key, org_menu.Delete{})
+
+	//企业
+	key = consts.ValidatorPrefixPlatform + "OrganizeManagePage"
+	containers.Set(key, organize4.ManagePage{})
 
 	//终端
 	key = consts.ValidatorPrefixPlatform + "AgentManagePage"
