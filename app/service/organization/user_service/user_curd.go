@@ -13,12 +13,17 @@ type UserCurd struct {
 	masterModel *model_organization.UserModel
 }
 
-// Register 注册
-func (crd *UserCurd) Register(param *model_organization.UserModel) bool {
+// Init 初始化
+func (crd *UserCurd) Init(param *model_organization.UserModel) {
 	param.RoleId = 0
 	param.PwErrorNum = 0
 	pw, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToHex(param.Password)
 	param.Password = pw
+}
+
+// Register 注册
+func (crd *UserCurd) Register(param *model_organization.UserModel) bool {
+	crd.Init(param)
 	return crd.masterModel.InsertItem(param)
 }
 

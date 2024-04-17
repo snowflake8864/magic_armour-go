@@ -16,8 +16,8 @@ type OrgExtend struct {
 	masterModel *model_organization.OrgExtendModel
 }
 
-// AddDefault 添加默认数据
-func (crd *OrgExtend) AddDefault(orgId int64) bool {
+// InitDefault 初始化默认数据
+func (crd *OrgExtend) InitDefault(orgId int64) model_organization.OrgExtendModel {
 	plugPortConfig := enum_plug.PlugPortConfig{}
 	plugPortConfig.Format()
 	plugLoginConfig := enum_plug.PlugLoginConfig{}
@@ -29,7 +29,7 @@ func (crd *OrgExtend) AddDefault(orgId int64) bool {
 	hardwareNoticeConfig := enum_safety_report.HardwareNoticeConfig{}
 	hardwareNoticeConfig.Format()
 
-	param := model_organization.OrgExtendModel{
+	return model_organization.OrgExtendModel{
 		Id:                   orgId,
 		PlugPortConfig:       helpers.JsonEncode(plugPortConfig),
 		PlugLoginConfig:      helpers.JsonEncode(plugLoginConfig),
@@ -38,7 +38,6 @@ func (crd *OrgExtend) AddDefault(orgId int64) bool {
 		HardwareNoticeConfig: helpers.JsonEncode(hardwareNoticeConfig),
 		UpdatedAt:            helpers.GetDatetime(),
 	}
-	return crd.masterModel.InsertItem(&param)
 }
 
 // GetItemByOrg 通过企业编号获取

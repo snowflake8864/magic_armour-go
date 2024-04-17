@@ -2,12 +2,10 @@ package organize_service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/model_organization"
-	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 )
@@ -23,7 +21,16 @@ type OrgCurd struct {
 
 // Add 新增企业
 func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userParam *model_organization.UserModel, netIp string) (errCode int, err error) {
-	crd.masterModel.Begin()
+	tx := crd.masterModel.Begin()
+	/*defer func() {
+		if err := recover(); err != nil {
+			tx.Rollback()
+		}
+	}()*/
+	if tx.Error != nil {
+		return -10, errors.New("保存企业失败")
+	}
+
 	//新增企业
 	if orgParam.Type == enum_organization.TypePerson {
 		orgParam.Name = ""
@@ -41,24 +48,24 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	orgParam.LoginPhoneCheck = enums.IsNot
 	orgParam.CreatedAt = helpers.GetDatetime()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
-	if crd.masterModel.InsertItem(orgParam) {
-		crd.masterModel.Rollback()
+	if err = tx.Create(orgParam).Error; err != nil {
+		tx.Rollback()
 		return -1, errors.New("保存企业失败")
 	}
-	fmt.Println("===========================")
-	fmt.Println(orgParam.Id)
 
 	//新增企业扩展
-	if CreateOrgExtendFactory().AddDefault(orgParam.Id) {
-		crd.masterModel.Rollback()
+	OrgExtendParam := CreateOrgExtendFactory().InitDefault(orgParam.Id)
+	if err = tx.Create(&OrgExtendParam).Error; err != nil {
+		tx.Rollback()
 		return -2, errors.New("保存企业配置失败")
 	}
 
 	//新增企业用户
 	userParam.OrgId = orgParam.Id
+	userParam.LastLoginAt = orgParam.CreatedAt
 	userParam.CreatedAt = orgParam.CreatedAt
-	if user_service.CreateCurdFactory().Register(userParam) {
-		crd.masterModel.Rollback()
+	if err = tx.Create(&userParam).Error; err != nil {
+		tx.Rollback()
 		return -3, errors.New("注册企业用户失败")
 	}
 
@@ -69,11 +76,12 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	orgLogParam.OperateSource = orgParam.Source
 	orgLogParam.OperateId = orgParam.CreateId
 	orgLogParam.OperateName = orgParam.CreateName
-	if user_service.CreateCurdFactory().Register(userParam) {
+	if err = tx.Create(&orgLogParam).Error; err != nil {
 		crd.masterModel.Rollback()
 		return -3, errors.New("保存企业日志失败")
 	}
-	crd.masterModel.Commit()
+
+	tx.Commit()
 	return errCode, err
 }
 

@@ -86,7 +86,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 
 	//用户信息
 	userParam := model_organization.UserModel{}
-	userParam.Username = orgParam.Name
+	userParam.Username = orgParam.UserName
 	userParam.Phone = orgParam.UserPhone
 	userParam.Email = orgParam.UserEmail
 	userParam.Password = ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")
