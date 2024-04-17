@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -20,6 +21,17 @@ type ControllerBase struct {
 // getLogin 获取登录数据
 func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogin {
 	return cur_userinfo.GetCurrentAdmin(ctx)
+}
+
+// getOrgSearchConditions 获取企业查询条件
+func (u *ControllerBase) getOrgSearchConditions(ctx *gin.Context) (organize_service.SearchConditions, error) {
+	//页面上传
+	searchConditions := organize_service.SearchConditions{}
+	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
+	searchConditions.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")
+	searchConditions.OrgType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgType"))
+	return searchConditions, nil
 }
 
 // getAgentSearchConditions 获取终端查询条件

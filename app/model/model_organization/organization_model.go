@@ -1,6 +1,7 @@
 package model_organization
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -17,6 +18,7 @@ func CreateOrganizationFactory() *OrganizationModel {
 type OrganizationModel struct {
 	model.BaseModel
 	Id                int64  `json:"id" gorm:"primaryKey"`
+	Code              string `json:"code"`
 	Name              string `json:"name"`
 	Type              int    `json:"type"`
 	UserId            int64  `json:"user_id"`
@@ -160,5 +162,33 @@ func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{
 		return items, nil
 	} else {
 		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *OrganizationModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Select("id").Where(condition).Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *OrganizationModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrganizationModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }
