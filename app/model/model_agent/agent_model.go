@@ -370,6 +370,19 @@ func (m *AgentModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (
 	}
 }
 
+// GetItemsByOrg 通过企业id获取多条记录
+func (m *AgentModel) GetItemsByOrg(orgId int64, column string) (items []*AgentModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Select(column).Where("org_id=?", orgId).Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
 // GetItemsByOrgAndAgents 通过企业id和终端id获取多条记录
 func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, column string) (items []*AgentModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -384,10 +397,10 @@ func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, colu
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AgentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*AgentModel, err error) {
+func (m *AgentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order, column string) (items []*AgentModel, err error) {
 	whereSQL, vals, _ := m.WhereBuild(condition)
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(whereSQL, vals...)
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -427,7 +440,7 @@ func (m *AgentModel) Page(condition map[string]interface{}, offset, limit int, o
 	if total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	items, err := m.GetItemsByConditions(condition, offset, limit, order, "*")
 	if err == nil {
 		return total, items
 	} else {

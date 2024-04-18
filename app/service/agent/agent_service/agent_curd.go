@@ -46,6 +46,43 @@ func (crd *AgentCurd) GetMapsByOrgAndAgents(orgId int64, agentId []string, colum
 	return result
 }
 
+// GetAllByOrg 通过企业id获取全部终端
+func (crd *AgentCurd) GetAllByOrg(orgId int64, column string) []*model_agent.AgentModel {
+	models, err := crd.masterModel.GetItemsByOrg(orgId, column)
+	if err != nil {
+		return nil
+	}
+	if models == nil {
+		return nil
+	}
+	return models
+}
+
+// GetIdsByOrg 通过企业id获取终端id集合
+func (crd *AgentCurd) GetIdsByOrg(orgId int64) (result []string) {
+	models, err := crd.masterModel.GetItemsByOrg(orgId, "agent_id")
+	if err != nil {
+		return result
+	}
+	for _, model := range models {
+		result = append(result, model.AgentId)
+	}
+	return result
+}
+
+// GetIdsByOrgAndCondition 通过企业id和其他条件获取终端id集合
+func (crd *AgentCurd) GetIdsByOrgAndCondition(orgId int64, search SearchConditions) (result []string) {
+	search.OrgId = orgId
+	models, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "", "agent_id")
+	if err != nil {
+		return result
+	}
+	for _, model := range models {
+		result = append(result, model.AgentId)
+	}
+	return result
+}
+
 // Page 分页
 func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.AgentModel) {
 	where := crd.search2Where(search)
