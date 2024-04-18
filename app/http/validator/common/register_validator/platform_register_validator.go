@@ -51,6 +51,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, organize4.ManagePage{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeManageLock"
 	containers.Set(key, organize4.ManageLock{})
+	key = consts.ValidatorPrefixPlatform + "OrganizeManageUnlock"
+	containers.Set(key, organize4.ManageUnlock{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeVerifyPage"
 	containers.Set(key, organize4.VerifyPage{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeVerifyAdd"

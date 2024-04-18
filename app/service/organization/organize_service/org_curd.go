@@ -162,6 +162,39 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 	return errCode, err
 }
 
+// Unlock 管理: 解锁
+func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+	if orgExist.Status != enum_organization.StatusLocking {
+		return -1, errors.New("企业状态异常，不能进行解锁操作")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"status": enum_organization.StatusNormal,
+	}
+	if !crd.masterModel.UpdateById(orgId, updates) {
+		return -1, errors.New("企业账户解锁失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformUnlock, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	orgLogParam.Content = reason
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
+
+	return errCode, err
+}
+
 // Refused 审核: 回绝
 func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
