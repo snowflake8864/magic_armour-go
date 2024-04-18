@@ -76,6 +76,7 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	orgLogParam.OperateSource = orgParam.Source
 	orgLogParam.OperateId = orgParam.CreateId
 	orgLogParam.OperateName = orgParam.CreateName
+	orgLogParam.Content = orgParam.Remark
 	if err = tx.Create(&orgLogParam).Error; err != nil {
 		crd.masterModel.Rollback()
 		return -3, errors.New("保存企业日志失败")
