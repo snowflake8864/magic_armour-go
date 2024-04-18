@@ -13,7 +13,7 @@ type VerifyAdd struct {
 	OrgType   int    `form:"orgType" json:"orgType" binding:"required,oneof=1 2"`
 	OraName   string `form:"oraName" json:"oraName" binding:"required,min=4,max=128"`
 	UserName  string `form:"userName" json:"userName" binding:"required,alphanum,min=4,max=128"`
-	UserPw    string `form:"userPw"   json:"userPw" binding:"required,min=8,max=16"`
+	UserPw    string `form:"userPw"   json:"userPw" binding:"required,min=6,max=16"`
 	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,number,len=11"`
 	UserEmail string `form:"userEmail" json:"userEmail" binding:"omitempty,email,max=64"`
 	Remark    string `form:"remark" json:"remark" binding:"omitempty,max=200"`

@@ -1,7 +1,6 @@
 package model_organization
 
 import (
-	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -146,7 +145,8 @@ func (m *OrganizationModel) GetItemsByIds(ids []int64) (items []*OrganizationMod
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrganizationModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	whereSQL, vals, _ := m.WhereBuild(condition)
+	tmp := m.Model(m).Where(whereSQL, vals...)
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -155,7 +155,7 @@ func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{
 	} else {
 		tmp = tmp.Order("created_at ASC")
 	}
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
@@ -166,10 +166,8 @@ func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{
 // Count 通过条件统计
 func (m *OrganizationModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("id").Where(condition).Count(&total)
-	})
-	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	whereSQL, vals, _ := m.WhereBuild(condition)
+	result := m.Model(m).Select("id").Where(whereSQL, vals...).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

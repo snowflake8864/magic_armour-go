@@ -52,6 +52,73 @@ func (m *BaseModel) TrimSql(sql string) string {
 	return sql
 }
 
+// WhereBuild 封装map 查询条件
+func (m *BaseModel) WhereBuild(conditions map[string]interface{}) (whereSQL string, vals []interface{}, err error) {
+	for conditionKey, conditionVal := range conditions {
+		fieldAndWhere := strings.Split(conditionKey, " ")
+		if len(fieldAndWhere) > 2 {
+			return "", nil, fmt.Errorf("Error in query condition: %s. ", conditionKey)
+		}
+		if whereSQL != "" {
+			whereSQL += " AND "
+		}
+		switch len(fieldAndWhere) {
+		case 1:
+			whereSQL += fmt.Sprint(fieldAndWhere[0], "=?")
+			vals = append(vals, conditionVal)
+			break
+		case 2:
+			field := fieldAndWhere[0]
+			switch fieldAndWhere[1] {
+			case "=":
+				whereSQL += fmt.Sprint(field, "=?")
+				vals = append(vals, conditionVal)
+				break
+			case ">":
+				whereSQL += fmt.Sprint(field, ">?")
+				vals = append(vals, conditionVal)
+				break
+			case ">=":
+				whereSQL += fmt.Sprint(field, ">=?")
+				vals = append(vals, conditionVal)
+				break
+			case "<":
+				whereSQL += fmt.Sprint(field, "<?")
+				vals = append(vals, conditionVal)
+				break
+			case "<=":
+				whereSQL += fmt.Sprint(field, "<=?")
+				vals = append(vals, conditionVal)
+				break
+			case "!=":
+				whereSQL += fmt.Sprint(field, "!=?")
+				vals = append(vals, conditionVal)
+				break
+			case "<>":
+				whereSQL += fmt.Sprint(field, "!=?")
+				vals = append(vals, conditionVal)
+				break
+			case "in":
+				whereSQL += fmt.Sprint(field, " IN (?)")
+				vals = append(vals, conditionVal)
+				break
+			case "like":
+				whereSQL += fmt.Sprint(field, " LIKE ?")
+				vals = append(vals, conditionVal)
+				break
+			case "IsNull":
+				whereSQL += fmt.Sprint(field, " IS NULL")
+				break
+			case "IsNotNull":
+				whereSQL += fmt.Sprint(field, " IS NOT NULL")
+				break
+			}
+			break
+		}
+	}
+	return whereSQL, vals, err
+}
+
 // 在 ginskeleton项目中如果在业务 model 设置了回调函数，请看以下说明
 // 注意：gorm 的自动回调函数（BeforeCreate、BeforeUpdate 等），不是由本项目的 Create ... 函数先初始化然后调用的，而是gorm自动直接调用的，
 // 所以 接收器 b 的所有参数都是没有赋值的,因此这里需要给 b.DB 赋予回调的 gormDb

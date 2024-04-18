@@ -107,10 +107,7 @@ func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{},
 // Count 通过条件统计
 func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("id").Where(condition).Count(&total)
-	})
-	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	result := m.Model(m).Select("id").Where(condition).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

@@ -1,7 +1,6 @@
 package organize_service
 
 import (
-	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/utils/helpers"
 )
@@ -29,7 +28,7 @@ func (crd *OrgBase) search2Where(search SearchConditions) map[string]interface{}
 		wheres["type"] = search.OrgType
 	}
 	if !helpers.StringIsEmpty(search.OraName) {
-		wheres["name"] = gorm.Expr("LIKE ?", "%"+search.OraName+"%")
+		wheres["name like"] = "%" + search.OraName + "%"
 	}
 	if search.UserId > 0 {
 		wheres["user_id"] = search.UserId
@@ -41,7 +40,7 @@ func (crd *OrgBase) search2Where(search SearchConditions) map[string]interface{}
 		wheres["user_phone"] = search.UserPhone
 	}
 	if search.StatusList != nil && len(search.StatusList) > 0 {
-		wheres["status"] = search.StatusList
+		wheres["status in"] = search.StatusList
 	}
 	return wheres
 }

@@ -1,7 +1,6 @@
 package agent_service
 
 import (
-	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
@@ -38,7 +37,7 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 		wheres["agent_id"] = search.AgentId
 	}
 	if search.AgentIds != nil && len(search.AgentIds) > 0 {
-		wheres["agent_id"] = search.AgentIds
+		wheres["agent_id in"] = search.AgentIds
 	}
 	if !helpers.StringIsEmpty(search.HostName) {
 		wheres["host_name"] = search.HostName
@@ -47,7 +46,7 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 		wheres["net_ip"] = search.NetIp
 	}
 	if !helpers.StringIsEmpty(search.AgentIp) {
-		wheres["agent_ip"] = gorm.Expr("LIKE ?", "%"+search.AgentIp+"%")
+		wheres["agent_ip like"] = "%" + search.AgentIp + "%"
 	}
 	if search.PlatformType > 0 {
 		wheres["platform_type"] = search.PlatformType
@@ -65,7 +64,7 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 		wheres["alias"] = search.Alias
 	}
 	if search.DeptIds != nil && len(search.DeptIds) > 0 {
-		wheres["dept_id"] = search.DeptIds
+		wheres["dept_id in"] = search.DeptIds
 	}
 	return wheres
 }

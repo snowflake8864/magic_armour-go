@@ -1,7 +1,6 @@
 package model_organization
 
 import (
-	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -91,7 +90,7 @@ func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, off
 	} else {
 		tmp = tmp.Order("created_at ASC")
 	}
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
@@ -102,10 +101,7 @@ func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, off
 // Count 通过条件统计
 func (m *OrgLogModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("id").Where(condition).Count(&total)
-	})
-	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	result := m.Model(m).Select("id").Where(condition).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

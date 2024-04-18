@@ -112,7 +112,7 @@ func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, o
 	} else {
 		tmp = tmp.Order("created_at ASC")
 	}
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
