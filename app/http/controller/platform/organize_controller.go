@@ -74,6 +74,20 @@ func (u *OrganizeController) UnlockForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// CleanForManage 管理：清理业务数据
+func (u *OrganizeController) CleanForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	reason := ctx.GetString(consts.ValidatorPrefixPlatform + "reason")
+
+	errCode, err := organize_service.CreateOrgCurdFactory().Unlock(orgId, reason, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // PageForVerify 审核: 分页
 func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	//查询条件

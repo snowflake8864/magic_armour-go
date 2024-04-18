@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
+	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/utils/kafka_go"
 	_ "goskeleton/bootstrap"
 	"testing"
@@ -57,7 +58,10 @@ func TestWriteCommon(t *testing.T) {
 	msg := &kafka_go.MessageStruct{
 		Sign: kafka_go.SignAgent,
 		Type: kafka_go.TypeAgentDelete,
-		Data: "123333",
+		Data: agent_job.AgentCommon{
+			OrgId:   2,
+			AgentId: "12233d",
+		},
 	}
 	kafka_go.CreateProducerFactory()
 	for i := 0; i <= 2; i++ {

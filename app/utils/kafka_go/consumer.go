@@ -79,8 +79,8 @@ func ConsumeCommon() {
 		switch data.Sign {
 		case SignAgent:
 			if data.Type == TypeAgentDelete {
-				if agentId, ok := data.Data.(string); ok {
-					agent_job.Delete(agentId)
+				if param, ok := data.Data.(agent_job.AgentCommon); ok {
+					agent_job.Delete(param)
 				}
 			}
 		default:

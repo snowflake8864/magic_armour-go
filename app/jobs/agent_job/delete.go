@@ -1,10 +1,12 @@
 package agent_job
 
 import (
-	"fmt"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/model_agent"
+	"goskeleton/app/utils/helpers"
 )
 
-func Delete(agentId string) {
-	variable.ZapLog.Info(fmt.Sprintf("agent_job Delete  agentId:%s", agentId))
+func Delete(param AgentCommon) {
+	variable.ZapLog.Info("agent_job Delete" + helpers.JsonEncode(param))
+	model_agent.CreateAgentFactory().DeleteByOrgAndAgent(param.OrgId, param.AgentId)
 }

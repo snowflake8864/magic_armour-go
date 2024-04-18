@@ -175,7 +175,8 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 
 	//修改
 	updates := map[string]interface{}{
-		"status": enum_organization.StatusNormal,
+		"status":   enum_organization.StatusNormal,
+		"is_clean": enums.IsNot,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
 		return -1, errors.New("企业账户解锁失败")
@@ -193,6 +194,49 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 	}
 
 	return errCode, err
+}
+
+// Clear 管理: 清理业务数据
+func (crd *OrgCurd) Clear(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+	if orgExist.Status != enum_organization.StatusLocking {
+		return -1, errors.New("企业状态不是锁定中，不能进行清理操作")
+	}
+	if orgExist.IsClean == enums.IsYes {
+		return -1, errors.New("企业不能重复清理数据")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"status": enum_organization.StatusNormal,
+	}
+	if !crd.masterModel.UpdateById(orgId, updates) {
+		return -1, errors.New("企业清理业务数据失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformClean, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	orgLogParam.Content = reason
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
+
+	//后续操作
+	crd.clearAfter(orgId)
+
+	return errCode, err
+}
+
+func (crd *OrgCurd) clearAfter(orgId int64) {
+
 }
 
 // Refused 审核: 回绝

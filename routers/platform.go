@@ -105,6 +105,8 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManagePage"))
 						manage.POST("lock", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageLock"))
 						manage.POST("unlock", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageUnlock"))
+						manage.POST("clean", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageClean"))
+						//manage.POST("setHsSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageSetHsSwitch"))
 					}
 					verify := organize.Group("verify/")
 					{
