@@ -80,7 +80,7 @@ func (u *OrganizeController) CleanForManage(ctx *gin.Context) {
 	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
 	reason := ctx.GetString(consts.ValidatorPrefixPlatform + "reason")
 
-	errCode, err := organize_service.CreateOrgCurdFactory().Unlock(orgId, reason, ctx.ClientIP(), loginInfo)
+	errCode, err := organize_service.CreateOrgCurdFactory().Clean(orgId, reason, ctx.ClientIP(), loginInfo)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

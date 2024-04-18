@@ -169,3 +169,8 @@ func (crd *AgentCurd) BatchUpdate(ids []string, updateColumn map[string]struct{}
 
 	return errCode, err
 }
+
+// DeleteByOrg 通过企业删除
+func (crd *AgentCurd) DeleteByOrg(orgId int64) {
+	crd.masterModel.DeleteByOrg(orgId)
+}

@@ -1,14 +1,18 @@
 package organize_service
 
 import (
+	"context"
 	"errors"
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/model_organization"
+	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/md5_encrypt"
 )
 
@@ -196,8 +200,8 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 	return errCode, err
 }
 
-// Clear 管理: 清理业务数据
-func (crd *OrgCurd) Clear(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+// Clean 管理: 清理业务数据
+func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -212,7 +216,8 @@ func (crd *OrgCurd) Clear(orgId int64, reason, netIp string, loginInfo admin_ser
 
 	//修改
 	updates := map[string]interface{}{
-		"status": enum_organization.StatusNormal,
+		"status":   enum_organization.StatusLocking,
+		"is_clean": enums.IsYes,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
 		return -1, errors.New("企业清理业务数据失败")
@@ -229,14 +234,23 @@ func (crd *OrgCurd) Clear(orgId int64, reason, netIp string, loginInfo admin_ser
 		return -3, errors.New("保存企业日志失败")
 	}
 
-	//后续操作
+	//后续
 	crd.clearAfter(orgId)
 
 	return errCode, err
 }
 
 func (crd *OrgCurd) clearAfter(orgId int64) {
+	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
+	go agent_service.CreateCurdFactory().DeleteByOrg(orgId)
 
+	//丢入队列
+	msg := &kafka_go.MessageStruct{
+		Sign: kafka_go.SignOrg,
+		Type: kafka_go.TypeOrgClean,
+		Data: orgId,
+	}
+	kafka_go.ProduceCommon(context.Background(), msg)
 }
 
 // Refused 审核: 回绝

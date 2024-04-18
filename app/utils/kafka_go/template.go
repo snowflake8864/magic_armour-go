@@ -9,4 +9,7 @@ type MessageStruct struct {
 const (
 	SignAgent       string = "agent"
 	TypeAgentDelete string = "agent_delete"
+
+	SignOrg      string = "org"
+	TypeOrgClean string = "org_clean"
 )

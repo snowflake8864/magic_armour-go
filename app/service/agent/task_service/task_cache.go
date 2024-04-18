@@ -13,8 +13,10 @@ func CreateCacheFactory() *TaskCache {
 	}
 	return &TaskCache{
 		redisClient:          redCli,
-		cacheExpire:          86400,
+		orgUninstallPrefix:   "task_org_uninstall_",
+		orgUninstallExpire:   86400 * 3,
 		unfinishedPrefix:     "task_unfinished_",
+		unfinishedExpire:     86400,
 		emptyNumberPrefix:    "task_empty_number_",
 		emptyNumberThreshold: 3,
 	}
@@ -22,8 +24,10 @@ func CreateCacheFactory() *TaskCache {
 
 type TaskCache struct {
 	redisClient          *redis_factory.RedisClient
-	cacheExpire          int
+	orgUninstallPrefix   string
+	orgUninstallExpire   int
 	unfinishedPrefix     string
+	unfinishedExpire     int
 	emptyNumberPrefix    string
 	emptyNumberThreshold int
 }
@@ -36,17 +40,36 @@ func (crd *TaskCache) keyByUnfinished(orgId int64, agentId string) string {
 	return crd.unfinishedPrefix + helpers.Int64ToStr(orgId) + agentId
 }
 
+func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
+	return crd.orgUninstallPrefix + helpers.Int64ToStr(orgId)
+}
+
+// AddOrgUninstall 企业全局卸载任务: 新增
+func (crd *TaskCache) AddOrgUninstall(orgId int64) bool {
+	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), helpers.GetDatetime(), crd.orgUninstallExpire)
+	return isOk
+}
+
+// ExistsOrgUninstall 企业全局卸载任务: 判断
+func (crd *TaskCache) ExistsOrgUninstall(orgId int64) bool {
+	isOk, _ := crd.redisClient.Exists(crd.keyByOrgUninstall(orgId))
+	return isOk
+}
+
+// GetUnfinished 终端未完成任务: 获取
 func (crd *TaskCache) GetUnfinished(orgId int64, agentId string) []int {
 	data, _ := crd.redisClient.SMembersByInt(crd.keyByUnfinished(orgId, agentId))
 	return data
 }
 
+// AddUnfinished 终端未完成任务:新增
 func (crd *TaskCache) AddUnfinished(orgId int64, agentId string, tasks []int) bool {
 	isOk, _ := crd.redisClient.SAddByInt(crd.keyByUnfinished(orgId, agentId), tasks)
-	crd.redisClient.Expire(crd.keyByUnfinished(orgId, agentId), crd.cacheExpire)
+	crd.redisClient.Expire(crd.keyByUnfinished(orgId, agentId), crd.unfinishedExpire)
 	return isOk
 }
 
+// RemUnfinished 终端未完成任务:移除
 func (crd *TaskCache) RemUnfinished(orgId int64, agentId string, tasks []int) bool {
 	_, err := crd.redisClient.SRemByInt(crd.keyByUnfinished(orgId, agentId), tasks)
 	if err == nil {
@@ -76,7 +99,7 @@ func (crd *TaskCache) SetHeartbeat(orgId int64, agentId string, hasUnfinishedTas
 		//新空任务次数
 		newNumber := oldNumber + 1
 		//设置空任务次数
-		crd.redisClient.SetEx(cacheKey, strconv.Itoa(newNumber), crd.cacheExpire)
+		crd.redisClient.SetEx(cacheKey, strconv.Itoa(newNumber), crd.unfinishedExpire)
 		//原空任务次数小于阀值 & 新空任务次数大于等于阀值
 		if oldNumber < crd.emptyNumberThreshold && newNumber >= crd.emptyNumberThreshold {
 			//agent心跳时间改为:普通(agent.comtime)
