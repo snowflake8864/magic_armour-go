@@ -44,15 +44,16 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 
 	//新增企业
 	if orgParam.Source == enum_organization.SourcePlatform {
-		orgParam.Status = enum_organization.StatusNormal
+		orgParam.TrusteeshipSwitch = enums.IsYes
 		orgParam.HuanshiSwitch = enums.IsYes
 	} else {
 		orgParam.Status = enum_organization.StatusNormal
+		orgParam.TrusteeshipSwitch = enums.IsNot
 		orgParam.HuanshiSwitch = enums.IsNot
 	}
+	orgParam.Status = enum_organization.StatusVerifying
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
-	orgParam.TrusteeshipSwitch = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
 	orgParam.CreatedAt = helpers.GetDatetime()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
