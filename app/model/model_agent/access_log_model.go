@@ -66,6 +66,16 @@ func (m *AccessLogModel) CreateTable() bool {
 	}
 }
 
+func (m *AccessLogModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *AccessLogModel) InsertItem(s *AccessLogModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -73,6 +83,58 @@ func (m *AccessLogModel) InsertItem(s *AccessLogModel) bool {
 	})
 	result := m.Exec(sql)
 	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrg 通过企业i删除
+func (m *AccessLogModel) DeleteByOrg(orgId int64) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAgent 通过企业id和终端id删除
+func (m *AccessLogModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id=?", agentId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAgents 通通过企业id和终端id集合删除
+func (m *AccessLogModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id IN ?", agentIds).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *AccessLogModel) DeleteByConditions(condition map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where(condition).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
 		return true
 	} else {
 		return false

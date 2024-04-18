@@ -86,49 +86,10 @@ func (m *AgentExtendModel) UpdateById(id string, updates map[string]interface{})
 	}
 }
 
-// UpdateByIds 通过id集合修改
-func (m *AgentExtendModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", ids).Updates(updates)
-	})
-	result := m.Exec(m.TrimSql(sql))
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// UpdateByConditions 通过条件修改
-func (m *AgentExtendModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Updates(updates)
-	})
-	result := m.Exec(m.TrimSql(sql))
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
 // DeleteById 通过id删除
 func (m *AgentExtendModel) DeleteById(id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("agent_id=?", id).Delete(m)
-	})
-	result := m.Exec(m.TrimSql(sql))
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// DeleteByIds 通过id集合删除
-func (m *AgentExtendModel) DeleteByIds(ids []string) bool {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", ids).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -148,18 +109,5 @@ func (m *AgentExtendModel) GetItemById(id, column string) (item *AgentExtendMode
 		return item, nil
 	} else {
 		return item, result.Error
-	}
-}
-
-// GetItemsByIds 通过id集合获取多条记录
-func (m *AgentExtendModel) GetItemsByIds(ids []string, column string) (items []*AgentExtendModel, err error) {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("agent_id IN ?", ids).Find(&items)
-	})
-	result := m.Raw(m.TrimSql(sql)).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
 	}
 }

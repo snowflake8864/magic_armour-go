@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -62,6 +63,45 @@ func (m *TrustGlobalModel) CreateTable() bool {
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *TrustGlobalModel) InsertItem(s *TrustGlobalModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrg 通过企业id删除
+func (m *TrustGlobalModel) DeleteByOrg(orgId int64) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAndId 通过企业id、ID删除
+func (m *TrustGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
 		return true
 	} else {
 		return false

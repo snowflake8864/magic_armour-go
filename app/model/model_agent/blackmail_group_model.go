@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -53,6 +54,71 @@ func (m *BlackmailGroupModel) CreateTable() bool {
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *BlackmailGroupModel) InsertItem(s *BlackmailGroupModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrg 通过企业id删除
+func (m *BlackmailGroupModel) DeleteByOrg(orgId int64) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAndId 通过企业id、ID删除
+func (m *BlackmailGroupModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAgentAndId 通过企业id、终端id、ID删除
+func (m *BlackmailGroupModel) DeleteByOrgAndAgentAndId(orgId int64, agentId, id string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id=?", agentId).Where("id=?", id).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAgent 通过企业id和终端id删除
+func (m *BlackmailGroupModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id=?", agentId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
 		return true
 	} else {
 		return false
