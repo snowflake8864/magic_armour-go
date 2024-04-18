@@ -27,6 +27,14 @@ func (crd *UserCurd) Register(param *model_organization.UserModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
+// DeleteByOrg 通过企业编号删除
+func (crd *UserCurd) DeleteByOrg(orgId int64) bool {
+	conditions := map[string]interface{}{
+		"org_id": orgId,
+	}
+	return crd.masterModel.DeleteByConditions(conditions)
+}
+
 // GetItemById 通过用户编号获取
 func (crd *UserCurd) GetItemById(id int64) (model *model_organization.UserModel) {
 	model, _ = crd.masterModel.GetItemById(id)

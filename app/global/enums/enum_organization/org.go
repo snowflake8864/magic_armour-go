@@ -15,6 +15,7 @@ const (
 
 	LogActionPlatformAdd     int = 100 //日志行为: 平台添加
 	LogActionPlatformApprove int = 101 //日志行为: 通过审核
+	LogActionPlatformRefuse  int = 102 //日志行为: 未通过审核
 )
 
 var EnumMap = map[string]map[int]string{
@@ -34,5 +35,6 @@ var EnumMap = map[string]map[int]string{
 	"log_action": {
 		LogActionPlatformAdd:     "平台添加",
 		LogActionPlatformApprove: "通过审核",
+		LogActionPlatformRefuse:  "未通过审核",
 	},
 }

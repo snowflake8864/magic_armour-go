@@ -40,6 +40,11 @@ func (crd *OrgExtend) InitDefault(orgId int64) model_organization.OrgExtendModel
 	}
 }
 
+// DeleteByOrg 通过企业编号删除
+func (crd *OrgExtend) DeleteByOrg(orgId int64) bool {
+	return crd.masterModel.DeleteById(orgId)
+}
+
 // GetItemByOrg 通过企业编号获取
 func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *model_organization.OrgExtendModel) {
 	model, _ = crd.masterModel.GetItemById(orgId)

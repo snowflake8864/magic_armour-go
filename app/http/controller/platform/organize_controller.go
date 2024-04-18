@@ -113,3 +113,17 @@ func (u *OrganizeController) ApproveForVerify(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// RefuseForVerify 审核: 不通过
+func (u *OrganizeController) RefuseForVerify(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	reason := ctx.GetString(consts.ValidatorPrefixPlatform + "reason")
+
+	errCode, err := organize_service.CreateOrgCurdFactory().Refused(orgId, reason, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}

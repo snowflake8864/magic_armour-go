@@ -96,7 +96,7 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	return errCode, err
 }
 
-// Approved 通过审核
+// Approved 审核: 批准
 func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
@@ -118,6 +118,46 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformApprove, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	orgLogParam.Content = reason
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
+
+	return errCode, err
+}
+
+// Refused 审核: 回绝
+func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+	if orgExist.Status != enum_organization.StatusVerifying {
+		return -1, errors.New("企业状态异常，不能进行审核操作")
+	}
+
+	//删除企业
+	if !crd.masterModel.DeleteById(orgId) {
+		return -1, errors.New("企业账户删除失败")
+	}
+
+	//删除企业扩展
+	if !CreateOrgExtendFactory().DeleteByOrg(orgId) {
+		return -1, errors.New("企业配置删除失败")
+	}
+
+	//删除企业用户
+	if !user_service.CreateCurdFactory().DeleteByOrg(orgId) {
+		return -1, errors.New("企业用户删除失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformRefuse, netIp)
 	orgLogParam.OperateSource = enum_organization.SourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username

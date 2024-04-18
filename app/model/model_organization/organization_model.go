@@ -104,6 +104,16 @@ func (m *OrganizationModel) UpdateById(id int64, updates map[string]interface{})
 	}
 }
 
+// DeleteById 通过id删除
+func (m *OrganizationModel) DeleteById(id int64) bool {
+	result := m.Where("id=?", id).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // DeleteByConditions 通过条件删除
 func (m *OrganizationModel) DeleteByConditions(condition map[string]interface{}) bool {
 	result := m.Model(m).Where(condition).Delete(m)
