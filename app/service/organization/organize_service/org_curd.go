@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/model_organization"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 )
@@ -21,20 +22,27 @@ type OrgCurd struct {
 
 // Add 新增企业
 func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userParam *model_organization.UserModel, netIp string) (errCode int, err error) {
-	tx := crd.masterModel.Begin()
-	/*defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
+	//用户已存在
+	userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username)
+	if userExist.Id > 0 {
+		return -1, errors.New("用户名已存在")
+	}
+	//企业已存在
+	if orgParam.Type == enum_organization.TypePerson {
+		orgParam.Name = ""
+	} else {
+		orgExist := crd.GetItemByName(orgParam.Name)
+		if orgExist.Id > 0 {
+			return -1, errors.New("企业已存在")
 		}
-	}()*/
+	}
+
+	tx := crd.masterModel.Begin()
 	if tx.Error != nil {
 		return -10, errors.New("保存企业失败")
 	}
 
 	//新增企业
-	if orgParam.Type == enum_organization.TypePerson {
-		orgParam.Name = ""
-	}
 	if orgParam.Source == enum_organization.SourcePlatform {
 		orgParam.Status = enum_organization.StatusNormal
 		orgParam.HuanshiSwitch = enums.IsYes
