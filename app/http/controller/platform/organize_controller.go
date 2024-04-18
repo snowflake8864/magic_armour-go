@@ -46,6 +46,20 @@ func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOrgManagePage(total, orgModels))
 }
 
+// LockForManage 管理：锁定
+func (u *OrganizeController) LockForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	reason := ctx.GetString(consts.ValidatorPrefixPlatform + "reason")
+
+	errCode, err := organize_service.CreateOrgCurdFactory().Lock(orgId, reason, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // PageForVerify 审核: 分页
 func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	//查询条件

@@ -11,7 +11,7 @@ import (
 
 type VerifyRefuse struct {
 	data_type.OrganizeSingle
-	Reason string `form:"reason" json:"reason" binding:"required,max=200"`
+	CommonReason
 }
 
 func (n VerifyRefuse) CheckParams(context *gin.Context) {
