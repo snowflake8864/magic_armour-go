@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/model_organization"
-	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
@@ -242,8 +241,6 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 
 func (crd *OrgCurd) clearAfter(orgId int64) {
 	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
-	go agent_service.CreateCurdFactory().DeleteByOrg(orgId)
-
 	//丢入队列
 	msg := &kafka_go.MessageStruct{
 		Sign: kafka_go.SignOrg,
