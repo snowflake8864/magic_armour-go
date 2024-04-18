@@ -99,3 +99,17 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// ApproveForVerify 审核: 批准
+func (u *OrganizeController) ApproveForVerify(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	reason := ctx.GetString(consts.ValidatorPrefixPlatform + "reason")
+
+	errCode, err := organize_service.CreateOrgCurdFactory().Approved(orgId, reason, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}

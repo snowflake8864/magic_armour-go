@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 )
@@ -87,11 +88,44 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	orgLogParam.OperateName = orgParam.CreateName
 	orgLogParam.Content = orgParam.Remark
 	if err = tx.Create(&orgLogParam).Error; err != nil {
-		crd.masterModel.Rollback()
+		tx.Rollback()
 		return -3, errors.New("保存企业日志失败")
 	}
 
 	tx.Commit()
+	return errCode, err
+}
+
+// Approved 通过审核
+func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+	if orgExist.Status != enum_organization.StatusVerifying {
+		return -1, errors.New("企业状态异常，不能进行审核操作")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"status": enum_organization.StatusNormal,
+	}
+	if !crd.masterModel.UpdateById(orgId, updates) {
+		return -1, errors.New("企业账户审核失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformApprove, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	orgLogParam.Content = reason
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
+
 	return errCode, err
 }
 

@@ -13,7 +13,8 @@ const (
 
 	OrgFieldDefault string = "id" //默认排序字段
 
-	LogActionPlatformAdd int = 100 //日志行为: 平台添加
+	LogActionPlatformAdd     int = 100 //日志行为: 平台添加
+	LogActionPlatformApprove int = 101 //日志行为: 通过审核
 )
 
 var EnumMap = map[string]map[int]string{
@@ -31,6 +32,7 @@ var EnumMap = map[string]map[int]string{
 		SourcePlatform: "平台添加",
 	},
 	"log_action": {
-		LogActionPlatformAdd: "平台添加",
+		LogActionPlatformAdd:     "平台添加",
+		LogActionPlatformApprove: "通过审核",
 	},
 }
