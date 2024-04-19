@@ -461,6 +461,7 @@ func (m *AgentModel) Page(condition map[string]interface{}, offset, limit int, o
 	}
 }
 
+// AgentCalc 终端统计
 type AgentCalc struct {
 	OrgId               int64 `json:"org_id"`
 	TotalNumber         int   `json:"total_number"`

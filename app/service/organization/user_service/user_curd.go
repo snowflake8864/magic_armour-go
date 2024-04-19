@@ -52,3 +52,12 @@ func (crd *UserCurd) GetItemByName(name string) (model *model_organization.UserM
 	model, _ = crd.masterModel.GetItemByName(name)
 	return model
 }
+
+// PageByOrg 通过企业分页
+func (crd *UserCurd) PageByOrg(orgId int64, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.UserModel) {
+	wheres := make(map[string]interface{})
+	wheres["org_id"] = orgId
+	order := orderField + " " + orderSort
+	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
+	return total, items
+}

@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -207,4 +208,17 @@ func (u *OrganizeController) RefuseForVerify(ctx *gin.Context) {
 		return
 	}
 	response.SuccessSimplify(ctx)
+}
+
+// PageForUser 用户: 分页
+func (u *OrganizeController) PageForUser(ctx *gin.Context) {
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+
+	//用户分页
+	total, models := user_service.CreateCurdFactory().PageByOrg(orgId, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.User{}).TransPage(total, models))
 }

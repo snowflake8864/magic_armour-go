@@ -118,6 +118,10 @@ func InitPlatformRouter() *gin.Engine {
 						verify.POST("approve", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeVerifyApprove"))
 						verify.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeVerifyRefuse"))
 					}
+					user := organize.Group("user/")
+					{
+						user.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeUserPage"))
+					}
 
 				} //企业
 
