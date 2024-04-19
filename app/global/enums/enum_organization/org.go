@@ -13,14 +13,14 @@ const (
 
 	OrgFieldDefault string = "id" //默认排序字段
 
-	LogActionPlatformAdd              int = 100 //日志行为: 平台添加
-	LogActionPlatformApprove          int = 101 //日志行为: 通过审核
-	LogActionPlatformRefuse           int = 102 //日志行为: 未通过审核
-	LogActionPlatformLock             int = 103 //日志行为: 锁定
-	LogActionPlatformUnlock           int = 104 //日志行为: 锁定
-	LogActionPlatformClean            int = 105 //日志行为: 清理业务数据
-	LogActionPlatformHuanshiSwitchOn  int = 106 //日志行为: 锁定
-	LogActionPlatformHuanshiSwitchOff int = 107 //日志行为: 锁定
+	LogActionPlatformAdd            int = 100 //日志行为: 平台添加
+	LogActionPlatformApprove        int = 101 //日志行为: 通过审核
+	LogActionPlatformRefuse         int = 102 //日志行为: 未通过审核
+	LogActionPlatformLock           int = 103 //日志行为: 锁定
+	LogActionPlatformUnlock         int = 104 //日志行为: 锁定
+	LogActionPlatformClean          int = 105 //日志行为: 清理业务数据
+	LogActionPlatformHuanshiSwitch  int = 106 //日志行为: 设置幻势开关
+	LogActionPlatformLoginSmsSwitch int = 107 //日志行为: 设置企业登录短信验证开关
 
 	LogActionOrgRegister   int = 200 //日志行为: 用户注册
 	LogActionOrgAddSubUser int = 201 //日志行为: 添加子用户
@@ -42,16 +42,16 @@ var EnumMap = map[string]map[int]string{
 		SourcePlatform: "平台添加",
 	},
 	"log_action": {
-		LogActionPlatformAdd:              "平台添加",
-		LogActionPlatformApprove:          "通过审核",
-		LogActionPlatformRefuse:           "未通过审核",
-		LogActionPlatformLock:             "企业账户锁定",
-		LogActionPlatformUnlock:           "企业账户解锁",
-		LogActionPlatformClean:            "清理业务数据",
-		LogActionPlatformHuanshiSwitchOn:  "幻势开关开启",
-		LogActionPlatformHuanshiSwitchOff: "幻势开关关闭",
-		LogActionOrgRegister:              "用户注册",
-		LogActionOrgAddSubUser:            "添加子账户",
-		LogActionOrgDelSubUser:            "删除子账户",
+		LogActionPlatformAdd:            "平台添加",
+		LogActionPlatformApprove:        "通过审核",
+		LogActionPlatformRefuse:         "未通过审核",
+		LogActionPlatformLock:           "企业账户锁定",
+		LogActionPlatformUnlock:         "企业账户解锁",
+		LogActionPlatformClean:          "清理业务数据",
+		LogActionPlatformHuanshiSwitch:  "设置幻势开关",
+		LogActionPlatformLoginSmsSwitch: "设置企业登录短信验证开关",
+		LogActionOrgRegister:            "用户注册",
+		LogActionOrgAddSubUser:          "添加子账户",
+		LogActionOrgDelSubUser:          "删除子账户",
 	},
 }

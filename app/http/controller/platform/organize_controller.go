@@ -88,6 +88,34 @@ func (u *OrganizeController) CleanForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// SetHsSwitchForManage 管理: 设置幻势开关
+func (u *OrganizeController) SetHsSwitchForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	openSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "switch"))
+
+	errCode, err := organize_service.CreateOrgCurdFactory().SetHsSwitch(orgId, openSwitch, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// SetLoginSmsSwitchForManage 管理: 设置企业登录短信验证开关
+func (u *OrganizeController) SetLoginSmsSwitchForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	openSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "switch"))
+
+	errCode, err := organize_service.CreateOrgCurdFactory().SetLoginSmsSwitch(orgId, openSwitch, ctx.ClientIP(), loginInfo)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // PageForVerify 审核: 分页
 func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	//查询条件

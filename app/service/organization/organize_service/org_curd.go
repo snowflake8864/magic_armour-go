@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
@@ -75,6 +76,7 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 
 	//新增企业用户
 	userParam.OrgId = orgParam.Id
+	userParam.Status = enum_user.StatusNormal
 	userParam.LastLoginAt = orgParam.CreatedAt
 	userParam.CreatedAt = orgParam.CreatedAt
 	if err = tx.Create(&userParam).Error; err != nil {
@@ -238,6 +240,74 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 
 	//后续
 	crd.clearAfter(orgId)
+
+	return errCode, err
+}
+
+// SetHsSwitch 管理: 设置幻势开关
+func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"huanshi_switch": openSwitch,
+	}
+	if !crd.masterModel.UpdateById(orgId, updates) {
+		return -1, errors.New("保存数据失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformHuanshiSwitch, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	if openSwitch == enums.IsYes {
+		orgLogParam.Content = "开启"
+	} else {
+		orgLogParam.Content = "关闭"
+	}
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
+
+	return errCode, err
+}
+
+// SetLoginSmsSwitch 管理: 设置企业登录短信验证开关
+func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+	//验证企业
+	orgExist := crd.GetItemByOrg(orgId)
+	if orgExist.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"login_phone_check": openSwitch,
+	}
+	if !crd.masterModel.UpdateById(orgId, updates) {
+		return -1, errors.New("保存数据失败")
+	}
+
+	//新增企业日志
+	logFact := CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformLoginSmsSwitch, netIp)
+	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateId = loginInfo.AdminId
+	orgLogParam.OperateName = loginInfo.Username
+	if openSwitch == enums.IsYes {
+		orgLogParam.Content = "开启"
+	} else {
+		orgLogParam.Content = "关闭"
+	}
+	if !logFact.Add(&orgLogParam) {
+		return -3, errors.New("保存企业日志失败")
+	}
 
 	return errCode, err
 }

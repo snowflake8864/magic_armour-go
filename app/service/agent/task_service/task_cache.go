@@ -58,7 +58,7 @@ func (crd *TaskCache) ExistsOrgUninstall(orgId int64) bool {
 
 // DeleteOrgUninstall 企业级卸载任务: 删除
 func (crd *TaskCache) DeleteOrgUninstall(orgId int64) bool {
-	_, err := crd.redisClient.Exists(crd.keyByOrgUninstall(orgId))
+	_, err := crd.redisClient.Del(crd.keyByOrgUninstall(orgId))
 	if err == nil {
 		return true
 	}
