@@ -99,6 +99,7 @@ func InitPlatformRouter() *gin.Engine {
 					public := organize.Group("public/")
 					{
 						public.POST("types", (&platform.OrganizeController{}).Types)
+						public.POST("detail", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizePublicDetail"))
 					}
 					manage := organize.Group("manage/")
 					{
@@ -108,6 +109,7 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("clean", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageClean"))
 						manage.POST("setHsSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageSetHsSwitch"))
 						manage.POST("setLoginSmsSwitch", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeManageSetLoginSmsSwitch"))
+
 					}
 					verify := organize.Group("verify/")
 					{

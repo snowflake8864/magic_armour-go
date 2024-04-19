@@ -47,6 +47,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, org_menu.Delete{})
 
 	//企业
+	key = consts.ValidatorPrefixPlatform + "OrganizePublicDetail"
+	containers.Set(key, organize4.PublicDetail{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeManagePage"
 	containers.Set(key, organize4.ManagePage{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeManageLock"

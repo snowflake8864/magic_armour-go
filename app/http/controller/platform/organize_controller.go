@@ -23,6 +23,17 @@ func (u *OrganizeController) Types(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
 }
 
+// Detail 企业详情
+func (u *OrganizeController) Detail(ctx *gin.Context) {
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	model := organize_service.CreateOrgCurdFactory().GetItemByOrg(orgId)
+	if model == nil || model.Id == 0 {
+		response.FailSimplify(ctx, "企业不存在")
+		return
+	}
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransDetail(model))
+}
+
 // PageForManage 管理: 分页
 func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	//查询条件
@@ -43,7 +54,7 @@ func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	//终端分页
 	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOrgManagePage(total, orgModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
 
 // LockForManage 管理：锁定
@@ -135,7 +146,7 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	//终端分页
 	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOrgManagePage(total, orgModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
 
 // AddForVerify 审核: 分页

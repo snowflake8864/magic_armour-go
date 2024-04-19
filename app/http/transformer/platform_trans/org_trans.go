@@ -29,14 +29,15 @@ func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[strin
 	data["huanshi_switch"] = model.HuanshiSwitch
 	data["trusteeship_switch"] = model.TrusteeshipSwitch
 	data["login_phone_check"] = model.LoginPhoneCheck
+	data["remark"] = model.Remark
 	data["source"] = model.Source
 	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_organization.EnumMap)
 	data["created_at"] = model.CreatedAt
 	return data
 }
 
-// TransOrgManagePage 转换成管理页需要的数据
-func (t *Org) TransOrgManagePage(total int64, models []*model_organization.OrganizationModel) interface{} {
+// TransPage 转换成管理页需要的数据
+func (t *Org) TransPage(total int64, models []*model_organization.OrganizationModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -49,4 +50,9 @@ func (t *Org) TransOrgManagePage(total int64, models []*model_organization.Organ
 		"total": total,
 		"items": items,
 	}
+}
+
+// TransDetail 转换成详情页需要的数据
+func (t *Org) TransDetail(model *model_organization.OrganizationModel) map[string]interface{} {
+	return t.pageGeneral(model)
 }
