@@ -25,6 +25,8 @@ func (t *User) pageGeneral(model *model_organization.UserModel) map[string]inter
 	data["status"] = model.Status
 	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_user.EnumMap)
 	data["is_root"] = model.IsRoot
+	data["create_id"] = model.CreateId
+	data["create_name"] = model.CreateName
 	data["created_at"] = model.CreatedAt
 	return data
 }
