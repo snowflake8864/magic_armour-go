@@ -162,6 +162,9 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 		return -3, errors.New("保存企业日志失败")
 	}
 
+	//企业级卸载任务
+	task_service.CreateCacheFactory().DeleteOrgUninstall(orgId)
+
 	return errCode, err
 }
 
@@ -240,6 +243,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 }
 
 func (crd *OrgCurd) clearAfter(orgId int64) {
+	//企业级卸载任务
 	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
 	//丢入队列
 	msg := &kafka_go.MessageStruct{

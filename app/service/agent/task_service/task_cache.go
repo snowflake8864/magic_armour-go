@@ -44,16 +44,25 @@ func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
 	return crd.orgUninstallPrefix + helpers.Int64ToStr(orgId)
 }
 
-// AddOrgUninstall 企业全局卸载任务: 新增
+// AddOrgUninstall 企业级卸载任务: 新增
 func (crd *TaskCache) AddOrgUninstall(orgId int64) bool {
 	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), helpers.GetDatetime(), crd.orgUninstallExpire)
 	return isOk
 }
 
-// ExistsOrgUninstall 企业全局卸载任务: 判断
+// ExistsOrgUninstall 企业级卸载任务: 判断
 func (crd *TaskCache) ExistsOrgUninstall(orgId int64) bool {
 	isOk, _ := crd.redisClient.Exists(crd.keyByOrgUninstall(orgId))
 	return isOk
+}
+
+// DeleteOrgUninstall 企业级卸载任务: 删除
+func (crd *TaskCache) DeleteOrgUninstall(orgId int64) bool {
+	_, err := crd.redisClient.Exists(crd.keyByOrgUninstall(orgId))
+	if err == nil {
+		return true
+	}
+	return false
 }
 
 // GetUnfinished 终端未完成任务: 获取
