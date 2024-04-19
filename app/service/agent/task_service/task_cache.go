@@ -46,7 +46,7 @@ func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
 
 // AddOrgUninstall 企业级卸载任务: 新增
 func (crd *TaskCache) AddOrgUninstall(orgId int64) bool {
-	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), helpers.GetDatetime(), crd.orgUninstallExpire)
+	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), helpers.DatetimeCurr(), crd.orgUninstallExpire)
 	return isOk
 }
 

@@ -32,7 +32,7 @@ func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, 
 	//需要缓存列表
 	var caches []int
 	var inserts []model_agent.TaskModel
-	nowDate := helpers.GetDatetime()
+	nowDate := helpers.DatetimeCurr()
 
 	//遍历新任务并去除未完成的
 	for _, val := range types {
@@ -75,7 +75,7 @@ func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp 
 	updates := map[string]interface{}{
 		"status":       enum_task.StatusFinish,
 		"net_ip":       netIp,
-		"completed_at": helpers.GetDatetime(),
+		"completed_at": helpers.DatetimeCurr(),
 	}
 	//入库
 	crd.masterModel.UpdateByConditions(conditions, updates)

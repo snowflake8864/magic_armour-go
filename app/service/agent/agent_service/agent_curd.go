@@ -98,7 +98,7 @@ func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderF
 
 // SetLivingByAgent 设置终端活动中
 func (crd *AgentCurd) SetLivingByAgent(id string) bool {
-	nowDate := helpers.GetDatetime()
+	nowDate := helpers.DatetimeCurr()
 
 	updates := map[string]interface{}{
 		"live_at":   nowDate,

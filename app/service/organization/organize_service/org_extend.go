@@ -36,7 +36,7 @@ func (crd *OrgExtend) InitDefault(orgId int64) model_organization.OrgExtendModel
 		LoginSolveConfig:     helpers.JsonEncode(loginSolveConfig),
 		AlarmNoticeConfig:    helpers.JsonEncode(loginSolveConfig),
 		HardwareNoticeConfig: helpers.JsonEncode(hardwareNoticeConfig),
-		UpdatedAt:            helpers.GetDatetime(),
+		UpdatedAt:            helpers.DatetimeCurr(),
 	}
 }
 

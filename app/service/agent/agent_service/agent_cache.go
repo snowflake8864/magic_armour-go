@@ -50,7 +50,7 @@ func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 	loginInfo.OsType = param.OsType
 	loginInfo.AgentIp = param.AgentIp
 	loginInfo.NetIp = param.NetIp
-	loginInfo.LoginAt = helpers.GetDatetime()
+	loginInfo.LoginAt = helpers.DatetimeCurr()
 
 	jsonStr := helpers.JsonEncode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)

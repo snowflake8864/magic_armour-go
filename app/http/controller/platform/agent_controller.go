@@ -1,7 +1,9 @@
 package platform
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer"
@@ -28,9 +30,11 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
 }
 
-// CountOnline 统计在线和离线数量
-func (u *AgentController) CountOnline(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "CountOnline")
+// StatByOrg 按企业统计终端
+func (u *AgentController) StatByOrg(ctx *gin.Context) {
+	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	fmt.Println("orgID:", orgId)
+	response.SuccessReturnData(ctx, "StatByOrg")
 }
 
 // TypeList 类型列表

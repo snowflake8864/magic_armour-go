@@ -21,7 +21,7 @@ type AgentAuth struct {
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
 	agentModel := CreateCurdFactory().GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.ColumnSwitchAndModeForAlarm(true))
-	nowDate := helpers.GetDatetime()
+	nowDate := helpers.DatetimeCurr()
 	isAllocateDept := true //是否分配组织架构
 
 	if helpers.StringIsEmpty(agentModel.AgentId) {

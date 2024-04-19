@@ -30,7 +30,7 @@ func (crd *OrgLog) InitByOrg(orgParam *model_organization.OrganizationModel, mod
 // Add 新增企业
 func (crd *OrgLog) Add(param *model_organization.OrgLogModel) bool {
 	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.GetDatetime()
+		param.CreatedAt = helpers.DatetimeCurr()
 	}
 	return crd.masterModel.InsertItem(param)
 }

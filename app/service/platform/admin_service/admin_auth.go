@@ -183,7 +183,7 @@ func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[stri
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,
 		IsRoot:   adminModel.IsRoot,
-		LoginAt:  helpers.GetDatetime(),
+		LoginAt:  helpers.DatetimeCurr(),
 	}
 
 	//缓存

@@ -41,7 +41,7 @@ func (crd *AdminCurd) IncrPwErrorNum(id int64) bool {
 func (crd *AdminCurd) loginSuccess(id int64) bool {
 	updates := map[string]interface{}{
 		"pw_error_num":  0,
-		"last_login_at": helpers.GetDatetime(),
+		"last_login_at": helpers.DatetimeCurr(),
 	}
 	return crd.masterModel.UpdateById(id, updates)
 }

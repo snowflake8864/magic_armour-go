@@ -28,7 +28,7 @@ func (crd *MenuCurd) Add(param *model_platform.OrgMenuModel) (errCode int, err e
 		//等级从1开始
 		param.Level = 1
 	}
-	param.CreatedAt = helpers.GetDatetime()
+	param.CreatedAt = helpers.DatetimeCurr()
 
 	isOk := crd.masterModel.InsertItem(param)
 	if !isOk {

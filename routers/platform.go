@@ -128,7 +128,7 @@ func InitPlatformRouter() *gin.Engine {
 					{
 						public.POST("onlineStatus", (&platform.AgentController{}).OnlineStatus)
 						public.POST("safeStatus", (&platform.AgentController{}).SafeStatus)
-						public.POST("countOnline", (&platform.AgentController{}).CountOnline)
+						public.POST("statByOrg", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentPublicStatByOrg"))
 					}
 					manage := agent.Group("manage/")
 					{

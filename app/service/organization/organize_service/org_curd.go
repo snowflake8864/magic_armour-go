@@ -60,7 +60,7 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
-	orgParam.CreatedAt = helpers.GetDatetime()
+	orgParam.CreatedAt = helpers.DatetimeCurr()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
 	if err = tx.Create(orgParam).Error; err != nil {
 		tx.Rollback()
