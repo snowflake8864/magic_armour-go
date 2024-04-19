@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers"
+	"strings"
 )
 
 type SearchConditions struct {
@@ -22,6 +23,8 @@ type SearchConditions struct {
 	Alias        string
 	ContactName  string
 	DeptIds      []int64
+	CreateAtGte  string
+	CreateAtLte  string
 }
 
 type AgentBase struct {
@@ -66,6 +69,12 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 	if search.DeptIds != nil && len(search.DeptIds) > 0 {
 		wheres["dept_id in"] = search.DeptIds
 	}
+	if !helpers.StringIsEmpty(search.CreateAtGte) {
+		wheres["created_at >="] = search.CreateAtGte
+	}
+	if !helpers.StringIsEmpty(search.CreateAtLte) {
+		wheres["created_at <="] = search.CreateAtLte
+	}
 	return wheres
 }
 
@@ -94,6 +103,29 @@ func (crd *AgentBase) ColumnSwitchAndModeForAlarm(needId bool) string {
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
 		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode"
 	return column
+}
+
+// ColumnCalcAgents 字段： 统计终端
+func (crd *AgentBase) ColumnCalcAgents(org, online, safe, win, winOnline bool) string {
+	columns := []string{"COUNT(agent_id) AS total_number"}
+	if org {
+		columns = append(columns, "org_id")
+	}
+	if online {
+		columns = append(columns, "SUM(IF(is_online ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS online_number")
+	}
+	if safe {
+		columns = append(columns, "SUM(IF(is_safe ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS safe_number")
+	}
+	if win {
+		columns = append(columns, "SUM(IF(platform_type ="+helpers.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0) AS windows_number")
+	}
+	if winOnline {
+		columns = append(columns, "SUM(IF(platform_type ="+helpers.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)"+
+			" AND is_online ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS  windows_online_number")
+	}
+
+	return strings.Join(columns, ", ")
 }
 
 // addTask 新增任务

@@ -83,6 +83,16 @@ func (crd *AgentCurd) GetIdsByOrgAndCondition(orgId int64, search SearchConditio
 	return result
 }
 
+// CalcAgents 计算终端统计数据
+func (crd *AgentCurd) CalcAgents(search SearchConditions, column string) (result *model_agent.AgentCalc) {
+	where := crd.search2Where(search)
+	result, err := crd.masterModel.CalcByConditions(where, column)
+	if err != nil {
+		return result
+	}
+	return result
+}
+
 // Page 分页
 func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.AgentModel) {
 	where := crd.search2Where(search)

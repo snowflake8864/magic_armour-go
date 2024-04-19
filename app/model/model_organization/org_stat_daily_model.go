@@ -28,7 +28,7 @@ type OrgStatDailyModel struct {
 	AgentAdd         int    `json:"agent_add"`
 	AgentLinuxTotal  int    `json:"agent_linux_total"`
 	AgentLinuxOnline int    `json:"agent_linux_online"`
-	AgentLinuxAdd    int    `json:"agentLinuxAdd"`
+	AgentLinuxAdd    int    `json:"agent_linux_add"`
 	AgentWinTotal    int    `json:"agent_win_total"`
 	AgentWinOnline   int    `json:"agent_win_online"`
 	AgentWinAdd      int    `json:"agent_win_add"`

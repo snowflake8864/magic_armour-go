@@ -460,3 +460,27 @@ func (m *AgentModel) Page(condition map[string]interface{}, offset, limit int, o
 		return 0, nil
 	}
 }
+
+type AgentCalc struct {
+	OrgId               int64 `json:"org_id"`
+	TotalNumber         int   `json:"total_number"`
+	OnlineNumber        int   `json:"online_number"`
+	SafeNumber          int   `json:"safe_number"`
+	WindowsNumber       int   `json:"windows_number"`
+	WindowsOnlineNumber int   `json:"windows_online_number"`
+}
+
+// CalcByConditions 通过条件获取多条记录
+func (m *AgentModel) CalcByConditions(condition map[string]interface{}, column string) (item *AgentCalc, err error) {
+	whereSQL, vals, _ := m.WhereBuild(condition)
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return nil, result.Error
+	}
+}

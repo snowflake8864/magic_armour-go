@@ -1,7 +1,6 @@
 package platform
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -32,9 +31,15 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 
 // StatByOrg 按企业统计终端
 func (u *AgentController) StatByOrg(ctx *gin.Context) {
-	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
-	fmt.Println("orgID:", orgId)
-	response.SuccessReturnData(ctx, "StatByOrg")
+	searchConditions := agent_service.SearchConditions{
+		OrgId:    int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId")),
+		IsSafe:   enums.AllDefault,
+		IsOnline: enums.AllDefault,
+	}
+
+	agentFact := agent_service.CreateCurdFactory()
+	stat := agentFact.CalcAgents(searchConditions, agentFact.ColumnCalcAgents(false, true, false, false, false))
+	response.SuccessReturnData(ctx, stat)
 }
 
 // TypeList 类型列表
