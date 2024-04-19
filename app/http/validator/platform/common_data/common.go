@@ -1,4 +1,4 @@
-package data_type
+package common_data
 
 // OrganizeSearch 企业查询条件
 type OrganizeSearch struct {
@@ -11,4 +11,14 @@ type OrganizeSearch struct {
 // OrganizeSingle 企业单个
 type OrganizeSingle struct {
 	OrgId int `form:"orgId" json:"orgId" binding:"required"`
+}
+
+// CommonReason 原因
+type CommonReason struct {
+	Reason string `form:"reason" json:"reason" binding:"required,max=200"`
+}
+
+// CommonSwitch 开关
+type CommonSwitch struct {
+	Switch *int `form:"switch" json:"switch" binding:"required,oneof=0 1"`
 }

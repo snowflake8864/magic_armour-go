@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
-	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/http/validator/platform/common_data"
 	"goskeleton/app/utils/response"
 )
 
 type VerifyApprove struct {
-	data_type.OrganizeSingle
-	CommonReason
+	common_data.OrganizeSingle
+	common_data.CommonReason
 }
 
 func (n VerifyApprove) CheckParams(context *gin.Context) {
