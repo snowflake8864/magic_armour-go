@@ -87,7 +87,6 @@ func SavePlatformOperate() gin.HandlerFunc {
 				"/platform/auth/sendSms":       {},
 				"/platform/auth/normalLogin":   {},
 				"/platform/auth/logout":        {},
-				"/platform/auth/hsLogin":       {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
