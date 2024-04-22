@@ -98,7 +98,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       80.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -107,7 +107,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       240.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -116,90 +116,90 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       880.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改模块。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       1040.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改模块。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（终端）+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       880.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、勒索防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（服务器）+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       1040.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、勒索防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（终端）+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       880.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、动态封堵、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+动态封堵。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（服务器）+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       1040.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、动态封堵、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+动态封堵。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       1680.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、勒索防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       1840.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、勒索防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改+勒索防护+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       2480.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、勒索防护、动态封堵、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。\n+动态封堵",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改+勒索防护+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
 			Price:       2640.00,
-			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、勒索防护、动态封堵、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
+			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。\n+动态封堵",
 			IsPublish:   enums.IsYes,
 			CreatedAt:   curTime,
 		},
@@ -254,8 +254,11 @@ func (m *ProductModel) GetItemById(id int64) (item *ProductModel, err error) {
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ProductModel, err error) {
-	whereSQL, vals, _ := m.WhereBuild(condition)
-	tmp := m.Model(m).Where(whereSQL, vals)
+
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -275,8 +278,11 @@ func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, of
 // Count 通过条件统计
 func (m *ProductModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	whereSQL, vals, _ := m.WhereBuild(condition)
-	result := m.Model(m).Select("id").Where(whereSQL, vals).Count(&total)
+	tmp := m.Model(m).Select("id")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
+	result := tmp.Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

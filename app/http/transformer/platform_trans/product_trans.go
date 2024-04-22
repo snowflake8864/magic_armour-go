@@ -15,12 +15,12 @@ type Product struct {
 
 func (t *Product) pageGeneral(model *model_platform.ProductModel) map[string]interface{} {
 	data := make(map[string]interface{})
+	data["id"] = model.Id
 	data["title"] = model.Title
 	data["grant_type"] = model.GrantType
 	data["grant_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.GrantType, enum_product.EnumIntMap)
 	productGrantConfig := enum_product.ProductGrantConfig{}
 	_ = helpers.Json2Struct(model.GrantModule, &productGrantConfig)
-	productGrantConfig.Default()
 	data["grant_module"] = productGrantConfig
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["price"] = model.Price

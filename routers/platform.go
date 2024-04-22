@@ -134,6 +134,11 @@ func InitPlatformRouter() *gin.Engine {
 						public.POST("grantModules", (&platform.ProductController{}).GrantModules)
 						public.POST("allPublished", (&platform.ProductController{}).AllPublished)
 					}
+					manage := product.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProductManagePage"))
+
+					}
 				} //产品
 
 				//终端

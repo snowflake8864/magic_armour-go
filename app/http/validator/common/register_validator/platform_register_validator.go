@@ -8,6 +8,7 @@ import (
 	home4 "goskeleton/app/http/validator/platform/home"
 	"goskeleton/app/http/validator/platform/org_menu"
 	organize4 "goskeleton/app/http/validator/platform/organize"
+	product4 "goskeleton/app/http/validator/platform/product"
 	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
@@ -79,6 +80,10 @@ func PlatformRegisterValidator() {
 	containers.Set(key, organize4.ManagePage{})
 	key = consts.ValidatorPrefixPlatform + "AgentOwnPage"
 	containers.Set(key, agent4.OwnPage{})
+
+	//产品
+	key = consts.ValidatorPrefixPlatform + "ProductManagePage"
+	containers.Set(key, product4.ManagePage{})
 
 	//威胁情报
 	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"

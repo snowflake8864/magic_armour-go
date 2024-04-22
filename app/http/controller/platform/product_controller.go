@@ -2,12 +2,12 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/utils/response"
 )
@@ -32,28 +32,23 @@ func (u *ProductController) GrantModules(ctx *gin.Context) {
 // AllPublished 全部已发布的产品
 func (u *ProductController) AllPublished(ctx *gin.Context) {
 	models := product_service.CreateCurdFactory().GetPublished()
+
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransList(models))
 }
 
 // PageForManage 管理: 分页
 func (u *ProductController) PageForManage(ctx *gin.Context) {
-	//查询条件
-	conditions, err := u.getOrgSearchConditions(ctx)
-	if err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	}
-	//默认状态
-	conditions.StatusList = []int{
-		enum_organization.StatusNormal,
-		enum_organization.StatusLocking,
-	}
+	//页面上传
+	conditions := product_service.SearchConditions{}
+	conditions.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
+	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
+	conditions.IsPublish = enums.AllDefaultInt
 
 	//分页参数和排序参数
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
-	//终端分页
-	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	//产品分页
+	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }
