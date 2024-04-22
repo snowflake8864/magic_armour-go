@@ -49,6 +49,7 @@ type AgentModel struct {
 	Remark              string `json:"remark"`
 	GrantConfig         string `json:"grant_config"`
 	GrantOrderNo        string `json:"grant_order_no"`
+	GrantProductTitle   string `json:"grant_product_title"`
 	GrantExpireAt       string `json:"grant_expire_at"`
 	GrantStatus         int    `json:"grant_status"`
 	ProcessSwitch       int    `json:"process_switch"`
@@ -123,6 +124,7 @@ func (m *AgentModel) CreateTable() bool {
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注',
 			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权:配置(json)',
 			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
+			grant_product_title varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:产品名称',
 			grant_expire_at datetime NULL  COMMENT '授权:过期时间',
 			grant_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:状态',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',

@@ -6,11 +6,13 @@ import (
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/http/validator/platform/common_data"
 	"goskeleton/app/utils/response"
 )
 
-type ManagePage struct {
+type OwnPage struct {
 	data_type.Page
+	common_data.OrganizeSingle
 	AgentId     string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
 	DeptIds     []int  `form:"deptId" json:"deptId" binding:"omitempty,dive"`
 	HostName    string `form:"hostName" json:"hostName" binding:"omitempty,min=1"`
@@ -22,7 +24,7 @@ type ManagePage struct {
 	IsSafe      int    `form:"isSafe" json:"isSafe"`
 }
 
-func (n ManagePage) CheckParams(context *gin.Context) {
+func (n OwnPage) CheckParams(context *gin.Context) {
 	//1.先按照验证器提供的基本语法，基本可以校验90%以上的不合格参数
 	if err := context.ShouldBind(&n); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
@@ -33,10 +35,10 @@ func (n ManagePage) CheckParams(context *gin.Context) {
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）
 	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixPlatform, context)
 	if extraAddBindDataContext == nil {
-		response.FailSimplify(context, "[platform agent ManagePage]表单验证器json化失败")
+		response.FailSimplify(context, "[platform agent OwnPage]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&platform.AgentController{}).PageForManage(extraAddBindDataContext)
+		(&platform.AgentController{}).PageForOwn(extraAddBindDataContext)
 	}
 
 }

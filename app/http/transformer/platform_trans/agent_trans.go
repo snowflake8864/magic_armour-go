@@ -2,7 +2,6 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_organization"
@@ -28,42 +27,24 @@ func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64
 	data["is_safe"] = model.IsSafe
 	data["contact_name"] = model.ContactName
 	data["alias"] = model.Alias
-	data["grant_config"] = helpers.Json2Map(model.GrantConfig)
+	data["grant_product_title"] = model.GrantProductTitle
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
 	if deptModel, ok := departments[model.DeptId]; ok && !helpers.StringIsEmpty(deptModel.FullName) {
 		data["dept_fullname"] = helpers.Json2Map(deptModel.FullName)
 	}
-	data["process_switch"] = model.ProcessSwitch
-	data["process_mode"] = model.ProcessMode
-	data["dll_switch"] = model.DllSwitch
-	data["dll_mode"] = model.DllMode
-	data["tamper_switch"] = model.TamperSwitch
-	data["tamper_mode"] = model.TamperMode
-	data["blackmail_switch"] = model.BlackmailSwitch
-	data["blackmail_mode"] = model.BlackmailMode
-	data["port_switch"] = model.PortSwitch
-	data["plug_switch"] = model.PlugSwitch
-	data["usb_switch"] = model.UsbSwitch
-	data["usb_mode"] = model.UsbMode
-	data["outreach_alarm_switch"] = model.OutreachAlarmSwitch
-	data["login_solve_switch"] = model.LoginSolveSwitch
+
 	data["created_at"] = model.CreatedAt
 	return data
 }
 
 // TransAgentManagePage 转换成管理页需要的数据
-func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[int64]*model_organization.DepartmentModel, softwareNewest map[int]string) interface{} {
+func (t *Agent) TransAgentManagePage(total int64, models []*model_agent.AgentModel, departments map[int64]*model_organization.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model, departments)
 
-			canUpgrade := 0
-			if isOk, _ := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
-				return 1
-			}
-			tmp["can_upgrade"] = canUpgrade
 			items = append(items, tmp)
 		}
 	}

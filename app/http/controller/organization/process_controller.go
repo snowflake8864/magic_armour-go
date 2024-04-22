@@ -23,7 +23,7 @@ func (u *ProcessController) ChangeStatus(ctx *gin.Context) {
 
 // PageForManage 管理页: 分页
 func (u *ProcessController) PageForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForManage")
+	response.SuccessReturnData(ctx, "PageForOwn")
 }
 
 // SetSwitchForManage 管理页: 设置开关

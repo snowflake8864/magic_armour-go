@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
@@ -61,7 +61,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	//软件最新发布
 	softwareNewest := software_service.CreateCurdFactory().GetMapsByPublished()
 
-	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps, softwareNewest))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps, softwareNewest))
 }
 
 // DeleteForManage 管理: 删除

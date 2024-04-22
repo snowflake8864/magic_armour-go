@@ -23,7 +23,7 @@ func (u *TamperController) FolderPower(ctx *gin.Context) {
 
 // PageForManage 分页
 func (u *TamperController) PageForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForManage")
+	response.SuccessReturnData(ctx, "PageForOwn")
 }
 
 // SetSwitchForManage 管理页: 设置开关
