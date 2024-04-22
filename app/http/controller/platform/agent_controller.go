@@ -20,21 +20,21 @@ type AgentController struct {
 // OnlineStatus 在线状态
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
 }
 
 // StatByOrg 按企业统计终端
 func (u *AgentController) StatByOrg(ctx *gin.Context) {
 	searchConditions := agent_service.SearchConditions{
 		OrgId:    int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId")),
-		IsSafe:   enums.AllDefault,
-		IsOnline: enums.AllDefault,
+		IsSafe:   enums.AllDefaultInt,
+		IsOnline: enums.AllDefaultInt,
 	}
 
 	agentFact := agent_service.CreateCurdFactory()

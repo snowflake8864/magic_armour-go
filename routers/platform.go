@@ -130,7 +130,9 @@ func InitPlatformRouter() *gin.Engine {
 				{
 					public := organize.Group("public/")
 					{
-						public.POST("allPublished", (&platform.OrganizeController{}).Types)
+						public.POST("grantTypes", (&platform.ProductController{}).GrantTypes)
+						public.POST("grantModules", (&platform.ProductController{}).GrantTypes)
+						public.POST("allPublished", (&platform.ProductController{}).GrantTypes)
 					}
 				} //产品
 

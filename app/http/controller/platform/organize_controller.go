@@ -21,7 +21,7 @@ type OrganizeController struct {
 // Types 企业类型
 func (u *OrganizeController) Types(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapIntOfStr("type", enum_organization.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntStr2List(list, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
 }
 
 // Detail 企业详情

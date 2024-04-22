@@ -24,7 +24,7 @@ func (crd *OrgBase) search2Where(search SearchConditions) map[string]interface{}
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
 	}
-	if search.OrgType > 0 && search.OrgType != enums.AllDefault {
+	if search.OrgType > 0 && search.OrgType != enums.AllDefaultInt {
 		wheres["type"] = search.OrgType
 	}
 	if !helpers.StringIsEmpty(search.OraName) {

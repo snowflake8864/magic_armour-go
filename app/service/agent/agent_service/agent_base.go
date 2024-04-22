@@ -54,10 +54,10 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 	if search.PlatformType > 0 {
 		wheres["platform_type"] = search.PlatformType
 	}
-	if search.IsOnline != enums.AllDefault {
+	if search.IsOnline != enums.AllDefaultInt {
 		wheres["is_online"] = search.IsOnline
 	}
-	if search.IsSafe != enums.AllDefault {
+	if search.IsSafe != enums.AllDefaultInt {
 		wheres["is_safe"] = search.IsSafe
 	}
 	if !helpers.StringIsEmpty(search.ContactName) {
