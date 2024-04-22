@@ -27,6 +27,7 @@ func (t *Agent) pageGeneral(model *model_agent.AgentModel, departments map[int64
 	data["is_safe"] = model.IsSafe
 	data["contact_name"] = model.ContactName
 	data["alias"] = model.Alias
+	data["grant_order_no"] = model.GrantOrderNo
 	data["grant_product_title"] = model.GrantProductTitle
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
