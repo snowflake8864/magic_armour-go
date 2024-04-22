@@ -10,7 +10,19 @@ const (
 
 	AppUsageVersionOffline int = 1 //程序使用版本:离线
 	AppUsageVersionCloud   int = 2 //程序使用版本:云
+
+	OperateSourceOrganize int = 1 //操作来源：企业
+	OperateSourcePlatform int = 2 //操作来源：平台
+	OperateSourceAi       int = 3 //操作来源：AI
 )
+
+var EnumMapInt = map[string]map[int]string{
+	"operate_source": {
+		OperateSourceOrganize: "企业",
+		OperateSourcePlatform: "平台",
+		OperateSourceAi:       "系统AI",
+	},
+}
 
 // Get1stIsStrReturnSliceOfStr 如是第一级是string,返回相应[]string
 func Get1stIsStrReturnSliceOfStr(first string, s map[string][]string) []string {

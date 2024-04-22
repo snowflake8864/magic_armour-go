@@ -48,7 +48,7 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	}
 
 	//新增企业
-	if orgParam.Source == enum_organization.SourcePlatform {
+	if orgParam.Source == enums.OperateSourcePlatform {
 		orgParam.TrusteeshipSwitch = enums.IsYes
 		orgParam.HuanshiSwitch = enums.IsYes
 	} else {
@@ -123,7 +123,7 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformApprove, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
@@ -156,7 +156,7 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformLock, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
@@ -193,7 +193,7 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformUnlock, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
@@ -230,7 +230,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformClean, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
@@ -263,7 +263,7 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformHuanshiSwitch, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	if openSwitch == enums.IsYes {
@@ -297,7 +297,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformLoginSmsSwitch, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	if openSwitch == enums.IsYes {
@@ -353,7 +353,7 @@ func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_s
 	//新增企业日志
 	logFact := CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformRefuse, netIp)
-	orgLogParam.OperateSource = enum_organization.SourcePlatform
+	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason

@@ -125,6 +125,15 @@ func InitPlatformRouter() *gin.Engine {
 
 				} //企业
 
+				//产品
+				product := vPlatform.Group("product/")
+				{
+					public := organize.Group("public/")
+					{
+						public.POST("allPublished", (&platform.OrganizeController{}).Types)
+					}
+				} //产品
+
 				//终端
 				agent := vPlatform.Group("agent/")
 				{

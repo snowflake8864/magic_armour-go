@@ -1,4 +1,4 @@
-package enum_grant
+package enum_product
 
 import "goskeleton/app/global/enums"
 

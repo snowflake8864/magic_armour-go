@@ -162,7 +162,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	orgParam.UserEmail = ctx.GetString(consts.ValidatorPrefixPlatform + "userEmail")
 	orgParam.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 	orgParam.Type = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgType"))
-	orgParam.Source = enum_organization.SourcePlatform
+	orgParam.Source = enums.OperateSourcePlatform
 	orgParam.CreateId = loginInfo.AdminId
 	orgParam.CreateName = loginInfo.Username
 

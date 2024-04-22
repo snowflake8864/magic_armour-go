@@ -3,7 +3,7 @@ package agent_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
-	"goskeleton/app/global/enums/enum_grant"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/helpers"
@@ -26,7 +26,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 
 	if helpers.StringIsEmpty(agentModel.AgentId) {
 		//授权配置
-		grantConfig := enum_grant.AgentGrantConfig{}
+		grantConfig := enum_product.AgentGrantConfig{}
 		grantConfig.Default()
 
 		param.IsOnline = enums.IsYes

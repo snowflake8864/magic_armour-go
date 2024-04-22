@@ -31,7 +31,7 @@ func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[strin
 	data["login_phone_check"] = model.LoginPhoneCheck
 	data["remark"] = model.Remark
 	data["source"] = model.Source
-	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_organization.EnumMap)
+	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.Source, enums.EnumMapInt)
 	data["created_at"] = model.CreatedAt
 	return data
 }
