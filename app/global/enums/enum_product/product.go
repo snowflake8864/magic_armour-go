@@ -58,8 +58,8 @@ var EnumStrSlice = map[string][]string{
 	},
 }
 
-// AgentGrantConfig 终端授权配置
-type AgentGrantConfig struct {
+// ProductGrantConfig 终端授权配置
+type ProductGrantConfig struct {
 	Process   int `json:"process"`
 	Tamper    int `json:"tamper"`
 	Blackmail int `json:"blackmail"`
@@ -71,14 +71,81 @@ type AgentGrantConfig struct {
 	Login     int `json:"login"`
 }
 
-func (c *AgentGrantConfig) Default() {
-	c.Process = enums.IsNot
-	c.Tamper = enums.IsNot
-	c.Blackmail = enums.IsNot
-	c.Port = enums.IsNot
-	c.Plug = enums.IsNot
-	c.Usb = enums.IsNot
-	c.Syslog = enums.IsYes
-	c.Outreach = enums.IsYes
-	c.Login = enums.IsYes
+func (c *ProductGrantConfig) Default() {
+	if c.Process == 0 {
+		c.Process = enums.IsNot
+	} else {
+		c.Process = enums.IsYes
+	}
+	if c.Tamper == 0 {
+		c.Tamper = enums.IsNot
+	} else {
+		c.Tamper = enums.IsYes
+	}
+	if c.Blackmail == 0 {
+		c.Blackmail = enums.IsNot
+	} else {
+		c.Blackmail = enums.IsYes
+	}
+	if c.Port == 0 {
+		c.Port = enums.IsNot
+	} else {
+		c.Port = enums.IsYes
+	}
+	if c.Plug == 0 {
+		c.Plug = enums.IsNot
+	} else {
+		c.Plug = enums.IsYes
+	}
+	if c.Usb == 0 {
+		c.Usb = enums.IsNot
+	} else {
+		c.Usb = enums.IsYes
+	}
+	if c.Syslog == 0 {
+		c.Syslog = enums.IsNot
+	} else {
+		c.Syslog = enums.IsYes
+	}
+	if c.Outreach == 0 {
+		c.Outreach = enums.IsNot
+	} else {
+		c.Outreach = enums.IsYes
+	}
+	if c.Login == 0 {
+		c.Login = enums.IsNot
+	} else {
+		c.Login = enums.IsYes
+	}
+}
+
+func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
+	if c.Process == enums.IsYes {
+		txtList = append(txtList, "可信防护")
+	}
+	if c.Tamper == enums.IsYes {
+		txtList = append(txtList, "防篡改")
+	}
+	if c.Blackmail == enums.IsYes {
+		txtList = append(txtList, "勒索防护")
+	}
+	if c.Port == enums.IsYes {
+		txtList = append(txtList, "端口虚开")
+	}
+	if c.Plug == enums.IsYes {
+		txtList = append(txtList, "动态封堵")
+	}
+	if c.Usb == enums.IsYes {
+		txtList = append(txtList, "外设管理")
+	}
+	if c.Syslog == enums.IsYes {
+		txtList = append(txtList, "通信日志")
+	}
+	if c.Outreach == enums.IsYes {
+		txtList = append(txtList, "外联管控")
+	}
+	if c.Login == enums.IsYes {
+		txtList = append(txtList, "口令破解")
+	}
+	return txtList
 }

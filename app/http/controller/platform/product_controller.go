@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -26,6 +27,12 @@ func (u *ProductController) GrantTypes(ctx *gin.Context) {
 func (u *ProductController) GrantModules(ctx *gin.Context) {
 	list := enums.Get1stIsStrReturnMapStrOfStr("module", enum_product.EnumStrMap)
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapStrOStr2List(list, false))
+}
+
+// AllPublished 全部已发布的产品
+func (u *ProductController) AllPublished(ctx *gin.Context) {
+	models := product_service.CreateCurdFactory().GetPublished()
+	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransList(models))
 }
 
 // PageForManage 管理: 分页

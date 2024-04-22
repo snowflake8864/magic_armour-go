@@ -242,16 +242,6 @@ func (m *ProductModel) DeleteById(id int64) bool {
 	}
 }
 
-// DeleteByConditions 通过条件删除
-func (m *ProductModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
 // GetItemById 通过id获取一条记录
 func (m *ProductModel) GetItemById(id int64) (item *ProductModel, err error) {
 	result := m.Model(m).Where("id=?", id).First(&item)
@@ -262,19 +252,10 @@ func (m *ProductModel) GetItemById(id int64) (item *ProductModel, err error) {
 	}
 }
 
-// GetItemsByIds 通过id集合获取多条记录
-func (m *ProductModel) GetItemsByIds(ids []int64) (items []*ProductModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ProductModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	whereSQL, vals, _ := m.WhereBuild(condition)
+	tmp := m.Model(m).Where(whereSQL, vals)
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -294,7 +275,8 @@ func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, of
 // Count 通过条件统计
 func (m *ProductModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	whereSQL, vals, _ := m.WhereBuild(condition)
+	result := m.Model(m).Select("id").Where(whereSQL, vals).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

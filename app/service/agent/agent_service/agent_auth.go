@@ -26,7 +26,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 
 	if helpers.StringIsEmpty(agentModel.AgentId) {
 		//授权配置
-		grantConfig := enum_product.AgentGrantConfig{}
+		grantConfig := enum_product.ProductGrantConfig{}
 		grantConfig.Default()
 
 		param.IsOnline = enums.IsYes

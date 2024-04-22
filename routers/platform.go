@@ -128,11 +128,11 @@ func InitPlatformRouter() *gin.Engine {
 				//产品
 				product := vPlatform.Group("product/")
 				{
-					public := organize.Group("public/")
+					public := product.Group("public/")
 					{
 						public.POST("grantTypes", (&platform.ProductController{}).GrantTypes)
-						public.POST("grantModules", (&platform.ProductController{}).GrantTypes)
-						public.POST("allPublished", (&platform.ProductController{}).GrantTypes)
+						public.POST("grantModules", (&platform.ProductController{}).GrantModules)
+						public.POST("allPublished", (&platform.ProductController{}).AllPublished)
 					}
 				} //产品
 
