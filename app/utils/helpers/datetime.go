@@ -10,6 +10,11 @@ func DatetimeCurr() string {
 	return time.Now().Format(variable.DateFormat)
 }
 
+// DatetimeSpecial 获取当前日期，特殊格式
+func DatetimeSpecial(format string) string {
+	return time.Now().Format(format)
+}
+
 // DayInCurrMonth 现在是当前月的第几天
 func DayInCurrMonth() int {
 	return time.Now().Day()

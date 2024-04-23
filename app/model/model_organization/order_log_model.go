@@ -26,6 +26,7 @@ type OrderLogModel struct {
 	OperateName   string `json:"operate_name"`
 	UsedNumber    string `json:"used_number"`
 	UsedAgents    string `json:"used_agents"`
+	Remark        string `json:"remark"`
 	CreatedAt     string `json:"created_at"`
 }
 
@@ -48,6 +49,7 @@ func (m *OrderLogModel) CreateTable() bool {
 			operate_name varchar (128) NOT NULL DEFAULT '' COMMENT '操作用户:名称',
 			used_number int(11) NOT NULL DEFAULT '0' COMMENT '使用数目',
   			used_agents text COMMENT '使用终端集合',
+			remark varchar (255) NOT NULL DEFAULT '' COMMENT '备注',
 			created_at datetime DEFAULT NULL,
 			PRIMARY KEY (id),
 			KEY org_order (org_id,order_no)

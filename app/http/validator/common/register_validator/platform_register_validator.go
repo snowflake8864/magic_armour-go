@@ -6,6 +6,7 @@ import (
 	agent4 "goskeleton/app/http/validator/platform/agent"
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	home4 "goskeleton/app/http/validator/platform/home"
+	order4 "goskeleton/app/http/validator/platform/order"
 	"goskeleton/app/http/validator/platform/org_menu"
 	organize4 "goskeleton/app/http/validator/platform/organize"
 	product4 "goskeleton/app/http/validator/platform/product"
@@ -78,6 +79,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, agent4.PublicStatByOrg{})
 	key = consts.ValidatorPrefixPlatform + "AgentOrgPage"
 	containers.Set(key, organize4.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "AgentOrgAddGrant"
+	containers.Set(key, order4.OrgAddGrant{})
 	key = consts.ValidatorPrefixPlatform + "AgentOwnPage"
 	containers.Set(key, agent4.OwnPage{})
 

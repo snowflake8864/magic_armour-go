@@ -3,14 +3,18 @@ package enum_platform_operate
 // 任务
 
 const (
-	ModuleAuth = "auth"
-	ModuleOrg  = "org"
+	ModuleAuth    = "auth"
+	ModuleOrg     = "org"
+	ModuleProduct = "product"
+	ModuleOrder   = "order"
 )
 
 var EnumMap = map[string]map[string]string{
 	"module": {
-		ModuleAuth: "安全认证",
-		ModuleOrg:  "客户管理",
+		ModuleAuth:    "安全认证",
+		ModuleOrg:     "客户管理",
+		ModuleProduct: "产品管理",
+		ModuleOrder:   "订单管理",
 	},
 }
 
@@ -28,6 +32,9 @@ var pathModuleLabel = map[string][]string{
 	"/platform/organize/verify/add":               {ModuleOrg, "添加企业账户"},
 	"/platform/organize/verify/approve":           {ModuleOrg, "账户审核：批准"},
 	"/platform/organize/verify/delete":            {ModuleOrg, "账户审核：删除"},
+	"/platform/product/manage/add":                {ModuleProduct, "产品管理：添加"},
+	"/platform/product/manage/edit":               {ModuleProduct, "产品管理：编辑"},
+	"/platform/product/manage/delete":             {ModuleProduct, "产品管理：删除"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

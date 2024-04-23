@@ -6,12 +6,11 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_organization"
-	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/model_organization"
+	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/product_service"
-	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -59,63 +58,21 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }
 
-// AddForManage 管理: 添加
-func (u *OrderController) AddForManage(ctx *gin.Context) {
-	param := u.addParam(ctx)
+// AddForOrg 管理: 添加
+func (u *OrderController) AddForOrg(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := model_organization.OrderModel{}
+	param.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	param.ProductId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "productId"))
+	param.BuyNumber = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "buyNumber"))
+	param.GrantDuration = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantDuration"))
+	param.RealAmount = ctx.GetFloat64(consts.ValidatorPrefixPlatform + "realAmount")
+	param.DeclineRemark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 
-	if !product_service.CreateCurdFactory().Add(&param) {
-		response.FailSimplify(ctx, "新增失败")
-		return
-	}
-
-	response.SuccessSimplify(ctx)
-}
-
-// EditForManage 管理: 编辑
-func (u *OrderController) EditForManage(ctx *gin.Context) {
-	param := u.addParam(ctx)
-
-	if errCode, err := product_service.CreateCurdFactory().UpdateById(&param); err != nil {
+	if errCode, err := order_service.CreateCurdFactory().PlatformAdd(&param, loginInfo); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
 
 	response.SuccessSimplify(ctx)
-}
-
-// DeleteForManage 管理: 删除
-func (u *OrderController) DeleteForManage(ctx *gin.Context) {
-	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
-	if !product_service.CreateCurdFactory().DeleteById(id) {
-		response.FailSimplify(ctx, "删除失败")
-		return
-	}
-
-	response.SuccessSimplify(ctx)
-}
-
-func (u *OrderController) addParam(ctx *gin.Context) model_platform.ProductModel {
-	var param = model_platform.ProductModel{}
-	param.Id = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
-	param.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grant_type"))
-	param.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
-	param.Price = ctx.GetFloat64(consts.ValidatorPrefixPlatform + "price")
-	param.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
-
-	productGrantConfig := enum_product.ProductGrantConfig{}
-	productGrantConfig.Process = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_process"))
-	productGrantConfig.Tamper = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_tamper"))
-	productGrantConfig.Blackmail = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_blackmail"))
-	productGrantConfig.Port = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_port"))
-	productGrantConfig.Plug = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_plug"))
-	productGrantConfig.Usb = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_usb"))
-	productGrantConfig.Syslog = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_syslog"))
-	productGrantConfig.Outreach = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_outreach"))
-	productGrantConfig.Login = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_login"))
-	param.GrantModule = helpers.JsonEncode(productGrantConfig)
-
-	loginInfo := u.getLogin(ctx)
-	param.CreateId = loginInfo.AdminId
-	param.CreateName = loginInfo.Username
-	return param
 }

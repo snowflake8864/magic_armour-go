@@ -159,6 +159,14 @@ func (r *RedisClient) Get(key string) string {
 	return val
 }
 
+func (r *RedisClient) Incr(key string) (int, error) {
+	val, err := r.Int(r.client.Do("Incr", key))
+	if err != nil {
+		return 0, err
+	}
+	return val, nil
+}
+
 //下面是Hash相关
 
 func (r *RedisClient) HmSet(key string, fieldsAndValues map[string]string) (bool, error) {

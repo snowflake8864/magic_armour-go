@@ -43,3 +43,34 @@ func String2Int64(str string) int64 {
 		return num
 	}
 }
+
+// StringPad
+// input string 原字符串
+// padLength int 规定补齐后的字符串位数
+// padString string 自定义填充字符串
+// padType string 填充类型:LEFT(向左填充,自动补齐位数), 默认右侧
+func StringPad(input string, padLength int, padString string, padType string) string {
+	output := ""
+	inputLen := len(input)
+
+	if inputLen >= padLength {
+		return input
+	}
+
+	padStringLen := len(padString)
+	needFillLen := padLength - inputLen
+
+	if diffLen := padStringLen - needFillLen; diffLen > 0 {
+		padString = padString[diffLen:]
+	}
+
+	for i := 1; i <= needFillLen; i += padStringLen {
+		output += padString
+	}
+	switch padType {
+	case "LEFT":
+		return output + input
+	default:
+		return input + output
+	}
+}

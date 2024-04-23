@@ -167,6 +167,7 @@ func InitPlatformRouter() *gin.Engine {
 					org := agent.Group("org/")
 					{
 						org.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOrgPage"))
+						org.POST("addGrant", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOrgAddGrant"))
 					}
 					manage := agent.Group("own/")
 					{
