@@ -137,6 +137,9 @@ func InitPlatformRouter() *gin.Engine {
 					manage := product.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProductManagePage"))
+						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProductManageAdd"))
+						//manage.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProductManageEdit"))
+						//manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ProductManageDelete"))
 
 					}
 				} //产品

@@ -84,6 +84,8 @@ func PlatformRegisterValidator() {
 	//产品
 	key = consts.ValidatorPrefixPlatform + "ProductManagePage"
 	containers.Set(key, product4.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "ProductManageAdd"
+	containers.Set(key, product4.ManageAdd{})
 
 	//威胁情报
 	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"

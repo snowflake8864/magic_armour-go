@@ -8,7 +8,9 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/product_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -51,4 +53,42 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
+}
+
+// AddForManage 管理: 添加
+func (u *ProductController) AddForManage(ctx *gin.Context) {
+	param := u.addParam(ctx)
+
+	if !product_service.CreateCurdFactory().Add(&param) {
+		response.FailSimplify(ctx, "新增失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+func (u *ProductController) addParam(ctx *gin.Context) model_platform.ProductModel {
+	var param = model_platform.ProductModel{}
+	param.Id = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
+	param.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grant_type"))
+	param.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
+	param.Price = ctx.GetFloat64(consts.ValidatorPrefixPlatform + "price")
+	param.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
+
+	productGrantConfig := enum_product.ProductGrantConfig{}
+	productGrantConfig.Process = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_process"))
+	productGrantConfig.Tamper = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_tamper"))
+	productGrantConfig.Blackmail = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_blackmail"))
+	productGrantConfig.Port = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_port"))
+	productGrantConfig.Plug = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_plug"))
+	productGrantConfig.Usb = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_usb"))
+	productGrantConfig.Syslog = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_syslog"))
+	productGrantConfig.Outreach = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_outreach"))
+	productGrantConfig.Login = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_login"))
+	param.GrantModule = helpers.JsonEncode(productGrantConfig)
+
+	loginInfo := u.getLogin(ctx)
+	param.CreateId = loginInfo.AdminId
+	param.CreateName = loginInfo.Username
+	return param
 }
