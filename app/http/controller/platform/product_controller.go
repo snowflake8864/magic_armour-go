@@ -67,6 +67,29 @@ func (u *ProductController) AddForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// EditForManage 管理: 编辑
+func (u *ProductController) EditForManage(ctx *gin.Context) {
+	param := u.addParam(ctx)
+
+	if errCode, err := product_service.CreateCurdFactory().UpdateById(&param); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+// DeleteForManage 管理: 删除
+func (u *ProductController) DeleteForManage(ctx *gin.Context) {
+	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
+	if !product_service.CreateCurdFactory().DeleteById(id) {
+		response.FailSimplify(ctx, "删除失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
 func (u *ProductController) addParam(ctx *gin.Context) model_platform.ProductModel {
 	var param = model_platform.ProductModel{}
 	param.Id = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))

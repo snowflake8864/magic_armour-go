@@ -65,6 +65,11 @@ func (crd *ProductCurd) UpdateById(param *model_platform.ProductModel) (errCode 
 	return errCode, err
 }
 
+// DeleteById 删除
+func (crd *ProductCurd) DeleteById(id int64) bool {
+	return crd.masterModel.DeleteById(id)
+}
+
 // GetItemById 通过编号称获取
 func (crd *ProductCurd) GetItemById(id int64) (model *model_platform.ProductModel) {
 	model, _ = crd.masterModel.GetItemById(id)
