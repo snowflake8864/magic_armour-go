@@ -46,15 +46,23 @@ var EnumStrMap = map[string]map[string]string{
 	},
 }
 
-var EnumStrSlice = map[string][]string{
-	//@todo 顺序不能改变（导入授权码的顺序）
+var WebMapInt = map[string][]int{
+	"type": {
+		TypeGold,
+		TypeTest,
+	},
+}
+var WebMapStr = map[string][]string{
 	"module": {
 		ModuleProcess,
-		ModuleBlackmail,
 		ModuleTamper,
+		ModuleBlackmail,
 		ModulePort,
 		ModulePlug,
 		ModuleUsb,
+		ModuleSyslog,
+		ModuleOutreach,
+		ModuleLogin,
 	},
 }
 

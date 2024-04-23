@@ -21,14 +21,16 @@ type ProductController struct {
 
 // GrantTypes 授权类型
 func (u *ProductController) GrantTypes(ctx *gin.Context) {
-	list := enums.Get1stIsStrReturnMapIntOfStr("type", enum_product.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
+	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_product.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_product.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // GrantModules 授权模块
 func (u *ProductController) GrantModules(ctx *gin.Context) {
-	list := enums.Get1stIsStrReturnMapStrOfStr("module", enum_product.EnumStrMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapStrOStr2List(list, false))
+	keys := enums.Get1stIsStrReturnSliceOfStr("module", enum_product.WebMapStr)
+	labels := enums.Get1stIsStrReturnMapStrOfStr("module", enum_product.EnumStrMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatStringList(keys, labels, false))
 }
 
 // AllPublished 全部已发布的产品
