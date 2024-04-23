@@ -144,6 +144,17 @@ func InitPlatformRouter() *gin.Engine {
 					}
 				} //产品
 
+				//订单
+				order := vPlatform.Group("order/")
+				{
+					public := order.Group("public/")
+					{
+						public.POST("orderStatus", (&platform.OrderController{}).OrderStatus)
+						public.POST("expireStatus", (&platform.OrderController{}).ExpireStatus)
+						public.POST("grantDuration", (&platform.OrderController{}).GrantDuration)
+					}
+				} //订单
+
 				//终端
 				agent := vPlatform.Group("agent/")
 				{

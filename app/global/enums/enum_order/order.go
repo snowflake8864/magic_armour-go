@@ -56,3 +56,27 @@ var EnumMap = map[string]map[int]string{
 		enums.IsYes: "无效",
 	},
 }
+
+var WebMapInt = map[string][]int{
+	"order_status": {
+		OrderStatusCancel,
+		OrderStatusUnpaid,
+		OrderStatusPaid,
+		OrderStatusCompleted,
+	},
+	"grant_duration": {
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		12,
+		24,
+		36,
+	},
+	"expire_status": {
+		enums.IsNot,
+		enums.IsYes,
+	},
+}
