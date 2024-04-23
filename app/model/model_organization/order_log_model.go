@@ -24,6 +24,8 @@ type OrderLogModel struct {
 	OperateSource int    `json:"operate_source"`
 	OperateId     int64  `json:"operate_id"`
 	OperateName   string `json:"operate_name"`
+	UsedNumber    string `json:"used_number"`
+	UsedAgents    string `json:"used_agents"`
 	CreatedAt     string `json:"created_at"`
 }
 
@@ -44,6 +46,8 @@ func (m *OrderLogModel) CreateTable() bool {
 			operate_source tinyint (1) NOT NULL DEFAULT '0' COMMENT '操作:来源',
 			operate_id int (11) NOT NULL DEFAULT '0' COMMENT '操作用户:编号',
 			operate_name varchar (128) NOT NULL DEFAULT '' COMMENT '操作用户:名称',
+			used_number int(11) NOT NULL DEFAULT '0' COMMENT '使用数目',
+  			used_agents text COMMENT '使用终端集合',
 			created_at datetime DEFAULT NULL,
 			PRIMARY KEY (id),
 			KEY org_order (org_id,order_no)
@@ -64,46 +68,6 @@ func (m *OrderLogModel) InsertItem(s *OrderLogModel) bool {
 		return true
 	} else {
 		return false
-	}
-}
-
-// UpdateById 通过id修改
-func (m *OrderLogModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("id=?", id).Updates(updates)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// DeleteByConditions 通过条件删除
-func (m *OrderLogModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// GetItemById 通过id获取一条记录
-func (m *OrderLogModel) GetItemById(id int64) (item *OrderLogModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
-	if result.Error == nil {
-		return item, nil
-	} else {
-		return item, result.Error
-	}
-}
-
-// GetItemsByIds 通过id集合获取多条记录
-func (m *OrderLogModel) GetItemsByIds(ids []int64) (items []*OrderLogModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
 	}
 }
 

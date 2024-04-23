@@ -19,6 +19,9 @@ type OrderModel struct {
 	OrderNo       string  `json:"order_no" gorm:"primaryKey"`
 	OrgId         int64   `json:"org_id"`
 	OrgName       string  `json:"org_name"`
+	UserName      string  `json:"user_name"`
+	UserEmail     string  `json:"user_email"`
+	UserPhone     string  `json:"user_phone"`
 	ProductId     int64   `json:"product_id"`
 	ProductTitle  string  `json:"product_title"`
 	GrantType     int     `json:"grant_type"`
@@ -35,9 +38,6 @@ type OrderModel struct {
 	PayMethod     string  `json:"pay_method"`
 	PayInfo       string  `json:"pay_info"`
 	PayOrderNo    string  `json:"pay_order_no"`
-	CreateId      int64   `json:"create_id"`
-	CreateName    string  `json:"create_name"`
-	CreatePhone   string  `json:"create_phone"`
 	CreatedAt     string  `json:"created_at"`
 	DeclineAt     string  `json:"decline_at"`
 	DeclineRemark string  `json:"decline_remark"`
@@ -58,7 +58,10 @@ func (m *OrderModel) CreateTable() bool {
 		(
           order_no VARCHAR(128) NOT NULL DEFAULT '' COMMENT '订单编号',
           org_id int (11) NOT NULL DEFAULT '0' COMMENT '企业(o_organization.id)',
-          org_name varchar (128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.id)',
+          org_name varchar (128) NOT NULL DEFAULT '' COMMENT '企业(o_organization.name)',
+          user_name varchar(128) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_organization.user_name)',
+		  user_email varchar(64) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_organization.user_email)',
+		  user_phone varchar(16) NOT NULL DEFAULT '' COMMENT '默认管理用户(o_organization.user_phone)',
           product_id int (11) NOT NULL DEFAULT '0' COMMENT '产品id(p_products.id)',
           product_title varchar (128) NOT NULL DEFAULT '' COMMENT '产品标题(p_products.title)',
           grant_type tinyint (1) NOT NULL DEFAULT '0' COMMENT '授权类型',
@@ -75,9 +78,6 @@ func (m *OrderModel) CreateTable() bool {
           pay_method tinyint (1) NOT NULL DEFAULT '0' COMMENT '支付方法',
           pay_info text COMMENT '支付信息',
           pay_order_no varchar (128) NOT NULL DEFAULT '' COMMENT '支付订单号(三方)',
-          create_id int (11) NOT NULL DEFAULT '0' COMMENT '创建人(o_user.id)',
-          create_name varchar (64) NOT NULL DEFAULT '' COMMENT '创建人(o_user.username)',
-          create_phone varchar (16) NOT NULL DEFAULT '' COMMENT '创建人(o_user.phone)',
           create_at datetime DEFAULT NULL COMMENT '创建时间',
           decline_at datetime DEFAULT NULL COMMENT '直降时间',
           decline_remark varchar (255) NOT NULL DEFAULT '' COMMENT '直降备注',
@@ -86,12 +86,10 @@ func (m *OrderModel) CreateTable() bool {
           cancel_at datetime DEFAULT NULL COMMENT '取消',
           source tinyint (1) NOT NULL DEFAULT '0' COMMENT '来源',
           PRIMARY KEY (order_no),
-          KEY org_expire (org_id, is_expire),
+          KEY org_expire (org_id, order_status, is_expire),
           KEY org_name (org_name),
-          KEY pay_order_no (pay_order_no),
           KEY product_id (product_id),
-          KEY order_status (order_status),
-          KEY create_name (create_name),
+          KEY user_name (user_name),
           KEY create_at (create_at),
           KEY pay_at (pay_at),
           KEY complete_at (complete_at)
@@ -116,18 +114,8 @@ func (m *OrderModel) InsertItem(s *OrderModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *OrderModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("id=?", id).Updates(updates)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// DeleteByConditions 通过条件删除
-func (m *OrderModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
+func (m *OrderModel) UpdateById(id string, updates map[string]interface{}) bool {
+	result := m.Model(m).Where("order_no=?", id).Updates(updates)
 	if result.Error == nil {
 		return true
 	} else {
@@ -136,8 +124,8 @@ func (m *OrderModel) DeleteByConditions(condition map[string]interface{}) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *OrderModel) GetItemById(id int64) (item *OrderModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+func (m *OrderModel) GetItemById(id string) (item *OrderModel, err error) {
+	result := m.Model(m).Where("order_no=?", id).First(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -146,8 +134,8 @@ func (m *OrderModel) GetItemById(id int64) (item *OrderModel, err error) {
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *OrderModel) GetItemsByIds(ids []int64) (items []*OrderModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
+func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel, err error) {
+	result := m.Model(m).Where("order_no IN ?", ids).Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
@@ -177,7 +165,7 @@ func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offs
 // Count 通过条件统计
 func (m *OrderModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	result := m.Model(m).Select("order_no").Where(condition).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

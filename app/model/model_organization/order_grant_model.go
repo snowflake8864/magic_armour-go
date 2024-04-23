@@ -3,7 +3,6 @@ package model_organization
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
 )
 
 // 订单表
@@ -67,16 +66,6 @@ func (m *OrderGrantModel) UpdateById(id int64, updates map[string]interface{}) b
 	}
 }
 
-// DeleteByConditions 通过条件删除
-func (m *OrderGrantModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
 // GetItemById 通过id获取一条记录
 func (m *OrderGrantModel) GetItemById(id int64) (item *OrderGrantModel, err error) {
 	result := m.Model(m).Where("id=?", id).First(&item)
@@ -84,59 +73,5 @@ func (m *OrderGrantModel) GetItemById(id int64) (item *OrderGrantModel, err erro
 		return item, nil
 	} else {
 		return item, result.Error
-	}
-}
-
-// GetItemsByIds 通过id集合获取多条记录
-func (m *OrderGrantModel) GetItemsByIds(ids []int64) (items []*OrderGrantModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-// GetItemsByConditions 通过条件获取多条记录
-func (m *OrderGrantModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderGrantModel, err error) {
-	tmp := m.Model(m).Where(condition)
-	if limit > 0 {
-		tmp = tmp.Offset(offset).Limit(limit)
-	}
-	if !helpers.StringIsEmpty(order) {
-		tmp = tmp.Order(order)
-	} else {
-		tmp = tmp.Order("created_at ASC")
-	}
-	result := m.Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-// Count 通过条件统计
-func (m *OrderGrantModel) Count(condition map[string]interface{}) int64 {
-	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
-	if result.Error == nil {
-		return total
-	} else {
-		return 0
-	}
-}
-
-// Page 通过条件分页
-func (m *OrderGrantModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrderGrantModel) {
-	total = m.Count(condition)
-	if total == 0 {
-		return total, nil
-	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
-		return total, items
-	} else {
-		return 0, nil
 	}
 }
