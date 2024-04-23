@@ -22,14 +22,16 @@ type AgentController struct {
 
 // OnlineStatus 在线状态
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
-	list := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
+	keys := enums.Get1stIsStrReturnSliceOfInt("is_online", enum_agent.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
-	list := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatMapIntOfStr2List(list, true))
+	keys := enums.Get1stIsStrReturnSliceOfInt("is_safe", enum_agent.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // CountOnline 统计在线和离线数量

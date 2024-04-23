@@ -43,3 +43,22 @@ var EnumIntMap = map[string]map[int]string{
 		enums.IsNot: "异常",
 	},
 }
+
+var WebMapInt = map[string][]int{
+	"agent_type": {
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+	},
+	"is_online": {
+		enums.IsYes,
+		enums.IsNot,
+	},
+	"is_safe": {
+		enums.IsYes,
+		enums.IsNot,
+	},
+}
