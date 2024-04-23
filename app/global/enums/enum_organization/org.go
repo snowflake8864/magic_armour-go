@@ -48,3 +48,10 @@ var EnumMap = map[string]map[int]string{
 		LogActionOrgDelSubUser:          "删除子账户",
 	},
 }
+
+var WebMapInt = map[string][]int{
+	"type": {
+		TypeOrg,
+		TypePerson,
+	},
+}

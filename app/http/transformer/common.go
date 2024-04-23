@@ -29,30 +29,8 @@ func (t *Common) FormatMapIntOfStr2List(s map[int]string, appendAll bool) (resul
 	return result
 }
 
-// FormatMapStrOStr2List 把map[string]string格式成标准前端数据格式
-func (t *Common) FormatMapStrOStr2List(s map[string]string, appendAll bool) (result []map[string]interface{}) {
-	if s == nil {
-		return result
-	}
-	if appendAll {
-		result = append(result, map[string]interface{}{
-			"val":   enums.AllDefaultStr,
-			"label": "全部",
-		})
-	}
-	for key, val := range s {
-		result = append(result, map[string]interface{}{
-			"val":   key,
-			"label": val,
-		})
-	}
-	return result
-}
-
 // FormatIntList 格式成标准前端数据格式
 func (t *Common) FormatIntList(keys []int, labels map[int]string, appendAll bool) (result []map[string]interface{}) {
-	fmt.Println(keys)
-	fmt.Println(labels)
 	if keys == nil {
 		return result
 	}
@@ -76,8 +54,6 @@ func (t *Common) FormatIntList(keys []int, labels map[int]string, appendAll bool
 
 // FormatStringList 格式成标准前端数据格式
 func (t *Common) FormatStringList(keys []string, labels map[string]string, appendAll bool) (result []map[string]interface{}) {
-	fmt.Println(keys)
-	fmt.Println(labels)
 	if keys == nil {
 		return result
 	}
