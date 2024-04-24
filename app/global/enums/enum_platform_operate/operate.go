@@ -38,6 +38,10 @@ var pathModuleLabel = map[string][]string{
 	"/platform/product/manage/edit":               {ModuleProduct, "产品管理：编辑"},
 	"/platform/product/manage/delete":             {ModuleProduct, "产品管理：删除"},
 	"/platform/agent/org/addGrant":                {ModuleAgent, "终端管理：添加授权"},
+	"/platform/order/manage/decline":              {ModuleOrder, "订单管理：直降"},
+	"/platform/order/manage/cancel":               {ModuleOrder, "订单管理：取消"},
+	"/platform/order/manage/paid":                 {ModuleOrder, "订单管理：确认已付款"},
+	"/platform/order/manage/unpaid":               {ModuleOrder, "订单管理：确认未付款"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

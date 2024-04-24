@@ -115,3 +115,83 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
+
+// CancelForManage 订单管理: 取消
+func (u *OrderController) CancelForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DeclineForManage 订单管理: 直降
+func (u *OrderController) DeclineForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+	remark := ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
+	realAmount := ctx.GetFloat64(consts.ValidatorPrefixPlatform + "realAmount")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().Decline(orderNo, remark, realAmount, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// PaidForManage 订单管理: 确认已支付
+func (u *OrderController) PaidForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// UnpaidForManage 订单管理: 确认未付款
+func (u *OrderController) UnpaidForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DetailForManage 订单管理: 详情
+func (u *OrderController) DetailForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// LogsForManage 订单管理:  日志列表
+func (u *OrderController) LogsForManage(ctx *gin.Context) {
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+
+	loginInfo := u.getLogin(ctx)
+	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}

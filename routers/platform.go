@@ -161,6 +161,12 @@ func InitPlatformRouter() *gin.Engine {
 					manage := order.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManagePage"))
+						manage.POST("detail", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManageDetail"))
+						manage.POST("logs", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManageLogs"))
+						manage.POST("decline", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManageDecline"))
+						manage.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManageCancel"))
+						manage.POST("paid", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManagePaid"))
+						manage.POST("unpaid", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderManageUnpaid"))
 					}
 				} //订单
 

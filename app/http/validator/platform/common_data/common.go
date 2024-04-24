@@ -33,3 +33,8 @@ type OrderSearch struct {
 	StartTime    string `form:"startTime" json:"startTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 	EndTime      string `form:"endTime" json:"endTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 }
+
+// OrderSingle 订单单个
+type OrderSingle struct {
+	OrderNo string `form:"orderNo" json:"orderNo" binding:"required"`
+}

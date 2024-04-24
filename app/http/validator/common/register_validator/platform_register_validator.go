@@ -91,6 +91,18 @@ func PlatformRegisterValidator() {
 	containers.Set(key, order4.GrantPage{})
 	key = consts.ValidatorPrefixPlatform + "OrderManagePage"
 	containers.Set(key, order4.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "OrderManageDetail"
+	containers.Set(key, order4.ManageDetail{})
+	key = consts.ValidatorPrefixPlatform + "OrderManageLogs"
+	containers.Set(key, order4.ManageLogs{})
+	key = consts.ValidatorPrefixPlatform + "OrderManageDecline"
+	containers.Set(key, order4.ManageDecline{})
+	key = consts.ValidatorPrefixPlatform + "OrderManageCancel"
+	containers.Set(key, order4.ManageCancel{})
+	key = consts.ValidatorPrefixPlatform + "OrderManagePaid"
+	containers.Set(key, order4.ManagePaid{})
+	key = consts.ValidatorPrefixPlatform + "OrderManageUnpaid"
+	containers.Set(key, order4.ManageUnpaid{})
 
 	//产品
 	key = consts.ValidatorPrefixPlatform + "ProductManagePage"

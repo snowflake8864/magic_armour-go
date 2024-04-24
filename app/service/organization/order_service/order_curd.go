@@ -165,3 +165,51 @@ func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderF
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
 }
+
+// PlatformCancel 平台取消
+func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// OrgCancel 企业取消
+func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// PayByBankcard 通过银行卡支付
+func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// Decline 直降
+func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// ConfirmPaid 确认已支付
+func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// ConfirmUnpaid 确认未付款
+func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// OrgDelete 企业删除
+func (crd *OrderCurd) OrgDelete(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
+
+	return errCode, err
+}
+
+// AutoExpire 自动过期
+func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) (errCode int, err error) {
+
+	return errCode, err
+}
