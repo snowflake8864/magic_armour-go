@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -10,7 +11,7 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/order_service"
-	"goskeleton/app/service/platform/product_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -39,23 +40,6 @@ func (u *OrderController) GrantDuration(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_duration", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_duration", enum_order.EnumMap)
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
-}
-
-// PageForManage 管理: 分页
-func (u *OrderController) PageForManage(ctx *gin.Context) {
-	//页面上传
-	conditions := product_service.SearchConditions{}
-	conditions.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
-	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
-	conditions.IsPublish = enums.AllDefaultInt
-
-	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
-
-	//产品分页
-	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
-
-	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }
 
 // AddForOrg  为企业添加订单授权
@@ -111,4 +95,23 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_servi
 	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
 	searchConditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 	return searchConditions
+}
+
+// PageForManage 订单管理: 分页
+func (u *OrderController) PageForManage(ctx *gin.Context) {
+	//查询条件
+	conditions := u.getOrderSearchConditions(ctx)
+	conditions.IsExpire = enums.AllDefaultInt
+	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
+	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	fmt.Println(helpers.JsonEncode(conditions))
+
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//终端分页
+	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
