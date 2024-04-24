@@ -32,6 +32,7 @@ func (t *Order) pageGeneral(model *model_organization.OrderModel) map[string]int
 	data["sale_price"] = model.SalePrice
 	data["grant_duration"] = model.GrantDuration
 	data["buy_number"] = model.BuyNumber
+	data["usageNumber"] = model.UsageNumber
 	data["total_amount"] = model.TotalAmount
 	data["decline_amount"] = model.DeclineAmount
 	data["real_amount"] = model.RealAmount

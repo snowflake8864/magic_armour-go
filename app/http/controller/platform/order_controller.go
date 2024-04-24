@@ -86,3 +86,29 @@ func (u *OrderController) ValidByOrg(ctx *gin.Context) {
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransList(models))
 }
+
+// PageForGrant 授权管理: 分页
+func (u *OrderController) PageForGrant(ctx *gin.Context) {
+	//查询条件
+	conditions := u.getOrderSearchConditions(ctx)
+	conditions.IsExpire = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isExpire"))
+	conditions.OrderStatus = enum_order.OrderStatusCompleted
+
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//终端分页
+	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
+}
+
+func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_service.SearchConditions {
+	searchConditions := order_service.SearchConditions{}
+	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
+	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
+	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	searchConditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	return searchConditions
+}

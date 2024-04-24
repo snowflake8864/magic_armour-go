@@ -87,6 +87,8 @@ func PlatformRegisterValidator() {
 	//订单
 	key = consts.ValidatorPrefixPlatform + "OrderPublicValidByOrg"
 	containers.Set(key, order4.ValidByOrg{})
+	key = consts.ValidatorPrefixPlatform + "OrderGrantPage"
+	containers.Set(key, order4.ValidByOrg{})
 
 	//产品
 	key = consts.ValidatorPrefixPlatform + "ProductManagePage"

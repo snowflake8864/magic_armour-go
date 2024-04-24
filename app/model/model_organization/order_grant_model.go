@@ -57,8 +57,8 @@ func (m *OrderGrantModel) InsertItem(s *OrderGrantModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *OrderGrantModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("id=?", id).Updates(updates)
+func (m *OrderGrantModel) UpdateById(id string, updates map[string]interface{}) bool {
+	result := m.Model(m).Where("order_no=?", id).Updates(updates)
 	if result.Error == nil {
 		return true
 	} else {
@@ -67,11 +67,21 @@ func (m *OrderGrantModel) UpdateById(id int64, updates map[string]interface{}) b
 }
 
 // GetItemById 通过id获取一条记录
-func (m *OrderGrantModel) GetItemById(id int64) (item *OrderGrantModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+func (m *OrderGrantModel) GetItemById(id string) (item *OrderGrantModel, err error) {
+	result := m.Model(m).Where("order_no=?", id).First(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
 		return item, result.Error
+	}
+}
+
+// GetItemsByIds 通过ids获取多条记录
+func (m *OrderGrantModel) GetItemsByIds(ids []string) (items []*OrderGrantModel, err error) {
+	result := m.Model(m).Where("order_no IN ?", ids).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
 	}
 }

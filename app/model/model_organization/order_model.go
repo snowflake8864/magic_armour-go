@@ -29,6 +29,7 @@ type OrderModel struct {
 	SalePrice     float64 `json:"sale_price"`
 	GrantDuration int     `json:"grant_duration"`
 	BuyNumber     int     `json:"buy_number"`
+	UsageNumber   int     `json:"usage_number"`
 	TotalAmount   float64 `json:"total_amount"`
 	DeclineAmount float64 `json:"decline_amount"`
 	RealAmount    float64 `json:"real_amount"`
@@ -69,6 +70,7 @@ func (m *OrderModel) CreateTable() bool {
           sale_price decimal (8, 2) NOT NULL DEFAULT '0.00' COMMENT '产品售价',
           grant_duration int (11) NOT NULL DEFAULT '0' COMMENT '授权时长',
           buy_number int (11) NOT NULL DEFAULT '0' COMMENT '购买数量',
+          usage_number  int (11) NOT NULL DEFAULT '0' COMMENT '使用数量',
           total_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '总计金额',
           decline_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '直降金额',
           real_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '真实金额',

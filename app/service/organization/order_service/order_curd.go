@@ -2,7 +2,6 @@ package order_service
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
@@ -110,16 +109,6 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 		return -1, errors.New("保存订单失败")
 	}
 
-	//订单授权
-	if orderParam.Source == enums.OperateSourcePlatform {
-		orderGrant := CreateGrantFactory().Init(orderParam.OrderNo, orderParam.OrgId, orderParam.BuyNumber)
-		if err = tx.Create(&orderGrant).Error; err != nil {
-			tx.Rollback()
-			return -1, errors.New("保存订单失败")
-		}
-	}
-	tx.Commit()
-
 	//订单日志
 	logParam := model_organization.OrderLogModel{
 		OrgId:         orderParam.OrgId,
@@ -134,8 +123,11 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 		Remark:        orderParam.DeclineRemark,
 		CreatedAt:     orderParam.CreatedAt,
 	}
-	CreateLogFactory().Add(&logParam)
-
+	if err = tx.Create(&logParam).Error; err != nil {
+		tx.Rollback()
+		return -1, errors.New("保存日志失败")
+	}
+	tx.Commit()
 	return errCode, err
 }
 
@@ -169,7 +161,6 @@ func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*model_organizati
 // Page 分页
 func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrderModel) {
 	where := crd.search2Where(search)
-	fmt.Println(where)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items

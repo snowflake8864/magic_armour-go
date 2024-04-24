@@ -154,6 +154,10 @@ func InitPlatformRouter() *gin.Engine {
 						public.POST("grantDuration", (&platform.OrderController{}).GrantDuration)
 						public.POST("validByOrg", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderPublicValidByOrg"))
 					}
+					grant := order.Group("grant/")
+					{
+						grant.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderGrantPage"))
+					}
 				} //订单
 
 				//终端

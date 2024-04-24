@@ -35,9 +35,7 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 	if !helpers.StringIsEmpty(search.UserName) {
 		wheres["user_name"] = search.UserName
 	}
-	if !helpers.StringIsEmpty(search.OraName) {
-		wheres["org_name like"] = "%" + search.OraName + "%"
-	}
+
 	if !helpers.StringIsEmpty(search.UserPhone) {
 		wheres["user_phone"] = search.UserPhone
 	}
@@ -46,6 +44,9 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 	}
 	if !helpers.StringIsEmpty(search.CreateAtLte) {
 		wheres["created_at <="] = search.CreateAtLte
+	}
+	if !helpers.StringIsEmpty(search.OraName) {
+		wheres["org_name like"] = "%" + search.OraName + "%"
 	}
 	if !helpers.StringIsEmpty(search.ProductName) {
 		wheres["product_title like"] = "%" + search.ProductName + "%"

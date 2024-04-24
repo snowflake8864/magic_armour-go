@@ -128,7 +128,6 @@ func initTableAndData() {
 		_ = model_organization.CreateCustomTableFactory().CreateTable()
 		_ = model_organization.CreateDepartmentFactory().CreateTable()
 		_ = model_organization.CreateOperateLogFactory().CreateTable()
-		_ = model_organization.CreateOrderGrantFactory().CreateTable()
 		_ = model_organization.CreateOrderLogFactory().CreateTable()
 		_ = model_organization.CreateOrderFactory().CreateTable()
 		_ = model_organization.CreateOrgExtendFactory().CreateTable()
