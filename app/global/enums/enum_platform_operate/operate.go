@@ -7,6 +7,7 @@ const (
 	ModuleOrg     = "org"
 	ModuleProduct = "product"
 	ModuleOrder   = "order"
+	ModuleAgent   = "agent"
 )
 
 var EnumMap = map[string]map[string]string{
@@ -15,6 +16,7 @@ var EnumMap = map[string]map[string]string{
 		ModuleOrg:     "客户管理",
 		ModuleProduct: "产品管理",
 		ModuleOrder:   "订单管理",
+		ModuleAgent:   " 终端管理",
 	},
 }
 
@@ -35,6 +37,7 @@ var pathModuleLabel = map[string][]string{
 	"/platform/product/manage/add":                {ModuleProduct, "产品管理：添加"},
 	"/platform/product/manage/edit":               {ModuleProduct, "产品管理：编辑"},
 	"/platform/product/manage/delete":             {ModuleProduct, "产品管理：删除"},
+	"/platform/agent/org/addGrant":                {ModuleAgent, "终端管理：添加授权"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

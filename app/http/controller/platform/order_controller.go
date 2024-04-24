@@ -58,7 +58,7 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }
 
-// AddForOrg 管理: 添加
+// AddForOrg  为企业添加订单授权
 func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := model_organization.OrderModel{}
@@ -70,10 +70,19 @@ func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	param.DeclineRemark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 	param.Source = enums.OperateSourcePlatform
 
-	if errCode, err := order_service.CreateCurdFactory().PlatformAdd(&param, loginInfo.AdminId, loginInfo.Username); err != nil {
+	if errCode, err := order_service.CreateCurdFactory().Add(&param, loginInfo.AdminId, loginInfo.Username); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
 
 	response.SuccessSimplify(ctx)
+}
+
+// ValidByOrg 企业下有效订单列表
+func (u *OrderController) ValidByOrg(ctx *gin.Context) {
+	OrgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+
+	models := order_service.CreateCurdFactory().GetValidItemsByOrg(OrgId)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransList(models))
 }

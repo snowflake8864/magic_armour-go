@@ -145,7 +145,10 @@ func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel, err error
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -165,7 +168,11 @@ func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offs
 // Count 通过条件统计
 func (m *OrderModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("order_no").Where(condition).Count(&total)
+	tmp := m.Model(m).Select("order_no")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
+	result := tmp.Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

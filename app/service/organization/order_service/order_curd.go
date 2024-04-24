@@ -58,8 +58,8 @@ func (crd *OrderCurd) getExpireAt() string {
 	return day
 }
 
-// PlatformAdd 平台新增
-func (crd *OrderCurd) PlatformAdd(orderParam *model_organization.OrderModel, operateId int64, operateName string) (errCode int, err error) {
+// Add 平台新增
+func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId int64, operateName string) (errCode int, err error) {
 	//订单信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
 	if orgModel == nil || orgModel.Id == 0 {
@@ -78,7 +78,6 @@ func (crd *OrderCurd) PlatformAdd(orderParam *model_organization.OrderModel, ope
 	if tx.Error != nil {
 		return -10, errors.New("保存订单失败")
 	}
-	fmt.Println("=====================", crd.makerOrderNo())
 
 	//新增订单
 	orderParam.OrderNo = crd.makerOrderNo()
@@ -138,4 +137,40 @@ func (crd *OrderCurd) PlatformAdd(orderParam *model_organization.OrderModel, ope
 	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
+}
+
+// GetItemByOrderNo 通过编号称获取
+func (crd *OrderCurd) GetItemByOrderNo(id string) (model *model_organization.OrderModel) {
+	model, _ = crd.masterModel.GetItemById(id)
+	return model
+}
+
+// GetItemByOrderNos 通过编号集合称获取
+func (crd *OrderCurd) GetItemByOrderNos(ids []string) (items []*model_organization.OrderModel) {
+	items, _ = crd.masterModel.GetItemsByIds(ids)
+	return items
+}
+
+// GetValidItemsByOrg 通过企业编号获取有效订单
+func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*model_organization.OrderModel) {
+	search := SearchConditions{
+		OrgId:       orgId,
+		IsExpire:    enums.IsNot,
+		OrderStatus: enum_order.OrderStatusCompleted,
+	}
+
+	items, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "")
+	if err != nil || len(items) == 0 {
+		return nil
+	}
+	return items
+}
+
+// Page 分页
+func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrderModel) {
+	where := crd.search2Where(search)
+	fmt.Println(where)
+	order := orderField + " " + orderSort
+	total, items = crd.masterModel.Page(where, offset, pageSize, order)
+	return total, items
 }

@@ -155,8 +155,10 @@ func (m *OrganizationModel) GetItemsByIds(ids []int64) (items []*OrganizationMod
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrganizationModel, err error) {
-	whereSQL, vals, _ := m.WhereBuild(condition)
-	tmp := m.Model(m).Where(whereSQL, vals...)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -176,8 +178,11 @@ func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{
 // Count 通过条件统计
 func (m *OrganizationModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	whereSQL, vals, _ := m.WhereBuild(condition)
-	result := m.Model(m).Select("id").Where(whereSQL, vals...).Count(&total)
+	tmp := m.Model(m).Select("id")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
+	result := tmp.Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

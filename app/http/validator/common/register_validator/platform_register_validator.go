@@ -84,6 +84,10 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "AgentOwnPage"
 	containers.Set(key, agent4.OwnPage{})
 
+	//订单
+	key = consts.ValidatorPrefixPlatform + "OrderPublicValidByOrg"
+	containers.Set(key, order4.ValidByOrg{})
+
 	//产品
 	key = consts.ValidatorPrefixPlatform + "ProductManagePage"
 	containers.Set(key, product4.ManagePage{})
