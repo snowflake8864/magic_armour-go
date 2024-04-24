@@ -27,7 +27,7 @@ func (crd *OrgLog) InitByOrg(orgParam *model_organization.OrganizationModel, mod
 	return param
 }
 
-// Add 新增企业
+// Add 新增企业日志
 func (crd *OrgLog) Add(param *model_organization.OrgLogModel) bool {
 	if helpers.StringIsEmpty(param.CreatedAt) {
 		param.CreatedAt = helpers.DatetimeCurr()

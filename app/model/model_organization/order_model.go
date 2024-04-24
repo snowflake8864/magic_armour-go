@@ -26,8 +26,8 @@ type OrderModel struct {
 	ProductTitle  string  `json:"product_title"`
 	GrantType     int     `json:"grant_type"`
 	GrantModule   string  `json:"grant_module"`
-	GrantDuration int     `json:"grant_duration"`
 	SalePrice     float64 `json:"sale_price"`
+	GrantDuration int     `json:"grant_duration"`
 	BuyNumber     int     `json:"buy_number"`
 	TotalAmount   float64 `json:"total_amount"`
 	DeclineAmount float64 `json:"decline_amount"`
@@ -35,7 +35,7 @@ type OrderModel struct {
 	OrderStatus   int     `json:"order_status"`
 	IsExpire      int     `json:"is_expire"`
 	ExpireAt      string  `json:"expire_at"`
-	PayMethod     string  `json:"pay_method"`
+	PayMethod     int     `json:"pay_method"`
 	PayInfo       string  `json:"pay_info"`
 	PayOrderNo    string  `json:"pay_order_no"`
 	CreatedAt     string  `json:"created_at"`
@@ -43,7 +43,7 @@ type OrderModel struct {
 	DeclineRemark string  `json:"decline_remark"`
 	PayAt         string  `json:"pay_at"`
 	CompleteAt    string  `json:"complete_at"`
-	CancelAt      string  `json:"cancel_at"`
+	CancelAt      string  `json:"cancel_at" gorm:"default:NULL"`
 	Source        int     `json:"source"`
 }
 
@@ -66,8 +66,8 @@ func (m *OrderModel) CreateTable() bool {
           product_title varchar (128) NOT NULL DEFAULT '' COMMENT '产品标题(p_products.title)',
           grant_type tinyint (1) NOT NULL DEFAULT '0' COMMENT '授权类型',
           grant_module varchar (1024) NOT NULL DEFAULT '' COMMENT '授权模块(json)',
+          sale_price decimal (8, 2) NOT NULL DEFAULT '0.00' COMMENT '产品售价',
           grant_duration int (11) NOT NULL DEFAULT '0' COMMENT '授权时长',
-          sale_price decimal (6, 2) NOT NULL DEFAULT '0.00' COMMENT '产品售价',
           buy_number int (11) NOT NULL DEFAULT '0' COMMENT '购买数量',
           total_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '总计金额',
           decline_amount decimal (14, 2) NOT NULL DEFAULT '0.00' COMMENT '直降金额',
@@ -78,7 +78,7 @@ func (m *OrderModel) CreateTable() bool {
           pay_method tinyint (1) NOT NULL DEFAULT '0' COMMENT '支付方法',
           pay_info text COMMENT '支付信息',
           pay_order_no varchar (128) NOT NULL DEFAULT '' COMMENT '支付订单号(三方)',
-          create_at datetime DEFAULT NULL COMMENT '创建时间',
+          created_at datetime DEFAULT NULL COMMENT '创建时间',
           decline_at datetime DEFAULT NULL COMMENT '直降时间',
           decline_remark varchar (255) NOT NULL DEFAULT '' COMMENT '直降备注',
           pay_at datetime DEFAULT NULL COMMENT '支付时间',
@@ -90,7 +90,7 @@ func (m *OrderModel) CreateTable() bool {
           KEY org_name (org_name),
           KEY product_id (product_id),
           KEY user_name (user_name),
-          KEY create_at (create_at),
+          KEY created_at (created_at),
           KEY pay_at (pay_at),
           KEY complete_at (complete_at)
         ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC COMMENT = '企业:订单';

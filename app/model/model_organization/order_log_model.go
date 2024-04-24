@@ -24,7 +24,7 @@ type OrderLogModel struct {
 	OperateSource int    `json:"operate_source"`
 	OperateId     int64  `json:"operate_id"`
 	OperateName   string `json:"operate_name"`
-	UsedNumber    string `json:"used_number"`
+	UsedNumber    int    `json:"used_number"`
 	UsedAgents    string `json:"used_agents"`
 	Remark        string `json:"remark"`
 	CreatedAt     string `json:"created_at"`

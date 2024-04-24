@@ -68,8 +68,9 @@ func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	param.GrantDuration = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantDuration"))
 	param.RealAmount = ctx.GetFloat64(consts.ValidatorPrefixPlatform + "realAmount")
 	param.DeclineRemark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
+	param.Source = enums.OperateSourcePlatform
 
-	if errCode, err := order_service.CreateCurdFactory().PlatformAdd(&param, loginInfo); err != nil {
+	if errCode, err := order_service.CreateCurdFactory().PlatformAdd(&param, loginInfo.AdminId, loginInfo.Username); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
