@@ -69,7 +69,19 @@ func (u *SoftwareController) GetAgentConfig(ctx *gin.Context) {
 
 // SetAgentConfig  保存终端配置
 func (u *SoftwareController) SetAgentConfig(ctx *gin.Context) {
+	idAndVal := map[string]string{
+		enum_dictionary.AgentHttpUrl:               ctx.GetString(consts.ValidatorPrefixPlatform + "http_url"),
+		enum_dictionary.AgentHttpPort:              ctx.GetString(consts.ValidatorPrefixPlatform + "http_port"),
+		enum_dictionary.AgentCompatibleDefaultOrg:  ctx.GetString(consts.ValidatorPrefixPlatform + "default_org"),
+		enum_dictionary.AgentCompatibleDefaultUser: ctx.GetString(consts.ValidatorPrefixPlatform + "default_user"),
+	}
 
+	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
+		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // PageForManage 管理: 分页
