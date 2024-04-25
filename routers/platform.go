@@ -203,7 +203,7 @@ func InitPlatformRouter() *gin.Engine {
 					public := software.Group("public/")
 					{
 						public.POST("osTypes", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicOsTypes"))
-						public.POST("agentConfigGet", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicAgentConfigGet"))
+						public.POST("agentConfigGet", (&platform.SoftwareController{}).GetAgentConfig)
 						public.POST("agentConfigSet", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicAgentConfigSet"))
 					}
 					manage := software.Group("manage/")
@@ -214,7 +214,7 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("publish", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePublish"))
 						manage.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageCancel"))
 						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageDelete"))
-						manage.POST("clear", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageClear"))
+						manage.POST("clear", (&platform.SoftwareController{}).ClearForManage)
 					}
 
 				}

@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/http/validator/platform/org_menu"
 	organize4 "goskeleton/app/http/validator/platform/organize"
 	product4 "goskeleton/app/http/validator/platform/product"
+	software4 "goskeleton/app/http/validator/platform/software"
 	"goskeleton/app/http/validator/platform/threaten_push"
 )
 
@@ -117,6 +118,24 @@ func PlatformRegisterValidator() {
 	containers.Set(key, product4.ManageEdit{})
 	key = consts.ValidatorPrefixPlatform + "ProductManageDelete"
 	containers.Set(key, product4.ManageDelete{})
+
+	//软件
+	key = consts.ValidatorPrefixPlatform + "SoftwarePublicOsTypes"
+	containers.Set(key, software4.PublicOsTypes{})
+	key = consts.ValidatorPrefixPlatform + "SoftwarePublicAgentConfigSet"
+	containers.Set(key, software4.PublicAgentConfigSet{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManagePage"
+	containers.Set(key, software4.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManageAdd"
+	containers.Set(key, software4.ManageAdd{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManageDownload"
+	containers.Set(key, software4.ManageDownload{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManagePublish"
+	containers.Set(key, software4.ManagePublish{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManageCancel"
+	containers.Set(key, software4.ManageCancel{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareManageDelete"
+	containers.Set(key, software4.ManageDelete{})
 
 	//威胁情报
 	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"
