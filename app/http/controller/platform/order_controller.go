@@ -174,24 +174,18 @@ func (u *OrderController) UnpaidForManage(ctx *gin.Context) {
 func (u *OrderController) DetailForManage(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
 
-	loginInfo := u.getLogin(ctx)
-	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
-	if err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
-		return
-	}
-	response.SuccessSimplify(ctx)
+	model := order_service.CreateCurdFactory().GetItemByOrderNo(orderNo)
+	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransDetail(model))
 }
 
 // LogsForManage 订单管理:  日志列表
 func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
-	loginInfo := u.getLogin(ctx)
-	errCode, err := order_service.CreateCurdFactory().PlatformCancel(orderNo, loginInfo.AdminId, loginInfo.Username)
-	if err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
-		return
-	}
-	response.SuccessSimplify(ctx)
+	//日志分页
+	total, logModels := order_service.CreateLogFactory().Page(orderNo, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransLogsPage(total, logModels))
 }

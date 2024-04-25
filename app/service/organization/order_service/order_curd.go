@@ -118,8 +118,8 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 		OperateSource: orderParam.Source,
 		OperateId:     operateId,
 		OperateName:   operateName,
-		UsedNumber:    0,
-		UsedAgents:    "",
+		UsageNumber:   0,
+		UsageAgents:   "",
 		Remark:        orderParam.DeclineRemark,
 		CreatedAt:     orderParam.CreatedAt,
 	}

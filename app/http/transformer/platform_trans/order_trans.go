@@ -82,3 +82,41 @@ func (t *Order) TransList(models []*model_organization.OrderModel) (items []map[
 	}
 	return items
 }
+
+// TransDetail 转换详情页需要的数据
+func (t *Order) TransDetail(model *model_organization.OrderModel) (item map[string]interface{}) {
+	if model != nil {
+		item = t.pageGeneral(model)
+	}
+	return item
+}
+
+// TransLogsPage 转换成日志页需要的数据
+func (t *Order) TransLogsPage(total int64, models []*model_organization.OrderLogModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := make(map[string]interface{})
+
+			tmp["org_id"] = model.OrgId
+			tmp["OrderStatus"] = model.OrderStatus
+			tmp["order_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("order_status", model.OrderStatus, enum_order.EnumMap)
+			tmp["operate_id"] = model.OperateId
+			tmp["operate_name"] = model.OperateName
+			tmp["operate_action"] = model.OperateAction
+			tmp["operate_action_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("action", model.OperateAction, enum_order.EnumMap)
+			tmp["operate_source"] = model.OperateSource
+			tmp["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.OperateSource, enums.EnumMapInt)
+			tmp["usage_number"] = model.UsageNumber
+			tmp["usage_agents"] = model.UsageAgents
+			tmp["remark"] = model.Remark
+			tmp["created_at"] = model.CreatedAt
+			items = append(items, tmp)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}

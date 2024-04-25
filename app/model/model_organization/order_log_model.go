@@ -24,8 +24,8 @@ type OrderLogModel struct {
 	OperateSource int    `json:"operate_source"`
 	OperateId     int64  `json:"operate_id"`
 	OperateName   string `json:"operate_name"`
-	UsedNumber    int    `json:"used_number"`
-	UsedAgents    string `json:"used_agents"`
+	UsageNumber   int    `json:"usage_number"`
+	UsageAgents   string `json:"usage_agents"`
 	Remark        string `json:"remark"`
 	CreatedAt     string `json:"created_at"`
 }
@@ -47,8 +47,8 @@ func (m *OrderLogModel) CreateTable() bool {
 			operate_source tinyint (1) NOT NULL DEFAULT '0' COMMENT '操作:来源',
 			operate_id int (11) NOT NULL DEFAULT '0' COMMENT '操作用户:编号',
 			operate_name varchar (128) NOT NULL DEFAULT '' COMMENT '操作用户:名称',
-			used_number int(11) NOT NULL DEFAULT '0' COMMENT '使用数目',
-  			used_agents text COMMENT '使用终端集合',
+			usage_number int(11) NOT NULL DEFAULT '0' COMMENT '使用数目',
+  			usage_agents text COMMENT '使用终端集合',
 			remark varchar (255) NOT NULL DEFAULT '' COMMENT '备注',
 			created_at datetime DEFAULT NULL,
 			PRIMARY KEY (id),
@@ -84,7 +84,7 @@ func (m *OrderLogModel) GetItemsByConditions(condition map[string]interface{}, o
 	} else {
 		tmp = tmp.Order("created_at ASC")
 	}
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {

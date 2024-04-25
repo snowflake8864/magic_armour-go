@@ -159,7 +159,7 @@ func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offs
 	} else {
 		tmp = tmp.Order("created_at ASC")
 	}
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {

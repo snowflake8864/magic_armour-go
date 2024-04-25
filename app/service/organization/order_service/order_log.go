@@ -21,3 +21,12 @@ func (crd *OrderLog) Add(param *model_organization.OrderLogModel) bool {
 	}
 	return crd.masterModel.InsertItem(param)
 }
+
+// Page 分页
+func (crd *OrderLog) Page(orderNo string, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrderLogModel) {
+	wheres := make(map[string]interface{})
+	wheres["order_no"] = orderNo
+	order := orderField + " " + orderSort
+	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
+	return total, items
+}

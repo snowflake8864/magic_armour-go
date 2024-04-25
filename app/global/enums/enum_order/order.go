@@ -18,6 +18,7 @@ const (
 	ActionConfirmPaid   int = 5 //行为：确认支付成功
 	ActionConfirmUnpaid int = 6 //行为：确认未付款
 	ActionAutoExpire    int = 7 //行为：自动过期
+	ActionGrant2Agent   int = 8 //行为：授权给终端
 )
 
 var EnumMap = map[string]map[int]string{
@@ -50,6 +51,7 @@ var EnumMap = map[string]map[int]string{
 		ActionConfirmPaid:   "确认支付成功",
 		ActionConfirmUnpaid: "确认未付款",
 		ActionAutoExpire:    "自动过期",
+		ActionGrant2Agent:   "授权给终端",
 	},
 	"expire_status": {
 		enums.IsNot: "有效",
