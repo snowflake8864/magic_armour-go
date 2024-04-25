@@ -2,6 +2,6 @@
 .idea/
 .idea
 /storage/logs/*
-/storage/uploaded/*
+/storage/app/uploaded/*
 /public/storage
 *.exe
