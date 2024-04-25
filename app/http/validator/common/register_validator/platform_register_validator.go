@@ -3,6 +3,7 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/validator/common/upload_files"
 	agent4 "goskeleton/app/http/validator/platform/agent"
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	home4 "goskeleton/app/http/validator/platform/home"
@@ -21,6 +22,9 @@ func PlatformRegisterValidator() {
 
 	//  key 按照前缀+模块+验证动作 格式，将各个模块验证注册在容器
 	var key string
+	// 文件上传
+	key = consts.ValidatorPrefix + "UploadFiles"
+	containers.Set(key, upload_files.UpFiles{})
 
 	//安全认证
 	key = consts.ValidatorPrefixPlatform + "AuthCheckUser"

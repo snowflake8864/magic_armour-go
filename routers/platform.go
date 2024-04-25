@@ -73,6 +73,12 @@ func InitPlatformRouter() *gin.Engine {
 			// 【需要token】中间件验证的路由
 			vPlatform.Use(authorization.CheckPlatformPToken())
 			{
+				//文件上传公共路由
+				uploadFiles := vPlatform.Group("upload/")
+				{
+					uploadFiles.POST("files", validatorFactory.Create(consts.ValidatorPrefixPlatform+"UploadFiles"))
+				}
+
 				//首页
 				home := vPlatform.Group("home/")
 				{
@@ -184,12 +190,36 @@ func InitPlatformRouter() *gin.Engine {
 						org.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOrgPage"))
 						org.POST("addGrant", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOrgAddGrant"))
 					}
-					manage := agent.Group("own/")
+					own := agent.Group("own/")
 					{
-						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOwnPage"))
+						own.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOwnPage"))
 					}
 
 				} //终端
+
+				//软件
+				software := vPlatform.Group("software/")
+				{
+					public := software.Group("public/")
+					{
+						public.POST("osTypes", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicOsTypes"))
+						public.POST("agentConfigGet", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicAgentConfigGet"))
+						public.POST("agentConfigSet", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicAgentConfigSet"))
+					}
+					manage := software.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePage"))
+						manage.POST("upload", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageUpload"))
+						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageAdd"))
+						manage.POST("download", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageDownload"))
+						manage.POST("publish", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePublish"))
+						manage.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageCancel"))
+						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageDelete"))
+						manage.POST("clear", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageClear"))
+					}
+
+				}
+
 				//威胁情报
 				threaten := vPlatform.Group("threaten/")
 				{
