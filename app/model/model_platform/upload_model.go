@@ -22,7 +22,7 @@ type UploadModel struct {
 	StorageName   string `json:"storage_name"`
 	FullPath      string `json:"full_path"`
 	FileHash      string `json:"file_hash"`
-	Size          string `json:"size"`
+	Size          int64  `json:"size"`
 	OperateSource int    `json:"operate_source"`
 	OperateId     int64  `json:"operate_id"`
 	OperateName   string `json:"operate_name"`

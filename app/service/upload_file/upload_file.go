@@ -6,6 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/model_platform"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 	"os"
 	"path"
@@ -13,7 +15,7 @@ import (
 	"time"
 )
 
-func Upload(context *gin.Context, savePath string) (r bool, finnalSavePath interface{}) {
+func Upload(context *gin.Context, savePath string) (r bool, upload model_platform.UploadModel) {
 
 	newSavePath, newReturnPath := generateYearMonthPath(savePath)
 
@@ -28,16 +30,20 @@ func Upload(context *gin.Context, savePath string) (r bool, finnalSavePath inter
 
 		if saveErr = context.SaveUploadedFile(file, newSavePath+saveFileName); saveErr == nil {
 			//  上传成功,返回资源的相对路径，这里请根据实际返回绝对路径或者相对路径
-			finnalSavePath = gin.H{
-				"path": strings.ReplaceAll(newReturnPath+saveFileName, variable.BasePath, ""),
-			}
-			return true, finnalSavePath
+			upload.OriginalName = file.Filename
+			upload.Size = file.Size
+			upload.StoragePath = strings.ReplaceAll(newReturnPath+saveFileName, variable.BasePath, "")
+			upload.StorageName = saveFileName
+			upload.FullPath = newSavePath + saveFileName
+			_, fileHash := helpers.FileMd5sum(upload.FullPath)
+			upload.FileHash = fileHash
+			return true, upload
 		}
 	} else {
 		saveErr = errors.New(my_errors.ErrorsSnowflakeGetIdFail)
 		variable.ZapLog.Error("文件保存出错：" + saveErr.Error())
 	}
-	return false, nil
+	return false, upload
 
 }
 

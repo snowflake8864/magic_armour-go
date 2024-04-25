@@ -209,7 +209,6 @@ func InitPlatformRouter() *gin.Engine {
 					manage := software.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePage"))
-						manage.POST("upload", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageUpload"))
 						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageAdd"))
 						manage.POST("download", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageDownload"))
 						manage.POST("publish", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePublish"))
