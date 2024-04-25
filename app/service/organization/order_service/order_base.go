@@ -17,6 +17,7 @@ type SearchConditions struct {
 	IsExpire    int
 	CreateAtGte string
 	CreateAtLte string
+	ExpireAtGte string
 	StatusList  []int
 }
 
@@ -47,6 +48,9 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 	}
 	if !helpers.StringIsEmpty(search.OraName) {
 		wheres["org_name like"] = "%" + search.OraName + "%"
+	}
+	if !helpers.StringIsEmpty(search.ExpireAtGte) {
+		wheres["expire_at >="] = search.ExpireAtGte
 	}
 	if !helpers.StringIsEmpty(search.ProductName) {
 		wheres["product_title like"] = "%" + search.ProductName + "%"

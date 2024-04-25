@@ -73,6 +73,16 @@ func (m *OrderLogModel) InsertItem(s *OrderLogModel) bool {
 	}
 }
 
+// DeleteByOrder 通过id删除
+func (m *OrderLogModel) DeleteByOrder(id string) bool {
+	result := m.Where("order_no=?", id).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrderLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderLogModel, err error) {
 	tmp := m.Model(m).Where(condition)

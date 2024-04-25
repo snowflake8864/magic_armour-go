@@ -118,8 +118,6 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 		OperateSource: orderParam.Source,
 		OperateId:     operateId,
 		OperateName:   operateName,
-		UsageNumber:   0,
-		UsageAgents:   "",
 		Remark:        orderParam.DeclineRemark,
 		CreatedAt:     orderParam.CreatedAt,
 	}
@@ -168,12 +166,75 @@ func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderF
 
 // PlatformCancel 平台取消
 func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	now := helpers.DatetimeCurr()
+	//修改
+	updates := map[string]interface{}{
+		"order_status": enum_order.OrderStatusCancel,
+		"cancel_at":    now,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("取消订单失败")
+	}
+
+	//订单日志
+	logParam := model_organization.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionCancel,
+		OperateSource: enums.OperateSourcePlatform,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
 }
 
 // OrgCancel 企业取消
 func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrgId != orgId {
+		return -1, errors.New("订单错误")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	now := helpers.DatetimeCurr()
+	//修改
+	updates := map[string]interface{}{
+		"order_status": enum_order.OrderStatusCancel,
+		"cancel_at":    now,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("取消订单失败")
+	}
+
+	//订单日志
+	logParam := model_organization.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionCancel,
+		OperateSource: enums.OperateSourceOrganize,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
 }
@@ -187,29 +248,171 @@ func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64
 // Decline 直降
 func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operateId int64, operateName string) (errCode int, err error) {
 
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
+		return -1, errors.New("订单状态不正确")
+	}
+	if orderModel.TotalAmount < realAmount {
+		return -1, errors.New("支付金额不能大于原始金额")
+	}
+
+	now := helpers.DatetimeCurr()
+	//修改
+	updates := map[string]interface{}{
+		"real_amount":    crd.calcDeclineAmount(orderModel.TotalAmount, realAmount),
+		"decline_amount": crd.calcDeclineAmount(orderModel.TotalAmount, realAmount),
+		"decline_remark": remark,
+		"decline_at":     now,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("订单修改失败")
+	}
+
+	//订单日志
+	logParam := model_organization.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionDecline,
+		OperateSource: enums.OperateSourcePlatform,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		Remark:        remark,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
+
 	return errCode, err
 }
 
 // ConfirmPaid 确认已支付
 func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	now := helpers.DatetimeCurr()
+	//修改
+	updates := map[string]interface{}{
+		"order_status": enum_order.OrderStatusCompleted,
+		"complete_at":  now,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("订单修改失败")
+	}
+
+	//订单日志
+	logParam := model_organization.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionConfirmPaid,
+		OperateSource: enums.OperateSourcePlatform,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
 }
 
 // ConfirmUnpaid 确认未付款
 func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	now := helpers.DatetimeCurr()
+	//修改
+	updates := map[string]interface{}{
+		"order_status": enum_order.OrderStatusUnpaid,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("订单修改失败")
+	}
+
+	//订单日志
+	logParam := model_organization.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionConfirmUnpaid,
+		OperateSource: enums.OperateSourcePlatform,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
 }
 
 // OrgDelete 企业删除
-func (crd *OrderCurd) OrgDelete(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
+func (crd *OrderCurd) OrgDelete(orderNo string, orgId int64) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrgId != orgId {
+		return -1, errors.New("订单错误")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusCancel {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	if !crd.masterModel.DeleteById(orderNo) {
+		return -1, errors.New("订单删除失败")
+	}
+
+	//订单日志
+	CreateLogFactory().DeleteByOrder(orderNo)
 
 	return errCode, err
 }
 
 // AutoExpire 自动过期
-func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) (errCode int, err error) {
+func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
+	search := SearchConditions{
+		OrgId:       orgId,
+		OrderStatus: enum_order.OrderStatusCompleted,
+		IsExpire:    enums.IsNot,
+		ExpireAtGte: expireDate,
+	}
+	items, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "")
+	if err != nil || len(items) == 0 {
+		return true
+	}
+	now := helpers.DatetimeCurr()
+	for _, model := range items {
+		//修改订单
+		updates := map[string]interface{}{
+			"is_expire": enums.IsYes,
+		}
+		crd.masterModel.UpdateById(model.OrderNo, updates)
 
-	return errCode, err
+		//订单日志
+		logParam := model_organization.OrderLogModel{
+			OrgId:         model.OrgId,
+			OrderNo:       model.OrderNo,
+			OrderStatus:   model.OrderStatus,
+			OperateAction: enum_order.ActionAutoExpire,
+			OperateSource: enums.OperateSourceAi,
+			CreatedAt:     now,
+		}
+		CreateLogFactory().Add(&logParam)
+	}
+
+	return true
 }

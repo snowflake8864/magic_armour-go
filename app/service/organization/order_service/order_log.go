@@ -22,6 +22,11 @@ func (crd *OrderLog) Add(param *model_organization.OrderLogModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
+// DeleteByOrder 通过订单删除
+func (crd *OrderLog) DeleteByOrder(orderNo string) bool {
+	return crd.masterModel.DeleteByOrder(orderNo)
+}
+
 // Page 分页
 func (crd *OrderLog) Page(orderNo string, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrderLogModel) {
 	wheres := make(map[string]interface{})

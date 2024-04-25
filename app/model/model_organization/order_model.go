@@ -115,6 +115,16 @@ func (m *OrderModel) InsertItem(s *OrderModel) bool {
 	}
 }
 
+// DeleteById 通过id删除
+func (m *OrderModel) DeleteById(id string) bool {
+	result := m.Where("order_no=?", id).Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // UpdateById 通过id修改
 func (m *OrderModel) UpdateById(id string, updates map[string]interface{}) bool {
 	result := m.Model(m).Where("order_no=?", id).Updates(updates)
