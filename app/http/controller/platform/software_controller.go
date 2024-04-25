@@ -1,11 +1,12 @@
 package platform
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -44,15 +45,26 @@ func (u *SoftwareController) GetOsTypes(ctx *gin.Context) {
 			"children": children,
 		})
 	}
-	fmt.Println(result)
 
 	response.SuccessReturnData(ctx, result)
-	return
 }
 
 // GetAgentConfig  获取终端配置
 func (u *SoftwareController) GetAgentConfig(ctx *gin.Context) {
+	dictIds := []string{
+		enum_dictionary.AgentHttpUrl,
+		enum_dictionary.AgentHttpPort,
+		enum_dictionary.AgentCompatibleDefaultOrg,
+		enum_dictionary.AgentCompatibleDefaultUser,
+	}
+	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
+	response.SuccessReturnData(ctx, gin.H{
+		"http_url":     vals[enum_dictionary.AgentHttpUrl],
+		"http_port":    vals[enum_dictionary.AgentHttpPort],
+		"default_org":  vals[enum_dictionary.AgentCompatibleDefaultOrg],
+		"default_user": vals[enum_dictionary.AgentCompatibleDefaultUser],
+	})
 }
 
 // SetAgentConfig  保存终端配置

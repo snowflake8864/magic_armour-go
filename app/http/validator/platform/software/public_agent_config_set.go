@@ -10,9 +10,9 @@ import (
 
 type PublicAgentConfigSet struct {
 	UploadId    string `form:"http_url" json:"http_url" binding:"required"`
-	HttpPort    int    `form:"http_port" json:"http_port" binding:"required,min=433,max=65535"`
-	DefaultOrg  *int   `form:"default_org" json:"default_org" binding:"required"`
-	DefaultUser *int   `form:"default_user" json:"default_user" binding:"required"`
+	HttpPort    string `form:"http_port" json:"http_port" binding:"required"`
+	DefaultOrg  string `form:"default_org" json:"default_org"`
+	DefaultUser string `form:"default_user" json:"default_user"`
 }
 
 func (n PublicAgentConfigSet) CheckParams(context *gin.Context) {
