@@ -10,11 +10,11 @@ import (
 
 type ManageAdd struct {
 	PlatformType
-	OsType        int      `form:"osType" json:"osType" binding:"required"`
-	OsVer         []string `form:"osVer" json:"osVer" binding:"required"`
-	UploadId      int      `form:"uploadId" json:"uploadId" binding:"required"`
-	VersionNumber string   `form:"versionNumber" json:"versionNumber" binding:"required"`
-	Remark        string   `form:"remark" json:"remark"`
+	OsType        int    `form:"osType" json:"osType" binding:"required"`
+	OsVer         []int  `form:"osVer" json:"osVer" binding:"required"`
+	UploadId      int    `form:"uploadId" json:"uploadId" binding:"required"`
+	VersionNumber string `form:"versionNumber" json:"versionNumber" binding:"required"`
+	Remark        string `form:"remark" json:"remark"`
 }
 
 func (n ManageAdd) CheckParams(context *gin.Context) {

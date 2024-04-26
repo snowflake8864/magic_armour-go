@@ -61,3 +61,8 @@ func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConf
 	}
 	return loginInfo, nil
 }
+
+// Clear 清空
+func (crd *SoftwareDownload) Clear() bool {
+	return crd.masterModel.TruncateTable()
+}

@@ -11,7 +11,6 @@ import (
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/department_service"
-	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -65,14 +64,7 @@ func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	conditions.ContactName = ctx.GetString(consts.ValidatorPrefixPlatform + "contactName")
 	conditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
 	conditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
-
-	var reqDeptIds []int64
-	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + "deptId"); isOk {
-		var tmp []interface{}
-		tmp, _ = deptIds.([]interface{})
-		reqDeptIds = helpers.SliceAny2Int64(tmp)
-	}
-	conditions.DeptIds = reqDeptIds
+	conditions.DeptIds = u.getWebSliceOfInt64(ctx, "deptId")
 
 	//分页参数和排序参数
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)

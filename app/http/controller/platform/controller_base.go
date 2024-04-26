@@ -55,3 +55,25 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	}
 	return offset, pageSize, orderField, orderSort
 }
+
+// getWebSliceOfInt64 获取前端上传数组: int64
+func (u *ControllerBase) getWebSliceOfInt64(ctx *gin.Context, field string) []int64 {
+	var list []int64
+	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
+		var tmp []interface{}
+		tmp, _ = deptIds.([]interface{})
+		list = helpers.SliceAny2Int64(tmp)
+	}
+	return list
+}
+
+// getWebSliceOfInt 获取前端上传数组: int64
+func (u *ControllerBase) getWebSliceOfInt(ctx *gin.Context, field string) []int {
+	var list []int
+	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
+		var tmp []interface{}
+		tmp, _ = deptIds.([]interface{})
+		list = helpers.SliceAny2Int(tmp)
+	}
+	return list
+}

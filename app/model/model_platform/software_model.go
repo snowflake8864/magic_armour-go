@@ -24,6 +24,8 @@ type SoftwareModel struct {
 	OsVer        string `json:"os_ver"`
 	IsPublish    int    `json:"is_publish"`
 	Remark       string `json:"remark"`
+	StoragePath  string `json:"storage_path"`
+	FullPath     string `json:"full_path"`
 	CreateId     int64  `json:"create_id"`
 	CreateName   string `json:"create_name"`
 	CreatedAt    string `json:"created_at"`
@@ -47,6 +49,8 @@ func (m *SoftwareModel) CreateTable() bool {
 			os_ver varchar(512)  NOT NULL DEFAULT '' COMMENT '系统版本(统一定义)',
 			is_publish tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布',
             remark text  NOT NULL COMMENT '备注',
+			storage_path varchar(512)  NOT NULL DEFAULT '' COMMENT '存储相对路径(项目下)',
+			full_path varchar(1024)  NOT NULL DEFAULT '' COMMENT '完整路径',
             create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(admin.username)',
 			created_at datetime NOT NULL,
@@ -54,7 +58,7 @@ func (m *SoftwareModel) CreateTable() bool {
 			KEY index_ver (ver),
 			KEY index_platform_type (platform_type),
 			KEY index_os_type (os_type)
-		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='软甲表';
+		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='软件表';
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
@@ -67,6 +71,17 @@ func (m *SoftwareModel) CreateTable() bool {
 func (m *SoftwareModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *SoftwareModel) InsertItem(s *SoftwareModel) bool {
+
+	result := m.Model(m).Create(s)
 	if result.Error == nil {
 		return true
 	} else {
@@ -92,6 +107,19 @@ func (m *SoftwareModel) UpdateById(id int64, updates map[string]interface{}) boo
 	}
 }
 
+func (m *SoftwareModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
+	result := tmp.Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // DeleteById 通过id删除
 func (m *SoftwareModel) DeleteById(id int64) bool {
 	result := m.Model(m).Where("id=?", id).Delete(m)
@@ -104,7 +132,10 @@ func (m *SoftwareModel) DeleteById(id int64) bool {
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*SoftwareModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -124,7 +155,11 @@ func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, o
 // Count 通过条件统计
 func (m *SoftwareModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	tmp := m.Model(m).Select("id")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals)
+	}
+	result := tmp.Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

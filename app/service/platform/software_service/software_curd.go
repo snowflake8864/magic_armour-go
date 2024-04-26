@@ -1,8 +1,13 @@
 package software_service
 
 import (
+	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/model/model_platform"
+	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/utils/helpers"
 )
 
 func CreateCurdFactory() *SoftwareCurd {
@@ -45,4 +50,93 @@ func (crd *SoftwareCurd) Page(where map[string]interface{}, offset, pageSize int
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
+}
+
+// Add 新增
+func (crd *SoftwareCurd) Add(param *model_platform.SoftwareModel) (errCode int, err error) {
+	if helpers.StringIsEmpty(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentHttpUrl)) {
+		return -1, errors.New("上传软件前需要配置终端访问地址")
+	}
+
+	uploadModel := upload_service.CreateCurdFactory().GetItemById(param.UploadId)
+	if uploadModel == nil || uploadModel.Id == 0 {
+		return -1, errors.New("上传软件不存在")
+	}
+	param.StoragePath = uploadModel.StoragePath
+	param.FullPath = uploadModel.FullPath
+	param.IsPublish = enums.IsNot
+	param.CreatedAt = helpers.DatetimeCurr()
+
+	if !crd.masterModel.InsertItem(param) {
+		return -1, errors.New("保存失败")
+	}
+
+	return errCode, err
+}
+
+// DeleteById 删除
+func (crd *SoftwareCurd) DeleteById(id int64) (errCode int, err error) {
+	model := crd.GetItemById(id)
+	if model == nil || model.Id == 0 {
+		return -1, errors.New("软件不存在")
+	}
+
+	if !crd.masterModel.DeleteById(id) {
+		return -1, errors.New("删除失败")
+	}
+
+	return errCode, err
+}
+
+// PublishById 删除
+func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
+	model := crd.GetItemById(id)
+	if model == nil || model.Id == 0 {
+		return -1, errors.New("软件不存在")
+	}
+	if model.IsPublish == enums.IsYes {
+		return -1, errors.New("软件已经发布过了")
+	}
+
+	//关闭同系统类型的
+	conditions := map[string]interface{}{
+		"os_type":    model.OsType,
+		"is_publish": enums.IsYes,
+	}
+	updates := map[string]interface{}{
+		"is_publish": enums.IsNot,
+	}
+	crd.masterModel.UpdateByConditions(conditions, updates)
+
+	//修改本身
+	updates = map[string]interface{}{
+		"is_publish": enums.IsYes,
+	}
+	if !crd.masterModel.UpdateById(id, updates) {
+		return -1, errors.New("保存失败")
+	}
+	return errCode, err
+}
+
+// CancelById  取消
+func (crd *SoftwareCurd) CancelById(id int64) (errCode int, err error) {
+	model := crd.GetItemById(id)
+	if model == nil || model.Id == 0 {
+		return -1, errors.New("软件不存在")
+	}
+
+	//修改本身
+	updates := map[string]interface{}{
+		"is_publish": enums.IsNot,
+	}
+	if !crd.masterModel.UpdateById(id, updates) {
+		return -1, errors.New("保存失败")
+	}
+	return errCode, err
+}
+
+// Clear 清空
+func (crd *SoftwareCurd) Clear() bool {
+	CreateDownloadFactory().Clear()
+	return crd.masterModel.TruncateTable()
 }

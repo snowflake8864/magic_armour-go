@@ -6,17 +6,19 @@ const (
 	PlatformTypeLinux   = 1 //平台类型: linux
 	PlatformTypeWindows = 2 //平台类型: windows
 
-	OsTypeWinSeven         = 101 //系统类型: win7以上
-	OsTypeWinXp            = 102 //系统类型: win xp 和 win 2003
-	OsTypeLinuxUbuntu      = 201 //系统类型: linux Ubuntu
-	OsTypeLinuxCentos      = 202 //系统类型: linux Centos
-	OsTypeLinuxNeokylin    = 203 //系统类型: linux 麒麟
-	OsTypeLinuxUos         = 204 //系统类型: linux 通信
-	OsTypeLinuxRedhat      = 205 //系统类型: linux 红帽
-	OsTypeLinuxDebian      = 206 //系统类型: linux Debian
-	OsTypeLinuxRocky       = 207 //系统类型: linux Rocky
+	OsTypeLinuxUbuntu      = 101 //系统类型: linux Ubuntu
+	OsTypeLinuxCentos      = 102 //系统类型: linux Centos
+	OsTypeLinuxNeokylin    = 103 //系统类型: linux 麒麟
+	OsTypeLinuxUos         = 104 //系统类型: linux 通信
+	OsTypeLinuxRedhat      = 105 //系统类型: linux 红帽
+	OsTypeLinuxDebian      = 106 //系统类型: linux Debian
+	OsTypeLinuxRocky       = 107 //系统类型: linux Rocky
 	OsTypeLinuxAnolis      = 108 //系统类型: linux 阿里龙蜥
-	OsTypeLinuxOpencloudos = 209 //系统类型: linux 腾讯
+	OsTypeLinuxOpencloudos = 109 //系统类型: linux 腾讯
+
+	OsTypeWinSeven = 201 //系统类型: win7以上
+	OsTypeWinXp    = 202 //系统类型: win xp 和 win 1003
+
 )
 
 var EnumMap = map[string]map[int]string{
@@ -51,28 +53,29 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxOpencloudos: "OpenCloudOs64位",
 	},
 	"os_ver": {
-		//windows
-		1010: "windows7-至今",
-		//Windows其它
-		1020: "windows xp-windows 2003",
 		//Ubuntu
-		2010: "64位(14.04-22.04)",
+		1010: "64位(14.04-22.04)",
 		//CentOS
-		2020: "64位(6.5 - 7.9)",
+		1020: "64位(6.5 - 8.5)",
 		//麒麟
-		2030: "64位 中标麒麟(V7)",
+		1030: "64位 中标麒麟(V7)",
 		//统信
-		2040: "64位 (20)",
+		1040: "64位 (20)",
 		//RedHat
-		2050: "64位(6.5 - 7.9)",
+		1050: "64位(6.5 - 7.9)",
 		//Debian
-		2060: "64位(14.04 - 22.04)",
+		1060: "64位(14.04 - 22.04)",
 		//Rocky
-		2070: "64位(8.4 - 9.1)",
+		1070: "64位(8.4 - 9.1)",
 		//ANOLIS
-		2080: "64位(7.7 - 8.8)",
+		1080: "64位(7.7 - 8.8)",
 		//OPENCLOUDOS
-		2090: "64位(8.6-9.0)",
+		1090: "64位(8.6-9.0)",
+
+		//windows
+		2010: "windows7-至今",
+		//Windows其它
+		2020: "windows xp-windows 2003",
 	},
 }
 var EnumSlice = map[string]map[int][]int{
@@ -95,37 +98,37 @@ var EnumSlice = map[string]map[int][]int{
 	},
 	"map_os_ver": {
 		OsTypeWinSeven: {
-			1100,
-		},
-		OsTypeWinXp: {
-			1200,
-		},
-		OsTypeLinuxUbuntu: {
 			2010,
 		},
-		OsTypeLinuxCentos: {
+		OsTypeWinXp: {
 			2020,
 		},
+		OsTypeLinuxUbuntu: {
+			1010,
+		},
+		OsTypeLinuxCentos: {
+			1020,
+		},
 		OsTypeLinuxNeokylin: {
-			2030,
+			1030,
 		},
 		OsTypeLinuxUos: {
-			2040,
+			1040,
 		},
 		OsTypeLinuxRedhat: {
-			2050,
+			1050,
 		},
 		OsTypeLinuxDebian: {
-			2060,
+			1060,
 		},
 		OsTypeLinuxRocky: {
-			2070,
+			1070,
 		},
 		OsTypeLinuxAnolis: {
-			2080,
+			1080,
 		},
 		OsTypeLinuxOpencloudos: {
-			2090,
+			1090,
 		},
 	},
 }

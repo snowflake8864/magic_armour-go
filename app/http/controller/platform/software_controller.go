@@ -8,8 +8,10 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -109,12 +111,33 @@ func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 
 // AddForManage 管理:  添加
 func (u *SoftwareController) AddForManage(ctx *gin.Context) {
+	var param = model_platform.SoftwareModel{}
+	param.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
+	param.OsType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "osType"))
+	param.OsVer = helpers.JsonEncode(u.getWebSliceOfInt(ctx, "osVer"))
+	param.UploadId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
+	param.Ver = ctx.GetString(consts.ValidatorPrefixPlatform + "versionNumber")
+	param.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 
+	loginInfo := u.getLogin(ctx)
+	param.CreateId = loginInfo.AdminId
+	param.CreateName = loginInfo.Username
+
+	if errCode, err := software_service.CreateCurdFactory().Add(&param); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // ClearForManage 管理: 清空
 func (u *SoftwareController) ClearForManage(ctx *gin.Context) {
-
+	if !software_service.CreateCurdFactory().Clear() {
+		response.FailSimplify(ctx, "清空失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DownloadForManage 管理: 下载
@@ -124,15 +147,33 @@ func (u *SoftwareController) DownloadForManage(ctx *gin.Context) {
 
 // PublishForManage 管理: 发布
 func (u *SoftwareController) PublishForManage(ctx *gin.Context) {
+	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
+	if errCode, err := software_service.CreateCurdFactory().PublishById(softId); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 
+	response.SuccessSimplify(ctx)
 }
 
 // CancelForManage 管理: 取消
 func (u *SoftwareController) CancelForManage(ctx *gin.Context) {
+	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
+	if errCode, err := software_service.CreateCurdFactory().CancelById(softId); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForManage 管理: 删除
 func (u *SoftwareController) DeleteForManage(ctx *gin.Context) {
+	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
+	if errCode, err := software_service.CreateCurdFactory().DeleteById(softId); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 
+	response.SuccessSimplify(ctx)
 }
