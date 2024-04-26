@@ -5,8 +5,11 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -87,6 +90,21 @@ func (u *SoftwareController) SetAgentConfig(ctx *gin.Context) {
 // PageForManage 管理: 分页
 func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 
+	//页面上传
+	PlatformType := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
+	condition := make(map[string]interface{})
+	if PlatformType == enum_software.PlatformTypeWindows || PlatformType == enum_software.PlatformTypeLinux {
+		condition["platform_type"] = PlatformType
+		condition["is_publish"] = enums.IsYes
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//软件分页
+	total, models := software_service.CreateCurdFactory().Page(condition, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Software{}).TransPage(total, models))
 }
 
 // AddForManage 管理:  添加

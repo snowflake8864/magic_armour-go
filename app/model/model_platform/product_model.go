@@ -254,7 +254,6 @@ func (m *ProductModel) GetItemById(id int64) (item *ProductModel, err error) {
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ProductModel, err error) {
-
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals)

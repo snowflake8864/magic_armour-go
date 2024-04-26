@@ -39,3 +39,10 @@ func (crd *SoftwareCurd) GetItemsByPublished() (items []*model_platform.Software
 	items, _ = crd.masterModel.GetItemsByConditions(condition, 0, 0, "")
 	return items
 }
+
+// Page 分页
+func (crd *SoftwareCurd) Page(where map[string]interface{}, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_platform.SoftwareModel) {
+	order := orderField + " " + orderSort
+	total, items = crd.masterModel.Page(where, offset, pageSize, order)
+	return total, items
+}

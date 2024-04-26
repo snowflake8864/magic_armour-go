@@ -21,6 +21,7 @@ type SoftwareModel struct {
 	Ver          string `json:"ver"`
 	PlatformType int    `json:"platform_type"`
 	OsType       int    `json:"os_type"`
+	OsVer        string `json:"os_ver"`
 	IsPublish    int    `json:"is_publish"`
 	Remark       string `json:"remark"`
 	CreateId     int64  `json:"create_id"`

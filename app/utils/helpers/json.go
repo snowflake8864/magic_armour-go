@@ -52,3 +52,15 @@ func Json2SliceInt64(jsonStr string) []int64 {
 	}
 	return numbers
 }
+
+// Json2SliceString json还原[]string
+func Json2SliceString(jsonStr string) []string {
+	var strList []string
+
+	// 进行反序列化操作
+	err := json.Unmarshal([]byte(jsonStr), &strList)
+	if err != nil {
+		return nil
+	}
+	return strList
+}

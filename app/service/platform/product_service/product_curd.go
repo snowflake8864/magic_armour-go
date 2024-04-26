@@ -2,7 +2,6 @@ package product_service
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/utils/helpers"
@@ -91,7 +90,6 @@ func (crd *ProductCurd) GetPublished() (items []*model_platform.ProductModel) {
 // Page 分页
 func (crd *ProductCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_platform.ProductModel) {
 	where := crd.search2Where(search)
-	fmt.Println(where)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
