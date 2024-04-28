@@ -7,7 +7,11 @@ import (
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/utils/validator_translation"
 	"net/http"
+	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
+	"time"
 )
 
 func ReturnJson(Context *gin.Context, httpCode int, dataCode interface{}, msg string, data interface{}) {
@@ -127,4 +131,54 @@ func ValidatorError(c *gin.Context, err error) {
 		}
 	}
 	c.Abort()
+}
+
+// FileDownload 文件下载
+func FileDownload(c *gin.Context, fullDir string) {
+	//绝对文件路径
+	fullPath, err := filepath.Abs(fullDir)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 检查文件是否存在
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		http.NotFound(c.Writer, c.Request)
+		return
+	}
+	// 通过 http.ServeFile 将文件内容传输给客户端
+	http.ServeFile(c.Writer, c.Request, fullPath)
+
+}
+
+// FileDownloadAndRename 文件下载且修改文件名称
+// @newName 中文会转码，不然会被截断
+func FileDownloadAndRename(c *gin.Context, fullDir, newName string) {
+	//绝对文件路径
+	fullPath, err := filepath.Abs(fullDir)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// 检查文件是否存在
+	if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+		http.NotFound(c.Writer, c.Request)
+		return
+	}
+
+	// 准备文件记录
+	file, err := os.Open(fullPath)
+	if err != nil {
+		http.Error(c.Writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer file.Close()
+	newName = url.PathEscape(newName)
+	// 设置Header信息
+	c.Writer.Header().Set("Content-Disposition", "attachment; filename="+newName)
+	//fmt.Println(c.Writer.Header().Get("Content-Disposition"))
+	// 服务文件
+	http.ServeContent(c.Writer, c.Request, newName, time.Now(), file)
 }

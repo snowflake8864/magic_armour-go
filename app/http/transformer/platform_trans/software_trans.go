@@ -17,6 +17,7 @@ func (t *Software) pageGeneral(model *model_platform.SoftwareModel) map[string]i
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["ver"] = model.Ver
+	data["version_number_label"] = enum_software.ShowVer(model.PlatformType, model.OsType, model.Ver)
 	data["platform_type"] = model.PlatformType
 	data["platform_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", model.PlatformType, enum_software.EnumMap)
 	data["os_type"] = model.OsType
@@ -29,6 +30,7 @@ func (t *Software) pageGeneral(model *model_platform.SoftwareModel) map[string]i
 	}
 	data["os_type_txt"] = osTypeTxt
 	data["remark"] = model.Remark
+	data["download_name"] = enum_software.DownloadName(model.PlatformType, model.OsType, model.Ver)
 	data["create_id"] = model.CreateId
 	data["create_name"] = model.CreateName
 	data["created_at"] = model.CreatedAt

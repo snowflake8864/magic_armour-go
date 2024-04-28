@@ -142,7 +142,14 @@ func (u *SoftwareController) ClearForManage(ctx *gin.Context) {
 
 // DownloadForManage 管理: 下载
 func (u *SoftwareController) DownloadForManage(ctx *gin.Context) {
+	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
+	model := software_service.CreateCurdFactory().GetItemById(softId)
+	if model == nil || model.Id == 0 {
+		response.FailSimplify(ctx, "软件不存在")
+		return
+	}
 
+	response.FileDownloadAndRename(ctx, model.FullPath, enum_software.DownloadName(model.PlatformType, model.OsType, model.Ver))
 }
 
 // PublishForManage 管理: 发布
@@ -163,7 +170,6 @@ func (u *SoftwareController) CancelForManage(ctx *gin.Context) {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-
 	response.SuccessSimplify(ctx)
 }
 

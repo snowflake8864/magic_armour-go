@@ -1,6 +1,9 @@
 package enum_software
 
-import "strings"
+import (
+	"goskeleton/app/global/enums"
+	"strings"
+)
 
 const (
 	PlatformTypeLinux   = 1 //平台类型: linux
@@ -25,6 +28,10 @@ var EnumMap = map[string]map[int]string{
 	"platform_type": {
 		PlatformTypeWindows: "Windows",
 		PlatformTypeLinux:   "Linux",
+	},
+	"platform_type_alias": {
+		PlatformTypeWindows: "WIN",
+		PlatformTypeLinux:   "LINUX",
 	},
 	"os_type": {
 		OsTypeWinSeven:         "Windows",
@@ -191,4 +198,23 @@ func CanUpgradeIndirect(newestMap map[int]string, agentOsType int, agentVer stri
 	} else {
 		return false, ""
 	}
+}
+
+// DownloadName 下载名称
+func DownloadName(platformType, agentOsType int, agentVer string) string {
+	name := "MA_"
+	name += enums.Get1stIsStrAnd2ndIsIntReturnStr("os_type", agentOsType, EnumMap)
+	name += "("
+	name += strings.ReplaceAll(agentVer, ".", "_")
+	name += ").zip"
+	return name
+}
+
+// ShowVer  显示版本号
+func ShowVer(platformType, agentOsType int, agentVer string) string {
+	name := "MA_"
+	name += enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type_alias", platformType, EnumMap)
+	name += "_"
+	name += agentVer
+	return name
 }
