@@ -9,6 +9,11 @@ import (
 )
 
 type ConfigSave struct {
+	ThreatenSwitch      string `form:"threaten_switch" json:"threaten_switch" binding:"required,oneof=0 1"`
+	ThreatenUrl         string `form:"threaten_url" json:"threaten_url" binding:"required"`
+	ThreatenAppId       string `form:"threaten_app_id" json:"threaten_app_id" binding:"required"`
+	ThreatenAppKey      string `form:"threaten_app_key" json:"threaten_app_key" binding:"required"`
+	ThreatenCacheExpire string `form:"threaten_cache_expire" json:"threaten_cache_expire" binding:"required"`
 }
 
 func (n ConfigSave) CheckParams(context *gin.Context) {

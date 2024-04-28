@@ -139,9 +139,9 @@ func PlatformRegisterValidator() {
 
 	//威胁情报
 	key = consts.ValidatorPrefixPlatform + "ThreatenConfigSave"
-	containers.Set(key, threaten4.ConfigOnline{})
-	key = consts.ValidatorPrefixPlatform + "ThreatenConfigOnline"
 	containers.Set(key, threaten4.ConfigSave{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenConfigOnline"
+	containers.Set(key, threaten4.ConfigOnline{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenCachePage"
 	containers.Set(key, threaten4.CachePage{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenCacheGetAttr"

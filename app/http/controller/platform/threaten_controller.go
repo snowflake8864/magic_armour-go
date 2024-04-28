@@ -2,9 +2,12 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -23,12 +26,34 @@ func (u *ThreatenController) Levels(ctx *gin.Context) {
 
 // GetForConfig 配置: 获取
 func (u *ThreatenController) GetForConfig(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetForConfig")
+	dictIds := []string{
+		enum_dictionary.ThreatenSwitch,
+		enum_dictionary.ThreatenUrl,
+		enum_dictionary.ThreatenAppId,
+		enum_dictionary.ThreatenAppKey,
+		enum_dictionary.ThreatenCacheExpire,
+	}
+	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+
+	response.SuccessReturnData(ctx, vals)
 }
 
 // SaveForConfig 配置: 保存
 func (u *ThreatenController) SaveForConfig(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SaveForConfig")
+	idAndVal := map[string]string{
+		enum_dictionary.ThreatenSwitch:      ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_switch"),
+		enum_dictionary.ThreatenUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_url"),
+		enum_dictionary.ThreatenAppId:       ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_id"),
+		enum_dictionary.ThreatenAppKey:      ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_key"),
+		enum_dictionary.ThreatenCacheExpire: ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_cache_expire"),
+	}
+
+	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
+		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // OnlineForConfig 配置: 验证在线
