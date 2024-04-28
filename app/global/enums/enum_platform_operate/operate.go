@@ -3,20 +3,24 @@ package enum_platform_operate
 // 任务
 
 const (
-	ModuleAuth    = "auth"
-	ModuleOrg     = "org"
-	ModuleProduct = "product"
-	ModuleOrder   = "order"
-	ModuleAgent   = "agent"
+	ModuleAuth     = "auth"
+	ModuleOrg      = "org"
+	ModuleProduct  = "product"
+	ModuleOrder    = "order"
+	ModuleAgent    = "agent"
+	ModuleSoftware = "software"
+	ModuleThreaten = "threaten"
 )
 
 var EnumMap = map[string]map[string]string{
 	"module": {
-		ModuleAuth:    "安全认证",
-		ModuleOrg:     "客户管理",
-		ModuleProduct: "产品管理",
-		ModuleOrder:   "订单管理",
-		ModuleAgent:   " 终端管理",
+		ModuleAuth:     "安全认证",
+		ModuleOrg:      "客户管理",
+		ModuleProduct:  "产品管理",
+		ModuleOrder:    "订单管理",
+		ModuleAgent:    " 终端管理",
+		ModuleSoftware: " 软件管理",
+		ModuleThreaten: "威胁情报",
 	},
 }
 
@@ -34,14 +38,19 @@ var pathModuleLabel = map[string][]string{
 	"/platform/organize/verify/add":               {ModuleOrg, "添加企业账户"},
 	"/platform/organize/verify/approve":           {ModuleOrg, "账户审核：批准"},
 	"/platform/organize/verify/delete":            {ModuleOrg, "账户审核：删除"},
-	"/platform/product/manage/add":                {ModuleProduct, "产品管理：添加"},
-	"/platform/product/manage/edit":               {ModuleProduct, "产品管理：编辑"},
-	"/platform/product/manage/delete":             {ModuleProduct, "产品管理：删除"},
-	"/platform/agent/org/addGrant":                {ModuleAgent, "终端管理：添加授权"},
-	"/platform/order/manage/decline":              {ModuleOrder, "订单管理：直降"},
-	"/platform/order/manage/cancel":               {ModuleOrder, "订单管理：取消"},
-	"/platform/order/manage/paid":                 {ModuleOrder, "订单管理：确认已付款"},
-	"/platform/order/manage/unpaid":               {ModuleOrder, "订单管理：确认未付款"},
+	"/platform/product/manage/add":                {ModuleProduct, "添加"},
+	"/platform/product/manage/edit":               {ModuleProduct, "编辑"},
+	"/platform/product/manage/delete":             {ModuleProduct, "删除"},
+	"/platform/agent/org/addGrant":                {ModuleAgent, "添加授权"},
+	"/platform/order/manage/decline":              {ModuleOrder, "直降"},
+	"/platform/order/manage/cancel":               {ModuleOrder, "取消"},
+	"/platform/order/manage/paid":                 {ModuleOrder, "确认已付款"},
+	"/platform/order/manage/unpaid":               {ModuleOrder, "确认未付款"},
+	"/platform/software/manage/add":               {ModuleSoftware, "添加"},
+	"/platform/software/manage/delete":            {ModuleSoftware, "删除"},
+	"/platform/software/manage/publish":           {ModuleSoftware, "发布"},
+	"/platform/software/manage/cancel":            {ModuleSoftware, "取消"},
+	"/platform/software/manage/clear":             {ModuleSoftware, "清空"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

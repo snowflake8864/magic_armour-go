@@ -1,0 +1,75 @@
+package enum_threaten
+
+const (
+	CenterSupportNumber int = 200 //威胁情报中心支持数量:最大300,建议200
+
+	LevelUnknown      int = 0  //威胁情报中心等级：未知
+	LevelWhite        int = 1  //威胁情报中心等级：白名单
+	LevelDefaultOne   int = 2  //威胁情报中心等级：1级
+	LevelDefaultTwo   int = 3  //威胁情报中心等级：2级
+	LevelDefaultThree int = 4  //威胁情报中心等级：3级
+	LevelDefaultFour  int = 5  //威胁情报中心等级：4级
+	LevelDefaultFive  int = 6  //威胁情报中心等级：5级
+	LevelDefaultSix   int = 7  //威胁情报中心等级：6级
+	LevelDefaultSeven int = 8  //威胁情报中心等级：7级
+	LevelDefaultEight int = 9  //威胁情报中心等级：8级
+	LevelDefaultNine  int = 10 //威胁情报中心等级：9级
+	LevelBlack        int = 11 //威胁情报中心等级：黑名单
+	LevelNotSync      int = 99 //威胁情报中心等级： 未同步
+
+	SourceThreatenCenter int = 1 //等级来源:威胁情报中心
+	SourceImport         int = 2 //等级来源:人工导入
+	SourcePlatformAdd    int = 3 //等级来源:内部生成
+
+	PushStatusNot int = 1 //推送状态：未推送
+	PushStatusYes int = 2 //推送状态：已推送
+
+	DataFromUnknown int = 1 //数据来源：未知
+	DataFromProcess int = 2 //数据来源：进程
+	DataFromDll     int = 3 //数据来源：模块
+)
+
+var EnumMap = map[string]map[int]string{
+	"level": {
+		LevelUnknown:      "未知",
+		LevelWhite:        "白名单",
+		LevelDefaultOne:   "1级",
+		LevelDefaultTwo:   "2级",
+		LevelDefaultThree: "3级",
+		LevelDefaultFour:  "4级",
+		LevelDefaultFive:  "5级",
+		LevelDefaultSix:   "6级",
+		LevelDefaultSeven: "7级",
+		LevelDefaultEight: "8级",
+		LevelDefaultNine:  "9级",
+		LevelBlack:        "黑名单",
+		LevelNotSync:      "未同步",
+	},
+	"source": {
+		SourceThreatenCenter: "威胁情报",
+		SourceImport:         "人工导入",
+		SourcePlatformAdd:    "内部生成",
+	},
+	"push_status": {
+		PushStatusNot: "威胁情报",
+		PushStatusYes: "人工导入",
+	},
+}
+
+var WebMapInt = map[string][]int{
+	"level": {
+		LevelUnknown,
+		LevelWhite,
+		LevelDefaultOne,
+		LevelDefaultTwo,
+		LevelDefaultThree,
+		LevelDefaultFour,
+		LevelDefaultFive,
+		LevelDefaultSix,
+		LevelDefaultSeven,
+		LevelDefaultEight,
+		LevelDefaultNine,
+		LevelBlack,
+		LevelNotSync,
+	},
+}

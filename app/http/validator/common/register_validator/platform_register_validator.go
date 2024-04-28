@@ -3,16 +3,16 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/http/validator/common/upload_files"
+	uploadFiles4 "goskeleton/app/http/validator/common/upload_files"
 	agent4 "goskeleton/app/http/validator/platform/agent"
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	home4 "goskeleton/app/http/validator/platform/home"
 	order4 "goskeleton/app/http/validator/platform/order"
-	"goskeleton/app/http/validator/platform/org_menu"
+	orgMenu4 "goskeleton/app/http/validator/platform/org_menu"
 	organize4 "goskeleton/app/http/validator/platform/organize"
 	product4 "goskeleton/app/http/validator/platform/product"
 	software4 "goskeleton/app/http/validator/platform/software"
-	"goskeleton/app/http/validator/platform/threaten_push"
+	threaten4 "goskeleton/app/http/validator/platform/threaten"
 )
 
 // PlatformRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -25,7 +25,7 @@ func PlatformRegisterValidator() {
 	var key string
 	// 文件上传
 	key = consts.ValidatorPrefixPlatform + "UploadFiles"
-	containers.Set(key, upload_files.PlatformUpFiles{})
+	containers.Set(key, uploadFiles4.PlatformUpFiles{})
 
 	//安全认证
 	key = consts.ValidatorPrefixPlatform + "AuthCheckUser"
@@ -45,13 +45,13 @@ func PlatformRegisterValidator() {
 
 	//菜单
 	key = consts.ValidatorPrefixPlatform + "OrgMenuTree"
-	containers.Set(key, org_menu.Tree{})
+	containers.Set(key, orgMenu4.Tree{})
 	key = consts.ValidatorPrefixPlatform + "OrgMenuAdd"
-	containers.Set(key, org_menu.Add{})
+	containers.Set(key, orgMenu4.Add{})
 	key = consts.ValidatorPrefixPlatform + "OrgMenuEdit"
-	containers.Set(key, org_menu.Edit{})
+	containers.Set(key, orgMenu4.Edit{})
 	key = consts.ValidatorPrefixPlatform + "OrgMenuDelete"
-	containers.Set(key, org_menu.Delete{})
+	containers.Set(key, orgMenu4.Delete{})
 
 	//企业
 	key = consts.ValidatorPrefixPlatform + "OrganizePublicDetail"
@@ -138,6 +138,20 @@ func PlatformRegisterValidator() {
 	containers.Set(key, software4.ManageDelete{})
 
 	//威胁情报
+	key = consts.ValidatorPrefixPlatform + "ThreatenConfigSave"
+	containers.Set(key, threaten4.ConfigOnline{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenConfigOnline"
+	containers.Set(key, threaten4.ConfigSave{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCachePage"
+	containers.Set(key, threaten4.CachePage{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCacheGetAttr"
+	containers.Set(key, threaten4.CacheGetAttr{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCacheDelete"
+	containers.Set(key, threaten4.CacheDelete{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCacheBatchWhite"
+	containers.Set(key, threaten4.PushBatchWhite{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCacheBatchBlack"
+	containers.Set(key, threaten4.PushBatchBlack{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"
-	containers.Set(key, threaten_push.Page{})
+	containers.Set(key, threaten4.PushPage{})
 }

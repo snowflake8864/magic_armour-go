@@ -224,14 +224,31 @@ func InitPlatformRouter() *gin.Engine {
 				{
 					public := threaten.Group("public/")
 					{
-						public.POST("levels", (&platform.ThreatenCacheController{}).Levels)
+						public.POST("levels", (&platform.ThreatenController{}).Levels)
+					}
+					config := threaten.Group("config/")
+					{
+						config.POST("get", (&platform.ThreatenController{}).GetForConfig)
+						config.POST("save", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenConfigSave"))
+						config.POST("online", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenConfigOnline"))
+					}
+					cache := threaten.Group("cache/")
+					{
+						cache.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCachePage"))
+						cache.POST("getAttr", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheGetAttr"))
+						cache.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheDelete"))
+						cache.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchWhite"))
+						cache.POST("batchBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchBlack"))
+						cache.POST("allWhite", (&platform.ThreatenController{}).AllWhiteForPush)
+						cache.POST("clear", (&platform.ThreatenController{}).ClearForPush)
+						cache.POST("refresh", (&platform.ThreatenController{}).ClearForPush)
 					}
 					push := threaten.Group("push/")
 					{
 						push.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenPushPage"))
-						push.POST("clear", (&platform.ThreatenPushController{}).Clear)
+						push.POST("clear", (&platform.ThreatenController{}).ClearForPush)
 					}
-				} //终端
+				} //威胁情报
 			}
 		}
 	}

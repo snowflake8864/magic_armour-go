@@ -39,12 +39,12 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 		(
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'hash',
 			level tinyint NOT NULL DEFAULT '0' COMMENT '类型(参考文件中定义)',
-			source tinyint NOT NULL DEFAULT '1' COMMENT '来源(1威胁情报中心, 2人工导入, 3内部生成)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
 			parent_dir varchar(512)  DEFAULT '' COMMENT '上级路径',
 			os varchar(128)  DEFAULT '' COMMENT '操作系统',
 			attribute string  COMMENT '文件属性',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
+			source tinyint NOT NULL DEFAULT '1' COMMENT '来源',
 			check_at datetime DEFAULT NULL COMMENT '验证时间',
 			created_at datetime NOT NULL,
 			INDEX index_level (level) USING INVERTED,
