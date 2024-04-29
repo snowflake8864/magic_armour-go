@@ -1,67 +1,83 @@
 package threaten_service
 
 import (
-	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/md5_encrypt"
-	"goskeleton/app/utils/openssl_encrypt"
+	"errors"
+	"fmt"
+	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/http_request"
 	"goskeleton/app/utils/redis_factory"
-	"time"
+	"strings"
 )
 
-func CreateRequestFactory(deviceId string) *accessArmour {
-	return &accessArmour{
-		privateRsa:  variable.HuanshiPrivateRsa,
-		deviceId:    deviceId,
-		cacheExpire: 600,
-		aesFactory:  openssl_encrypt.CreateAesFactory(),
+func CreateRequestFactory(c RequestConfig) *requestThreaten {
+	c.Domain = strings.TrimRight(c.Domain, "/")
+	return &requestThreaten{
 		redisClient: redis_factory.GetOneRedisClient(),
-		cacheKey:    "huanshi_access_token",
+		cacheKey:    "threaten_token",
+		cacheExpire: 600,
+		Config:      c,
 	}
 }
 
-type accessArmour struct {
-	privateRsa  string //约定的私钥
-	deviceId    string //系统设备ID
-	cacheExpire int    //缓存有效期
-	aesFactory  *openssl_encrypt.AesCrypt
+type RequestConfig struct {
+	Switch    int
+	Domain    string
+	AppId     string
+	AppSecret string
+}
+
+type requestThreaten struct {
 	redisClient *redis_factory.RedisClient
 	cacheKey    string
+	cacheExpire int //缓存有效期
+	Config      RequestConfig
 }
 
-// 生成秘钥
-func (aa *accessArmour) GenerateSecret(timestamp int64) string {
-	return md5_encrypt.MD5(aa.privateRsa + aa.deviceId + string(timestamp-1))
+type responseData struct {
+	Code int         `json:"code"`
+	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
 }
 
-// 校验秘钥
-func (aa *accessArmour) CheckSecret(timestamp int64, secret string) (bool, string) {
-	currentTime := time.Now()
-
-	if diff := int(currentTime.Unix() - timestamp); diff > aa.cacheExpire || diff < aa.cacheExpire {
-		return false, "秘钥已无效"
+// dealResponse 处理请求结果
+func (aa *requestThreaten) dealResponse(bodyContext string, err error) (error, interface{}) {
+	if err != nil {
+		return err, nil
 	}
-	if aa.GenerateSecret(timestamp) != secret {
-		return false, "秘钥不正确"
-	}
-
-	return true, ""
-}
-
-type AccessGenerateToken struct {
-	Secret   string `json:"secret"`
-	Expire   int    `json:"expire"`
-	Token    string `json:"token"`
-	DeviceId string `json:"device_id"`
-}
-
-// 生成口令
-func (aa *accessArmour) GenerateToken(secret string) (AccessGenerateToken, error) {
-	token, _ := aa.aesFactory.CbcEncryptToHex(secret)
-
-	isOK, err := aa.redisClient.SetEx(aa.cacheKey, token, aa.cacheExpire)
-	if !isOK || err != nil {
-		return AccessGenerateToken{}, err
+	resp := responseData{}
+	err = helpers.Json2Struct(bodyContext, &resp)
+	if err != nil {
+		return errors.New("json_last_error: " + err.Error()), nil
 	}
 
-	return AccessGenerateToken{Secret: secret, Expire: aa.cacheExpire, Token: token, DeviceId: aa.deviceId}, nil
+	//口令过期
+	if resp.Code == 3007 {
+		return errors.New(fmt.Sprintf("token expired[code=%d]", resp.Code)), nil
+	}
+	//结果不正确
+	if resp.Code == 1 {
+		return errors.New(fmt.Sprintf("result fail[code=%d]", resp.Code)), nil
+	}
+	return nil, resp.Data
+}
+
+// Online 是否在线
+func (aa *requestThreaten) Online() error {
+	uri := aa.Config.Domain + "/center/heartbeat"
+	err, _ := aa.dealResponse(http_request.GetNoParams(uri, nil))
+	return err
+}
+
+// GenerateToken 生成口令
+func (aa *requestThreaten) GenerateToken() error {
+	uri := aa.Config.Domain + "/center/auth/token"
+	params := map[string]interface{}{
+		"appId":     aa.Config.AppId,
+		"secretKey": aa.Config.AppSecret,
+	}
+	err, resp := aa.dealResponse(http_request.PostWithForm(uri, nil, params))
+	fmt.Println(resp)
+	fmt.Sprintf("resp %T \n", resp)
+
+	return err
 }
