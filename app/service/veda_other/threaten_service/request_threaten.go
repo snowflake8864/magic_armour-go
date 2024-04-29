@@ -1,4 +1,4 @@
-package huanshi_service
+package threaten_service
 
 import (
 	"goskeleton/app/global/variable"
@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func CreateAccessFactory(deviceId string) *accessArmour {
+func CreateRequestFactory(deviceId string) *accessArmour {
 	return &accessArmour{
 		privateRsa:  variable.HuanshiPrivateRsa,
 		deviceId:    deviceId,

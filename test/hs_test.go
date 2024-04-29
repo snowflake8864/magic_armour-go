@@ -16,7 +16,7 @@ func TestAccess(t *testing.T) {
 	currentTime := time.Now().Unix()
 	fmt.Println("currentTime:", currentTime)
 
-	hsAccessFact := huanshi_service.CreateAccessFactory(deviceId)
+	hsAccessFact := huanshi_service.CreateCallbackFactory(deviceId)
 	secret := hsAccessFact.GenerateSecret(currentTime)
 	fmt.Println("secret:", secret)
 

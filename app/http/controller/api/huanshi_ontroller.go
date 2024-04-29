@@ -18,7 +18,7 @@ func (u *HuanshiController) Auth(ctx *gin.Context) {
 	deviceId := ctx.GetString(consts.ValidatorPrefixApi + "deviceId")
 
 	//验证秘钥
-	hsAccessFact := huanshi_service.CreateAccessFactory(deviceId)
+	hsAccessFact := huanshi_service.CreateCallbackFactory(deviceId)
 	if isOk, errMsg := hsAccessFact.CheckSecret(timestamp, secret); !isOk {
 		response.FailRoutine(ctx, 10001, errMsg)
 	}
