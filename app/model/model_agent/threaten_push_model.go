@@ -25,7 +25,7 @@ type ThreatenPushModel struct {
 	Attribute  string `json:"attribute"`
 	DataFrom   int    `json:"data_from"`
 	PushStatus int    `json:"push_status"`
-	PushAt     string `json:"push_at"`
+	PushAt     string `json:"push_at" gorm:"default:NULL"`
 	CreateId   int    `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`

@@ -73,3 +73,35 @@ var WebMapInt = map[string][]int{
 		LevelNotSync,
 	},
 }
+
+// IsWhite 是否白名单
+func IsWhite(level int) bool {
+	if level == LevelWhite {
+		return true
+	}
+	return false
+}
+
+// IsBlack 是否黑名单
+func IsBlack(level int) bool {
+	if level == LevelBlack {
+		return true
+	}
+	return false
+}
+
+// HasLevel 是否有威胁等级
+func HasLevel(level int) bool {
+	if level == LevelUnknown || level == LevelNotSync {
+		return false
+	}
+	return true
+}
+
+// HasEffect 是否会产生影响
+func HasEffect(level int) bool {
+	if level == LevelWhite || level == LevelBlack {
+		return false
+	}
+	return true
+}

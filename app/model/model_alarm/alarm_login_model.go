@@ -127,7 +127,10 @@ func (m *AlarmLoginModel) DeleteByConditions(condition map[string]interface{}) b
 // GetItemsByConditions 通过条件获取多条记录
 func (m *AlarmLoginModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*AlarmLoginModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(condition)
+		tmp := m.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -150,7 +153,11 @@ func (m *AlarmLoginModel) GetItemsByConditions(condition map[string]interface{},
 func (m *AlarmLoginModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("id").Where(condition).Count(&total)
+		tmp := m.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals)
+		}
+		return tmp.Count(&total)
 	})
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {

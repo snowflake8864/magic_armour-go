@@ -4,11 +4,16 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type CachePage struct {
+	data_type.Page
+	Id    string `form:"id" json:"id" binding:"omitempty,len=32"`
+	Dir   string `form:"dir" json:"dir" binding:"omitempty,min=2"`
+	Level *int   `form:"level" json:"level" binding:"required,max=20"`
 }
 
 func (n CachePage) CheckParams(context *gin.Context) {

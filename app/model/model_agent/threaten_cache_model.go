@@ -1,8 +1,10 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // 威胁情报缓存表
@@ -23,7 +25,7 @@ type ThreatenCacheModel struct {
 	Os        string `json:"os"`
 	Attribute string `json:"attribute"`
 	DataFrom  int    `json:"data_from"`
-	CheckAt   string `json:"check_at"`
+	CheckAt   string `json:"check_at" gorm:"default:NULL"`
 	CreatedAt string `json:"created_at"`
 }
 
@@ -39,8 +41,8 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 		(
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'hash',
 			level tinyint NOT NULL DEFAULT '0' COMMENT '类型(参考文件中定义)',
-			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
-			parent_dir varchar(512)  DEFAULT '' COMMENT '上级路径',
+			dir varchar(1024)  NOT NULL DEFAULT '' COMMENT '文件路径',
+			parent_dir varchar(1024)  DEFAULT '' COMMENT '上级路径',
 			os varchar(128)  DEFAULT '' COMMENT '操作系统',
 			attribute string  COMMENT '文件属性',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
@@ -63,5 +65,137 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *ThreatenCacheModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *ThreatenCacheModel) InsertItem(s *ThreatenCacheModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(sql)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateById 通过id修改
+func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("id=?", id).Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateByConditions 通过条件修改
+func (m *ThreatenCacheModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where(condition).Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteById 通过id删除
+func (m *ThreatenCacheModel) DeleteById(id string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("id=?", id).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *ThreatenCacheModel) GetItemById(id string) (item *ThreatenCacheModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("id=?", id).First(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).First(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := m.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !helpers.StringIsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *ThreatenCacheModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := m.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *ThreatenCacheModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*ThreatenCacheModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

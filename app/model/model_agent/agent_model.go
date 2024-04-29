@@ -437,9 +437,12 @@ func (m *AgentModel) GetItemsByConditions(condition map[string]interface{}, offs
 // Count 通过条件统计
 func (m *AgentModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	whereSQL, vals, _ := m.WhereBuild(condition)
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("agent_id").Where(whereSQL, vals...).Count(&total)
+		tmp := m.Model(m).Select("agent_id")
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals)
+		}
+		return tmp.Count(&total)
 	})
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
