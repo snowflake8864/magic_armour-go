@@ -28,8 +28,11 @@ func formatResp(resp *goCurl.Response, err error) (string, error) {
 
 // GetNoParams GET方法, 无参数
 func GetNoParams(uri string, headers map[string]interface{}) (string, error) {
+	headers["Content-Type"] = "application/x-www-form-urlencoded"
 	cli := goCurl.CreateHttpClient(goCurl.Options{
-		Headers: headers,
+		Headers:       headers,
+		SetResCharset: "utf-8",
+		Timeout:       30,
 	})
 	return formatResp(cli.Get(uri))
 }

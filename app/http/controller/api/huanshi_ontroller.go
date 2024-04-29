@@ -3,7 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/service/veda_other/huanshi_service"
+	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/response"
 )
 
@@ -18,7 +18,7 @@ func (u *HuanshiController) Auth(ctx *gin.Context) {
 	deviceId := ctx.GetString(consts.ValidatorPrefixApi + "deviceId")
 
 	//验证秘钥
-	hsAccessFact := huanshi_service.CreateCallbackFactory(deviceId)
+	hsAccessFact := huanshi_platform.CreateCallbackFactory(deviceId)
 	if isOk, errMsg := hsAccessFact.CheckSecret(timestamp, secret); !isOk {
 		response.FailRoutine(ctx, 10001, errMsg)
 	}

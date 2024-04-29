@@ -9,6 +9,9 @@ import (
 )
 
 type ConfigOnline struct {
+	ThreatenUrl    string `form:"threaten_url" json:"threaten_url" binding:"required"`
+	ThreatenAppId  string `form:"threaten_app_id" json:"threaten_app_id" binding:"required"`
+	ThreatenAppKey string `form:"threaten_app_key" json:"threaten_app_key" binding:"required"`
 }
 
 func (n ConfigOnline) CheckParams(context *gin.Context) {

@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"goskeleton/app/service/veda_other/huanshi_service"
+	"goskeleton/app/service/veda_other/huanshi_platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
 	"time"
@@ -16,7 +16,7 @@ func TestAccess(t *testing.T) {
 	currentTime := time.Now().Unix()
 	fmt.Println("currentTime:", currentTime)
 
-	hsAccessFact := huanshi_service.CreateCallbackFactory(deviceId)
+	hsAccessFact := huanshi_platform.CreateCallbackFactory(deviceId)
 	secret := hsAccessFact.GenerateSecret(currentTime)
 	fmt.Println("secret:", secret)
 

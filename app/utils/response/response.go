@@ -65,6 +65,12 @@ func FailRoutine(c *gin.Context, dataCode interface{}, msg string) {
 	c.Abort()
 }
 
+// FailData 失败的业务逻辑：有错误数据
+func FailData(c *gin.Context, msg string, data interface{}) {
+	ReturnJson(c, http.StatusBadRequest, consts.CurdBaseCode, msg, data)
+	c.Abort()
+}
+
 // ErrorTokenBaseInfo token 基本的格式错误
 func ErrorTokenBaseInfo(c *gin.Context) {
 	ReturnJson(c, http.StatusBadRequest, http.StatusBadRequest, my_errors.ErrorsTokenBaseInfo, "")
@@ -92,7 +98,7 @@ func ErrorTokenRefreshFail(c *gin.Context) {
 	c.Abort()
 }
 
-// token 参数校验错误
+// TokenErrorParam token 参数校验错误
 func TokenErrorParam(c *gin.Context, wrongParam interface{}) {
 	ReturnJson(c, http.StatusUnauthorized, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, wrongParam)
 	c.Abort()

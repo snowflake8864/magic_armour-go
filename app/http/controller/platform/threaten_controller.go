@@ -8,7 +8,9 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/response"
+	"strings"
 )
 
 // ThreatenController 威胁情报推送相关
@@ -42,7 +44,7 @@ func (u *ThreatenController) GetForConfig(ctx *gin.Context) {
 func (u *ThreatenController) SaveForConfig(ctx *gin.Context) {
 	idAndVal := map[string]string{
 		enum_dictionary.ThreatenSwitch:      ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_switch"),
-		enum_dictionary.ThreatenUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_url"),
+		enum_dictionary.ThreatenUrl:         strings.TrimRight(ctx.GetString(consts.ValidatorPrefixPlatform+"threaten_url"), "/"),
 		enum_dictionary.ThreatenAppId:       ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_id"),
 		enum_dictionary.ThreatenAppKey:      ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_key"),
 		enum_dictionary.ThreatenCacheExpire: ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_cache_expire"),
@@ -58,7 +60,21 @@ func (u *ThreatenController) SaveForConfig(ctx *gin.Context) {
 
 // OnlineForConfig 配置: 验证在线
 func (u *ThreatenController) OnlineForConfig(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "OnlineForConfig")
+	config := threaten_platform.RequestConfig{
+		Domain:    ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_url"),
+		AppId:     ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_id"),
+		AppSecret: ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_key"),
+	}
+	threatenPlatform := threaten_platform.CreateRequestFactory(config)
+	if err := threatenPlatform.Online(); err != nil {
+		response.FailData(ctx, "网络连接失败", err.Error())
+		return
+	}
+	if err := threatenPlatform.GenerateToken(); err != nil {
+		response.FailData(ctx, "配置不正确", err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PageForCache 缓存: 分页

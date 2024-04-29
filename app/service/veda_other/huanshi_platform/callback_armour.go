@@ -1,4 +1,4 @@
-package huanshi_service
+package huanshi_platform
 
 import (
 	"goskeleton/app/global/variable"
