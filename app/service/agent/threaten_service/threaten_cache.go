@@ -1,12 +1,13 @@
 package threaten_service
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/utils/helpers"
 )
 
-func CreateCurdFactory() *ThreatenCache {
+func CreateCacheFactory() *ThreatenCache {
 	return &ThreatenCache{masterModel: model_agent.CreateThreatenCacheFactory()}
 }
 
@@ -94,16 +95,12 @@ func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
 }
 
 // Clear 清空
-func (crd *ThreatenCache) Clear(param *model_agent.ThreatenCacheModel) bool {
-	if crd.masterModel.TruncateTable() {
-		return false
-	}
-
-	return true
+func (crd *ThreatenCache) Clear() bool {
+	return crd.masterModel.TruncateTable()
 }
 
 // Refresh 刷新
-func (crd *ThreatenCache) Refresh(param *model_agent.ThreatenCacheModel) bool {
+func (crd *ThreatenCache) Refresh() bool {
 	wheres := crd.search2Where(SearchConditions{
 		LevelList: []int{
 			enum_threaten.LevelUnknown,
@@ -120,6 +117,7 @@ func (crd *ThreatenCache) Refresh(param *model_agent.ThreatenCacheModel) bool {
 			enum_threaten.LevelBlack,
 		},
 	})
+	fmt.Println(wheres)
 	updates := map[string]interface{}{
 		"level": enum_threaten.LevelNotSync,
 	}

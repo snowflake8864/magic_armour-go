@@ -110,7 +110,7 @@ func (m *SoftwareModel) UpdateById(id int64, updates map[string]interface{}) boo
 func (m *SoftwareModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals)
+		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Updates(updates)
 	if result.Error == nil {
@@ -134,7 +134,7 @@ func (m *SoftwareModel) DeleteById(id int64) bool {
 func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*SoftwareModel, err error) {
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals)
+		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
@@ -157,7 +157,7 @@ func (m *SoftwareModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals)
+		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
 	if result.Error == nil {

@@ -159,7 +159,7 @@ func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel, err error
 func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderModel, err error) {
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals)
+		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
@@ -182,7 +182,7 @@ func (m *OrderModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	tmp := m.Model(m).Select("order_no")
 	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals)
+		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
 	if result.Error == nil {

@@ -138,7 +138,7 @@ func (m *AlarmPortModel) GetItemsByConditions(condition map[string]interface{}, 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := m.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-			tmp = tmp.Where(whereSQL, vals)
+			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
@@ -164,7 +164,7 @@ func (m *AlarmPortModel) Count(condition map[string]interface{}) int64 {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := m.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-			tmp = tmp.Where(whereSQL, vals)
+			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
 	})

@@ -45,9 +45,11 @@ func UseDbConn(selectDb string) *gorm.DB {
 }
 
 func (m *BaseModel) TrimSql(sql string) string {
-	sql = strings.Replace(sql, "	", " ", -1)
-	sql = strings.Replace(sql, "\t", "", -1)
-	sql = strings.Replace(sql, "\n", "", -1)
+	sql = strings.ReplaceAll(sql, "	", " ")
+	sql = strings.ReplaceAll(sql, "\t", "")
+	sql = strings.ReplaceAll(sql, "\n", "")
+	sql = strings.ReplaceAll(sql, "((", "(")
+	sql = strings.ReplaceAll(sql, "))", ")")
 	//fmt.Println(sql)
 	return sql
 }
@@ -99,7 +101,7 @@ func (m *BaseModel) WhereBuild(conditions map[string]interface{}) (whereSQL stri
 				vals = append(vals, conditionVal)
 				break
 			case "in":
-				whereSQL += fmt.Sprint(field, " IN (?)")
+				whereSQL += fmt.Sprint(field, " IN ?")
 				vals = append(vals, conditionVal)
 				break
 			case "like":

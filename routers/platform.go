@@ -240,8 +240,8 @@ func InitPlatformRouter() *gin.Engine {
 						cache.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchWhite"))
 						cache.POST("batchBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchBlack"))
 						cache.POST("allWhite", (&platform.ThreatenController{}).AllWhiteForPush)
-						cache.POST("clear", (&platform.ThreatenController{}).ClearForPush)
-						cache.POST("refresh", (&platform.ThreatenController{}).ClearForPush)
+						cache.POST("clear", (&platform.ThreatenController{}).ClearForCache)
+						cache.POST("refresh", (&platform.ThreatenController{}).RefreshForCache)
 					}
 					push := threaten.Group("push/")
 					{

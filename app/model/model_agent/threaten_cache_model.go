@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -107,8 +108,15 @@ func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{
 // UpdateByConditions 通过条件修改
 func (m *ThreatenCacheModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Updates(updates)
+		tmp := m.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			fmt.Println(whereSQL)
+			fmt.Println(vals)
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
 	})
+	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true
@@ -148,7 +156,7 @@ func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := m.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-			tmp = tmp.Where(whereSQL, vals)
+			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
@@ -174,7 +182,7 @@ func (m *ThreatenCacheModel) Count(condition map[string]interface{}) int64 {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := m.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-			tmp = tmp.Where(whereSQL, vals)
+			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
 	})

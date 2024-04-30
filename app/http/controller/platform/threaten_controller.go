@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/response"
@@ -84,12 +85,20 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 
 // ClearForCache 缓存: 清空
 func (u *ThreatenController) ClearForCache(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ClearForCache")
+	if !threaten_service.CreateCacheFactory().Clear() {
+		response.FailSimplify(ctx, "清空失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // RefreshForCache 缓存: 刷新
 func (u *ThreatenController) RefreshForCache(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RefreshForCache")
+	if !threaten_service.CreateCacheFactory().Refresh() {
+		response.FailSimplify(ctx, "刷新失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForCache 缓存: 删除
