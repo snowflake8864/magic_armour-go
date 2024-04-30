@@ -79,7 +79,11 @@ func (m *TaskModel) InsertBatch(list *[]TaskModel) bool {
 // UpdateByConditions 通过条件修改
 func (m *TaskModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Updates(updates)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -105,7 +109,7 @@ func (m *TaskModel) DeleteByOrg(orgId int64) bool {
 // GetItemsByConditions 通过条件获取多条记录
 func (m *TaskModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*TaskModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m)
+		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
@@ -131,7 +135,7 @@ func (m *TaskModel) GetItemsByConditions(condition map[string]interface{}, offse
 func (m *TaskModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m).Select("id")
+		tmp := tx.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

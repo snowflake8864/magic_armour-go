@@ -105,7 +105,11 @@ func (m *AlarmBlackmailModel) InsertBatch(list *[]AlarmBlackmailModel) bool {
 // UpdateByConditions 通过条件修改
 func (m *AlarmBlackmailModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Updates(updates)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -118,7 +122,11 @@ func (m *AlarmBlackmailModel) UpdateByConditions(condition map[string]interface{
 // DeleteByConditions 通过条件删除
 func (m *AlarmBlackmailModel) DeleteByConditions(condition map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -131,7 +139,7 @@ func (m *AlarmBlackmailModel) DeleteByConditions(condition map[string]interface{
 // GetItemsByConditions 通过条件获取多条记录
 func (m *AlarmBlackmailModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*AlarmBlackmailModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m)
+		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
@@ -157,7 +165,7 @@ func (m *AlarmBlackmailModel) GetItemsByConditions(condition map[string]interfac
 func (m *AlarmBlackmailModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m).Select("id")
+		tmp := tx.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

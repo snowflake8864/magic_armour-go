@@ -105,7 +105,11 @@ func (m *SyslogProcessModel) InsertBatch(list *[]SyslogProcessModel) bool {
 // DeleteByConditions 通过条件删除
 func (m *SyslogProcessModel) DeleteByConditions(condition map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -118,7 +122,10 @@ func (m *SyslogProcessModel) DeleteByConditions(condition map[string]interface{}
 // GetItemsByConditions 通过条件获取多条记录
 func (m *SyslogProcessModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*SyslogProcessModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(condition)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -141,7 +148,11 @@ func (m *SyslogProcessModel) GetItemsByConditions(condition map[string]interface
 func (m *SyslogProcessModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select("id").Where(condition).Count(&total)
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
 	})
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {

@@ -258,7 +258,11 @@ func (m *AgentModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, update
 // UpdateByConditions 通过条件修改
 func (m *AgentModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Updates(updates)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -336,7 +340,11 @@ func (m *AgentModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
 // DeleteByConditions 通过条件删除
 func (m *AgentModel) DeleteByConditions(condition map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where(condition).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -413,9 +421,11 @@ func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, colu
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *AgentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order, column string) (items []*AgentModel, err error) {
-	whereSQL, vals, _ := m.WhereBuild(condition)
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -438,7 +448,7 @@ func (m *AgentModel) GetItemsByConditions(condition map[string]interface{}, offs
 func (m *AgentModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m).Select("agent_id")
+		tmp := tx.Model(m).Select("agent_id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

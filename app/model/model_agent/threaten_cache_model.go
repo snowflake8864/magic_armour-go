@@ -1,7 +1,6 @@
 package model_agent
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -108,15 +107,12 @@ func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{
 // UpdateByConditions 通过条件修改
 func (m *ThreatenCacheModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m)
+		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
-			fmt.Println(whereSQL)
-			fmt.Println(vals)
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
 	})
-	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true
@@ -154,7 +150,7 @@ func (m *ThreatenCacheModel) GetItemById(id string) (item *ThreatenCacheModel, e
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m)
+		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
@@ -180,7 +176,7 @@ func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface
 func (m *ThreatenCacheModel) Count(condition map[string]interface{}) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := m.Model(m).Select("id")
+		tmp := tx.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

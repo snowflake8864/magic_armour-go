@@ -48,8 +48,8 @@ func (m *BaseModel) TrimSql(sql string) string {
 	sql = strings.ReplaceAll(sql, "	", " ")
 	sql = strings.ReplaceAll(sql, "\t", "")
 	sql = strings.ReplaceAll(sql, "\n", "")
-	sql = strings.ReplaceAll(sql, "((", "(")
-	sql = strings.ReplaceAll(sql, "))", ")")
+	//sql = strings.ReplaceAll(sql, "((", "(")
+	//sql = strings.ReplaceAll(sql, "))", ")")
 	//fmt.Println(sql)
 	return sql
 }
