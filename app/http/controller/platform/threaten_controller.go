@@ -138,7 +138,17 @@ func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 
 // PageForPush 推送: 分页
 func (u *ThreatenController) PageForPush(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Page")
+	//页面上传
+	conditions := threaten_service.SearchConditions{}
+	conditions.Id = ctx.GetString(consts.ValidatorPrefixPlatform + "id")
+	conditions.Dir = ctx.GetString(consts.ValidatorPrefixPlatform + "dir")
+
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+
+	//分页
+	total, models := threaten_service.CreateCacheFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
 }
 
 // AllWhiteForPush 推送: 全部白
@@ -158,5 +168,9 @@ func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 
 // ClearForPush 推送: 清空
 func (u *ThreatenController) ClearForPush(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Clear")
+	if !threaten_service.CreatePushFactory().Clear() {
+		response.FailSimplify(ctx, "清空失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

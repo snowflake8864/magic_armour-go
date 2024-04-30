@@ -4,11 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type PushPage struct {
+	data_type.Page
+	Id  string `form:"id" json:"id" binding:"omitempty,max=64"`
+	Dir string `form:"dir" json:"dir" binding:"omitempty,min=2"`
 }
 
 func (n PushPage) CheckParams(context *gin.Context) {

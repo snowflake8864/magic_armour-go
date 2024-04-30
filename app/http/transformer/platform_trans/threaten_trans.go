@@ -43,3 +43,41 @@ func (t *Threaten) TransCachePage(total int64, models []*model_agent.ThreatenCac
 		"items": items,
 	}
 }
+
+func (t *Threaten) pagePushGeneral(model *model_agent.ThreatenPushModel) map[string]interface{} {
+	data := make(map[string]interface{})
+	data["id"] = model.Id
+	data["level"] = model.Level
+	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Level, enum_threaten.EnumMap)
+
+	data["dir"] = model.Dir
+	data["parent_dir"] = model.ParentDir
+	data["os"] = model.Os
+	data["data_from"] = model.DataFrom
+	data["push_at"] = model.PushAt
+	data["push_status"] = model.PushStatus
+	data["introduce"] = model.Introduce
+	data["copyright"] = model.Copyright
+	data["attribute"] = model.Attribute
+	data["push_status"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
+	data["create_id"] = model.CreateId
+	data["create_name"] = model.CreateName
+	data["created_at"] = model.CreatedAt
+	return data
+}
+
+// TransPushPage 转换成推送页需要的数据
+func (t *Threaten) TransPushPage(total int64, models []*model_agent.ThreatenPushModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pagePushGeneral(model)
+			items = append(items, tmp)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
