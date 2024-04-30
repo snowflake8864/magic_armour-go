@@ -19,7 +19,7 @@ const (
 
 	SourceThreatenCenter int = 1 //等级来源:威胁情报中心
 	SourceImport         int = 2 //等级来源:人工导入
-	SourcePlatformAdd    int = 3 //等级来源:内部生成
+	SourceAgentUpload    int = 3 //等级来源:内部生成
 
 	PushStatusNot int = 1 //推送状态：未推送
 	PushStatusYes int = 2 //推送状态：已推送
@@ -48,11 +48,11 @@ var EnumMap = map[string]map[int]string{
 	"source": {
 		SourceThreatenCenter: "威胁情报",
 		SourceImport:         "人工导入",
-		SourcePlatformAdd:    "内部生成",
+		SourceAgentUpload:    "终端上传",
 	},
 	"push_status": {
-		PushStatusNot: "威胁情报",
-		PushStatusYes: "人工导入",
+		PushStatusNot: "未推送",
+		PushStatusYes: "已推送",
 	},
 }
 

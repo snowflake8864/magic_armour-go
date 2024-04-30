@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
@@ -80,7 +81,18 @@ func (u *ThreatenController) OnlineForConfig(ctx *gin.Context) {
 
 // PageForCache 缓存: 分页
 func (u *ThreatenController) PageForCache(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForCache")
+	//页面上传
+	conditions := threaten_service.SearchConditions{}
+	conditions.Id = ctx.GetString(consts.ValidatorPrefixPlatform + "id")
+	conditions.Dir = ctx.GetString(consts.ValidatorPrefixPlatform + "dir")
+	conditions.Level = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "level"))
+
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+
+	//分页
+	total, models := threaten_service.CreateCacheFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
 }
 
 // ClearForCache 缓存: 清空
