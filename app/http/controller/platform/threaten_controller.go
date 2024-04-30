@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"strings"
 )
@@ -115,12 +116,24 @@ func (u *ThreatenController) RefreshForCache(ctx *gin.Context) {
 
 // DeleteForCache 缓存: 删除
 func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForCache")
+	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
+
+	if !threaten_service.CreateCacheFactory().DeleteById(id) {
+		response.FailSimplify(ctx, "删除失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // GetAttrForCache 缓存: 获取属性
 func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetAttrForCache")
+	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
+	model := threaten_service.CreateCacheFactory().GetItemById(id)
+	if model == nil || helpers.StringIsEmpty(model.Id) {
+		response.FailSimplify(ctx, "数据不存在")
+		return
+	}
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCacheAttr(model))
 }
 
 // PageForPush 推送: 分页

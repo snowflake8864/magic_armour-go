@@ -9,6 +9,7 @@ import (
 )
 
 type CacheDelete struct {
+	Id string `form:"id" json:"id" binding:"required,max=64"`
 }
 
 func (n CacheDelete) CheckParams(context *gin.Context) {

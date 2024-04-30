@@ -11,7 +11,7 @@ import (
 
 type CachePage struct {
 	data_type.Page
-	Id    string `form:"id" json:"id" binding:"omitempty,len=32"`
+	Id    string `form:"id" json:"id" binding:"omitempty,max=64"`
 	Dir   string `form:"dir" json:"dir" binding:"omitempty,min=2"`
 	Level *int   `form:"level" json:"level" binding:"required,max=20"`
 }

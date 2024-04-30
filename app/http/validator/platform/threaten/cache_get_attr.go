@@ -9,6 +9,7 @@ import (
 )
 
 type CacheGetAttr struct {
+	Id string `form:"id" json:"id" binding:"required,max=64"`
 }
 
 func (n CacheGetAttr) CheckParams(context *gin.Context) {
