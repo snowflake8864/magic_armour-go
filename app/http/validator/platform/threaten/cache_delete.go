@@ -9,7 +9,7 @@ import (
 )
 
 type CacheDelete struct {
-	Id string `form:"id" json:"id" binding:"required,max=64"`
+	threatenSingle
 }
 
 func (n CacheDelete) CheckParams(context *gin.Context) {

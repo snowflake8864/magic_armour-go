@@ -29,6 +29,12 @@ func Json2Struct(jsonStr string, val interface{}) error {
 	return json.Unmarshal([]byte(jsonStr), &val)
 }
 
+// Json2Any json还原成默认传入数据类型
+// 用法：err := Json2Any([]byte(jsonStr), &person);
+func Json2Any(jsonStr string, val interface{}) error {
+	return json.Unmarshal([]byte(jsonStr), &val)
+}
+
 // Json2SliceInt json还原[]int
 func Json2SliceInt(jsonStr string) []int {
 	var numbers []int
