@@ -146,9 +146,9 @@ func (u *ThreatenController) PageForPush(ctx *gin.Context) {
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, models := threaten_service.CreateCacheFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, models := threaten_service.CreatePushFactory().Page(conditions, offset, pageSize, orderField, orderSort)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransPushPage(total, models))
 }
 
 // AllWhiteForPush 推送: 全部白
