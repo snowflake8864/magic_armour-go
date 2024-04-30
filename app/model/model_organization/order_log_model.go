@@ -85,7 +85,10 @@ func (m *OrderLogModel) DeleteByOrder(id string) bool {
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrderLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderLogModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
@@ -105,7 +108,11 @@ func (m *OrderLogModel) GetItemsByConditions(condition map[string]interface{}, o
 // Count 通过条件统计
 func (m *OrderLogModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	tmp := m.Model(m).Select("order_no")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

@@ -87,7 +87,11 @@ func (m *DepartmentModel) UpdateById(id int64, updates map[string]interface{}) b
 
 // DeleteByConditions 通过条件删除
 func (m *DepartmentModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Delete(m)
 	if result.Error == nil {
 		return true
 	} else {
@@ -117,7 +121,10 @@ func (m *DepartmentModel) GetItemsByIds(ids []int64) (items []*DepartmentModel, 
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *DepartmentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*DepartmentModel, err error) {
-	tmp := m.Model(m).Where(condition)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}

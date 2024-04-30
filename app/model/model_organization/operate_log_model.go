@@ -74,8 +74,11 @@ func (m *OperateLogModel) CreateTable() bool {
 }
 
 func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
-	result := m.Create(s)
-	if result.RowsAffected > 0 {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
 		return true
 	} else {
 		return false
@@ -85,7 +88,10 @@ func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OperateLogModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(condition)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -107,7 +113,14 @@ func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{},
 // Count 通过条件统计
 func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
 	var total int64
-	result := m.Model(m).Select("id").Where(condition).Count(&total)
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
 		return total
 	} else {

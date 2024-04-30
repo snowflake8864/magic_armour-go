@@ -116,7 +116,11 @@ func (m *OrganizationModel) DeleteById(id int64) bool {
 
 // DeleteByConditions 通过条件删除
 func (m *OrganizationModel) DeleteByConditions(condition map[string]interface{}) bool {
-	result := m.Model(m).Where(condition).Delete(m)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Delete(m)
 	if result.Error == nil {
 		return true
 	} else {

@@ -3,6 +3,7 @@ package model_platform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // CreateOrgMenuFactory 企业用的菜单表
@@ -149,7 +150,11 @@ func (m *OrgMenuModel) GetItemsByIds(ids []int64) (items []*OrgMenuModel, err er
 }
 
 func (m *OrgMenuModel) GetItemsByConditions(condition map[string]interface{}) (items []*OrgMenuModel, err error) {
-	result := m.Where(condition).Find(&items).Order("level ASC, sort ASC")
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Find(&items).Order("level ASC, sort ASC")
 	if result.Error == nil {
 		return items, nil
 	} else {
