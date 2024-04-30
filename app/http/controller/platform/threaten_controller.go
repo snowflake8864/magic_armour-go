@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
@@ -158,12 +159,22 @@ func (u *ThreatenController) AllWhiteForPush(ctx *gin.Context) {
 
 // BatchWhiteForPush 推送: 批量白
 func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
+	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
+
+	var params []model_agent.ThreatenPushModel
+	err := helpers.Json2Any(list, &params)
+	if err != err {
+		response.FailSimplify(ctx, "参数格式错误")
+		return
+	}
+
 	response.SuccessReturnData(ctx, "BatchWhite")
 }
 
 // BatchBlackForPush 推送: 批量黑
 func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchBlack")
+
+	response.SuccessReturnData(ctx, "BatchWhite")
 }
 
 // ClearForPush 推送: 清空

@@ -9,6 +9,7 @@ import (
 )
 
 type PushBatchWhite struct {
+	PushBatch
 }
 
 func (n PushBatchWhite) CheckParams(context *gin.Context) {
