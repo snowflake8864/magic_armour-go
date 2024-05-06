@@ -158,7 +158,8 @@ func (m *ThreatenCacheModel) GetItemById(id string) (item *ThreatenCacheModel, e
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m)
+		column := "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
+		tmp := tx.Model(m).Select(column)
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
