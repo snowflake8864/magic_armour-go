@@ -78,10 +78,17 @@ func InitPlatformRouter() *gin.Engine {
 				{
 					uploadFiles.POST("files", validatorFactory.Create(consts.ValidatorPrefixPlatform+"UploadFiles"))
 				}
-				//
+				//账户
 				account := vPlatform.Group("account/")
 				{
-					account.POST("setSelfPw", validatorFactory.Create(consts.ValidatorPrefixPlatform+"UploadFiles"))
+					account.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AccountModifyPw"))
+				}
+
+				//数据字典
+				dictionary := vPlatform.Group("dictionary/")
+				{
+					dictionary.POST("list", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DictionaryList"))
+					dictionary.POST("save", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DictionarySave"))
 				}
 
 				//首页

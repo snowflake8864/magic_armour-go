@@ -1,6 +1,7 @@
 package platform
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -159,17 +160,7 @@ func (u *ThreatenController) AllWhiteForPush(ctx *gin.Context) {
 
 // BatchWhiteForPush 推送: 批量白
 func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
-	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
-	var params []model_agent.ThreatenPushModel
-	err := helpers.Json2Any(list, &params)
-	if err != nil {
-		response.FailSimplify(ctx, "参数格式错误")
-		return
-	}
-
-	loginInfo := u.getLogin(ctx)
-
-	if errCode, err := threaten_service.CreatePushFactory().BatchAdd(params, enum_threaten.LevelWhite, loginInfo.AdminId, loginInfo.Username); err != nil {
+	if errCode, err := u.handelBatchForPush(ctx, enum_threaten.LevelBlack); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
@@ -178,8 +169,23 @@ func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
 
 // BatchBlackForPush 推送: 批量黑
 func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
+	if errCode, err := u.handelBatchForPush(ctx, enum_threaten.LevelBlack); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
 
-	response.SuccessReturnData(ctx, "BatchBlack")
+// BatchBlackForPush 推送: 批量黑
+func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (errCode int, err error) {
+	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
+	var params []model_agent.ThreatenPushModel
+	err = helpers.Json2Any(list, &params)
+	if err != nil {
+		return -1, errors.New("参数格式错误")
+	}
+	loginInfo := u.getLogin(ctx)
+	return threaten_service.CreatePushFactory().BatchAdd(params, enum_threaten.LevelWhite, loginInfo.AdminId, loginInfo.Username)
 }
 
 // ClearForPush 推送: 清空

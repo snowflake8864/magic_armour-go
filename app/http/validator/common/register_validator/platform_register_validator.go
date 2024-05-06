@@ -37,6 +37,8 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "AuthNormalLogin"
 	containers.Set(key, auth4.NormalLogin{})
 
+	//
+
 	//首页
 	key = consts.ValidatorPrefixPlatform + "HomeAgentDailyOnline"
 	containers.Set(key, home4.AgentDailyOnline{})

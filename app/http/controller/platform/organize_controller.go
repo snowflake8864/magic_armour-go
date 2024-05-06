@@ -151,7 +151,7 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
 
-// AddForVerify 审核: 分页
+// AddForVerify 审核: 添加
 func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 

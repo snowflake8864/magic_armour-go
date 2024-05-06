@@ -10,6 +10,7 @@ const (
 	ModuleAgent    = "agent"
 	ModuleSoftware = "software"
 	ModuleThreaten = "threaten"
+	ModuleAccount  = "account"
 )
 
 var EnumMap = map[string]map[string]string{
@@ -21,6 +22,7 @@ var EnumMap = map[string]map[string]string{
 		ModuleAgent:    " 终端管理",
 		ModuleSoftware: " 软件管理",
 		ModuleThreaten: "威胁情报",
+		ModuleAccount:  "账户管理",
 	},
 }
 
@@ -57,6 +59,7 @@ var pathModuleLabel = map[string][]string{
 	"/platform/threaten/cache/batchWhite":         {ModuleThreaten, "缓存-批量白名单"},
 	"/platform/threaten/cache/batchBlack":         {ModuleThreaten, "缓存-批量黑名单"},
 	"/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},
+	"/platform/account/modifyPw":                  {ModuleAccount, "修改密码"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
