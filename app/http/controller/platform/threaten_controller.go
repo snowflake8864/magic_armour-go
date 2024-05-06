@@ -168,13 +168,19 @@ func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessReturnData(ctx, "BatchWhite")
+	loginInfo := u.getLogin(ctx)
+
+	if errCode, err := threaten_service.CreatePushFactory().BatchAdd(params, enum_threaten.LevelWhite, loginInfo.AdminId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchBlackForPush 推送: 批量黑
 func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 
-	response.SuccessReturnData(ctx, "BatchWhite")
+	response.SuccessReturnData(ctx, "BatchBlack")
 }
 
 // ClearForPush 推送: 清空

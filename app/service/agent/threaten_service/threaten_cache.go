@@ -16,10 +16,22 @@ type ThreatenCache struct {
 	masterModel *model_agent.ThreatenCacheModel
 }
 
-// GetItemById 通过用户名获取
+// GetItemById 通过id获取
 func (crd *ThreatenCache) GetItemById(id string) (model *model_agent.ThreatenCacheModel) {
 	model, _ = crd.masterModel.GetItemById(id)
 	return model
+}
+
+// GetMapsByIds 通过ids获取, 有映射关系
+func (crd *ThreatenCache) GetMapsByIds(ids []string) (maps map[string]*model_agent.ThreatenCacheModel) {
+	models, err := crd.masterModel.GetItemsByIds(ids)
+	if err != nil || models == nil {
+		return nil
+	}
+	for _, model := range models {
+		maps[model.Id] = model
+	}
+	return maps
 }
 
 // Page 分页

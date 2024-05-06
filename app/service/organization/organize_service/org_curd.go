@@ -50,16 +50,14 @@ func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userPara
 	//新增企业
 	if orgParam.Source == enums.OperateSourcePlatform {
 		orgParam.TrusteeshipSwitch = enums.IsYes
-		orgParam.HuanshiSwitch = enums.IsYes
 	} else {
-		orgParam.Status = enum_organization.StatusNormal
 		orgParam.TrusteeshipSwitch = enums.IsNot
-		orgParam.HuanshiSwitch = enums.IsNot
 	}
 	orgParam.Status = enum_organization.StatusVerifying
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
+	orgParam.TrusteeshipSwitch = enums.IsYes
 	orgParam.CreatedAt = helpers.DatetimeCurr()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
 	if err = tx.Create(orgParam).Error; err != nil {
@@ -130,6 +128,8 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_
 	if !logFact.Add(&orgLogParam) {
 		return -3, errors.New("保存企业日志失败")
 	}
+
+	//新增
 
 	return errCode, err
 }

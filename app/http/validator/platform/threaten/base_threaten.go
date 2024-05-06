@@ -6,8 +6,8 @@ type threatenSingle struct {
 }
 
 type threatenSearch struct {
-	Dir   string `form:"dir" json:"dir" binding:"omitempty,min=2"`
-	Level *int   `form:"level" json:"level" binding:"required,max=20"`
+	Id  string `form:"id" json:"id" binding:"omitempty,max=64"`
+	Dir string `form:"dir" json:"dir" binding:"omitempty,min=2"`
 }
 
 type PushBatch struct {

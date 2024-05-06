@@ -29,7 +29,7 @@ type ThreatenPushModel struct {
 	DataFrom   int    `json:"data_from"`
 	PushStatus int    `json:"push_status"`
 	PushAt     string `json:"push_at" gorm:"default:NULL"`
-	CreateId   int    `json:"create_id"`
+	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
 }
@@ -88,6 +88,19 @@ func (m *ThreatenPushModel) TruncateTable() bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *ThreatenPushModel) InsertBatch(list *[]ThreatenPushModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // UpdateByIds 通过id集合修改
 func (m *ThreatenPushModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -98,6 +111,19 @@ func (m *ThreatenPushModel) UpdateByIds(ids []string, updates map[string]interfa
 		return true
 	} else {
 		return false
+	}
+}
+
+// GetItemsByIds 通过id集合获取多条记录
+func (m *ThreatenPushModel) GetItemsByIds(ids []string) (items []*ThreatenPushModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("id IN ?", ids).Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
 	}
 }
 

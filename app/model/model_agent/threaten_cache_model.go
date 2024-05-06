@@ -76,6 +76,10 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 	}
 }
 
+func (m *ThreatenCacheModel) getListColumns() string {
+	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
+}
+
 func (m *ThreatenCacheModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
@@ -155,11 +159,23 @@ func (m *ThreatenCacheModel) GetItemById(id string) (item *ThreatenCacheModel, e
 	}
 }
 
+// GetItemsByIds 通过id集合获取多条记录
+func (m *ThreatenCacheModel) GetItemsByIds(ids []string) (items []*ThreatenCacheModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Select(m.getListColumns()).Where("id IN ?", ids).Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		column := "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
-		tmp := tx.Model(m).Select(column)
+		tmp := tx.Model(m).Select(m.getListColumns())
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

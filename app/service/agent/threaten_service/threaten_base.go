@@ -3,6 +3,7 @@ package threaten_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/utils/helpers"
+	"strings"
 )
 
 type SearchConditions struct {
@@ -22,7 +23,7 @@ type ThreatenBase struct {
 func (crd *ThreatenBase) search2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
 	if !helpers.StringIsEmpty(search.Id) {
-		wheres["id"] = search.Id
+		wheres["id"] = strings.ToLower(search.Id)
 	}
 	if search.Ids != nil && len(search.Ids) > 0 {
 		wheres["id in"] = search.Ids

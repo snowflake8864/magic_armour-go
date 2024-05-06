@@ -11,8 +11,8 @@ import (
 
 type CachePage struct {
 	data_type.Page
-	threatenSingle
 	threatenSearch
+	Level *int `form:"level" json:"level" binding:"required,max=20"`
 }
 
 func (n CachePage) CheckParams(context *gin.Context) {
