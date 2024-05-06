@@ -78,6 +78,11 @@ func InitPlatformRouter() *gin.Engine {
 				{
 					uploadFiles.POST("files", validatorFactory.Create(consts.ValidatorPrefixPlatform+"UploadFiles"))
 				}
+				//
+				account := vPlatform.Group("account/")
+				{
+					account.POST("setSelfPw", validatorFactory.Create(consts.ValidatorPrefixPlatform+"UploadFiles"))
+				}
 
 				//首页
 				home := vPlatform.Group("home/")

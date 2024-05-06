@@ -23,15 +23,17 @@ func (crd *ThreatenCache) GetItemById(id string) (model *model_agent.ThreatenCac
 }
 
 // GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenCache) GetMapsByIds(ids []string) (maps map[string]*model_agent.ThreatenCacheModel) {
+func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*model_agent.ThreatenCacheModel {
+	result := make(map[string]*model_agent.ThreatenCacheModel)
+
 	models, err := crd.masterModel.GetItemsByIds(ids)
 	if err != nil || models == nil {
 		return nil
 	}
 	for _, model := range models {
-		maps[model.Id] = model
+		result[model.Id] = model
 	}
-	return maps
+	return result
 }
 
 // Page 分页

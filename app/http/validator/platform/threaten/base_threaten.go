@@ -11,5 +11,5 @@ type threatenSearch struct {
 }
 
 type PushBatch struct {
-	List string `form:"List" json:"List" binding:"required,min=16"`
+	List string `form:"list" json:"list" binding:"required,min=16"`
 }

@@ -51,6 +51,12 @@ var pathModuleLabel = map[string][]string{
 	"/platform/software/manage/publish":           {ModuleSoftware, "发布"},
 	"/platform/software/manage/cancel":            {ModuleSoftware, "取消"},
 	"/platform/software/manage/clear":             {ModuleSoftware, "清空"},
+	"/platform/threaten/cache/delete":             {ModuleThreaten, "缓存-删除"},
+	"/platform/threaten/cache/clear":              {ModuleThreaten, "缓存-清空"},
+	"/platform/threaten/cache/refresh":            {ModuleThreaten, "缓存-刷新"},
+	"/platform/threaten/cache/batchWhite":         {ModuleThreaten, "缓存-批量白名单"},
+	"/platform/threaten/cache/batchBlack":         {ModuleThreaten, "缓存-批量黑名单"},
+	"/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

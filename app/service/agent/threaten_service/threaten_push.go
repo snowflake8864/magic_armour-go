@@ -17,16 +17,31 @@ type ThreatenPush struct {
 	masterModel *model_agent.ThreatenPushModel
 }
 
+type PushBo struct {
+	Id        string `json:"id"`
+	Level     int    `json:"level"`
+	Dir       string `json:"dir"`
+	ParentDir string `json:"parent_dir"`
+	Os        string `json:"os"`
+	Introduce string `json:"introduce"`
+	Copyright string `json:"copyright"`
+	Signature string `json:"signature"`
+	Attribute string `json:"attribute"`
+	DataFrom  int    `json:"data_from"`
+}
+
 // GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenPush) GetMapsByIds(ids []string) (maps map[string]*model_agent.ThreatenPushModel) {
+func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*model_agent.ThreatenPushModel {
+	result := make(map[string]*model_agent.ThreatenPushModel)
+
 	models, err := crd.masterModel.GetItemsByIds(ids)
 	if err != nil || models == nil {
 		return nil
 	}
 	for _, model := range models {
-		maps[model.Id] = model
+		result[model.Id] = model
 	}
-	return maps
+	return result
 }
 
 // Page 分页

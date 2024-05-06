@@ -160,10 +160,9 @@ func (u *ThreatenController) AllWhiteForPush(ctx *gin.Context) {
 // BatchWhiteForPush 推送: 批量白
 func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
 	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
-
 	var params []model_agent.ThreatenPushModel
 	err := helpers.Json2Any(list, &params)
-	if err != err {
+	if err != nil {
 		response.FailSimplify(ctx, "参数格式错误")
 		return
 	}
