@@ -23,16 +23,20 @@ type ThreatenCacheModel struct {
 	Dir       string `json:"dir"`
 	ParentDir string `json:"parent_dir"`
 	Os        string `json:"os"`
+	Introduce string `json:"introduce"`
+	Copyright string `json:"copyright"`
+	Signature string `json:"signature"`
 	Attribute string `json:"attribute"`
 	DataFrom  int    `json:"data_from"`
 	CheckAt   string `json:"check_at" gorm:"default:NULL"`
+	CheckInfo string `json:"check_info"`
 	CreatedAt string `json:"created_at"`
 }
 
 // 表名
 
 func (m *ThreatenCacheModel) TableName() string {
-	return "a_threaten_cache"
+	return "a_threaten_caches"
 }
 
 func (m *ThreatenCacheModel) CreateTable() bool {
@@ -43,11 +47,15 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 			level tinyint NOT NULL DEFAULT '0' COMMENT '类型(参考文件中定义)',
 			dir varchar(1024)  NOT NULL DEFAULT '' COMMENT '文件路径',
 			parent_dir varchar(1024)  DEFAULT '' COMMENT '上级路径',
-			os varchar(128)  DEFAULT '' COMMENT '操作系统',
-			attribute string  COMMENT '文件属性',
+			os varchar(128)  DEFAULT ''  COMMENT '操作系统',
+			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '描述',
+			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '版权',
+			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '签名',
+			attribute string NOT NULL DEFAULT '' COMMENT '属性',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
 			source tinyint NOT NULL DEFAULT '1' COMMENT '来源',
 			check_at datetime DEFAULT NULL COMMENT '验证时间',
+			check_info string NOT NULL DEFAULT '' COMMENT '验证信息',
 			created_at datetime NOT NULL,
 			INDEX index_level (level) USING INVERTED,
 			INDEX index_dir (dir) USING INVERTED,

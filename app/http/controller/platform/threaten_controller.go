@@ -134,7 +134,7 @@ func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
 	}
-	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransThreatenAttr(model))
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransThreatenInfo(model))
 }
 
 // PageForPush 推送: 分页

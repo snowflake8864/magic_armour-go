@@ -24,6 +24,7 @@ type ThreatenPushModel struct {
 	Os         string `json:"os"`
 	Introduce  string `json:"introduce"`
 	Copyright  string `json:"copyright"`
+	Signature  string `json:"signature"`
 	Attribute  string `json:"attribute"`
 	DataFrom   int    `json:"data_from"`
 	PushStatus int    `json:"push_status"`
@@ -48,9 +49,10 @@ func (m *ThreatenPushModel) CreateTable() bool {
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
 			parent_dir varchar(512)  DEFAULT '' COMMENT '上级路径',
 			os varchar(128)  DEFAULT '' COMMENT '操作系统',
-			introduce string  COMMENT '描述',
-			copyright string  COMMENT '版权',
-			attribute string  COMMENT '文件属性',
+			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '描述',
+			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '版权',
+			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '签名',
+			attribute string NOT NULL DEFAULT ''  COMMENT '属性',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
 			push_status tinyint NOT NULL DEFAULT '0' COMMENT '送状态(0未推 1已推)',
 			push_at datetime DEFAULT NULL COMMENT '推送时间',

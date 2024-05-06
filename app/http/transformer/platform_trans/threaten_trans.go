@@ -22,6 +22,10 @@ func (t *Threaten) pageCacheGeneral(model *model_agent.ThreatenCacheModel) map[s
 	data["dir"] = model.Dir
 	data["parent_dir"] = model.ParentDir
 	data["os"] = model.Os
+	data["introduce"] = model.Introduce
+	data["copyright"] = model.Copyright
+	data["signature"] = model.Signature
+	data["attribute"] = model.Attribute
 	data["data_from"] = model.DataFrom
 	data["check_at"] = model.CheckAt
 	data["created_at"] = model.CreatedAt
@@ -58,6 +62,7 @@ func (t *Threaten) pagePushGeneral(model *model_agent.ThreatenPushModel) map[str
 	data["push_status"] = model.PushStatus
 	data["introduce"] = model.Introduce
 	data["copyright"] = model.Copyright
+	data["signature"] = model.Signature
 	data["attribute"] = model.Attribute
 	data["push_status"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
 	data["create_id"] = model.CreateId
