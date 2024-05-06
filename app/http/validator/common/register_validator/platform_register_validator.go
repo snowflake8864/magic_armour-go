@@ -4,8 +4,10 @@ import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
 	uploadFiles4 "goskeleton/app/http/validator/common/upload_files"
+	account4 "goskeleton/app/http/validator/platform/account"
 	agent4 "goskeleton/app/http/validator/platform/agent"
 	auth4 "goskeleton/app/http/validator/platform/auth"
+	dictionary4 "goskeleton/app/http/validator/platform/dictionary"
 	home4 "goskeleton/app/http/validator/platform/home"
 	order4 "goskeleton/app/http/validator/platform/order"
 	orgMenu4 "goskeleton/app/http/validator/platform/org_menu"
@@ -44,6 +46,14 @@ func PlatformRegisterValidator() {
 	containers.Set(key, home4.AgentDailyOnline{})
 	key = consts.ValidatorPrefixPlatform + "HomeUserDailyOnline"
 	containers.Set(key, home4.UserDailyOnline{})
+
+	//账户管理
+	key = consts.ValidatorPrefixPlatform + "AccountModifyPw"
+	containers.Set(key, account4.ModifyPw{})
+
+	//数据字典
+	key = consts.ValidatorPrefixPlatform + "DictionarySave"
+	containers.Set(key, dictionary4.Save{})
 
 	//菜单
 	key = consts.ValidatorPrefixPlatform + "OrgMenuTree"
