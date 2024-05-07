@@ -4,14 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
-	"regexp"
 )
 
 type ModifyPw struct {
-	OldPw string `form:"oldPw"   json:"oldPw" binding:"required,min=6,max=16"`
-	NewPw string `form:"newPw"   json:"newPw" binding:"required,min=6,max=16"`
+	OldPw string `form:"oldPw"   json:"oldPw" binding:"required,min=6,max=20"`
+	NewPw string `form:"newPw"   json:"newPw" binding:"required,min=6,max=20"`
 }
 
 func (n ModifyPw) CheckParams(context *gin.Context) {
@@ -22,12 +22,11 @@ func (n ModifyPw) CheckParams(context *gin.Context) {
 		return
 	}
 
-	re := regexp.MustCompile(`^([a-zA-Z0-9.!@#%^&*()+=$_\-]+)$`)
-	if !re.MatchString(n.OldPw) {
+	if !common_regexp.CheckPw(n.NewPw) {
 		response.FailSimplify(context, "param [OldPw] error")
 		return
 	}
-	if !re.MatchString(n.NewPw) {
+	if !common_regexp.CheckPw(n.OldPw) {
 		response.FailSimplify(context, "param [NewPw] error")
 		return
 	}

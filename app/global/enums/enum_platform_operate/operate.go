@@ -3,26 +3,28 @@ package enum_platform_operate
 // 任务
 
 const (
-	ModuleAuth     = "auth"
-	ModuleOrg      = "org"
-	ModuleProduct  = "product"
-	ModuleOrder    = "order"
-	ModuleAgent    = "agent"
-	ModuleSoftware = "software"
-	ModuleThreaten = "threaten"
-	ModuleAccount  = "account"
+	ModuleAuth       = "auth"
+	ModuleOrg        = "org"
+	ModuleProduct    = "product"
+	ModuleOrder      = "order"
+	ModuleAgent      = "agent"
+	ModuleSoftware   = "software"
+	ModuleThreaten   = "threaten"
+	ModuleAccount    = "account"
+	ModuleDictionary = "dictionary"
 )
 
 var EnumMap = map[string]map[string]string{
 	"module": {
-		ModuleAuth:     "安全认证",
-		ModuleOrg:      "客户管理",
-		ModuleProduct:  "产品管理",
-		ModuleOrder:    "订单管理",
-		ModuleAgent:    " 终端管理",
-		ModuleSoftware: " 软件管理",
-		ModuleThreaten: "威胁情报",
-		ModuleAccount:  "账户管理",
+		ModuleAuth:       "安全认证",
+		ModuleOrg:        "客户管理",
+		ModuleProduct:    "产品管理",
+		ModuleOrder:      "订单管理",
+		ModuleAgent:      " 终端管理",
+		ModuleSoftware:   " 软件管理",
+		ModuleThreaten:   "威胁情报",
+		ModuleAccount:    "账户管理",
+		ModuleDictionary: "数据字典",
 	},
 }
 
@@ -60,6 +62,7 @@ var pathModuleLabel = map[string][]string{
 	"/platform/threaten/cache/batchBlack":         {ModuleThreaten, "缓存-批量黑名单"},
 	"/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},
 	"/platform/account/modifyPw":                  {ModuleAccount, "修改密码"},
+	"/platform/dictionary/save":                   {ModuleDictionary, "修改"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

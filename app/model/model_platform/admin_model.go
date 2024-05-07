@@ -135,10 +135,10 @@ func (m *AdminModel) GetItemByUsername(username string) (*AdminModel, error) {
 	}
 }
 
-func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (*AdminModel, error) {
-	result := m.Select(m.Columns()).Where("username=?", username).Where("pw=?", pw).First(m)
+func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (item *AdminModel, err error) {
+	result := m.Select(m.Columns()).Where("username=? and pw=?", username, pw).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}

@@ -22,6 +22,5 @@ func (u *AccountController) ModifyPw(ctx *gin.Context) {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-
 	response.SuccessSimplify(ctx)
 }
