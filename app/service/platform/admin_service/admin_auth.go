@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -20,7 +21,7 @@ func CreateAuthFactory() *AdminAuth {
 	return &AdminAuth{
 		redisClient:   redis_factory.GetOneRedisClient(),
 		tokenPrefix:   "admin_auth_token_",
-		tokenExpire:   1800,
+		tokenExpire:   cur_app.GetPlatformTokenExpire(),
 		lockingPrefix: "admin_auth_locking_",
 		sliderPrefix:  "admin_auth_slider_",
 		sliderExpire:  180,

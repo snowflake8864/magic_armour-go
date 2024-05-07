@@ -1,9 +1,11 @@
 package admin_service
 
 import (
+	"errors"
 	"gorm.io/gorm"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateCurdFactory() *AdminCurd {
@@ -44,4 +46,31 @@ func (crd *AdminCurd) loginSuccess(id int64) bool {
 		"last_login_at": helpers.DatetimeCurr(),
 	}
 	return crd.masterModel.UpdateById(id, updates)
+}
+
+// ModifyPwById 修改密码
+func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, err error) {
+	adminModel, err := crd.masterModel.GetItemById(id)
+	if err != nil || adminModel.Id == 0 {
+		return -1, errors.New("用户不存在")
+	}
+
+	//加密
+	AesFact := openssl_encrypt.CreateAesFactory()
+	oldPw, _ = AesFact.CbcEncryptToHex(oldPw)
+	newPw, _ = AesFact.CbcEncryptToHex(newPw)
+
+	//
+	if !crd.HasByUsernameAndPw(adminModel.Username, oldPw) {
+		return -1, errors.New("旧密码不正确")
+	}
+
+	//修改密码
+	updates := map[string]interface{}{
+		"pw": newPw,
+	}
+	if !crd.masterModel.UpdateById(id, updates) {
+		return -1, errors.New("修改密码失败")
+	}
+	return errCode, err
 }

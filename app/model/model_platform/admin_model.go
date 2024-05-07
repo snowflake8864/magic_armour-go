@@ -117,7 +117,7 @@ func (m *AdminModel) InitData() bool {
 	}
 }
 
-func (m *AdminModel) GetItemById(id int) (*AdminModel, error) {
+func (m *AdminModel) GetItemById(id int64) (*AdminModel, error) {
 	result := m.Select(m.Columns()).Where("id=?", id).First(m)
 	if result.Error == nil {
 		return m, nil

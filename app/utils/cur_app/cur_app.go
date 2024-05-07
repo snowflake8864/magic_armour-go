@@ -46,3 +46,18 @@ func GetOrganizationConfig() map[string]interface{} {
 
 	return data
 }
+
+// GetPlatformTokenExpire  获取平台口令过期时间
+func GetPlatformTokenExpire() int {
+	return variable.ConfigYml.GetInt("AppCustomConfig.Platform.TokenExpire")
+}
+
+// GetOrganizationTokenExpire  获取企业口令过期时间
+func GetOrganizationTokenExpire() int {
+	return variable.ConfigYml.GetInt("AppCustomConfig.Organization.TokenExpire")
+}
+
+// GetAgentTokenExpire  获取终端口令过期时间
+func GetAgentTokenExpire() int {
+	return variable.ConfigYml.GetInt("AppCustomConfig.TokenExpire.TokenExpire")
+}

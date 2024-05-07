@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"goskeleton/app/model/model_agent"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -17,7 +18,7 @@ func CreateCacheFactory() *AgentCache {
 	return &AgentCache{
 		redisClient: redCli,
 		authPrefix:  "agent_auth_",
-		authExpire:  7200,
+		authExpire:  cur_app.GetAgentTokenExpire(),
 	}
 }
 

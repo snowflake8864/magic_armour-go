@@ -10,7 +10,8 @@ import (
 )
 
 type ModifyPw struct {
-	Pw string `form:"pw"   json:"pw" binding:"required,min=6,max=16"`
+	OldPw string `form:"oldPw"   json:"oldPw" binding:"required,min=6,max=16"`
+	NewPw string `form:"newPw"   json:"newPw" binding:"required,min=6,max=16"`
 }
 
 func (n ModifyPw) CheckParams(context *gin.Context) {
@@ -21,9 +22,13 @@ func (n ModifyPw) CheckParams(context *gin.Context) {
 		return
 	}
 
-	re := regexp.MustCompile(`^([a-zA-Z0-9._!@$\-]+)$`)
-	if !re.MatchString(n.Pw) {
-		response.FailSimplify(context, "param [Pw] error")
+	re := regexp.MustCompile(`^([a-zA-Z0-9.!@#%^&*()+=$_\-]+)$`)
+	if !re.MatchString(n.OldPw) {
+		response.FailSimplify(context, "param [OldPw] error")
+		return
+	}
+	if !re.MatchString(n.NewPw) {
+		response.FailSimplify(context, "param [NewPw] error")
 		return
 	}
 
