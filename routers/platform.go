@@ -92,7 +92,7 @@ func InitPlatformRouter() *gin.Engine {
 				//数据字典
 				dictionary := vPlatform.Group("dictionary/")
 				{
-					dictionary.POST("list", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DictionaryList"))
+					dictionary.POST("list", (&platform.DictionaryController{}).List)
 					dictionary.POST("save", validatorFactory.Create(consts.ValidatorPrefixPlatform+"DictionarySave"))
 				}
 
