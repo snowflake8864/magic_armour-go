@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/gin_release"
 	"net/http"
 )
@@ -58,6 +59,10 @@ func InitPlatformRouter() *gin.Engine {
 	//  创建一个接口路由组
 	vPlatform := router.Group("/platform/")
 	{
+		vPlatform.GET("customConfig", func(context *gin.Context) {
+			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())
+		})
+
 		vPlatform.Use(authorization.RequestParams).Use(authorization.SavePlatformOperate())
 		{
 			//登录认证
