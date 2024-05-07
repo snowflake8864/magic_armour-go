@@ -117,19 +117,19 @@ func (m *AdminModel) InitData() bool {
 	}
 }
 
-func (m *AdminModel) GetItemById(id int64) (*AdminModel, error) {
-	result := m.Select(m.Columns()).Where("id=?", id).First(m)
+func (m *AdminModel) GetItemById(id int64) (item *AdminModel, err error) {
+	result := m.Select(m.Columns()).Where("id=?", id).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}
 }
 
-func (m *AdminModel) GetItemByUsername(username string) (*AdminModel, error) {
-	result := m.Select(m.Columns()).Where("username=?", username).First(m)
+func (m *AdminModel) GetItemByUsername(username string) (item *AdminModel, err error) {
+	result := m.Select(m.Columns()).Where("username=?", username).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}

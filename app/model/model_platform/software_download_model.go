@@ -87,7 +87,7 @@ func (m *SoftwareDownloadModel) InsertItem(s *SoftwareDownloadModel) bool {
 
 // GetItemById 通过id获取一条记录
 func (m *SoftwareDownloadModel) GetItemById(id int64) (item *SoftwareDownloadModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -97,7 +97,7 @@ func (m *SoftwareDownloadModel) GetItemById(id int64) (item *SoftwareDownloadMod
 
 // GetItemByUnique 通过id获取一条记录
 func (m *SoftwareDownloadModel) GetItemByUnique(orgId, softwareId, userId int64, serviceIp string) (item *SoftwareDownloadModel, err error) {
-	result := m.Model(m).Where("org_id=? AND software_id=? AND create_id=? AND service_ip=?", orgId, softwareId, userId, serviceIp).First(&item)
+	result := m.Model(m).Where("org_id=? AND software_id=? AND create_id=? AND service_ip=?", orgId, softwareId, userId, serviceIp).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

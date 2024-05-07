@@ -137,7 +137,7 @@ func (m *OrderModel) UpdateById(id string, updates map[string]interface{}) bool 
 
 // GetItemById 通过id获取一条记录
 func (m *OrderModel) GetItemById(id string) (item *OrderModel, err error) {
-	result := m.Model(m).Where("order_no=?", id).First(&item)
+	result := m.Model(m).Where("order_no=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

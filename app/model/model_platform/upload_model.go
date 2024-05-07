@@ -89,7 +89,7 @@ func (m *UploadModel) InsertItem(s *UploadModel) bool {
 
 // GetItemById 通过id获取一条记录
 func (m *UploadModel) GetItemById(id int64) (item *UploadModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

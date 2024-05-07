@@ -89,10 +89,10 @@ func (m *SoftwareModel) InsertItem(s *SoftwareModel) bool {
 	}
 }
 
-func (m *SoftwareModel) GetItemById(id int64) (*SoftwareModel, error) {
-	result := m.Where("id=?", id).First(m)
+func (m *SoftwareModel) GetItemById(id int64) (item *SoftwareModel, err error) {
+	result := m.Where("id=?", id).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}

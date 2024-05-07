@@ -102,9 +102,9 @@ func (m *AgentExtendModel) DeleteById(id string) bool {
 // GetItemById 通过id获取一条记录
 func (m *AgentExtendModel) GetItemById(id, column string) (item *AgentExtendModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("agent_id=?", id).First(&item)
+		return tx.Model(m).Select(column).Where("agent_id=?", id).Take(&item)
 	})
-	result := m.Raw(m.TrimSql(sql)).First(&item)
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

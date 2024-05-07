@@ -122,19 +122,19 @@ func (m *OrgMenuModel) DeleteById(id int64) bool {
 	}
 }
 
-func (m *OrgMenuModel) GetItemById(id int64) (*OrgMenuModel, error) {
-	result := m.Where("id=?", id).First(m)
+func (m *OrgMenuModel) GetItemById(id int64) (item *OrgMenuModel, err error) {
+	result := m.Where("id=?", id).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}
 }
 
-func (m *OrgMenuModel) GetItemByParent(id int64) (*OrgMenuModel, error) {
-	result := m.Where("parent_id=?", id).First(m)
+func (m *OrgMenuModel) GetItemByParent(id int64) (item *OrgMenuModel, err error) {
+	result := m.Where("parent_id=?", id).Take(&item)
 	if result.Error == nil {
-		return m, nil
+		return item, nil
 	} else {
 		return nil, result.Error
 	}

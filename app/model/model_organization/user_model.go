@@ -113,7 +113,7 @@ func (m *UserModel) DeleteByConditions(condition map[string]interface{}) bool {
 
 // GetItemById 通过id获取一条记录
 func (m *UserModel) GetItemById(id int64) (item *UserModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -122,7 +122,7 @@ func (m *UserModel) GetItemById(id int64) (item *UserModel, err error) {
 }
 
 func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, err error) {
-	result := m.Model(m).Where("id=?", userId).Where("org_id=?", orgId).First(&item)
+	result := m.Model(m).Where("id=?", userId).Where("org_id=?", orgId).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -132,7 +132,7 @@ func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, e
 
 // GetItemByName 通过名称获取一条记录
 func (m *UserModel) GetItemByName(name string) (item *UserModel, err error) {
-	result := m.Model(m).Where("username=?", name).First(&item)
+	result := m.Model(m).Where("username=?", name).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

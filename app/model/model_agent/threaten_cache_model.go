@@ -149,9 +149,9 @@ func (m *ThreatenCacheModel) DeleteById(id string) bool {
 // GetItemById 通过id获取一条记录
 func (m *ThreatenCacheModel) GetItemById(id string) (item *ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("id=?", id).First(&item)
+		return tx.Model(m).Where("id=?", id).Take(&item)
 	})
-	result := m.Raw(m.TrimSql(sql)).First(&item)
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

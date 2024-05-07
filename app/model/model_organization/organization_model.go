@@ -130,7 +130,7 @@ func (m *OrganizationModel) DeleteByConditions(condition map[string]interface{})
 
 // GetItemById 通过id获取一条记录
 func (m *OrganizationModel) GetItemById(id int64) (item *OrganizationModel, err error) {
-	result := m.Model(m).Where("id=?", id).First(&item)
+	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -139,7 +139,7 @@ func (m *OrganizationModel) GetItemById(id int64) (item *OrganizationModel, err 
 }
 
 func (m *OrganizationModel) GetItemByName(name string) (item *OrganizationModel, err error) {
-	result := m.Model(m).Where("name=?", name).First(&item)
+	result := m.Model(m).Where("name=?", name).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

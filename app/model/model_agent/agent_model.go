@@ -357,9 +357,9 @@ func (m *AgentModel) DeleteByConditions(condition map[string]interface{}) bool {
 // GetItemById 通过id获取一条记录
 func (m *AgentModel) GetItemById(id, column string) (item *AgentModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("agent_id=?", id).First(&item)
+		return tx.Model(m).Select(column).Where("agent_id=?", id).Take(&item)
 	})
-	result := m.Raw(m.TrimSql(sql)).First(&item)
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -383,9 +383,9 @@ func (m *AgentModel) GetItemsByIds(ids []string, column string) (items []*AgentM
 // GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
 func (m *AgentModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Where("org_id=?", orgId).Where("agent_id=?", agentId).First(&item)
+		return tx.Model(m).Select(column).Where("org_id=?", orgId).Where("agent_id=?", agentId).Take(&item)
 	})
-	result := m.Raw(m.TrimSql(sql)).First(&item)
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
