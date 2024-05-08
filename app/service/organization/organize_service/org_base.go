@@ -9,6 +9,7 @@ type SearchConditions struct {
 	OrgId      int64
 	OrgType    int
 	OraName    string
+	LogOraName string
 	UserId     int64
 	UserName   string
 	UserPhone  string
@@ -29,6 +30,9 @@ func (crd *OrgBase) search2Where(search SearchConditions) map[string]interface{}
 	}
 	if !helpers.StringIsEmpty(search.OraName) {
 		wheres["name like"] = "%" + search.OraName + "%"
+	}
+	if !helpers.StringIsEmpty(search.LogOraName) {
+		wheres["org_name like"] = "%" + search.LogOraName + "%"
 	}
 	if search.UserId > 0 {
 		wheres["user_id"] = search.UserId

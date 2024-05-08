@@ -145,6 +145,10 @@ func InitPlatformRouter() *gin.Engine {
 					{
 						user.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeUserPage"))
 					}
+					log := organize.Group("log/")
+					{
+						log.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrganizeLogPage"))
+					}
 
 				} //企业
 

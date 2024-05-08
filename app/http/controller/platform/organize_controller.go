@@ -223,3 +223,18 @@ func (u *OrganizeController) PageForUser(ctx *gin.Context) {
 
 	response.SuccessReturnData(ctx, (&platform_trans.User{}).TransPage(total, models))
 }
+
+// PageForLog 日志: 分页
+func (u *OrganizeController) PageForLog(ctx *gin.Context) {
+	searchConditions := organize_service.SearchConditions{}
+	searchConditions.LogOraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
+
+	//分页参数和排序参数
+	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+
+	//用户分页
+	total, models := organize_service.CreateOrgLogFactory().Page(searchConditions, offset, pageSize, orderField, orderSort)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogPage(total, models))
+}

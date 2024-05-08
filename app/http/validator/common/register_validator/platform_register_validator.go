@@ -90,6 +90,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, organize4.VerifyRefuse{})
 	key = consts.ValidatorPrefixPlatform + "OrganizeUserPage"
 	containers.Set(key, organize4.UserPage{})
+	key = consts.ValidatorPrefixPlatform + "OrganizeLogPage"
+	containers.Set(key, organize4.LogPage{})
 
 	//终端
 	key = consts.ValidatorPrefixPlatform + "AgentPublicStatByOrg"
