@@ -13,8 +13,8 @@ func GetAppUsageVersion() int {
 // GetPlatformConfig  获取平台自定义配置
 func GetPlatformConfig() map[string]interface{} {
 	data := make(map[string]interface{})
-	data["app_version"] = GetAppUsageVersion()
-	data["project_version"] = consts.VersionNumber
+	data["version"] = GetAppUsageVersion()
+	data["ver_number"] = consts.VersionNumber
 
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.IconShow")
@@ -33,8 +33,8 @@ func GetPlatformConfig() map[string]interface{} {
 // GetOrganizationConfig  获取企业自定义配置
 func GetOrganizationConfig() map[string]interface{} {
 	data := make(map[string]interface{})
-	data["app_version"] = GetAppUsageVersion()
-	data["project_version"] = consts.VersionNumber
+	data["version"] = GetAppUsageVersion()
+	data["ver_number"] = consts.VersionNumber
 
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.IconShow")

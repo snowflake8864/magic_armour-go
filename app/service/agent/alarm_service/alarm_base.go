@@ -51,7 +51,7 @@ func (crd *AlarmBase) search2Where(search SearchConditions) map[string]interface
 
 // StatColumn 统计表字段
 // @use: StatColumn(PrefixTotal, true, true,true,true)
-func (crd *AlarmBase) StatColumn(prefix string, total, handled, addTotal, addHandled bool) string {
+func (crd *AlarmBase) StatColumn(prefix string, total, handled, addTotal, addHandled, statDay bool) string {
 	var columns []string
 	prefix = strings.Trim(prefix, "_")
 	if prefix != PrefixTotal {
@@ -75,11 +75,15 @@ func (crd *AlarmBase) StatColumn(prefix string, total, handled, addTotal, addHan
 		field := prefix + "add_handled"
 		columns = append(columns, "SUM("+field+") AS "+field)
 	}
+
+	if statDay {
+		columns = append(columns, "stat_day")
+	}
 	return strings.Join(columns, ", ")
 }
 
 // StatColumnOfAllType 统计表字段: 全部类型之和
-func (crd *AlarmBase) StatColumnOfAllType(total, handled, addTotal, addHandled bool) string {
+func (crd *AlarmBase) StatColumnOfAllType(total, handled, addTotal, addHandled, statDay bool) string {
 	var columns []string
 	prefixes := []string{
 		PrefixProcess,
@@ -95,7 +99,7 @@ func (crd *AlarmBase) StatColumnOfAllType(total, handled, addTotal, addHandled b
 	}
 
 	for _, val := range prefixes {
-		columns = append(columns, crd.StatColumn(val, total, handled, addTotal, addHandled))
+		columns = append(columns, crd.StatColumn(val, total, handled, addTotal, addHandled, statDay))
 	}
 
 	return strings.Join(columns, ", ")

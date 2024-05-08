@@ -28,7 +28,7 @@ func (crd *AlarmStatDaily) SumTotalByDay(day string) (result *model_alarm.AlarmS
 		StatDay: day,
 	}
 	where := crd.search2Where(search)
-	column := crd.StatColumn(PrefixTotal, true, false, true, false)
+	column := crd.StatColumn(PrefixTotal, true, false, true, false, false)
 	result, err := crd.masterModel.CalcByConditions(where, column)
 	if err != nil {
 		return result
