@@ -6,9 +6,9 @@ const (
 	StatusNot int = 1 //状态：无效
 	StatusYes int = 2 //状态：有效
 
-	TypeGold   int = 0 //类型:正式
-	TypeTest   int = 1 //类型:测试
-	TypeSample int = 2 //类型:样本
+	TypeGold   int = 1 //类型:正式
+	TypeTest   int = 2 //类型:测试
+	TypeSample int = 3 //类型:样本
 
 	ModuleProcess   string = "process"   //模块:可信进程
 	ModuleTamper    string = "tamper"    //模块:防篡改

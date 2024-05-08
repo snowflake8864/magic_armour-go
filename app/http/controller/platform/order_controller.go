@@ -1,7 +1,6 @@
 package platform
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -11,7 +10,6 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/organization/order_service"
-	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -105,7 +103,6 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
 	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
-	fmt.Println(helpers.JsonEncode(conditions))
 
 	//分页参数和排序参数
 	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)

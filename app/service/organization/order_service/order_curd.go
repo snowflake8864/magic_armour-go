@@ -416,3 +416,13 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 
 	return true
 }
+
+// SumBySearch 计算： 按照条件
+func (crd *OrderCurd) SumBySearch(search SearchConditions, column string) (result *model_organization.OrderModel) {
+	where := crd.search2Where(search)
+	result, err := crd.masterModel.CalcByConditions(where, column)
+	if err != nil {
+		return result
+	}
+	return result
+}

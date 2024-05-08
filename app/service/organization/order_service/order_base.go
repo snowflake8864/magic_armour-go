@@ -3,6 +3,7 @@ package order_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/utils/helpers"
+	"strings"
 )
 
 type SearchConditions struct {
@@ -61,7 +62,7 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 	if search.OrderStatus > 0 && search.OrderStatus != enums.AllDefaultInt {
 		wheres["order_status"] = search.OrderStatus
 	}
-	if search.IsExpire > 0 && search.IsExpire != enums.AllDefaultInt {
+	if search.IsExpire != enums.AllDefaultInt {
 		wheres["is_expire"] = search.IsExpire
 	}
 	if search.StatusList != nil && len(search.StatusList) > 0 {
@@ -69,4 +70,12 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 	}
 
 	return wheres
+}
+
+// ColumnCalcOfUsage 字段： 统计使用数
+func (crd *OrderBase) ColumnCalcOfUsage() string {
+	var columns []string
+	columns = append(columns, "SUM(buy_number) AS buy_number")
+	columns = append(columns, "SUM(usage_number) AS usage_number")
+	return strings.Join(columns, ", ")
 }

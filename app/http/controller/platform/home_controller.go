@@ -3,9 +3,12 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/agent/alarm_service"
+	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers"
@@ -177,5 +180,21 @@ func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
 
 // GrantUsedStat 授权: 使用统计
 func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GrantUsedStat")
+	searchConditions := order_service.SearchConditions{}
+	searchConditions.IsExpire = enums.AllDefaultInt
+	searchConditions.OrderStatus = enum_order.OrderStatusCompleted
+
+	CurdFact := order_service.CreateCurdFactory()
+	column := CurdFact.ColumnCalcOfUsage()
+	model := CurdFact.SumBySearch(searchConditions, column)
+	var result []map[string]interface{}
+	result = append(result,
+		map[string]interface{}{
+			"name":  "已使用",
+			"value": model.UsageNumber,
+		}, map[string]interface{}{
+			"name":  "未使用",
+			"value": model.BuyNumber - model.UsageNumber,
+		})
+	response.SuccessReturnData(ctx, result)
 }

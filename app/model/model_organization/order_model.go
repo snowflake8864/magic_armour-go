@@ -205,3 +205,17 @@ func (m *OrderModel) Page(condition map[string]interface{}, offset, limit int, o
 		return 0, nil
 	}
 }
+
+// CalcByConditions 通过条件获取多条记录
+func (m *OrderModel) CalcByConditions(condition map[string]interface{}, column string) (item *OrderModel, err error) {
+	tmp := m.Model(m).Select(column)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return nil, result.Error
+	}
+}
