@@ -149,7 +149,21 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 
 // UserDailyOnline 用户: 每天在线
 func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UserDailyOnline")
+	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
+	StatDailyFact := org_stat_service.CreateStatDailyFactory()
+	column := StatDailyFact.ColumnOfUser(false, true, false, true)
+	models := StatDailyFact.SumByMonthGroupDay(month, column)
+
+	var result []map[string]interface{}
+	if models != nil && len(models) > 0 {
+		for _, model := range models {
+			result = append(result, map[string]interface{}{
+				"date":   helpers.TimestampCalcDayInCurrMonth(helpers.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
+				"online": model.UserOnline,
+			})
+		}
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // UserNewestLogs 用户: 最新日志
