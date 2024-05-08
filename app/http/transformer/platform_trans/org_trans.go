@@ -56,3 +56,51 @@ func (t *Org) TransPage(total int64, models []*model_organization.OrganizationMo
 func (t *Org) TransDetail(model *model_organization.OrganizationModel) map[string]interface{} {
 	return t.pageGeneral(model)
 }
+
+func (t *Org) pageLogGeneral(model *model_organization.OrgLogModel) map[string]interface{} {
+	data := make(map[string]interface{})
+	data["id"] = model.Id
+	data["module"] = model.Module
+	data["module_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("log_action", model.Module, enum_organization.EnumMap)
+	data["org_id"] = model.OrgId
+	data["org_name"] = model.OrgName
+	data["user_name"] = model.UserName
+	data["user_email"] = model.UserEmail
+	data["user_phone"] = model.UserPhone
+	data["content"] = model.Content
+	data["operate_source"] = model.OperateSource
+	data["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.OperateSource, enums.EnumMapInt)
+	data["operate_id"] = model.OperateId
+	data["operate_name"] = model.OperateName
+	data["created_at"] = model.CreatedAt
+	return data
+}
+
+// TransLogPage 转换成日志页需要的数据
+func (t *Org) TransLogPage(total int64, models []*model_organization.OrgLogModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageLogGeneral(model)
+			items = append(items, tmp)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
+// TransLogList 转换成日志列表
+func (t *Org) TransLogList(models []*model_organization.OrgLogModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageLogGeneral(model)
+			items = append(items, tmp)
+		}
+	}
+
+	return items
+}

@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_stat_service"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
@@ -168,7 +170,9 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 
 // UserNewestLogs 用户: 最新日志
 func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UserNewestLogs")
+	models := organize_service.CreateOrgLogFactory().NewestList(10)
+
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogList(models))
 }
 
 // GrantUsedStat 授权: 使用统计

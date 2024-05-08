@@ -42,3 +42,14 @@ func (crd *OrgLog) Page(search SearchConditions, offset, pageSize int, orderFiel
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
 }
+
+// NewestList 最新列表
+func (crd *OrgLog) NewestList(limit int) (items []*model_organization.OrgLogModel) {
+	where := crd.search2Where(SearchConditions{})
+
+	items, err := crd.masterModel.GetItemsByConditions(where, 0, limit, "created_at DESC")
+	if err != nil {
+		return nil
+	}
+	return items
+}
