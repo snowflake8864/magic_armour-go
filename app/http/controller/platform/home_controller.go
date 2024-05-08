@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/agent/alarm_service"
+	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
@@ -69,7 +70,24 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 
 // AgentTodayStat 终端: 今天统计
 func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AgentTodayStat")
+	//今天
+	today := helpers.DatetimeSpecial(variable.DayFormat)
+	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+
+	StatDailyFact := org_stat_service.CreateStatDailyFactory()
+	column := StatDailyFact.StatColumnOAgent(false, true, false, false, false, false, false, false, false, false)
+	statToday := StatDailyFact.SumByDay(today, column)
+	statYesterday := StatDailyFact.SumByDay(yesterday, column)
+
+	expect, percent, ratio := u.calcRatio(statToday.AgentOnline, statYesterday.AgentOnline)
+
+	response.SuccessReturnData(ctx, gin.H{
+		"total_today":     statToday.AgentOnline,
+		"total_yesterday": statYesterday.AgentOnline,
+		"expect":          expect,
+		"percent":         percent,
+		"ratio":           ratio,
+	})
 }
 
 // AgentDailyOnline 终端: 每天在线
