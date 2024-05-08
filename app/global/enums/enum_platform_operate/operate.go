@@ -28,6 +28,20 @@ var EnumMap = map[string]map[string]string{
 	},
 }
 
+var WebMapString = map[string][]string{
+	"module": {
+		ModuleAuth,
+		ModuleOrg,
+		ModuleProduct,
+		ModuleOrder,
+		ModuleAgent,
+		ModuleSoftware,
+		ModuleThreaten,
+		ModuleAccount,
+		ModuleDictionary,
+	},
+}
+
 var pathModuleLabel = map[string][]string{
 	"/platform/auth/checkUser":                    {ModuleAuth, "校验管理员"},
 	"/platform/auth/getSliderCode":                {ModuleAuth, "获取滑块码"},

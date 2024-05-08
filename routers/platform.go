@@ -270,6 +270,25 @@ func InitPlatformRouter() *gin.Engine {
 						push.POST("clear", (&platform.ThreatenController{}).ClearForPush)
 					}
 				} //威胁情报
+				//操作相关
+				operation := vPlatform.Group("operation/")
+				{
+					operation.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OperationPage"))
+					operation.POST("modules", (&platform.OperationController{}).Modules)
+				}
+				//服务器相关
+				server := vPlatform.Group("server/")
+				{
+					monitor := server.Group("monitor/")
+					{
+						monitor.POST("records", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerMonitorRecords"))
+					}
+					time := server.Group("time/")
+					{
+						time.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerTimeGet"))
+						time.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerTimeSet"))
+					}
+				}
 			}
 		}
 	}

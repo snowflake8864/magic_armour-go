@@ -9,6 +9,7 @@ import (
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	dictionary4 "goskeleton/app/http/validator/platform/dictionary"
 	home4 "goskeleton/app/http/validator/platform/home"
+	operation4 "goskeleton/app/http/validator/platform/operation"
 	order4 "goskeleton/app/http/validator/platform/order"
 	orgMenu4 "goskeleton/app/http/validator/platform/org_menu"
 	organize4 "goskeleton/app/http/validator/platform/organize"
@@ -168,4 +169,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, threaten4.PushBatchBlack{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenPushPage"
 	containers.Set(key, threaten4.PushPage{})
+
+	//操作相关
+	key = consts.ValidatorPrefixPlatform + "OperationPage"
+	containers.Set(key, operation4.Page{})
 }
