@@ -79,3 +79,18 @@ func TimestampToDatetime(timestamp int64) string {
 
 	return t.Format(variable.DateFormat)
 }
+
+// DatetimeToTimestamp 日期转成时间戳
+func DatetimeToTimestamp(datetime, layout string) int64 {
+	// 解析日期字符串为time.Time类型
+	t, err := time.Parse(layout, datetime)
+	if err != nil {
+		return 0
+	}
+	return t.Unix()
+}
+
+// TimestampCalcDayInCurrMonth 时间戳现在是当前月的第几天
+func TimestampCalcDayInCurrMonth(timestamp int64) int {
+	return time.Unix(timestamp, 0).Local().Day()
+}

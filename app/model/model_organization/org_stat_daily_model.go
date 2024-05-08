@@ -1,6 +1,7 @@
 package model_organization
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -17,7 +18,6 @@ func CreateOrgStatDailyFactory() *OrgStatDailyModel {
 type OrgStatDailyModel struct {
 	model.BaseModel
 	OrgId            int64  `json:"org_id"`
-	AgentId          string `json:"agent_id"`
 	StatDay          string `json:"stat_day"`
 	StatMonth        int    `json:"stat_month"`
 	UserTotal        int    `json:"user_total"`
@@ -45,7 +45,6 @@ func (m *OrgStatDailyModel) CreateTable() bool {
 	sql += `
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
             stat_month int(11) NOT NULL COMMENT '统计：日期',
 			stat_day dateV2 NOT NULL COMMENT '统计：日期',
 			user_total int(11) NOT NULL DEFAULT '0' COMMENT '用户:总数',
@@ -62,7 +61,7 @@ func (m *OrgStatDailyModel) CreateTable() bool {
 			agent_win_add int(11) NOT NULL DEFAULT '0' COMMENT '终端:windows-新增数',
 			created_at datetime NULL
 		)
-		UNIQUE KEY(org_id, agent_id,stat_month,stat_day)
+		UNIQUE KEY(org_id,stat_month,stat_day)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
@@ -170,6 +169,23 @@ func (m *OrgStatDailyModel) CalcByConditions(condition map[string]interface{}, c
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
 		return item, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// CalcByConditionsGroupDay 通过条件获取多条记录且按天分组
+func (m *OrgStatDailyModel) CalcByConditionsGroupDay(condition map[string]interface{}, column string) (items []*OrgStatDailyModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(condition)
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		return tmp.Group("stat_day").Order("stat_day ASC").Find(&items)
+	})
+	fmt.Println("======================================")
+	fmt.Println(sql)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
 	} else {
 		return nil, result.Error
 	}

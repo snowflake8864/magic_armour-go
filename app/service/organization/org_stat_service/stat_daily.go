@@ -111,7 +111,7 @@ func (crd *StatDaily) Add(param *model_organization.OrgStatDailyModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
-// SumByDay 计算： 按日期
+// SumByDay 计算： 每天
 func (crd *StatDaily) SumByDay(day, column string) (result *model_organization.OrgStatDailyModel) {
 	search := SearchConditions{
 		StatDay: day,
@@ -122,4 +122,17 @@ func (crd *StatDaily) SumByDay(day, column string) (result *model_organization.O
 		return result
 	}
 	return result
+}
+
+// SumByMonthGroupDay 计算： 每月并且按照天分组
+func (crd *StatDaily) SumByMonthGroupDay(month int, column string) (items []*model_organization.OrgStatDailyModel) {
+	search := SearchConditions{
+		StatMonth: month,
+	}
+	where := crd.search2Where(search)
+	items, err := crd.masterModel.CalcByConditionsGroupDay(where, column)
+	if err != nil {
+		return nil
+	}
+	return items
 }

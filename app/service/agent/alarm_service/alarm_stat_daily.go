@@ -22,7 +22,7 @@ func (crd *AlarmStatDaily) Add(param *model_alarm.AlarmStatDailyModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
-// SumByDay 计算： 按日期
+// SumByDay 计算： 每天
 func (crd *AlarmStatDaily) SumByDay(day, column string) (result *model_alarm.AlarmStatDailyModel) {
 	search := SearchConditions{
 		StatDay: day,

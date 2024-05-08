@@ -2,6 +2,7 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_stat_service"
@@ -14,29 +15,7 @@ type HomeController struct {
 	ControllerBase
 }
 
-// AlarmTodayStat 告警: 今天统计
-func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
-	//今天
-	today := helpers.DatetimeSpecial(variable.DayFormat)
-	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
-
-	StatDailyFact := alarm_service.CreateStatDailyFactory()
-	column := StatDailyFact.StatColumn(alarm_service.PrefixTotal, false, false, true, false, false)
-	statToday := StatDailyFact.SumByDay(today, column)
-	statYesterday := StatDailyFact.SumByDay(yesterday, column)
-
-	expect, percent, ratio := u.calcRatio(statToday.AddTotal, statYesterday.AddTotal)
-
-	response.SuccessReturnData(ctx, gin.H{
-		"total_today":     statToday.AddTotal,
-		"total_yesterday": statYesterday.AddTotal,
-		"expect":          expect,
-		"percent":         percent,
-		"ratio":           ratio,
-	})
-}
-
-// AgentTodayStat 终端: 今天统计
+// calcRatio 计算比例
 func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent string, ratio float64) {
 	if divisor > dividend {
 		// divisor=3; dividend=1
@@ -64,8 +43,29 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 		percent = "0.00"
 	}
 	percent += "%"
-
 	return expect, percent, ratio
+}
+
+// AlarmTodayStat 告警: 今天统计
+func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
+	//今天
+	today := helpers.DatetimeSpecial(variable.DayFormat)
+	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+
+	StatDailyFact := alarm_service.CreateStatDailyFactory()
+	column := StatDailyFact.StatColumn(alarm_service.PrefixTotal, false, false, true, false, false)
+	statToday := StatDailyFact.SumByDay(today, column)
+	statYesterday := StatDailyFact.SumByDay(yesterday, column)
+
+	expect, percent, ratio := u.calcRatio(statToday.AddTotal, statYesterday.AddTotal)
+
+	response.SuccessReturnData(ctx, gin.H{
+		"total_today":     statToday.AddTotal,
+		"total_yesterday": statYesterday.AddTotal,
+		"expect":          expect,
+		"percent":         percent,
+		"ratio":           ratio,
+	})
 }
 
 // AgentTodayStat 终端: 今天统计
@@ -92,7 +92,22 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 
 // AgentDailyOnline 终端: 每天在线
 func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AgentDailyOnline")
+	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
+	StatDailyFact := org_stat_service.CreateStatDailyFactory()
+	column := StatDailyFact.ColumnOfAgent(false, false, false, false, true, false, false, true, false, true)
+	models := StatDailyFact.SumByMonthGroupDay(month, column)
+
+	var result []map[string]interface{}
+	if models != nil && len(models) > 0 {
+		for _, model := range models {
+			result = append(result, map[string]interface{}{
+				"date":         helpers.TimestampCalcDayInCurrMonth(helpers.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
+				"win_online":   model.AgentWinOnline,
+				"linux_online": model.AgentLinuxOnline,
+			})
+		}
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // UserTodayStat 用户: 今天统计
@@ -106,6 +121,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
+	//新增
 	expect, percent, ratio := u.calcRatio(statToday.UserAdd, statYesterday.UserAdd)
 	mapAdd := map[string]interface{}{
 		"total_today":     statToday.UserAdd,
@@ -115,6 +131,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 		"ratio":           ratio,
 	}
 
+	//在线
 	expect, percent, ratio = u.calcRatio(statToday.UserOnline, statYesterday.UserOnline)
 	mapOnline := map[string]interface{}{
 		"total_today":     statToday.UserOnline,
