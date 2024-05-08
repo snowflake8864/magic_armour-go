@@ -34,3 +34,16 @@ func (crd *AlarmStatDaily) SumByDay(day, column string) (result *model_alarm.Ala
 	}
 	return result
 }
+
+// SumByMonthGroupDay 计算： 每月并且按照天分组
+func (crd *AlarmStatDaily) SumByMonthGroupDay(month int, column string) (items []*model_alarm.AlarmStatDailyModel) {
+	search := SearchConditions{
+		StatMonth: month,
+	}
+	where := crd.search2Where(search)
+	items, err := crd.masterModel.CalcByConditionsGroupDay(where, column)
+	if err != nil {
+		return nil
+	}
+	return items
+}

@@ -1,7 +1,6 @@
 package model_organization
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -181,8 +180,6 @@ func (m *OrgStatDailyModel) CalcByConditionsGroupDay(condition map[string]interf
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
 		return tmp.Group("stat_day").Order("stat_day ASC").Find(&items)
 	})
-	fmt.Println("======================================")
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items, nil

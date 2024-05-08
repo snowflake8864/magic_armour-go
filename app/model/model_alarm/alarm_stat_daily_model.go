@@ -238,3 +238,18 @@ func (m *AlarmStatDailyModel) CalcByConditions(condition map[string]interface{},
 		return nil, result.Error
 	}
 }
+
+// CalcByConditionsGroupDay 通过条件获取多条记录且按天分组
+func (m *AlarmStatDailyModel) CalcByConditionsGroupDay(condition map[string]interface{}, column string) (items []*AlarmStatDailyModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(condition)
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		return tmp.Group("stat_day").Order("stat_day ASC").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
