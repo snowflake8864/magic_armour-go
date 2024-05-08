@@ -40,6 +40,12 @@ func (crd *AlarmBase) search2Where(search SearchConditions) map[string]interface
 	if !helpers.StringIsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}
+	if search.StatMonth > 0 {
+		wheres["stat_month"] = search.StatMonth
+	}
+	if !helpers.StringIsEmpty(search.StatDay) {
+		wheres["stat_day"] = search.StatDay
+	}
 	if !helpers.StringIsEmpty(search.CreateAtGte) {
 		wheres["created_at >="] = search.CreateAtGte
 	}

@@ -20,8 +20,9 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
 
 	StatDailyFact := alarm_service.CreateStatDailyFactory()
-	statToday := StatDailyFact.SumTotalByDay(today)
-	statYesterday := StatDailyFact.SumTotalByDay(yesterday)
+	column := StatDailyFact.StatColumn(alarm_service.PrefixTotal, false, false, true, false, false)
+	statToday := StatDailyFact.SumByDay(today, column)
+	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
 	expect, percent, ratio := u.calcRatio(statToday.AddTotal, statYesterday.AddTotal)
 

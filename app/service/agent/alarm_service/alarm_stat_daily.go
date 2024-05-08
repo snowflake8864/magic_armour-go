@@ -22,13 +22,12 @@ func (crd *AlarmStatDaily) Add(param *model_alarm.AlarmStatDailyModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
-// SumTotalByDay 计算总计： 按日期
-func (crd *AlarmStatDaily) SumTotalByDay(day string) (result *model_alarm.AlarmStatDailyModel) {
+// SumByDay 计算： 按日期
+func (crd *AlarmStatDaily) SumByDay(day, column string) (result *model_alarm.AlarmStatDailyModel) {
 	search := SearchConditions{
 		StatDay: day,
 	}
 	where := crd.search2Where(search)
-	column := crd.StatColumn(PrefixTotal, true, false, true, false, false)
 	result, err := crd.masterModel.CalcByConditions(where, column)
 	if err != nil {
 		return result

@@ -159,3 +159,18 @@ func (m *OrgStatDailyModel) GetItemsByConditions(condition map[string]interface{
 		return nil, result.Error
 	}
 }
+
+// CalcByConditions 通过条件获取多条记录
+func (m *OrgStatDailyModel) CalcByConditions(condition map[string]interface{}, column string) (item *OrgStatDailyModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(condition)
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return nil, result.Error
+	}
+}
