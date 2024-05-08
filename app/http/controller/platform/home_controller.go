@@ -75,7 +75,7 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := StatDailyFact.StatColumnOAgent(false, true, false, false, false, false, false, false, false, false)
+	column := StatDailyFact.ColumnOfAgent(false, true, false, false, false, false, false, false, false, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
@@ -97,7 +97,37 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 
 // UserTodayStat 用户: 今天统计
 func (u *HomeController) UserTodayStat(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "UserTodayStat")
+	//今天
+	today := helpers.DatetimeSpecial(variable.DayFormat)
+	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+
+	StatDailyFact := org_stat_service.CreateStatDailyFactory()
+	column := StatDailyFact.ColumnOfUser(false, true, true, false)
+	statToday := StatDailyFact.SumByDay(today, column)
+	statYesterday := StatDailyFact.SumByDay(yesterday, column)
+
+	expect, percent, ratio := u.calcRatio(statToday.UserAdd, statYesterday.UserAdd)
+	mapAdd := map[string]interface{}{
+		"total_today":     statToday.UserAdd,
+		"total_yesterday": statYesterday.UserAdd,
+		"expect":          expect,
+		"percent":         percent,
+		"ratio":           ratio,
+	}
+
+	expect, percent, ratio = u.calcRatio(statToday.UserOnline, statYesterday.UserOnline)
+	mapOnline := map[string]interface{}{
+		"total_today":     statToday.UserOnline,
+		"total_yesterday": statYesterday.UserOnline,
+		"expect":          expect,
+		"percent":         percent,
+		"ratio":           ratio,
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"add":    mapAdd,
+		"online": mapOnline,
+	})
 }
 
 // UserDailyOnline 用户: 每天在线

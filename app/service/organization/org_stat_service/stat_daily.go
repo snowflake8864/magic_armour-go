@@ -47,8 +47,8 @@ func (crd *StatDaily) search2Where(search SearchConditions) map[string]interface
 	return wheres
 }
 
-// StatColumnOfUser 统计表字段:用户相关
-func (crd *StatDaily) StatColumnOfUser(total, online, add, statDay bool) string {
+// ColumnOfUser 统计表字段:用户相关
+func (crd *StatDaily) ColumnOfUser(total, online, add, statDay bool) string {
 	var columns []string
 	if total {
 		columns = append(columns, "SUM(user_total) AS user_total")
@@ -66,8 +66,8 @@ func (crd *StatDaily) StatColumnOfUser(total, online, add, statDay bool) string 
 	return strings.Join(columns, ", ")
 }
 
-// StatColumnOAgent 统计表字段: 终端相关
-func (crd *StatDaily) StatColumnOAgent(total, online, add, linuxTotal, linuxOnline, linuxAdd, winTotal, winOnline, winAdd, statDay bool) string {
+// ColumnOfAgent 统计表字段: 终端相关
+func (crd *StatDaily) ColumnOfAgent(total, online, add, linuxTotal, linuxOnline, linuxAdd, winTotal, winOnline, winAdd, statDay bool) string {
 	var columns []string
 	if total {
 		columns = append(columns, "SUM(agent_total) AS agent_total")
