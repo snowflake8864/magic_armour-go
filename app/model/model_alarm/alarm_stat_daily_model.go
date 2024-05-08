@@ -20,6 +20,10 @@ type AlarmStatDailyModel struct {
 	AgentId             string `json:"agent_id"`
 	StatDay             string `json:"stat_day"`
 	StatMonth           int    `json:"stat_month"`
+	Total               int    `json:"total"`
+	Handled             int    `json:"handled"`
+	AddTotal            int    `json:"add_total"`
+	AddHandled          int    `json:"add_handled"`
 	ProcessTotal        int    `json:"process_total"`
 	ProcessHandled      int    `json:"process_handled"`
 	ProcessAddTotal     int    `json:"process_add_total"`
@@ -76,6 +80,10 @@ func (m *AlarmStatDailyModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
             stat_month int(11) NOT NULL COMMENT '统计：日期',
 			stat_day DATEV2 NOT NULL COMMENT '统计：日期',
+			total int(11) NOT NULL DEFAULT '0' COMMENT '告警:总数',
+			handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:已处理数',
+			add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进新增-总数',
+			add_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:新增-已处理数',
 			process_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-总数',
 			process_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-已处理数',
 			process_add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:进程-新增-总数',
@@ -211,6 +219,21 @@ func (m *AlarmStatDailyModel) GetItemsByConditions(condition map[string]interfac
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// CalcByConditions 通过条件获取多条记录
+func (m *AlarmStatDailyModel) CalcByConditions(condition map[string]interface{}, column string) (item *AlarmStatDailyModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(condition)
+		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item, nil
 	} else {
 		return nil, result.Error
 	}

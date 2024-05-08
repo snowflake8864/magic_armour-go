@@ -110,3 +110,9 @@ func Float64(any interface{}) float64 {
 		return 0
 	}
 }
+
+// Float64ToStr Float64转成字符串
+func Float64ToStr(num float64) string {
+	return strconv.FormatFloat(num, 'f', -1, 64)
+	//return fmt.Sprintf("%f", num)
+}

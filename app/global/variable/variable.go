@@ -19,14 +19,15 @@ var (
 	EventDestroyPrefix = "Destroy_"            //  程序退出时需要销毁的事件前缀
 	ConfigKeyPrefix    = "Config_"             //  配置文件键值缓存时，键的前缀
 	DateFormat         = "2006-01-02 15:04:05" //  设置全局日期时间格式
+	DayFormat          = "2006-01-02"          //  设置全局日期时间格式
 	HuanshiPrivateRsa  = "LWX919787"           //幻势:私钥
 
 	// 全局日志指针
 	ZapLog *zap.Logger
 	// 全局配置文件
-	ConfigYml        ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
-	ConfigGormv2Yml  ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
-	ConfigKafkaV2Yml ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	ConfigYml       ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	ConfigGormv2Yml ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
+	//ConfigKafkaV2Yml ymlconfig_interf.YmlConfigInterf // 全局配置文件指针
 
 	//gorm 数据库客户端，如果您操作数据库使用的是gorm，请取消以下注释，在 bootstrap>init 文件，进行初始化即可使用
 	GormDbPlatform *gorm.DB       // 全局gorm的客户端连接

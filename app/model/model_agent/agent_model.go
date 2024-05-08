@@ -488,8 +488,8 @@ type AgentCalc struct {
 
 // CalcByConditions 通过条件获取多条记录
 func (m *AgentModel) CalcByConditions(condition map[string]interface{}, column string) (item *AgentCalc, err error) {
-	whereSQL, vals, _ := m.WhereBuild(condition)
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(condition)
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
 		return tmp.Take(&item)
 	})

@@ -28,7 +28,7 @@ func WeekdayCurr() string {
 // DateCalcByDay 按天计算日期
 func DateCalcByDay(d int) (day, dayStart, dayEnd string, month int) {
 	t := time.Now().AddDate(0, 0, d)
-	day = t.Format("2006-01-02")
+	day = t.Format(variable.DayFormat)
 	dayStart = day + " 00:00:00"
 	dayEnd = day + " 23:59:59"
 	month = String2Int(t.Format("200601"))

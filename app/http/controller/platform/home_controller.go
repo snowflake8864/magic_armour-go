@@ -2,6 +2,9 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/variable"
+	"goskeleton/app/service/agent/alarm_service"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 )
 
@@ -10,37 +13,85 @@ type HomeController struct {
 	ControllerBase
 }
 
-// 告警: 今天统计
+// AlarmTodayStat 告警: 今天统计
 func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AlarmTodayStat")
+	//今天
+	today := helpers.DatetimeSpecial(variable.DayFormat)
+	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+
+	StatDailyFact := alarm_service.CreateStatDailyFactory()
+	statToday := StatDailyFact.SumTotalByDay(today)
+	statYesterday := StatDailyFact.SumTotalByDay(yesterday)
+
+	expect, percent, ratio := u.calcRatio(statToday.AddTotal, statYesterday.AddTotal)
+
+	response.SuccessReturnData(ctx, gin.H{
+		"total_today":     statToday.AddTotal,
+		"total_yesterday": statYesterday.AddTotal,
+		"expect":          expect,
+		"percent":         percent,
+		"ratio":           ratio,
+	})
 }
 
-// 终端: 今天统计
+// AgentTodayStat 终端: 今天统计
+func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent string, ratio float64) {
+	if divisor > dividend {
+		// divisor=3; dividend=1
+		expect = "up" //上升
+		if dividend == 0 {
+			ratio = 0
+		} else {
+			ratio = helpers.FloatDiv(divisor-dividend, dividend, 2)
+		}
+
+	} else if divisor < dividend {
+		// divisor=1; dividend=3
+		expect = "down" //下降
+		if divisor == 0 {
+			ratio = helpers.FloatScale(helpers.Float64(dividend), 2)
+		} else {
+			ratio = 1 - helpers.FloatDiv(divisor, dividend, 2)
+		}
+	} else {
+		expect = "same" //不变
+		ratio = 0
+	}
+	percent = helpers.Float64ToStr(ratio)
+	if percent == "0" {
+		percent = "0.00"
+	}
+	percent += "%"
+
+	return expect, percent, ratio
+}
+
+// AgentTodayStat 终端: 今天统计
 func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "AgentTodayStat")
 }
 
-// 终端: 每天在线
+// AgentDailyOnline 终端: 每天在线
 func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "AgentDailyOnline")
 }
 
-// 用户: 今天统计
+// UserTodayStat 用户: 今天统计
 func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "UserTodayStat")
 }
 
-// 用户: 每天在线
+// UserDailyOnline 用户: 每天在线
 func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "UserDailyOnline")
 }
 
-// 用户: 最新日志
+// UserNewestLogs 用户: 最新日志
 func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "UserNewestLogs")
 }
 
-// 授权: 使用统计
+// GrantUsedStat 授权: 使用统计
 func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "GrantUsedStat")
 }
