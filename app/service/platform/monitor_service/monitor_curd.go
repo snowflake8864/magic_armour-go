@@ -43,6 +43,9 @@ func (crd *MonitorCurd) GetList(search SearchConditions) (items []*model_platfor
 
 // Add 新增
 func (crd *MonitorCurd) Add(param *model_platform.ServerMonitorModel) bool {
+	if helpers.StringIsEmpty(param.CreatedAt) {
+		param.CreatedAt = helpers.DatetimeCurr()
+	}
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk
