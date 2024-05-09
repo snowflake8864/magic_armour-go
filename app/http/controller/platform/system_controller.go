@@ -174,7 +174,7 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 		response.FailData(ctx, "配置不正确", err.Error())
 		return
 	}
-	param := map[string]interface{}{
+	/*param := map[string]interface{}{
 		"deviceMark":     "f963864bebc14dd2b4fe9a00047314c4",
 		"agentNum":       4,
 		"onlineAgentNum": 2,
@@ -182,7 +182,7 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	if err := threatenPlatform.SyncDeviceByTcp(param); err != nil {
 		response.FailData(ctx, "同步设备", err.Error())
 		return
-	}
+	}*/
 	response.SuccessSimplify(ctx)
 }
 
