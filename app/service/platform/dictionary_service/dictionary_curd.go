@@ -30,7 +30,7 @@ func (crd *DictionaryCurd) GetAll() (items []*model_platform.DictionaryModel) {
 }
 
 // UpdateValById 通过Id修改值
-func (crd *DictionaryCurd) UpdateValById(id, val string) bool {
+func (crd *DictionaryCurd) UpdateValById(id string, val interface{}) bool {
 	err := crd.masterModel.UpdateValById(id, val)
 	if err != nil {
 		return false
@@ -40,7 +40,7 @@ func (crd *DictionaryCurd) UpdateValById(id, val string) bool {
 }
 
 // BatchUpdate 批量修改
-func (crd *DictionaryCurd) BatchUpdate(idAndVal map[string]string) bool {
+func (crd *DictionaryCurd) BatchUpdate(idAndVal map[string]interface{}) bool {
 	for id, val := range idAndVal {
 		_ = crd.masterModel.UpdateValById(id, val)
 	}

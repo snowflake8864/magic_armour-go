@@ -3,7 +3,10 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/monitor_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
@@ -56,16 +59,40 @@ func (u *SystemController) TimeSet(ctx *gin.Context) {
 
 // SshGet  SSH服务
 func (u *SystemController) SshGet(ctx *gin.Context) {
+	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSshSwitch)
+
 	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
+		"switch": helpers.String2Int(val),
 	})
 }
 
 // SshSet  SSH服务
 func (u *SystemController) SshSet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "switch"))
+
+	//删除以前的规则
+	commandDelDrop := "sudo iptables -D INPUT -p Tcp --dport 22 -j DROP"
+	commandDelACCEPT := "sudo iptables -D INPUT -p Tcp --dport 22 -j ACCEPT"
+	for i := 0; i <= 2; i++ {
+		_ = exec.Command(commandDelDrop).Run()
+		_ = exec.Command(commandDelACCEPT).Run()
+	}
+
+	//按照开关添加规则
+	commandAdd := ""
+	if Switch == enums.SwitchOn {
+		commandAdd += "sudo iptables -I INPUT -p Tcp --dport 22 -j ACCEPT"
+	} else {
+		commandAdd += "sudo iptables -I INPUT -p Tcp --dport 22 -j DROP"
+	}
+	cmd := exec.Command(commandAdd)
+	_, err := cmd.CombinedOutput() // 执行命令并获取输出结果
+	if err != nil {
+		response.FailData(ctx, "exec command failed", err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // NetworkGet  网络服务
