@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/service/platform/monitor_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
+	"os/exec"
 )
 
 // SystemController 系统管理
@@ -32,13 +33,25 @@ func (u *SystemController) TimeGet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"date": helpers.DatetimeCurr(),
 	})
+
 }
 
 // TimeSet  服务器器时间
 func (u *SystemController) TimeSet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	date := ctx.GetString(consts.ValidatorPrefixPlatform + "date")
+
+	command := " sudo /bin/timedatectl set-timezone Asia/Shanghai"
+	command += " && sudo /sbin/hwclock --set --date '" + date + "'"
+	command += " && sudo /sbin/hwclock --hctosys"
+	command += " && sudo /sbin/clock -w"
+
+	cmd := exec.Command(command)
+	_, err := cmd.CombinedOutput() // 执行命令并获取输出结果
+	if err != nil {
+		response.FailData(ctx, "exec command failed", err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // SshGet  SSH服务
