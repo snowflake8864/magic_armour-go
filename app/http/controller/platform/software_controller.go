@@ -74,7 +74,7 @@ func (u *SoftwareController) GetAgentConfig(ctx *gin.Context) {
 
 // SetAgentConfig  保存终端配置
 func (u *SoftwareController) SetAgentConfig(ctx *gin.Context) {
-	idAndVal := map[string]string{
+	idAndVal := map[string]interface{}{
 		enum_dictionary.AgentHttpUrl:               ctx.GetString(consts.ValidatorPrefixPlatform + "http_url"),
 		enum_dictionary.AgentHttpPort:              ctx.GetString(consts.ValidatorPrefixPlatform + "http_port"),
 		enum_dictionary.AgentCompatibleDefaultOrg:  ctx.GetString(consts.ValidatorPrefixPlatform + "default_org"),

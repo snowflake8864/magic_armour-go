@@ -92,6 +92,9 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 		return
 	}
 
+	//修改数据字典
+	dictionary_service.CreateCurdFactory().UpdateValById(enum_dictionary.PlatformSshSwitch, Switch)
+
 	response.SuccessSimplify(ctx)
 }
 

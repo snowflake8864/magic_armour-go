@@ -47,7 +47,7 @@ func (u *ThreatenController) GetForConfig(ctx *gin.Context) {
 
 // SaveForConfig 配置: 保存
 func (u *ThreatenController) SaveForConfig(ctx *gin.Context) {
-	idAndVal := map[string]string{
+	idAndVal := map[string]interface{}{
 		enum_dictionary.ThreatenSwitch:      ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_switch"),
 		enum_dictionary.ThreatenUrl:         strings.TrimRight(ctx.GetString(consts.ValidatorPrefixPlatform+"threaten_url"), "/"),
 		enum_dictionary.ThreatenAppId:       ctx.GetString(consts.ValidatorPrefixPlatform + "threaten_app_id"),
