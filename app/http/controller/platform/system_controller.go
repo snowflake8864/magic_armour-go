@@ -114,16 +114,31 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 
 // AgentLogConfigGet  终端日志配置
 func (u *SystemController) AgentLogConfigGet(ctx *gin.Context) {
+	dictIds := []string{
+		enum_dictionary.AgentAlarmExpire,
+		enum_dictionary.AgentSyslogExpire,
+	}
+	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+
 	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
+		"agent_alarm_expire":  vals[enum_dictionary.AgentAlarmExpire],
+		"agent_syslog_expire": vals[enum_dictionary.AgentSyslogExpire],
 	})
 }
 
 // AgentLogConfigSet  终端日志配置
 func (u *SystemController) AgentLogConfigSet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	idAndVal := map[string]interface{}{
+		enum_dictionary.AgentAlarmExpire:  ctx.GetFloat64(consts.ValidatorPrefixPlatform + "agent_alarm_expire"),
+		enum_dictionary.AgentSyslogExpire: ctx.GetFloat64(consts.ValidatorPrefixPlatform + "agent_syslog_expire"),
+	}
+
+	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
+		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // HuanshiGet  幻势配置
