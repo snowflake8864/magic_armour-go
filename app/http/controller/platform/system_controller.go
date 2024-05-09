@@ -162,6 +162,7 @@ func (u *SystemController) HuanshiGet(ctx *gin.Context) {
 func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	config := huanshi_platform.RequestConfig{
 		HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
+		HuanshiCallIp:      "192.168.17.250",
 		HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
 	}
 	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
@@ -171,6 +172,15 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	}
 	if err := threatenPlatform.GenerateToken(); err != nil {
 		response.FailData(ctx, "配置不正确", err.Error())
+		return
+	}
+	param := map[string]interface{}{
+		"deviceMark":     "f963864bebc14dd2b4fe9a00047314c4",
+		"agentNum":       4,
+		"onlineAgentNum": 2,
+	}
+	if err := threatenPlatform.SyncDeviceByTcp(param); err != nil {
+		response.FailData(ctx, "同步设备", err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)

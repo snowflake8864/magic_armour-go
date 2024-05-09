@@ -2,6 +2,7 @@ package huanshi_platform
 
 import (
 	"errors"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/http_request"
@@ -13,11 +14,13 @@ import (
 func CreateRequestFactory(c RequestConfig) *requestHuanshi {
 	c.HuanshiUrl = strings.TrimRight(c.HuanshiUrl, "/")
 	return &requestHuanshi{
-		redisClient: redis_factory.GetOneRedisClient(),
-		cacheKey:    "huanshi_token",
-		cacheExpire: 600,
-		Config:      c,
-		PrivateRsa:  variable.HuanshiPrivateRsa,
+		redisClient:     redis_factory.GetOneRedisClient(),
+		cacheKey:        "huanshi_token",
+		cacheExpire:     600,
+		Config:          c,
+		PrivateRsa:      variable.HuanshiPrivateRsa,
+		RequestPlatform: "huanjia",
+		Edition:         consts.VersionNumber,
 	}
 }
 
@@ -45,11 +48,13 @@ type RequestConfig struct {
 }
 
 type requestHuanshi struct {
-	redisClient *redis_factory.RedisClient
-	cacheKey    string
-	cacheExpire int //缓存有效期
-	Config      RequestConfig
-	PrivateRsa  string
+	redisClient     *redis_factory.RedisClient
+	cacheKey        string
+	cacheExpire     int //缓存有效期
+	Config          RequestConfig
+	PrivateRsa      string
+	RequestPlatform string
+	Edition         string
 }
 
 type responseCommon struct {
@@ -129,8 +134,38 @@ func (aa *requestHuanshi) GenerateToken() error {
 }
 
 func (aa *requestHuanshi) GetHeaders() (headers map[string]interface{}) {
+	if headers == nil {
+		headers = make(map[string]interface{})
+	}
 	if token := aa.redisClient.Get(aa.cacheKey); !helpers.StringIsEmpty(token) {
 		headers["Authorization"] = "Bearer " + token
 	}
 	return headers
+}
+
+// SyncDeviceByTcp 通过TCO同步设备
+/*
+参数：param {
+"deviceMark" : "设备标识",
+"platform" => "请求平台"
+"edition" =>  "产品版本号",
+"ip" => "回调IP",
+"url" => "回调地址",
+"agentNum"=> "终端总数",
+"onlineAgentNum"=> "在线终端数",
+}
+*/
+func (aa *requestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
+	uri := aa.Config.HuanshiUrl + "/web/device/add"
+
+	param["platform"] = aa.RequestPlatform
+	param["edition"] = aa.Edition
+	param["ip"] = aa.Config.HuanshiCallIp
+	param["url"] = aa.Config.HuanshiCallbackUrl
+
+	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), param)
+	if err := aa.checkCode(bodyContext, err); err != nil {
+		return err
+	}
+	return nil
 }

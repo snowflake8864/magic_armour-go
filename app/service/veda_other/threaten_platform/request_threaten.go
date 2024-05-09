@@ -111,6 +111,10 @@ func (aa *requestThreaten) GenerateToken() error {
 }
 
 func (aa *requestThreaten) GetHeaders() (headers map[string]interface{}) {
+	if headers == nil {
+		headers = make(map[string]interface{})
+	}
+
 	if token := aa.redisClient.Get(aa.cacheKey); !helpers.StringIsEmpty(token) {
 		headers["AuthToken"] = token
 	}
@@ -128,7 +132,7 @@ type ResponseCheckHashes struct {
 
 // CheckHashes 验证hash集合,若存在返回
 /*
-参数：[]{
+参数：list []{
 	"req_type":1
 	"key" : "",
 	"filename" : "",
@@ -157,7 +161,7 @@ func (aa *requestThreaten) CheckHashes(list []map[string]interface{}) (error err
 
 // PushHashes 推送hash集合
 /*
-参数：[]{
+参数：list []{
 	"threaten_name": "",
 	"type": 0, //约定-1
 	"filename": "",
