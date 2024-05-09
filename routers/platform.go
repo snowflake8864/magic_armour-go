@@ -303,6 +303,12 @@ func InitPlatformRouter() *gin.Engine {
 						agentLog.POST("get", (&platform.SystemController{}).AgentLogConfigGet)
 						agentLog.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogConfigSet"))
 					}
+					huanshi := system.Group("huanshi/")
+					{
+						huanshi.POST("get", (&platform.SystemController{}).AgentLogConfigGet)
+						huanshi.POST("online", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiOnline"))
+						huanshi.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiSet"))
+					}
 				} //服务器相关
 			}
 		}

@@ -69,7 +69,7 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 	})
 }
 
-// AgentLogConfigSet  终端日志配置
+// AgentLogConfigGet  终端日志配置
 func (u *SystemController) AgentLogConfigGet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"date": helpers.DatetimeCurr(),
@@ -78,6 +78,27 @@ func (u *SystemController) AgentLogConfigGet(ctx *gin.Context) {
 
 // AgentLogConfigSet  终端日志配置
 func (u *SystemController) AgentLogConfigSet(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, gin.H{
+		"date": helpers.DatetimeCurr(),
+	})
+}
+
+// HuanshiGet  幻势配置
+func (u *SystemController) HuanshiGet(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, gin.H{
+		"date": helpers.DatetimeCurr(),
+	})
+}
+
+// HuanshiOnline  幻势配置
+func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, gin.H{
+		"date": helpers.DatetimeCurr(),
+	})
+}
+
+// HuanshiSet  幻势配置
+func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"date": helpers.DatetimeCurr(),
 	})

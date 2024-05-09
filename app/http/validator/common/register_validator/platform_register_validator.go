@@ -186,4 +186,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, system4.NetworkSet{})
 	key = consts.ValidatorPrefixPlatform + "SystemAgentLogConfigSet"
 	containers.Set(key, system4.AgentLogConfigSet{})
+	key = consts.ValidatorPrefixPlatform + "SystemHuanshiOnline"
+	containers.Set(key, system4.HuanshiOnline{})
+	key = consts.ValidatorPrefixPlatform + "SystemHuanshiSet"
+	containers.Set(key, system4.HuanshiSet{})
 }
