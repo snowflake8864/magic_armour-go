@@ -120,10 +120,7 @@ func (u *SystemController) AgentLogConfigGet(ctx *gin.Context) {
 	}
 	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
-	response.SuccessReturnData(ctx, gin.H{
-		"agent_alarm_expire":  vals[enum_dictionary.AgentAlarmExpire],
-		"agent_syslog_expire": vals[enum_dictionary.AgentSyslogExpire],
-	})
+	response.SuccessReturnData(ctx, vals)
 }
 
 // AgentLogConfigSet  终端日志配置
@@ -143,9 +140,21 @@ func (u *SystemController) AgentLogConfigSet(ctx *gin.Context) {
 
 // HuanshiGet  幻势配置
 func (u *SystemController) HuanshiGet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	dictIds := []string{
+		enum_dictionary.HuanshiCallbackUrl,
+		enum_dictionary.HuanshiCallIp,
+		enum_dictionary.HuanshiSwitch,
+		enum_dictionary.HuanshiUrl,
+		enum_dictionary.HuanshiAlarmSwitch,
+		enum_dictionary.HuanshiAlarmIp,
+		enum_dictionary.HuanshiAlarmPort,
+		enum_dictionary.HuanshiLogSwitch,
+		enum_dictionary.HuanshiLogIp,
+		enum_dictionary.HuanshiLogPort,
+	}
+	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+
+	response.SuccessReturnData(ctx, vals)
 }
 
 // HuanshiOnline  幻势配置
@@ -157,7 +166,23 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 
 // HuanshiSet  幻势配置
 func (u *SystemController) HuanshiSet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	idAndVal := map[string]interface{}{
+		enum_dictionary.HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
+		enum_dictionary.HuanshiCallIp:      ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_ip"),
+		enum_dictionary.HuanshiSwitch:      ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_switch"),
+		enum_dictionary.HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
+		enum_dictionary.HuanshiAlarmSwitch: ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_alarm_switch"),
+		enum_dictionary.HuanshiAlarmIp:     ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_alarm_ip"),
+		enum_dictionary.HuanshiAlarmPort:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_alarm_port"),
+		enum_dictionary.HuanshiLogSwitch:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_switch"),
+		enum_dictionary.HuanshiLogIp:       ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_log_ip"),
+		enum_dictionary.HuanshiLogPort:     ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_port"),
+	}
+
+	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
+		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
