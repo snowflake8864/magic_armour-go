@@ -277,18 +277,33 @@ func InitPlatformRouter() *gin.Engine {
 					operation.POST("modules", (&platform.OperationController{}).Modules)
 				}
 				//服务器相关
-				server := vPlatform.Group("server/")
+				system := vPlatform.Group("system/")
 				{
-					monitor := server.Group("monitor/")
+					monitor := system.Group("monitor/")
 					{
-						monitor.POST("records", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerMonitorRecords"))
+						monitor.POST("records", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemMonitorRecords"))
 					}
-					time := server.Group("time/")
+					time := system.Group("time/")
 					{
-						time.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerTimeGet"))
-						time.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ServerTimeSet"))
+						time.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemTimeGet"))
+						time.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemTimeSet"))
 					}
-				}
+					ssh := system.Group("ssh/")
+					{
+						ssh.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemSshGet"))
+						ssh.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemSshSet"))
+					}
+					network := system.Group("network/")
+					{
+						network.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkGet"))
+						network.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkSet"))
+					}
+					agentLog := system.Group("agentLog/")
+					{
+						agentLog.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogGet"))
+						agentLog.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogSet"))
+					}
+				} //服务器相关
 			}
 		}
 	}

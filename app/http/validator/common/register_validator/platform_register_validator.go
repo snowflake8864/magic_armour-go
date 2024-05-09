@@ -15,6 +15,7 @@ import (
 	organize4 "goskeleton/app/http/validator/platform/organize"
 	product4 "goskeleton/app/http/validator/platform/product"
 	software4 "goskeleton/app/http/validator/platform/software"
+	system4 "goskeleton/app/http/validator/platform/system"
 	threaten4 "goskeleton/app/http/validator/platform/threaten"
 )
 
@@ -173,4 +174,8 @@ func PlatformRegisterValidator() {
 	//操作相关
 	key = consts.ValidatorPrefixPlatform + "OperationPage"
 	containers.Set(key, operation4.Page{})
+
+	//服务器相关
+	key = consts.ValidatorPrefixPlatform + "SystemMonitorRecords"
+	containers.Set(key, system4.MonitorRecords{})
 }
