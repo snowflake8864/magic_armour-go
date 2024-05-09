@@ -79,6 +79,15 @@ func Get1stIsStrAnd2ndIsIntReturnInt(first string, second int, s map[string]map[
 	return val
 }
 
+// Get1stIsStrAnd2ndIsStrReturnStr 如是第一级是string串且第二级是string,返回相应string
+func Get1stIsStrAnd2ndIsStrReturnStr(first string, second string, s map[string]map[string]string) string {
+	val, ok := s[first][second]
+	if ok == false {
+		return ""
+	}
+	return val
+}
+
 // Get1stIsStrAnd2ndIsIntReturnSliceInt 如是第一级是string串且第二级是int,返回相应[]int
 func Get1stIsStrAnd2ndIsIntReturnSliceInt(first string, second int, s map[string]map[int][]int) []int {
 	val, ok := s[first][second]

@@ -3,6 +3,7 @@ package model_platform
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers"
 )
 
 // 角色表
@@ -54,8 +55,8 @@ func (m *OperateLogModel) CreateTable() bool {
 			created_at datetime NOT NULL,
 			PRIMARY KEY (id),
 			KEY index_module (module),
-			KEY index_path (path),
-			KEY index_create_id (create_id)
+			KEY index_net_ip (net_ip),
+			KEY index_create_name (create_name)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='操作日志表';
 		`
 	result := m.Exec(m.TrimSql(sql))
@@ -72,5 +73,56 @@ func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OperateLogModel, err error) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !helpers.StringIsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := tmp.Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
+// Count 通过条件统计
+func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
+	var total int64
+	tmp := m.Model(m).Select("id")
+	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *OperateLogModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OperateLogModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items, err := m.GetItemsByConditions(condition, offset, limit, order)
+	if err == nil {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }
