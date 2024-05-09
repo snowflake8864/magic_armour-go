@@ -9,7 +9,8 @@ import (
 )
 
 type HuanshiOnline struct {
-	HuanshiUrl string `form:"huanshi_url" json:"huanshi_url" binding:"required,max=128"`
+	HuanshiCallbackUrl string `form:"huanshi_callback_url" json:"huanshi_callback_url" binding:"required,max=128"`
+	HuanshiUrl         string `form:"huanshi_url" json:"huanshi_url" binding:"required,max=128"`
 }
 
 func (n HuanshiOnline) CheckParams(context *gin.Context) {

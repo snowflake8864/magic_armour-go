@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/monitor_service"
+	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"os/exec"
@@ -159,9 +160,20 @@ func (u *SystemController) HuanshiGet(ctx *gin.Context) {
 
 // HuanshiOnline  幻势配置
 func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	config := huanshi_platform.RequestConfig{
+		HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
+		HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
+	}
+	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
+	if err := threatenPlatform.Online(); err != nil {
+		response.FailData(ctx, "网络连接失败", err.Error())
+		return
+	}
+	if err := threatenPlatform.GenerateToken(); err != nil {
+		response.FailData(ctx, "配置不正确", err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // HuanshiSet  幻势配置
