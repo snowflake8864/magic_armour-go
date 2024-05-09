@@ -178,4 +178,12 @@ func PlatformRegisterValidator() {
 	//服务器相关
 	key = consts.ValidatorPrefixPlatform + "SystemMonitorRecords"
 	containers.Set(key, system4.MonitorRecords{})
+	key = consts.ValidatorPrefixPlatform + "SystemTimeSet"
+	containers.Set(key, system4.TimeSet{})
+	key = consts.ValidatorPrefixPlatform + "SystemSshSet"
+	containers.Set(key, system4.SshSet{})
+	key = consts.ValidatorPrefixPlatform + "SystemNetworkSet"
+	containers.Set(key, system4.NetworkSet{})
+	key = consts.ValidatorPrefixPlatform + "SystemAgentLogSet"
+	containers.Set(key, system4.AgentLogSet{})
 }

@@ -285,22 +285,22 @@ func InitPlatformRouter() *gin.Engine {
 					}
 					time := system.Group("time/")
 					{
-						time.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemTimeGet"))
+						time.POST("get", (&platform.SystemController{}).TimeGet)
 						time.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemTimeSet"))
 					}
 					ssh := system.Group("ssh/")
 					{
-						ssh.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemSshGet"))
+						ssh.POST("get", (&platform.SystemController{}).SshGet)
 						ssh.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemSshSet"))
 					}
 					network := system.Group("network/")
 					{
-						network.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkGet"))
+						network.POST("get", (&platform.SystemController{}).NetworkGet)
 						network.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkSet"))
 					}
 					agentLog := system.Group("agentLog/")
 					{
-						agentLog.POST("get", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogGet"))
+						agentLog.POST("get", (&platform.SystemController{}).AgentLogGet)
 						agentLog.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogSet"))
 					}
 				} //服务器相关
