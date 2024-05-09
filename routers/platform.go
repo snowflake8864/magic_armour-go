@@ -298,10 +298,10 @@ func InitPlatformRouter() *gin.Engine {
 						network.POST("get", (&platform.SystemController{}).NetworkGet)
 						network.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkSet"))
 					}
-					agentLog := system.Group("agentLog/")
+					agentLog := system.Group("agentLogConfig/")
 					{
-						agentLog.POST("get", (&platform.SystemController{}).AgentLogGet)
-						agentLog.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogSet"))
+						agentLog.POST("get", (&platform.SystemController{}).AgentLogConfigGet)
+						agentLog.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemAgentLogConfigSet"))
 					}
 				} //服务器相关
 			}

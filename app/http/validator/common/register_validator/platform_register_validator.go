@@ -184,6 +184,6 @@ func PlatformRegisterValidator() {
 	containers.Set(key, system4.SshSet{})
 	key = consts.ValidatorPrefixPlatform + "SystemNetworkSet"
 	containers.Set(key, system4.NetworkSet{})
-	key = consts.ValidatorPrefixPlatform + "SystemAgentLogSet"
-	containers.Set(key, system4.AgentLogSet{})
+	key = consts.ValidatorPrefixPlatform + "SystemAgentLogConfigSet"
+	containers.Set(key, system4.AgentLogConfigSet{})
 }

@@ -9,7 +9,12 @@ import (
 )
 
 type NetworkSet struct {
-	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
+	Name    string `form:"name" json:"name" binding:"required,max=32"`
+	Proto   string `form:"proto" json:"proto" binding:"required,oneof=ipv4 ipv6"`
+	Ip      string `form:"ip" json:"ip" binding:"required,ip"`
+	Mask    string `form:"mask" json:"mask" binding:"required,ip"`
+	Gateway string `form:"gateway" json:"gateway" binding:"required,ip"`
+	Dns     string `form:"dns" json:"dns" binding:"omitempty,ip"`
 }
 
 func (n NetworkSet) CheckParams(context *gin.Context) {

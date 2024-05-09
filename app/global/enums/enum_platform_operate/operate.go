@@ -12,6 +12,7 @@ const (
 	ModuleThreaten   = "threaten"
 	ModuleAccount    = "account"
 	ModuleDictionary = "dictionary"
+	ModuleSystem     = "system"
 )
 
 var EnumMap = map[string]map[string]string{
@@ -25,6 +26,7 @@ var EnumMap = map[string]map[string]string{
 		ModuleThreaten:   "威胁情报",
 		ModuleAccount:    "账户管理",
 		ModuleDictionary: "数据字典",
+		ModuleSystem:     "系统管理",
 	},
 }
 
@@ -39,6 +41,7 @@ var WebMapString = map[string][]string{
 		ModuleThreaten,
 		ModuleAccount,
 		ModuleDictionary,
+		ModuleSystem,
 	},
 }
 
@@ -77,6 +80,10 @@ var pathModuleLabel = map[string][]string{
 	"/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},
 	"/platform/account/modifyPw":                  {ModuleAccount, "修改密码"},
 	"/platform/dictionary/save":                   {ModuleDictionary, "修改"},
+	"/platform/system/agentLogConfig/set":         {ModuleSystem, "修改终端日志配置"},
+	"/platform/system/network/set":                {ModuleSystem, "修改网络配置"},
+	"/platform/system/ssh/set":                    {ModuleSystem, "修改SSH开关"},
+	"/platform/system/time/set":                   {ModuleSystem, "修改系统时间"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

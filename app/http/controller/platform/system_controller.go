@@ -69,15 +69,15 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 	})
 }
 
-// AgentLogGet  终端日志
-func (u *SystemController) AgentLogGet(ctx *gin.Context) {
+// AgentLogConfigSet  终端日志配置
+func (u *SystemController) AgentLogConfigGet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"date": helpers.DatetimeCurr(),
 	})
 }
 
-// AgentLogSet  终端日志
-func (u *SystemController) AgentLogSet(ctx *gin.Context) {
+// AgentLogConfigSet  终端日志配置
+func (u *SystemController) AgentLogConfigSet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"date": helpers.DatetimeCurr(),
 	})

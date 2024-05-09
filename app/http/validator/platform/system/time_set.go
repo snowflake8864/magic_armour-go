@@ -9,7 +9,7 @@ import (
 )
 
 type TimeSet struct {
-	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
+	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02 15:04:05"`
 }
 
 func (n TimeSet) CheckParams(context *gin.Context) {

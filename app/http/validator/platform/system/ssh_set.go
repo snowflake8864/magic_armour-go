@@ -5,11 +5,12 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/http/validator/platform/common_data"
 	"goskeleton/app/utils/response"
 )
 
 type SshSet struct {
-	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
+	common_data.CommonSwitch
 }
 
 func (n SshSet) CheckParams(context *gin.Context) {
