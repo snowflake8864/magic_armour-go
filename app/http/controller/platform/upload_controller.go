@@ -18,13 +18,27 @@ type Upload struct {
 //
 // 开始上传
 func (u *Upload) StartUpload(context *gin.Context) {
+	fileType, _ := context.GetPostForm("type")
+	allowFileTypes := map[string]struct{}{
+		"software": {},
+		"upgrade":  {},
+	}
+	if _, isOK := allowFileTypes[fileType]; !isOK {
+		response.FailSimplify(context, "type fail:"+fileType)
+		return
+	}
+
 	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	if r, uploadParam := upload_file.Upload(context, savePath); r == true {
+		uploadParam.Type = fileType
 		loginInfo := u.getLogin(context)
 		uploadParam.OperateSource = enums.OperateSourcePlatform
 		uploadParam.OperateId = loginInfo.AdminId
 		uploadParam.OperateName = loginInfo.Username
-		upload_service.CreateCurdFactory().Add(&uploadParam)
+		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+			response.FailSimplify(context, "保存失败")
+			return
+		}
 
 		response.SuccessReturnData(context, gin.H{
 			"id":   uploadParam.Id,
