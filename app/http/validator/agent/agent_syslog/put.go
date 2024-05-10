@@ -1,4 +1,4 @@
-package Syslog
+package agent_syslog
 
 import (
 	"github.com/gin-gonic/gin"

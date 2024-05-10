@@ -169,3 +169,7 @@ func (aa *requestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 	}
 	return nil
 }
+
+func (aa *requestHuanshi) SyncAgentBySyslog(param map[string]interface{}) error {
+	return nil
+}

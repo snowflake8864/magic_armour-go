@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/validator/agent/agent"
+	"goskeleton/app/http/validator/agent/agent_syslog"
 	"goskeleton/app/http/validator/agent/alarm"
 	"goskeleton/app/http/validator/agent/auth"
 	"goskeleton/app/http/validator/agent/blackmail"
@@ -12,7 +13,6 @@ import (
 	"goskeleton/app/http/validator/agent/port"
 	"goskeleton/app/http/validator/agent/proc_sample"
 	"goskeleton/app/http/validator/agent/process"
-	Syslog "goskeleton/app/http/validator/agent/syslog"
 	"goskeleton/app/http/validator/agent/tamper"
 	"goskeleton/app/http/validator/agent/task"
 	"goskeleton/app/http/validator/agent/usb"
@@ -132,5 +132,5 @@ func AgentRegisterValidator() {
 
 	//通讯日志相关
 	key = consts.ValidatorPrefixAgent + "SyslogPut"
-	containers.Set(key, Syslog.Put{})
+	containers.Set(key, agent_syslog.Put{})
 }
