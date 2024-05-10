@@ -1,6 +1,8 @@
 package platform
 
 import (
+	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -9,9 +11,11 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/monitor_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
 	"os/exec"
+	"strings"
 )
 
 // SystemController 系统管理
@@ -86,9 +90,7 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 	} else {
 		commandAdd += "sudo iptables -I INPUT -p Tcp --dport 22 -j DROP"
 	}
-	cmd := exec.Command(commandAdd)
-	_, err := cmd.CombinedOutput() // 执行命令并获取输出结果
-	if err != nil {
+	if err := exec.Command(commandAdd).Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
 		return
 	}
@@ -101,16 +103,75 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 
 // NetworkGet  网络服务
 func (u *SystemController) NetworkGet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+
+	shellPath := cur_app.ShellNetworkGet()
+	cmd := exec.Command("/bin/sh", shellPath)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout // 标准输出
+	cmd.Stderr = &stderr // 标准错误
+	err := cmd.Run()
+	if err != nil {
+		response.FailData(ctx, "exec command Run failed", err.Error())
+		return
+	}
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	if helpers.StringIsEmpty(outStr) || !helpers.StringIsEmpty(errStr) {
+		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
+		return
+	}
+
+	var result []map[string]interface{}
+	outList := strings.Split(outStr, "\n")
+	for _, line := range outList {
+		arr1 := strings.Split(line, " ")
+		if n := len(arr1); n > 5 || n < 2 {
+			continue
+		}
+		arr2 := make([]string, 5)
+		copy(arr2, arr1)
+		result = append(result, map[string]interface{}{
+			"name":    arr2[0],
+			"proto":   arr2[1],
+			"ip":      arr2[2],
+			"mask":    arr2[3],
+			"gateway": arr2[4],
+			"dns":     arr2[5],
+		})
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // NetworkSet  网络服务
 func (u *SystemController) NetworkSet(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
-	})
+	name := ctx.GetString(consts.ValidatorPrefixPlatform + "name")
+	proto := ctx.GetString(consts.ValidatorPrefixPlatform + "proto")
+	ip := ctx.GetString(consts.ValidatorPrefixPlatform + "ip")
+	mask := ctx.GetString(consts.ValidatorPrefixPlatform + "mask")
+	gateway := ctx.GetString(consts.ValidatorPrefixPlatform + "gateway")
+	dns := ctx.GetString(consts.ValidatorPrefixPlatform + "dns")
+
+	shellPath := cur_app.ShellNetworkSet()
+	cmd := exec.Command("/bin/sh", shellPath, name, proto, ip, mask, gateway, dns)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout // 标准输出
+	cmd.Stderr = &stderr // 标准错误
+	err := cmd.Run()
+	if err != nil {
+		response.FailData(ctx, "exec command Run failed", err.Error())
+		return
+	}
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	if helpers.StringIsEmpty(outStr) || !helpers.StringIsEmpty(errStr) {
+		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
+		return
+	}
+	if outStr != "0" {
+		response.FailData(ctx, "exec command output failed", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // AgentLogConfigGet  终端日志配置
@@ -162,8 +223,8 @@ func (u *SystemController) HuanshiGet(ctx *gin.Context) {
 func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	config := huanshi_platform.RequestConfig{
 		HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
-		HuanshiCallIp:      "192.168.17.250",
-		HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
+		//HuanshiCallIp:      "192.168.17.250",
+		HuanshiUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
 	}
 	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
 	if err := threatenPlatform.Online(); err != nil {

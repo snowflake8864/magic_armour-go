@@ -64,3 +64,13 @@ func GetOrganizationTokenExpire() int {
 func GetAgentTokenExpire() int {
 	return variable.ConfigYml.GetInt("AppCustomConfig.TokenExpire.TokenExpire")
 }
+
+// ShellNetworkGet 网络配置脚本： 获取
+func ShellNetworkGet() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkGet")
+}
+
+// ShellNetworkSet 网络配置脚本： 设置
+func ShellNetworkSet() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkSet")
+}
