@@ -84,6 +84,7 @@ var pathModuleLabel = map[string][]string{
 	"/platform/system/network/set":                {ModuleSystem, "修改网络配置"},
 	"/platform/system/ssh/set":                    {ModuleSystem, "修改SSH开关"},
 	"/platform/system/time/set":                   {ModuleSystem, "修改系统时间"},
+	"/platform/system/upgrade/run":                {ModuleSystem, "升级系统"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -61,6 +62,9 @@ func (crd *SoftwareCurd) Add(param *model_platform.SoftwareModel) (errCode int, 
 	uploadModel := upload_service.CreateCurdFactory().GetItemById(param.UploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
 		return -1, errors.New("上传软件不存在")
+	}
+	if !files.ExistsFile(uploadModel.FullPath) {
+		return -1, errors.New("文件不存在")
 	}
 	param.StoragePath = uploadModel.StoragePath
 	param.FullPath = uploadModel.FullPath

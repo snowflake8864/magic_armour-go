@@ -10,11 +10,15 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/monitor_service"
+	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
+	"goskeleton/app/utils/zip_factory"
 	"os/exec"
+	"path"
 	"strings"
 )
 
@@ -264,6 +268,42 @@ func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
 		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+// UpgradeRun  系统升级
+func (u *SystemController) UpgradeRun(ctx *gin.Context) {
+	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
+	uploadModel := upload_service.CreateCurdFactory().GetItemById(uploadId)
+	if uploadModel == nil || uploadModel.Id == 0 {
+		response.FailSimplify(ctx, "上传升级包不存在")
+		return
+	}
+	if !files.ExistsFile(uploadModel.FullPath) {
+		response.FailSimplify(ctx, "文件不存在误")
+		return
+	}
+	//解压
+	fileNameArr := strings.Split(uploadModel.StorageName, ".")
+
+	unzipDir := path.Dir(uploadModel.FullPath) + "/" + fileNameArr[0] + "_unzip"
+	if err := zip_factory.UnzipFile(uploadModel.FullPath, unzipDir); err != nil {
+		response.FailData(ctx, "解压失败", err.Error())
+		return
+	}
+	
+	//执行命令
+	shellPath := unzipDir + "veda_software_install.sh"
+	if !files.ExistsFile(shellPath) {
+		response.FailSimplify(ctx, "升级脚本不存在")
+		return
+	}
+	cmd := exec.Command("/bin/sh", shellPath, unzipDir)
+	if err := cmd.Run(); err != nil {
+		response.FailData(ctx, "exec command failed", err.Error())
 		return
 	}
 

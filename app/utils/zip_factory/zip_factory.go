@@ -4,114 +4,178 @@ import (
 	"archive/zip"
 	"io"
 	"os"
-	"strings"
+	"path/filepath"
 )
 
-// 压缩文件
-// files 文件数组，可以是不同dir下的文件或者文件夹
-// dest 压缩文件存放地址
-func Compress(files []*os.File, dest string) error {
-	d, _ := os.Create(dest)
-	defer d.Close()
-	w := zip.NewWriter(d)
-	defer w.Close()
-	for _, file := range files {
-		err := compress(file, "", w)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func compress(file *os.File, prefix string, zw *zip.Writer) error {
-	info, err := file.Stat()
+func ZipDir(srcPath string, zipFileName string) error {
+	// 创建压缩文件
+	zipFile, err := os.Create(zipFileName)
 	if err != nil {
 		return err
 	}
-	if info.IsDir() {
-		prefix = prefix + "/" + info.Name()
-		fileInfos, err := file.Readdir(-1)
+	defer zipFile.Close()
+
+	// 创建 zip.Writer
+	zipWriter := zip.NewWriter(zipFile)
+	defer zipWriter.Close()
+
+	// 遍历文件夹
+	err = filepath.Walk(srcPath, func(filePath string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		for _, fi := range fileInfos {
-			f, err := os.Open(file.Name() + "/" + fi.Name())
-			if err != nil {
-				return err
-			}
-			err = compress(f, prefix, zw)
-			if err != nil {
-				return err
-			}
+
+		// 判断文件是否为目录
+		if info.IsDir() {
+			return nil
 		}
-	} else {
-		header, err := zip.FileInfoHeader(info)
-		header.Name = prefix + "/" + header.Name
+
+		// 创建压缩文件的路径
+		relativePath, err := filepath.Rel(srcPath, filePath)
 		if err != nil {
 			return err
 		}
-		writer, err := zw.CreateHeader(header)
+
+		// 创建 zip 文件的路径
+		zipPath := filepath.Join(filepath.Base(srcPath), relativePath)
+
+		// 创建压缩文件的头部信息
+		zipHeader, err := zip.FileInfoHeader(info)
+		if err != nil {
+			return err
+		}
+		zipHeader.Name = zipPath
+
+		// 打开待压缩文件
+		file, err := os.Open(filePath)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		// 写入压缩文件
+		writer, err := zipWriter.CreateHeader(zipHeader)
 		if err != nil {
 			return err
 		}
 		_, err = io.Copy(writer, file)
-		file.Close()
-		if err != nil {
-			return err
-		}
+		return err
+	})
+
+	if err != nil {
+		return err
 	}
+
 	return nil
 }
 
-// 解压
-func DeCompress(zipFile, dest string) error {
-	reader, err := zip.OpenReader(zipFile)
+// UnzipFile 解压zip文件
+func UnzipFile(zipPath string, destPath string) error {
+	reader, err := zip.OpenReader(zipPath)
 	if err != nil {
 		return err
 	}
 	defer reader.Close()
+
 	for _, file := range reader.File {
-		rc, err := file.Open()
+		path := filepath.Join(destPath, file.Name)
+
+		if file.FileInfo().IsDir() {
+			os.MkdirAll(path, os.ModePerm)
+			continue
+		}
+
+		err = os.MkdirAll(filepath.Dir(path), os.ModePerm)
 		if err != nil {
 			return err
 		}
-		defer rc.Close()
-		filename := dest + file.Name
-		err = os.MkdirAll(getDir(filename), 0755)
+
+		src, err := file.Open()
 		if err != nil {
 			return err
 		}
-		w, err := os.Create(filename)
+		defer src.Close()
+
+		dst, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
 		if err != nil {
 			return err
 		}
-		defer w.Close()
-		_, err = io.Copy(w, rc)
+		defer dst.Close()
+
+		_, err = io.Copy(dst, src)
 		if err != nil {
 			return err
 		}
-		w.Close()
-		rc.Close()
 	}
+
 	return nil
 }
 
-func getDir(path string) string {
-	return subString(path, 0, strings.LastIndex(path, "/"))
-}
+func AddFileToZip(srcPath, destPath, newFileName, newFileContent string) error {
+	// 打开原始的zip文件
+	srcZipFile, err := os.OpenFile(srcPath, os.O_RDWR, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer srcZipFile.Close()
 
-func subString(str string, start, end int) string {
-	rs := []rune(str)
-	length := len(rs)
+	// 创建一个新的zip文件，用于写入新的文件
+	newZipFile, err := os.Create(destPath)
+	if err != nil {
+		return err
+	}
+	defer newZipFile.Close()
 
-	if start < 0 || start > length {
-		panic("start is wrong")
+	// 创建一个zip写入器
+	netZipWriter := zip.NewWriter(newZipFile)
+
+	// 将原始zip文件的内容复制到新的zip文件中
+	originalReader, err := zip.OpenReader(srcZipFile.Name())
+	if err != nil {
+		return err
+	}
+	defer originalReader.Close()
+
+	for _, file := range originalReader.File {
+		// 创建一个新的文件头
+		header := &zip.FileHeader{
+			Name:   file.Name,
+			Method: file.Method,
+		}
+
+		// 打开原始文件
+		originalFile, err := file.Open()
+		if err != nil {
+			return err
+		}
+		defer originalFile.Close()
+
+		// 将原始文件复制到新的zip文件中
+		newFile, err := netZipWriter.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+		_, err = io.Copy(newFile, originalFile)
+		if err != nil {
+			return err
+		}
 	}
 
-	if end < start || end > length {
-		panic("end is wrong")
+	// 创建一个新的文件并写入内容
+	newFile, err := netZipWriter.Create(newFileName)
+	if err != nil {
+		return err
+	}
+	_, err = newFile.Write([]byte(newFileContent))
+	if err != nil {
+		return err
 	}
 
-	return string(rs[start:end])
+	// 关闭zip写入器
+	err = netZipWriter.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

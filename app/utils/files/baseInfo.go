@@ -47,3 +47,14 @@ func GetFilesMimeByFp(fp multipart.File) string {
 
 	return http.DetectContentType(buffer)
 }
+
+// 文件是否存在
+func ExistsFile(filePath string) bool {
+	_, err := os.Stat(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}

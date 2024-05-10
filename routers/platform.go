@@ -309,6 +309,10 @@ func InitPlatformRouter() *gin.Engine {
 						huanshi.POST("online", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiOnline"))
 						huanshi.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiSet"))
 					}
+					upgrade := system.Group("upgrade/")
+					{
+						upgrade.POST("run", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemUpgradeRun"))
+					}
 				} //服务器相关
 			}
 		}
