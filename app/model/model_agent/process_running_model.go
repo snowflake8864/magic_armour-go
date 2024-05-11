@@ -19,7 +19,7 @@ type ProcessRunningModel struct {
 	OrgId     int64  `json:"org_id"`
 	AgentId   string `json:"agent_id"`
 	ProcHash  string `json:"proc_hash"`
-	ProcId    string `json:"proc_id"`
+	ProcId    int    `json:"proc_id"`
 	ProcDir   string `json:"proc_dir"`
 	ProcUser  string `json:"proc_user"`
 	DllNumber int    `json:"dll_number"`

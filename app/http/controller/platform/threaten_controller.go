@@ -185,7 +185,7 @@ func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (er
 		return -1, errors.New("参数格式错误")
 	}
 	loginInfo := u.getLogin(ctx)
-	return threaten_service.CreatePushFactory().BatchAdd(params, enum_threaten.LevelWhite, loginInfo.AdminId, loginInfo.Username)
+	return threaten_service.CreatePushFactory().BatchAdd(params, level, loginInfo.AdminId, loginInfo.Username)
 }
 
 // ClearForPush 推送: 清空

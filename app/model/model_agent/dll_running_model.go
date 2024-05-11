@@ -15,21 +15,15 @@ func CreateDllRunningFactory() *DllRunningModel {
 
 type DllRunningModel struct {
 	model.BaseModel
-	Id              string `json:"id" gorm:"primaryKey"`
-	OrgId           int64  `json:"org_id"`
-	AgentId         string `json:"agent_id"`
-	DllHash         string `json:"dll_hash"`
-	Dir             string `json:"dir"`
-	Status          int    `json:"status"`
-	SyncStatusAt    string `json:"sync_status_at"`
-	GlobalStatus    int    `json:"global_status"`
-	SelfStatus      int    `json:"self_status"`
-	ThreatenStatus  int    `json:"threaten_status"`
-	AutoWhiteSwitch int    `json:"auto_white_switch"`
-	Introduce       string `json:"introduce"`
-	Copyright       string `json:"copyright"`
-	Attribute       string `json:"attribute"`
-	CreatedAt       string `json:"created_at"`
+	Id        string `json:"id" gorm:"primaryKey"`
+	OrgId     int64  `json:"org_id"`
+	AgentId   string `json:"agent_id"`
+	DllHash   string `json:"dll_hash"`
+	ProcId    int    `json:"proc_id"`
+	DllDir    string `json:"dll_dir"`
+	ProcHash  string `json:"proc_hash"`
+	ProcDir   string `json:"proc_dir"`
+	CreatedAt string `json:"created_at"`
 }
 
 // 表名

@@ -4,11 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/agent"
+	"goskeleton/app/http/validator/agent/common_data"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type AutoPut struct {
+	common_data.ProcUpload0
 }
 
 func (n AutoPut) CheckParams(context *gin.Context) {

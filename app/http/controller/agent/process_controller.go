@@ -2,6 +2,11 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/service/agent/agent_post_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,20 +17,48 @@ type ProcessController struct {
 
 // PutAll 上传全部进程
 func (u *ProcessController) PutAll(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.GetLogin(ctx)
+	tasks := []int{enum_task.TypeProcessSuffixIsExe}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "上传全部进程")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "list")
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.TaskAll, loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PutRunning 上传运行中进程
 func (u *ProcessController) PutRunning(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.GetLogin(ctx)
+	tasks := []int{enum_task.TypeProcessRefresh}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "上传运行中进程")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.TaskRefresh, loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PutAuto 主动上传进程
 func (u *ProcessController) PutAuto(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.GetLogin(ctx)
 
-	response.SuccessReturnData(ctx, "主动上传进程")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.TaskAuto, loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // GetWhite 下载进程白名单
