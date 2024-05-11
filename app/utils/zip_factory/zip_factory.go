@@ -111,6 +111,7 @@ func UnzipFile(zipPath string, destPath string) error {
 	return nil
 }
 
+// AddFileToZip 新增文件到zip包，并重命名
 func AddFileToZip(srcPath, destPath, newFileName, newFileContent string) error {
 	// 打开原始的zip文件
 	srcZipFile, err := os.OpenFile(srcPath, os.O_RDWR, os.ModePerm)

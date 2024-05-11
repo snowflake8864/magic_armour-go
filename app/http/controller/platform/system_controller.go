@@ -294,7 +294,7 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 		response.FailData(ctx, "解压失败", err.Error())
 		return
 	}
-	
+
 	//执行命令
 	shellPath := unzipDir + "veda_software_install.sh"
 	if !files.ExistsFile(shellPath) {
