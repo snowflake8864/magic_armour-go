@@ -3,8 +3,8 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/http/validator/api/huanshi"
-	"goskeleton/app/http/validator/api/software"
+	huanshi2 "goskeleton/app/http/validator/api/huanshi"
+	software2 "goskeleton/app/http/validator/api/software"
 )
 
 // ApiRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -17,11 +17,11 @@ func ApiRegisterValidator() {
 
 	//软件
 	key = consts.ValidatorPrefixApi + "SoftwarePublished"
-	containers.Set(key, software.Published{})
+	containers.Set(key, software2.Published{})
 	key = consts.ValidatorPrefixApi + "SoftwareDownload"
-	containers.Set(key, software.Download{})
+	containers.Set(key, software2.Download{})
 
 	//幻势
 	key = consts.ValidatorPrefixApi + "HuanshiAuth"
-	containers.Set(key, huanshi.Auth{})
+	containers.Set(key, huanshi2.Auth{})
 }
