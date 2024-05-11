@@ -62,7 +62,7 @@ func GetOrganizationTokenExpire() int {
 
 // GetAgentTokenExpire  获取终端口令过期时间
 func GetAgentTokenExpire() int {
-	return variable.ConfigYml.GetInt("AppCustomConfig.TokenExpire.TokenExpire")
+	return variable.ConfigYml.GetInt("AppCustomConfig.Agent.TokenExpire")
 }
 
 // ShellNetworkGet 网络配置脚本： 获取
