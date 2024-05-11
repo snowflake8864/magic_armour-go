@@ -156,8 +156,9 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 
 		//来源：模块
 		if source == enum_process.SourceDll && len(process.ModuleList) > 0 {
-			for _, process := range params {
-
+			for _, dll := range process.ModuleList {
+				fmt.Println("dll========================================")
+				fmt.Println(helpers.JsonEncode(dll))
 			}
 		}
 	}
