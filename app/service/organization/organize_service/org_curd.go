@@ -317,11 +317,11 @@ func (crd *OrgCurd) clearAfter(orgId int64) {
 	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
 	//丢入队列
 	msg := &kafka_go.MessageStruct{
-		Sign: kafka_go.SignOrg,
-		Type: kafka_go.TypeOrgClean,
-		Data: orgId,
+		Sign:  kafka_go.SignOrg,
+		Type:  kafka_go.TypeOrgClean,
+		OrgId: orgId,
 	}
-	kafka_go.ProduceCommon(context.Background(), msg)
+	kafka_go.CreateProducerFactory().ProduceCommon(context.Background(), msg)
 }
 
 // Refused 审核: 回绝

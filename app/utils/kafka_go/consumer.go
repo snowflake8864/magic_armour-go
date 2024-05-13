@@ -9,7 +9,6 @@ import (
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/proc_job"
-	"goskeleton/app/model/model_agent"
 	"strings"
 )
 
@@ -90,18 +89,10 @@ func (k *ConsumerClient) ConsumeCommon() {
 
 		switch data.Type {
 		case TypeAgentDelete:
-			if param, ok := data.Data.(agent_job.AgentCommon); ok {
-				agent_job.Delete(param)
-			} else {
-				variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
-			}
+			agent_job.Delete(data.OrgId, data.AgentId)
 			break
 		case TypeOrgClean:
-			if param, ok := data.Data.(int64); ok {
-				org_job.Clean(param)
-			} else {
-				variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
-			}
+			org_job.Clean(data.OrgId)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
@@ -119,18 +110,11 @@ func (k *ConsumerClient) ConsumeProcess() {
 
 		switch data.Type {
 		case TypeProcMaster:
-			if param, ok := data.Data.(model_agent.ProcessModel); ok {
-				proc_job.UploadProcess(&param)
-			} else {
-				variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
-			}
+			proc_job.UploadProcess(data.Data)
 			break
 		case TypeProcRunning:
-			if param, ok := data.Data.(model_agent.ProcessRunningModel); ok {
-				proc_job.UploadProcessRunning(&param)
-			} else {
-				variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
-			}
+			proc_job.UploadProcessRunning(data.Data)
+
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))

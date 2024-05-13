@@ -119,7 +119,7 @@ func (crd *AgentCurd) SetLivingByAgent(id string) bool {
 }
 
 // BatchDelete 批量删除
-func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
+func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err error) {
 	var validIds []string
 	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id"); err != nil || len(agentModels) == 0 {
 		for _, model := range agentModels {
@@ -138,11 +138,12 @@ func (crd *AgentCurd) BatchDelete(ids []string) (errCode int, err error) {
 	ctx := context.Background()
 	for _, val := range validIds {
 		msg := &kafka_go.MessageStruct{
-			Sign: kafka_go.SignAgent,
-			Type: kafka_go.TypeAgentDelete,
-			Data: val,
+			Sign:    kafka_go.SignAgent,
+			Type:    kafka_go.TypeAgentDelete,
+			OrgId:   orgId,
+			AgentId: val,
 		}
-		kafka_go.ProduceCommon(ctx, msg)
+		kafka_go.CreateProducerFactory().ProduceCommon(ctx, msg)
 	}
 
 	return errCode, err

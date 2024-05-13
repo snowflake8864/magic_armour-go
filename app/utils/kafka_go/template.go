@@ -1,9 +1,11 @@
 package kafka_go
 
 type MessageStruct struct {
-	Sign string
-	Type string
-	Data interface{}
+	Sign    string
+	Type    string
+	OrgId   int64
+	AgentId string
+	Data    string
 }
 
 const (

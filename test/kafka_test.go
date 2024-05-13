@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/utils/kafka_go"
 	_ "goskeleton/bootstrap"
 	"testing"
@@ -56,12 +55,10 @@ func TestWriteCommon(t *testing.T) {
 	ctx := context.Background()
 
 	msg := &kafka_go.MessageStruct{
-		Sign: kafka_go.SignAgent,
-		Type: kafka_go.TypeAgentDelete,
-		Data: agent_job.AgentCommon{
-			OrgId:   2,
-			AgentId: "12233d",
-		},
+		Sign:    kafka_go.SignAgent,
+		Type:    kafka_go.TypeAgentDelete,
+		AgentId: "sssss1",
+		OrgId:   2,
 	}
 	producerFact := kafka_go.CreateProducerFactory()
 	for i := 0; i <= 2; i++ {
@@ -72,4 +69,8 @@ func TestWriteCommon(t *testing.T) {
 
 func TestReadCommon(t *testing.T) {
 	kafka_go.CreateConsumerFactory().ConsumeCommon()
+}
+
+func TestReadProcess(t *testing.T) {
+	kafka_go.CreateConsumerFactory().ConsumeProcess()
 }
