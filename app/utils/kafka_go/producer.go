@@ -62,9 +62,9 @@ func newProducer(name string, c writerConfig) *kafka.Writer {
 	}
 }
 
-func CreateProducerFactory() *ProducerCurd {
+func CreateProducerFactory() *ProducerClient {
 	config := getWriterConfig()
-	return &ProducerCurd{
+	return &ProducerClient{
 		Common:   newProducer(TopicCommon, config),
 		Process:  newProducer(TopicProcess, config),
 		Threaten: newProducer(TopicThreaten, config),
@@ -74,7 +74,7 @@ func CreateProducerFactory() *ProducerCurd {
 }
 
 // 结构体
-type ProducerCurd struct {
+type ProducerClient struct {
 	Common   *kafka.Writer
 	Process  *kafka.Writer
 	Threaten *kafka.Writer
@@ -83,7 +83,7 @@ type ProducerCurd struct {
 }
 
 // 生产消息
-func (k *ProducerCurd) writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error {
+func (k *ProducerClient) writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error {
 	err := w.WriteMessages(ctx, msg)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("写入kafka失败，Tocic:%v,err:%v", w.Topic, err))
@@ -92,7 +92,7 @@ func (k *ProducerCurd) writeMessage(ctx context.Context, w *kafka.Writer, msg ka
 }
 
 // 生成信息
-func (k *ProducerCurd) makeMessage(data *MessageStruct) kafka.Message {
+func (k *ProducerClient) makeMessage(data *MessageStruct) kafka.Message {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("json marshal err data:%v,err:%v", data, err))
@@ -103,31 +103,31 @@ func (k *ProducerCurd) makeMessage(data *MessageStruct) kafka.Message {
 	}
 }
 
-func (k *ProducerCurd) ProduceCommon(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceCommon(ctx context.Context, data *MessageStruct) {
 	if err := k.writeMessage(ctx, k.Common, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceCommon data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerCurd) ProduceProcess(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceProcess(ctx context.Context, data *MessageStruct) {
 	if err := k.writeMessage(ctx, k.Process, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceProcess data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerCurd) ProduceThreaten(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceThreaten(ctx context.Context, data *MessageStruct) {
 	if err := k.writeMessage(ctx, k.Threaten, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceThreaten data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerCurd) ProduceAlarm(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceAlarm(ctx context.Context, data *MessageStruct) {
 	if err := k.writeMessage(ctx, k.Alarm, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceAlarm data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerCurd) ProduceSyslog(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceSyslog(ctx context.Context, data *MessageStruct) {
 	if err := k.writeMessage(ctx, k.Syslog, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceSyslog data:%v ,err:%v", data, err))
 	}

@@ -8,8 +8,8 @@ import (
 	"strconv"
 )
 
-func CreateTopicFactory() *TopicCurd {
-	return &TopicCurd{
+func CreateTopicFactory() *TopicClient {
+	return &TopicClient{
 		Addr:      variable.ConfigYml.GetString("KafkaV2.Addr"),
 		topicList: []string{TopicCommon, TopicProcess, TopicThreaten, TopicAlarm, TopicSyslog},
 	}
@@ -17,12 +17,12 @@ func CreateTopicFactory() *TopicCurd {
 }
 
 // 结构体
-type TopicCurd struct {
+type TopicClient struct {
 	Addr      string
 	topicList []string
 }
 
-func (k *TopicCurd) Init() {
+func (k *TopicClient) Init() {
 	conn, err := kafka.Dial("tcp", k.Addr)
 	if err != nil {
 		variable.ZapLog.Info(err.Error())

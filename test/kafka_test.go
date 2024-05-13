@@ -63,9 +63,9 @@ func TestWriteCommon(t *testing.T) {
 			AgentId: "12233d",
 		},
 	}
-	kafka_go.CreateProducerFactory()
+	producerFact := kafka_go.CreateProducerFactory()
 	for i := 0; i <= 2; i++ {
-		kafka_go.ProduceCommon(ctx, msg)
+		producerFact.ProduceCommon(ctx, msg)
 	}
 
 }

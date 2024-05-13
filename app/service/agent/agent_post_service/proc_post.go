@@ -20,6 +20,7 @@ func CreateProcFactory() *ProcPost {
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "lock_proc_upload_",
 		cacheExpire: 120,
+		queryClient: kafka_go.CreateProducerFactory(),
 	}
 }
 
@@ -33,6 +34,7 @@ type ProcPost struct {
 	redisClient *redis_factory.RedisClient
 	cachePrefix string
 	cacheExpire int
+	queryClient *kafka_go.ProducerClient
 }
 
 type procData struct {
@@ -205,7 +207,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *model_agent.Pro
 		Type: kafka_go.TypeProcMaster,
 		Data: &model,
 	}
-	kafka_go.ProduceProcess(context.Background(), msg)
+	crd.queryClient.ProduceProcess(context.Background(), msg)
 
 	return nil
 }
@@ -226,7 +228,7 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *model_ag
 		Type: kafka_go.TypeProcRunning,
 		Data: &model,
 	}
-	kafka_go.ProduceProcess(context.Background(), msg)
+	crd.queryClient.ProduceProcess(context.Background(), msg)
 
 	return nil
 }

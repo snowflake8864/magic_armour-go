@@ -41,9 +41,9 @@ func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
 	return kafka.NewReader(configReader)
 }
 
-func CreateConsumerFactory() *ConsumerCurd {
+func CreateConsumerFactory() *ConsumerClient {
 	config := getReaderConfig()
-	return &ConsumerCurd{
+	return &ConsumerClient{
 		Common:   newConsumer(TopicCommon, config),
 		Process:  newConsumer(TopicProcess, config),
 		Threaten: newConsumer(TopicThreaten, config),
@@ -54,7 +54,7 @@ func CreateConsumerFactory() *ConsumerCurd {
 }
 
 // 结构体
-type ConsumerCurd struct {
+type ConsumerClient struct {
 	Common   *kafka.Reader
 	Process  *kafka.Reader
 	Threaten *kafka.Reader
@@ -62,7 +62,7 @@ type ConsumerCurd struct {
 	Syslog   *kafka.Reader
 }
 
-func (k *ConsumerCurd) readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
+func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
 	result := &MessageStruct{}
 
 	msg, err := r.ReadMessage(ctx)
@@ -81,7 +81,7 @@ func (k *ConsumerCurd) readMessage(ctx context.Context, r *kafka.Reader) (*Messa
 }
 
 // ConsumeCommon 消费主题： Common
-func (k *ConsumerCurd) ConsumeCommon() {
+func (k *ConsumerClient) ConsumeCommon() {
 	for {
 		data, err := k.readMessage(context.Background(), k.Common)
 		if err != nil {
@@ -110,7 +110,7 @@ func (k *ConsumerCurd) ConsumeCommon() {
 }
 
 // ConsumeProcess 消费主题： Process
-func (k *ConsumerCurd) ConsumeProcess() {
+func (k *ConsumerClient) ConsumeProcess() {
 	for {
 		data, err := k.readMessage(context.Background(), k.Process)
 		if err != nil {
