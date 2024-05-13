@@ -1,6 +1,7 @@
 package proc_service
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/service/agent/threaten_service"
@@ -85,7 +86,32 @@ func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 	return model.Type
 }
 
-// getProcStatus 获取全局名单状态
-func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int) {
+// getProcStatus 获取最终状态
+func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int, at string) {
+	at = helpers.DatetimeCurr()
+	if globalStatus == enum_process.RelyStatusWhite {
+		status = enum_process.StatusWhite
+	} else if globalStatus == enum_process.RelyStatusBlack {
+		status = enum_process.StatusBlack
+	} else if selfStatus == enum_process.RelyStatusWhite {
+		status = enum_process.StatusWhite
+	} else if selfStatus == enum_process.RelyStatusBlack {
+		status = enum_process.StatusBlack
+	} else if selfStatus == enum_process.RelyStatusUnset {
+		status = enum_process.StatusUnset
+	} else if autoWhiteSwitch == enums.SwitchOn {
+		if threatenStatus == enum_process.RelyStatusWhite {
+			status = enum_process.StatusWhite
+		} else if threatenStatus == enum_process.RelyStatusBlack {
+			status = enum_process.StatusBlack
+		} else {
+			status = enum_process.StatusUnset
+			at = helpers.TimestampToDatetime(helpers.AddTimestampByHour(-3))
+		}
+	} else {
+		status = enum_process.StatusUnset
+		at = helpers.TimestampToDatetime(helpers.AddTimestampByHour(-3))
+	}
 
+	return status, at
 }

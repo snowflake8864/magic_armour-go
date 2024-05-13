@@ -1,7 +1,9 @@
 package proc_service
 
 import (
+	"errors"
 	"goskeleton/app/model/model_agent"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -33,6 +35,13 @@ func (crd *ProcessCurd) Add(param *model_agent.ProcessModel) (errCode int, err e
 		return errCode, err
 	}
 
+	//
+	agentFact := agent_service.CreateCurdFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(param.OrgId, param.AgentId, agentFact.ColumnProc(true))
+	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+		return -1, errors.New("终端不存在")
+	}
+
 	//威胁情报状态
 	isExist := false
 	if isExist, param.ThreatenStatus = crd.getThreatenStatus(param.ProcHash); !isExist {
@@ -40,6 +49,10 @@ func (crd *ProcessCurd) Add(param *model_agent.ProcessModel) (errCode int, err e
 	}
 	//全局名单状态
 	param.GlobalStatus = crd.getGlobalStatus(param.OrgId, param.ProcHash)
+
+	//最终状态
+	param.Status, param.SyncStatusAt = crd.getProcStatus(param.GlobalStatus, param.SelfStatus,
+		param.ThreatenStatus, agentModel.AutoWhiteSwitch)
 
 	return errCode, err
 }

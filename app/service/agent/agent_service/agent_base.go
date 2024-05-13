@@ -82,7 +82,7 @@ func (crd *AgentBase) search2Where(search SearchConditions) map[string]interface
 func (crd *AgentBase) ColumnConfig(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id,"
+		column = "org_id, agent_id"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
@@ -90,6 +90,17 @@ func (crd *AgentBase) ColumnConfig(needId bool) string {
 		"syslog_dns_switch, syslog_outer_switch, syslog_inner_switch, syslog_process_switch, syslog_login_switch," +
 		"outreach_alarm_switch, self_protect_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch," +
 		"login_solve_switch, hardware_switch, hardware_time, common_time,fast_time"
+	return column
+}
+
+// ColumnProc 字段:全部可信防护相关
+func (crd *AgentBase) ColumnProc(needId bool) string {
+	column := ""
+	if needId {
+		column = "org_id, agent_id, os_name"
+	}
+	column = column +
+		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, auto_white_switch, alarm_ai_switch"
 	return column
 }
 
