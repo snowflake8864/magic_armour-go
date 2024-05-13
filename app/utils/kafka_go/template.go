@@ -7,9 +7,20 @@ type MessageStruct struct {
 }
 
 const (
-	SignAgent       string = "agent"
+	TopicCommon   string = "TopicCommon"
+	TopicProcess  string = "TopicProcess"
+	TopicThreaten string = "TopicThreaten"
+	TopicAlarm    string = "TopicAlarm"
+	TopicSyslog   string = "TopicSyslog"
+
+	SignAgent string = "agent"
+	SignOrg   string = "org"
+	SignProc  string = "proc"
+
 	TypeAgentDelete string = "agent_delete"
 
-	SignOrg      string = "org"
 	TypeOrgClean string = "org_clean"
+
+	TypeProcMaster  string = "proc_master"
+	TypeProcRunning string = "proc_running"
 )

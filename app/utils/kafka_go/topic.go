@@ -1,7 +1,6 @@
 package kafka_go
 
 import (
-	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers"
@@ -9,18 +8,22 @@ import (
 	"strconv"
 )
 
-const (
-	TopicCommon   string = "TopicCommon"
-	TopicProcess  string = "TopicProcess"
-	TopicThreaten string = "TopicThreaten"
-	TopicAlarm    string = "TopicAlarm"
-	TopicSyslog   string = "TopicSyslog"
-)
+func CreateTopicFactory() *TopicCurd {
+	return &TopicCurd{
+		Addr:      variable.ConfigYml.GetString("KafkaV2.Addr"),
+		topicList: []string{TopicCommon, TopicProcess, TopicThreaten, TopicAlarm, TopicSyslog},
+	}
 
-func CreateTopic() {
-	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
-	variable.ZapLog.Info(addr)
-	conn, err := kafka.Dial("tcp", addr)
+}
+
+// 结构体
+type TopicCurd struct {
+	Addr      string
+	topicList []string
+}
+
+func (k *TopicCurd) Init() {
+	conn, err := kafka.Dial("tcp", k.Addr)
 	if err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
@@ -42,9 +45,7 @@ func CreateTopic() {
 	defer controllerConn.Close()
 
 	var topicConfigs []kafka.TopicConfig
-
-	topics := []string{TopicCommon, TopicProcess, TopicThreaten, TopicAlarm, TopicSyslog}
-	for _, val := range topics {
+	for _, val := range k.topicList {
 		name := variable.ConfigYml.GetString("KafkaV2." + val + ".Name")
 		partition := variable.ConfigYml.GetInt("KafkaV2." + val + ".Partition")
 		replicationFactor := variable.ConfigYml.GetInt("KafkaV2." + val + ".ReplicationFactor")
@@ -57,7 +58,6 @@ func CreateTopic() {
 		topicConfigs = append(topicConfigs, st)
 	}
 
-	fmt.Println(topicConfigs)
 	err = controllerConn.CreateTopics(topicConfigs...)
 	if err != nil {
 		variable.ZapLog.Info(err.Error())

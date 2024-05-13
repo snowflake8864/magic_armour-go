@@ -14,7 +14,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestCreateTopic(t *testing.T) {
-	kafka_go.CreateTopic()
+	kafka_go.CreateTopicFactory().Init()
 }
 
 func TestShowTopic(t *testing.T) {
@@ -71,6 +71,5 @@ func TestWriteCommon(t *testing.T) {
 }
 
 func TestReadCommon(t *testing.T) {
-	kafka_go.CreateConsumerFactory()
-	kafka_go.ConsumeCommon()
+	kafka_go.CreateConsumerFactory().ConsumeCommon()
 }

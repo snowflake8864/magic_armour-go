@@ -89,8 +89,8 @@ func (aa *requestHuanshi) checkCode(bodyContext string, err error) error {
 	//fmt.Println("Type of x:", reflect.TypeOf(resp.Code))
 	code := helpers.Float64(resp.Code)
 	//口令过期
-	if code == 3007 {
-		return errors.New("token expired: " + bodyContext)
+	if code == 5004 {
+		return errors.New("token fail: " + bodyContext)
 	}
 	//结果不正确
 	if code != 1 {

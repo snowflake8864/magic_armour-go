@@ -1,11 +1,15 @@
 package agent_post_service
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
 	"strings"
@@ -39,11 +43,10 @@ type procData struct {
 	Introduce    string    `json:"introduce"`
 	Copyright    string    `json:"copyright"`
 	Attribute    string    `json:"attribute"`
-	Signature    string    `json:"signature"`
 	ModuleNumber int       `json:"module_number"`
 	ModuleList   []dllData `json:"module"`
-
-	//Finish int `json:"finish"` //没有用
+	Signature    string    `json:"signature"` //不在使用 @todo bug6830
+	Finish       int       `json:"finish"`    //没有使用
 }
 
 type dllData struct {
@@ -102,66 +105,128 @@ func (crd *ProcPost) makeRunningId(orgId int64, agentId, hash string, procId int
 }
 
 // ToQuery 格式化参数后推送给队列
-func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inputJson string) (err error) {
+func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inputJson string) error {
 	var params []procData
-	err = helpers.Json2Any(inputJson, &params)
-	if err != nil {
+	if err := helpers.Json2Any(inputJson, &params); err != nil {
 		return err
 	}
 	now := helpers.DatetimeCurr()
 	fmt.Println("params========================================")
 	fmt.Println(helpers.JsonEncode(params))
-	for _, process := range params {
-		//全部小写
-		procHash := strings.ToLower(process.Hash)
+	for _, itemProcess := range params {
+		//进程hash全部小写
+		procHash := strings.ToLower(itemProcess.Hash)
 
-		//来源：进程
-		if source == enum_process.SourceProcess {
-			//进程表数据
-			processModel := model_agent.ProcessModel{
-				OrgId:     orgId,
-				AgentId:   agentId,
-				ProcHash:  procHash,
-				Dir:       process.Dir,
-				CreatedAt: now,
-			}
-			processModel.Id = crd.makeMasterId(orgId, agentId, processModel.ProcHash)
-			processModel.Copyright, processModel.Introduce = crd.parseAttribute(process.Attribute, process.Copyright, process.Introduce)
-			fmt.Println("processModel========================================")
-			fmt.Println(helpers.JsonEncode(processModel))
-			//推送给队列
+		//进程表数据
+		processModel := model_agent.ProcessModel{
+			OrgId:     orgId,
+			AgentId:   agentId,
+			ProcHash:  procHash,
+			Dir:       itemProcess.Dir,
+			CreatedAt: now,
+		}
+		processModel.Id = crd.makeMasterId(orgId, agentId, procHash)
+		processModel.Copyright, processModel.Introduce = crd.parseAttribute(itemProcess.Attribute, itemProcess.Copyright, itemProcess.Introduce)
+		//推送给队列
+		if err := crd.sendProcess(source, task, &processModel); err != nil {
+			variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+		}
 
-			//任务：刷新
-			if task == TaskRefresh {
-				//运行中进程表
-				processRunningModel := model_agent.ProcessRunningModel{
-					BaseModel: model.BaseModel{},
-					Id:        "",
+		//运行中进程表
+		processRunningModel := model_agent.ProcessRunningModel{
+			BaseModel: model.BaseModel{},
+			OrgId:     orgId,
+			AgentId:   agentId,
+			ProcHash:  procHash,
+			ProcId:    itemProcess.ProcId,
+			ProcDir:   itemProcess.Dir,
+			ProcUser:  itemProcess.User,
+			DllNumber: itemProcess.ModuleNumber,
+			DllStatus: enum_process.ProcGetDllStatusDefault,
+			CreatedAt: now,
+		}
+		processRunningModel.Id = crd.makeRunningId(orgId, agentId, procHash, itemProcess.ProcId)
+		//推送给队列
+		if err := crd.sendProcessRunning(source, task, &processRunningModel); err != nil {
+			variable.ZapLog.Sugar().Debug("sendProcessRunning: " + err.Error())
+		}
+
+		//有模块数据
+		if len(itemProcess.ModuleList) > 0 {
+			for _, itemDll := range itemProcess.ModuleList {
+				dllHash := strings.ToLower(itemDll.Hash)
+				//模块表数据
+				dllModel := model_agent.DllModel{
 					OrgId:     orgId,
 					AgentId:   agentId,
-					ProcHash:  procHash,
-					ProcId:    process.ProcId,
-					ProcDir:   process.Dir,
-					ProcUser:  process.User,
-					DllNumber: process.ModuleNumber,
-					DllStatus: enum_process.ProcGetDllStatusDefault,
+					DllHash:   dllHash,
+					Dir:       itemDll.Dir,
 					CreatedAt: now,
 				}
-				processRunningModel.Id = crd.makeRunningId(orgId, agentId, procHash, process.ProcId)
-				fmt.Println("processRunningModel========================================")
-				fmt.Println(helpers.JsonEncode(processRunningModel))
+				dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
+				dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(itemDll.Attribute, "", "")
+				//推送给队列
+
+				//运行中模块表
+				dllRunningModel := model_agent.DllRunningModel{
+					BaseModel: model.BaseModel{},
+					OrgId:     orgId,
+					AgentId:   agentId,
+					DllHash:   dllHash,
+					DllDir:    itemDll.Dir,
+					ProcHash:  procHash,
+					ProcId:    itemProcess.ProcId,
+					ProcDir:   itemProcess.Dir,
+					CreatedAt: now,
+				}
+				dllRunningModel.Id = crd.makeRunningId(orgId, agentId, dllHash, dllRunningModel.ProcId)
 				//推送给队列
 			}
-		}
 
-		//来源：模块
-		if source == enum_process.SourceDll && len(process.ModuleList) > 0 {
-			for _, dll := range process.ModuleList {
-				fmt.Println("dll========================================")
-				fmt.Println(helpers.JsonEncode(dll))
-			}
 		}
 	}
+
+	return nil
+}
+
+// 发送进程数据
+func (crd *ProcPost) sendProcess(source int, task string, model *model_agent.ProcessModel) error {
+	if source != enum_process.SourceProcess {
+		return errors.New("数据主体不是进程")
+	}
+	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
+		return errors.New("agent主动上传不能连续主动上传进程数据")
+	}
+	fmt.Println("sendProcess =============================")
+	fmt.Println(helpers.JsonEncode(&model))
+
+	msg := &kafka_go.MessageStruct{
+		Sign: kafka_go.SignProc,
+		Type: kafka_go.TypeProcMaster,
+		Data: &model,
+	}
+	kafka_go.ProduceProcess(context.Background(), msg)
+
+	return nil
+}
+
+// 发送进程运行中数据
+func (crd *ProcPost) sendProcessRunning(source int, task string, model *model_agent.ProcessRunningModel) error {
+	if source != enum_process.SourceProcess {
+		return errors.New("数据主体不是进程")
+	}
+	if task != TaskRefresh {
+		return errors.New("任务不是刷新")
+	}
+	fmt.Println("sendProcessRunning =============================")
+	fmt.Println(helpers.JsonEncode(&model))
+
+	msg := &kafka_go.MessageStruct{
+		Sign: kafka_go.SignProc,
+		Type: kafka_go.TypeProcRunning,
+		Data: &model,
+	}
+	kafka_go.ProduceProcess(context.Background(), msg)
 
 	return nil
 }

@@ -35,6 +35,6 @@ func init() {
 func start(action string) {
 	switch action {
 	case "init":
-		kafka_go.CreateTopic()
+		kafka_go.CreateTopicFactory().Init()
 	}
 }

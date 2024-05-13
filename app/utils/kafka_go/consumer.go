@@ -8,20 +8,10 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/org_job"
+	"goskeleton/app/jobs/proc_job"
+	"goskeleton/app/model/model_agent"
 	"strings"
 )
-
-var readerCommon *kafka.Reader
-var readerProcess *kafka.Reader
-var readerThreaten *kafka.Reader
-var readerAlarm *kafka.Reader
-var readerSyslog *kafka.Reader
-
-func CreateConsumerFactory() {
-	config := getReaderConfig()
-
-	readerCommon = newConsumer(TopicCommon, config)
-}
 
 func getReaderConfig() kafka.ReaderConfig {
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
@@ -51,7 +41,28 @@ func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
 	return kafka.NewReader(configReader)
 }
 
-func readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
+func CreateConsumerFactory() *ConsumerCurd {
+	config := getReaderConfig()
+	return &ConsumerCurd{
+		Common:   newConsumer(TopicCommon, config),
+		Process:  newConsumer(TopicProcess, config),
+		Threaten: newConsumer(TopicThreaten, config),
+		Alarm:    newConsumer(TopicCommon, config),
+		Syslog:   newConsumer(TopicCommon, config),
+	}
+
+}
+
+// 结构体
+type ConsumerCurd struct {
+	Common   *kafka.Reader
+	Process  *kafka.Reader
+	Threaten *kafka.Reader
+	Alarm    *kafka.Reader
+	Syslog   *kafka.Reader
+}
+
+func (k *ConsumerCurd) readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
 	result := &MessageStruct{}
 
 	msg, err := r.ReadMessage(ctx)
@@ -70,9 +81,9 @@ func readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
 }
 
 // ConsumeCommon 消费主题： Common
-func ConsumeCommon() {
+func (k *ConsumerCurd) ConsumeCommon() {
 	for {
-		data, err := readMessage(context.Background(), readerCommon)
+		data, err := k.readMessage(context.Background(), k.Common)
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -94,6 +105,35 @@ func ConsumeCommon() {
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
+		}
+	}
+}
+
+// ConsumeProcess 消费主题： Process
+func (k *ConsumerCurd) ConsumeProcess() {
+	for {
+		data, err := k.readMessage(context.Background(), k.Process)
+		if err != nil {
+			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
+
+		switch data.Type {
+		case TypeProcMaster:
+			if param, ok := data.Data.(model_agent.ProcessModel); ok {
+				proc_job.UploadProcess(&param)
+			} else {
+				variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
+			}
+			break
+		case TypeProcRunning:
+			if param, ok := data.Data.(model_agent.ProcessRunningModel); ok {
+				proc_job.UploadProcessRunning(&param)
+			} else {
+				variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
+			}
+			break
+		default:
+			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
 		}
 	}
 }
