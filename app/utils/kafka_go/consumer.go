@@ -109,12 +109,11 @@ func (k *ConsumerClient) ConsumeProcess() {
 		}
 
 		switch data.Type {
-		case TypeProcMaster:
+		case TypeProcessPutMaster:
 			proc_job.UploadProcess(data.Data)
 			break
-		case TypeProcRunning:
+		case TypeProcessPutRunning:
 			proc_job.UploadProcessRunning(data.Data)
-
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))

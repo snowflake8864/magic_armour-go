@@ -317,7 +317,6 @@ func (crd *OrgCurd) clearAfter(orgId int64) {
 	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
 	//丢入队列
 	msg := &kafka_go.MessageStruct{
-		Sign:  kafka_go.SignOrg,
 		Type:  kafka_go.TypeOrgClean,
 		OrgId: orgId,
 	}

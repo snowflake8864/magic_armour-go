@@ -35,6 +35,7 @@ type AgentCacheLogin struct {
 	OsType       int    `json:"os_type"`
 	AgentIp      string `json:"agent_ip"`
 	NetIp        string `json:"net_ip"`
+	Os           string `json:"os"`
 	LoginAt      string `json:"login_at"`
 }
 
@@ -51,6 +52,7 @@ func (crd *AgentCache) EncryptByLogin(param *model_agent.AgentModel) string {
 	loginInfo.OsType = param.OsType
 	loginInfo.AgentIp = param.AgentIp
 	loginInfo.NetIp = param.NetIp
+	loginInfo.Os = param.OsName
 	loginInfo.LoginAt = helpers.DatetimeCurr()
 
 	jsonStr := helpers.JsonEncode(loginInfo)

@@ -5,9 +5,10 @@ import (
 )
 
 func UploadProcess(jsonStr string) {
-	variable.ZapLog.Info("proc_job UploadProcess" + jsonStr)
+	variable.ZapLog.Info(jsonStr)
+
 }
 
 func UploadProcessRunning(jsonStr string) {
-	variable.ZapLog.Info("proc_job UploadProcessRunning" + jsonStr)
+	variable.ZapLog.Info(jsonStr)
 }

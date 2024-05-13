@@ -18,7 +18,7 @@ type ProcGlobalModel struct {
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
-	Type       string `json:"type"`
+	Type       int    `json:"type"`
 	Dir        string `json:"dir"`
 	Remark     string `json:"remark"`
 	DataFrom   int    `json:"data_from"`
@@ -41,7 +41,7 @@ func (m *ProcGlobalModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'hash',
-			type varchar(8)  NOT NULL DEFAULT '' COMMENT '类型(1白名单,2黑名单)',
+			type tinyint  NOT NULL DEFAULT '0' COMMENT '类型(1白名单,2黑名单)',
 			dir varchar(8)  NOT NULL DEFAULT '' COMMENT '路径',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
@@ -81,6 +81,32 @@ func (m *ProcGlobalModel) InsertItem(s *ProcGlobalModel) bool {
 	}
 }
 
+// GetItemByOrgAndId 通过企业id\hash获取一条记录
+func (m *ProcGlobalModel) GetItemByOrgAndId(orgId int64, id string) (item *ProcGlobalModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? AND id=?", orgId, id).Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemsByOrgAndIds 通过企业id和终端id获取多条记录
+func (m *ProcGlobalModel) GetItemsByOrgAndIds(orgId int64, ids []string) (items []*ProcGlobalModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, ids).Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items, nil
+	} else {
+		return nil, result.Error
+	}
+}
+
 // DeleteByOrg 通过企业id删除
 func (m *ProcGlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -94,10 +120,10 @@ func (m *ProcGlobalModel) DeleteByOrg(orgId int64) bool {
 	}
 }
 
-// DeleteByOrgAndAndId 通过企业id、ID删除
-func (m *ProcGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+// DeleteByOrgAndId 通过企业id、ID删除
+func (m *ProcGlobalModel) DeleteByOrgAndId(orgId int64, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
+		return tx.Model(m).Where("org_id=? AND id=?", orgId, id).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

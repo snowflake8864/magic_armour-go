@@ -1,11 +1,12 @@
 package kafka_go
 
 type MessageStruct struct {
-	Sign    string
-	Type    string
-	OrgId   int64
-	AgentId string
-	Data    string
+	Sign    string `json:"sign"`
+	Type    string `json:"type"`
+	OrgId   int64  `json:"oId"`
+	AgentId string `json:"aId"`
+	AgentOS string `json:"aOS"`
+	Data    string `json:"data"`
 }
 
 const (
@@ -15,14 +16,12 @@ const (
 	TopicAlarm    string = "TopicAlarm"
 	TopicSyslog   string = "TopicSyslog"
 
-	SignAgent string = "agent"
-	SignOrg   string = "org"
-	SignProc  string = "proc"
-
 	TypeAgentDelete string = "agent_delete"
 
 	TypeOrgClean string = "org_clean"
 
-	TypeProcMaster  string = "proc_master"
-	TypeProcRunning string = "proc_running"
+	TypeProcessPutMaster  string = "process_put_master"
+	TypeProcessPutRunning string = "process_put_running"
+	TypeDllPutMaster      string = "dll_put_master"
+	TypeDllPutRunning     string = "dll_put_running"
 )

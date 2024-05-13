@@ -1,6 +1,7 @@
 package model_agent
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 )
@@ -65,5 +66,72 @@ func (m *ProcessRunningModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *ProcessRunningModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *ProcessRunningModel) InsertItem(s *ProcessRunningModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByOrgAndAgent 通过企业id\终端id删除
+func (m *ProcessRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		tmp = tmp.Where("org_id=? AND agent_id=? ", orgId, agentId)
+		return tmp.Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateByOrgAndAgentAndHashAndProcId 通过通过企业id\终端id\hash\ProcId修改
+func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		tmp = tmp.Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId)
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemByOrgAndAgentAndHashAndProcId 通过企业id\终端id\hash\ProcId获取一条记录
+func (m *ProcessRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int) (item *ProcessRunningModel, err error) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId).Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
 	}
 }

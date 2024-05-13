@@ -203,8 +203,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *model_agent.Pro
 	fmt.Println(helpers.JsonEncode(&model))
 
 	msg := &kafka_go.MessageStruct{
-		Sign: kafka_go.SignProc,
-		Type: kafka_go.TypeProcMaster,
+		Type: kafka_go.TypeProcessPutMaster,
 		Data: helpers.JsonEncode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
@@ -224,8 +223,7 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *model_ag
 	fmt.Println(helpers.JsonEncode(&model))
 
 	msg := &kafka_go.MessageStruct{
-		Sign: kafka_go.SignProc,
-		Type: kafka_go.TypeProcRunning,
+		Type: kafka_go.TypeProcessPutRunning,
 		Data: helpers.JsonEncode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)

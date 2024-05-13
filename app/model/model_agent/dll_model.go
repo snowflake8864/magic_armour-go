@@ -21,7 +21,7 @@ type DllModel struct {
 	DllHash         string `json:"dll_hash"`
 	Dir             string `json:"dir"`
 	Status          int    `json:"status"`
-	SyncStatusAt    string `json:"sync_status_at"`
+	SyncStatusAt    string `json:"sync_status_at" gorm:"default:NULL"`
 	GlobalStatus    int    `json:"global_status"`
 	SelfStatus      int    `json:"self_status"`
 	ThreatenStatus  int    `json:"threaten_status"`

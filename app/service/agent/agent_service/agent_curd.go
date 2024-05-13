@@ -138,7 +138,6 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err e
 	ctx := context.Background()
 	for _, val := range validIds {
 		msg := &kafka_go.MessageStruct{
-			Sign:    kafka_go.SignAgent,
 			Type:    kafka_go.TypeAgentDelete,
 			OrgId:   orgId,
 			AgentId: val,

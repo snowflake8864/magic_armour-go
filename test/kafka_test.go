@@ -55,7 +55,6 @@ func TestWriteCommon(t *testing.T) {
 	ctx := context.Background()
 
 	msg := &kafka_go.MessageStruct{
-		Sign:    kafka_go.SignAgent,
 		Type:    kafka_go.TypeAgentDelete,
 		AgentId: "sssss1",
 		OrgId:   2,

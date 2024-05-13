@@ -16,9 +16,18 @@ type ThreatenCache struct {
 	masterModel *model_agent.ThreatenCacheModel
 }
 
+// GetLevelById 通过id获取
+func (crd *ThreatenCache) GetLevelById(id string) (isExist bool, level int) {
+	model, _ := crd.masterModel.GetItemById(id, "id, level")
+	if helpers.StringIsEmpty(model.Id) {
+		return false, enum_threaten.LevelUnknown
+	}
+	return true, model.Level
+}
+
 // GetItemById 通过id获取
 func (crd *ThreatenCache) GetItemById(id string) (model *model_agent.ThreatenCacheModel) {
-	model, _ = crd.masterModel.GetItemById(id)
+	model, _ = crd.masterModel.GetItemById(id, "*")
 	return model
 }
 
