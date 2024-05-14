@@ -15,6 +15,7 @@ func CreateAlarmUsbFactory() *AlarmUsbModel {
 //结构体
 
 type AlarmUsbModel struct {
+	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
 	OrgId        int64  `json:"org_id"`
@@ -101,10 +102,10 @@ func (m *AlarmUsbModel) InsertBatch(list *[]AlarmUsbModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmUsbModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+func (m *AlarmUsbModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -118,10 +119,10 @@ func (m *AlarmUsbModel) UpdateByConditions(condition map[string]interface{}, upd
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmUsbModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *AlarmUsbModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)
@@ -135,10 +136,10 @@ func (m *AlarmUsbModel) DeleteByConditions(condition map[string]interface{}) boo
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmUsbModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*AlarmUsbModel, err error) {
+func (m *AlarmUsbModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmUsbModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -153,18 +154,18 @@ func (m *AlarmUsbModel) GetItemsByConditions(condition map[string]interface{}, o
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *AlarmUsbModel) Count(condition map[string]interface{}) int64 {
+func (m *AlarmUsbModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -178,13 +179,13 @@ func (m *AlarmUsbModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmUsbModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*AlarmUsbModel) {
+func (m *AlarmUsbModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmUsbModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	items = m.GetItemsByConditions(condition, offset, limit, order)
+	if len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil
