@@ -15,6 +15,7 @@ func CreateSoftwareFactory() *SoftwareModel {
 //结构体
 
 type SoftwareModel struct {
+	baseSoftware
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
 	UploadId     int64  `json:"upload_id"`
@@ -107,9 +108,9 @@ func (m *SoftwareModel) UpdateById(id int64, updates map[string]interface{}) boo
 	}
 }
 
-func (m *SoftwareModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+func (m *SoftwareModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Updates(updates)
@@ -131,9 +132,9 @@ func (m *SoftwareModel) DeleteById(id int64) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*SoftwareModel, err error) {
+func (m *SoftwareModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SoftwareModel) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -146,17 +147,17 @@ func (m *SoftwareModel) GetItemsByConditions(condition map[string]interface{}, o
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *SoftwareModel) Count(condition map[string]interface{}) int64 {
+func (m *SoftwareModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -168,13 +169,11 @@ func (m *SoftwareModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *SoftwareModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*SoftwareModel) {
-	total = m.Count(condition)
-	if total == 0 {
+func (m *SoftwareModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SoftwareModel) {
+	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil

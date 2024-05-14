@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/software_models"
@@ -94,17 +93,20 @@ func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 
 	//页面上传
 	PlatformType := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
-	condition := make(map[string]interface{})
+	condition := software_models.SearchConditions{
+		PlatformType: PlatformType,
+		IsPublish:    enums.IsYes,
+	}
 	if PlatformType == enum_software.PlatformTypeWindows || PlatformType == enum_software.PlatformTypeLinux {
-		condition["platform_type"] = PlatformType
-		condition["is_publish"] = enums.IsYes
+		condition.PlatformType = PlatformType
+		condition.IsPublish = enums.IsYes
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//软件分页
-	total, models := software_service.CreateCurdFactory().Page(condition, offset, pageSize, orderField, orderSort)
+	total, models := software_models.CreateSoftwareFactory().Page(condition, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Software{}).TransPage(total, models))
 }
