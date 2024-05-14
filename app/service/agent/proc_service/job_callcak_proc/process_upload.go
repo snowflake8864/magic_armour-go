@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
@@ -42,14 +43,13 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) (errCode i
 		return errCode, err
 	}
 
-	/*	agentFact := agent_service.CreateCurdFactory()
-		agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
-		if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
-			variable.ZapLog.Info("终端不存在")
-			return
-		}*/
+	agentFact := agent_models.CreateAgentFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
+	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+		variable.ZapLog.Info("终端不存在")
+		return
+	}
 
-	agentModel := agent_models.AgentModel{}
 	//威胁情报状态
 	isExist := false
 	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
