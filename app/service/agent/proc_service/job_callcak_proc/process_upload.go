@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers"
@@ -47,7 +48,7 @@ func (crd *ProcessUpload) Add(processModel *model_agent.ProcessModel) (errCode i
 			return
 		}*/
 
-	agentModel := model_agent.AgentModel{}
+	agentModel := agent_model.AgentModel{}
 	//威胁情报状态
 	isExist := false
 	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
