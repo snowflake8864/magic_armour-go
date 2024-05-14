@@ -1,4 +1,4 @@
-package order_service
+package order_models
 
 import (
 	"goskeleton/app/global/enums"
@@ -22,11 +22,11 @@ type SearchConditions struct {
 	StatusList  []int
 }
 
-type OrderBase struct {
+type baseOrder struct {
 }
 
-// search2Where 查询条件转化
-func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface{} {
+// conditions2Where 查询条件转化
+func (crd *baseOrder) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
 	if !helpers.StringIsEmpty(search.OrderNo) {
 		wheres["order_no"] = search.OrderNo
@@ -73,7 +73,7 @@ func (crd *OrderBase) search2Where(search SearchConditions) map[string]interface
 }
 
 // ColumnCalcOfUsage 字段： 统计使用数
-func (crd *OrderBase) ColumnCalcOfUsage() string {
+func (crd *baseOrder) ColumnCalcOfUsage() string {
 	var columns []string
 	columns = append(columns, "SUM(buy_number) AS buy_number")
 	columns = append(columns, "SUM(usage_number) AS usage_number")

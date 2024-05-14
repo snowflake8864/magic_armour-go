@@ -15,6 +15,7 @@ func CreateOrderFactory() *OrderModel {
 //结构体
 
 type OrderModel struct {
+	baseOrder
 	model.BaseModel
 	OrderNo       string  `json:"order_no" gorm:"primaryKey"`
 	OrgId         int64   `json:"org_id"`
@@ -136,29 +137,29 @@ func (m *OrderModel) UpdateById(id string, updates map[string]interface{}) bool 
 }
 
 // GetItemById 通过id获取一条记录
-func (m *OrderModel) GetItemById(id string) (item *OrderModel, err error) {
+func (m *OrderModel) GetItemById(id string) (item *OrderModel) {
 	result := m.Model(m).Where("order_no=?", id).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return item, result.Error
+		return item
 	}
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel, err error) {
+func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel) {
 	result := m.Model(m).Where("order_no IN ?", ids).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrderModel, err error) {
+func (m *OrderModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrderModel) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -171,17 +172,17 @@ func (m *OrderModel) GetItemsByConditions(condition map[string]interface{}, offs
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *OrderModel) Count(condition map[string]interface{}) int64 {
+func (m *OrderModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("order_no")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -193,13 +194,13 @@ func (m *OrderModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *OrderModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrderModel) {
+func (m *OrderModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OrderModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	items = m.GetItemsByConditions(condition, offset, limit, order)
+	if len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil
@@ -207,15 +208,15 @@ func (m *OrderModel) Page(condition map[string]interface{}, offset, limit int, o
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *OrderModel) CalcByConditions(condition map[string]interface{}, column string) (item *OrderModel, err error) {
+func (m *OrderModel) CalcByConditions(condition SearchConditions, column string) (item *OrderModel) {
 	tmp := m.Model(m).Select(column)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }

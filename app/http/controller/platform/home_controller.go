@@ -7,8 +7,8 @@ import (
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/agent/alarm_service"
-	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers"
@@ -180,13 +180,13 @@ func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
 
 // GrantUsedStat 授权: 使用统计
 func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
-	searchConditions := order_service.SearchConditions{}
+	searchConditions := order_models.SearchConditions{}
 	searchConditions.IsExpire = enums.AllDefaultInt
 	searchConditions.OrderStatus = enum_order.OrderStatusCompleted
 
-	CurdFact := order_service.CreateCurdFactory()
+	CurdFact := order_models.CreateOrderFactory()
 	column := CurdFact.ColumnCalcOfUsage()
-	model := CurdFact.SumBySearch(searchConditions, column)
+	model := CurdFact.CalcByConditions(searchConditions, column)
 	var result []map[string]interface{}
 	result = append(result,
 		map[string]interface{}{

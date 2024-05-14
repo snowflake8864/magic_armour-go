@@ -80,13 +80,13 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
+	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
 
-func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_service.SearchConditions {
-	searchConditions := order_service.SearchConditions{}
+func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
+	searchConditions := order_models.SearchConditions{}
 	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
@@ -108,7 +108,7 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
+	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
@@ -178,11 +178,13 @@ func (u *OrderController) DetailForManage(ctx *gin.Context) {
 // LogsForManage 订单管理:  日志列表
 func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+	searchConditions := order_models.SearchConditions{}
+	searchConditions.OrderNo = orderNo
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//日志分页
-	total, logModels := order_service.CreateLogFactory().Page(orderNo, offset, pageSize, orderField, orderSort)
+	total, logModels := order_models.CreateOrderLogFactory().Page(searchConditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransLogsPage(total, logModels))
 }

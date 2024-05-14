@@ -24,7 +24,6 @@ func CreateCurdFactory() *OrderCurd {
 }
 
 type OrderCurd struct {
-	OrderBase
 	masterModel *order_models.OrderModel
 	redisClient *redis_factory.RedisClient
 	redisPrefix string
@@ -131,37 +130,29 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 
 // GetItemByOrderNo 通过编号称获取
 func (crd *OrderCurd) GetItemByOrderNo(id string) (model *order_models.OrderModel) {
-	model, _ = crd.masterModel.GetItemById(id)
+	model = crd.masterModel.GetItemById(id)
 	return model
 }
 
 // GetItemByOrderNos 通过编号集合称获取
 func (crd *OrderCurd) GetItemByOrderNos(ids []string) (items []*order_models.OrderModel) {
-	items, _ = crd.masterModel.GetItemsByIds(ids)
+	items = crd.masterModel.GetItemsByIds(ids)
 	return items
 }
 
 // GetValidItemsByOrg 通过企业编号获取有效订单
 func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*order_models.OrderModel) {
-	search := SearchConditions{
+	search := order_models.SearchConditions{
 		OrgId:       orgId,
 		IsExpire:    enums.IsNot,
 		OrderStatus: enum_order.OrderStatusCompleted,
 	}
 
-	items, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "")
-	if err != nil || len(items) == 0 {
+	items = crd.masterModel.GetItemsByConditions(search, 0, 0, "")
+	if len(items) == 0 {
 		return nil
 	}
 	return items
-}
-
-// Page 分页
-func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*order_models.OrderModel) {
-	where := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(where, offset, pageSize, order)
-	return total, items
 }
 
 // PlatformCancel 平台取消
@@ -384,14 +375,14 @@ func (crd *OrderCurd) OrgDelete(orderNo string, orgId int64) (errCode int, err e
 
 // AutoExpire 自动过期
 func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
-	search := SearchConditions{
+	search := order_models.SearchConditions{
 		OrgId:       orgId,
 		OrderStatus: enum_order.OrderStatusCompleted,
 		IsExpire:    enums.IsNot,
 		ExpireAtGte: expireDate,
 	}
-	items, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "")
-	if err != nil || len(items) == 0 {
+	items := crd.masterModel.GetItemsByConditions(search, 0, 0, "")
+	if len(items) == 0 {
 		return true
 	}
 	now := helpers.DatetimeCurr()
@@ -415,14 +406,4 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 	}
 
 	return true
-}
-
-// SumBySearch 计算： 按照条件
-func (crd *OrderCurd) SumBySearch(search SearchConditions, column string) (result *order_models.OrderModel) {
-	where := crd.search2Where(search)
-	result, err := crd.masterModel.CalcByConditions(where, column)
-	if err != nil {
-		return result
-	}
-	return result
 }
