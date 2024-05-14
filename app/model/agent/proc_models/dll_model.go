@@ -32,7 +32,6 @@ type DllModel struct {
 	Signature       string `json:"signature"`
 	Attribute       string `json:"attribute"`
 	CreatedAt       string `json:"created_at"`
-	UpdatedAt       string `json:"updated_at"`
 }
 
 // 表名

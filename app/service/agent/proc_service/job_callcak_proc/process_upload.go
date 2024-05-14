@@ -32,24 +32,23 @@ func (crd *ProcessUpload) GetOne(orgId int64, agentId, hash string) (model *proc
 }
 
 // Add 添加
-func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) (errCode int, err error) {
+func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	if helpers.StringIsEmpty(processModel.CreatedAt) {
 		processModel.CreatedAt = helpers.DatetimeCurr()
 	}
+
 	//如果存在， 忽略
 	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)
-	if hasModel == nil || helpers.StringIsEmpty(hasModel.ProcHash) {
-		return errCode, err
+	if hasModel != nil && !helpers.StringIsEmpty(hasModel.ProcHash) {
+		return nil
 	}
 
-	/*	agentFact := agent_service.CreateCurdFactory()
-		agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
-		if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
-			variable.ZapLog.Info("终端不存在")
-			return
-		}*/
+	agentFact := agent_models.CreateAgentFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
+	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+		return errors.New("终端不存在")
+	}
 
-	agentModel := agent_models.AgentModel{}
 	//威胁情报状态
 	isExist := false
 	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
@@ -63,11 +62,12 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) (errCode i
 	processModel.Status, processModel.SyncStatusAt = crd.getProcStatus(processModel.GlobalStatus, processModel.SelfStatus,
 		processModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
 
-	if crd.masterModel.InsertItem(processModel) {
-		return -1, errors.New("保存失败")
+	//保存
+	if !crd.masterModel.InsertItem(processModel) {
+		return errors.New("保存失败")
 	}
 
-	return errCode, err
+	return nil
 }
 
 func (crd *ProcessUpload) pushThreaten(processModel *proc_models.ProcessModel, agentOs string) {

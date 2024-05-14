@@ -33,7 +33,6 @@ type ProcessModel struct {
 	Copyright       string `json:"copyright"`
 	Signature       string `json:"signature"`
 	CreatedAt       string `json:"created_at"`
-	UpdatedAt       string `json:"updated_at"`
 }
 
 // 表名

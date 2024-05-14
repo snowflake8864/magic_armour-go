@@ -28,7 +28,6 @@ type ProcessRunningModel struct {
 	DllStatus int    `json:"dll_status"`
 	DllList   string `json:"dll_list"`
 	CreatedAt string `json:"created_at"`
-	UpdatedAt string `json:"updated_at"`
 }
 
 // 表名
@@ -52,7 +51,6 @@ func (m *ProcessRunningModel) CreateTable() bool {
             dll_status tinyint  NOT NULL DEFAULT '0' COMMENT '模块:状态(0默认 1开始, 2获取中, 3结束)',
             dll_list string  NOT NULL DEFAULT '' COMMENT '模块:列表',
 			created_at datetime NULL,
-			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id, proc_hash, proc_id) 

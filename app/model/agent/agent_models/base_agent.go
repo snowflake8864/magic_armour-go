@@ -89,7 +89,7 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 func (m *baseAgent) ColumnConfig(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id"
+		column = "org_id, agent_id,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
@@ -104,7 +104,7 @@ func (m *baseAgent) ColumnConfig(needId bool) string {
 func (m *baseAgent) ColumnProc(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id, os_name"
+		column = "org_id, agent_id, os_name,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, auto_white_switch, alarm_ai_switch"
