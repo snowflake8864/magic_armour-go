@@ -24,36 +24,6 @@ type SearchConditionsForProcess struct {
 type ProcessBase struct {
 }
 
-// search2Where 查询条件转化
-func (crd *ProcessBase) search2WhereForProc(search SearchConditionsForProcess) map[string]interface{} {
-	wheres := make(map[string]interface{})
-
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
-	}
-	if !helpers.StringIsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
-	}
-
-	if !helpers.StringIsEmpty(search.ProcHash) {
-		wheres["proc_hash"] = search.ProcHash
-	}
-	if !helpers.StringIsEmpty(search.DllHash) {
-		wheres["dll_hash"] = search.DllHash
-	}
-	if !helpers.StringIsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
-	}
-	if !helpers.StringIsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
-	}
-	if !helpers.StringIsEmpty(search.Dir) {
-		wheres["dir like"] = "%" + search.Dir + "%"
-	}
-
-	return wheres
-}
-
 // ColumnCalcOfUsage 字段： 统计使用数
 func (crd *ProcessBase) ColumnCalcOfUsage() string {
 	var columns []string

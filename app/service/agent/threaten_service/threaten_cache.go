@@ -31,11 +31,25 @@ func (crd *ThreatenCache) GetItemById(id string) (model *model_agent.ThreatenCac
 	return model
 }
 
+// GetLevelsByIds 通过ids获取, 有映射关系
+func (crd *ThreatenCache) GetLevelsByIds(ids []string) map[string]int {
+	result := make(map[string]int)
+
+	models, err := crd.masterModel.GetItemsByIds(ids, "id, level")
+	if err != nil || models == nil {
+		return nil
+	}
+	for _, model := range models {
+		result[model.Id] = model.Level
+	}
+	return result
+}
+
 // GetMapsByIds 通过ids获取, 有映射关系
 func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*model_agent.ThreatenCacheModel {
 	result := make(map[string]*model_agent.ThreatenCacheModel)
 
-	models, err := crd.masterModel.GetItemsByIds(ids)
+	models, err := crd.masterModel.GetItemsByIds(ids, crd.masterModel.GetListColumns())
 	if err != nil || models == nil {
 		return nil
 	}
@@ -54,10 +68,17 @@ func (crd *ThreatenCache) Page(search SearchConditions, offset, pageSize int, or
 }
 
 // Add 新增
-func (crd *ThreatenCache) Add(param *model_agent.ThreatenCacheModel) bool {
+func (crd *ThreatenCache) Add(param *model_agent.ThreatenCacheModel, checkExist bool) bool {
+	if checkExist {
+		if isExist, _ := crd.GetLevelById(param.Id); isExist {
+			return true
+		}
+	}
+
 	if helpers.StringIsEmpty(param.CreatedAt) {
 		param.CreatedAt = helpers.DatetimeCurr()
 	}
+	param.Level = enum_threaten.LevelDefault
 	return crd.masterModel.InsertItem(param)
 }
 
@@ -70,7 +91,7 @@ func (crd *ThreatenCache) DeleteById(ID string) bool {
 func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 	wheres := crd.search2Where(SearchConditions{
 		Ids:   ids,
-		Level: enum_threaten.LevelNotSync,
+		Level: enum_threaten.LevelDefault,
 	})
 	updates := map[string]interface{}{
 		"level":    enum_threaten.LevelUnknown,
@@ -142,7 +163,7 @@ func (crd *ThreatenCache) Refresh() bool {
 	})
 	fmt.Println(wheres)
 	updates := map[string]interface{}{
-		"level": enum_threaten.LevelNotSync,
+		"level": enum_threaten.LevelDefault,
 	}
 	return crd.masterModel.UpdateByConditions(wheres, updates)
 }

@@ -15,7 +15,7 @@ const (
 	LevelDefaultEight int = 9  //威胁情报中心等级：8级
 	LevelDefaultNine  int = 10 //威胁情报中心等级：9级
 	LevelBlack        int = 11 //威胁情报中心等级：黑名单
-	LevelNotSync      int = 99 //威胁情报中心等级： 未同步
+	LevelDefault      int = 99 //威胁情报中心等级： 未同步
 
 	SourceThreatenCenter int = 1 //等级来源:威胁情报中心
 	SourceImport         int = 2 //等级来源:人工导入
@@ -43,7 +43,7 @@ var EnumMap = map[string]map[int]string{
 		LevelDefaultEight: "8级",
 		LevelDefaultNine:  "9级",
 		LevelBlack:        "黑名单",
-		LevelNotSync:      "未同步",
+		LevelDefault:      "未同步",
 	},
 	"source": {
 		SourceThreatenCenter: "威胁情报",
@@ -70,7 +70,7 @@ var WebMapInt = map[string][]int{
 		LevelDefaultEight,
 		LevelDefaultNine,
 		LevelBlack,
-		LevelNotSync,
+		LevelDefault,
 	},
 }
 
@@ -92,7 +92,7 @@ func IsBlack(level int) bool {
 
 // HasLevel 是否有威胁等级
 func HasLevel(level int) bool {
-	if level == LevelUnknown || level == LevelNotSync {
+	if level == LevelUnknown || level == LevelDefault {
 		return false
 	}
 	return true

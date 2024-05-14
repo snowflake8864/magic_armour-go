@@ -2,12 +2,16 @@ package proc_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers"
 )
 
-func CreateProcessCurdFactory() *ProcessCurd {
+func CreateProcessFactory() *ProcessCurd {
 	return &ProcessCurd{
 		masterModel: model_agent.CreateProcessFactory(),
 	}
@@ -28,35 +32,55 @@ func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *model_
 }
 
 // Add 添加
-func (crd *ProcessCurd) Add(param *model_agent.ProcessModel) (errCode int, err error) {
+func (crd *ProcessCurd) Add(processModel *model_agent.ProcessModel) (errCode int, err error) {
+	if helpers.StringIsEmpty(processModel.CreatedAt) {
+		processModel.CreatedAt = helpers.DatetimeCurr()
+	}
 	//如果存在， 忽略
-	hasModel := crd.GetOne(param.OrgId, param.AgentId, param.ProcHash)
+	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)
 	if hasModel == nil || helpers.StringIsEmpty(hasModel.ProcHash) {
 		return errCode, err
 	}
 
-	//
 	agentFact := agent_service.CreateCurdFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(param.OrgId, param.AgentId, agentFact.ColumnProc(true))
+	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
-		return -1, errors.New("终端不存在")
+		variable.ZapLog.Info("终端不存在")
+		return
 	}
 
 	//威胁情报状态
 	isExist := false
-	if isExist, param.ThreatenStatus = crd.getThreatenStatus(param.ProcHash); !isExist {
+	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
 		//加入威胁情报缓存
+		crd.pushThreaten(processModel, agentModel.OsName)
 	}
 	//全局名单状态
-	param.GlobalStatus = crd.getGlobalStatus(param.OrgId, param.ProcHash)
+	processModel.GlobalStatus = crd.getGlobalStatus(processModel.OrgId, processModel.ProcHash)
 
 	//最终状态
-	param.Status, param.SyncStatusAt = crd.getProcStatus(param.GlobalStatus, param.SelfStatus,
-		param.ThreatenStatus, agentModel.AutoWhiteSwitch)
+	processModel.Status, processModel.SyncStatusAt = crd.getProcStatus(processModel.GlobalStatus, processModel.SelfStatus,
+		processModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
+
+	if crd.masterModel.InsertItem(processModel) {
+		return -1, errors.New("保存失败")
+	}
 
 	return errCode, err
 }
 
-func (crd *ProcessCurd) pushThreaten(param *model_agent.ProcessModel) {
-
+func (crd *ProcessCurd) pushThreaten(processModel *model_agent.ProcessModel, agentOs string) {
+	param := model_agent.ThreatenCacheModel{
+		Id:        processModel.ProcHash,
+		Source:    enum_threaten.SourceAgentUpload,
+		Dir:       processModel.Dir,
+		ParentDir: "",
+		Os:        agentOs,
+		Introduce: processModel.Introduce,
+		Copyright: processModel.Copyright,
+		Signature: processModel.Signature,
+		Attribute: "",
+		DataFrom:  enum_process.SourceProcess,
+	}
+	go threaten_service.CreateCacheFactory().Add(&param, false)
 }

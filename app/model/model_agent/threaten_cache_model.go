@@ -76,7 +76,7 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 	}
 }
 
-func (m *ThreatenCacheModel) getListColumns() string {
+func (m *ThreatenCacheModel) GetListColumns() string {
 	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
 }
 
@@ -160,9 +160,9 @@ func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *Threat
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *ThreatenCacheModel) GetItemsByIds(ids []string) (items []*ThreatenCacheModel, err error) {
+func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items []*ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(m.getListColumns()).Where("id IN ?", ids).Find(&items)
+		return tx.Model(m).Select(column).Select(m.GetListColumns()).Where("id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
@@ -175,7 +175,7 @@ func (m *ThreatenCacheModel) GetItemsByIds(ids []string) (items []*ThreatenCache
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select(m.getListColumns())
+		tmp := tx.Model(m).Select(m.GetListColumns())
 		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

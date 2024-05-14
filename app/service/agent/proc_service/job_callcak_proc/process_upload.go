@@ -1,0 +1,85 @@
+package job_callcak_proc
+
+import (
+	"errors"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/model/model_agent"
+	"goskeleton/app/service/agent/threaten_service"
+	"goskeleton/app/utils/helpers"
+)
+
+func CreateProcessUploadFactory() *ProcessUpload {
+	return &ProcessUpload{
+		masterModel: model_agent.CreateProcessFactory(),
+	}
+}
+
+type ProcessUpload struct {
+	ProcessBase
+	masterModel *model_agent.ProcessModel
+}
+
+// GetOne 获取一条
+func (crd *ProcessUpload) GetOne(orgId int64, agentId, hash string) (model *model_agent.ProcessModel) {
+	model, err := crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
+	if err == nil || helpers.StringIsEmpty(model.ProcHash) {
+		return nil
+	}
+	return model
+}
+
+// Add 添加
+func (crd *ProcessUpload) Add(processModel *model_agent.ProcessModel) (errCode int, err error) {
+	if helpers.StringIsEmpty(processModel.CreatedAt) {
+		processModel.CreatedAt = helpers.DatetimeCurr()
+	}
+	//如果存在， 忽略
+	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)
+	if hasModel == nil || helpers.StringIsEmpty(hasModel.ProcHash) {
+		return errCode, err
+	}
+
+	/*	agentFact := agent_service.CreateCurdFactory()
+		agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
+		if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+			variable.ZapLog.Info("终端不存在")
+			return
+		}*/
+
+	agentModel := model_agent.AgentModel{}
+	//威胁情报状态
+	isExist := false
+	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
+		//加入威胁情报缓存
+		crd.pushThreaten(processModel, agentModel.OsName)
+	}
+	//全局名单状态
+	processModel.GlobalStatus = crd.getGlobalStatus(processModel.OrgId, processModel.ProcHash)
+
+	//最终状态
+	processModel.Status, processModel.SyncStatusAt = crd.getProcStatus(processModel.GlobalStatus, processModel.SelfStatus,
+		processModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
+
+	if crd.masterModel.InsertItem(processModel) {
+		return -1, errors.New("保存失败")
+	}
+
+	return errCode, err
+}
+
+func (crd *ProcessUpload) pushThreaten(processModel *model_agent.ProcessModel, agentOs string) {
+	param := model_agent.ThreatenCacheModel{
+		Id:        processModel.ProcHash,
+		Source:    enum_threaten.SourceAgentUpload,
+		Dir:       processModel.Dir,
+		ParentDir: "",
+		Os:        agentOs,
+		Introduce: processModel.Introduce,
+		Copyright: processModel.Copyright,
+		Signature: processModel.Signature,
+		Attribute: "",
+		DataFrom:  enum_process.SourceProcess,
+	}
+	go threaten_service.CreateCacheFactory().Add(&param, false)
+}
