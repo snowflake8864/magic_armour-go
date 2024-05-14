@@ -2,7 +2,7 @@ package queue
 
 import (
 	"github.com/spf13/cobra"
-	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/topic_kakfa"
 )
 
 var (
@@ -35,6 +35,6 @@ func init() {
 func start(action string) {
 	switch action {
 	case "init":
-		kafka_go.CreateTopicFactory().Init()
+		topic_kakfa.CreateTopicFactory().Init()
 	}
 }

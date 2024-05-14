@@ -1,4 +1,4 @@
-package kafka_go
+package producer_kafka
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/kafka_go"
 	"log"
 	"os"
 	"strings"
@@ -65,11 +66,11 @@ func newProducer(name string, c writerConfig) *kafka.Writer {
 func CreateProducerFactory() *ProducerClient {
 	config := getWriterConfig()
 	return &ProducerClient{
-		Common:   newProducer(TopicCommon, config),
-		Process:  newProducer(TopicProcess, config),
-		Threaten: newProducer(TopicThreaten, config),
-		Alarm:    newProducer(TopicCommon, config),
-		Syslog:   newProducer(TopicCommon, config),
+		Common:   newProducer(kafka_go.TopicCommon, config),
+		Process:  newProducer(kafka_go.TopicProcess, config),
+		Threaten: newProducer(kafka_go.TopicThreaten, config),
+		Alarm:    newProducer(kafka_go.TopicCommon, config),
+		Syslog:   newProducer(kafka_go.TopicCommon, config),
 	}
 }
 
@@ -92,7 +93,7 @@ func (k *ProducerClient) writeMessage(ctx context.Context, w *kafka.Writer, msg 
 }
 
 // 生成信息
-func (k *ProducerClient) makeMessage(data *MessageStruct) kafka.Message {
+func (k *ProducerClient) makeMessage(data *kafka_go.MessageStruct) kafka.Message {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
 		variable.ZapLog.Error(fmt.Sprintf("json marshal err data:%v,err:%v", data, err))
@@ -103,31 +104,31 @@ func (k *ProducerClient) makeMessage(data *MessageStruct) kafka.Message {
 	}
 }
 
-func (k *ProducerClient) ProduceCommon(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceCommon(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Common, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceCommon data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerClient) ProduceProcess(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceProcess(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Process, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceProcess data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerClient) ProduceThreaten(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceThreaten(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Threaten, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceThreaten data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerClient) ProduceAlarm(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceAlarm(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Alarm, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceAlarm data:%v ,err:%v", data, err))
 	}
 }
 
-func (k *ProducerClient) ProduceSyslog(ctx context.Context, data *MessageStruct) {
+func (k *ProducerClient) ProduceSyslog(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Syslog, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceSyslog data:%v ,err:%v", data, err))
 	}

@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
 	"strings"
@@ -20,7 +21,7 @@ func CreateProcFactory() *ProcPost {
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "lock_proc_upload_",
 		cacheExpire: 120,
-		queryClient: kafka_go.CreateProducerFactory(),
+		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
 
@@ -34,7 +35,7 @@ type ProcPost struct {
 	redisClient *redis_factory.RedisClient
 	cachePrefix string
 	cacheExpire int
-	queryClient *kafka_go.ProducerClient
+	queryClient *producer_kafka.ProducerClient
 }
 
 type procData struct {

@@ -1,9 +1,10 @@
-package kafka_go
+package topic_kakfa
 
 import (
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/kafka_go"
 	"net"
 	"strconv"
 )
@@ -11,7 +12,7 @@ import (
 func CreateTopicFactory() *TopicClient {
 	return &TopicClient{
 		Addr:      variable.ConfigYml.GetString("KafkaV2.Addr"),
-		topicList: []string{TopicCommon, TopicProcess, TopicThreaten, TopicAlarm, TopicSyslog},
+		topicList: []string{kafka_go.TopicCommon, kafka_go.TopicProcess, kafka_go.TopicThreaten, kafka_go.TopicAlarm, kafka_go.TopicSyslog},
 	}
 
 }

@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
 )
 
@@ -320,7 +321,7 @@ func (crd *OrgCurd) clearAfter(orgId int64) {
 		Type:  kafka_go.TypeOrgClean,
 		OrgId: orgId,
 	}
-	kafka_go.CreateProducerFactory().ProduceCommon(context.Background(), msg)
+	producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
 }
 
 // Refused 审核: 回绝

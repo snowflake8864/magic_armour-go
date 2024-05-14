@@ -1,4 +1,4 @@
-package kafka_go
+package consumer_kafka
 
 import (
 	"context"
@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/proc_job"
+	"goskeleton/app/utils/kafka_go"
 	"strings"
 )
 
@@ -43,11 +44,11 @@ func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
 func CreateConsumerFactory() *ConsumerClient {
 	config := getReaderConfig()
 	return &ConsumerClient{
-		Common:   newConsumer(TopicCommon, config),
-		Process:  newConsumer(TopicProcess, config),
-		Threaten: newConsumer(TopicThreaten, config),
-		Alarm:    newConsumer(TopicCommon, config),
-		Syslog:   newConsumer(TopicCommon, config),
+		Common:   newConsumer(kafka_go.TopicCommon, config),
+		Process:  newConsumer(kafka_go.TopicProcess, config),
+		Threaten: newConsumer(kafka_go.TopicThreaten, config),
+		Alarm:    newConsumer(kafka_go.TopicCommon, config),
+		Syslog:   newConsumer(kafka_go.TopicCommon, config),
 	}
 
 }
@@ -61,8 +62,8 @@ type ConsumerClient struct {
 	Syslog   *kafka.Reader
 }
 
-func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*MessageStruct, error) {
-	result := &MessageStruct{}
+func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kafka_go.MessageStruct, error) {
+	result := &kafka_go.MessageStruct{}
 
 	msg, err := r.ReadMessage(ctx)
 	if err != nil {
@@ -88,10 +89,10 @@ func (k *ConsumerClient) ConsumeCommon() {
 		}
 
 		switch data.Type {
-		case TypeAgentDelete:
+		case kafka_go.TypeAgentDelete:
 			agent_job.Delete(data.OrgId, data.AgentId)
 			break
-		case TypeOrgClean:
+		case kafka_go.TypeOrgClean:
 			org_job.Clean(data.OrgId)
 			break
 		default:
@@ -109,10 +110,10 @@ func (k *ConsumerClient) ConsumeProcess() {
 		}
 
 		switch data.Type {
-		case TypeProcessPutMaster:
+		case kafka_go.TypeProcessPutMaster:
 			proc_job.UploadProcess(data.Data)
 			break
-		case TypeProcessPutRunning:
+		case kafka_go.TypeProcessPutRunning:
 			proc_job.UploadProcessRunning(data.Data)
 			break
 		default:

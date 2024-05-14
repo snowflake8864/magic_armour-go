@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 )
 
 func CreateCurdFactory() *AgentCurd {
@@ -60,7 +61,7 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err e
 			OrgId:   orgId,
 			AgentId: val,
 		}
-		kafka_go.CreateProducerFactory().ProduceCommon(ctx, msg)
+		producer_kafka.CreateProducerFactory().ProduceCommon(ctx, msg)
 	}
 
 	return errCode, err
