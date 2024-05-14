@@ -82,28 +82,30 @@ func (m *ProcGlobalModel) InsertItem(s *ProcGlobalModel) bool {
 }
 
 // GetItemByOrgAndId 通过企业id\hash获取一条记录
-func (m *ProcGlobalModel) GetItemByOrgAndId(orgId int64, id string) (item *ProcGlobalModel, err error) {
+func (m *ProcGlobalModel) GetItemByOrgAndId(orgId int64, id string) (item *ProcGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id=?", orgId, id).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return item, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
 	}
 }
 
 // GetItemsByOrgAndIds 通过企业id和终端id获取多条记录
-func (m *ProcGlobalModel) GetItemsByOrgAndIds(orgId int64, ids []string) (items []*ProcGlobalModel, err error) {
+func (m *ProcGlobalModel) GetItemsByOrgAndIds(orgId int64, ids []string) (items []*ProcGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 

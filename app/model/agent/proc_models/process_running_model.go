@@ -15,6 +15,7 @@ func CreateProcessRunningFactory() *ProcessRunningModel {
 //结构体
 
 type ProcessRunningModel struct {
+	baseProc
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
@@ -109,7 +110,7 @@ func (m *ProcessRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) b
 }
 
 // UpdateByOrgAndAgentAndHashAndProcId 通过通过企业id\终端id\hash\ProcId修改
-func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) bool {
+func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		tmp = tmp.Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId)
@@ -117,21 +118,22 @@ func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, a
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }
 
 // GetItemByOrgAndAgentAndHashAndProcId 通过企业id\终端id\hash\ProcId获取一条记录
-func (m *ProcessRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int) (item *ProcessRunningModel, err error) {
+func (m *ProcessRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int) (item *ProcessRunningModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return item, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }

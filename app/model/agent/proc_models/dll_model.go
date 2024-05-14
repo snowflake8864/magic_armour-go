@@ -14,6 +14,7 @@ func CreateDllFactory() *DllModel {
 //结构体
 
 type DllModel struct {
+	baseProc
 	model.BaseModel
 	Id              string `json:"id" gorm:"primaryKey"`
 	OrgId           int64  `json:"org_id"`

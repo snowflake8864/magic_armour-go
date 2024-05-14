@@ -15,6 +15,7 @@ func CreateProcSampleFactory() *ProcSampleModel {
 //结构体
 
 type ProcSampleModel struct {
+	baseProc
 	model.BaseModel
 	Id           string `json:"id" gorm:"primaryKey"`
 	OrgId        int64  `json:"org_id"`

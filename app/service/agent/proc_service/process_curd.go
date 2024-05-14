@@ -25,8 +25,8 @@ type ProcessCurd struct {
 
 // GetOne 获取一条
 func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *proc_models.ProcessModel) {
-	model, err := crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
-	if err == nil || helpers.StringIsEmpty(model.ProcHash) {
+	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
+	if helpers.StringIsEmpty(model.ProcHash) {
 		return nil
 	}
 	return model
