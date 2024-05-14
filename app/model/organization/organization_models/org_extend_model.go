@@ -14,6 +14,7 @@ func CreateOrgExtendFactory() *OrgExtendModel {
 //结构体
 
 type OrgExtendModel struct {
+	baseOrg
 	model.BaseModel
 	Id                   int64  `json:"id" gorm:"primaryKey"`
 	PlugPortConfig       string `json:"plug_port_config"`

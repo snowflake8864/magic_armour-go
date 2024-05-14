@@ -15,6 +15,7 @@ func CreateOrgLogFactory() *OrgLogModel {
 //结构体
 
 type OrgLogModel struct {
+	baseOrg
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
 	Module        int    `json:"module"`
@@ -80,9 +81,9 @@ func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrgLogModel, err error) {
+func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgLogModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -102,10 +103,10 @@ func (m *OrgLogModel) GetItemsByConditions(condition map[string]interface{}, off
 }
 
 // Count 通过条件统计
-func (m *OrgLogModel) Count(condition map[string]interface{}) int64 {
+func (m *OrgLogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -117,7 +118,7 @@ func (m *OrgLogModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *OrgLogModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrgLogModel) {
+func (m *OrgLogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OrgLogModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

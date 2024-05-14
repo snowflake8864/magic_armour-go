@@ -1,7 +1,9 @@
 package user_service
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/model/organization/user_models"
+	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
 )
 
@@ -29,8 +31,8 @@ func (crd *UserCurd) Register(param *user_models.UserModel) bool {
 
 // DeleteByOrg 通过企业编号删除
 func (crd *UserCurd) DeleteByOrg(orgId int64) bool {
-	conditions := map[string]interface{}{
-		"org_id": orgId,
+	conditions := user_models.SearchConditions{
+		OrgId: orgId,
 	}
 	return crd.masterModel.DeleteByConditions(conditions)
 }
@@ -53,11 +55,35 @@ func (crd *UserCurd) GetItemByName(name string) (model *user_models.UserModel) {
 	return model
 }
 
-// PageByOrg 通过企业分页
-func (crd *UserCurd) PageByOrg(orgId int64, offset, pageSize int, orderField, orderSort string) (total int64, items []*user_models.UserModel) {
-	wheres := make(map[string]interface{})
-	wheres["org_id"] = orgId
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
-	return total, items
+// HasByUsernameAndPw 用户名和密码一致
+func (crd *UserCurd) HasByUsernameAndPw(name, pw string) bool {
+	if adminModel := crd.masterModel.GetItemByNameAndPw(name, pw); adminModel.Id > 0 {
+		return true
+	}
+	return false
+}
+
+// IncrPwErrorNum 自增登录错误次数
+func (crd *UserCurd) IncrPwErrorNum(id int64) bool {
+	updates := map[string]interface{}{
+		"pw_error_num": gorm.Expr("pw_error_num+1"),
+	}
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); isOk {
+		return true
+	} else {
+		return false
+	}
+}
+
+// loginSuccess 登录成功
+func (crd *UserCurd) loginSuccess(id int64) bool {
+	updates := map[string]interface{}{
+		"pw_error_num":  0,
+		"last_login_at": helpers.DatetimeCurr(),
+	}
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); isOk {
+		return true
+	} else {
+		return false
+	}
 }

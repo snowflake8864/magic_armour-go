@@ -10,7 +10,6 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
-	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -55,7 +54,7 @@ func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, order)
+	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
@@ -147,7 +146,7 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, order)
+	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
@@ -215,19 +214,20 @@ func (u *OrganizeController) RefuseForVerify(ctx *gin.Context) {
 // PageForUser 用户: 分页
 func (u *OrganizeController) PageForUser(ctx *gin.Context) {
 	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	conditions := user_models.SearchConditions{OrgId: orgId}
 
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//用户分页
-	total, models := user_service.CreateCurdFactory().PageByOrg(orgId, offset, pageSize, orderField, orderSort)
+	total, models := user_models.CreateUserFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.User{}).TransPage(total, models))
 }
 
 // PageForLog 日志: 分页
 func (u *OrganizeController) PageForLog(ctx *gin.Context) {
-	searchConditions := organize_service.SearchConditions{}
+	searchConditions := organization_models.SearchConditions{}
 	searchConditions.LogOraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 
@@ -235,7 +235,7 @@ func (u *OrganizeController) PageForLog(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//用户分页
-	total, models := organize_service.CreateOrgLogFactory().Page(searchConditions, offset, pageSize, orderField, orderSort)
+	total, models := organization_models.CreateOrgLogFactory().Page(searchConditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogPage(total, models))
 }

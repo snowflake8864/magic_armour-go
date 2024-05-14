@@ -66,11 +66,10 @@ func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, 
 func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp string) {
 	CreateCacheFactory().RemUnfinished(orgId, agentId, types)
 
-	conditions := map[string]interface{}{
-		"org_id":   orgId,
-		"agent_id": agentId,
-		"type":     types,
-		"status":   enum_task.StatusStart,
+	conditions := task_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+		Types:   types,
 	}
 	updates := map[string]interface{}{
 		"status":       enum_task.StatusFinish,

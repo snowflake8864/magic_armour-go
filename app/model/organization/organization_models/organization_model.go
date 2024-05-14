@@ -15,6 +15,7 @@ func CreateOrganizationFactory() *OrganizationModel {
 //结构体
 
 type OrganizationModel struct {
+	baseOrg
 	model.BaseModel
 	Id                int64  `json:"id" gorm:"primaryKey"`
 	Code              string `json:"code"`
@@ -115,9 +116,9 @@ func (m *OrganizationModel) DeleteById(id int64) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *OrganizationModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *OrganizationModel) DeleteByConditions(condition SearchConditions) bool {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Delete(m)
@@ -158,9 +159,9 @@ func (m *OrganizationModel) GetItemsByIds(ids []int64) (items []*OrganizationMod
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OrganizationModel, err error) {
+func (m *OrganizationModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrganizationModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -180,10 +181,10 @@ func (m *OrganizationModel) GetItemsByConditions(condition map[string]interface{
 }
 
 // Count 通过条件统计
-func (m *OrganizationModel) Count(condition map[string]interface{}) int64 {
+func (m *OrganizationModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -195,7 +196,7 @@ func (m *OrganizationModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *OrganizationModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OrganizationModel) {
+func (m *OrganizationModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OrganizationModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

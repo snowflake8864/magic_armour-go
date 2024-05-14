@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/model/platform/admin_models"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/cur_app"
@@ -25,7 +25,7 @@ func CreateAuthFactory() *UserAuth {
 		lockingPrefix: "user_auth_locking_",
 		sliderPrefix:  "user_auth_slider_",
 		sliderExpire:  180,
-		smsPrefix:     "admin_auth_sms_",
+		smsPrefix:     "user_auth_sms_",
 		smsExpire:     300,
 	}
 }
@@ -42,7 +42,8 @@ type UserAuth struct {
 }
 
 type UserCacheLogin struct {
-	AdminId  int64  `json:"user_id"`
+	OrgId    int64  `json:"org_id"`
+	UserId   int64  `json:"user_id"`
 	Username string `json:"username"`
 	IsRoot   int    `json:"is_root"`
 	LoginAt  string `json:"login_at"`
@@ -127,63 +128,65 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 	}
 
 	curdFact := CreateCurdFactory()
-	adminModel := curdFact.GetItemByUsername(username)
-	if adminModel.Id == 0 {
+	userModel := curdFact.GetItemByName(username)
+	if userModel.Id == 0 {
 		return nil, -1, errors.New("用户名或密码错误")
 	}
 
 	//短信验证
-	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
+	SmsSwitch := helpers.String2Int(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch))
+	if !helpers.StringIsEmpty(userModel.Phone) && SmsSwitch == enums.IsYes {
 		if helpers.StringIsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
-		if !crd.checkBySms(adminModel.Phone, sms) {
+		if !crd.checkBySms(userModel.Phone, sms) {
 			return nil, -99, errors.New("短信验证码不一致")
 		}
-		crd.deleteBySms(adminModel.Phone)
+		crd.deleteBySms(userModel.Phone)
 	}
 
 	//用户名和密码不一致
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
 	if !curdFact.HasByUsernameAndPw(username, pw) {
 		//错误次数加1
-		curdFact.IncrPwErrorNum(adminModel.Id)
+		curdFact.IncrPwErrorNum(userModel.Id)
 
 		//数据字典
 		dictIds := []string{
-			enum_dictionary.PlatformLoginErrorMax,
-			enum_dictionary.PlatformLoginLockDuration,
-			enum_dictionary.PlatformLoginErrorRemind,
+			enum_dictionary.OrganizationLoginErrorMax,
+			enum_dictionary.OrganizationLoginLockDuration,
+			enum_dictionary.OrganizationLoginErrorRemind,
 		}
 		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 		//达到登录错误最大次数
-		diff := helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorMax]) - adminModel.PwErrorNum - 1
+		diff := helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginErrorMax]) - userModel.PwErrorNum - 1
 		if diff <= 0 {
 			//设置锁定
-			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
+			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
 			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
 				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
-		} else if diff < helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
+		} else if diff < helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
 			return result, -2, errors.New("用户名或密码错误, 还有" +
-				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟")
+				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.OrganizationLoginErrorRemind] + "分钟")
 		} else {
 			return nil, -2, errors.New("用户名或密码错误")
 		}
 	}
 
-	curdFact.loginSuccess(adminModel.Id)
+	curdFact.loginSuccess(userModel.Id)
 
-	result = crd.loginAfter(adminModel)
+	result = crd.loginAfter(userModel)
 
 	return result, 0, nil
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(adminModel *admin_models.AdminModel) map[string]interface{} {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]interface{} {
 	loginInfo := UserCacheLogin{
-		AdminId:  adminModel.Id,
-		Username: adminModel.Username,
-		IsRoot:   adminModel.IsRoot,
+		OrgId:    userModel.OrgId,
+		UserId:   userModel.Id,
+		Username: userModel.Username,
+		IsRoot:   userModel.IsRoot,
 		LoginAt:  helpers.DatetimeCurr(),
 	}
 
@@ -194,8 +197,8 @@ func (crd *UserAuth) loginAfter(adminModel *admin_models.AdminModel) map[string]
 
 	//
 	result := make(map[string]interface{})
-	result["username"] = adminModel.Username
-	result["is_root"] = adminModel.IsRoot
+	result["username"] = userModel.Username
+	result["is_root"] = userModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
 	return result

@@ -3,7 +3,7 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
@@ -19,9 +19,9 @@ func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogi
 }
 
 // getOrgSearchConditions 获取企业查询条件
-func (u *ControllerBase) getOrgSearchConditions(ctx *gin.Context) (organize_service.SearchConditions, error) {
+func (u *ControllerBase) getOrgSearchConditions(ctx *gin.Context) (organization_models.SearchConditions, error) {
 	//页面上传
-	searchConditions := organize_service.SearchConditions{}
+	searchConditions := organization_models.SearchConditions{}
 	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")

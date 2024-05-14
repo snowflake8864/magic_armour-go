@@ -7,7 +7,9 @@ import (
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/organization/order_models"
+	"goskeleton/app/model/organization/org_stat_models"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/service/organization/organize_service"
@@ -58,7 +60,8 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
 
 	StatDailyFact := alarm_service.CreateStatDailyFactory()
-	column := StatDailyFact.StatColumn(alarm_service.PrefixTotal, false, false, true, false, false)
+	column := alarm_stat_models.CreateAlarmStatDailyFactory().StatColumn(alarm_stat_models.PrefixTotal, false,
+		false, true, false, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
@@ -80,7 +83,8 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := StatDailyFact.ColumnOfAgent(false, true, false, false, false, false, false, false, false, false)
+	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfAgent(false, true, false, false,
+		false, false, false, false, false, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
@@ -99,7 +103,8 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := StatDailyFact.ColumnOfAgent(false, false, false, false, true, false, false, true, false, true)
+	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfAgent(false, false, false, false,
+		true, false, false, true, false, true)
 	models := StatDailyFact.SumByMonthGroupDay(month, column)
 
 	var result []map[string]interface{}
@@ -122,7 +127,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := StatDailyFact.ColumnOfUser(false, true, true, false)
+	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfUser(false, true, true, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
@@ -156,7 +161,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := StatDailyFact.ColumnOfUser(false, true, false, true)
+	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfUser(false, true, false, true)
 	models := StatDailyFact.SumByMonthGroupDay(month, column)
 
 	var result []map[string]interface{}

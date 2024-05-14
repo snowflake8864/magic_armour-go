@@ -15,6 +15,7 @@ func CreateUserFactory() *UserModel {
 //结构体
 
 type UserModel struct {
+	baseUser
 	model.BaseModel
 	Id          int64  `json:"id" gorm:"primaryKey"`
 	Username    string `json:"username"`
@@ -88,19 +89,19 @@ func (m *UserModel) InsertItem(s *UserModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *UserModel) UpdateById(id int64, updates map[string]interface{}) bool {
+func (m *UserModel) UpdateById(id int64, updates map[string]interface{}) (bool, int64) {
 	result := m.Model(m).Where("id=?", id).Updates(updates)
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }
 
 // DeleteByConditions 通过条件删除
-func (m *UserModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *UserModel) DeleteByConditions(condition SearchConditions) bool {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Delete(m)
@@ -113,7 +114,7 @@ func (m *UserModel) DeleteByConditions(condition map[string]interface{}) bool {
 
 // GetItemById 通过id获取一条记录
 func (m *UserModel) GetItemById(id int64) (item *UserModel, err error) {
-	result := m.Model(m).Where("id=?", id).Take(&item)
+	result := m.Model(m).Select(m.Columns()).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -122,7 +123,7 @@ func (m *UserModel) GetItemById(id int64) (item *UserModel, err error) {
 }
 
 func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, err error) {
-	result := m.Model(m).Where("id=?", userId).Where("org_id=?", orgId).Take(&item)
+	result := m.Model(m).Select(m.Columns()).Where("id=?", userId).Where("org_id=?", orgId).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -132,7 +133,7 @@ func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, e
 
 // GetItemByName 通过名称获取一条记录
 func (m *UserModel) GetItemByName(name string) (item *UserModel, err error) {
-	result := m.Model(m).Where("username=?", name).Take(&item)
+	result := m.Model(m).Select(m.Columns()).Where("username=?", name).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -140,9 +141,19 @@ func (m *UserModel) GetItemByName(name string) (item *UserModel, err error) {
 	}
 }
 
+func (m *UserModel) GetItemByNameAndPw(name, pw string) (item *UserModel) {
+	result := m.Select(m.Columns()).Where("username=? and pw=?", name, pw).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
+	}
+}
+
 // GetItemsByIds 通过id集合获取多条记录
 func (m *UserModel) GetItemsByIds(ids []int64) (items []*UserModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
+	result := m.Model(m).Select(m.Columns()).Where("id IN ?", ids).Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
@@ -151,9 +162,9 @@ func (m *UserModel) GetItemsByIds(ids []int64) (items []*UserModel, err error) {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *UserModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*UserModel, err error) {
-	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+func (m *UserModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*UserModel, err error) {
+	tmp := m.Model(m).Select(m.Columns())
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -173,10 +184,10 @@ func (m *UserModel) GetItemsByConditions(condition map[string]interface{}, offse
 }
 
 // Count 通过条件统计
-func (m *UserModel) Count(condition map[string]interface{}) int64 {
+func (m *UserModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -188,7 +199,7 @@ func (m *UserModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *UserModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*UserModel) {
+func (m *UserModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*UserModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

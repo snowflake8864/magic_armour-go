@@ -13,7 +13,6 @@ func CreatePushFactory() *ThreatenPush {
 }
 
 type ThreatenPush struct {
-	ThreatenBase
 	masterModel *threaten_models.ThreatenPushModel
 }
 
@@ -21,22 +20,14 @@ type ThreatenPush struct {
 func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*threaten_models.ThreatenPushModel {
 	result := make(map[string]*threaten_models.ThreatenPushModel)
 
-	models, err := crd.masterModel.GetItemsByIds(ids)
-	if err != nil || models == nil {
+	models := crd.masterModel.GetItemsByIds(ids)
+	if models == nil {
 		return nil
 	}
 	for _, model := range models {
 		result[model.Id] = model
 	}
 	return result
-}
-
-// Page 分页
-func (crd *ThreatenPush) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*threaten_models.ThreatenPushModel) {
-	wheres := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
-	return total, items
 }
 
 // Clear 清空
