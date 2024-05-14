@@ -85,7 +85,7 @@ func (u *ThreatenController) OnlineForConfig(ctx *gin.Context) {
 // PageForCache 缓存: 分页
 func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 	//页面上传
-	conditions := threaten_service.SearchConditions{}
+	conditions := threaten_models.SearchConditions{}
 	conditions.Id = ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 	conditions.Dir = ctx.GetString(consts.ValidatorPrefixPlatform + "dir")
 	conditions.Level = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "level"))
@@ -93,7 +93,7 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, models := threaten_service.CreateCacheFactory().Page(conditions, offset, pageSize, order)
+	total, models := threaten_models.CreateThreatenCacheFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
 }
@@ -130,7 +130,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 // GetAttrForCache 缓存: 获取属性
 func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
-	model := threaten_service.CreateCacheFactory().GetItemById(id)
+	model := threaten_models.CreateThreatenCacheFactory().GetItemById(id, "*")
 	if model == nil || helpers.StringIsEmpty(model.Id) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
@@ -141,14 +141,14 @@ func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 // PageForPush 推送: 分页
 func (u *ThreatenController) PageForPush(ctx *gin.Context) {
 	//页面上传
-	conditions := threaten_service.SearchConditions{}
+	conditions := threaten_models.SearchConditions{}
 	conditions.Id = ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 	conditions.Dir = ctx.GetString(consts.ValidatorPrefixPlatform + "dir")
 
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, models := threaten_service.CreatePushFactory().Page(conditions, offset, pageSize, order)
+	total, models := threaten_models.CreateThreatenPushFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransPushPage(total, models))
 }

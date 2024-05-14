@@ -1,4 +1,4 @@
-package threaten_service
+package threaten_models
 
 import (
 	"goskeleton/app/global/enums"
@@ -16,11 +16,18 @@ type SearchConditions struct {
 	LevelList   []int
 }
 
-type ThreatenBase struct {
+type baseThreaten struct {
+	Id          string
+	Ids         []string
+	Dir         string
+	CreateAtGte string
+	CreateAtLte string
+	Level       int
+	LevelList   []int
 }
 
-// search2Where 查询条件转化
-func (crd *ThreatenBase) search2Where(search SearchConditions) map[string]interface{} {
+// conditions2Where 查询条件转化
+func (m *baseThreaten) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
 	if !helpers.StringIsEmpty(search.Id) {
 		wheres["id"] = strings.ToLower(search.Id)

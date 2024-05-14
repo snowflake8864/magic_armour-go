@@ -77,10 +77,10 @@ func (m *TaskModel) InsertBatch(list *[]TaskModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *TaskModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+func (m *TaskModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -107,10 +107,10 @@ func (m *TaskModel) DeleteByOrg(orgId int64) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *TaskModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*TaskModel, err error) {
+func (m *TaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -125,18 +125,19 @@ func (m *TaskModel) GetItemsByConditions(condition map[string]interface{}, offse
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *TaskModel) Count(condition map[string]interface{}) int64 {
+func (m *TaskModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -150,15 +151,24 @@ func (m *TaskModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *TaskModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*TaskModel) {
-	total = m.Count(condition)
-	if total == 0 {
+func (m *TaskModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TaskModel) {
+	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil
 	}
+}
+
+type SearchConditions struct {
+	OrgId   int64
+	AgentId string
+}
+
+// conditions2Where 查询条件转化
+func (m *TaskModel) conditions2Where(search SearchConditions) map[string]interface{} {
+	wheres := make(map[string]interface{})
+	return wheres
 }

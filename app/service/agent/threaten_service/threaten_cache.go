@@ -1,7 +1,6 @@
 package threaten_service
 
 import (
-	"fmt"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers"
@@ -12,65 +11,13 @@ func CreateCacheFactory() *ThreatenCache {
 }
 
 type ThreatenCache struct {
-	ThreatenBase
 	masterModel *threaten_models.ThreatenCacheModel
-}
-
-// GetLevelById 通过id获取
-func (crd *ThreatenCache) GetLevelById(id string) (isExist bool, level int) {
-	model, _ := crd.masterModel.GetItemById(id, "id, level")
-	if helpers.StringIsEmpty(model.Id) {
-		return false, enum_threaten.LevelUnknown
-	}
-	return true, model.Level
-}
-
-// GetItemById 通过id获取
-func (crd *ThreatenCache) GetItemById(id string) (model *threaten_models.ThreatenCacheModel) {
-	model, _ = crd.masterModel.GetItemById(id, "*")
-	return model
-}
-
-// GetLevelsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenCache) GetLevelsByIds(ids []string) map[string]int {
-	result := make(map[string]int)
-
-	models, err := crd.masterModel.GetItemsByIds(ids, "id, level")
-	if err != nil || models == nil {
-		return nil
-	}
-	for _, model := range models {
-		result[model.Id] = model.Level
-	}
-	return result
-}
-
-// GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*threaten_models.ThreatenCacheModel {
-	result := make(map[string]*threaten_models.ThreatenCacheModel)
-
-	models, err := crd.masterModel.GetItemsByIds(ids, crd.masterModel.GetListColumns())
-	if err != nil || models == nil {
-		return nil
-	}
-	for _, model := range models {
-		result[model.Id] = model
-	}
-	return result
-}
-
-// Page 分页
-func (crd *ThreatenCache) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*threaten_models.ThreatenCacheModel) {
-	wheres := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
-	return total, items
 }
 
 // Add 新增
 func (crd *ThreatenCache) Add(param *threaten_models.ThreatenCacheModel, checkExist bool) bool {
 	if checkExist {
-		if isExist, _ := crd.GetLevelById(param.Id); isExist {
+		if isExist, _ := crd.masterModel.GetLevelById(param.Id); isExist {
 			return true
 		}
 	}
@@ -89,15 +36,16 @@ func (crd *ThreatenCache) DeleteById(ID string) bool {
 
 // BatchUnknown 批量设置成未知
 func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
-	wheres := crd.search2Where(SearchConditions{
+	wheres := threaten_models.SearchConditions{
 		Ids:   ids,
 		Level: enum_threaten.LevelDefault,
-	})
+	}
 	updates := map[string]interface{}{
 		"level":    enum_threaten.LevelUnknown,
 		"check_at": helpers.DatetimeCurr(),
 	}
-	return crd.masterModel.UpdateByConditions(wheres, updates)
+	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
+	return isOk
 }
 
 // Rewrite 根据第三方返回重写本地信息
@@ -145,7 +93,7 @@ func (crd *ThreatenCache) Clear() bool {
 
 // Refresh 刷新
 func (crd *ThreatenCache) Refresh() bool {
-	wheres := crd.search2Where(SearchConditions{
+	wheres := threaten_models.SearchConditions{
 		LevelList: []int{
 			enum_threaten.LevelUnknown,
 			enum_threaten.LevelWhite,
@@ -160,10 +108,11 @@ func (crd *ThreatenCache) Refresh() bool {
 			enum_threaten.LevelDefaultNine,
 			enum_threaten.LevelBlack,
 		},
-	})
-	fmt.Println(wheres)
+	}
+
 	updates := map[string]interface{}{
 		"level": enum_threaten.LevelDefault,
 	}
-	return crd.masterModel.UpdateByConditions(wheres, updates)
+	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
+	return isOk
 }

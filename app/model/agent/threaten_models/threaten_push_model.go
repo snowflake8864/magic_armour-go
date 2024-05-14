@@ -16,6 +16,7 @@ func CreateThreatenPushFactory() *ThreatenPushModel {
 //结构体
 
 type ThreatenPushModel struct {
+	baseThreaten
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
 	Level      int    `json:"level"`
@@ -115,23 +116,24 @@ func (m *ThreatenPushModel) UpdateByIds(ids []string, updates map[string]interfa
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *ThreatenPushModel) GetItemsByIds(ids []string) (items []*ThreatenPushModel, err error) {
+func (m *ThreatenPushModel) GetItemsByIds(ids []string) (items []*ThreatenPushModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ThreatenPushModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenPushModel, err error) {
+func (m *ThreatenPushModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenPushModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -146,18 +148,19 @@ func (m *ThreatenPushModel) GetItemsByConditions(condition map[string]interface{
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *ThreatenPushModel) Count(condition map[string]interface{}) int64 {
+func (m *ThreatenPushModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -171,13 +174,11 @@ func (m *ThreatenPushModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *ThreatenPushModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*ThreatenPushModel) {
-	total = m.Count(condition)
-	if total == 0 {
+func (m *ThreatenPushModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ThreatenPushModel) {
+	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil

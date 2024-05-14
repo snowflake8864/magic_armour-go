@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/service/agent/threaten_service"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers"
 	"strings"
 )
@@ -23,7 +23,7 @@ func (crd *ProcessBase) ColumnCalcOfUsage() string {
 
 // getThreatenStatus 获取威胁情报状态
 func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, status int) {
-	isExist, level := threaten_service.CreateCacheFactory().GetLevelById(hash)
+	isExist, level := threaten_models.CreateThreatenCacheFactory().GetLevelById(hash)
 	if !isExist {
 		return isExist, enum_process.RelyStatusUnset
 	}

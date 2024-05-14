@@ -2,6 +2,7 @@ package threaten_models
 
 import (
 	"gorm.io/gorm"
+	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -16,6 +17,7 @@ func CreateThreatenCacheFactory() *ThreatenCacheModel {
 //结构体
 
 type ThreatenCacheModel struct {
+	baseThreaten
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
 	Level     int    `json:"level"`
@@ -117,19 +119,19 @@ func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{
 }
 
 // UpdateByConditions 通过条件修改
-func (m *ThreatenCacheModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+func (m *ThreatenCacheModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }
 
@@ -147,36 +149,75 @@ func (m *ThreatenCacheModel) DeleteById(id string) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *ThreatenCacheModel, err error) {
+func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(column).Where("id=?", id).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return item, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
+// GetLevelById 通过id获取等级
+func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
+	model := m.GetItemById(id, "id, level")
+	if helpers.StringIsEmpty(model.Id) {
+		return false, enum_threaten.LevelUnknown
+	}
+	return true, model.Level
+}
+
 // GetItemsByIds 通过id集合获取多条记录
-func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items []*ThreatenCacheModel, err error) {
+func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items []*ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(column).Select(m.GetListColumns()).Where("id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
+// GetLevelsByIds 通过id集合获取多条记录, 有映射关系
+func (m *ThreatenCacheModel) GetLevelsByIds(ids []string) map[string]int {
+	result := make(map[string]int)
+
+	models := m.GetItemsByIds(ids, "id, level")
+	if models == nil {
+		return nil
+	}
+	for _, model := range models {
+		result[model.Id] = model.Level
+	}
+	return result
+}
+
+// GetMapsByIds 通过id集合获取多条记录, 有映射关系
+func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCacheModel {
+	result := make(map[string]*ThreatenCacheModel)
+
+	models := m.GetItemsByIds(ids, m.GetListColumns())
+	if models == nil {
+		return nil
+	}
+	for _, model := range models {
+		result[model.Id] = model
+	}
+	return result
+}
+
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ThreatenCacheModel, err error) {
+func (m *ThreatenCacheModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(m.GetListColumns())
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -191,18 +232,19 @@ func (m *ThreatenCacheModel) GetItemsByConditions(condition map[string]interface
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *ThreatenCacheModel) Count(condition map[string]interface{}) int64 {
+func (m *ThreatenCacheModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -216,13 +258,11 @@ func (m *ThreatenCacheModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *ThreatenCacheModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*ThreatenCacheModel) {
-	total = m.Count(condition)
-	if total == 0 {
+func (m *ThreatenCacheModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ThreatenCacheModel) {
+	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil
