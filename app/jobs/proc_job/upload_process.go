@@ -2,14 +2,14 @@ package proc_job
 
 import (
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service/job_callcak_proc"
 	"goskeleton/app/utils/helpers"
 )
 
 func UploadProcess(jsonStr string) {
 
-	processModel := model_agent.ProcessModel{}
+	processModel := proc_models.ProcessModel{}
 	if err := helpers.Json2Struct(jsonStr, &processModel); err != nil {
 		variable.ZapLog.Info(jsonStr)
 		variable.ZapLog.Info(err.Error())

@@ -3,17 +3,17 @@ package threaten_service
 import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_threaten"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateCacheFactory() *ThreatenCache {
-	return &ThreatenCache{masterModel: model_agent.CreateThreatenCacheFactory()}
+	return &ThreatenCache{masterModel: threaten_models.CreateThreatenCacheFactory()}
 }
 
 type ThreatenCache struct {
 	ThreatenBase
-	masterModel *model_agent.ThreatenCacheModel
+	masterModel *threaten_models.ThreatenCacheModel
 }
 
 // GetLevelById 通过id获取
@@ -26,7 +26,7 @@ func (crd *ThreatenCache) GetLevelById(id string) (isExist bool, level int) {
 }
 
 // GetItemById 通过id获取
-func (crd *ThreatenCache) GetItemById(id string) (model *model_agent.ThreatenCacheModel) {
+func (crd *ThreatenCache) GetItemById(id string) (model *threaten_models.ThreatenCacheModel) {
 	model, _ = crd.masterModel.GetItemById(id, "*")
 	return model
 }
@@ -46,8 +46,8 @@ func (crd *ThreatenCache) GetLevelsByIds(ids []string) map[string]int {
 }
 
 // GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*model_agent.ThreatenCacheModel {
-	result := make(map[string]*model_agent.ThreatenCacheModel)
+func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*threaten_models.ThreatenCacheModel {
+	result := make(map[string]*threaten_models.ThreatenCacheModel)
 
 	models, err := crd.masterModel.GetItemsByIds(ids, crd.masterModel.GetListColumns())
 	if err != nil || models == nil {
@@ -60,7 +60,7 @@ func (crd *ThreatenCache) GetMapsByIds(ids []string) map[string]*model_agent.Thr
 }
 
 // Page 分页
-func (crd *ThreatenCache) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.ThreatenCacheModel) {
+func (crd *ThreatenCache) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*threaten_models.ThreatenCacheModel) {
 	wheres := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
@@ -68,7 +68,7 @@ func (crd *ThreatenCache) Page(search SearchConditions, offset, pageSize int, or
 }
 
 // Add 新增
-func (crd *ThreatenCache) Add(param *model_agent.ThreatenCacheModel, checkExist bool) bool {
+func (crd *ThreatenCache) Add(param *threaten_models.ThreatenCacheModel, checkExist bool) bool {
 	if checkExist {
 		if isExist, _ := crd.GetLevelById(param.Id); isExist {
 			return true
@@ -101,7 +101,7 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 }
 
 // Rewrite 根据第三方返回重写本地信息
-func (crd *ThreatenCache) Rewrite(param *model_agent.ThreatenCacheModel) bool {
+func (crd *ThreatenCache) Rewrite(param *threaten_models.ThreatenCacheModel) bool {
 	updates := map[string]interface{}{
 		"level":     param.Level,
 		"attribute": param.Attribute,

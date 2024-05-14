@@ -5,14 +5,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/threaten_models"
 )
 
 type Threaten struct {
 	transformer.Common
 }
 
-func (t *Threaten) pageCacheGeneral(model *model_agent.ThreatenCacheModel) map[string]interface{} {
+func (t *Threaten) pageCacheGeneral(model *threaten_models.ThreatenCacheModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
@@ -33,7 +33,7 @@ func (t *Threaten) pageCacheGeneral(model *model_agent.ThreatenCacheModel) map[s
 }
 
 // TransCachePage 转换成管理页需要的数据
-func (t *Threaten) TransCachePage(total int64, models []*model_agent.ThreatenCacheModel) interface{} {
+func (t *Threaten) TransCachePage(total int64, models []*threaten_models.ThreatenCacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -48,7 +48,7 @@ func (t *Threaten) TransCachePage(total int64, models []*model_agent.ThreatenCac
 	}
 }
 
-func (t *Threaten) pagePushGeneral(model *model_agent.ThreatenPushModel) map[string]interface{} {
+func (t *Threaten) pagePushGeneral(model *threaten_models.ThreatenPushModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
@@ -72,7 +72,7 @@ func (t *Threaten) pagePushGeneral(model *model_agent.ThreatenPushModel) map[str
 }
 
 // TransPushPage 转换成推送页需要的数据
-func (t *Threaten) TransPushPage(total int64, models []*model_agent.ThreatenPushModel) interface{} {
+func (t *Threaten) TransPushPage(total int64, models []*threaten_models.ThreatenPushModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

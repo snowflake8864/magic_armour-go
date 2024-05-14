@@ -1,22 +1,22 @@
 package organize_service
 
 import (
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateOrgLogFactory() *OrgLog {
-	return &OrgLog{masterModel: model_organization.CreateOrgLogFactory()}
+	return &OrgLog{masterModel: organization_models.CreateOrgLogFactory()}
 }
 
 type OrgLog struct {
 	OrgBase
-	masterModel *model_organization.OrgLogModel
+	masterModel *organization_models.OrgLogModel
 }
 
 // InitByOrg 初始化企业日志结构体
-func (crd *OrgLog) InitByOrg(orgParam *model_organization.OrganizationModel, module int, netIp string) model_organization.OrgLogModel {
-	param := model_organization.OrgLogModel{}
+func (crd *OrgLog) InitByOrg(orgParam *organization_models.OrganizationModel, module int, netIp string) organization_models.OrgLogModel {
+	param := organization_models.OrgLogModel{}
 	param.Module = module
 	param.NetIp = netIp
 	param.OrgId = orgParam.Id
@@ -28,7 +28,7 @@ func (crd *OrgLog) InitByOrg(orgParam *model_organization.OrganizationModel, mod
 }
 
 // Add 新增企业日志
-func (crd *OrgLog) Add(param *model_organization.OrgLogModel) bool {
+func (crd *OrgLog) Add(param *organization_models.OrgLogModel) bool {
 	if helpers.StringIsEmpty(param.CreatedAt) {
 		param.CreatedAt = helpers.DatetimeCurr()
 	}
@@ -36,7 +36,7 @@ func (crd *OrgLog) Add(param *model_organization.OrgLogModel) bool {
 }
 
 // Page 分页
-func (crd *OrgLog) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrgLogModel) {
+func (crd *OrgLog) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*organization_models.OrgLogModel) {
 	where := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
@@ -44,7 +44,7 @@ func (crd *OrgLog) Page(search SearchConditions, offset, pageSize int, orderFiel
 }
 
 // NewestList 最新列表
-func (crd *OrgLog) NewestList(limit int) (items []*model_organization.OrgLogModel) {
+func (crd *OrgLog) NewestList(limit int) (items []*organization_models.OrgLogModel) {
 	where := crd.search2Where(SearchConditions{})
 
 	items, err := crd.masterModel.GetItemsByConditions(where, 0, limit, "created_at DESC")

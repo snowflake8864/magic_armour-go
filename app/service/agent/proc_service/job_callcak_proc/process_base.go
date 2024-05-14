@@ -4,7 +4,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers"
 	"strings"
@@ -38,7 +38,7 @@ func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, status int
 
 // getGlobalStatus 获取全局名单状态z
 func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
-	model, err := model_agent.CreateProcGlobalFactory().GetItemByOrgAndId(orgId, hash)
+	model, err := proc_models.CreateProcGlobalFactory().GetItemByOrgAndId(orgId, hash)
 	if err != nil || model == nil || model.Type == enum_process.RelyStatusUnset {
 		return enum_process.RelyStatusUnset
 	}

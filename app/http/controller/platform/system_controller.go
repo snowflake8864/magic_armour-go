@@ -8,9 +8,9 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/monitor_service"
-	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
@@ -277,7 +277,7 @@ func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 // UpgradeRun  系统升级
 func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
-	uploadModel := upload_service.CreateCurdFactory().GetItemById(uploadId)
+	uploadModel := upload_models.CreateUploadFactory().GetItemById(uploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
 		response.FailSimplify(ctx, "上传升级包不存在")
 		return

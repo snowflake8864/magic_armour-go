@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
@@ -18,16 +18,16 @@ import (
 )
 
 func CreateOrgCurdFactory() *OrgCurd {
-	return &OrgCurd{masterModel: model_organization.CreateOrganizationFactory()}
+	return &OrgCurd{masterModel: organization_models.CreateOrganizationFactory()}
 }
 
 type OrgCurd struct {
 	OrgBase
-	masterModel *model_organization.OrganizationModel
+	masterModel *organization_models.OrganizationModel
 }
 
 // Add 新增企业
-func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
+func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
 	//用户已存在
 	userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username)
 	if userExist.Id > 0 {
@@ -365,19 +365,19 @@ func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_s
 }
 
 // GetItemByOrg 通过企业编号获取
-func (crd *OrgCurd) GetItemByOrg(orgId int64) (model *model_organization.OrganizationModel) {
+func (crd *OrgCurd) GetItemByOrg(orgId int64) (model *organization_models.OrganizationModel) {
 	model, _ = crd.masterModel.GetItemById(orgId)
 	return model
 }
 
 // GetItemByName 通过企业名称获取
-func (crd *OrgCurd) GetItemByName(name string) (model *model_organization.OrganizationModel) {
+func (crd *OrgCurd) GetItemByName(name string) (model *organization_models.OrganizationModel) {
 	model, _ = crd.masterModel.GetItemByName(name)
 	return model
 }
 
 // Page 分页
-func (crd *OrgCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrganizationModel) {
+func (crd *OrgCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*organization_models.OrganizationModel) {
 	where := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)

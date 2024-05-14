@@ -3,21 +3,42 @@ package database
 import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_access_models"
+	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/model_agent"
-	"goskeleton/app/model/model_alarm"
-	"goskeleton/app/model/model_organization"
-	"goskeleton/app/model/model_platform"
-	"goskeleton/app/model/model_syslog"
-	"goskeleton/app/model/organization/org_menu_models"
+	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/blackmail_models"
+	"goskeleton/app/model/agent/outreach_models"
+	"goskeleton/app/model/agent/plug_models"
+	"goskeleton/app/model/agent/port_models"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/tamper_models"
+	"goskeleton/app/model/agent/task_models"
+	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/model/agent/trust_models"
+	"goskeleton/app/model/agent/usb_models"
+	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/model/alarm/alarm_stat_models"
+	"goskeleton/app/model/common/sms_models"
+	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/model/organization/agent_type_models"
+	"goskeleton/app/model/organization/custom_table_models"
+	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/organization/order_models"
+	"goskeleton/app/model/organization/org_operate_models"
+	"goskeleton/app/model/organization/org_stat_models"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/prodcut_models"
+	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/model/platform/dictionary_models"
 	"goskeleton/app/model/platform/migrate_models"
 	"goskeleton/app/model/platform/operate_models"
+	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/model/platform/server_monitor_models"
-	"goskeleton/app/model/platform/sms_models"
+	"goskeleton/app/model/platform/software_models"
+	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"time"
 )
@@ -128,81 +149,81 @@ func initTableAndData() {
 		_ = productFact.InitData()
 		_ = server_monitor_models.CreateServerMonitorFactory().CreateTable()
 		_ = sms_models.CreateSmsLogFactory().CreateTable()
-		_ = model_platform.CreateSoftwareFactory().CreateTable()
-		_ = model_platform.CreateSoftwareDownloadFactory().CreateTable()
-		_ = model_platform.CreateUploadFactory().CreateTable()
+		_ = software_models.CreateSoftwareFactory().CreateTable()
+		_ = software_models.CreateSoftwareDownloadFactory().CreateTable()
+		_ = upload_models.CreateUploadFactory().CreateTable()
 	}
 	//下面开始创建表 (organization库)
 	if !existMigration("db_organization_init_tables") {
-		_ = model_organization.CreateAgentTypeFactory().CreateTable()
-		_ = model_organization.CreateCustomTableFactory().CreateTable()
-		_ = model_organization.CreateDepartmentFactory().CreateTable()
-		_ = model_organization.CreateOperateLogFactory().CreateTable()
-		_ = model_organization.CreateOrderLogFactory().CreateTable()
-		_ = model_organization.CreateOrderFactory().CreateTable()
-		_ = model_organization.CreateOrgExtendFactory().CreateTable()
-		_ = model_organization.CreateOrgLogFactory().CreateTable()
-		_ = model_organization.CreateOrgStatDailyFactory().CreateTable()
-		_ = model_organization.CreateOrganizationFactory().CreateTable()
-		_ = model_organization.CreateRoleFactory().CreateTable()
+		_ = agent_type_models.CreateAgentTypeFactory().CreateTable()
+		_ = custom_table_models.CreateCustomTableFactory().CreateTable()
+		_ = department_models.CreateDepartmentFactory().CreateTable()
+		_ = org_operate_models.CreateOperateLogFactory().CreateTable()
+		_ = order_models.CreateOrderLogFactory().CreateTable()
+		_ = order_models.CreateOrderFactory().CreateTable()
+		_ = organization_models.CreateOrgExtendFactory().CreateTable()
+		_ = organization_models.CreateOrgLogFactory().CreateTable()
+		_ = org_stat_models.CreateOrgStatDailyFactory().CreateTable()
+		_ = organization_models.CreateOrganizationFactory().CreateTable()
+		_ = role_models.CreateRoleFactory().CreateTable()
 		_ = user_models.CreateUserFactory().CreateTable()
 	}
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
-		_ = model_agent.CreateAccessLogFactory().CreateTable()
+		_ = agent_access_models.CreateAccessLogFactory().CreateTable()
 		_ = agent_models.CreateAgentFactory().CreateTable()
 		_ = agent_models.CreateAgentExtendFactory().CreateTable()
-		_ = model_agent.CreateBlackmailGroupFactory().CreateTable()
-		_ = model_agent.CreateBlackmailPolicyFactory().CreateTable()
-		_ = model_agent.CreateDllFactory().CreateTable()
-		_ = model_agent.CreateDllRunningFactory().CreateTable()
-		_ = model_agent.CreateErrorFactory().CreateTable()
-		_ = model_agent.CreateMonitorFactory().CreateTable()
-		_ = model_agent.CreateOutreachGlobalFactory().CreateTable()
-		_ = model_agent.CreatePlugDynamicFactory().CreateTable()
-		_ = model_agent.CreatePlugIpGlobalFactory().CreateTable()
-		_ = model_agent.CreatePlugIpPolicyFactory().CreateTable()
-		_ = model_agent.CreatePortVirtualGlobalFactory().CreateTable()
-		_ = model_agent.CreatePortVirtualPolicyFactory().CreateTable()
-		_ = model_agent.CreatePortWorkingFactory().CreateTable()
-		_ = model_agent.CreateProcGlobalFactory().CreateTable()
-		_ = model_agent.CreateProcSampleFactory().CreateTable()
-		_ = model_agent.CreateProcessRunningFactory().CreateTable()
-		_ = model_agent.CreateProcessFactory().CreateTable()
-		_ = model_agent.CreateTamperGlobalFactory().CreateTable()
-		_ = model_agent.CreateTamperPolicyFactory().CreateTable()
-		_ = model_agent.CreateTaskFactory().CreateTable()
-		_ = model_agent.CreateThreatenCacheFactory().CreateTable()
-		_ = model_agent.CreateThreatenPushFactory().CreateTable()
-		_ = model_agent.CreateTrustGlobalFactory().CreateTable()
-		_ = model_agent.CreateTrustPolicyFactory().CreateTable()
-		_ = model_agent.CreateUsbFactory().CreateTable()
-		_ = model_agent.CreateUsbGlobalFactory().CreateTable()
-		_ = model_agent.CreateUsbLogFactory().CreateTable()
+		_ = blackmail_models.CreateBlackmailGroupFactory().CreateTable()
+		_ = blackmail_models.CreateBlackmailPolicyFactory().CreateTable()
+		_ = proc_models.CreateDllFactory().CreateTable()
+		_ = proc_models.CreateDllRunningFactory().CreateTable()
+		_ = agent_error_models.CreateErrorFactory().CreateTable()
+		_ = agent_monitor_models.CreateMonitorFactory().CreateTable()
+		_ = outreach_models.CreateOutreachGlobalFactory().CreateTable()
+		_ = plug_models.CreatePlugDynamicFactory().CreateTable()
+		_ = plug_models.CreatePlugIpGlobalFactory().CreateTable()
+		_ = plug_models.CreatePlugIpPolicyFactory().CreateTable()
+		_ = port_models.CreatePortVirtualGlobalFactory().CreateTable()
+		_ = port_models.CreatePortVirtualPolicyFactory().CreateTable()
+		_ = port_models.CreatePortWorkingFactory().CreateTable()
+		_ = proc_models.CreateProcGlobalFactory().CreateTable()
+		_ = proc_models.CreateProcSampleFactory().CreateTable()
+		_ = proc_models.CreateProcessRunningFactory().CreateTable()
+		_ = proc_models.CreateProcessFactory().CreateTable()
+		_ = tamper_models.CreateTamperGlobalFactory().CreateTable()
+		_ = tamper_models.CreateTamperPolicyFactory().CreateTable()
+		_ = task_models.CreateTaskFactory().CreateTable()
+		_ = threaten_models.CreateThreatenCacheFactory().CreateTable()
+		_ = threaten_models.CreateThreatenPushFactory().CreateTable()
+		_ = trust_models.CreateTrustGlobalFactory().CreateTable()
+		_ = trust_models.CreateTrustPolicyFactory().CreateTable()
+		_ = usb_models.CreateUsbFactory().CreateTable()
+		_ = usb_models.CreateUsbGlobalFactory().CreateTable()
+		_ = usb_models.CreateUsbLogFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_init_tables") {
-		_ = model_alarm.CreateAlarmBlackmailFactory().CreateTable()
-		_ = model_alarm.CreateAlarmDllFactory().CreateTable()
-		_ = model_alarm.CreateAlarmLoginFactory().CreateTable()
-		_ = model_alarm.CreateAlarmOutreachFactory().CreateTable()
-		_ = model_alarm.CreateAlarmPlugFactory().CreateTable()
-		_ = model_alarm.CreateAlarmPortFactory().CreateTable()
-		_ = model_alarm.CreateAlarmProcessFactory().CreateTable()
-		_ = model_alarm.CreateAlarmSelfFactory().CreateTable()
-		_ = model_alarm.CreateAlarmStatDailyFactory().CreateTable()
-		_ = model_alarm.CreateAlarmTamperFactory().CreateTable()
-		_ = model_alarm.CreateAlarmUsbFactory().CreateTable()
+		_ = alarm_models.CreateAlarmBlackmailFactory().CreateTable()
+		_ = alarm_models.CreateAlarmDllFactory().CreateTable()
+		_ = alarm_models.CreateAlarmLoginFactory().CreateTable()
+		_ = alarm_models.CreateAlarmOutreachFactory().CreateTable()
+		_ = alarm_models.CreateAlarmPlugFactory().CreateTable()
+		_ = alarm_models.CreateAlarmPortFactory().CreateTable()
+		_ = alarm_models.CreateAlarmProcessFactory().CreateTable()
+		_ = alarm_models.CreateAlarmSelfFactory().CreateTable()
+		_ = alarm_stat_models.CreateAlarmStatDailyFactory().CreateTable()
+		_ = alarm_models.CreateAlarmTamperFactory().CreateTable()
+		_ = alarm_models.CreateAlarmUsbFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)
 	if !existMigration("db_syslog_init_tables") {
-		_ = model_syslog.CreateSyslogDnsFactory().CreateTable()
-		_ = model_syslog.CreateSyslogInnerFactory().CreateTable()
-		_ = model_syslog.CreateSyslogLoginFactory().CreateTable()
-		_ = model_syslog.CreateSyslogOuterFactory().CreateTable()
-		_ = model_syslog.CreateSyslogProcessFactory().CreateTable()
+		_ = syslog_models.CreateSyslogDnsFactory().CreateTable()
+		_ = syslog_models.CreateSyslogInnerFactory().CreateTable()
+		_ = syslog_models.CreateSyslogLoginFactory().CreateTable()
+		_ = syslog_models.CreateSyslogOuterFactory().CreateTable()
+		_ = syslog_models.CreateSyslogProcessFactory().CreateTable()
 	}
 
 	//保存迁移数据

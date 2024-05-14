@@ -4,23 +4,23 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_outreach"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/outreach_models"
 	"time"
 )
 
 func CreateGlobalFactory() *OutreachGlobalCurd {
-	return &OutreachGlobalCurd{model_agent.CreateOutreachGlobalFactory()}
+	return &OutreachGlobalCurd{outreach_models.CreateOutreachGlobalFactory()}
 }
 
 type OutreachGlobalCurd struct {
-	masterModel *model_agent.OutreachGlobalModel
+	masterModel *outreach_models.OutreachGlobalModel
 }
 
 // AddDefault 新增默认数据
 func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 	curTime := time.Now().Format(variable.DateFormat)
 
-	list := []model_agent.OutreachGlobalModel{
+	list := []outreach_models.OutreachGlobalModel{
 		{
 			Id:         "382d29ad257f55c55c75c9f3a906c99e",
 			OrgId:      orgId,
@@ -94,7 +94,7 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 }
 
 // Add 新增
-func (crd *OutreachGlobalCurd) Add(param *model_agent.OutreachGlobalModel) bool {
+func (crd *OutreachGlobalCurd) Add(param *outreach_models.OutreachGlobalModel) bool {
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk

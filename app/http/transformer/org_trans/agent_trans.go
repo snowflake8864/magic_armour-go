@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -13,7 +13,7 @@ type Agent struct {
 	transformer.Common
 }
 
-func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*model_organization.DepartmentModel) map[string]interface{} {
+func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
@@ -53,7 +53,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 }
 
 // TransAgentManagePage 转换成管理页需要的数据
-func (t *Agent) TransAgentManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*model_organization.DepartmentModel, softwareNewest map[int]string) interface{} {
+func (t *Agent) TransAgentManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

@@ -1,17 +1,17 @@
 package org_stat_service
 
 import (
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/org_stat_models"
 	"goskeleton/app/utils/helpers"
 	"strings"
 )
 
 func CreateStatDailyFactory() *StatDaily {
-	return &StatDaily{masterModel: model_organization.CreateOrgStatDailyFactory()}
+	return &StatDaily{masterModel: org_stat_models.CreateOrgStatDailyFactory()}
 }
 
 type StatDaily struct {
-	masterModel *model_organization.OrgStatDailyModel
+	masterModel *org_stat_models.OrgStatDailyModel
 }
 
 type SearchConditions struct {
@@ -104,7 +104,7 @@ func (crd *StatDaily) ColumnOfAgent(total, online, add, linuxTotal, linuxOnline,
 }
 
 // Add 新增
-func (crd *StatDaily) Add(param *model_organization.OrgStatDailyModel) bool {
+func (crd *StatDaily) Add(param *org_stat_models.OrgStatDailyModel) bool {
 	if helpers.StringIsEmpty(param.CreatedAt) {
 		param.CreatedAt = helpers.DatetimeCurr()
 	}
@@ -112,7 +112,7 @@ func (crd *StatDaily) Add(param *model_organization.OrgStatDailyModel) bool {
 }
 
 // SumByDay 计算： 每天
-func (crd *StatDaily) SumByDay(day, column string) (result *model_organization.OrgStatDailyModel) {
+func (crd *StatDaily) SumByDay(day, column string) (result *org_stat_models.OrgStatDailyModel) {
 	search := SearchConditions{
 		StatDay: day,
 	}
@@ -125,7 +125,7 @@ func (crd *StatDaily) SumByDay(day, column string) (result *model_organization.O
 }
 
 // SumByMonthGroupDay 计算： 每月并且按照天分组
-func (crd *StatDaily) SumByMonthGroupDay(month int, column string) (items []*model_organization.OrgStatDailyModel) {
+func (crd *StatDaily) SumByMonthGroupDay(month int, column string) (items []*org_stat_models.OrgStatDailyModel) {
 	search := SearchConditions{
 		StatMonth: month,
 	}

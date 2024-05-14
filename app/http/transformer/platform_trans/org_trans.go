@@ -5,14 +5,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/organization_models"
 )
 
 type Org struct {
 	transformer.Common
 }
 
-func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[string]interface{} {
+func (t *Org) pageGeneral(model *organization_models.OrganizationModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["code"] = model.Code
@@ -37,7 +37,7 @@ func (t *Org) pageGeneral(model *model_organization.OrganizationModel) map[strin
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Org) TransPage(total int64, models []*model_organization.OrganizationModel) interface{} {
+func (t *Org) TransPage(total int64, models []*organization_models.OrganizationModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -53,11 +53,11 @@ func (t *Org) TransPage(total int64, models []*model_organization.OrganizationMo
 }
 
 // TransDetail 转换成详情页需要的数据
-func (t *Org) TransDetail(model *model_organization.OrganizationModel) map[string]interface{} {
+func (t *Org) TransDetail(model *organization_models.OrganizationModel) map[string]interface{} {
 	return t.pageGeneral(model)
 }
 
-func (t *Org) pageLogGeneral(model *model_organization.OrgLogModel) map[string]interface{} {
+func (t *Org) pageLogGeneral(model *organization_models.OrgLogModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["module"] = model.Module
@@ -77,7 +77,7 @@ func (t *Org) pageLogGeneral(model *model_organization.OrgLogModel) map[string]i
 }
 
 // TransLogPage 转换成日志页需要的数据
-func (t *Org) TransLogPage(total int64, models []*model_organization.OrgLogModel) interface{} {
+func (t *Org) TransLogPage(total int64, models []*organization_models.OrgLogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -93,7 +93,7 @@ func (t *Org) TransLogPage(total int64, models []*model_organization.OrgLogModel
 }
 
 // TransLogList 转换成日志列表
-func (t *Org) TransLogList(models []*model_organization.OrgLogModel) interface{} {
+func (t *Org) TransLogList(models []*organization_models.OrgLogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

@@ -4,20 +4,20 @@ import (
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_safety_report"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateOrgExtendFactory() *OrgExtend {
-	return &OrgExtend{masterModel: model_organization.CreateOrgExtendFactory()}
+	return &OrgExtend{masterModel: organization_models.CreateOrgExtendFactory()}
 }
 
 type OrgExtend struct {
-	masterModel *model_organization.OrgExtendModel
+	masterModel *organization_models.OrgExtendModel
 }
 
 // InitDefault 初始化默认数据
-func (crd *OrgExtend) InitDefault(orgId int64) model_organization.OrgExtendModel {
+func (crd *OrgExtend) InitDefault(orgId int64) organization_models.OrgExtendModel {
 	plugPortConfig := enum_plug.PlugPortConfig{}
 	plugPortConfig.Format()
 	plugLoginConfig := enum_plug.PlugLoginConfig{}
@@ -29,7 +29,7 @@ func (crd *OrgExtend) InitDefault(orgId int64) model_organization.OrgExtendModel
 	hardwareNoticeConfig := enum_safety_report.HardwareNoticeConfig{}
 	hardwareNoticeConfig.Format()
 
-	return model_organization.OrgExtendModel{
+	return organization_models.OrgExtendModel{
 		Id:                   orgId,
 		PlugPortConfig:       helpers.JsonEncode(plugPortConfig),
 		PlugLoginConfig:      helpers.JsonEncode(plugLoginConfig),
@@ -46,7 +46,7 @@ func (crd *OrgExtend) DeleteByOrg(orgId int64) bool {
 }
 
 // GetItemByOrg 通过企业编号获取
-func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *model_organization.OrgExtendModel) {
+func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.OrgExtendModel) {
 	model, _ = crd.masterModel.GetItemById(orgId)
 	return model
 }

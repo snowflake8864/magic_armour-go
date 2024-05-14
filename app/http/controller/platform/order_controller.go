@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/utils/response"
 )
@@ -43,7 +43,7 @@ func (u *OrderController) GrantDuration(ctx *gin.Context) {
 // AddForOrg  为企业添加订单授权
 func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := model_organization.OrderModel{}
+	param := order_models.OrderModel{}
 	param.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
 	param.ProductId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "productId"))
 	param.BuyNumber = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "buyNumber"))

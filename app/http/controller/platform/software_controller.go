@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers"
@@ -111,7 +111,7 @@ func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 
 // AddForManage 管理:  添加
 func (u *SoftwareController) AddForManage(ctx *gin.Context) {
-	var param = model_platform.SoftwareModel{}
+	var param = software_models.SoftwareModel{}
 	param.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
 	param.OsType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "osType"))
 	param.OsVer = helpers.JsonEncode(u.getWebSliceOfInt(ctx, "osVer"))

@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
 	"os"
@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func Upload(context *gin.Context, savePath string) (r bool, upload model_platform.UploadModel) {
+func Upload(context *gin.Context, savePath string) (r bool, upload upload_models.UploadModel) {
 
 	newSavePath, newReturnPath := generateYearMonthPath(savePath)
 

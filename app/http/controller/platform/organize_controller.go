@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
@@ -157,7 +157,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	//企业信息
-	orgParam := model_organization.OrganizationModel{}
+	orgParam := organization_models.OrganizationModel{}
 	orgParam.Name = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	orgParam.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	orgParam.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")

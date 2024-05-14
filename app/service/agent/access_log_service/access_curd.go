@@ -1,19 +1,19 @@
 package access_log_service
 
 import (
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_access_models"
 )
 
 func CreateCurdFactory() *AccessLogCurd {
-	return &AccessLogCurd{model_agent.CreateAccessLogFactory()}
+	return &AccessLogCurd{agent_access_models.CreateAccessLogFactory()}
 }
 
 type AccessLogCurd struct {
-	masterModel *model_agent.AccessLogModel
+	masterModel *agent_access_models.AccessLogModel
 }
 
 // Add 新增
-func (crd *AccessLogCurd) Add(param *model_agent.AccessLogModel) bool {
+func (crd *AccessLogCurd) Add(param *agent_access_models.AccessLogModel) bool {
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk

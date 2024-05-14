@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -14,7 +14,7 @@ type Order struct {
 	transformer.Common
 }
 
-func (t *Order) pageGeneral(model *model_organization.OrderModel) map[string]interface{} {
+func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["order_no"] = model.OrderNo
 	data["org_id"] = model.OrgId
@@ -57,7 +57,7 @@ func (t *Order) pageGeneral(model *model_organization.OrderModel) map[string]int
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Order) TransPage(total int64, models []*model_organization.OrderModel) interface{} {
+func (t *Order) TransPage(total int64, models []*order_models.OrderModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -73,7 +73,7 @@ func (t *Order) TransPage(total int64, models []*model_organization.OrderModel) 
 }
 
 // TransList 转换列表页需要的数据
-func (t *Order) TransList(models []*model_organization.OrderModel) (items []map[string]interface{}) {
+func (t *Order) TransList(models []*order_models.OrderModel) (items []map[string]interface{}) {
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model)
@@ -84,7 +84,7 @@ func (t *Order) TransList(models []*model_organization.OrderModel) (items []map[
 }
 
 // TransDetail 转换详情页需要的数据
-func (t *Order) TransDetail(model *model_organization.OrderModel) (item map[string]interface{}) {
+func (t *Order) TransDetail(model *order_models.OrderModel) (item map[string]interface{}) {
 	if model != nil {
 		item = t.pageGeneral(model)
 	}
@@ -92,7 +92,7 @@ func (t *Order) TransDetail(model *model_organization.OrderModel) (item map[stri
 }
 
 // TransLogsPage 转换成日志页需要的数据
-func (t *Order) TransLogsPage(total int64, models []*model_organization.OrderLogModel) interface{} {
+func (t *Order) TransLogsPage(total int64, models []*order_models.OrderLogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

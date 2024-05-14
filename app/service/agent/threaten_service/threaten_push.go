@@ -3,23 +3,23 @@ package threaten_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_threaten"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers"
 	"strings"
 )
 
 func CreatePushFactory() *ThreatenPush {
-	return &ThreatenPush{masterModel: model_agent.CreateThreatenPushFactory()}
+	return &ThreatenPush{masterModel: threaten_models.CreateThreatenPushFactory()}
 }
 
 type ThreatenPush struct {
 	ThreatenBase
-	masterModel *model_agent.ThreatenPushModel
+	masterModel *threaten_models.ThreatenPushModel
 }
 
 // GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*model_agent.ThreatenPushModel {
-	result := make(map[string]*model_agent.ThreatenPushModel)
+func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*threaten_models.ThreatenPushModel {
+	result := make(map[string]*threaten_models.ThreatenPushModel)
 
 	models, err := crd.masterModel.GetItemsByIds(ids)
 	if err != nil || models == nil {
@@ -32,7 +32,7 @@ func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*model_agent.Thre
 }
 
 // Page 分页
-func (crd *ThreatenPush) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.ThreatenPushModel) {
+func (crd *ThreatenPush) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*threaten_models.ThreatenPushModel) {
 	wheres := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(wheres, offset, pageSize, order)
@@ -45,7 +45,7 @@ func (crd *ThreatenPush) Clear() bool {
 }
 
 // BatchAdd 批量添加
-func (crd *ThreatenPush) BatchAdd(list []model_agent.ThreatenPushModel, level int, operateId int64, operateName string) (errCode int, err error) {
+func (crd *ThreatenPush) BatchAdd(list []threaten_models.ThreatenPushModel, level int, operateId int64, operateName string) (errCode int, err error) {
 	//取出id
 	var ids []string
 	for _, model := range list {
@@ -57,11 +57,11 @@ func (crd *ThreatenPush) BatchAdd(list []model_agent.ThreatenPushModel, level in
 	existPushes := crd.GetMapsByIds(ids)
 	currTime := helpers.DatetimeCurr()
 
-	var inserts []model_agent.ThreatenPushModel
+	var inserts []threaten_models.ThreatenPushModel
 	for _, model := range list {
 		tmpId := strings.ToLower(model.Id)
 		if _, isOK := existPushes[tmpId]; !isOK {
-			inserts = append(inserts, model_agent.ThreatenPushModel{
+			inserts = append(inserts, threaten_models.ThreatenPushModel{
 				Id:         tmpId,
 				Level:      level,
 				Dir:        model.Dir,

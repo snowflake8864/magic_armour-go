@@ -1,22 +1,22 @@
 package proc_service
 
 import (
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateGlobalCurdFactory() *GlobalCurd {
 	return &GlobalCurd{
-		masterModel: model_agent.CreateProcGlobalFactory(),
+		masterModel: proc_models.CreateProcGlobalFactory(),
 	}
 }
 
 type GlobalCurd struct {
-	masterModel *model_agent.ProcGlobalModel
+	masterModel *proc_models.ProcGlobalModel
 }
 
 // GetOne 获取一条
-func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *model_agent.ProcGlobalModel) {
+func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.ProcGlobalModel) {
 	model, err := crd.masterModel.GetItemByOrgAndId(orgId, hash)
 	if err == nil || helpers.StringIsEmpty(model.Id) {
 		return nil
@@ -25,7 +25,7 @@ func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *model_agent.Proc
 }
 
 // Add 添加
-func (crd *GlobalCurd) Add(param *model_agent.ProcGlobalModel) (errCode int, err error) {
+func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) (errCode int, err error) {
 
 	return errCode, err
 }

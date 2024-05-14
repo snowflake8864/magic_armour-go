@@ -4,23 +4,23 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateCurdFactory() *SoftwareCurd {
-	return &SoftwareCurd{masterModel: model_platform.CreateSoftwareFactory()}
+	return &SoftwareCurd{masterModel: software_models.CreateSoftwareFactory()}
 }
 
 type SoftwareCurd struct {
-	masterModel *model_platform.SoftwareModel
+	masterModel *software_models.SoftwareModel
 }
 
 // GetItemById 通过id获取
-func (crd *SoftwareCurd) GetItemById(id int64) (model *model_platform.SoftwareModel) {
+func (crd *SoftwareCurd) GetItemById(id int64) (model *software_models.SoftwareModel) {
 	model, _ = crd.masterModel.GetItemById(id)
 	return model
 }
@@ -38,7 +38,7 @@ func (crd *SoftwareCurd) GetMapsByPublished() (maps map[int]string) {
 }
 
 // GetItemsByPublished 最新发布数据,
-func (crd *SoftwareCurd) GetItemsByPublished() (items []*model_platform.SoftwareModel) {
+func (crd *SoftwareCurd) GetItemsByPublished() (items []*software_models.SoftwareModel) {
 	condition := map[string]interface{}{
 		"is_publish": enums.IsYes,
 	}
@@ -47,19 +47,19 @@ func (crd *SoftwareCurd) GetItemsByPublished() (items []*model_platform.Software
 }
 
 // Page 分页
-func (crd *SoftwareCurd) Page(where map[string]interface{}, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_platform.SoftwareModel) {
+func (crd *SoftwareCurd) Page(where map[string]interface{}, offset, pageSize int, orderField, orderSort string) (total int64, items []*software_models.SoftwareModel) {
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
 	return total, items
 }
 
 // Add 新增
-func (crd *SoftwareCurd) Add(param *model_platform.SoftwareModel) (errCode int, err error) {
+func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int, err error) {
 	if helpers.StringIsEmpty(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentHttpUrl)) {
 		return -1, errors.New("上传软件前需要配置终端访问地址")
 	}
 
-	uploadModel := upload_service.CreateCurdFactory().GetItemById(param.UploadId)
+	uploadModel := upload_models.CreateUploadFactory().GetItemById(param.UploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
 		return -1, errors.New("上传软件不存在")
 	}

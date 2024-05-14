@@ -3,18 +3,18 @@ package software_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateDownloadFactory() *SoftwareDownload {
-	return &SoftwareDownload{masterModel: model_platform.CreateSoftwareDownloadFactory()}
+	return &SoftwareDownload{masterModel: software_models.CreateSoftwareDownloadFactory()}
 }
 
 type SoftwareDownload struct {
-	masterModel *model_platform.SoftwareDownloadModel
+	masterModel *software_models.SoftwareDownloadModel
 }
 
 type AgentConfig struct {

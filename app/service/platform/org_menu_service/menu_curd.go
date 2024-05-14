@@ -3,7 +3,7 @@ package org_menu_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/model/organization/org_menu_models"
+	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/utils/helpers"
 )
 

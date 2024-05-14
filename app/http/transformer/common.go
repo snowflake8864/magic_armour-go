@@ -2,7 +2,7 @@ package transformer
 
 import (
 	"goskeleton/app/global/enums"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers"
 	"strings"
 )
@@ -70,7 +70,7 @@ var attributeJson struct {
 // TransThreatenInfo 转换威胁情报信息
 // @result["type"]: 1空 2遍历换行, 3表格形式
 // @result["attr"]: 根据type变化
-func (t *Common) TransThreatenInfo(model *model_agent.ThreatenCacheModel) map[string]interface{} {
+func (t *Common) TransThreatenInfo(model *threaten_models.ThreatenCacheModel) map[string]interface{} {
 	result := make(map[string]interface{})
 	if helpers.StringIsEmpty(model.CheckInfo) {
 		result["type"] = 1

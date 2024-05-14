@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_access_models"
 	accessLogService "goskeleton/app/service/agent/access_log_service"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -58,7 +58,7 @@ func SaveAgentAccess() gin.HandlerFunc {
 		context.Next()
 
 		go func(c *gin.Context) {
-			var param = model_agent.AccessLogModel{}
+			var param = agent_access_models.AccessLogModel{}
 			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()

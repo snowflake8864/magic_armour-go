@@ -9,7 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
@@ -179,7 +179,7 @@ func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 // BatchBlackForPush 推送: 批量黑
 func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (errCode int, err error) {
 	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
-	var params []model_agent.ThreatenPushModel
+	var params []threaten_models.ThreatenPushModel
 	err = helpers.Json2Any(list, &params)
 	if err != nil {
 		return -1, errors.New("参数格式错误")

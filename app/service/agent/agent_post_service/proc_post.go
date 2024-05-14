@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/md5_encrypt"
@@ -120,7 +120,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 		procHash := strings.ToLower(itemProcess.Hash)
 
 		//进程表数据
-		processModel := model_agent.ProcessModel{
+		processModel := proc_models.ProcessModel{
 			OrgId:     orgId,
 			AgentId:   agentId,
 			ProcHash:  procHash,
@@ -135,7 +135,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 		}
 
 		//运行中进程表
-		processRunningModel := model_agent.ProcessRunningModel{
+		processRunningModel := proc_models.ProcessRunningModel{
 			BaseModel: model.BaseModel{},
 			OrgId:     orgId,
 			AgentId:   agentId,
@@ -158,7 +158,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 			for _, itemDll := range itemProcess.ModuleList {
 				dllHash := strings.ToLower(itemDll.Hash)
 				//模块表数据
-				dllModel := model_agent.DllModel{
+				dllModel := proc_models.DllModel{
 					OrgId:     orgId,
 					AgentId:   agentId,
 					DllHash:   dllHash,
@@ -170,7 +170,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 				//推送给队列
 
 				//运行中模块表
-				dllRunningModel := model_agent.DllRunningModel{
+				dllRunningModel := proc_models.DllRunningModel{
 					BaseModel: model.BaseModel{},
 					OrgId:     orgId,
 					AgentId:   agentId,
@@ -192,7 +192,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 }
 
 // 发送进程数据
-func (crd *ProcPost) sendProcess(source int, task string, model *model_agent.ProcessModel) error {
+func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.ProcessModel) error {
 	if source != enum_process.SourceProcess {
 		return errors.New("数据主体不是进程")
 	}
@@ -212,7 +212,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *model_agent.Pro
 }
 
 // 发送进程运行中数据
-func (crd *ProcPost) sendProcessRunning(source int, task string, model *model_agent.ProcessRunningModel) error {
+func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_models.ProcessRunningModel) error {
 	if source != enum_process.SourceProcess {
 		return errors.New("数据主体不是进程")
 	}

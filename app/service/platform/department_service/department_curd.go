@@ -2,27 +2,27 @@ package department_service
 
 import (
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/department_models"
 )
 
 func CreateCurdFactory() *DepartmentCurd {
 	return &DepartmentCurd{
-		masterModel: model_organization.CreateDepartmentFactory(),
+		masterModel: department_models.CreateDepartmentFactory(),
 	}
 }
 
 type DepartmentCurd struct {
-	masterModel *model_organization.DepartmentModel
+	masterModel *department_models.DepartmentModel
 }
 
 // GetItemById 通过id获取一条记录
-func (crd *DepartmentCurd) GetItemById(id int64) (model *model_organization.DepartmentModel) {
+func (crd *DepartmentCurd) GetItemById(id int64) (model *department_models.DepartmentModel) {
 	model, _ = crd.masterModel.GetItemById(id)
 	return model
 }
 
 // GetMapsByIds 通过ids获取多条记录, 有映射关系
-func (crd *DepartmentCurd) GetMapsByIds(ids []int64) map[int64]*model_organization.DepartmentModel {
+func (crd *DepartmentCurd) GetMapsByIds(ids []int64) map[int64]*department_models.DepartmentModel {
 	models, err := crd.masterModel.GetItemsByIds(ids)
 	if err != nil {
 		return nil
@@ -30,7 +30,7 @@ func (crd *DepartmentCurd) GetMapsByIds(ids []int64) map[int64]*model_organizati
 	if models == nil {
 		return nil
 	}
-	result := make(map[int64]*model_organization.DepartmentModel)
+	result := make(map[int64]*department_models.DepartmentModel)
 	for _, model := range models {
 		result[model.Id] = model
 	}

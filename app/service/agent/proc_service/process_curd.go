@@ -6,24 +6,25 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateProcessFactory() *ProcessCurd {
 	return &ProcessCurd{
-		masterModel: model_agent.CreateProcessFactory(),
+		masterModel: proc_models.CreateProcessFactory(),
 	}
 }
 
 type ProcessCurd struct {
 	ProcessBase
-	masterModel *model_agent.ProcessModel
+	masterModel *proc_models.ProcessModel
 }
 
 // GetOne 获取一条
-func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *model_agent.ProcessModel) {
+func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *proc_models.ProcessModel) {
 	model, err := crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
 	if err == nil || helpers.StringIsEmpty(model.ProcHash) {
 		return nil
@@ -32,7 +33,7 @@ func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *model_
 }
 
 // Add 添加
-func (crd *ProcessCurd) Add(processModel *model_agent.ProcessModel) (errCode int, err error) {
+func (crd *ProcessCurd) Add(processModel *proc_models.ProcessModel) (errCode int, err error) {
 	if helpers.StringIsEmpty(processModel.CreatedAt) {
 		processModel.CreatedAt = helpers.DatetimeCurr()
 	}
@@ -69,8 +70,8 @@ func (crd *ProcessCurd) Add(processModel *model_agent.ProcessModel) (errCode int
 	return errCode, err
 }
 
-func (crd *ProcessCurd) pushThreaten(processModel *model_agent.ProcessModel, agentOs string) {
-	param := model_agent.ThreatenCacheModel{
+func (crd *ProcessCurd) pushThreaten(processModel *proc_models.ProcessModel, agentOs string) {
+	param := threaten_models.ThreatenCacheModel{
 		Id:        processModel.ProcHash,
 		Source:    enum_threaten.SourceAgentUpload,
 		Dir:       processModel.Dir,

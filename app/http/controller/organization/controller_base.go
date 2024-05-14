@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -109,7 +109,7 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 // parseAgentModels 解析终端集合并拿到相关数据
 // 返回 agentIds 终端集合
 // 返回 departments 组织架构集合
-func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
+func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*department_models.DepartmentModel) {
 	if agentModels == nil || len(agentModels) == 0 {
 		return nil, nil
 	}

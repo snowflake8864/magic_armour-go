@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
-	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/product_service"
@@ -16,7 +16,7 @@ import (
 
 func CreateCurdFactory() *OrderCurd {
 	return &OrderCurd{
-		masterModel: model_organization.CreateOrderFactory(),
+		masterModel: order_models.CreateOrderFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		redisPrefix: "order_number_",
 		redisExpire: 86400,
@@ -25,7 +25,7 @@ func CreateCurdFactory() *OrderCurd {
 
 type OrderCurd struct {
 	OrderBase
-	masterModel *model_organization.OrderModel
+	masterModel *order_models.OrderModel
 	redisClient *redis_factory.RedisClient
 	redisPrefix string
 	redisExpire int
@@ -58,7 +58,7 @@ func (crd *OrderCurd) getExpireAt() string {
 }
 
 // Add 平台新增
-func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId int64, operateName string) (errCode int, err error) {
+func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, operateName string) (errCode int, err error) {
 	//订单信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
 	if orgModel == nil || orgModel.Id == 0 {
@@ -110,7 +110,7 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderParam.OrgId,
 		OrderNo:       orderParam.OrderNo,
 		OrderStatus:   orderParam.OrderStatus,
@@ -130,19 +130,19 @@ func (crd *OrderCurd) Add(orderParam *model_organization.OrderModel, operateId i
 }
 
 // GetItemByOrderNo 通过编号称获取
-func (crd *OrderCurd) GetItemByOrderNo(id string) (model *model_organization.OrderModel) {
+func (crd *OrderCurd) GetItemByOrderNo(id string) (model *order_models.OrderModel) {
 	model, _ = crd.masterModel.GetItemById(id)
 	return model
 }
 
 // GetItemByOrderNos 通过编号集合称获取
-func (crd *OrderCurd) GetItemByOrderNos(ids []string) (items []*model_organization.OrderModel) {
+func (crd *OrderCurd) GetItemByOrderNos(ids []string) (items []*order_models.OrderModel) {
 	items, _ = crd.masterModel.GetItemsByIds(ids)
 	return items
 }
 
 // GetValidItemsByOrg 通过企业编号获取有效订单
-func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*model_organization.OrderModel) {
+func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*order_models.OrderModel) {
 	search := SearchConditions{
 		OrgId:       orgId,
 		IsExpire:    enums.IsNot,
@@ -157,7 +157,7 @@ func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*model_organizati
 }
 
 // Page 分页
-func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_organization.OrderModel) {
+func (crd *OrderCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*order_models.OrderModel) {
 	where := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)
@@ -185,7 +185,7 @@ func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateNam
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderModel.OrgId,
 		OrderNo:       orderModel.OrderNo,
 		OrderStatus:   orderModel.OrderStatus,
@@ -224,7 +224,7 @@ func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateN
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderModel.OrgId,
 		OrderNo:       orderModel.OrderNo,
 		OrderStatus:   orderModel.OrderStatus,
@@ -272,7 +272,7 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderModel.OrgId,
 		OrderNo:       orderModel.OrderNo,
 		OrderStatus:   orderModel.OrderStatus,
@@ -309,7 +309,7 @@ func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName s
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderModel.OrgId,
 		OrderNo:       orderModel.OrderNo,
 		OrderStatus:   orderModel.OrderStatus,
@@ -344,7 +344,7 @@ func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName
 	}
 
 	//订单日志
-	logParam := model_organization.OrderLogModel{
+	logParam := order_models.OrderLogModel{
 		OrgId:         orderModel.OrgId,
 		OrderNo:       orderModel.OrderNo,
 		OrderStatus:   orderModel.OrderStatus,
@@ -403,7 +403,7 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 		crd.masterModel.UpdateById(model.OrderNo, updates)
 
 		//订单日志
-		logParam := model_organization.OrderLogModel{
+		logParam := order_models.OrderLogModel{
 			OrgId:         model.OrgId,
 			OrderNo:       model.OrderNo,
 			OrderStatus:   model.OrderStatus,
@@ -418,7 +418,7 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 }
 
 // SumBySearch 计算： 按照条件
-func (crd *OrderCurd) SumBySearch(search SearchConditions, column string) (result *model_organization.OrderModel) {
+func (crd *OrderCurd) SumBySearch(search SearchConditions, column string) (result *order_models.OrderModel) {
 	where := crd.search2Where(search)
 	result, err := crd.masterModel.CalcByConditions(where, column)
 	if err != nil {
