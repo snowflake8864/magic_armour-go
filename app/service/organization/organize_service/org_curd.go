@@ -22,7 +22,6 @@ func CreateOrgCurdFactory() *OrgCurd {
 }
 
 type OrgCurd struct {
-	OrgBase
 	masterModel *organization_models.OrganizationModel
 }
 
@@ -374,12 +373,4 @@ func (crd *OrgCurd) GetItemByOrg(orgId int64) (model *organization_models.Organi
 func (crd *OrgCurd) GetItemByName(name string) (model *organization_models.OrganizationModel) {
 	model, _ = crd.masterModel.GetItemByName(name)
 	return model
-}
-
-// Page 分页
-func (crd *OrgCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*organization_models.OrganizationModel) {
-	where := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(where, offset, pageSize, order)
-	return total, items
 }

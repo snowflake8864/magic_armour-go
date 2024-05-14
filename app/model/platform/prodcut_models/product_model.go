@@ -18,6 +18,7 @@ func CreateProductFactory() *ProductModel {
 //结构体
 
 type ProductModel struct {
+	baseProduct
 	model.BaseModel
 	Id          int64   `json:"id" gorm:"primaryKey"`
 	Title       string  `json:"title"`
@@ -243,19 +244,20 @@ func (m *ProductModel) DeleteById(id int64) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *ProductModel) GetItemById(id int64) (item *ProductModel, err error) {
+func (m *ProductModel) GetItemById(id int64) (item *ProductModel) {
 	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return item, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*ProductModel, err error) {
+func (m *ProductModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProductModel) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -268,17 +270,18 @@ func (m *ProductModel) GetItemsByConditions(condition map[string]interface{}, of
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 
 // Count 通过条件统计
-func (m *ProductModel) Count(condition map[string]interface{}) int64 {
+func (m *ProductModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -290,13 +293,11 @@ func (m *ProductModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *ProductModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*ProductModel) {
-	total = m.Count(condition)
-	if total == 0 {
+func (m *ProductModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProductModel) {
+	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil

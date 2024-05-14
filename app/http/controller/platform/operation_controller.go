@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/platform/operate_models"
 	"goskeleton/app/service/platform/operate_log_service"
 	"goskeleton/app/utils/response"
 )
@@ -35,7 +36,7 @@ func (u *OperationController) Page(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//产品分页
-	total, models := operate_log_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
+	total, models := operate_models.CreateOperateLogFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Operation{}).TransPage(total, models))
 }

@@ -81,7 +81,7 @@ func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgLogModel, err error) {
+func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgLogModel) {
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
@@ -96,9 +96,9 @@ func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, l
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
@@ -123,8 +123,8 @@ func (m *OrgLogModel) Page(condition SearchConditions, offset, limit int, order 
 	if total == 0 {
 		return total, nil
 	}
-	items, err := m.GetItemsByConditions(condition, offset, limit, order)
-	if err == nil {
+	items = m.GetItemsByConditions(condition, offset, limit, order)
+	if items == nil {
 		return total, items
 	} else {
 		return 0, nil

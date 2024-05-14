@@ -35,14 +35,6 @@ func (crd *OperateLogCurd) search2Where(search SearchConditions) map[string]inte
 	return wheres
 }
 
-// Page 分页
-func (crd *OperateLogCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*operate_models.OperateLogModel) {
-	where := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(where, offset, pageSize, order)
-	return total, items
-}
-
 // Add 新增
 func (crd *OperateLogCurd) Add(param *operate_models.OperateLogModel) bool {
 	isOk := crd.masterModel.InsertItem(param)

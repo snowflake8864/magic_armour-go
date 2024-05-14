@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/organization/prodcut_models"
+	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
@@ -43,7 +43,7 @@ func (u *ProductController) AllPublished(ctx *gin.Context) {
 // PageForManage 管理: 分页
 func (u *ProductController) PageForManage(ctx *gin.Context) {
 	//页面上传
-	conditions := product_service.SearchConditions{}
+	conditions := prodcut_models.SearchConditions{}
 	conditions.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
 	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
 	conditions.IsPublish = enums.AllDefaultInt
@@ -52,7 +52,7 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//产品分页
-	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
+	total, models := prodcut_models.CreateProductFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }

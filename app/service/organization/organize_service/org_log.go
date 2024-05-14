@@ -10,7 +10,6 @@ func CreateOrgLogFactory() *OrgLog {
 }
 
 type OrgLog struct {
-	OrgBase
 	masterModel *organization_models.OrgLogModel
 }
 
@@ -35,21 +34,11 @@ func (crd *OrgLog) Add(param *organization_models.OrgLogModel) bool {
 	return crd.masterModel.InsertItem(param)
 }
 
-// Page 分页
-func (crd *OrgLog) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*organization_models.OrgLogModel) {
-	where := crd.search2Where(search)
-	order := orderField + " " + orderSort
-	total, items = crd.masterModel.Page(where, offset, pageSize, order)
-	return total, items
-}
-
 // NewestList 最新列表
 func (crd *OrgLog) NewestList(limit int) (items []*organization_models.OrgLogModel) {
-	where := crd.search2Where(SearchConditions{})
+	where := organization_models.SearchConditions{}
 
-	items, err := crd.masterModel.GetItemsByConditions(where, 0, limit, "created_at DESC")
-	if err != nil {
-		return nil
-	}
+	items = crd.masterModel.GetItemsByConditions(where, 0, limit, "created_at DESC")
+
 	return items
 }

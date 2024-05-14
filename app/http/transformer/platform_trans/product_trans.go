@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/organization/prodcut_models"
+	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/utils/helpers"
 )
 
