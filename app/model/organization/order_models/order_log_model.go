@@ -15,6 +15,7 @@ func CreateOrderLogFactory() *OrderLogModel {
 //结构体
 
 type OrderLogModel struct {
+	baseOrder
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
 	OrgId         int64  `json:"org_id"`
