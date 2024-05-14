@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/response"
@@ -168,7 +169,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	orgParam.CreateName = loginInfo.Username
 
 	//用户信息
-	userParam := model_organization.UserModel{}
+	userParam := user_models.UserModel{}
 	userParam.Username = orgParam.UserName
 	userParam.Phone = orgParam.UserPhone
 	userParam.Email = orgParam.UserEmail

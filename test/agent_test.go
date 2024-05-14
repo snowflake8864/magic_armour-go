@@ -3,7 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_software"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/helpers"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -11,7 +11,7 @@ import (
 )
 
 func TestAgentLogin(t *testing.T) {
-	var param = agent_model.AgentModel{}
+	var param = agent_models.AgentModel{}
 
 	param.AgentId = "test_111"
 	param.HostName = "中文名称"

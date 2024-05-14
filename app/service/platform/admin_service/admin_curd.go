@@ -3,29 +3,27 @@ package admin_service
 import (
 	"errors"
 	"gorm.io/gorm"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateCurdFactory() *AdminCurd {
-	return &AdminCurd{masterModel: model_platform.CreateAdminFactory()}
+	return &AdminCurd{masterModel: admin_models.CreateAdminFactory()}
 }
 
 type AdminCurd struct {
-	masterModel *model_platform.AdminModel
+	masterModel *admin_models.AdminModel
 }
 
 // GetItemByUsername 通过用户名获取
-func (crd *AdminCurd) GetItemByUsername(name string) (model *model_platform.AdminModel) {
-	model, _ = crd.masterModel.GetItemByUsername(name)
-	return model
+func (crd *AdminCurd) GetItemByUsername(name string) (model *admin_models.AdminModel) {
+	return crd.masterModel.GetItemByUsername(name)
 }
 
 // HasByUsernameAndPw 用户名和密码一致
 func (crd *AdminCurd) HasByUsernameAndPw(name, pw string) bool {
-	adminModel, _ := crd.masterModel.GetItemByUsernameAndPw(name, pw)
-	if adminModel.Id > 0 {
+	if adminModel := crd.masterModel.GetItemByUsernameAndPw(name, pw); adminModel.Id > 0 {
 		return true
 	}
 	return false
@@ -36,7 +34,11 @@ func (crd *AdminCurd) IncrPwErrorNum(id int64) bool {
 	updates := map[string]interface{}{
 		"pw_error_num": gorm.Expr("pw_error_num+1"),
 	}
-	return crd.masterModel.UpdateById(id, updates)
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); isOk {
+		return true
+	} else {
+		return false
+	}
 }
 
 // loginSuccess 登录成功
@@ -45,13 +47,17 @@ func (crd *AdminCurd) loginSuccess(id int64) bool {
 		"pw_error_num":  0,
 		"last_login_at": helpers.DatetimeCurr(),
 	}
-	return crd.masterModel.UpdateById(id, updates)
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); isOk {
+		return true
+	} else {
+		return false
+	}
 }
 
 // ModifyPwById 修改密码
 func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, err error) {
-	adminModel, err := crd.masterModel.GetItemById(id)
-	if err != nil || adminModel.Id == 0 {
+	adminModel := crd.masterModel.GetItemById(id)
+	if adminModel.Id == 0 {
 		return -1, errors.New("用户不存在")
 	}
 
@@ -69,7 +75,7 @@ func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, 
 	updates := map[string]interface{}{
 		"pw": newPw,
 	}
-	if !crd.masterModel.UpdateById(id, updates) {
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
 		return -1, errors.New("修改密码失败")
 	}
 	return errCode, err

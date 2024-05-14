@@ -1,15 +1,15 @@
 package dictionary_service
 
 import (
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/dictionary_models"
 )
 
 func CreateCurdFactory() *DictionaryCurd {
-	return &DictionaryCurd{model_platform.CreateDictionaryFactory()}
+	return &DictionaryCurd{dictionary_models.CreateDictionaryFactory()}
 }
 
 type DictionaryCurd struct {
-	masterModel *model_platform.DictionaryModel
+	masterModel *dictionary_models.DictionaryModel
 }
 
 // GetMapByModule 通过模块获取map[id][val]
@@ -24,7 +24,7 @@ func (crd *DictionaryCurd) GetMapByModule(module string) map[string]string {
 }
 
 // GetAll 获取全部
-func (crd *DictionaryCurd) GetAll() (items []*model_platform.DictionaryModel) {
+func (crd *DictionaryCurd) GetAll() (items []*dictionary_models.DictionaryModel) {
 	items = crd.masterModel.GetAll()
 	return items
 }

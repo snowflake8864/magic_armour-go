@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_menu"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/organization/org_menu_models"
 	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/tree"
@@ -51,7 +51,7 @@ func (u *OrgMenuController) Tree(ctx *gin.Context) {
 
 // Add 添加
 func (u *OrgMenuController) Add(ctx *gin.Context) {
-	var param = model_platform.OrgMenuModel{
+	var param = org_menu_models.OrgMenuModel{
 		Position: enum_menu.PositionLeft,
 		ParentId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "parentId")),
 		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
@@ -75,7 +75,7 @@ func (u *OrgMenuController) Add(ctx *gin.Context) {
 
 // Edit 编辑
 func (u *OrgMenuController) Edit(ctx *gin.Context) {
-	var param = model_platform.OrgMenuModel{
+	var param = org_menu_models.OrgMenuModel{
 		Id:       int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
 		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "type")),
 		Name:     ctx.GetString(consts.ValidatorPrefixPlatform + "name"),

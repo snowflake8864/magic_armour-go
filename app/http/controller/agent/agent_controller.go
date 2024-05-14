@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers"
@@ -26,7 +26,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
 
 	//终端配置
-	agentCurdFact := agent_model.CreateAgentFactory()
+	agentCurdFact := agent_models.CreateAgentFactory()
 	agentModel := agentCurdFact.GetItemByOrgAndAgent(loginInfo.OrgId, loginInfo.AgentId, agentCurdFact.ColumnConfig(true))
 
 	//数据字典

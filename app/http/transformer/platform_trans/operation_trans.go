@@ -5,14 +5,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/operate_models"
 )
 
 type Operation struct {
 	transformer.Common
 }
 
-func (t *Operation) pageGeneral(model *model_platform.OperateLogModel) map[string]interface{} {
+func (t *Operation) pageGeneral(model *operate_models.OperateLogModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["path"] = model.Path
@@ -33,7 +33,7 @@ func (t *Operation) pageGeneral(model *model_platform.OperateLogModel) map[strin
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Operation) TransPage(total int64, models []*model_platform.OperateLogModel) interface{} {
+func (t *Operation) TransPage(total int64, models []*operate_models.OperateLogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

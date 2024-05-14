@@ -3,7 +3,7 @@ package agent_service
 import (
 	"encoding/json"
 	"errors"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/md5_encrypt"
@@ -44,7 +44,7 @@ func (crd *AgentCache) getKeyByLogin(val string) string {
 }
 
 // EncryptByLogin 登录信息加密并缓存
-func (crd *AgentCache) EncryptByLogin(param *agent_model.AgentModel) string {
+func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 	var loginInfo AgentCacheLogin
 	loginInfo.OrgId = param.OrgId
 	loginInfo.AgentId = param.AgentId

@@ -3,12 +3,21 @@ package database
 import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_alarm"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/model/model_platform"
 	"goskeleton/app/model/model_syslog"
+	"goskeleton/app/model/organization/org_menu_models"
+	"goskeleton/app/model/organization/prodcut_models"
+	"goskeleton/app/model/organization/user_models"
+	"goskeleton/app/model/platform/admin_models"
+	"goskeleton/app/model/platform/dictionary_models"
+	"goskeleton/app/model/platform/migrate_models"
+	"goskeleton/app/model/platform/operate_models"
+	"goskeleton/app/model/platform/server_monitor_models"
+	"goskeleton/app/model/platform/sms_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"time"
 )
@@ -50,9 +59,9 @@ func start(action string) {
 	case "init":
 		initTableAndData()
 	case "menu":
-		_ = model_platform.CreateOrgMenuFactory().InitData()
+		_ = org_menu_models.CreateOrgMenuFactory().InitData()
 	case "dictionary":
-		_ = model_platform.CreateDictionaryFactory().InitData()
+		_ = dictionary_models.CreateDictionaryFactory().InitData()
 		_ = dictionary_service.CreateCacheFactory().Rebuild()
 	case "append":
 		variable.ZapLog.Sugar().Debug("action:" + action)
@@ -64,11 +73,11 @@ func start(action string) {
 var migrateMap map[string]string
 
 // 不在迁移表中
-var notExistMigrateList []model_platform.MigrateModel
+var notExistMigrateList []migrate_models.MigrateModel
 
 // 获取迁移数据
 func getMigrationMap() {
-	migrateFact := model_platform.CreateMigrateFactory()
+	migrateFact := migrate_models.CreateMigrateFactory()
 	migrateMap, _ = migrateFact.GetAllMaps()
 	if migrateMap == nil {
 		variable.ZapLog.Sugar().Debug("migrate GetAllMaps fail")
@@ -81,7 +90,7 @@ func saveMigrations() {
 		variable.ZapLog.Sugar().Debug("本次迁移数据为空")
 		return
 	}
-	migrateFact := model_platform.CreateMigrateFactory()
+	migrateFact := migrate_models.CreateMigrateFactory()
 	_ = migrateFact.InsertBatch(&notExistMigrateList)
 }
 
@@ -90,7 +99,7 @@ func existMigration(migration string) bool {
 	if ok {
 		return true
 	}
-	var st = model_platform.MigrateModel{
+	var st = migrate_models.MigrateModel{
 		Migration: migration,
 		CreatedAt: time.Now().Format(variable.DateFormat),
 	}
@@ -100,7 +109,7 @@ func existMigration(migration string) bool {
 
 func initTableAndData() {
 	//初始化迁移表
-	migrateFact := model_platform.CreateMigrateFactory()
+	migrateFact := migrate_models.CreateMigrateFactory()
 	migrateFact.CreateTable()
 
 	//获取迁移表数据
@@ -108,17 +117,17 @@ func initTableAndData() {
 
 	//下面开始创建表 (platform库)
 	if !existMigration("db_platform_init_tables") {
-		adminFact := model_platform.CreateAdminFactory()
+		adminFact := admin_models.CreateAdminFactory()
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
-		_ = model_platform.CreateDictionaryFactory().CreateTable()
-		_ = model_platform.CreateOperateLogFactory().CreateTable()
-		_ = model_platform.CreateOrgMenuFactory().CreateTable()
-		productFact := model_platform.CreateProductFactory()
+		_ = dictionary_models.CreateDictionaryFactory().CreateTable()
+		_ = operate_models.CreateOperateLogFactory().CreateTable()
+		_ = org_menu_models.CreateOrgMenuFactory().CreateTable()
+		productFact := prodcut_models.CreateProductFactory()
 		_ = productFact.CreateTable()
 		_ = productFact.InitData()
-		_ = model_platform.CreateServerMonitorFactory().CreateTable()
-		_ = model_platform.CreateSmsLogFactory().CreateTable()
+		_ = server_monitor_models.CreateServerMonitorFactory().CreateTable()
+		_ = sms_models.CreateSmsLogFactory().CreateTable()
 		_ = model_platform.CreateSoftwareFactory().CreateTable()
 		_ = model_platform.CreateSoftwareDownloadFactory().CreateTable()
 		_ = model_platform.CreateUploadFactory().CreateTable()
@@ -136,13 +145,13 @@ func initTableAndData() {
 		_ = model_organization.CreateOrgStatDailyFactory().CreateTable()
 		_ = model_organization.CreateOrganizationFactory().CreateTable()
 		_ = model_organization.CreateRoleFactory().CreateTable()
-		_ = model_organization.CreateUserFactory().CreateTable()
+		_ = user_models.CreateUserFactory().CreateTable()
 	}
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
 		_ = model_agent.CreateAccessLogFactory().CreateTable()
-		_ = agent_model.CreateAgentFactory().CreateTable()
-		_ = agent_model.CreateAgentExtendFactory().CreateTable()
+		_ = agent_models.CreateAgentFactory().CreateTable()
+		_ = agent_models.CreateAgentExtendFactory().CreateTable()
 		_ = model_agent.CreateBlackmailGroupFactory().CreateTable()
 		_ = model_agent.CreateBlackmailPolicyFactory().CreateTable()
 		_ = model_agent.CreateDllFactory().CreateTable()

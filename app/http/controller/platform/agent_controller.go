@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/response"
@@ -34,13 +34,13 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 
 // StatByOrg 按企业统计终端
 func (u *AgentController) StatByOrg(ctx *gin.Context) {
-	searchConditions := agent_model.SearchConditions{
+	searchConditions := agent_models.SearchConditions{
 		OrgId:    int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId")),
 		IsSafe:   enums.AllDefaultInt,
 		IsOnline: enums.AllDefaultInt,
 	}
 
-	agentFact := agent_model.CreateAgentFactory()
+	agentFact := agent_models.CreateAgentFactory()
 	stat := agentFact.CalcByConditions(searchConditions, agentFact.ColumnCalcAgents(false, true, false, false, false))
 	response.SuccessReturnData(ctx, stat)
 }
@@ -53,7 +53,7 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 // PageForOwn 终端本身: 分页
 func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	//页面上传
-	conditions := agent_model.SearchConditions{}
+	conditions := agent_models.SearchConditions{}
 	conditions.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "OrgId"))
 	conditions.AgentId = ctx.GetString(consts.ValidatorPrefixPlatform + "agentId")
 	conditions.HostName = ctx.GetString(consts.ValidatorPrefixPlatform + "hostName")
@@ -69,7 +69,7 @@ func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
 
 	//终端分页
-	total, agentModels := agent_model.CreateAgentFactory().Page(conditions, offset, pageSize, order)
+	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 
@@ -79,7 +79,7 @@ func (u *AgentController) PageForOwn(ctx *gin.Context) {
 // parseAgentModels 解析终端集合并拿到相关数据
 // 返回 agentIds 终端集合
 // 返回 departments 组织架构集合
-func (u *ControllerBase) parseAgentModels(agentModels []*agent_model.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
+func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
 	if agentModels == nil || len(agentModels) == 0 {
 		return nil, nil
 	}

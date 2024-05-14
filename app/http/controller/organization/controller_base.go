@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/model_organization"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
@@ -22,10 +22,10 @@ func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogi
 }
 
 // getAgentSearchConditions 获取终端查询条件
-func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model.SearchConditions, error) {
+func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_models.SearchConditions, error) {
 
 	//页面上传
-	searchConditions := agent_model.SearchConditions{}
+	searchConditions := agent_models.SearchConditions{}
 	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrganization + "agentId")
 	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixOrganization + "hostName")
 	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrganization + "agentIp")
@@ -109,7 +109,7 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 // parseAgentModels 解析终端集合并拿到相关数据
 // 返回 agentIds 终端集合
 // 返回 departments 组织架构集合
-func (u *ControllerBase) parseAgentModels(agentModels []*agent_model.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
+func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
 	if agentModels == nil || len(agentModels) == 0 {
 		return nil, nil
 	}

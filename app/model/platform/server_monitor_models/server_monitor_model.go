@@ -1,4 +1,4 @@
-package model_platform
+package server_monitor_models
 
 import (
 	"goskeleton/app/global/variable"

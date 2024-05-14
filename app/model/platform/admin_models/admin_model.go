@@ -1,4 +1,4 @@
-package model_platform
+package admin_models
 
 import (
 	"goskeleton/app/global/variable"
@@ -113,42 +113,46 @@ func (m *AdminModel) InitData() bool {
 	if result.RowsAffected > 0 {
 		return true
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
 	}
 }
 
-func (m *AdminModel) GetItemById(id int64) (item *AdminModel, err error) {
+func (m *AdminModel) GetItemById(id int64) (item *AdminModel) {
 	result := m.Select(m.Columns()).Where("id=?", id).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
 	}
 }
 
-func (m *AdminModel) GetItemByUsername(username string) (item *AdminModel, err error) {
+func (m *AdminModel) GetItemByUsername(username string) (item *AdminModel) {
 	result := m.Select(m.Columns()).Where("username=?", username).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
 	}
 }
 
-func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (item *AdminModel, err error) {
+func (m *AdminModel) GetItemByUsernameAndPw(username, pw string) (item *AdminModel) {
 	result := m.Select(m.Columns()).Where("username=? and pw=?", username, pw).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return nil, result.Error
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
 	}
 }
 
-func (m *AdminModel) UpdateById(id int64, updates map[string]interface{}) bool {
+func (m *AdminModel) UpdateById(id int64, updates map[string]interface{}) (bool, int64) {
 	result := m.Table(m.TableName()).Where("id=?", id).Updates(updates)
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }

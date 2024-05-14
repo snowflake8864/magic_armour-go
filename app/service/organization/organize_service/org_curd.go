@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/model/model_organization"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
@@ -26,7 +27,7 @@ type OrgCurd struct {
 }
 
 // Add 新增企业
-func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userParam *model_organization.UserModel, netIp string) (errCode int, err error) {
+func (crd *OrgCurd) Add(orgParam *model_organization.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
 	//用户已存在
 	userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username)
 	if userExist.Id > 0 {

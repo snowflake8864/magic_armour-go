@@ -3,16 +3,16 @@ package product_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/organization/prodcut_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateCurdFactory() *ProductCurd {
-	return &ProductCurd{masterModel: model_platform.CreateProductFactory()}
+	return &ProductCurd{masterModel: prodcut_models.CreateProductFactory()}
 }
 
 type ProductCurd struct {
-	masterModel *model_platform.ProductModel
+	masterModel *prodcut_models.ProductModel
 }
 
 type SearchConditions struct {
@@ -41,14 +41,14 @@ func (crd *ProductCurd) search2Where(search SearchConditions) map[string]interfa
 }
 
 // Add 新增
-func (crd *ProductCurd) Add(param *model_platform.ProductModel) bool {
+func (crd *ProductCurd) Add(param *prodcut_models.ProductModel) bool {
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk
 }
 
 // UpdateById 新增
-func (crd *ProductCurd) UpdateById(param *model_platform.ProductModel) (errCode int, err error) {
+func (crd *ProductCurd) UpdateById(param *prodcut_models.ProductModel) (errCode int, err error) {
 	updates := make(map[string]interface{})
 	updates["title"] = param.Title
 	updates["grant_type"] = param.GrantType
@@ -70,13 +70,13 @@ func (crd *ProductCurd) DeleteById(id int64) bool {
 }
 
 // GetItemById 通过编号称获取
-func (crd *ProductCurd) GetItemById(id int64) (model *model_platform.ProductModel) {
+func (crd *ProductCurd) GetItemById(id int64) (model *prodcut_models.ProductModel) {
 	model, _ = crd.masterModel.GetItemById(id)
 	return model
 }
 
 // GetPublished 获取已发布的
-func (crd *ProductCurd) GetPublished() (items []*model_platform.ProductModel) {
+func (crd *ProductCurd) GetPublished() (items []*prodcut_models.ProductModel) {
 	search := SearchConditions{
 		IsPublish: enums.IsYes,
 	}
@@ -88,7 +88,7 @@ func (crd *ProductCurd) GetPublished() (items []*model_platform.ProductModel) {
 }
 
 // Page 分页
-func (crd *ProductCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_platform.ProductModel) {
+func (crd *ProductCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*prodcut_models.ProductModel) {
 	where := crd.search2Where(search)
 	order := orderField + " " + orderSort
 	total, items = crd.masterModel.Page(where, offset, pageSize, order)

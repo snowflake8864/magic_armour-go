@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/response"
@@ -113,7 +113,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 // 验证终端是否有保护模式
 func (u *TaskController) checkAgentHasProject(orgId int64, agentId string) bool {
-	agentCurdFact := agent_model.CreateAgentFactory()
+	agentCurdFact := agent_models.CreateAgentFactory()
 	agentModel := agentCurdFact.GetItemByOrgAndAgent(orgId, agentId, agentCurdFact.ColumnSwitchAndModeForAlarm(true))
 	if agentModel.ProcessSwitch == enums.SwitchOn && agentModel.ProcessMode == enum_agent.ModeProject {
 		return true

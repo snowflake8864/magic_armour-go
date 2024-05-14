@@ -4,7 +4,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 )
 
@@ -23,7 +23,7 @@ type AgentBase struct {
 }
 
 // addTask 新增任务
-func (crd *AgentBase) addTask(param *agent_model.AgentModel, isTrustDir bool, remark string) {
+func (crd *AgentBase) addTask(param *agent_models.AgentModel, isTrustDir bool, remark string) {
 	tasks := []int{
 		enum_task.TypeAgentConfigDownload,
 	}

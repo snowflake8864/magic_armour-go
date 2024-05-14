@@ -1,4 +1,4 @@
-package model_platform
+package sms_models
 
 import (
 	"goskeleton/app/global/variable"

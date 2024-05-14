@@ -1,4 +1,4 @@
-package agent_model
+package agent_models
 
 import (
 	"gorm.io/gorm"

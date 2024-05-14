@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers"
@@ -42,7 +42,7 @@ func (crd *ProcessCurd) Add(processModel *model_agent.ProcessModel) (errCode int
 		return errCode, err
 	}
 
-	agentFact := agent_model.CreateAgentFactory()
+	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
 		variable.ZapLog.Info("终端不存在")

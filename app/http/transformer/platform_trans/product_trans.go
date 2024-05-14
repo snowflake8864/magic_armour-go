@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/organization/prodcut_models"
 	"goskeleton/app/utils/helpers"
 )
 
@@ -13,7 +13,7 @@ type Product struct {
 	transformer.Common
 }
 
-func (t *Product) pageGeneral(model *model_platform.ProductModel) map[string]interface{} {
+func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["title"] = model.Title
@@ -32,7 +32,7 @@ func (t *Product) pageGeneral(model *model_platform.ProductModel) map[string]int
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Product) TransPage(total int64, models []*model_platform.ProductModel) interface{} {
+func (t *Product) TransPage(total int64, models []*prodcut_models.ProductModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -48,7 +48,7 @@ func (t *Product) TransPage(total int64, models []*model_platform.ProductModel) 
 }
 
 // TransList 转换列表页需要的数据
-func (t *Product) TransList(models []*model_platform.ProductModel) (items []map[string]interface{}) {
+func (t *Product) TransList(models []*prodcut_models.ProductModel) (items []map[string]interface{}) {
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model)

@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/organization/prodcut_models"
 	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/utils/helpers"
 	"goskeleton/app/utils/response"
@@ -92,8 +92,8 @@ func (u *ProductController) DeleteForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-func (u *ProductController) addParam(ctx *gin.Context) model_platform.ProductModel {
-	var param = model_platform.ProductModel{}
+func (u *ProductController) addParam(ctx *gin.Context) prodcut_models.ProductModel {
+	var param = prodcut_models.ProductModel{}
 	param.Id = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
 	param.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grant_type"))
 	param.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")

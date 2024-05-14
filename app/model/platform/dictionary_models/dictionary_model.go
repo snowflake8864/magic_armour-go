@@ -1,4 +1,4 @@
-package model_platform
+package dictionary_models
 
 import (
 	"goskeleton/app/global/enums/enum_dictionary"

@@ -1,4 +1,4 @@
-package model_platform
+package prodcut_models
 
 import (
 	"goskeleton/app/global/enums"

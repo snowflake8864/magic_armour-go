@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
@@ -32,7 +32,7 @@ func (u *AuthController) MakeUserid(ctx *gin.Context) {
 
 // Login 登录
 func (u *AuthController) Login(ctx *gin.Context) {
-	var param = agent_model.AgentModel{}
+	var param = agent_models.AgentModel{}
 
 	param.AgentId = strings.ToLower(ctx.GetString(consts.ValidatorPrefixAgent + "uid"))
 	param.HostName = ctx.GetString(consts.ValidatorPrefixAgent + "host_name")

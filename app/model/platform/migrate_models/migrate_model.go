@@ -1,4 +1,4 @@
-package model_platform
+package migrate_models
 
 import (
 	"goskeleton/app/global/variable"

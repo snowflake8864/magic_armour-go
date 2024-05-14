@@ -4,22 +4,22 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateOnlineFactory() *AgentOnline {
-	return &AgentOnline{masterModel: agent_model.CreateAgentFactory()}
+	return &AgentOnline{masterModel: agent_models.CreateAgentFactory()}
 }
 
 type AgentOnline struct {
 	AgentBase
-	masterModel *agent_model.AgentModel
+	masterModel *agent_models.AgentModel
 }
 
 // RegisterOrLogin 存在登录，不存在注册
-func (crd *AgentOnline) RegisterOrLogin(param *agent_model.AgentModel) (bool, string) {
+func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, string) {
 	agentModel := crd.masterModel.GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.masterModel.ColumnSwitchAndModeForAlarm(true))
 	nowDate := helpers.DatetimeCurr()
 	isAllocateDept := true //是否分配组织架构

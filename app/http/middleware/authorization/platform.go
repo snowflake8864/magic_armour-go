@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/operate_models"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/operate_log_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -59,7 +59,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 		context.Next()
 
 		go func(c *gin.Context) {
-			var param = model_platform.OperateLogModel{}
+			var param = operate_models.OperateLogModel{}
 			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()

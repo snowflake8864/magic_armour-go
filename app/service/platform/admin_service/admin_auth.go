@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/cur_app"
@@ -179,7 +179,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 }
 
 // loginAfter
-func (crd *AdminAuth) loginAfter(adminModel *model_platform.AdminModel) map[string]interface{} {
+func (crd *AdminAuth) loginAfter(adminModel *admin_models.AdminModel) map[string]interface{} {
 	loginInfo := AdminCacheLogin{
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,

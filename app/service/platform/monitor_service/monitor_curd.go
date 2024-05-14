@@ -1,16 +1,16 @@
 package monitor_service
 
 import (
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/server_monitor_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateCurdFactory() *MonitorCurd {
-	return &MonitorCurd{masterModel: model_platform.CreateServerMonitorFactory()}
+	return &MonitorCurd{masterModel: server_monitor_models.CreateServerMonitorFactory()}
 }
 
 type MonitorCurd struct {
-	masterModel *model_platform.ServerMonitorModel
+	masterModel *server_monitor_models.ServerMonitorModel
 }
 
 type SearchConditions struct {
@@ -31,7 +31,7 @@ func (crd *MonitorCurd) search2Where(search SearchConditions) map[string]interfa
 }
 
 // GetList 获取列表
-func (crd *MonitorCurd) GetList(search SearchConditions) (items []*model_platform.ServerMonitorModel) {
+func (crd *MonitorCurd) GetList(search SearchConditions) (items []*server_monitor_models.ServerMonitorModel) {
 	where := crd.search2Where(search)
 	order := " id ASC"
 	items, err := crd.masterModel.GetAllByConditions(where, order)
@@ -42,7 +42,7 @@ func (crd *MonitorCurd) GetList(search SearchConditions) (items []*model_platfor
 }
 
 // Add 新增
-func (crd *MonitorCurd) Add(param *model_platform.ServerMonitorModel) bool {
+func (crd *MonitorCurd) Add(param *server_monitor_models.ServerMonitorModel) bool {
 	if helpers.StringIsEmpty(param.CreatedAt) {
 		param.CreatedAt = helpers.DatetimeCurr()
 	}

@@ -1,4 +1,4 @@
-package model_platform
+package operate_models
 
 import (
 	"goskeleton/app/global/variable"

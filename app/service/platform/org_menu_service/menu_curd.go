@@ -3,20 +3,20 @@ package org_menu_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/organization/org_menu_models"
 	"goskeleton/app/utils/helpers"
 )
 
 func CreateCurdFactory() *MenuCurd {
-	return &MenuCurd{masterModel: model_platform.CreateOrgMenuFactory()}
+	return &MenuCurd{masterModel: org_menu_models.CreateOrgMenuFactory()}
 }
 
 type MenuCurd struct {
-	masterModel *model_platform.OrgMenuModel
+	masterModel *org_menu_models.OrgMenuModel
 }
 
 // Add 新增
-func (crd *MenuCurd) Add(param *model_platform.OrgMenuModel) (errCode int, err error) {
+func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err error) {
 
 	if param.ParentId > 0 {
 		if hasModel, _ := crd.masterModel.GetItemById(param.ParentId); hasModel != nil && hasModel.Id > 0 {
@@ -38,7 +38,7 @@ func (crd *MenuCurd) Add(param *model_platform.OrgMenuModel) (errCode int, err e
 }
 
 // GetAll 获取全部
-func (crd *MenuCurd) GetAll(isRoot int) []*model_platform.OrgMenuModel {
+func (crd *MenuCurd) GetAll(isRoot int) []*org_menu_models.OrgMenuModel {
 	condition := make(map[string]interface{})
 	if isRoot == 0 {
 		condition["is_root"] = enums.IsYes
@@ -49,7 +49,7 @@ func (crd *MenuCurd) GetAll(isRoot int) []*model_platform.OrgMenuModel {
 }
 
 // GetItemsByIds 通过id获取
-func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*model_platform.OrgMenuModel {
+func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*org_menu_models.OrgMenuModel {
 	condition := make(map[string]interface{})
 	condition["id"] = ids
 	if isRoot == 0 {
@@ -61,7 +61,7 @@ func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*model_platform.Or
 }
 
 // UpdateById 修改
-func (crd *MenuCurd) UpdateById(param *model_platform.OrgMenuModel) (errCode int, err error) {
+func (crd *MenuCurd) UpdateById(param *org_menu_models.OrgMenuModel) (errCode int, err error) {
 	updates := make(map[string]interface{})
 	updates["type"] = param.Type
 	updates["name"] = param.Name

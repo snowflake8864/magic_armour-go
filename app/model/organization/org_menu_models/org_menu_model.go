@@ -1,4 +1,4 @@
-package model_platform
+package org_menu_models
 
 import (
 	"goskeleton/app/global/variable"

@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -57,7 +57,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
 
 	//终端分页
-	total, agentModels := agent_model.CreateAgentFactory().Page(conditions, offset, pageSize, order)
+	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 	//软件最新发布

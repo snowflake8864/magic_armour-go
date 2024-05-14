@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/agent/agent_model"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers"
@@ -15,12 +15,12 @@ import (
 )
 
 func CreateCurdFactory() *AgentCurd {
-	return &AgentCurd{masterModel: agent_model.CreateAgentFactory()}
+	return &AgentCurd{masterModel: agent_models.CreateAgentFactory()}
 }
 
 type AgentCurd struct {
 	AgentBase
-	masterModel *agent_model.AgentModel
+	masterModel *agent_models.AgentModel
 }
 
 // SetLivingByAgent 设置终端活动中

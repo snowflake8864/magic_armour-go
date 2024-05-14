@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/migrate_models"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/database"
 	"testing"
@@ -47,9 +47,9 @@ func TestDbMigrate(t *testing.T) {
 }
 
 func TestInsertMany(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
+	modelFact := migrate_models.CreateMigrateFactory()
 
-	var st = &[]model_platform.MigrateModel{
+	var st = &[]migrate_models.MigrateModel{
 		{
 			Migration: "20240108000001_init_paltforma' or '2'='2",
 			CreatedAt: time.Now().Format(variable.DateFormat),
@@ -64,7 +64,7 @@ func TestInsertMany(t *testing.T) {
 }
 
 func TestShowAllMAP(t *testing.T) {
-	modelFact := model_platform.CreateMigrateFactory()
+	modelFact := migrate_models.CreateMigrateFactory()
 
 	items, err := modelFact.GetAllMaps()
 	if items == nil {

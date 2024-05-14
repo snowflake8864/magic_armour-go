@@ -1,7 +1,7 @@
 package platform_trans
 
 import (
-	"goskeleton/app/model/model_platform"
+	"goskeleton/app/model/platform/server_monitor_models"
 	"strings"
 )
 
@@ -9,7 +9,7 @@ type Monitor struct {
 }
 
 // TransList 转换成列表
-func (t *Monitor) TransList(models []*model_platform.ServerMonitorModel) interface{} {
+func (t *Monitor) TransList(models []*server_monitor_models.ServerMonitorModel) interface{} {
 	result := make(map[string][]string)
 
 	if models != nil {
