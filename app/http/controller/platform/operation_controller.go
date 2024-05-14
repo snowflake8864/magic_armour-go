@@ -8,7 +8,6 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/operate_models"
-	"goskeleton/app/service/platform/operate_log_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -27,7 +26,7 @@ func (u *OperationController) Modules(ctx *gin.Context) {
 // Page  分页
 func (u *OperationController) Page(ctx *gin.Context) {
 	//页面上传
-	conditions := operate_log_service.SearchConditions{}
+	conditions := operate_models.SearchConditions{}
 	conditions.Module = ctx.GetString(consts.ValidatorPrefixPlatform + "module")
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixPlatform + "netIp")
 	conditions.CreateName = ctx.GetString(consts.ValidatorPrefixPlatform + "createName")

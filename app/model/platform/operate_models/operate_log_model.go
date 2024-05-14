@@ -1,6 +1,7 @@
 package operate_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers"
@@ -10,6 +11,12 @@ import (
 
 func CreateOperateLogFactory() *OperateLogModel {
 	return &OperateLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+}
+
+type SearchConditions struct {
+	Module     string
+	NetIp      string
+	CreateName string
 }
 
 //结构体
@@ -67,6 +74,22 @@ func (m *OperateLogModel) CreateTable() bool {
 	}
 }
 
+// search2Where 查询条件转化
+func (m *OperateLogModel) conditions2Where(search SearchConditions) map[string]interface{} {
+	wheres := make(map[string]interface{})
+	if !helpers.StringIsEmpty(search.Module) && search.Module != enums.AllDefaultStr {
+		wheres["module"] = search.Module
+	}
+	if !helpers.StringIsEmpty(search.NetIp) {
+		wheres["net_ip"] = search.NetIp
+	}
+	if !helpers.StringIsEmpty(search.CreateName) {
+		wheres["create_name"] = search.CreateName
+	}
+	return wheres
+	return wheres
+}
+
 func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 	result := m.Create(s)
 	if result.RowsAffected > 0 {
@@ -77,9 +100,9 @@ func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OperateLogModel, err error) {
+func (m *OperateLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OperateLogModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
@@ -99,10 +122,10 @@ func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{},
 }
 
 // Count 通过条件统计
-func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
+func (m *OperateLogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -114,7 +137,7 @@ func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *OperateLogModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OperateLogModel) {
+func (m *OperateLogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OperateLogModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
