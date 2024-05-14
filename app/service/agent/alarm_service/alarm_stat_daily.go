@@ -10,7 +10,6 @@ func CreateStatDailyFactory() *AlarmStatDaily {
 }
 
 type AlarmStatDaily struct {
-	AlarmBase
 	masterModel *alarm_stat_models.AlarmStatDailyModel
 }
 
@@ -24,25 +23,23 @@ func (crd *AlarmStatDaily) Add(param *alarm_stat_models.AlarmStatDailyModel) boo
 
 // SumByDay 计算： 每天
 func (crd *AlarmStatDaily) SumByDay(day, column string) (result *alarm_stat_models.AlarmStatDailyModel) {
-	search := SearchConditions{
+	where := alarm_stat_models.SearchConditions{
 		StatDay: day,
 	}
-	where := crd.search2Where(search)
-	result, err := crd.masterModel.CalcByConditions(where, column)
-	if err != nil {
-		return result
+	result = crd.masterModel.CalcByConditions(where, column)
+	if result != nil {
+		return nil
 	}
 	return result
 }
 
 // SumByMonthGroupDay 计算： 每月并且按照天分组
 func (crd *AlarmStatDaily) SumByMonthGroupDay(month int, column string) (items []*alarm_stat_models.AlarmStatDailyModel) {
-	search := SearchConditions{
+	where := alarm_stat_models.SearchConditions{
 		StatMonth: month,
 	}
-	where := crd.search2Where(search)
-	items, err := crd.masterModel.CalcByConditionsGroupDay(where, column)
-	if err != nil {
+	items = crd.masterModel.CalcByConditionsGroupDay(where, column)
+	if items != nil {
 		return nil
 	}
 	return items

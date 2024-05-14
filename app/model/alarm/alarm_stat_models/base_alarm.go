@@ -1,4 +1,4 @@
-package alarm_service
+package alarm_stat_models
 
 import (
 	"goskeleton/app/utils/helpers"
@@ -28,11 +28,11 @@ const (
 	PrefixSelf      string = "self"
 )
 
-type AlarmBase struct {
+type baseAlarm struct {
 }
 
 // search2Where 查询条件转化
-func (crd *AlarmBase) search2Where(search SearchConditions) map[string]interface{} {
+func (crd *baseAlarm) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
@@ -57,7 +57,7 @@ func (crd *AlarmBase) search2Where(search SearchConditions) map[string]interface
 
 // StatColumn 统计表字段
 // @use: StatColumn(PrefixTotal, true, true,true,true)
-func (crd *AlarmBase) StatColumn(prefix string, total, handled, addTotal, addHandled, statDay bool) string {
+func (crd *baseAlarm) StatColumn(prefix string, total, handled, addTotal, addHandled, statDay bool) string {
 	var columns []string
 	prefix = strings.Trim(prefix, "_")
 	if prefix != PrefixTotal {
@@ -89,7 +89,7 @@ func (crd *AlarmBase) StatColumn(prefix string, total, handled, addTotal, addHan
 }
 
 // StatColumnOfAllType 统计表字段: 全部类型之和
-func (crd *AlarmBase) StatColumnOfAllType(total, handled, addTotal, addHandled, statDay bool) string {
+func (crd *baseAlarm) StatColumnOfAllType(total, handled, addTotal, addHandled, statDay bool) string {
 	var columns []string
 	prefixes := []string{
 		PrefixProcess,

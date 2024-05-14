@@ -15,6 +15,7 @@ func CreateAlarmStatDailyFactory() *AlarmStatDailyModel {
 //结构体
 
 type AlarmStatDailyModel struct {
+	baseAlarm
 	model.BaseModel
 	OrgId               int64  `json:"org_id"`
 	AgentId             string `json:"agent_id"`
@@ -169,10 +170,10 @@ func (m *AlarmStatDailyModel) InsertBatch(list *[]AlarmStatDailyModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmStatDailyModel) UpdateByConditions(condition map[string]interface{}, updates map[string]interface{}) bool {
+func (m *AlarmStatDailyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -186,10 +187,10 @@ func (m *AlarmStatDailyModel) UpdateByConditions(condition map[string]interface{
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmStatDailyModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *AlarmStatDailyModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)
@@ -203,7 +204,7 @@ func (m *AlarmStatDailyModel) DeleteByConditions(condition map[string]interface{
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmStatDailyModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*AlarmStatDailyModel, err error) {
+func (m *AlarmStatDailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Where(condition)
 		if limit > 0 {
@@ -218,38 +219,38 @@ func (m *AlarmStatDailyModel) GetItemsByConditions(condition map[string]interfac
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *AlarmStatDailyModel) CalcByConditions(condition map[string]interface{}, column string) (item *AlarmStatDailyModel, err error) {
+func (m *AlarmStatDailyModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(condition)
+		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
 		return tmp.Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return item, nil
+		return item
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
 
 // CalcByConditionsGroupDay 通过条件获取多条记录且按天分组
-func (m *AlarmStatDailyModel) CalcByConditionsGroupDay(condition map[string]interface{}, column string) (items []*AlarmStatDailyModel, err error) {
+func (m *AlarmStatDailyModel) CalcByConditionsGroupDay(condition SearchConditions, column string) (items []*AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(condition)
+		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
 		return tmp.Group("stat_day").Order("stat_day ASC").Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return items, nil
+		return items
 	} else {
-		return nil, result.Error
+		return nil
 	}
 }
