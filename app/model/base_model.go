@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers"
 	"strings"
 )
 
@@ -52,6 +53,13 @@ func (m *BaseModel) TrimSql(sql string) string {
 	//sql = strings.ReplaceAll(sql, "))", ")")
 	//fmt.Println(sql)
 	return sql
+}
+
+func (m *BaseModel) GetColumn(column string) string {
+	if helpers.StringIsEmpty(column) {
+		column = "*"
+	}
+	return column
 }
 
 // WhereBuild 封装map 查询条件

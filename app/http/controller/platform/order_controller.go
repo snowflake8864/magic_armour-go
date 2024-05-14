@@ -77,10 +77,10 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
@@ -105,10 +105,10 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, orderModels := order_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
 }
@@ -179,7 +179,7 @@ func (u *OrderController) DetailForManage(ctx *gin.Context) {
 func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//日志分页
 	total, logModels := order_service.CreateLogFactory().Page(orderNo, offset, pageSize, orderField, orderSort)

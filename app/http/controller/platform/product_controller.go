@@ -49,10 +49,10 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	conditions.IsPublish = enums.AllDefaultInt
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//产品分页
-	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, models := product_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
 }

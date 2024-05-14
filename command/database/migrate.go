@@ -3,6 +3,7 @@ package database
 import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/model/model_agent"
 	"goskeleton/app/model/model_alarm"
 	"goskeleton/app/model/model_organization"
@@ -140,8 +141,8 @@ func initTableAndData() {
 	//下面开始创建表 (agent库)
 	if !existMigration("db_agent_init_tables") {
 		_ = model_agent.CreateAccessLogFactory().CreateTable()
-		_ = model_agent.CreateAgentFactory().CreateTable()
-		_ = model_agent.CreateAgentExtendFactory().CreateTable()
+		_ = agent_model.CreateAgentFactory().CreateTable()
+		_ = agent_model.CreateAgentExtendFactory().CreateTable()
 		_ = model_agent.CreateBlackmailGroupFactory().CreateTable()
 		_ = model_agent.CreateBlackmailPolicyFactory().CreateTable()
 		_ = model_agent.CreateDllFactory().CreateTable()

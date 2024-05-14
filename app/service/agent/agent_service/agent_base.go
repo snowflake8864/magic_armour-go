@@ -4,15 +4,26 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/service/agent/task_service"
 )
+
+type UpdateColumn struct {
+	SyslogDnsSwitch     int `json:"syslog_dns_switch"`
+	SyslogOuterSwitch   int `json:"syslog_outer_switch"`
+	SyslogInnerSwitch   int `json:"syslog_inner_switch"`
+	SyslogProcessSwitch int `json:"syslog_process_switch"`
+	SyslogLoginSwitch   int `json:"syslog_login_switch"`
+	OutreachAlarmSwitch int `json:"outreach_alarm_switch"`
+	SelfProtectSwitch   int `json:"self_protect_switch"`
+	AutoWhiteSwitch     int `json:"auto_white_switch"`
+}
 
 type AgentBase struct {
 }
 
 // addTask 新增任务
-func (crd *AgentBase) addTask(param *model_agent.AgentModel, isTrustDir bool, remark string) {
+func (crd *AgentBase) addTask(param *agent_model.AgentModel, isTrustDir bool, remark string) {
 	tasks := []int{
 		enum_task.TypeAgentConfigDownload,
 	}

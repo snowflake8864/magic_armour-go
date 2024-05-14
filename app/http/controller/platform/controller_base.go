@@ -30,11 +30,11 @@ func (u *ControllerBase) getOrgSearchConditions(ctx *gin.Context) (organize_serv
 }
 
 // getPageAndSort 获取分页参数和排序参数
-func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, orderField, orderSort string) {
+func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, order string) {
 	page := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "page"))
 	pageSize = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "pageSize"))
-	orderField = ctx.GetString(consts.ValidatorPrefixPlatform + "field")
-	orderSort = ctx.GetString(consts.ValidatorPrefixPlatform + "sort")
+	orderField := ctx.GetString(consts.ValidatorPrefixPlatform + "field")
+	orderSort := ctx.GetString(consts.ValidatorPrefixPlatform + "sort")
 	if page <= 0 {
 		page = 1
 	}
@@ -53,7 +53,7 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	if helpers.StringIsEmpty(orderSort) {
 		orderSort = "DESC"
 	}
-	return offset, pageSize, orderField, orderSort
+	return offset, pageSize, orderField + " " + orderSort
 }
 
 // getWebSliceOfInt64 获取前端上传数组: int64

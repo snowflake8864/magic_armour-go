@@ -3,7 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_software"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/helpers"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -11,7 +11,7 @@ import (
 )
 
 func TestAgentLogin(t *testing.T) {
-	var param = model_agent.AgentModel{}
+	var param = agent_model.AgentModel{}
 
 	param.AgentId = "test_111"
 	param.HostName = "中文名称"
@@ -52,7 +52,7 @@ func TestAgentLogin(t *testing.T) {
 	//data, _ := json.Marshal(param)
 	fmt.Println(param)
 	fmt.Println("RegisterOrLogin---------------------------------------------")
-	isOk, data := agent_service.CreateAuthFactory().RegisterOrLogin(&param)
+	isOk, data := agent_service.CreateOnlineFactory().RegisterOrLogin(&param)
 	fmt.Println(isOk)
 	fmt.Println(data)
 }
@@ -63,14 +63,4 @@ func TestAgentDecrypt(t *testing.T) {
 
 func TestGetMapsByAgents(t *testing.T) {
 
-	agentCurdFact := agent_service.CreateCurdFactory()
-	agentModel := agentCurdFact.GetItemByOrgAndAgent(1, "win2010_test_001", agentCurdFact.ColumnConfig(true))
-	fmt.Println(helpers.JsonEncode(agentModel))
-	fmt.Println("==========================")
-	fmt.Println(agentModel.ProcessSwitch)
-
-}
-
-func TestSetLivingByAgent(t *testing.T) {
-	agent_service.CreateCurdFactory().SetLivingByAgent("win2004_test_001")
 }

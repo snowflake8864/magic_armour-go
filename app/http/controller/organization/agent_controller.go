@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -54,10 +54,10 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
 
 	//终端分页
-	total, agentModels := agent_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, agentModels := agent_model.CreateAgentFactory().Page(conditions, offset, pageSize, order)
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 	//软件最新发布
@@ -144,17 +144,7 @@ func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
 // BatchSetConfigForManage 管理: 批量设置配置
 func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	updateColumn := map[string]struct{}{
-		"syslog_dns_switch":     struct{}{},
-		"syslog_outer_switch":   struct{}{},
-		"syslog_inner_switch":   struct{}{},
-		"syslog_process_switch": struct{}{},
-		"syslog_login_switch":   struct{}{},
-		"outreach_alarm_switch": struct{}{},
-		"self_protect_switch":   struct{}{},
-		"auto_white_switch":     struct{}{},
-	}
-	var param = model_agent.AgentModel{}
+	var param = agent_service.UpdateColumn{}
 	param.SyslogDnsSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogDnsSwitch"))
 	param.SyslogOuterSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogOuterSwitch"))
 	param.SyslogInnerSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogInnerSwitch"))
@@ -164,7 +154,7 @@ func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
 	param.SelfProtectSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "selfProtectSwitch"))
 	param.AutoWhiteSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "autoWhiteSwitch"))
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(agentIds, updateColumn, &param, "终端管理")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(0, agentIds, param, "终端管理")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

@@ -5,10 +5,9 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers"
@@ -16,98 +15,16 @@ import (
 )
 
 func CreateCurdFactory() *AgentCurd {
-	return &AgentCurd{masterModel: model_agent.CreateAgentFactory()}
+	return &AgentCurd{masterModel: agent_model.CreateAgentFactory()}
 }
 
 type AgentCurd struct {
 	AgentBase
-	masterModel *model_agent.AgentModel
-}
-
-// GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
-func (crd *AgentCurd) GetItemByOrgAndAgent(orgId int64, agentId, column string) (model *model_agent.AgentModel) {
-	model, _ = crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, column)
-	return model
-}
-
-// GetMapsByOrgAndAgents 通过企业id和终端ids获取多条记录, 有映射关系
-func (crd *AgentCurd) GetMapsByOrgAndAgents(orgId int64, agentId []string, column string) map[string]*model_agent.AgentModel {
-	models, err := crd.masterModel.GetItemsByOrgAndAgents(orgId, agentId, column)
-	if err != nil {
-		return nil
-	}
-	if models == nil {
-		return nil
-	}
-	result := make(map[string]*model_agent.AgentModel)
-	for _, model := range models {
-		result[model.AgentId] = model
-	}
-	return result
-}
-
-// GetAllByOrg 通过企业id获取全部终端
-func (crd *AgentCurd) GetAllByOrg(orgId int64, column string) []*model_agent.AgentModel {
-	models, err := crd.masterModel.GetItemsByOrg(orgId, column)
-	if err != nil {
-		return nil
-	}
-	if models == nil {
-		return nil
-	}
-	return models
-}
-
-// GetIdsByOrg 通过企业id获取终端id集合
-func (crd *AgentCurd) GetIdsByOrg(orgId int64) (result []string) {
-	models, err := crd.masterModel.GetItemsByOrg(orgId, "agent_id")
-	if err != nil {
-		return result
-	}
-	for _, model := range models {
-		result = append(result, model.AgentId)
-	}
-	return result
-}
-
-// GetIdsByOrgAndCondition 通过企业id和其他条件获取终端id集合
-func (crd *AgentCurd) GetIdsByOrgAndCondition(orgId int64, search SearchConditions) (result []string) {
-	search.OrgId = orgId
-	models, err := crd.masterModel.GetItemsByConditions(crd.search2Where(search), 0, 0, "", "agent_id")
-	if err != nil {
-		return result
-	}
-	for _, model := range models {
-		result = append(result, model.AgentId)
-	}
-	return result
-}
-
-// CalcAgents 计算终端统计数据
-func (crd *AgentCurd) CalcAgents(search SearchConditions, column string) (result *model_agent.AgentCalc) {
-	where := crd.search2Where(search)
-	result, err := crd.masterModel.CalcByConditions(where, column)
-	if err != nil {
-		return result
-	}
-	return result
-}
-
-// Page 分页
-func (crd *AgentCurd) Page(search SearchConditions, offset, pageSize int, orderField, orderSort string) (total int64, items []*model_agent.AgentModel) {
-	where := crd.search2Where(search)
-	order := ""
-	if orderField == enum_agent.OrderFieldDefault {
-		order = "is_online DESC, is_safe ASC, created_at DESC"
-	} else {
-		order = "created_at DESC"
-	}
-	total, items = crd.masterModel.Page(where, offset, pageSize, order)
-	return total, items
+	masterModel *agent_model.AgentModel
 }
 
 // SetLivingByAgent 设置终端活动中
-func (crd *AgentCurd) SetLivingByAgent(id string) bool {
+func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 	nowDate := helpers.DatetimeCurr()
 
 	updates := map[string]interface{}{
@@ -115,13 +32,14 @@ func (crd *AgentCurd) SetLivingByAgent(id string) bool {
 		"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
 		"is_online": enums.IsYes,
 	}
-	return crd.masterModel.UpdateById(id, updates)
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	return isOk
 }
 
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err error) {
 	var validIds []string
-	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id"); err != nil || len(agentModels) == 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, "agent_id"); len(agentModels) == 0 {
 		for _, model := range agentModels {
 			validIds = append(validIds, model.AgentId)
 		}
@@ -130,7 +48,7 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err e
 		return -1, errors.New("终端不存在")
 	}
 
-	if isOK := crd.masterModel.DeleteByIds(validIds); !isOK {
+	if isOK := crd.masterModel.DeleteByOrgAndAgents(orgId, validIds); !isOK {
 		return -1, errors.New("删除失败")
 	}
 
@@ -155,7 +73,7 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 		return errCode, err
 	}
 	var validIds []string
-	if agentModels, err := crd.masterModel.GetItemsByIds(ids, "agent_id, os_type, ver"); err != nil || len(agentModels) == 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, "agent_id, os_type, ver"); len(agentModels) == 0 {
 		for _, model := range agentModels {
 			if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
 				validIds = append(validIds, model.AgentId)
@@ -171,9 +89,9 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 }
 
 // BatchUpdate 批量修改
-func (crd *AgentCurd) BatchUpdate(ids []string, updateColumn map[string]struct{}, param *model_agent.AgentModel, remark string) (errCode int, err error) {
-	agentModels, err := crd.masterModel.GetItemsByIds(ids, crd.ColumnConfig(true))
-	if err != nil || len(agentModels) == 0 {
+func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, updateColumn UpdateColumn, remark string) (errCode int, err error) {
+	agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnConfig(true))
+	if len(agentModels) == 0 {
 		return -1, errors.New("终端不存在")
 	}
 

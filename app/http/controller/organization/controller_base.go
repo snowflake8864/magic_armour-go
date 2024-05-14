@@ -4,9 +4,8 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/model/model_organization"
-	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -23,10 +22,10 @@ func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogi
 }
 
 // getAgentSearchConditions 获取终端查询条件
-func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_service.SearchConditions, error) {
+func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model.SearchConditions, error) {
 
 	//页面上传
-	searchConditions := agent_service.SearchConditions{}
+	searchConditions := agent_model.SearchConditions{}
 	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrganization + "agentId")
 	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixOrganization + "hostName")
 	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrganization + "agentIp")
@@ -81,11 +80,11 @@ func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int6
 }
 
 // getPageAndSort 获取分页参数和排序参数
-func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, orderField, orderSort string) {
+func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, order string) {
 	page := int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "page"))
 	pageSize = int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "pageSize"))
-	orderField = ctx.GetString(consts.ValidatorPrefixOrganization + "field")
-	orderSort = ctx.GetString(consts.ValidatorPrefixOrganization + "sort")
+	orderField := ctx.GetString(consts.ValidatorPrefixOrganization + "field")
+	orderSort := ctx.GetString(consts.ValidatorPrefixOrganization + "sort")
 	if page <= 0 {
 		page = 1
 	}
@@ -104,13 +103,13 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	if helpers.StringIsEmpty(orderSort) {
 		orderSort = "DESC"
 	}
-	return offset, pageSize, orderField, orderSort
+	return offset, pageSize, orderField + " " + orderSort
 }
 
 // parseAgentModels 解析终端集合并拿到相关数据
 // 返回 agentIds 终端集合
 // 返回 departments 组织架构集合
-func (u *ControllerBase) parseAgentModels(agentModels []*model_agent.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
+func (u *ControllerBase) parseAgentModels(agentModels []*agent_model.AgentModel, needDepartment bool) (agentIds []string, departments map[int64]*model_organization.DepartmentModel) {
 	if agentModels == nil || len(agentModels) == 0 {
 		return nil, nil
 	}

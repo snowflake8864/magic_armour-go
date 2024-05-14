@@ -101,7 +101,7 @@ func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//软件分页
 	total, models := software_service.CreateCurdFactory().Page(condition, offset, pageSize, orderField, orderSort)

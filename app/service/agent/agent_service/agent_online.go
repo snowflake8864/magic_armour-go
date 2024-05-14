@@ -4,23 +4,23 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
-	"goskeleton/app/model/model_agent"
+	"goskeleton/app/model/agent/agent_model"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/helpers"
 )
 
-func CreateAuthFactory() *AgentAuth {
-	return &AgentAuth{masterModel: model_agent.CreateAgentFactory()}
+func CreateOnlineFactory() *AgentOnline {
+	return &AgentOnline{masterModel: agent_model.CreateAgentFactory()}
 }
 
-type AgentAuth struct {
+type AgentOnline struct {
 	AgentBase
-	masterModel *model_agent.AgentModel
+	masterModel *agent_model.AgentModel
 }
 
 // RegisterOrLogin 存在登录，不存在注册
-func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, string) {
-	agentModel := CreateCurdFactory().GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.ColumnSwitchAndModeForAlarm(true))
+func (crd *AgentOnline) RegisterOrLogin(param *agent_model.AgentModel) (bool, string) {
+	agentModel := crd.masterModel.GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.masterModel.ColumnSwitchAndModeForAlarm(true))
 	nowDate := helpers.DatetimeCurr()
 	isAllocateDept := true //是否分配组织架构
 
@@ -106,7 +106,7 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 			"online_at":      nowDate,
 			"live_at":        nowDate,
 		}
-		isOk := crd.masterModel.UpdateByOrgAndAgent(param.OrgId, param.AgentId, updates)
+		isOk, _ := crd.masterModel.UpdateByOrgAndAgent(param.OrgId, param.AgentId, updates)
 		if !isOk {
 			return false, "更新数据失败"
 		}
@@ -132,11 +132,11 @@ func (crd *AgentAuth) RegisterOrLogin(param *model_agent.AgentModel) (bool, stri
 }
 
 // autoGrant 自动授权
-func (crd *AgentAuth) autoGrant(orgId int64, agentId string) {
+func (crd *AgentOnline) autoGrant(orgId int64, agentId string) {
 
 }
 
 // autoAllocateDept 自动分配组织架构
-func (crd *AgentAuth) autoAllocateDept(orgId int64, agentId, agentIp string) {
+func (crd *AgentOnline) autoAllocateDept(orgId int64, agentId, agentIp string) {
 	go department_service.CreateCurdFactory().AutoAllocate(orgId, agentId, agentIp)
 }

@@ -189,6 +189,7 @@ func (m *AgentModel) InsertItem(s *AgentModel) bool {
 	if result.Error == nil {
 		return true
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
 	}
 }
@@ -202,33 +203,35 @@ func (m *AgentModel) InsertBatch(list *[]AgentModel) bool {
 	if result.Error == nil {
 		return true
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
 	}
 }
 
 // UpdateById 通过id修改
-func (m *AgentModel) UpdateById(id string, updates map[string]interface{}) bool {
+func (m *AgentModel) UpdateById(id string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("agent_id=?", id).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return false, 0
 	}
 }
 
 // UpdateByIds 通过id集合修改
-func (m *AgentModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
+func (m *AgentModel) UpdateByIds(ids []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("agent_id IN ?", ids).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }
 
@@ -304,7 +307,7 @@ func (m *AgentModel) DeleteByIds(ids []string) bool {
 // DeleteByOrgAndAgent 通过企业id和终端id删除
 func (m *AgentModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id=?", agentId).Delete(m)
+		return tx.Model(m).Where("org_id=? AND agent_id= ", orgId, agentId).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -330,7 +333,7 @@ func (m *AgentModel) DeleteByOrg(orgId int64) bool {
 // DeleteByOrgAndAgents 通通过企业id和终端id集合删除
 func (m *AgentModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id IN ?", agentIds).Delete(m)
+		return tx.Model(m).Where("org_id=? AND agent_id IN ?", orgId).Where("agent_id IN ?", agentIds).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

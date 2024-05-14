@@ -51,10 +51,10 @@ func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
@@ -143,10 +143,10 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//终端分页
-	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, orgModels := organize_service.CreateOrgCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
 }
@@ -216,7 +216,7 @@ func (u *OrganizeController) PageForUser(ctx *gin.Context) {
 	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//用户分页
 	total, models := user_service.CreateCurdFactory().PageByOrg(orgId, offset, pageSize, orderField, orderSort)
@@ -231,7 +231,7 @@ func (u *OrganizeController) PageForLog(ctx *gin.Context) {
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//用户分页
 	total, models := organize_service.CreateOrgLogFactory().Page(searchConditions, offset, pageSize, orderField, orderSort)

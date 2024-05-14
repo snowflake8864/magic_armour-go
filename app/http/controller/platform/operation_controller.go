@@ -32,10 +32,10 @@ func (u *OperationController) Page(ctx *gin.Context) {
 	conditions.CreateName = ctx.GetString(consts.ValidatorPrefixPlatform + "createName")
 
 	//分页参数和排序参数
-	offset, pageSize, orderField, orderSort := u.getPageAndSort(ctx, "")
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//产品分页
-	total, models := operate_log_service.CreateCurdFactory().Page(conditions, offset, pageSize, orderField, orderSort)
+	total, models := operate_log_service.CreateCurdFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Operation{}).TransPage(total, models))
 }

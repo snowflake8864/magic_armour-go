@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/model_agent"
-	accessLogService "goskeleton/app/service/agent/access_log"
+	accessLogService "goskeleton/app/service/agent/access_log_service"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers"
