@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -23,6 +24,8 @@ func (crd *DllRunningUpload) Add(dllRunningModel *proc_models.DllRunningModel) e
 	if string_helper.IsEmpty(dllRunningModel.CreatedAt) {
 		dllRunningModel.CreatedAt = date_helper.CurDatetime()
 	}
+	dllRunningModel.DllDir = path_helper.ToStandard(dllRunningModel.DllDir)
+	dllRunningModel.ProcDir = path_helper.ToStandard(dllRunningModel.ProcDir)
 
 	//保存
 	if !crd.masterModel.InsertItem(dllRunningModel) {

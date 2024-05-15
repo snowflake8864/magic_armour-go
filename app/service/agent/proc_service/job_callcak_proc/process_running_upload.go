@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -23,6 +24,7 @@ func (crd *ProcessRunningUpload) Add(processRunningModel *proc_models.ProcessRun
 	if string_helper.IsEmpty(processRunningModel.CreatedAt) {
 		processRunningModel.CreatedAt = date_helper.CurDatetime()
 	}
+	processRunningModel.ProcDir = path_helper.ToStandard(processRunningModel.ProcDir)
 
 	//保存
 	if !crd.masterModel.InsertItem(processRunningModel) {

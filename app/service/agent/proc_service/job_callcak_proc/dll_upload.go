@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -37,6 +38,8 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	if string_helper.IsEmpty(dllModel.CreatedAt) {
 		dllModel.CreatedAt = date_helper.CurDatetime()
 	}
+	dllModel.Dir = path_helper.ToStandard(dllModel.Dir)
+	dllModel.ProcDir = path_helper.ToStandard(dllModel.ProcDir)
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)

@@ -94,8 +94,6 @@ func (m *DllModel) InsertItem(s *DllModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
 	})
-	println("======================1111")
-	println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -37,6 +38,7 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	if string_helper.IsEmpty(processModel.CreatedAt) {
 		processModel.CreatedAt = date_helper.CurDatetime()
 	}
+	processModel.Dir = path_helper.ToStandard(processModel.Dir)
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)

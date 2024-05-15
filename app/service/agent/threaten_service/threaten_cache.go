@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -23,6 +24,8 @@ func (crd *ThreatenCache) Add(param *threaten_models.ThreatenCacheModel, checkEx
 		}
 	}
 
+	param.Dir = path_helper.ToStandard(param.Dir)
+	param.ParentDir = path_helper.ToStandard(param.ParentDir)
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}

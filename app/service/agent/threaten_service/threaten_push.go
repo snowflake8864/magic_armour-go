@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"strings"
 )
 
@@ -55,8 +56,8 @@ func (crd *ThreatenPush) BatchAdd(list []threaten_models.ThreatenPushModel, leve
 			inserts = append(inserts, threaten_models.ThreatenPushModel{
 				Id:         tmpId,
 				Level:      level,
-				Dir:        model.Dir,
-				ParentDir:  model.ParentDir,
+				Dir:        path_helper.ToStandard(model.Dir),
+				ParentDir:  path_helper.ToStandard(model.ParentDir),
 				Os:         model.Os,
 				Introduce:  model.Introduce,
 				Copyright:  model.Copyright,

@@ -8,7 +8,6 @@ import (
 )
 
 func UploadDll(jsonStr string) {
-	variable.ZapLog.Info("UploadDll===================")
 	dllModel := proc_models.DllModel{}
 	if err := json_helper.Json2Struct(jsonStr, &dllModel); err != nil {
 		variable.ZapLog.Info(err.Error())
