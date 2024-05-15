@@ -18,16 +18,18 @@ import (
 )
 
 const (
-	AlarmModuleProcess   int = 1  //告警模块: 进程
-	AlarmModuleDll       int = 2  //告警模块: 模块
-	AlarmModuleTamper    int = 3  //告警模块: 防篡改
-	AlarmModuleBlackmail int = 4  //告警模块: 虚开
-	AlarmModulePort      int = 5  //告警模块: 端口
-	AlarmModuleUsb       int = 6  //告警模块: 外设
-	AlarmModulePlug      int = 7  //告警模块: 动态封堵
-	AlarmModuleOutreach  int = 8  //告警模块: 外联
-	AlarmModuleLogin     int = 9  //告警模块: 口令破解
-	AlarmModuleSelf      int = 10 //告警模块: 自保
+	AlarmTypeProcess   int = 1  //告警类型: 进程
+	AlarmTypeDll       int = 2  //告警类型: 模块
+	AlarmTypeTamper    int = 3  //告警类型: 防篡改
+	AlarmTypeBlackmail int = 4  //告警类型: 虚开
+	AlarmTypePort      int = 5  //告警类型: 端口
+	AlarmTypeUsb       int = 6  //告警类型: 外设
+	AlarmTypePlug      int = 7  //告警类型: 动态封堵
+	AlarmTypeOutreach  int = 8  //告警类型: 外联
+	AlarmTypeLogin     int = 9  //告警类型: 口令破解
+	AlarmTypeSelf      int = 10 //告警类型: 自保
+
+	DataTypeAgent string = "zhongduan" //数据类型: 终端
 
 	LogTypeDns     int = 1 //日志类型：dns
 	LogTypeOuter   int = 2 //日志类型：对外通讯
@@ -193,25 +195,36 @@ func (aa *requestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 }
 
 // 模拟发送SYSLOG
-func (aa *requestHuanshi) analogSendSyslog(tt string, facility, level int, param map[string]interface{}) error {
+func (aa *requestHuanshi) analogSendSyslog(tt string, paramJson string) error {
 	if aa.Config.HuanshiSwitch == enums.SwitchOn {
 		return nil
 	}
 
 	//发送地址
-	address := ""
+	var address string
+	var facility, level int
 	if tt == "agent" {
 		address = aa.Config.HuanshiAlarmIp + ":" + aa.Config.HuanshiAlarmPort
+		//@todo 通道:LOCAL7; 等级:info
+		facility = 23
+		level = 6
 	} else if tt == "alarm" {
+
 		if aa.Config.HuanshiAlarmSwitch == enums.SwitchOn {
 			return nil
 		}
 		address = aa.Config.HuanshiAlarmIp + ":" + aa.Config.HuanshiAlarmPort
+		//@todo 通道:LOCAL5; 等级:info
+		facility = 21
+		level = 5
 	} else if tt == "log" {
 		if aa.Config.HuanshiLogSwitch == enums.SwitchOn {
 			return nil
 		}
 		address = aa.Config.HuanshiLogIp + ":" + aa.Config.HuanshiLogPort
+		//@todo 通道:LOCAL3; 等级:warning
+		facility = 19
+		level = 4
 	} else {
 		return errors.New("type not in [agent alarm log]")
 	}
@@ -232,7 +245,7 @@ func (aa *requestHuanshi) analogSendSyslog(tt string, facility, level int, param
 	msg := "<"
 	msg += int_helper.IntToStr((facility * 8) + level)
 	msg += ">"
-	msg += json_helper.Encode(param)
+	msg += paramJson
 
 	_, err = conn.Write([]byte(msg))
 	if err != nil {
@@ -241,48 +254,100 @@ func (aa *requestHuanshi) analogSendSyslog(tt string, facility, level int, param
 	return nil
 }
 
-// SyncAgentBySyslog 通过SYSLOG同步终端
-/*
-参数：param {
-"agentId" : "" //终端编号
-"os" : ""  //系统
-"ip" : ""  //终端ip
-"netIp" : ""  //通讯ip
-"hostName" : "" //计算机名称
-"status": 1  //终端上线状态: 0 1
-"onlineTime": "终端上线时间"
-"version": "终端版本"
-"deptCode" : "" //组织架构
-"deptName" : //组织架构
-"agentType" : "" //终端类型
-"aliasName" : "" //别名
-"contactName" : "" //管理人
-"contactPhone": "" //管理人
-"deviceMark": "" //设备标识
-"platform":"" //请求平台
-"dataType": "zhongduan"
+type AgentData struct {
+	DeviceMark   string `json:"deviceMark"`   //设备标识
+	Platform     string `json:"platform"`     //来源
+	DataType     string `json:"dataType"`     //数据类型
+	AgentId      string `json:"agentId"`      //终端编号
+	Os           string `json:"os"`           //系统
+	Ip           string `json:"ip"`           //终端ip
+	NetIp        string `json:"netIp"`        //通讯ip
+	HostName     string `json:"hostName"`     //计算机名称
+	Status       int    `json:"status"`       //终端上线状态
+	OnlineTime   string `json:"onlineTime"`   //终端上线时间
+	Version      string `json:"version"`      //终端版本
+	DeptCode     string `json:"deptCode"`     //组织架构
+	DeptName     string `json:"deptName"`     //组织架构
+	AgentType    string `json:"agentType"`    //终端类型
+	AliasName    string `json:"aliasName"`    //别名
+	ContactName  string `json:"contactName"`  //管理人
+	ContactPhone string `json:"contactPhone"` //管理人
 }
-*/
-func (aa *requestHuanshi) SyncAgentBySyslog(param map[string]interface{}) error {
+
+// SyncAgentBySyslog 通过SYSLOG同步终端
+func (aa *requestHuanshi) SyncAgentBySyslog(param AgentData) error {
 	//默认值
-	param["platform"] = aa.RequestPlatform
-	param["dataType"] = "zhongduan"
-	//@todo 通道:LOCAL7; 等级:info
-	if err := aa.analogSendSyslog("agent", 23, 6, param); err != nil {
+	param.Platform = aa.RequestPlatform
+	param.DataType = DataTypeAgent
+	if err := aa.analogSendSyslog("agent", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
 }
 
-// SyncAlarmBySyslog 同步告警
+type alarmBase struct {
+	DeviceMark  string `json:"deviceMark"`  //设备标识
+	Platform    string `json:"platform"`    //来源
+	Type        string `json:"type"`        //告警类型
+	Uid         string `json:"uid"`         //终端编号
+	Ip          string `json:"ip"`          //终端ip
+	ContactName string `json:"contactName"` //管理人
+	DeptName    string `json:"deptName"`    //组织架构
+	Level       int    `json:"level"`       //告警级别
+	NoticeType  int    `json:"noticeType"`  //告警类型
+	NoticeTime  string `json:"noticeTime"`  //告警时间
+}
+
+// AlarmComm 告警数据结构： 公共
+type AlarmComm struct {
+	alarmBase
+	Dir               string `json:"dir"`               //告警关联路径
+	ExceptionProcess  string `json:"exceptionProcess"`  ///异常进程路径
+	AttackIp          string `json:"attackIp"`          //虚开端口: 攻击ip
+	DestinationIp     string `json:"destinationIp"`     //虚开端口: 目的ip
+	OpenPort          string `json:"openPort"`          //虚开端口: 目的端口号
+	RedirectIp        string `json:"redirectIp"`        //虚开端口: 重定向ip
+	PeripheralEid     string `json:"peripheralEid"`     //外设:  外设ID
+	PeripheralName    string `json:"peripheralName"`    //外设:  设备名称
+	PeripheralRemark  string `json:"peripheralRemark"`  //外设: 设备描述
+	PeripheralContact string `json:"peripheralContact"` //外设: 责任人
+}
+
+// AlarmPlug 告警数据结构： 封堵
+type AlarmPlug struct {
+	alarmBase
+	Pip        string `json:"pip"`        //封堵 ip
+	PStartTime string `json:"pStartTime"` //封堵 开始时间
+	PEndTime   string `json:"pEndTime"`   //封堵 结束时间
+	PMinute    int    `json:"pMinute"`    //封堵 时长（分钟）
+	PType      int    `json:"pType"`      //封堵 类型
+	PTypeTxt   string `json:"pTypeTxt"`   //封堵 类型说明
+}
+
+// AlarmOutreach 告警数据结构： 外联
+type AlarmOutreach struct {
+	alarmBase
+	Phash      string `json:"phash"`      //进程 HASH
+	Pid        int    `json:"pid"`        //进程 ID
+	Ppath      string `json:"ppath"`      //进程 路径
+	Domain     string `json:"domain"`     //域名
+	AnalysisIp string `json:"analysisIp"` //解析ip
+}
+
+// AlarmLogin 告警数据结构：  登录口令破解
+type AlarmLogin struct {
+	alarmBase
+	SourceIp string `json:"sourceIp"` //来源ip
+	Total    int    `json:"total"`    //次数
+}
+
+// SyncAlarmCommBySyslog 同步告警告警
 // 参数：param 每种告警不相同
 // 功能模块: 参考宏定义
-func (aa *requestHuanshi) SyncAlarmBySyslog(param map[string]interface{}) error {
-	//默认值
-	param["platform"] = aa.RequestPlatform
-	param["dataType"] = "zhongduan"
+func (aa *requestHuanshi) SyncAlarmCommBySyslog(param AlarmComm) error {
+	param.Platform = aa.RequestPlatform
 	//@todo 通道:LOCAL5; 等级:info
-	if err := aa.analogSendSyslog("alarm", 21, 6, param); err != nil {
+	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -295,8 +360,7 @@ func (aa *requestHuanshi) SyncLogBySyslog(param map[string]interface{}) error {
 	//默认值
 	param["platform"] = aa.RequestPlatform
 	param["device_ip"] = aa.Config.HuanshiCallIp
-	//@todo 通道:LOCAL3; 等级:warning
-	if err := aa.analogSendSyslog("log", 19, 4, param); err != nil {
+	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -318,7 +382,7 @@ func (aa *requestHuanshi) cacheAgentKey(deviceMark, agentId string) string {
 // SaveAgent 保存终端信息
 func (aa *requestHuanshi) SaveAgent(deviceMark, agentId string, param CacheAgent) error {
 	key := aa.cacheAgentKey(deviceMark, agentId)
-	data := json_helper.Encode(param)
+	data := json_helper.Encode(json_helper.Encode(param))
 	//新增缓存
 	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
 		return errors.New("cache token fail: " + err.Error())
