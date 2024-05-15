@@ -52,7 +52,7 @@ type procData struct {
 	ModuleNumber int       `json:"module_number"`
 	ModuleList   []dllData `json:"module"`
 	Signature    string    `json:"signature"` //不在使用 @todo bug6830
-	Finish       int       `json:"finish"`    //没有使用
+	Finish       int       `json:"finish"`    //不在使用 @todo 100代表任务已完成
 }
 
 type dllData struct {
