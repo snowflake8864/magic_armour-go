@@ -5,7 +5,9 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 )
 
@@ -30,17 +32,17 @@ func (crd *SoftwareDownload) EncryptConfig(OrgId, UserId int64) string {
 	//从数据字典中获取过期时间
 	var hour int64 = 366
 	agentConfigExpire := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentConfigExpire)
-	if !helpers.StringIsEmpty(agentConfigExpire) {
-		hour = helpers.String2Int64(agentConfigExpire)
+	if !string_helper.IsEmpty(agentConfigExpire) {
+		hour = string_helper.ToInt64(agentConfigExpire)
 	}
 
 	//登录信息
 	loginInfo := AgentConfig{
 		OrgId:  OrgId,
 		UserId: UserId,
-		Expire: helpers.AddTimestampByHour(hour),
+		Expire: date_helper.AddTimestampByHour(hour),
 	}
-	jsonStr := helpers.JsonEncode(loginInfo)
+	jsonStr := json_helper.Encode(loginInfo)
 	//加密
 	cryptStr, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(jsonStr)
 	return cryptStr
@@ -55,7 +57,7 @@ func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConf
 	}
 
 	//转成登录结构体
-	err = helpers.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.Json2Struct(jsonStr, &loginInfo)
 	if err != nil {
 		return AgentConfig{}, errors.New("userid json fail")
 	}

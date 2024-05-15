@@ -3,7 +3,7 @@ package order_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 订单表
@@ -159,13 +159,13 @@ func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel) {
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrderModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrderModel) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
-	if !helpers.StringIsEmpty(order) {
+	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
 		tmp = tmp.Order("created_at ASC")
@@ -182,7 +182,7 @@ func (m *OrderModel) GetItemsByConditions(condition SearchConditions, offset, li
 func (m *OrderModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("order_no")
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)
@@ -210,7 +210,7 @@ func (m *OrderModel) Page(condition SearchConditions, offset, limit int, order s
 // CalcByConditions 通过条件获取多条记录
 func (m *OrderModel) CalcByConditions(condition SearchConditions, column string) (item *OrderModel) {
 	tmp := m.Model(m).Select(column)
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Take(&item)

@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 	"strings"
 )
 
@@ -47,7 +47,7 @@ func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 
 // getProcStatus 获取最终状态
 func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int, at string) {
-	at = helpers.DatetimeCurr()
+	at = date_helper.CurDatetime()
 	if globalStatus == enum_process.RelyStatusWhite {
 		status = enum_process.StatusWhite
 	} else if globalStatus == enum_process.RelyStatusBlack {
@@ -65,11 +65,11 @@ func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, 
 			status = enum_process.StatusBlack
 		} else {
 			status = enum_process.StatusUnset
-			at = helpers.TimestampToDatetime(helpers.AddTimestampByHour(-3))
+			at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
 		}
 	} else {
 		status = enum_process.StatusUnset
-		at = helpers.TimestampToDatetime(helpers.AddTimestampByHour(-3))
+		at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
 	}
 
 	return status, at

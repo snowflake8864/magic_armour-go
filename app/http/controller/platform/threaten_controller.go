@@ -13,7 +13,8 @@ import (
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
 )
@@ -131,7 +132,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 	model := threaten_models.CreateThreatenCacheFactory().GetItemById(id, "*")
-	if model == nil || helpers.StringIsEmpty(model.Id) {
+	if model == nil || string_helper.IsEmpty(model.Id) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
 	}
@@ -180,7 +181,7 @@ func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (errCode int, err error) {
 	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
 	var params []threaten_models.ThreatenPushModel
-	err = helpers.Json2Any(list, &params)
+	err = json_helper.Json2Any(list, &params)
 	if err != nil {
 		return -1, errors.New("参数格式错误")
 	}

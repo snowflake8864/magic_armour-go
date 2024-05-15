@@ -1,4 +1,4 @@
-package helpers
+package file_helper
 
 import (
 	"crypto/md5"
@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func FileMd5sum(dir string) (error, string) {
+func Md5sum(dir string) (error, string) {
 	// 打开文件
 	file, err := os.Open(dir)
 	if err != nil {

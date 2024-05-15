@@ -4,7 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 	"strings"
 )
 
@@ -46,7 +46,7 @@ func (crd *ThreatenPush) BatchAdd(list []threaten_models.ThreatenPushModel, leve
 	//existCaches := CreateCacheFactory().GetMapsByIds(ids)
 	////本地威胁情报推送中已存在， 忽略
 	existPushes := crd.GetMapsByIds(ids)
-	currTime := helpers.DatetimeCurr()
+	currTime := date_helper.CurDatetime()
 
 	var inserts []threaten_models.ThreatenPushModel
 	for _, model := range list {

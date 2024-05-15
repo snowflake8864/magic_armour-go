@@ -2,7 +2,7 @@ package proc_service
 
 import (
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateGlobalCurdFactory() *GlobalCurd {
@@ -18,7 +18,7 @@ type GlobalCurd struct {
 // GetOne 获取一条
 func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.ProcGlobalModel) {
 	model, err := crd.masterModel.GetItemByOrgAndId(orgId, hash)
-	if err == nil || helpers.StringIsEmpty(model.Id) {
+	if err == nil || string_helper.IsEmpty(model.Id) {
 		return nil
 	}
 	return model

@@ -8,7 +8,8 @@ import (
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/files"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *SoftwareCurd {
@@ -48,7 +49,7 @@ func (crd *SoftwareCurd) GetItemsByPublished() (items []*software_models.Softwar
 
 // Add 新增
 func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int, err error) {
-	if helpers.StringIsEmpty(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentHttpUrl)) {
+	if string_helper.IsEmpty(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentHttpUrl)) {
 		return -1, errors.New("上传软件前需要配置终端访问地址")
 	}
 
@@ -62,7 +63,7 @@ func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int,
 	param.StoragePath = uploadModel.StoragePath
 	param.FullPath = uploadModel.FullPath
 	param.IsPublish = enums.IsNot
-	param.CreatedAt = helpers.DatetimeCurr()
+	param.CreatedAt = date_helper.CurDatetime()
 
 	if !crd.masterModel.InsertItem(param) {
 		return -1, errors.New("保存失败")

@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/organization/order_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 type Order struct {
@@ -26,7 +26,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["grant_type"] = model.GrantType
 	data["grant_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.GrantType, enum_product.EnumIntMap)
 	productGrantConfig := enum_product.ProductGrantConfig{}
-	_ = helpers.Json2Struct(model.GrantModule, &productGrantConfig)
+	_ = json_helper.Json2Struct(model.GrantModule, &productGrantConfig)
 	data["grant_module"] = productGrantConfig
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["sale_price"] = model.SalePrice
@@ -43,7 +43,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["expire_at"] = model.ExpireAt
 	data["pay_method"] = model.PayMethod
 	data["pay_method_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("pay_method", model.PayMethod, enum_order.EnumMap)
-	data["pay_info"] = helpers.Json2Map(model.PayInfo)
+	data["pay_info"] = json_helper.ToMap(model.PayInfo)
 	data["pay_order_no"] = model.PayOrderNo
 	data["created_at"] = model.CreatedAt
 	data["decline_at"] = model.DeclineAt

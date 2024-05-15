@@ -2,7 +2,8 @@ package organize_service
 
 import (
 	"goskeleton/app/model/organization/organization_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateOrgLogFactory() *OrgLog {
@@ -28,8 +29,8 @@ func (crd *OrgLog) InitByOrg(orgParam *organization_models.OrganizationModel, mo
 
 // Add 新增企业日志
 func (crd *OrgLog) Add(param *organization_models.OrgLogModel) bool {
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	return crd.masterModel.InsertItem(param)
 }

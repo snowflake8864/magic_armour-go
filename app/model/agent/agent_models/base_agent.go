@@ -3,7 +3,8 @@ package agent_models
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -43,19 +44,19 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
 	}
-	if !helpers.StringIsEmpty(search.AgentId) {
+	if !string_helper.IsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}
 	if search.AgentIds != nil && len(search.AgentIds) > 0 {
 		wheres["agent_id in"] = search.AgentIds
 	}
-	if !helpers.StringIsEmpty(search.HostName) {
+	if !string_helper.IsEmpty(search.HostName) {
 		wheres["host_name"] = search.HostName
 	}
-	if !helpers.StringIsEmpty(search.NetIp) {
+	if !string_helper.IsEmpty(search.NetIp) {
 		wheres["net_ip"] = search.NetIp
 	}
-	if !helpers.StringIsEmpty(search.AgentIp) {
+	if !string_helper.IsEmpty(search.AgentIp) {
 		wheres["agent_ip like"] = "%" + search.AgentIp + "%"
 	}
 	if search.PlatformType > 0 {
@@ -67,19 +68,19 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 	if search.IsSafe != enums.AllDefaultInt {
 		wheres["is_safe"] = search.IsSafe
 	}
-	if !helpers.StringIsEmpty(search.ContactName) {
+	if !string_helper.IsEmpty(search.ContactName) {
 		wheres["contact_name"] = search.ContactName
 	}
-	if !helpers.StringIsEmpty(search.Alias) {
+	if !string_helper.IsEmpty(search.Alias) {
 		wheres["alias"] = search.Alias
 	}
 	if search.DeptIds != nil && len(search.DeptIds) > 0 {
 		wheres["dept_id in"] = search.DeptIds
 	}
-	if !helpers.StringIsEmpty(search.CreateAtGte) {
+	if !string_helper.IsEmpty(search.CreateAtGte) {
 		wheres["created_at >="] = search.CreateAtGte
 	}
-	if !helpers.StringIsEmpty(search.CreateAtLte) {
+	if !string_helper.IsEmpty(search.CreateAtLte) {
 		wheres["created_at <="] = search.CreateAtLte
 	}
 	return wheres
@@ -130,17 +131,17 @@ func (m *baseAgent) ColumnCalcAgents(org, online, safe, win, winOnline bool) str
 		columns = append(columns, "org_id")
 	}
 	if online {
-		columns = append(columns, "SUM(IF(is_online ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS online_number")
+		columns = append(columns, "SUM(IF(is_online ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS online_number")
 	}
 	if safe {
-		columns = append(columns, "SUM(IF(is_safe ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS safe_number")
+		columns = append(columns, "SUM(IF(is_safe ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS safe_number")
 	}
 	if win {
-		columns = append(columns, "SUM(IF(platform_type ="+helpers.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0) AS windows_number")
+		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0) AS windows_number")
 	}
 	if winOnline {
-		columns = append(columns, "SUM(IF(platform_type ="+helpers.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)"+
-			" AND is_online ="+helpers.IntToStr(enums.IsYes)+", 1, 0)) AS  windows_online_number")
+		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)"+
+			" AND is_online ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS  windows_online_number")
 	}
 
 	return strings.Join(columns, ", ")

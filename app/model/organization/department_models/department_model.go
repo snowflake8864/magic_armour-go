@@ -3,7 +3,7 @@ package department_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 组织架构表
@@ -88,7 +88,7 @@ func (m *DepartmentModel) UpdateById(id int64, updates map[string]interface{}) b
 // DeleteByConditions 通过条件删除
 func (m *DepartmentModel) DeleteByConditions(condition map[string]interface{}) bool {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Delete(m)
@@ -122,13 +122,13 @@ func (m *DepartmentModel) GetItemsByIds(ids []int64) (items []*DepartmentModel, 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *DepartmentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*DepartmentModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
-	if !helpers.StringIsEmpty(order) {
+	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
 		tmp = tmp.Order("created_at ASC")

@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -56,7 +56,7 @@ func (m *BaseModel) TrimSql(sql string) string {
 }
 
 func (m *BaseModel) GetColumn(column string) string {
-	if helpers.StringIsEmpty(column) {
+	if string_helper.IsEmpty(column) {
 		column = "*"
 	}
 	return column

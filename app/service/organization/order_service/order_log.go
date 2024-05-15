@@ -2,7 +2,8 @@ package order_service
 
 import (
 	"goskeleton/app/model/organization/order_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateLogFactory() *OrderLog {
@@ -15,8 +16,8 @@ type OrderLog struct {
 
 // Add 新增订单日志
 func (crd *OrderLog) Add(param *order_models.OrderLogModel) bool {
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	return crd.masterModel.InsertItem(param)
 }

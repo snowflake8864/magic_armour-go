@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/platform/software_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 type Software struct {
@@ -23,7 +23,7 @@ func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]
 	data["os_type"] = model.OsType
 	data["os_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("os_type", model.OsType, enum_software.EnumMap)
 	data["os_ver"] = model.OsVer
-	osVer := helpers.Json2SliceInt(model.OsVer)
+	osVer := json_helper.Json2SliceInt(model.OsVer)
 	var osTypeTxt []string
 	for _, val := range osVer {
 		osTypeTxt = append(osTypeTxt, enums.Get1stIsStrAnd2ndIsIntReturnStr("os_ver", val, enum_software.EnumMap))

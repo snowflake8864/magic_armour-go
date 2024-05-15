@@ -9,7 +9,10 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/cur_app"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -84,7 +87,7 @@ func (crd *AdminAuth) checkBySlider(username, code string) bool {
 
 // GenerateBySms  生成短信码
 func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
-	code = helpers.IntRandom2Str(100000, 999999)
+	code = int_helper.IntRandom2Str(100000, 999999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
 
 	go ali_sms.SendAuthCode(phone, code)
@@ -133,8 +136,8 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 	}
 
 	//短信验证
-	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
-		if helpers.StringIsEmpty(sms) {
+	if !string_helper.IsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
+		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
 		if !crd.checkBySms(adminModel.Phone, sms) {
@@ -157,13 +160,13 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 		}
 		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 		//达到登录错误最大次数
-		diff := helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorMax]) - adminModel.PwErrorNum - 1
+		diff := string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginErrorMax]) - adminModel.PwErrorNum - 1
 		if diff <= 0 {
 			//设置锁定
-			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
+			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
 			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
 				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
-		} else if diff < helpers.String2Int(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
+		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
 			return result, -2, errors.New("用户名或密码错误, 还有" +
 				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟")
 		} else {
@@ -184,11 +187,11 @@ func (crd *AdminAuth) loginAfter(adminModel *admin_models.AdminModel) map[string
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,
 		IsRoot:   adminModel.IsRoot,
-		LoginAt:  helpers.DatetimeCurr(),
+		LoginAt:  date_helper.CurDatetime(),
 	}
 
 	//缓存
-	jsonStr := helpers.JsonEncode(loginInfo)
+	jsonStr := json_helper.Encode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
 	crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
@@ -209,10 +212,10 @@ func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo Admi
 	}
 
 	jsonStr := crd.redisClient.Get(crd.keyByToken(token))
-	if helpers.StringIsEmpty(jsonStr) {
+	if string_helper.IsEmpty(jsonStr) {
 		return AdminCacheLogin{}, errors.New("token expired")
 	}
-	err = helpers.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.Json2Struct(jsonStr, &loginInfo)
 	if err != nil {
 		return AdminCacheLogin{}, errors.New("token json fail")
 	}

@@ -12,7 +12,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
@@ -59,7 +59,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
 	orgParam.TrusteeshipSwitch = enums.IsYes
-	orgParam.CreatedAt = helpers.DatetimeCurr()
+	orgParam.CreatedAt = date_helper.CurDatetime()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
 	if err = tx.Create(orgParam).Error; err != nil {
 		tx.Rollback()

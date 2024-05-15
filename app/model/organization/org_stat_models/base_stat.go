@@ -1,7 +1,7 @@
 package org_stat_models
 
 import (
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -29,19 +29,19 @@ func (crd *baseStat) conditions2Where(search SearchConditions) map[string]interf
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
 	}
-	if !helpers.StringIsEmpty(search.AgentId) {
+	if !string_helper.IsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}
 	if search.StatMonth > 0 {
 		wheres["stat_month"] = search.StatMonth
 	}
-	if !helpers.StringIsEmpty(search.StatDay) {
+	if !string_helper.IsEmpty(search.StatDay) {
 		wheres["stat_day"] = search.StatDay
 	}
-	if !helpers.StringIsEmpty(search.CreateAtGte) {
+	if !string_helper.IsEmpty(search.CreateAtGte) {
 		wheres["created_at >="] = search.CreateAtGte
 	}
-	if !helpers.StringIsEmpty(search.CreateAtLte) {
+	if !string_helper.IsEmpty(search.CreateAtLte) {
 		wheres["created_at <="] = search.CreateAtLte
 	}
 	return wheres

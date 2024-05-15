@@ -1,17 +1,19 @@
-package helpers
+package date_helper
 
 import (
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"time"
 )
 
-// DatetimeCurr 获取当前日期， 默认格式
-func DatetimeCurr() string {
+// CurDatetime 获取当前日期， 默认格式
+func CurDatetime() string {
 	return time.Now().Format(variable.DateFormat)
 }
 
-// DatetimeSpecial 获取当前日期，特殊格式
-func DatetimeSpecial(format string) string {
+// SpecialDatetime 获取当前日期，特殊格式
+func SpecialDatetime(format string) string {
 	return time.Now().Format(format)
 }
 
@@ -25,23 +27,23 @@ func WeekdayCurr() string {
 	return time.Now().Weekday().String()
 }
 
-// DateCalcByDay 按天计算日期
-func DateCalcByDay(d int) (day, dayStart, dayEnd string, month int) {
+// CalcByDay 按天计算日期
+func CalcByDay(d int) (day, dayStart, dayEnd string, month int) {
 	t := time.Now().AddDate(0, 0, d)
 	day = t.Format(variable.DayFormat)
 	dayStart = day + " 00:00:00"
 	dayEnd = day + " 23:59:59"
-	month = String2Int(t.Format("200601"))
+	month = string_helper.ToInt(t.Format("200601"))
 	return day, dayStart, dayEnd, month
 }
 
-// DateCalcByMonth 按月计算日期
-func DateCalcByMonth(m int) (month int, monthFirstDay, monthLastDay string) {
+// CalcByMonth 按月计算日期
+func CalcByMonth(m int) (month int, monthFirstDay, monthLastDay string) {
 	t := time.Now().AddDate(0, m, 0)
-	month = String2Int(t.Format("200601"))
+	month = string_helper.ToInt(t.Format("200601"))
 	ms := t.Format("2006-01")
 	monthFirstDay = ms + " -01"
-	monthLastDay = ms + " -" + IntToStr(DaysInMonth(t.Year(), t.Month()))
+	monthLastDay = ms + " -" + int_helper.IntToStr(DaysInMonth(t.Year(), t.Month()))
 	return month, monthFirstDay, monthLastDay
 }
 
@@ -53,8 +55,8 @@ func DaysInMonth(year int, month time.Month) int {
 	return t.AddDate(0, 1, -1).Day()
 }
 
-// TimestampCurr 获取当前时间戳
-func TimestampCurr() int64 {
+// CurTimestamp 获取当前时间戳
+func CurTimestamp() int64 {
 	return time.Now().Unix()
 }
 
@@ -73,7 +75,7 @@ func AddTimestampByMinute(m int64) int64 {
 // TimestampToDatetime 时间戳转成日期， 默认格式
 func TimestampToDatetime(timestamp int64) string {
 	if timestamp == 0 {
-		timestamp = TimestampCurr()
+		timestamp = CurTimestamp()
 	}
 	t := time.Unix(timestamp, 0).Local()
 
@@ -90,7 +92,7 @@ func DatetimeToTimestamp(datetime, layout string) int64 {
 	return t.Unix()
 }
 
-// TimestampCalcDayInCurrMonth 时间戳现在是当前月的第几天
-func TimestampCalcDayInCurrMonth(timestamp int64) int {
+// DaysInMonthByTimestamp 时间戳现在是月的第几天
+func DaysInMonthByTimestamp(timestamp int64) int {
 	return time.Unix(timestamp, 0).Local().Day()
 }

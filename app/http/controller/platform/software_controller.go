@@ -10,7 +10,7 @@ import (
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -116,7 +116,7 @@ func (u *SoftwareController) AddForManage(ctx *gin.Context) {
 	var param = software_models.SoftwareModel{}
 	param.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
 	param.OsType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "osType"))
-	param.OsVer = helpers.JsonEncode(u.getWebSliceOfInt(ctx, "osVer"))
+	param.OsVer = json_helper.Encode(u.getWebSliceOfInt(ctx, "osVer"))
 	param.UploadId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
 	param.Ver = ctx.GetString(consts.ValidatorPrefixPlatform + "versionNumber")
 	param.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")

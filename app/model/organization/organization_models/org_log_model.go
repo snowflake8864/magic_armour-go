@@ -3,7 +3,7 @@ package organization_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 企业日志构表
@@ -83,13 +83,13 @@ func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgLogModel) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
-	if !helpers.StringIsEmpty(order) {
+	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
 		tmp = tmp.Order("created_at ASC")
@@ -106,7 +106,7 @@ func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, l
 func (m *OrgLogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)

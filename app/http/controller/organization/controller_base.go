@@ -9,7 +9,8 @@ import (
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // ControllerBase 基础
@@ -39,7 +40,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrganization + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		reqDeptIds = helpers.SliceAny2Int64(tmp)
+		reqDeptIds = slice_helper.SliceAny2Int64(tmp)
 	}
 
 	//用户管理的组织架构
@@ -52,7 +53,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 			searchConditions.DeptIds = departments
 		} else {
 			//用户管理组织架构与查询组织架构交集
-			intersection := helpers.SliceInt64Intersect(reqDeptIds, departments)
+			intersection := slice_helper.SliceInt64Intersect(reqDeptIds, departments)
 			if intersection == nil || len(intersection) == 0 {
 				return searchConditions, errors.New("暂无数据")
 			} else {
@@ -93,14 +94,14 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	}
 	offset = (page - 1) * pageSize
 
-	if helpers.StringIsEmpty(orderField) {
-		if helpers.StringIsEmpty(defaultField) {
+	if string_helper.IsEmpty(orderField) {
+		if string_helper.IsEmpty(defaultField) {
 			orderField = "created_at"
 		} else {
 			orderField = defaultField
 		}
 	}
-	if helpers.StringIsEmpty(orderSort) {
+	if string_helper.IsEmpty(orderSort) {
 		orderSort = "DESC"
 	}
 	return offset, pageSize, orderField + " " + orderSort
@@ -137,7 +138,7 @@ func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string
 	if val, ok := ctx.Get(consts.ValidatorPrefixOrganization + "agentIds"); ok && val != nil {
 		var tmp []interface{}
 		tmp, _ = val.([]interface{})
-		agentIds = helpers.SliceAny2String(tmp)
+		agentIds = slice_helper.SliceAny2String(tmp)
 	}
 	return agentIds
 }

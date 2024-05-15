@@ -11,7 +11,7 @@ import (
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/service/platform/operate_log_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 	"net/http"
@@ -75,7 +75,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 
 			//是否需要记录
 			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
-			if helpers.StringIsEmpty(param.Module) {
+			if string_helper.IsEmpty(param.Module) {
 				variable.ZapLog.Debug("SavePlatformOperate path error: " + param.Path)
 				return
 			}
@@ -91,13 +91,13 @@ func SavePlatformOperate() gin.HandlerFunc {
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
 				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefixPlatform + "name"))
-				if helpers.StringIsEmpty(param.CreateName) {
+				if string_helper.IsEmpty(param.CreateName) {
 					variable.ZapLog.Error("SavePlatformOperate param name is empty, IP: " + param.NetIp)
 					return
 				}
 				//获取管理员
 				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
-				if helpers.StringIsEmpty(adminModel.Username) {
+				if string_helper.IsEmpty(adminModel.Username) {
 					variable.ZapLog.Error("SavePlatformOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
 					return
 				}
@@ -108,7 +108,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 				param.CreateName = loginInfo.Username
 			}
 
-			if !helpers.StringIsEmpty(param.CreateName) {
+			if !string_helper.IsEmpty(param.CreateName) {
 				operate_log_service.CreateCurdFactory().Add(&param)
 			}
 

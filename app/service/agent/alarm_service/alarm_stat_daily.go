@@ -2,7 +2,8 @@ package alarm_service
 
 import (
 	"goskeleton/app/model/alarm/alarm_stat_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateStatDailyFactory() *AlarmStatDaily {
@@ -15,8 +16,8 @@ type AlarmStatDaily struct {
 
 // Add 新增
 func (crd *AlarmStatDaily) Add(param *alarm_stat_models.AlarmStatDailyModel) bool {
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	return crd.masterModel.InsertItem(param)
 }

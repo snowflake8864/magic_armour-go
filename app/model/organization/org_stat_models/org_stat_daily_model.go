@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // CreateOrgStatDailyFactory 企业统计: 每天的
@@ -107,7 +107,7 @@ func (m *OrgStatDailyModel) InsertBatch(list *[]OrgStatDailyModel) bool {
 func (m *OrgStatDailyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -124,7 +124,7 @@ func (m *OrgStatDailyModel) UpdateByConditions(condition SearchConditions, updat
 func (m *OrgStatDailyModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)
@@ -144,7 +144,7 @@ func (m *OrgStatDailyModel) GetItemsByConditions(condition SearchConditions, off
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
-		if !helpers.StringIsEmpty(order) {
+		if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
 		} else {
 			tmp = tmp.Order("created_at ASC")

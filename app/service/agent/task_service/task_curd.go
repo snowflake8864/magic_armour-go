@@ -3,7 +3,8 @@ package task_service
 import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/task_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"strconv"
 )
@@ -27,12 +28,12 @@ func (crd *TaskCurd) AddTasksForAgents(orgId int64, agentIds []string, types []i
 func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, remark string) {
 	//未完成的任务
 	cacheFact := CreateCacheFactory()
-	unfinishedMap := helpers.SliceInt2Map(cacheFact.GetUnfinished(orgId, agentId))
+	unfinishedMap := slice_helper.SliceInt2Map(cacheFact.GetUnfinished(orgId, agentId))
 
 	//需要缓存列表
 	var caches []int
 	var inserts []task_models.TaskModel
-	nowDate := helpers.DatetimeCurr()
+	nowDate := date_helper.CurDatetime()
 
 	//遍历新任务并去除未完成的
 	for _, val := range types {
@@ -74,7 +75,7 @@ func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp 
 	updates := map[string]interface{}{
 		"status":       enum_task.StatusFinish,
 		"net_ip":       netIp,
-		"completed_at": helpers.DatetimeCurr(),
+		"completed_at": date_helper.CurDatetime(),
 	}
 	//入库
 	crd.masterModel.UpdateByConditions(conditions, updates)

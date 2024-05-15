@@ -3,7 +3,7 @@ package topic_kakfa
 import (
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/kafka_go"
 	"net"
 	"strconv"
@@ -32,7 +32,7 @@ func (k *TopicClient) Init() {
 	defer conn.Close()
 
 	controller, err := conn.Controller()
-	variable.ZapLog.Info(helpers.JsonEncode(controller))
+	variable.ZapLog.Info(json_helper.Encode(controller))
 	if err != nil {
 		variable.ZapLog.Info(err.Error())
 		return

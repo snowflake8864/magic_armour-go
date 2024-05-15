@@ -10,7 +10,7 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/service/platform/product_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -110,7 +110,7 @@ func (u *ProductController) addParam(ctx *gin.Context) prodcut_models.ProductMod
 	productGrantConfig.Syslog = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_syslog"))
 	productGrantConfig.Outreach = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_outreach"))
 	productGrantConfig.Login = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_login"))
-	param.GrantModule = helpers.JsonEncode(productGrantConfig)
+	param.GrantModule = json_helper.Encode(productGrantConfig)
 
 	loginInfo := u.getLogin(ctx)
 	param.CreateId = loginInfo.AdminId

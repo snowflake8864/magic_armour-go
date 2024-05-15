@@ -8,7 +8,8 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateProcessUploadFactory() *ProcessUpload {
@@ -25,7 +26,7 @@ type ProcessUpload struct {
 // GetOne 获取一条
 func (crd *ProcessUpload) GetOne(orgId int64, agentId, hash string) (model *proc_models.ProcessModel) {
 	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
-	if model == nil || helpers.StringIsEmpty(model.ProcHash) {
+	if model == nil || string_helper.IsEmpty(model.ProcHash) {
 		return nil
 	}
 	return model
@@ -33,19 +34,19 @@ func (crd *ProcessUpload) GetOne(orgId int64, agentId, hash string) (model *proc
 
 // Add 添加
 func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
-	if helpers.StringIsEmpty(processModel.CreatedAt) {
-		processModel.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(processModel.CreatedAt) {
+		processModel.CreatedAt = date_helper.CurDatetime()
 	}
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)
-	if hasModel != nil && !helpers.StringIsEmpty(hasModel.ProcHash) {
+	if hasModel != nil && !string_helper.IsEmpty(hasModel.ProcHash) {
 		return nil
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
-	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
 

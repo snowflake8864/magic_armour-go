@@ -6,7 +6,9 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/platform/department_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateOnlineFactory() *AgentOnline {
@@ -21,10 +23,10 @@ type AgentOnline struct {
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, string) {
 	agentModel := crd.masterModel.GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.masterModel.ColumnSwitchAndModeForAlarm(true))
-	nowDate := helpers.DatetimeCurr()
+	nowDate := date_helper.CurDatetime()
 	isAllocateDept := true //是否分配组织架构
 
-	if helpers.StringIsEmpty(agentModel.AgentId) {
+	if string_helper.IsEmpty(agentModel.AgentId) {
 		//授权配置
 		grantConfig := enum_product.ProductGrantConfig{}
 		grantConfig.Default()
@@ -41,7 +43,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		param.ContactTel = ""
 		param.Position = ""
 		param.Remark = ""
-		param.GrantConfig = helpers.JsonEncode(grantConfig)
+		param.GrantConfig = json_helper.Encode(grantConfig)
 		param.GrantStatus = enums.IsNot
 		param.ProcessSwitch = enums.SwitchOff
 		param.ProcessMode = enum_agent.ModeMonitor

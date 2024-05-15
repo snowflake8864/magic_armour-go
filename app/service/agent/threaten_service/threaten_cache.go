@@ -3,7 +3,8 @@ package threaten_service
 import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCacheFactory() *ThreatenCache {
@@ -22,8 +23,8 @@ func (crd *ThreatenCache) Add(param *threaten_models.ThreatenCacheModel, checkEx
 		}
 	}
 
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	param.Level = enum_threaten.LevelDefault
 	return crd.masterModel.InsertItem(param)
@@ -42,7 +43,7 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 	}
 	updates := map[string]interface{}{
 		"level":    enum_threaten.LevelUnknown,
-		"check_at": helpers.DatetimeCurr(),
+		"check_at": date_helper.CurDatetime(),
 	}
 	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
 	return isOk
@@ -53,7 +54,7 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.ThreatenCacheModel) boo
 	updates := map[string]interface{}{
 		"level":     param.Level,
 		"attribute": param.Attribute,
-		"check_at":  helpers.DatetimeCurr(),
+		"check_at":  date_helper.CurDatetime(),
 	}
 	if crd.masterModel.UpdateById(param.Id, updates) {
 		return false

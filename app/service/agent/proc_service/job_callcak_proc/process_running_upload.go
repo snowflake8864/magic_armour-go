@@ -3,7 +3,8 @@ package job_callcak_proc
 import (
 	"errors"
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateProcessRunningUploadFactory() *ProcessRunningUpload {
@@ -19,8 +20,8 @@ type ProcessRunningUpload struct {
 
 // Add 添加
 func (crd *ProcessRunningUpload) Add(processRunningModel *proc_models.ProcessRunningModel) error {
-	if helpers.StringIsEmpty(processRunningModel.CreatedAt) {
-		processRunningModel.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(processRunningModel.CreatedAt) {
+		processRunningModel.CreatedAt = date_helper.CurDatetime()
 	}
 
 	//保存

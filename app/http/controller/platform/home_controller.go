@@ -13,7 +13,8 @@ import (
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/service/organization/organize_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -30,22 +31,22 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 		if dividend == 0 {
 			ratio = 0
 		} else {
-			ratio = helpers.FloatDiv(divisor-dividend, dividend, 2)
+			ratio = float_helper.Div(divisor-dividend, dividend, 2)
 		}
 
 	} else if divisor < dividend {
 		// divisor=1; dividend=3
 		expect = "down" //下降
 		if divisor == 0 {
-			ratio = helpers.FloatScale(helpers.Float64(dividend), 2)
+			ratio = float_helper.FloatScale(float_helper.Float64(dividend), 2)
 		} else {
-			ratio = 1 - helpers.FloatDiv(divisor, dividend, 2)
+			ratio = 1 - float_helper.Div(divisor, dividend, 2)
 		}
 	} else {
 		expect = "same" //不变
 		ratio = 0
 	}
-	percent = helpers.Float64ToStr(ratio)
+	percent = float_helper.Float64ToStr(ratio)
 	if percent == "0" {
 		percent = "0.00"
 	}
@@ -56,8 +57,8 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 // AlarmTodayStat 告警: 今天统计
 func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	//今天
-	today := helpers.DatetimeSpecial(variable.DayFormat)
-	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+	today := date_helper.SpecialDatetime(variable.DayFormat)
+	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := alarm_service.CreateStatDailyFactory()
 	column := alarm_stat_models.CreateAlarmStatDailyFactory().StatColumn(alarm_stat_models.PrefixTotal, false,
@@ -79,8 +80,8 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 // AgentTodayStat 终端: 今天统计
 func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	//今天
-	today := helpers.DatetimeSpecial(variable.DayFormat)
-	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+	today := date_helper.SpecialDatetime(variable.DayFormat)
+	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
 	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfAgent(false, true, false, false,
@@ -111,7 +112,7 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
 			result = append(result, map[string]interface{}{
-				"date":         helpers.TimestampCalcDayInCurrMonth(helpers.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
+				"date":         date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
 				"win_online":   model.AgentWinOnline,
 				"linux_online": model.AgentLinuxOnline,
 			})
@@ -123,8 +124,8 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 // UserTodayStat 用户: 今天统计
 func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	//今天
-	today := helpers.DatetimeSpecial(variable.DayFormat)
-	yesterday, _, _, _ := helpers.DateCalcByDay(-1)
+	today := date_helper.SpecialDatetime(variable.DayFormat)
+	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
 	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfUser(false, true, true, false)
@@ -168,7 +169,7 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
 			result = append(result, map[string]interface{}{
-				"date":   helpers.TimestampCalcDayInCurrMonth(helpers.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
+				"date":   date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
 				"online": model.UserOnline,
 			})
 		}

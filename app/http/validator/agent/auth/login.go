@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/controller/agent"
 	"goskeleton/app/http/validator/core/data_transfer"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -36,28 +36,28 @@ func (n Login) CheckParams(context *gin.Context) {
 		return
 	}
 
-	if helpers.StringIsEmpty(n.Uuid) {
+	if string_helper.IsEmpty(n.Uuid) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Uuid] not empty")
 		return
 	}
-	if helpers.StringIsEmpty(n.MacId) {
+	if string_helper.IsEmpty(n.MacId) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [MacId] not empty")
 		return
 	}
-	if helpers.StringIsEmpty(n.Ver) {
+	if string_helper.IsEmpty(n.Ver) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Ver] not empty")
 		return
 	}
-	if helpers.StringIsEmpty(n.Auth) {
+	if string_helper.IsEmpty(n.Auth) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [Auth] error")
 		return
 	}
-	if helpers.StringIsEmpty(n.UserId) {
+	if string_helper.IsEmpty(n.UserId) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [UserId] error")
 		return
 	}
 
-	if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); helpers.StringIsEmpty(label) {
+	if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); string_helper.IsEmpty(label) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [PlatformType] error")
 		return
 	}

@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 模块表
@@ -94,7 +94,9 @@ func (m *DllModel) InsertItem(s *DllModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
 	})
-	result := m.Exec(sql)
+	println("======================1111")
+	println(sql)
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {
@@ -106,7 +108,7 @@ func (m *DllModel) InsertItem(s *DllModel) bool {
 func (m *DllModel) UpdateByConditions(condition SearchConditionsForProcess, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -123,7 +125,7 @@ func (m *DllModel) UpdateByConditions(condition SearchConditionsForProcess, upda
 func (m *DllModel) DeleteByConditions(condition SearchConditionsForProcess) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)
@@ -158,13 +160,13 @@ func (m *DllModel) GetListByConditions(condition SearchConditionsForProcess) (it
 func (m *DllModel) GetItemsByConditions(condition SearchConditionsForProcess, offset, limit int, order string) (items []*DllModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
-		if !helpers.StringIsEmpty(order) {
+		if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
 		} else {
 			tmp = tmp.Order("created_at ASC")
@@ -185,7 +187,7 @@ func (m *DllModel) Count(condition SearchConditionsForProcess) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)

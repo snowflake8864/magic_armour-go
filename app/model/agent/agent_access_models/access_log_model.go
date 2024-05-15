@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 访问日志表
@@ -82,7 +82,7 @@ func (m *AccessLogModel) InsertItem(s *AccessLogModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
 	})
-	result := m.Exec(sql)
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {
@@ -133,7 +133,7 @@ func (m *AccessLogModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bo
 func (m *AccessLogModel) DeleteByConditions(condition map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)

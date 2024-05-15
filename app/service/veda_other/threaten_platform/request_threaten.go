@@ -2,7 +2,9 @@ package threaten_platform
 
 import (
 	"errors"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/float_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/http_request"
 	"goskeleton/app/utils/redis_factory"
 	"strings"
@@ -43,13 +45,13 @@ func (aa *requestThreaten) checkCode(bodyContext string, err error) error {
 		return errors.New("body_error: " + err.Error())
 	}
 	resp := responseCommon{}
-	err = helpers.Json2Struct(bodyContext, &resp)
+	err = json_helper.Json2Struct(bodyContext, &resp)
 	if err != nil {
 		return errors.New("json_error: " + err.Error())
 	}
 
 	//fmt.Println("Type of x:", reflect.TypeOf(resp.Code))
-	code := helpers.Float64(resp.Code)
+	code := float_helper.Float64(resp.Code)
 	//口令过期
 	if code == 3007 {
 		return errors.New("token expired: " + bodyContext)
@@ -94,7 +96,7 @@ func (aa *requestThreaten) GenerateToken() error {
 	}
 
 	data := ResponseToken{}
-	err = helpers.Json2Struct(bodyContext, &data)
+	err = json_helper.Json2Struct(bodyContext, &data)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error())
 	}
@@ -115,7 +117,7 @@ func (aa *requestThreaten) GetHeaders() (headers map[string]interface{}) {
 		headers = make(map[string]interface{})
 	}
 
-	if token := aa.redisClient.Get(aa.cacheKey); !helpers.StringIsEmpty(token) {
+	if token := aa.redisClient.Get(aa.cacheKey); !string_helper.IsEmpty(token) {
 		headers["AuthToken"] = token
 	}
 	return headers
@@ -144,14 +146,14 @@ type ResponseCheckHashes struct {
 func (aa *requestThreaten) CheckHashes(list []map[string]interface{}) (error error, result []*ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
-		"keys": helpers.JsonEncode(list),
+		"keys": json_helper.Encode(list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
 	if err := aa.checkCode(bodyContext, err); err != nil {
 		return err, result
 	}
 
-	err = helpers.Json2Struct(bodyContext, &result)
+	err = json_helper.Json2Struct(bodyContext, &result)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error()), result
 	}
@@ -177,7 +179,7 @@ func (aa *requestThreaten) CheckHashes(list []map[string]interface{}) (error err
 func (aa *requestThreaten) PushHashes(list []map[string]interface{}) error {
 	uri := aa.Config.Domain + "/center/threaten/platadd"
 	params := map[string]interface{}{
-		"keys": helpers.JsonEncode(list),
+		"keys": json_helper.Encode(list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
 	if err := aa.checkCode(bodyContext, err); err != nil {

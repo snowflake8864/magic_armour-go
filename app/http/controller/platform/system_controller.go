@@ -14,7 +14,8 @@ import (
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/zip_factory"
 	"os/exec"
@@ -43,7 +44,7 @@ func (u *SystemController) MonitorRecords(ctx *gin.Context) {
 // TimeGet  服务器器时间
 func (u *SystemController) TimeGet(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
-		"date": helpers.DatetimeCurr(),
+		"date": date_helper.CurDatetime(),
 	})
 
 }
@@ -71,7 +72,7 @@ func (u *SystemController) SshGet(ctx *gin.Context) {
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSshSwitch)
 
 	response.SuccessReturnData(ctx, gin.H{
-		"switch": helpers.String2Int(val),
+		"switch": string_helper.ToInt(val),
 	})
 }
 
@@ -119,7 +120,7 @@ func (u *SystemController) NetworkGet(ctx *gin.Context) {
 		return
 	}
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-	if helpers.StringIsEmpty(outStr) || !helpers.StringIsEmpty(errStr) {
+	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
 		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
 		return
 	}
@@ -166,7 +167,7 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 		return
 	}
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-	if helpers.StringIsEmpty(outStr) || !helpers.StringIsEmpty(errStr) {
+	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
 		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
 		return
 	}

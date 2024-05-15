@@ -4,7 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/platform/org_menu_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 )
 
 func CreateCurdFactory() *MenuCurd {
@@ -28,7 +28,7 @@ func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err 
 		//等级从1开始
 		param.Level = 1
 	}
-	param.CreatedAt = helpers.DatetimeCurr()
+	param.CreatedAt = date_helper.CurDatetime()
 
 	isOk := crd.masterModel.InsertItem(param)
 	if !isOk {

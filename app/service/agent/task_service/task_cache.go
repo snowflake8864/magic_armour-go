@@ -1,7 +1,9 @@
 package task_service
 
 import (
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
 	"strconv"
 )
@@ -33,20 +35,20 @@ type TaskCache struct {
 }
 
 func (crd *TaskCache) keyByEmptyTask(orgId int64, agentId string) string {
-	return crd.emptyNumberPrefix + helpers.Int64ToStr(orgId) + agentId
+	return crd.emptyNumberPrefix + int_helper.Int64ToStr(orgId) + agentId
 }
 
 func (crd *TaskCache) keyByUnfinished(orgId int64, agentId string) string {
-	return crd.unfinishedPrefix + helpers.Int64ToStr(orgId) + agentId
+	return crd.unfinishedPrefix + int_helper.Int64ToStr(orgId) + agentId
 }
 
 func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
-	return crd.orgUninstallPrefix + helpers.Int64ToStr(orgId)
+	return crd.orgUninstallPrefix + int_helper.Int64ToStr(orgId)
 }
 
 // AddOrgUninstall 企业级卸载任务: 新增
 func (crd *TaskCache) AddOrgUninstall(orgId int64) bool {
-	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), helpers.DatetimeCurr(), crd.orgUninstallExpire)
+	isOk, _ := crd.redisClient.SetEx(crd.keyByOrgUninstall(orgId), date_helper.CurDatetime(), crd.orgUninstallExpire)
 	return isOk
 }
 
@@ -93,7 +95,7 @@ func (crd *TaskCache) SetHeartbeat(orgId int64, agentId string, hasUnfinishedTas
 	cacheKey := crd.keyByEmptyTask(orgId, agentId)
 	//原空任务次数
 
-	oldNumber := helpers.String2Int(crd.redisClient.Get(cacheKey))
+	oldNumber := string_helper.ToInt(crd.redisClient.Get(cacheKey))
 	//有未完成的任务
 	if hasUnfinishedTask {
 		//删除空任务次数
@@ -124,7 +126,7 @@ func (crd *TaskCache) SetHeartbeat(orgId int64, agentId string, hasUnfinishedTas
 func (crd *TaskCache) GetHeartbeatFlag(orgId int64, agentId string) bool {
 	cacheKey := crd.keyByEmptyTask(orgId, agentId)
 	//原空任务次数
-	oldNumber := helpers.String2Int(crd.redisClient.Get(cacheKey))
+	oldNumber := string_helper.ToInt(crd.redisClient.Get(cacheKey))
 	//空任务次数是否大于等于阀值
 	return oldNumber >= crd.emptyNumberThreshold
 }

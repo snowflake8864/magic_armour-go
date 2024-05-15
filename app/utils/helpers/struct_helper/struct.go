@@ -1,12 +1,12 @@
-package helpers
+package struct_helper
 
 import "reflect"
 
-// StructCopy 复制结构体
+// Copy 复制结构体
 // dst 目标结构体，src 源结构体
 // 必须传入指针，且不能为nil
 // 它会把src与dst的相同字段名的值，复制到dst中
-func StructCopy(dst, src interface{}) {
+func Copy(dst, src interface{}) {
 	dstValue := reflect.ValueOf(dst).Elem()
 	srcValue := reflect.ValueOf(src).Elem()
 

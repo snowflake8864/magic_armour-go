@@ -4,12 +4,12 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service/job_callcak_proc"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 func UploadProcess(jsonStr string) {
 	processModel := proc_models.ProcessModel{}
-	if err := helpers.Json2Struct(jsonStr, &processModel); err != nil {
+	if err := json_helper.Json2Struct(jsonStr, &processModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -23,7 +23,7 @@ func UploadProcess(jsonStr string) {
 
 func UploadProcessRunning(jsonStr string) {
 	processRunningModel := proc_models.ProcessRunningModel{}
-	if err := helpers.Json2Struct(jsonStr, &processRunningModel); err != nil {
+	if err := json_helper.Json2Struct(jsonStr, &processRunningModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return

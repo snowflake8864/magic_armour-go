@@ -3,7 +3,8 @@ package transformer
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -72,14 +73,14 @@ var attributeJson struct {
 // @result["attr"]: 根据type变化
 func (t *Common) TransThreatenInfo(model *threaten_models.ThreatenCacheModel) map[string]interface{} {
 	result := make(map[string]interface{})
-	if helpers.StringIsEmpty(model.CheckInfo) {
+	if string_helper.IsEmpty(model.CheckInfo) {
 		result["type"] = 1
 		result["attr"] = ""
 		return result
 	}
 
 	attrJson := attributeJson
-	err := helpers.Json2Struct(model.CheckInfo, &attrJson)
+	err := json_helper.Json2Struct(model.CheckInfo, &attrJson)
 	if err != nil {
 		result["type"] = 2
 		result["attr"] = strings.Split(model.CheckInfo, "\n")

@@ -3,7 +3,8 @@ package job_callcak_proc
 import (
 	"errors"
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateDllRunningUploadFactory() *DllRunningUpload {
@@ -19,8 +20,8 @@ type DllRunningUpload struct {
 
 // Add 添加
 func (crd *DllRunningUpload) Add(dllRunningModel *proc_models.DllRunningModel) error {
-	if helpers.StringIsEmpty(dllRunningModel.CreatedAt) {
-		dllRunningModel.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(dllRunningModel.CreatedAt) {
+		dllRunningModel.CreatedAt = date_helper.CurDatetime()
 	}
 
 	//保存

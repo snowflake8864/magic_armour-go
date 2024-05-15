@@ -4,7 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 //  终端任务表
@@ -80,7 +80,7 @@ func (m *TaskModel) InsertBatch(list *[]TaskModel) bool {
 func (m *TaskModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -110,13 +110,13 @@ func (m *TaskModel) DeleteByOrg(orgId int64) bool {
 func (m *TaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
-		if !helpers.StringIsEmpty(order) {
+		if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
 		} else {
 			tmp = tmp.Order("created_at ASC")
@@ -137,7 +137,7 @@ func (m *TaskModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -174,7 +174,7 @@ func (m *TaskModel) conditions2Where(search SearchConditions) map[string]interfa
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
 	}
-	if helpers.StringIsEmpty(search.AgentId) {
+	if string_helper.IsEmpty(search.AgentId) {
 		wheres["agent_id"] = search.AgentId
 	}
 	if len(search.Types) > 0 {

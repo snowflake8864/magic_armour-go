@@ -9,7 +9,10 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/cur_app"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -85,7 +88,7 @@ func (crd *UserAuth) checkBySlider(username, code string) bool {
 
 // GenerateBySms  生成短信码
 func (crd *UserAuth) GenerateBySms(phone string) (code string) {
-	code = helpers.IntRandom2Str(100000, 999999)
+	code = int_helper.IntRandom2Str(100000, 999999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
 
 	go ali_sms.SendAuthCode(phone, code)
@@ -134,9 +137,9 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 	}
 
 	//短信验证
-	SmsSwitch := helpers.String2Int(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch))
-	if !helpers.StringIsEmpty(userModel.Phone) && SmsSwitch == enums.IsYes {
-		if helpers.StringIsEmpty(sms) {
+	SmsSwitch := string_helper.ToInt(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch))
+	if !string_helper.IsEmpty(userModel.Phone) && SmsSwitch == enums.IsYes {
+		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
 		if !crd.checkBySms(userModel.Phone, sms) {
@@ -159,13 +162,13 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 		}
 		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 		//达到登录错误最大次数
-		diff := helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginErrorMax]) - userModel.PwErrorNum - 1
+		diff := string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorMax]) - userModel.PwErrorNum - 1
 		if diff <= 0 {
 			//设置锁定
-			crd.setLocking(username, helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
+			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
 			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
 				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
-		} else if diff < helpers.String2Int(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
+		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
 			return result, -2, errors.New("用户名或密码错误, 还有" +
 				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.OrganizationLoginErrorRemind] + "分钟")
 		} else {
@@ -187,11 +190,11 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]int
 		UserId:   userModel.Id,
 		Username: userModel.Username,
 		IsRoot:   userModel.IsRoot,
-		LoginAt:  helpers.DatetimeCurr(),
+		LoginAt:  date_helper.CurDatetime(),
 	}
 
 	//缓存
-	jsonStr := helpers.JsonEncode(loginInfo)
+	jsonStr := json_helper.Encode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
 	crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
@@ -212,10 +215,10 @@ func (crd *UserAuth) DecryptByLogin(token string, isDelay bool) (loginInfo UserC
 	}
 
 	jsonStr := crd.redisClient.Get(crd.keyByToken(token))
-	if helpers.StringIsEmpty(jsonStr) {
+	if string_helper.IsEmpty(jsonStr) {
 		return UserCacheLogin{}, errors.New("token expired")
 	}
-	err = helpers.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.Json2Struct(jsonStr, &loginInfo)
 	if err != nil {
 		return UserCacheLogin{}, errors.New("token json fail")
 	}

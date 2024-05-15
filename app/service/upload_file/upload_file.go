@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/common/upload_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/file_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"os"
 	"path"
@@ -37,7 +37,7 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 			upload.FullPath = newSavePath + saveFileName
 			upload.FullPath = newSavePath + saveFileName
 			upload.Suffix = path.Ext(saveFileName)
-			_, fileHash := helpers.FileMd5sum(upload.FullPath)
+			_, fileHash := file_helper.Md5sum(upload.FullPath)
 			upload.FileHash = fileHash
 			return true, upload
 		}

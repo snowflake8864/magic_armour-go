@@ -5,7 +5,11 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/float_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/http_request"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -81,13 +85,13 @@ func (aa *requestHuanshi) checkCode(bodyContext string, err error) error {
 		return errors.New("body_error: " + err.Error())
 	}
 	resp := responseCommon{}
-	err = helpers.Json2Struct(bodyContext, &resp)
+	err = json_helper.Json2Struct(bodyContext, &resp)
 	if err != nil {
 		return errors.New("json_error: " + err.Error())
 	}
 
 	//fmt.Println("Type of x:", reflect.TypeOf(resp.Code))
-	code := helpers.Float64(resp.Code)
+	code := float_helper.Float64(resp.Code)
 	//口令过期
 	if code == 5004 {
 		return errors.New("token fail: " + bodyContext)
@@ -121,12 +125,12 @@ type ResponseToken struct {
 // GenerateToken 生成口令
 func (aa *requestHuanshi) GenerateToken() error {
 	uri := aa.Config.HuanshiUrl + "/web/site_auth/login"
-	Timestamp := helpers.TimestampCurr()
+	Timestamp := date_helper.CurTimestamp()
 	//  $param['rsa'] = md5( $param['url'].'_'.$param['time'].'_'.$hs_private_rsa);
 	params := map[string]interface{}{
 		"url":  aa.Config.HuanshiCallbackUrl,
 		"time": Timestamp,
-		"rsa":  md5_encrypt.MD5(aa.Config.HuanshiCallbackUrl + "_" + helpers.Int64ToStr(Timestamp) + "_" + aa.PrivateRsa),
+		"rsa":  md5_encrypt.MD5(aa.Config.HuanshiCallbackUrl + "_" + int_helper.Int64ToStr(Timestamp) + "_" + aa.PrivateRsa),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
 	if err := aa.checkCode(bodyContext, err); err != nil {
@@ -134,7 +138,7 @@ func (aa *requestHuanshi) GenerateToken() error {
 	}
 
 	data := ResponseToken{}
-	err = helpers.Json2Struct(bodyContext, &data)
+	err = json_helper.Json2Struct(bodyContext, &data)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error())
 	}
@@ -150,7 +154,7 @@ func (aa *requestHuanshi) GetHeaders() (headers map[string]interface{}) {
 	if headers == nil {
 		headers = make(map[string]interface{})
 	}
-	if token := aa.redisClient.Get(aa.cacheKey); !helpers.StringIsEmpty(token) {
+	if token := aa.redisClient.Get(aa.cacheKey); !string_helper.IsEmpty(token) {
 		headers["Authorization"] = "Bearer " + token
 	}
 	return headers
@@ -226,9 +230,9 @@ func (aa *requestHuanshi) analogSendSyslog(tt string, facility, level int, param
 
 	//模拟SYSLOG信息
 	msg := "<"
-	msg += helpers.IntToStr((facility * 8) + level)
+	msg += int_helper.IntToStr((facility * 8) + level)
 	msg += ">"
-	msg += helpers.JsonEncode(param)
+	msg += json_helper.Encode(param)
 
 	_, err = conn.Write([]byte(msg))
 	if err != nil {
@@ -314,7 +318,7 @@ func (aa *requestHuanshi) cacheAgentKey(deviceMark, agentId string) string {
 // SaveAgent 保存终端信息
 func (aa *requestHuanshi) SaveAgent(deviceMark, agentId string, param CacheAgent) error {
 	key := aa.cacheAgentKey(deviceMark, agentId)
-	data := helpers.JsonEncode(param)
+	data := json_helper.Encode(param)
 	//新增缓存
 	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
 		return errors.New("cache token fail: " + err.Error())
@@ -327,11 +331,11 @@ func (aa *requestHuanshi) SaveAgent(deviceMark, agentId string, param CacheAgent
 func (aa *requestHuanshi) GetAgent(deviceMark, agentId string) (data CacheAgent) {
 
 	jsonStr := aa.redisClient.Get(aa.cacheAgentKey(deviceMark, agentId))
-	if helpers.StringIsEmpty(jsonStr) {
+	if string_helper.IsEmpty(jsonStr) {
 		return data
 	}
 
-	err := helpers.Json2Struct(jsonStr, &data)
+	err := json_helper.Json2Struct(jsonStr, &data)
 	if err != nil {
 		return data
 	}

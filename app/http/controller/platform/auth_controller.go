@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 )
@@ -23,7 +23,7 @@ func (u *AuthController) decrypt(data string) (result string) {
 // CheckUser 验证用户
 func (u *AuthController) CheckUser(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
-	if helpers.StringIsEmpty(name) {
+	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
@@ -39,7 +39,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 	}
 
 	phoneCheck := 0
-	if !helpers.StringIsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
+	if !string_helper.IsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
 		phoneCheck = 1
 	}
 
@@ -49,7 +49,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 // SendSms 发送短信
 func (u *AuthController) SendSms(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
-	if helpers.StringIsEmpty(name) {
+	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
@@ -64,7 +64,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		return
 	}
 
-	if helpers.StringIsEmpty(adminModel.Phone) {
+	if string_helper.IsEmpty(adminModel.Phone) {
 		response.FailRoutine(ctx, -97, "没有添加手机号码")
 		return
 	}
@@ -80,7 +80,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 // GetSliderCode 获取滑块码
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "name"))
-	if helpers.StringIsEmpty(name) {
+	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
@@ -98,7 +98,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "pw"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixPlatform + "sliderCode")
 	smsCode := ctx.GetString(consts.ValidatorPrefixPlatform + "smsCode")
-	if helpers.StringIsEmpty(name) || helpers.StringIsEmpty(pw) || helpers.StringIsEmpty(sliderCode) {
+	if string_helper.IsEmpty(name) || string_helper.IsEmpty(pw) || string_helper.IsEmpty(sliderCode) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}

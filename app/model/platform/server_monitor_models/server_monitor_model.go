@@ -3,7 +3,7 @@ package server_monitor_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 短信表
@@ -65,10 +65,10 @@ func (m *ServerMonitorModel) InsertItem(s *ServerMonitorModel) bool {
 // GetAllByConditions 通过条件获取全部记录
 func (m *ServerMonitorModel) GetAllByConditions(condition map[string]interface{}, order string) (items []*ServerMonitorModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
-	if !helpers.StringIsEmpty(order) {
+	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
 		tmp = tmp.Order("id ASC")

@@ -5,7 +5,8 @@ import (
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_safety_report"
 	"goskeleton/app/model/organization/organization_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 func CreateOrgExtendFactory() *OrgExtend {
@@ -31,12 +32,12 @@ func (crd *OrgExtend) InitDefault(orgId int64) organization_models.OrgExtendMode
 
 	return organization_models.OrgExtendModel{
 		Id:                   orgId,
-		PlugPortConfig:       helpers.JsonEncode(plugPortConfig),
-		PlugLoginConfig:      helpers.JsonEncode(plugLoginConfig),
-		LoginSolveConfig:     helpers.JsonEncode(loginSolveConfig),
-		AlarmNoticeConfig:    helpers.JsonEncode(loginSolveConfig),
-		HardwareNoticeConfig: helpers.JsonEncode(hardwareNoticeConfig),
-		UpdatedAt:            helpers.DatetimeCurr(),
+		PlugPortConfig:       json_helper.Encode(plugPortConfig),
+		PlugLoginConfig:      json_helper.Encode(plugLoginConfig),
+		LoginSolveConfig:     json_helper.Encode(loginSolveConfig),
+		AlarmNoticeConfig:    json_helper.Encode(loginSolveConfig),
+		HardwareNoticeConfig: json_helper.Encode(hardwareNoticeConfig),
+		UpdatedAt:            date_helper.CurDatetime(),
 	}
 }
 
@@ -53,7 +54,7 @@ func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.OrgE
 
 // FormatPlugPortConfig 格式化：封堵-端口虚开配置
 func (crd *OrgExtend) FormatPlugPortConfig(configJson string) (data enum_plug.PlugPortConfig) {
-	err := helpers.Json2Struct(configJson, data)
+	err := json_helper.Json2Struct(configJson, data)
 	if err != nil {
 		data.Format()
 	}
@@ -62,7 +63,7 @@ func (crd *OrgExtend) FormatPlugPortConfig(configJson string) (data enum_plug.Pl
 
 // FormatLoginSolveConfig 格式化：封堵-口令破解配置
 func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login_solve.LoginSolveConfig) {
-	err := helpers.Json2Struct(configJson, data)
+	err := json_helper.Json2Struct(configJson, data)
 	if err != nil {
 		data.Format()
 	}
@@ -71,7 +72,7 @@ func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login
 
 // FormatPlugLoginConfig 格式化：封堵-口令破解配置
 func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.PlugLoginConfig) {
-	err := helpers.Json2Struct(configJson, data)
+	err := json_helper.Json2Struct(configJson, data)
 	if err != nil {
 		data.Format()
 	}
@@ -80,7 +81,7 @@ func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.P
 
 // FormatAlarmNoticeConfig 格式化：告警通知配置
 func (crd *OrgExtend) FormatAlarmNoticeConfig(configJson string) (data enum_safety_report.AlarmNoticeConfig) {
-	err := helpers.Json2Struct(configJson, data)
+	err := json_helper.Json2Struct(configJson, data)
 	if err != nil {
 		data.Format()
 	}
@@ -89,7 +90,7 @@ func (crd *OrgExtend) FormatAlarmNoticeConfig(configJson string) (data enum_safe
 
 // FormatHardwareNoticeConfig 格式化： 硬件资源通知配置
 func (crd *OrgExtend) FormatHardwareNoticeConfig(configJson string) (data enum_safety_report.HardwareNoticeConfig) {
-	err := helpers.Json2Struct(configJson, data)
+	err := json_helper.Json2Struct(configJson, data)
 	if err != nil {
 		data.Format()
 	}

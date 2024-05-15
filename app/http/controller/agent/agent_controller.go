@@ -10,7 +10,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -42,9 +42,9 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["serveripport"] = mapDict[enum_dictionary.AgentHttpUrl] + ":" + mapDict[enum_dictionary.AgentHttpPort]
 	//暂时无使用
 	mapConf["logipport"] = ""
-	mapConf["logproto"] = helpers.String2Int(mapDict[enum_dictionary.AgentLogSendProto])
+	mapConf["logproto"] = string_helper.ToInt(mapDict[enum_dictionary.AgentLogSendProto])
 	mapConf["logsent"] = 0
-	mapConf["api_port"] = helpers.String2Int(mapDict[enum_dictionary.AgentHttpPort])
+	mapConf["api_port"] = string_helper.ToInt(mapDict[enum_dictionary.AgentHttpPort])
 	mapConf["syslog_port"] = 0
 
 	//进程

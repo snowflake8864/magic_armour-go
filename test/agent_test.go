@@ -5,7 +5,8 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
 )
@@ -23,18 +24,18 @@ func TestAgentLogin(t *testing.T) {
 	param.MemDesc = "16g"
 	param.CpuDesc = "16u"
 	param.HdDesc = "931g"
-	param.AgentStartAt = helpers.TimestampToDatetime(int64(1632465410))
-	param.OsStartAt = helpers.TimestampToDatetime(int64(1632465310))
+	param.AgentStartAt = date_helper.TimestampToDatetime(int64(1632465410))
+	param.OsStartAt = date_helper.TimestampToDatetime(int64(1632465310))
 	param.Auth = "123123"
 	param.OrgId = 1
 	param.UserId = 1
 	param.NetIp = "192.168.4.6"
-	if helpers.StringIsEmpty(param.AgentIp) {
+	if string_helper.IsEmpty(param.AgentIp) {
 		param.AgentIp = param.NetIp
 	}
 
 	//兼容处理，参考bug 6181
-	if helpers.StringIsEmpty(param.OsName) {
+	if string_helper.IsEmpty(param.OsName) {
 		if param.PlatformType == enum_software.PlatformTypeWindows {
 			param.OsName = "windows"
 		} else {

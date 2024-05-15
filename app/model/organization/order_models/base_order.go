@@ -2,7 +2,7 @@ package order_models
 
 import (
 	"goskeleton/app/global/enums"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -28,32 +28,32 @@ type baseOrder struct {
 // conditions2Where 查询条件转化
 func (crd *baseOrder) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
-	if !helpers.StringIsEmpty(search.OrderNo) {
+	if !string_helper.IsEmpty(search.OrderNo) {
 		wheres["order_no"] = search.OrderNo
 	}
 	if search.OrgId > 0 {
 		wheres["org_id"] = search.OrgId
 	}
-	if !helpers.StringIsEmpty(search.UserName) {
+	if !string_helper.IsEmpty(search.UserName) {
 		wheres["user_name"] = search.UserName
 	}
 
-	if !helpers.StringIsEmpty(search.UserPhone) {
+	if !string_helper.IsEmpty(search.UserPhone) {
 		wheres["user_phone"] = search.UserPhone
 	}
-	if !helpers.StringIsEmpty(search.CreateAtGte) {
+	if !string_helper.IsEmpty(search.CreateAtGte) {
 		wheres["created_at >="] = search.CreateAtGte
 	}
-	if !helpers.StringIsEmpty(search.CreateAtLte) {
+	if !string_helper.IsEmpty(search.CreateAtLte) {
 		wheres["created_at <="] = search.CreateAtLte
 	}
-	if !helpers.StringIsEmpty(search.OraName) {
+	if !string_helper.IsEmpty(search.OraName) {
 		wheres["org_name like"] = "%" + search.OraName + "%"
 	}
-	if !helpers.StringIsEmpty(search.ExpireAtGte) {
+	if !string_helper.IsEmpty(search.ExpireAtGte) {
 		wheres["expire_at >="] = search.ExpireAtGte
 	}
-	if !helpers.StringIsEmpty(search.ProductName) {
+	if !string_helper.IsEmpty(search.ProductName) {
 		wheres["product_title like"] = "%" + search.ProductName + "%"
 	}
 	if search.GrantType > 0 && search.GrantType != enums.AllDefaultInt {

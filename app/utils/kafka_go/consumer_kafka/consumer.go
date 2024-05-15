@@ -116,6 +116,12 @@ func (k *ConsumerClient) ConsumeProcess() {
 		case kafka_go.TypeProcessPutRunning:
 			proc_job.UploadProcessRunning(data.Data)
 			break
+		case kafka_go.TypeDllPutMaster:
+			proc_job.UploadDll(data.Data)
+			break
+		case kafka_go.TypeDllPutRunning:
+			proc_job.UploadDllRunning(data.Data)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
 		}

@@ -2,7 +2,7 @@ package prodcut_models
 
 import (
 	"goskeleton/app/global/enums"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 type SearchConditions struct {
@@ -23,7 +23,7 @@ func (crd *baseProduct) conditions2Where(search SearchConditions) map[string]int
 	if search.GrantType > 0 && search.GrantType != enums.AllDefaultInt {
 		wheres["grant_type"] = search.GrantType
 	}
-	if !helpers.StringIsEmpty(search.Title) {
+	if !string_helper.IsEmpty(search.Title) {
 		wheres["title like"] = "%" + search.Title + "%"
 	}
 	if search.IsPublish > 0 && search.IsPublish != enums.AllDefaultInt {

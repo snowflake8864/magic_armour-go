@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/variable"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 	"io"
 	"strings"
 )
@@ -59,5 +59,5 @@ func JoinParamsStr(ctx *gin.Context) string {
 
 // GetRequestParams 获取请求参数
 func GetRequestParams(ctx *gin.Context) string {
-	return helpers.JsonEncode(ctx.GetStringMap("RequestParams"))
+	return json_helper.Encode(ctx.GetStringMap("RequestParams"))
 }

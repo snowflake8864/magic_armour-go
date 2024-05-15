@@ -1,4 +1,4 @@
-package helpers
+package slice_helper
 
 import (
 	"strconv"

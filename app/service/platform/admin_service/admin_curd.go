@@ -4,7 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"goskeleton/app/model/platform/admin_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 )
 
@@ -45,7 +45,7 @@ func (crd *AdminCurd) IncrPwErrorNum(id int64) bool {
 func (crd *AdminCurd) loginSuccess(id int64) bool {
 	updates := map[string]interface{}{
 		"pw_error_num":  0,
-		"last_login_at": helpers.DatetimeCurr(),
+		"last_login_at": date_helper.CurDatetime(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(id, updates); isOk {
 		return true

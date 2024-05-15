@@ -2,7 +2,7 @@ package threaten_models
 
 import (
 	"goskeleton/app/global/enums"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -29,22 +29,22 @@ type baseThreaten struct {
 // conditions2Where 查询条件转化
 func (m *baseThreaten) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
-	if !helpers.StringIsEmpty(search.Id) {
+	if !string_helper.IsEmpty(search.Id) {
 		wheres["id"] = strings.ToLower(search.Id)
 	}
 	if search.Ids != nil && len(search.Ids) > 0 {
 		wheres["id in"] = search.Ids
 	}
-	if !helpers.StringIsEmpty(search.CreateAtGte) {
+	if !string_helper.IsEmpty(search.CreateAtGte) {
 		wheres["created_at >="] = search.CreateAtGte
 	}
-	if !helpers.StringIsEmpty(search.CreateAtLte) {
+	if !string_helper.IsEmpty(search.CreateAtLte) {
 		wheres["created_at <="] = search.CreateAtLte
 	}
 	if search.Level > 0 && search.Level != enums.AllDefaultInt {
 		wheres["level"] = search.Level
 	}
-	if !helpers.StringIsEmpty(search.Dir) {
+	if !string_helper.IsEmpty(search.Dir) {
 		wheres["dir like"] = "%" + search.Dir + "%"
 	}
 	if search.LevelList != nil && len(search.LevelList) > 0 {

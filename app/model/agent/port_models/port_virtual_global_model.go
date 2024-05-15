@@ -78,7 +78,7 @@ func (m *PortVirtualGlobalModel) InsertItem(s *PortVirtualGlobalModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
 	})
-	result := m.Exec(sql)
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {

@@ -5,7 +5,9 @@ import (
 	"errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/cur_app"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
 )
@@ -53,9 +55,9 @@ func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 	loginInfo.AgentIp = param.AgentIp
 	loginInfo.NetIp = param.NetIp
 	loginInfo.Os = param.OsName
-	loginInfo.LoginAt = helpers.DatetimeCurr()
+	loginInfo.LoginAt = date_helper.CurDatetime()
 
-	jsonStr := helpers.JsonEncode(loginInfo)
+	jsonStr := json_helper.Encode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
 
 	crd.redisClient.SetEx(crd.getKeyByLogin(token), jsonStr, crd.authExpire)
@@ -65,7 +67,7 @@ func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 // DecryptByLogin 登录信息解密
 func (crd *AgentCache) DecryptByLogin(token string, isDelay bool) (loginInfo AgentCacheLogin, err error) {
 	jsonStr := crd.redisClient.Get(crd.getKeyByLogin(token))
-	if helpers.StringIsEmpty(jsonStr) {
+	if string_helper.IsEmpty(jsonStr) {
 		return AgentCacheLogin{}, errors.New("token expired")
 	}
 	err = json.Unmarshal([]byte(jsonStr), &loginInfo)

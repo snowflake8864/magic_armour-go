@@ -2,7 +2,7 @@ package proc_service
 
 import (
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateProcessFactory() *ProcessCurd {
@@ -19,7 +19,7 @@ type ProcessCurd struct {
 // GetOne 获取一条
 func (crd *ProcessCurd) GetOne(orgId int64, agentId, hash string) (model *proc_models.ProcessModel) {
 	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
-	if helpers.StringIsEmpty(model.ProcHash) {
+	if string_helper.IsEmpty(model.ProcHash) {
 		return nil
 	}
 	return model

@@ -5,7 +5,8 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 type Agent struct {
@@ -31,8 +32,8 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["grant_product_title"] = model.GrantProductTitle
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
-	if deptModel, ok := departments[model.DeptId]; ok && !helpers.StringIsEmpty(deptModel.FullName) {
-		data["dept_fullname"] = helpers.Json2Map(deptModel.FullName)
+	if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+		data["dept_fullname"] = json_helper.ToMap(deptModel.FullName)
 	}
 
 	data["created_at"] = model.CreatedAt

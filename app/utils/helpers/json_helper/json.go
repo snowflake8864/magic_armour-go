@@ -1,9 +1,9 @@
-package helpers
+package json_helper
 
 import "encoding/json"
 
-// JsonEncode 转成json
-func JsonEncode(param interface{}) string {
+// Encode 转成json
+func Encode(param interface{}) string {
 	jsonByte, err := json.Marshal(param)
 	if err != nil {
 		return ""
@@ -11,8 +11,8 @@ func JsonEncode(param interface{}) string {
 	return string(jsonByte)
 }
 
-// Json2Map json还原成map
-func Json2Map(jsonStr string) map[string]interface{} {
+// ToMap json还原成map
+func ToMap(jsonStr string) map[string]interface{} {
 	var data map[string]interface{}
 
 	// 进行反序列化操作

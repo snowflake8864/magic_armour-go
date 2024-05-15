@@ -10,7 +10,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 )
@@ -26,7 +26,7 @@ type AgentCurd struct {
 
 // SetLivingByAgent 设置终端活动中
 func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
-	nowDate := helpers.DatetimeCurr()
+	nowDate := date_helper.CurDatetime()
 
 	updates := map[string]interface{}{
 		"live_at":   nowDate,

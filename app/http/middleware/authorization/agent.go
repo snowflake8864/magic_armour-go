@@ -10,7 +10,7 @@ import (
 	accessLogService "goskeleton/app/service/agent/access_log_service"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"net/http"
 	"strings"
@@ -84,7 +84,7 @@ func SaveAgentAccess() gin.HandlerFunc {
 				param.AgentId = loginInfo.AgentId
 			}
 
-			if !helpers.StringIsEmpty(param.AgentId) {
+			if !string_helper.IsEmpty(param.AgentId) {
 				accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")

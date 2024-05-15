@@ -2,7 +2,8 @@ package upload_service
 
 import (
 	"goskeleton/app/model/common/upload_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *UploadCurd {
@@ -15,8 +16,8 @@ type UploadCurd struct {
 
 // Add 新增
 func (crd *UploadCurd) Add(param *upload_models.UploadModel) bool {
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	isOk := crd.masterModel.InsertItem(param)
 

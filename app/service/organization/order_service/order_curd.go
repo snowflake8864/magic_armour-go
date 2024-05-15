@@ -10,7 +10,10 @@ import (
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/product_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/float_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
 )
 
@@ -31,28 +34,28 @@ type OrderCurd struct {
 }
 
 func (crd *OrderCurd) makerOrderNo() string {
-	today := helpers.DatetimeSpecial("20060102")
+	today := date_helper.SpecialDatetime("20060102")
 	key := crd.redisPrefix + today
 	if val, err := crd.redisClient.Incr(key); err == nil {
 		_, _ = crd.redisClient.Expire(key, crd.redisExpire)
-		num := helpers.IntToStr(val)
-		return "Yhj" + today[2:] + helpers.StringPad(num, 4, "0000000", "LEFT") + helpers.IntRandom2Str(1, 9)
+		num := int_helper.IntToStr(val)
+		return "Yhj" + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
 	} else {
 		return ""
 	}
 }
 
 func (crd *OrderCurd) calcDeclineAmount(TotalAmount, RealAmount float64) float64 {
-	return helpers.FloatSub(TotalAmount, RealAmount, 2)
+	return float_helper.Sub(TotalAmount, RealAmount, 2)
 }
 
 func (crd *OrderCurd) getExpireAt() string {
 	days := 365
-	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrderExpireDays); !helpers.StringIsEmpty(val) {
-		days = helpers.String2Int(val)
+	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrderExpireDays); !string_helper.IsEmpty(val) {
+		days = string_helper.ToInt(val)
 	}
 
-	day, _, _, _ := helpers.DateCalcByDay(days)
+	day, _, _, _ := date_helper.CalcByDay(days)
 	return day
 }
 
@@ -89,8 +92,8 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	orderParam.GrantType = productModel.GrantType
 	orderParam.GrantModule = productModel.GrantModule
 	orderParam.SalePrice = productModel.Price
-	orderParam.TotalAmount = helpers.FloatMul(orderParam.SalePrice, orderParam.BuyNumber, 2, orderParam.GrantDuration)
-	orderParam.CreatedAt = helpers.DatetimeCurr()
+	orderParam.TotalAmount = float_helper.Mul(orderParam.SalePrice, orderParam.BuyNumber, 2, orderParam.GrantDuration)
+	orderParam.CreatedAt = date_helper.CurDatetime()
 	if orderParam.Source == enums.OperateSourcePlatform {
 		orderParam.DeclineAmount = crd.calcDeclineAmount(orderParam.TotalAmount, orderParam.RealAmount)
 		orderParam.OrderStatus = enum_order.OrderStatusCompleted
@@ -158,14 +161,14 @@ func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*order_models.Ord
 // PlatformCancel 平台取消
 func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
 		return -1, errors.New("订单状态不正确")
 	}
 
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	//修改
 	updates := map[string]interface{}{
 		"order_status": enum_order.OrderStatusCancel,
@@ -194,7 +197,7 @@ func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateNam
 // OrgCancel 企业取消
 func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrgId != orgId {
@@ -204,7 +207,7 @@ func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateN
 		return -1, errors.New("订单状态不正确")
 	}
 
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	//修改
 	updates := map[string]interface{}{
 		"order_status": enum_order.OrderStatusCancel,
@@ -240,7 +243,7 @@ func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64
 func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operateId int64, operateName string) (errCode int, err error) {
 
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
@@ -250,7 +253,7 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 		return -1, errors.New("支付金额不能大于原始金额")
 	}
 
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	//修改
 	updates := map[string]interface{}{
 		"real_amount":    crd.calcDeclineAmount(orderModel.TotalAmount, realAmount),
@@ -282,14 +285,14 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 // ConfirmPaid 确认已支付
 func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
 		return -1, errors.New("订单状态不正确")
 	}
 
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	//修改
 	updates := map[string]interface{}{
 		"order_status": enum_order.OrderStatusCompleted,
@@ -318,14 +321,14 @@ func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName s
 // ConfirmUnpaid 确认未付款
 func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
 		return -1, errors.New("订单状态不正确")
 	}
 
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	//修改
 	updates := map[string]interface{}{
 		"order_status": enum_order.OrderStatusUnpaid,
@@ -353,7 +356,7 @@ func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName
 // OrgDelete 企业删除
 func (crd *OrderCurd) OrgDelete(orderNo string, orgId int64) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
-	if orderModel == nil || helpers.StringIsEmpty(orderModel.OrderNo) {
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
 		return -1, errors.New("订单不存在")
 	}
 	if orderModel.OrgId != orgId {
@@ -385,7 +388,7 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 	if len(items) == 0 {
 		return true
 	}
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	for _, model := range items {
 		//修改订单
 		updates := map[string]interface{}{

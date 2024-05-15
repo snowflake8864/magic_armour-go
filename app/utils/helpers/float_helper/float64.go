@@ -1,15 +1,15 @@
-package helpers
+package float_helper
 
 import (
 	"math"
 	"strconv"
 )
 
-// FloatAdd 加法,两数及以上的数值累计相加之和，并保留小数点后两位
+// Add 加法,两数及以上的数值累计相加之和，并保留小数点后两位
 // Example:
 // Add(100, 2000, 2, 100.01111)
 // Output: 2200.01
-func FloatAdd(x, y interface{}, decimal float64, z ...interface{}) float64 {
+func Add(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	sum := Float64(x) + Float64(y)
 	if len(z) > 0 {
 		for _, v := range z {
@@ -19,11 +19,11 @@ func FloatAdd(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	return FloatScale(sum, decimal)
 }
 
-// FloatSub 减法,两数及以上的数值累计之差，并保留小数点后两位
+// Sub 减法,两数及以上的数值累计之差，并保留小数点后两位
 // Example:
 // Sub(100, 2000, 2, 100.01111)
 // Output: -2000.01
-func FloatSub(x, y interface{}, decimal float64, z ...interface{}) float64 {
+func Sub(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	s := Float64(x) - Float64(y)
 	if len(z) > 0 {
 		for _, v := range z {
@@ -33,11 +33,11 @@ func FloatSub(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	return FloatScale(s, decimal)
 }
 
-// FloatMul 乘法,两数及以上的数值乘积，并保留小数点后两位
+// Mul 乘法,两数及以上的数值乘积，并保留小数点后两位
 // Example:
 // Mul(100, 2000, 2, 100.01111)
 // Output: 2.0002222e+07
-func FloatMul(x, y interface{}, decimal float64, z ...interface{}) float64 {
+func Mul(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	s := Float64(x) * Float64(y)
 	if len(z) > 0 {
 		for _, v := range z {
@@ -50,11 +50,11 @@ func FloatMul(x, y interface{}, decimal float64, z ...interface{}) float64 {
 	return FloatScale(s, decimal)
 }
 
-// FloatDiv 除法， 两数相除
+// Div 除法， 两数相除
 // Example:
 // Sub(999, 8989.5645, 2)
 // Output: 0.11
-func FloatDiv(x, y interface{}, decimal float64) float64 {
+func Div(x, y interface{}, decimal float64) float64 {
 	if Float64(y) == 0 || Float64(x) == 0 {
 		return 0
 	}

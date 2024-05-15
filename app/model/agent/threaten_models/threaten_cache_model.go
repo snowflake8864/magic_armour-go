@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 威胁情报缓存表
@@ -97,7 +97,7 @@ func (m *ThreatenCacheModel) InsertItem(s *ThreatenCacheModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
 	})
-	result := m.Exec(sql)
+	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
 	} else {
@@ -122,7 +122,7 @@ func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{
 func (m *ThreatenCacheModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -165,7 +165,7 @@ func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *Threat
 // GetLevelById 通过id获取等级
 func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
 	model := m.GetItemById(id, "id, level")
-	if helpers.StringIsEmpty(model.Id) {
+	if string_helper.IsEmpty(model.Id) {
 		return false, enum_threaten.LevelUnknown
 	}
 	return true, model.Level
@@ -217,13 +217,13 @@ func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCach
 func (m *ThreatenCacheModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(m.GetListColumns())
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
-		if !helpers.StringIsEmpty(order) {
+		if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
 		} else {
 			tmp = tmp.Order("created_at ASC")
@@ -244,7 +244,7 @@ func (m *ThreatenCacheModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)

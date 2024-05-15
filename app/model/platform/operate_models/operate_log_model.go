@@ -4,7 +4,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 角色表
@@ -77,13 +77,13 @@ func (m *OperateLogModel) CreateTable() bool {
 // search2Where 查询条件转化
 func (m *OperateLogModel) conditions2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
-	if !helpers.StringIsEmpty(search.Module) && search.Module != enums.AllDefaultStr {
+	if !string_helper.IsEmpty(search.Module) && search.Module != enums.AllDefaultStr {
 		wheres["module"] = search.Module
 	}
-	if !helpers.StringIsEmpty(search.NetIp) {
+	if !string_helper.IsEmpty(search.NetIp) {
 		wheres["net_ip"] = search.NetIp
 	}
-	if !helpers.StringIsEmpty(search.CreateName) {
+	if !string_helper.IsEmpty(search.CreateName) {
 		wheres["create_name"] = search.CreateName
 	}
 	return wheres
@@ -102,13 +102,13 @@ func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OperateLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OperateLogModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if limit > 0 {
 		tmp = tmp.Offset(offset).Limit(limit)
 	}
-	if !helpers.StringIsEmpty(order) {
+	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
 		tmp = tmp.Order("created_at ASC")
@@ -125,7 +125,7 @@ func (m *OperateLogModel) GetItemsByConditions(condition SearchConditions, offse
 func (m *OperateLogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
-	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !helpers.StringIsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Count(&total)

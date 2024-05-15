@@ -8,7 +8,10 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
@@ -60,7 +63,7 @@ type dllData struct {
 
 // 给hash加锁
 func (crd *ProcPost) lockHash(orgId int64, agentId, hash string) bool {
-	key := helpers.Int64ToStr(orgId) + "_" + agentId + "_" + hash
+	key := int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + hash
 	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
 		return true
 	} else {
@@ -71,7 +74,7 @@ func (crd *ProcPost) lockHash(orgId int64, agentId, hash string) bool {
 // 转换属性
 // @return copyright, introduce
 func (crd *ProcPost) parseAttribute(attribute, copyright, introduce string) (string, string) {
-	if helpers.StringIsEmpty(attribute) {
+	if string_helper.IsEmpty(attribute) {
 		return copyright, introduce
 	}
 
@@ -99,23 +102,23 @@ func (crd *ProcPost) parseAttribute(attribute, copyright, introduce string) (str
 
 // 生成主表id
 func (crd *ProcPost) makeMasterId(orgId int64, agentId, hash string) string {
-	return md5_encrypt.MD5(helpers.Int64ToStr(orgId) + agentId + hash)
+	return md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + hash)
 }
 
 // 生成运行中标id
 func (crd *ProcPost) makeRunningId(orgId int64, agentId, hash string, procId int) string {
-	return md5_encrypt.MD5(helpers.Int64ToStr(orgId) + agentId + hash + helpers.IntToStr(procId))
+	return md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + hash + int_helper.IntToStr(procId))
 }
 
 // ToQuery 格式化参数后推送给队列
 func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inputJson string) error {
 	var params []procData
-	if err := helpers.Json2Any(inputJson, &params); err != nil {
+	if err := json_helper.Json2Any(inputJson, &params); err != nil {
 		return err
 	}
-	now := helpers.DatetimeCurr()
+	now := date_helper.CurDatetime()
 	fmt.Println("params========================================")
-	fmt.Println(helpers.JsonEncode(params))
+	fmt.Println(json_helper.Encode(params))
 	for _, itemProcess := range params {
 		//进程hash全部小写
 		procHash := strings.ToLower(itemProcess.Hash)
@@ -164,6 +167,9 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 					AgentId:   agentId,
 					DllHash:   dllHash,
 					Dir:       itemDll.Dir,
+					Attribute: itemDll.Attribute,
+					ProcHash:  procHash,
+					ProcDir:   itemProcess.Dir,
 					CreatedAt: now,
 				}
 				dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
@@ -207,11 +213,11 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 		return errors.New("agent不能连续主动上传进程数据")
 	}
 	fmt.Println("sendProcess =============================")
-	fmt.Println(helpers.JsonEncode(&model))
+	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeProcessPutMaster,
-		Data: helpers.JsonEncode(&model),
+		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
 
@@ -227,11 +233,11 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 		return errors.New("任务不是刷新")
 	}
 	fmt.Println("sendProcessRunning =============================")
-	fmt.Println(helpers.JsonEncode(&model))
+	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeProcessPutRunning,
-		Data: helpers.JsonEncode(&model),
+		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
 
@@ -247,11 +253,11 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 		return errors.New("agent不能连续主动上传模块数据")
 	}
 	fmt.Println("sendDll =============================")
-	fmt.Println(helpers.JsonEncode(&model))
+	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeDllPutMaster,
-		Data: helpers.JsonEncode(&model),
+		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
 
@@ -267,11 +273,11 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 		return errors.New("任务不是刷新")
 	}
 	fmt.Println("sendDllRunning =============================")
-	fmt.Println(helpers.JsonEncode(&model))
+	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeDllPutRunning,
-		Data: helpers.JsonEncode(&model),
+		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
 

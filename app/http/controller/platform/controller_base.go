@@ -6,7 +6,8 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // ControllerBase 基础
@@ -43,14 +44,14 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	}
 	offset = (page - 1) * pageSize
 
-	if helpers.StringIsEmpty(orderField) {
-		if helpers.StringIsEmpty(defaultField) {
+	if string_helper.IsEmpty(orderField) {
+		if string_helper.IsEmpty(defaultField) {
 			orderField = "created_at"
 		} else {
 			orderField = defaultField
 		}
 	}
-	if helpers.StringIsEmpty(orderSort) {
+	if string_helper.IsEmpty(orderSort) {
 		orderSort = "DESC"
 	}
 	return offset, pageSize, orderField + " " + orderSort
@@ -62,7 +63,7 @@ func (u *ControllerBase) getWebSliceOfInt64(ctx *gin.Context, field string) []in
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		list = helpers.SliceAny2Int64(tmp)
+		list = slice_helper.SliceAny2Int64(tmp)
 	}
 	return list
 }
@@ -73,7 +74,7 @@ func (u *ControllerBase) getWebSliceOfInt(ctx *gin.Context, field string) []int 
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		list = helpers.SliceAny2Int(tmp)
+		list = slice_helper.SliceAny2Int(tmp)
 	}
 	return list
 }

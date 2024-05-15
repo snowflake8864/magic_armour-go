@@ -8,7 +8,8 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateDllUploadFactory() *DllUpload {
@@ -25,7 +26,7 @@ type DllUpload struct {
 // GetOne 获取一条
 func (crd *DllUpload) GetOne(orgId int64, agentId, hash string) (model *proc_models.DllModel) {
 	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
-	if model == nil || helpers.StringIsEmpty(model.DllHash) {
+	if model == nil || string_helper.IsEmpty(model.DllHash) {
 		return nil
 	}
 	return model
@@ -33,19 +34,19 @@ func (crd *DllUpload) GetOne(orgId int64, agentId, hash string) (model *proc_mod
 
 // Add 添加
 func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
-	if helpers.StringIsEmpty(dllModel.CreatedAt) {
-		dllModel.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(dllModel.CreatedAt) {
+		dllModel.CreatedAt = date_helper.CurDatetime()
 	}
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)
-	if hasModel != nil && !helpers.StringIsEmpty(hasModel.DllHash) {
+	if hasModel != nil && !string_helper.IsEmpty(hasModel.DllHash) {
 		return nil
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
-	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
 

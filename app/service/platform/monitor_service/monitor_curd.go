@@ -2,7 +2,8 @@ package monitor_service
 
 import (
 	"goskeleton/app/model/platform/server_monitor_models"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *MonitorCurd {
@@ -21,10 +22,10 @@ type SearchConditions struct {
 // search2Where 查询条件转化
 func (crd *MonitorCurd) search2Where(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
-	if !helpers.StringIsEmpty(search.MonitorDay) {
+	if !string_helper.IsEmpty(search.MonitorDay) {
 		wheres["monitor_day"] = search.MonitorDay
 	}
-	if !helpers.StringIsEmpty(search.ServerCode) {
+	if !string_helper.IsEmpty(search.ServerCode) {
 		wheres["ServerCode"] = search.ServerCode
 	}
 	return wheres
@@ -43,8 +44,8 @@ func (crd *MonitorCurd) GetList(search SearchConditions) (items []*server_monito
 
 // Add 新增
 func (crd *MonitorCurd) Add(param *server_monitor_models.ServerMonitorModel) bool {
-	if helpers.StringIsEmpty(param.CreatedAt) {
-		param.CreatedAt = helpers.DatetimeCurr()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
 	}
 	isOk := crd.masterModel.InsertItem(param)
 

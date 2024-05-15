@@ -4,17 +4,19 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service/job_callcak_proc"
-	"goskeleton/app/utils/helpers"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 func UploadDll(jsonStr string) {
+	variable.ZapLog.Info("UploadDll===================")
 	dllModel := proc_models.DllModel{}
-	if err := helpers.Json2Struct(jsonStr, &dllModel); err != nil {
+	if err := json_helper.Json2Struct(jsonStr, &dllModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
+	variable.ZapLog.Info(dllModel.Dir)
 	if err := job_callcak_proc.CreateDllUploadFactory().Add(&dllModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
@@ -23,7 +25,7 @@ func UploadDll(jsonStr string) {
 
 func UploadDllRunning(jsonStr string) {
 	dllRunningModel := proc_models.DllRunningModel{}
-	if err := helpers.Json2Struct(jsonStr, &dllRunningModel); err != nil {
+	if err := json_helper.Json2Struct(jsonStr, &dllRunningModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
