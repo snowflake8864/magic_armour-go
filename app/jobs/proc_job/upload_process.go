@@ -22,5 +22,15 @@ func UploadProcess(jsonStr string) {
 }
 
 func UploadProcessRunning(jsonStr string) {
-	variable.ZapLog.Info(jsonStr)
+	processRunningModel := proc_models.ProcessRunningModel{}
+	if err := helpers.Json2Struct(jsonStr, &processRunningModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callcak_proc.CreateProcessRunningUploadFactory().Add(&processRunningModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
 }
