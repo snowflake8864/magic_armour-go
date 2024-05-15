@@ -169,6 +169,9 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 				dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
 				dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(itemDll.Attribute, "", "")
 				//推送给队列
+				if err := crd.sendDll(source, task, &dllModel); err != nil {
+					variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
+				}
 
 				//运行中模块表
 				dllRunningModel := proc_models.DllRunningModel{
@@ -184,6 +187,9 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 				}
 				dllRunningModel.Id = crd.makeRunningId(orgId, agentId, dllHash, dllRunningModel.ProcId)
 				//推送给队列
+				if err := crd.sendDllRunning(source, task, &dllRunningModel); err != nil {
+					variable.ZapLog.Sugar().Debug("sendDllRunning: " + err.Error())
+				}
 			}
 
 		}
@@ -198,7 +204,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 		return errors.New("数据主体不是进程")
 	}
 	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
-		return errors.New("agent主动上传不能连续主动上传进程数据")
+		return errors.New("agent不能连续主动上传进程数据")
 	}
 	fmt.Println("sendProcess =============================")
 	fmt.Println(helpers.JsonEncode(&model))
@@ -225,6 +231,46 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeProcessPutRunning,
+		Data: helpers.JsonEncode(&model),
+	}
+	crd.queryClient.ProduceProcess(context.Background(), msg)
+
+	return nil
+}
+
+// 发送模块数据
+func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllModel) error {
+	if source != enum_process.SourceDll {
+		return errors.New("数据主体不是模块")
+	}
+	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.DllHash) {
+		return errors.New("agent不能连续主动上传模块数据")
+	}
+	fmt.Println("sendDll =============================")
+	fmt.Println(helpers.JsonEncode(&model))
+
+	msg := &kafka_go.MessageStruct{
+		Type: kafka_go.TypeDllPutMaster,
+		Data: helpers.JsonEncode(&model),
+	}
+	crd.queryClient.ProduceProcess(context.Background(), msg)
+
+	return nil
+}
+
+// 发送模块运行中数据
+func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.DllRunningModel) error {
+	if source != enum_process.SourceDll {
+		return errors.New("数据主体不是模块")
+	}
+	if task != TaskRefresh {
+		return errors.New("任务不是刷新")
+	}
+	fmt.Println("sendDllRunning =============================")
+	fmt.Println(helpers.JsonEncode(&model))
+
+	msg := &kafka_go.MessageStruct{
+		Type: kafka_go.TypeDllPutRunning,
 		Data: helpers.JsonEncode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)

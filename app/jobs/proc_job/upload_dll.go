@@ -1,0 +1,36 @@
+package proc_job
+
+import (
+	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/agent/proc_service/job_callcak_proc"
+	"goskeleton/app/utils/helpers"
+)
+
+func UploadDll(jsonStr string) {
+	dllModel := proc_models.DllModel{}
+	if err := helpers.Json2Struct(jsonStr, &dllModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callcak_proc.CreateDllUploadFactory().Add(&dllModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}
+
+func UploadDllRunning(jsonStr string) {
+	dllRunningModel := proc_models.DllRunningModel{}
+	if err := helpers.Json2Struct(jsonStr, &dllRunningModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callcak_proc.CreateDllRunningUploadFactory().Add(&dllRunningModel); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}

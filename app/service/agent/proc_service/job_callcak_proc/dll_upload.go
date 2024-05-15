@@ -1,0 +1,87 @@
+package job_callcak_proc
+
+import (
+	"errors"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/service/agent/threaten_service"
+	"goskeleton/app/utils/helpers"
+)
+
+func CreateDllUploadFactory() *DllUpload {
+	return &DllUpload{
+		masterModel: proc_models.CreateDllFactory(),
+	}
+}
+
+type DllUpload struct {
+	ProcessBase
+	masterModel *proc_models.DllModel
+}
+
+// GetOne 获取一条
+func (crd *DllUpload) GetOne(orgId int64, agentId, hash string) (model *proc_models.DllModel) {
+	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
+	if model == nil || helpers.StringIsEmpty(model.DllHash) {
+		return nil
+	}
+	return model
+}
+
+// Add 添加
+func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
+	if helpers.StringIsEmpty(dllModel.CreatedAt) {
+		dllModel.CreatedAt = helpers.DatetimeCurr()
+	}
+
+	//如果存在， 忽略
+	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)
+	if hasModel != nil && !helpers.StringIsEmpty(hasModel.DllHash) {
+		return nil
+	}
+
+	agentFact := agent_models.CreateAgentFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
+	if agentModel == nil || helpers.StringIsEmpty(agentModel.AgentId) {
+		return errors.New("终端不存在")
+	}
+
+	//威胁情报状态
+	isExist := false
+	if isExist, dllModel.ThreatenStatus = crd.getThreatenStatus(dllModel.DllHash); !isExist {
+		//加入威胁情报缓存
+		crd.pushThreaten(dllModel, agentModel.OsName)
+	}
+	//全局名单状态
+	dllModel.GlobalStatus = crd.getGlobalStatus(dllModel.OrgId, dllModel.DllHash)
+
+	//最终状态
+	dllModel.Status, dllModel.SyncStatusAt = crd.getProcStatus(dllModel.GlobalStatus, dllModel.SelfStatus,
+		dllModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
+
+	//保存
+	if !crd.masterModel.InsertItem(dllModel) {
+		return errors.New("保存失败")
+	}
+
+	return nil
+}
+
+func (crd *DllUpload) pushThreaten(dllModel *proc_models.DllModel, agentOs string) {
+	param := threaten_models.ThreatenCacheModel{
+		Id:        dllModel.DllHash,
+		Source:    enum_threaten.SourceAgentUpload,
+		Dir:       dllModel.Dir,
+		ParentDir: dllModel.ProcDir,
+		Os:        agentOs,
+		Introduce: dllModel.Introduce,
+		Copyright: dllModel.Copyright,
+		Signature: dllModel.Signature,
+		Attribute: dllModel.Attribute,
+		DataFrom:  enum_process.SourceDll,
+	}
+	go threaten_service.CreateCacheFactory().Add(&param, false)
+}
