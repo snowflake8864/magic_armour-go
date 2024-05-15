@@ -145,7 +145,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 			AgentId:   agentId,
 			ProcHash:  procHash,
 			ProcId:    itemProcess.ProcId,
-			ProcDir:   itemProcess.Dir,
+			ProcDir:   processModel.Dir,
 			ProcUser:  itemProcess.User,
 			DllNumber: itemProcess.ModuleNumber,
 			DllStatus: enum_process.ProcGetDllStatusDefault,
@@ -160,6 +160,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 		//有模块数据
 		if len(itemProcess.ModuleList) > 0 {
 			for _, itemDll := range itemProcess.ModuleList {
+				//小写
 				dllHash := strings.ToLower(itemDll.Hash)
 				//模块表数据
 				dllModel := proc_models.DllModel{
@@ -169,7 +170,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 					Dir:       itemDll.Dir,
 					Attribute: itemDll.Attribute,
 					ProcHash:  procHash,
-					ProcDir:   itemProcess.Dir,
+					ProcDir:   processModel.Dir,
 					CreatedAt: now,
 				}
 				dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
@@ -188,7 +189,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 					DllDir:    itemDll.Dir,
 					ProcHash:  procHash,
 					ProcId:    itemProcess.ProcId,
-					ProcDir:   itemProcess.Dir,
+					ProcDir:   processModel.Dir,
 					CreatedAt: now,
 				}
 				dllRunningModel.Id = crd.makeRunningId(orgId, agentId, dllHash, dllRunningModel.ProcId)
