@@ -213,8 +213,6 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
 		return errors.New("agent不能连续主动上传进程数据")
 	}
-	fmt.Println("sendProcess =============================")
-	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeProcessPutMaster,
@@ -233,8 +231,6 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 	if task != TaskRefresh {
 		return errors.New("任务不是刷新")
 	}
-	fmt.Println("sendProcessRunning =============================")
-	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeProcessPutRunning,
@@ -253,8 +249,6 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.DllHash) {
 		return errors.New("agent不能连续主动上传模块数据")
 	}
-	fmt.Println("sendDll =============================")
-	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeDllPutMaster,
@@ -273,8 +267,6 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 	if task != TaskRefresh {
 		return errors.New("任务不是刷新")
 	}
-	fmt.Println("sendDllRunning =============================")
-	fmt.Println(json_helper.Encode(&model))
 
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeDllPutRunning,
