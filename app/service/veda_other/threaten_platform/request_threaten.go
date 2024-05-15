@@ -132,21 +132,20 @@ type ResponseCheckHashes struct {
 	} `json:"data"`
 }
 
-// CheckHashes 验证hash集合,若存在返回
-/*
-参数：list []{
-	"req_type":1
-	"key" : "",
-	"filename" : "",
-	"dir" : "",
-	"os" : "",
-	"parentName": "",
+type CheckHashes struct {
+	ReqType    int    `json:"req_Type"`   //固定：1
+	Key        string `json:"key"`        //hash
+	Filename   string `json:"filename"`   //文件名
+	Dir        string `json:"dir"`        //文件路径
+	Os         string `json:"os"`         //终端系统
+	ParentName int    `json:"parentName"` //父文件路径
 }
-*/
-func (aa *requestThreaten) CheckHashes(list []map[string]interface{}) (error error, result []*ResponseCheckHashes) {
+
+// CheckHashes 验证hash集合,若存在返回
+func (aa *requestThreaten) CheckHashes(list *[]CheckHashes) (error error, result []*ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
-		"keys": json_helper.Encode(list),
+		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
 	if err := aa.checkCode(bodyContext, err); err != nil {
@@ -161,25 +160,24 @@ func (aa *requestThreaten) CheckHashes(list []map[string]interface{}) (error err
 	return nil, result
 }
 
-// PushHashes 推送hash集合
-/*
-参数：list []{
-	"threaten_name": "",
-	"type": 0, //约定-1
-	"filename": "",
-	"os": "",
-	"dir": "",
-	"attribute": "",
-	"uname": "",
-	"execdir": "",
-	"remark": "",
-	"copyright": ""
+type PushHashes struct {
+	ThreatenName string `json:"threaten_name"` //hash
+	Type         int    `json:"req_Type"`      ////约定 -1
+	Filename     string `json:"filename"`      //文件名
+	Dir          string `json:"dir"`           //文件路径
+	Os           string `json:"os"`            //终端系统
+	Uname        string `json:"uname"`         //推送用户名
+	ExecDir      string `json:"execdir"`       //父文件路径
+	Attribute    string `json:"attribute"`     //属性
+	Remark       string `json:"remark"`        //描述
+	Copyright    string `json:"copyright"`     //版权
 }
-*/
-func (aa *requestThreaten) PushHashes(list []map[string]interface{}) error {
+
+// PushHashes 推送hash集合
+func (aa *requestThreaten) PushHashes(list *[]PushHashes) error {
 	uri := aa.Config.Domain + "/center/threaten/platadd"
 	params := map[string]interface{}{
-		"keys": json_helper.Encode(list),
+		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
 	if err := aa.checkCode(bodyContext, err); err != nil {
