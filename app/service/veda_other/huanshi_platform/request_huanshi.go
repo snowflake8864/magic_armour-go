@@ -342,8 +342,6 @@ type AlarmLogin struct {
 }
 
 // SyncAlarmCommBySyslog 同步告警告警
-// 参数：param 每种告警不相同
-// 功能模块: 参考宏定义
 func (aa *requestHuanshi) SyncAlarmCommBySyslog(param AlarmComm) error {
 	param.Platform = aa.RequestPlatform
 	//@todo 通道:LOCAL5; 等级:info
@@ -351,6 +349,19 @@ func (aa *requestHuanshi) SyncAlarmCommBySyslog(param AlarmComm) error {
 		return err
 	}
 	return nil
+}
+
+type logBase struct {
+	DeviceMark string `json:"device_mark"` //设备标识
+	DeviceIp   string `json:"device_ip"`   //设备IP
+	Platform   string `json:"platform"`    //来源
+	LogType    int    `json:"log_type"`    //日志类型
+	AgentUid   string `json:"agent_uid"`   //终端标识
+	AgentIp    string `json:"agent_ip"`    //终端ip
+	CreatedAt  string `json:"created_at"`  //终端ip
+}
+
+type LogProcess struct {
 }
 
 // SyncLogBySyslog 同步日志
