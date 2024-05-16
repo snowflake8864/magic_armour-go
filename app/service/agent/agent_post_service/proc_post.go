@@ -28,37 +28,11 @@ func CreateProcFactory() *ProcPost {
 	}
 }
 
-const (
-	TaskAll     string = "all"
-	TaskAuto    string = "auto"
-	TaskRefresh string = "refresh"
-)
-
 type ProcPost struct {
 	redisClient *redis_factory.RedisClient
 	cachePrefix string
 	cacheExpire int
 	queryClient *producer_kafka.ProducerClient
-}
-
-type procData struct {
-	ProcId       int       `json:"id"`
-	Dir          string    `json:"dir"`
-	User         string    `json:"user"`
-	Hash         string    `json:"hash"`
-	Introduce    string    `json:"introduce"`
-	Copyright    string    `json:"copyright"`
-	Attribute    string    `json:"attribute"`
-	ModuleNumber int       `json:"module_number"`
-	ModuleList   []dllData `json:"module"`
-	Signature    string    `json:"signature"` //不在使用 @todo bug6830
-	Finish       int       `json:"finish"`    //不在使用 @todo 100代表任务已完成
-}
-
-type dllData struct {
-	Dir       string `json:"name"`
-	Hash      string `json:"hash"`
-	Attribute string `json:"attribute"`
 }
 
 // 给hash加锁
@@ -210,7 +184,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 	if source != enum_process.SourceProcess {
 		return errors.New("数据主体不是进程")
 	}
-	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
+	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
 		return errors.New("agent不能连续主动上传进程数据")
 	}
 
@@ -228,7 +202,7 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 	if source != enum_process.SourceProcess {
 		return errors.New("数据主体不是进程")
 	}
-	if task != TaskRefresh {
+	if task != ProcTaskRefresh {
 		return errors.New("任务不是刷新")
 	}
 
@@ -246,7 +220,7 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 	if source != enum_process.SourceDll {
 		return errors.New("数据主体不是模块")
 	}
-	if task == TaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.DllHash) {
+	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.DllHash) {
 		return errors.New("agent不能连续主动上传模块数据")
 	}
 
@@ -264,7 +238,7 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 	if source != enum_process.SourceDll {
 		return errors.New("数据主体不是模块")
 	}
-	if task != TaskRefresh {
+	if task != ProcTaskRefresh {
 		return errors.New("任务不是刷新")
 	}
 
