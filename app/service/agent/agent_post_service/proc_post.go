@@ -3,7 +3,6 @@ package agent_post_service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -91,8 +90,6 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 		return err
 	}
 	now := date_helper.CurDatetime()
-	fmt.Println("params========================================")
-	fmt.Println(json_helper.Encode(params))
 	for _, itemProcess := range params {
 		//进程hash全部小写
 		procHash := strings.ToLower(itemProcess.Hash)

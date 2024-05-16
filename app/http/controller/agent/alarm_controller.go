@@ -2,6 +2,8 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,12 +14,26 @@ type AlarmController struct {
 
 // PutMaster 上传报警信息(除端口虚开外)
 func (u *AlarmController) PutMaster(ctx *gin.Context) {
+	loginInfo := u.GetLogin(ctx)
 
-	response.SuccessReturnData(ctx, "上传报警信息(除端口虚开外)")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
+	err := agent_post_service.CreateAlarmFactory().ToQueryBYComm(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PutPort 上传端口虚开告警
 func (u *AlarmController) PutPort(ctx *gin.Context) {
+	loginInfo := u.GetLogin(ctx)
 
-	response.SuccessReturnData(ctx, "上传端口虚开告警")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
+	err := agent_post_service.CreateAlarmFactory().ToQueryBYPort(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

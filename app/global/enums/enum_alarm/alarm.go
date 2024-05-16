@@ -1,5 +1,7 @@
 package enum_alarm
 
+import "goskeleton/app/global/enums/enum_port"
+
 const (
 	HandleStatusNot int = 1 //处理状态: 未处理
 	HandleStatusYes int = 2 //处理状态: 已处理
@@ -88,6 +90,11 @@ const (
 
 	TypeLoginSolve int = 4200 //登录口令暴力破解
 	/**   ---------登录口令暴力破解告警 E--------- */
+
+	/**   ---------端口告警 S--------- */
+
+	TypePortVirtual int = 4300 //登录口令暴力破解
+	/**   ---------端口告警 E--------- */
 
 	/**   ---------自保告警 S--------- */
 
@@ -190,6 +197,8 @@ var EnumMapInt = map[string]map[int]string{
 		TypePlugDynamicFromLogin: "口令破解",
 
 		TypeLoginSolve: "登录口令暴力破解",
+
+		TypePortVirtual: "端口虚开",
 
 		TypeSelfProtectFileCreate:     "新建文件告警",
 		TypeSelfProtectFileDelete:     "删除文件告警",
@@ -362,6 +371,19 @@ var MapTypeModule = map[int]int{
 func GetModuleByType(t int) int {
 	if val, isOk := MapTypeModule[t]; isOk {
 		return val
+	} else {
+		return 0
+	}
+}
+
+// GetLevelByWeight 通过类型获取对应模块
+func GetLevelByWeight(w int) int {
+	if w == enum_port.AlarmLevel1 || w == enum_port.AlarmLevel2 {
+		return LevelCommon
+	} else if w == enum_port.AlarmLevel3 || w == enum_port.AlarmLevel4 {
+		return LevelImportant
+	} else if w == enum_port.AlarmLevel5 {
+		return LevelSerious
 	} else {
 		return 0
 	}

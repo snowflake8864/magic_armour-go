@@ -40,6 +40,10 @@ type alarmComm struct {
 	ProcParam string `json:"proc_param"`
 	FileDir   string `json:"file_dir"`
 	TargetDir string `json:"target_dir"`
+
+	PeripheralEid    string `json:"peripheral_eid"`
+	PeripheralName   string `json:"peripheral_name"`
+	PeripheralRemark string `json:"peripheral_remark"`
 }
 
 type alarmPort struct {

@@ -29,7 +29,7 @@ type AlarmProcessModel struct {
 	HandleAt     string `json:"handle_at"`
 	CreatedAt    string `json:"created_at"`
 	ProcHash     string `json:"proc_hash"`
-	ProcId       string `json:"proc_id"`
+	ProcId       int    `json:"proc_id"`
 	ProcDir      string `json:"proc_dir"`
 	ProcParam    string `json:"proc_param"`
 }
