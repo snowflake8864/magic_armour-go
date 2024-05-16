@@ -34,6 +34,7 @@ type alarmComm struct {
 	Dir              string `json:"dir"`
 	PParam           string `json:"p_param"`
 	ExceptionProcess string `json:"exception_process"`
+	Pid              int    `json:"id"`
 
 	ProcDir   string `json:"proc_dir"`
 	ProcHash  string `json:"proc_hash"`

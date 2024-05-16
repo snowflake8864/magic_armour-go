@@ -89,6 +89,7 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 		CreatedAt:    now,
 		ProcHash:     param.Hash,
 		ProcDir:      param.Dir,
+		ProcId:       param.Pid,
 		ProcParam:    param.PParam,
 	}
 
