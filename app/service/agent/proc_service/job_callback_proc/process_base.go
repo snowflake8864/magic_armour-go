@@ -1,4 +1,4 @@
-package job_callcak_proc
+package job_callback_proc
 
 import (
 	"goskeleton/app/global/enums"

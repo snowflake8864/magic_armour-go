@@ -78,7 +78,7 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 	if param.Level == 0 || string_helper.IsEmpty(param.Hash) {
 		return
 	}
-
+	fmt.Println("sendProcess ============================")
 	model := alarm_models.AlarmProcessModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
@@ -92,11 +92,12 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 		ProcId:       param.Pid,
 		ProcParam:    param.PParam,
 	}
-
+	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutProcess,
 		Data: json_helper.Encode(&model),
 	}
+
 	crd.queryClient.ProduceAlarm(context.Background(), msg)
 
 }

@@ -3,7 +3,7 @@ package proc_job
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/proc_models"
-	"goskeleton/app/service/agent/proc_service/job_callcak_proc"
+	"goskeleton/app/service/agent/proc_service/job_callback_proc"
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
@@ -15,8 +15,7 @@ func UploadDll(jsonStr string) {
 		return
 	}
 
-	variable.ZapLog.Info(dllModel.Dir)
-	if err := job_callcak_proc.CreateDllUploadFactory().Add(&dllModel); err != nil {
+	if err := job_callback_proc.CreateDllUploadFactory().Add(&dllModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
 	}
@@ -30,7 +29,7 @@ func UploadDllRunning(jsonStr string) {
 		return
 	}
 
-	if err := job_callcak_proc.CreateDllRunningUploadFactory().Add(&dllRunningModel); err != nil {
+	if err := job_callback_proc.CreateDllRunningUploadFactory().Add(&dllRunningModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
 	}
