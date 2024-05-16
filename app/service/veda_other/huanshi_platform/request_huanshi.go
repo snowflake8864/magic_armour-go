@@ -258,6 +258,7 @@ type AgentData struct {
 	DeviceMark   string `json:"deviceMark"`   //设备标识
 	Platform     string `json:"platform"`     //来源
 	DataType     string `json:"dataType"`     //数据类型
+	OrgId        int64  `json:"org_id"`       //企业编号
 	AgentId      string `json:"agentId"`      //终端编号
 	Os           string `json:"os"`           //系统
 	Ip           string `json:"ip"`           //终端ip
@@ -288,9 +289,10 @@ func (aa *requestHuanshi) SyncAgentBySyslog(param AgentData) error {
 type alarmBase struct {
 	DeviceMark  string `json:"deviceMark"`  //设备标识
 	Platform    string `json:"platform"`    //来源
-	Type        string `json:"type"`        //告警类型
-	Uid         string `json:"uid"`         //终端编号
-	Ip          string `json:"ip"`          //终端ip
+	Type        string `json:"type"`        //类型模块
+	OrgId       int64  `json:"org_id"`      //企业编号
+	AgentId     string `json:"uid"`         //终端编号
+	AgentIp     string `json:"ip"`          //终端ip
 	ContactName string `json:"contactName"` //管理人
 	DeptName    string `json:"deptName"`    //组织架构
 	Level       int    `json:"level"`       //告警级别
@@ -341,10 +343,18 @@ type AlarmLogin struct {
 	Total    int    `json:"total"`    //次数
 }
 
-// SyncAlarmCommBySyslog 同步告警告警
-func (aa *requestHuanshi) SyncAlarmCommBySyslog(param AlarmComm) error {
+// SyncAlarmComm 同步告警: 公共
+func (aa *requestHuanshi) SyncAlarmComm(param AlarmComm) error {
 	param.Platform = aa.RequestPlatform
-	//@todo 通道:LOCAL5; 等级:info
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+		param.ContactName = cache.ContactName
+		param.DeptName = cache.DeptName
+	} else {
+		return err
+	}
+
 	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
@@ -356,21 +366,82 @@ type logBase struct {
 	DeviceIp   string `json:"device_ip"`   //设备IP
 	Platform   string `json:"platform"`    //来源
 	LogType    int    `json:"log_type"`    //日志类型
-	AgentUid   string `json:"agent_uid"`   //终端标识
-	AgentIp    string `json:"agent_ip"`    //终端ip
-	CreatedAt  string `json:"created_at"`  //终端ip
+	OrgId      int64  `json:"org_id"`
+	AgentId    string `json:"agent_id"`   //终端标识
+	AgentIp    string `json:"agent_ip"`   //终端ip
+	CreatedAt  string `json:"created_at"` //终端ip
 }
 
+// LogProcess 日志数据结构： 进程启动日志
 type LogProcess struct {
+	logBase
+	ProcHash    string `json:"proc_hash"`
+	ProcId      int    `json:"proc_id"`
+	ProcDir     string `json:"proc_dir"`
+	ProcParam   string `json:"proc_param"`
+	ParentHash  string `json:"parent_hash"`
+	ParentId    int    `json:"parent_id"`
+	ParentDir   string `json:"parent_dir"`
+	ParentParam string `json:"parent_param"`
 }
 
-// SyncLogBySyslog 同步日志
-// 参数：param 每种日志不相同
-// 日志类型: 参考宏定义
-func (aa *requestHuanshi) SyncLogBySyslog(param map[string]interface{}) error {
-	//默认值
-	param["platform"] = aa.RequestPlatform
-	param["device_ip"] = aa.Config.HuanshiCallIp
+// LogDns 日志数据结构： DNS日志
+type LogDns struct {
+	logBase
+	ProcHash   string `json:"proc_hash"`
+	ProcId     int    `json:"proc_id"`
+	ProcDir    string `json:"proc_dir"`
+	DomainName string `json:"domain_name"`
+	TargetIp   string `json:"target_ip"`
+}
+
+// LogInner 日志数据结构： 对内通讯日志
+type LogInner struct {
+	logBase
+	ProcHash         string `json:"proc_hash"`
+	ProcId           int    `json:"proc_id"`
+	ProcDir          string `json:"proc_dir"`
+	TargetIp         string `json:"target_ip"`
+	TargetPort       int    `json:"target_port"`
+	TargetPortStatus int    `json:"target_port_status"`
+	SourceIp         string `json:"source_ip"`
+	SourcePort       int    `json:"source_port"`
+	Proto            int    `json:"proto"`
+}
+
+// LogOuter 日志数据结构： 对外通讯日志
+type LogOuter struct {
+	logBase
+	ProcHash         string `json:"proc_hash"`
+	ProcId           int    `json:"proc_id"`
+	ProcDir          string `json:"proc_dir"`
+	TargetIp         string `json:"target_ip"`
+	TargetPort       int    `json:"target_port"`
+	TargetPortStatus int    `json:"target_port_status"`
+	SourceIp         string `json:"source_ip"`
+	SourcePort       int    `json:"source_port"`
+	Proto            int    `json:"proto"`
+}
+
+// LogLogin 日志数据结构： 登录日志
+type LogLogin struct {
+	logBase
+	SourceIp string `json:"source_ip"`
+	Username string `json:"username"`
+	Type     string `json:"type"`
+	Status   int    `json:"status"`
+}
+
+// SyncLogProcess 同步日志：进程
+func (aa *requestHuanshi) SyncLogProcess(param LogProcess) error {
+	param.DeviceIp = aa.Config.HuanshiCallIp
+	param.Platform = aa.RequestPlatform
+	param.LogType = LogTypeProcess
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		param.DeviceMark = cache.OrgCode
+	} else {
+		return err
+	}
 	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
@@ -378,6 +449,7 @@ func (aa *requestHuanshi) SyncLogBySyslog(param map[string]interface{}) error {
 }
 
 type CacheAgent struct {
+	OrgCode     string `json:"org_code"`
 	AgentIp     string `json:"agent_ip"`
 	NetIp       string `json:"net_ip"`
 	DeptName    string `json:"dept_name"`
@@ -385,14 +457,14 @@ type CacheAgent struct {
 	AgentType   string `json:"agent_type"`
 }
 
-func (aa *requestHuanshi) cacheAgentKey(deviceMark, agentId string) string {
+func (aa *requestHuanshi) cacheAgentKey(orgId int64, agentId string) string {
 
-	return aa.agentCachePrefix + deviceMark + "_" + agentId
+	return aa.agentCachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
 // SaveAgent 保存终端信息
-func (aa *requestHuanshi) SaveAgent(deviceMark, agentId string, param CacheAgent) error {
-	key := aa.cacheAgentKey(deviceMark, agentId)
+func (aa *requestHuanshi) SaveAgent(orgId int64, agentId string, param CacheAgent) error {
+	key := aa.cacheAgentKey(orgId, agentId)
 	data := json_helper.Encode(json_helper.Encode(param))
 	//新增缓存
 	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
@@ -403,16 +475,16 @@ func (aa *requestHuanshi) SaveAgent(deviceMark, agentId string, param CacheAgent
 }
 
 // GetAgent 获取终端信息
-func (aa *requestHuanshi) GetAgent(deviceMark, agentId string) (data CacheAgent) {
+func (aa *requestHuanshi) GetAgent(orgId int64, agentId string) (err error, data CacheAgent) {
 
-	jsonStr := aa.redisClient.Get(aa.cacheAgentKey(deviceMark, agentId))
+	jsonStr := aa.redisClient.Get(aa.cacheAgentKey(orgId, agentId))
 	if string_helper.IsEmpty(jsonStr) {
-		return data
+		return errors.New("缓存数据不存在"), data
 	}
 
-	err := json_helper.Json2Struct(jsonStr, &data)
+	err = json_helper.Json2Struct(jsonStr, &data)
 	if err != nil {
-		return data
+		return errors.New("缓存数据错误"), data
 	}
-	return data
+	return nil, data
 }
