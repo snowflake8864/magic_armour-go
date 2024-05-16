@@ -7,6 +7,7 @@ import (
 	"github.com/segmentio/kafka-go"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
+	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/utils/kafka_go"
@@ -47,8 +48,8 @@ func CreateConsumerFactory() *ConsumerClient {
 		Common:   newConsumer(kafka_go.TopicCommon, config),
 		Process:  newConsumer(kafka_go.TopicProcess, config),
 		Threaten: newConsumer(kafka_go.TopicThreaten, config),
-		Alarm:    newConsumer(kafka_go.TopicCommon, config),
-		Syslog:   newConsumer(kafka_go.TopicCommon, config),
+		Alarm:    newConsumer(kafka_go.TopicAlarm, config),
+		Syslog:   newConsumer(kafka_go.TopicSyslog, config),
 	}
 
 }
@@ -124,6 +125,25 @@ func (k *ConsumerClient) ConsumeProcess() {
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
+		}
+	}
+}
+
+// ConsumeAlarm 消费主题： Alarm
+func (k *ConsumerClient) ConsumeAlarm() {
+	for {
+		data, err := k.readMessage(context.Background(), k.Alarm)
+		if err != nil {
+			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
+
+		switch data.Type {
+		case kafka_go.TypeAlarmPutProcess:
+			alarm_job.UploadProcess(data.Data)
+			break
+
+		default:
+			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}
 	}
 }

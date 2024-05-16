@@ -69,8 +69,8 @@ func CreateProducerFactory() *ProducerClient {
 		Common:   newProducer(kafka_go.TopicCommon, config),
 		Process:  newProducer(kafka_go.TopicProcess, config),
 		Threaten: newProducer(kafka_go.TopicThreaten, config),
-		Alarm:    newProducer(kafka_go.TopicCommon, config),
-		Syslog:   newProducer(kafka_go.TopicCommon, config),
+		Alarm:    newProducer(kafka_go.TopicAlarm, config),
+		Syslog:   newProducer(kafka_go.TopicSyslog, config),
 	}
 }
 

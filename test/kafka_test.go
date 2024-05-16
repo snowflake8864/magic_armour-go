@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/consumer_kafka"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
@@ -78,11 +77,7 @@ func TestReadProcess(t *testing.T) {
 	consumer_kafka.CreateConsumerFactory().ConsumeProcess()
 }
 
-func TestReadProcess1(t *testing.T) {
-	windowsPath := `C:\Windows\System32\`
-	standardPath := path_helper.ToStandard(windowsPath)
-	fmt.Println(path_helper.ToStandard(windowsPath))
-
-	fmt.Println(path_helper.ToWindows(standardPath))
+func TestReadAlarm(t *testing.T) {
+	consumer_kafka.CreateConsumerFactory().ConsumeAlarm()
 
 }
