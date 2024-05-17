@@ -36,3 +36,18 @@ func UploadDll(jsonStr string) {
 		return
 	}
 }
+
+func UploadTamper(jsonStr string) {
+	model := alarm_models.AlarmTamperModel{}
+	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	variable.ZapLog.Info(model.ProcDir)
+	if err := job_callback_alarm.CreateTamperUploadFactory().Add(&model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}

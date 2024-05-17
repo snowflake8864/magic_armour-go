@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 func CreateDllUploadFactory() *AlarmDllUpload {
@@ -27,6 +28,7 @@ func (crd *AlarmDllUpload) Add(model *alarm_models.AlarmDllModel) error {
 		model.CreatedAt = date_helper.CurDatetime()
 	}
 	model.Id = variable.SnowFlake.GetId()
+	model.DlLHash = strings.ToLower(model.DlLHash)
 	model.DllDir = path_helper.ToStandard(model.DllDir)
 	model.ProcDir = path_helper.ToStandard(model.ProcDir)
 
@@ -46,7 +48,8 @@ func (crd *AlarmDllUpload) Add(model *alarm_models.AlarmDllModel) error {
 				NoticeType: model.Level,
 				NoticeTime: model.CreatedAt,
 			},
-			Dir: model.DllDir,
+			Dir:              model.DllDir,
+			ExceptionProcess: model.ProcDir,
 		}
 		if err := hsCli.SyncAlarmComm(hsData); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())

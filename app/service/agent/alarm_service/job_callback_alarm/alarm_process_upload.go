@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 func CreateProcessUploadFactory() *AlarmProcessUpload {
@@ -27,6 +28,7 @@ func (crd *AlarmProcessUpload) Add(model *alarm_models.AlarmProcessModel) error 
 		model.CreatedAt = date_helper.CurDatetime()
 	}
 	model.Id = variable.SnowFlake.GetId()
+	model.ProcHash = strings.ToLower(model.ProcHash)
 	model.ProcDir = path_helper.ToStandard(model.ProcDir)
 	model.ProcParam = path_helper.ToStandard(model.ProcParam)
 
