@@ -121,7 +121,7 @@ func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now
 		DllDir:       param.Dir,
 		ProcDir:      param.ExceptionProcess,
 	}
-	fmt.Println("sendProcess ============================")
+	fmt.Println("sendDll ============================")
 	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutDll,
@@ -149,7 +149,7 @@ func (crd *AlarmPost) sendTamper(param *alarmComm, orgId int64, agentId string, 
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	fmt.Println("sendProcess ============================")
+	fmt.Println("sendTamper ============================")
 	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutTamper,
@@ -177,7 +177,7 @@ func (crd *AlarmPost) sendBlackmail(param *alarmComm, orgId int64, agentId strin
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	fmt.Println("sendProcess ============================")
+	fmt.Println("sendBlackmail ============================")
 	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutBlackmail,
@@ -205,7 +205,7 @@ func (crd *AlarmPost) sendUsb(param *alarmComm, orgId int64, agentId string, now
 		UsbName:      param.PeripheralName,
 		UsbIntro:     param.PeripheralRemark,
 	}
-	fmt.Println("sendProcess ============================")
+	fmt.Println("sendUsb ============================")
 	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutUsb,
@@ -235,7 +235,7 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 		FileDir:      param.FileDir,
 		TargetDir:    param.TargetDir,
 	}
-	fmt.Println("sendProcess ============================")
+	fmt.Println("sendSelf ============================")
 	fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutSelf,

@@ -28,7 +28,7 @@ type AlarmDllModel struct {
 	HandleUser   string `json:"handle_user"`
 	HandleAt     string `json:"handle_at"`
 	CreatedAt    string `json:"created_at"`
-	DlLHash      string `json:"dlL_hash"`
+	DlLHash      string `json:"dll_hash"`
 	DllDir       string `json:"dll_dir"`
 	ProcDir      string `json:"proc_dir"`
 }
