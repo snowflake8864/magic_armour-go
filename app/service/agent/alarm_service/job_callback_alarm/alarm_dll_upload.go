@@ -28,7 +28,7 @@ func (crd *AlarmDllUpload) Add(model *alarm_models.AlarmDllModel) error {
 		model.CreatedAt = date_helper.CurDatetime()
 	}
 	model.Id = variable.SnowFlake.GetId()
-	model.DlLHash = strings.ToLower(model.DlLHash)
+	model.DllHash = strings.ToLower(model.DllHash)
 	model.DllDir = path_helper.ToStandard(model.DllDir)
 	model.ProcDir = path_helper.ToStandard(model.ProcDir)
 

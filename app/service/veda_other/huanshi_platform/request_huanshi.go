@@ -346,7 +346,7 @@ type AlarmLogin struct {
 // SyncAlarmComm 同步告警: 公共
 func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 	param.Platform = aa.RequestPlatform
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
+	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
 	} else if cache.HuanshiSwitch == enums.SwitchOff {

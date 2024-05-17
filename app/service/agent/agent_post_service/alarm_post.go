@@ -117,7 +117,7 @@ func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now
 		AgentAt:      crd.getAgentAt(param.AgentTime, now),
 		HandleStatus: enum_alarm.HandleStatusNot,
 		CreatedAt:    now,
-		DlLHash:      param.Hash,
+		DllHash:      param.Hash,
 		DllDir:       param.Dir,
 		ProcDir:      param.ExceptionProcess,
 	}
