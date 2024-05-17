@@ -55,12 +55,9 @@ func CreateRequestFactory(c RequestConfig) *RequestHuanshi {
 type RequestConfig struct {
 	HuanshiCallbackUrl string
 	HuanshiCallIp      string
-	HuanshiSwitch      int
 	HuanshiUrl         string
-	HuanshiAlarmSwitch int
 	HuanshiAlarmIp     string
 	HuanshiAlarmPort   string
-	HuanshiLogSwitch   int
 	HuanshiLogIp       string
 	HuanshiLogPort     string
 }
@@ -175,10 +172,6 @@ func (aa *RequestHuanshi) GetHeaders() (headers map[string]interface{}) {
 }
 */
 func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
-	if aa.Config.HuanshiSwitch == enums.SwitchOn {
-		return nil
-	}
-
 	uri := aa.Config.HuanshiUrl + "/web/device/add"
 
 	//默认值
@@ -196,10 +189,6 @@ func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 
 // 模拟发送SYSLOG
 func (aa *RequestHuanshi) analogSendSyslog(tt string, paramJson string) error {
-	if aa.Config.HuanshiSwitch == enums.SwitchOn {
-		return nil
-	}
-
 	//发送地址
 	var address string
 	var facility, level int
@@ -209,18 +198,11 @@ func (aa *RequestHuanshi) analogSendSyslog(tt string, paramJson string) error {
 		facility = 23
 		level = 6
 	} else if tt == "alarm" {
-
-		if aa.Config.HuanshiAlarmSwitch == enums.SwitchOn {
-			return nil
-		}
 		address = aa.Config.HuanshiAlarmIp + ":" + aa.Config.HuanshiAlarmPort
 		//@todo 通道:LOCAL5; 等级:info
 		facility = 21
 		level = 5
 	} else if tt == "log" {
-		if aa.Config.HuanshiLogSwitch == enums.SwitchOn {
-			return nil
-		}
 		address = aa.Config.HuanshiLogIp + ":" + aa.Config.HuanshiLogPort
 		//@todo 通道:LOCAL3; 等级:warning
 		facility = 19

@@ -1,6 +1,7 @@
 package job_callback_alarm
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -10,8 +11,8 @@ import (
 type alarmBase struct {
 }
 
-// GetHuanshiCli 获取幻势客户端
-func (crd *alarmBase) GetHuanshiCli() *huanshi_platform.RequestHuanshi {
+// getHuanshiCli 获取幻势客户端
+func (crd *alarmBase) getHuanshiCli(pushTypeFiled string) *huanshi_platform.RequestHuanshi {
 	dictIds := []string{
 		enum_dictionary.HuanshiCallbackUrl,
 		enum_dictionary.HuanshiCallIp,
@@ -23,23 +24,26 @@ func (crd *alarmBase) GetHuanshiCli() *huanshi_platform.RequestHuanshi {
 		enum_dictionary.HuanshiLogSwitch,
 		enum_dictionary.HuanshiLogIp,
 		enum_dictionary.HuanshiLogPort,
+		pushTypeFiled,
 	}
 	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
-	if len(vals) != 10 {
+	if len(vals) != 11 {
+		return nil
+	}
+
+	if string_helper.ToInt(vals[enum_dictionary.HuanshiSwitch]) == enums.SwitchOff ||
+		string_helper.ToInt(vals[enum_dictionary.HuanshiAlarmSwitch]) == enums.SwitchOff ||
+		string_helper.ToInt(vals[pushTypeFiled]) == enums.SwitchOff {
 		return nil
 	}
 
 	config := huanshi_platform.RequestConfig{}
 	config.HuanshiCallbackUrl = vals[enum_dictionary.HuanshiCallbackUrl]
 	config.HuanshiCallIp = vals[enum_dictionary.HuanshiCallIp]
-	config.HuanshiSwitch = string_helper.ToInt(vals[enum_dictionary.HuanshiSwitch])
 	config.HuanshiUrl = vals[enum_dictionary.HuanshiUrl]
-	config.HuanshiAlarmSwitch = string_helper.ToInt(vals[enum_dictionary.HuanshiAlarmSwitch])
 	config.HuanshiAlarmIp = vals[enum_dictionary.HuanshiAlarmIp]
 	config.HuanshiAlarmPort = vals[enum_dictionary.HuanshiAlarmPort]
-	config.HuanshiLogSwitch = string_helper.ToInt(vals[enum_dictionary.HuanshiLogSwitch])
 	config.HuanshiLogIp = vals[enum_dictionary.HuanshiLogIp]
-	config.HuanshiLogPort = vals[enum_dictionary.HuanshiLogPort]
 
 	return huanshi_platform.CreateRequestFactory(config)
 }

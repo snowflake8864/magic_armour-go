@@ -2,6 +2,7 @@ package job_callback_alarm
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
@@ -37,7 +38,7 @@ func (crd *AlarmUsbUpload) Add(model *alarm_models.AlarmUsbModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.GetHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchUsb); hsCli != nil {
 		//外接设备别名
 		var usbAlias string
 		if usbModel := usb_models.CreateUsbFactory().GetItemByOrgAndAgentAndHash(model.OrgId, model.AgentId, model.UsbHash); usbModel != nil {

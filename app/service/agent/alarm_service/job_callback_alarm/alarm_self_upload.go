@@ -2,6 +2,7 @@ package job_callback_alarm
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -40,7 +41,7 @@ func (crd *AlarmSelfUpload) Add(model *alarm_models.AlarmSelfModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.GetHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchSelf); hsCli != nil {
 		hsData := huanshi_platform.AlarmComm{
 			AlarmBase: huanshi_platform.AlarmBase{
 				Type:       huanshi_platform.AlarmTypeSelf,
