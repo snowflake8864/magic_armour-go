@@ -154,7 +154,7 @@ func (k *ConsumerClient) ConsumeAlarm() {
 			alarm_job.UploadUsb(data.Data)
 			break
 		case kafka_go.TypeAlarmPutSelf:
-			alarm_job.UploadUsb(data.Data)
+			alarm_job.UploadSelf(data.Data)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
