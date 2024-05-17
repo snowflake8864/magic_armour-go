@@ -41,7 +41,7 @@ func (crd *AlarmTamperUpload) Add(model *alarm_models.AlarmTamperModel) error {
 	if hsCli := crd.GetHuanshiCli(); hsCli != nil {
 		hsData := huanshi_platform.AlarmComm{
 			AlarmBase: huanshi_platform.AlarmBase{
-				Type:       huanshi_platform.AlarmTypeProcess,
+				Type:       huanshi_platform.AlarmTypeTamper,
 				OrgId:      model.OrgId,
 				AgentId:    model.AgentId,
 				Level:      model.Level,

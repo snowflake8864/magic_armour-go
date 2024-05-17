@@ -51,3 +51,18 @@ func UploadTamper(jsonStr string) {
 		return
 	}
 }
+
+func UploadBlackmail(jsonStr string) {
+	model := alarm_models.AlarmBlackmailModel{}
+	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	variable.ZapLog.Info(model.ProcDir)
+	if err := job_callback_alarm.CreateBlackmailUploadFactory().Add(&model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}
