@@ -15,7 +15,6 @@ func UploadProcess(jsonStr string) {
 		return
 	}
 
-	variable.ZapLog.Info(model.ProcDir)
 	if err := job_callback_alarm.CreateProcessUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
@@ -30,7 +29,6 @@ func UploadDll(jsonStr string) {
 		return
 	}
 
-	variable.ZapLog.Info(model.ProcDir)
 	if err := job_callback_alarm.CreateDllUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
@@ -45,7 +43,6 @@ func UploadTamper(jsonStr string) {
 		return
 	}
 
-	variable.ZapLog.Info(model.ProcDir)
 	if err := job_callback_alarm.CreateTamperUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
@@ -60,8 +57,21 @@ func UploadBlackmail(jsonStr string) {
 		return
 	}
 
-	variable.ZapLog.Info(model.ProcDir)
 	if err := job_callback_alarm.CreateBlackmailUploadFactory().Add(&model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}
+
+func UploadUsb(jsonStr string) {
+	model := alarm_models.AlarmUsbModel{}
+	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callback_alarm.CreateUsbUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		return
 	}

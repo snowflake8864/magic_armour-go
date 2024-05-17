@@ -150,6 +150,9 @@ func (k *ConsumerClient) ConsumeAlarm() {
 		case kafka_go.TypeAlarmPutBlackmail:
 			alarm_job.UploadBlackmail(data.Data)
 			break
+		case kafka_go.TypeAlarmPutUsb:
+			alarm_job.UploadUsb(data.Data)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}

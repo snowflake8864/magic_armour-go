@@ -1,8 +1,10 @@
 package usb_models
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 外设表
@@ -14,6 +16,7 @@ func CreateUsbFactory() *UsbModel {
 //结构体
 
 type UsbModel struct {
+	baseUsb
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
@@ -68,5 +71,126 @@ func (m *UsbModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+func (m *UsbModel) InsertItem(s *UsbModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+// UpdateByConditions 通过条件修改
+func (m *UsbModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *UsbModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemByOrgAndAgentAndHash 通过企业id\终端id\hash获取一条记录
+func (m *UsbModel) GetItemByOrgAndAgentAndHash(orgId int64, agentId, hash string) (item *UsbModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? AND agent_id=? AND usb_hash=?", orgId, agentId, hash).Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
+// GetListByConditions 获取符合条件的全部记录
+func (m *UsbModel) GetListByConditions(condition SearchConditions) (items []*UsbModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *UsbModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*UsbModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *UsbModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *UsbModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*UsbModel) {
+	if total = m.Count(condition); total == 0 {
+		return total, nil
+	}
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

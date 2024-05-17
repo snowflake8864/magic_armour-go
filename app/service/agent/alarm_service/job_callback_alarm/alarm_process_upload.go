@@ -45,7 +45,7 @@ func (crd *AlarmProcessUpload) Add(model *alarm_models.AlarmProcessModel) error 
 				OrgId:      model.OrgId,
 				AgentId:    model.AgentId,
 				Level:      model.Level,
-				NoticeType: model.Level,
+				NoticeType: model.Type,
 				NoticeTime: model.CreatedAt,
 			},
 			Dir: model.ProcDir,

@@ -45,7 +45,7 @@ func (crd *AlarmTamperUpload) Add(model *alarm_models.AlarmTamperModel) error {
 				OrgId:      model.OrgId,
 				AgentId:    model.AgentId,
 				Level:      model.Level,
-				NoticeType: model.Level,
+				NoticeType: model.Type,
 				NoticeTime: model.CreatedAt,
 			},
 			Dir:              model.FileDir,

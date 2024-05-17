@@ -45,7 +45,7 @@ func (crd *AlarmBlackmailUpload) Add(model *alarm_models.AlarmBlackmailModel) er
 				OrgId:      model.OrgId,
 				AgentId:    model.AgentId,
 				Level:      model.Level,
-				NoticeType: model.Level,
+				NoticeType: model.Type,
 				NoticeTime: model.CreatedAt,
 			},
 			Dir:              model.FileDir,
