@@ -12,19 +12,19 @@ import (
 	"strings"
 )
 
-func CreateDllUploadFactory() *AlarmDllUpload {
-	return &AlarmDllUpload{
+func CreateDllUploadFactory() *DllUpload {
+	return &DllUpload{
 		masterModel: alarm_models.CreateAlarmDllFactory(),
 	}
 }
 
-type AlarmDllUpload struct {
+type DllUpload struct {
 	alarmBase
 	masterModel *alarm_models.AlarmDllModel
 }
 
 // Add 添加
-func (crd *AlarmDllUpload) Add(model *alarm_models.AlarmDllModel) error {
+func (crd *DllUpload) Add(model *alarm_models.AlarmDllModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

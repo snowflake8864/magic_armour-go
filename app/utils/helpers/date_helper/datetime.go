@@ -72,6 +72,13 @@ func AddTimestampByMinute(m int64) int64 {
 	return now.Add(time.Duration(m) * time.Minute).Unix()
 }
 
+// CalcDatetimeByMinute 按分钟把给定时间从新计算
+func CalcDatetimeByMinute(t string, m int64) string {
+	timestamp := DatetimeToTimestamp(t, variable.DateFormat)
+	timestamp = AddTimestampByMinute(m)
+	return TimestampToDatetime(timestamp)
+}
+
 // TimestampToDatetime 时间戳转成日期， 默认格式
 func TimestampToDatetime(timestamp int64) string {
 	if timestamp == 0 {

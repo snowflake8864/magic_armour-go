@@ -12,19 +12,19 @@ import (
 	"strings"
 )
 
-func CreateBlackmailUploadFactory() *AlarmBlackmailUpload {
-	return &AlarmBlackmailUpload{
+func CreateBlackmailUploadFactory() *BlackmailUpload {
+	return &BlackmailUpload{
 		masterModel: alarm_models.CreateAlarmBlackmailFactory(),
 	}
 }
 
-type AlarmBlackmailUpload struct {
+type BlackmailUpload struct {
 	alarmBase
 	masterModel *alarm_models.AlarmBlackmailModel
 }
 
 // Add 添加
-func (crd *AlarmBlackmailUpload) Add(model *alarm_models.AlarmBlackmailModel) error {
+func (crd *BlackmailUpload) Add(model *alarm_models.AlarmBlackmailModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

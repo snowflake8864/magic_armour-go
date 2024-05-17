@@ -33,7 +33,7 @@ type AlarmPlugModel struct {
 	Direction    int    `json:"direction"`
 	Duration     int    `json:"duration"`
 	StartTime    string `json:"start_time"`
-	EndTime      string `json:"end_time"`
+	EndTime      string `json:"end_time" gorm:"default:NULL"`
 }
 
 // 表名

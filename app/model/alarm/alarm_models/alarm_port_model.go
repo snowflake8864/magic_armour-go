@@ -198,3 +198,19 @@ func (m *AlarmPortModel) Page(condition SearchConditions, offset, limit int, ord
 		return 0, nil
 	}
 }
+
+// CalcByConditions 通过条件获取多条记录
+func (m *AlarmPortModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
+		tmp := tx.Model(m).Select(m.GetColumn(column)).Where(whereSQL, vals...)
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}

@@ -289,7 +289,7 @@ type AlarmComm struct {
 	ExceptionProcess  string `json:"exceptionProcess"`  ///异常进程路径
 	AttackIp          string `json:"attackIp"`          //虚开端口: 攻击ip
 	DestinationIp     string `json:"destinationIp"`     //虚开端口: 目的ip
-	OpenPort          string `json:"openPort"`          //虚开端口: 目的端口号
+	OpenPort          int    `json:"openPort"`          //虚开端口: 目的端口号
 	RedirectIp        string `json:"redirectIp"`        //虚开端口: 重定向ip
 	PeripheralEid     string `json:"peripheralEid"`     //外设:  外设ID
 	PeripheralName    string `json:"peripheralName"`    //外设:  设备名称
@@ -328,6 +328,28 @@ type AlarmLogin struct {
 // SyncAlarmComm 同步告警: 公共
 func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 	param.Platform = aa.RequestPlatform
+	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
+	} else if cache.HuanshiSwitch == enums.SwitchOff {
+		return nil
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+		param.ContactName = cache.ContactName
+		param.DeptName = cache.DeptName
+	}
+
+	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SyncAlarmPlug 同步告警: 封堵
+func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
+	param.Platform = aa.RequestPlatform
+	param.Type = AlarmTypePlug
 	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
