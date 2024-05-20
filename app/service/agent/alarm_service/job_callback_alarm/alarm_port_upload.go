@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/service/agent/plug_service/plug_calc_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -56,7 +57,7 @@ func (crd *AlarmPortUpload) Add(model *alarm_models.AlarmPortModel) error {
 
 	//动态封堵
 	sumWeight := model.Weight * model.AttackTotal
-	if err := CreatePlugCalcFactory().CalcByPort(model.OrgId, model.AgentId, model.AttackIp, sumWeight, model.CreatedAt); err != nil {
+	if err := plug_calc_service.CreatePlugCalcFactory().CalcByPort(model.OrgId, model.AgentId, model.AttackIp, sumWeight, model.CreatedAt); err != nil {
 		variable.ZapLog.Sugar().Debug(err.Error())
 	}
 

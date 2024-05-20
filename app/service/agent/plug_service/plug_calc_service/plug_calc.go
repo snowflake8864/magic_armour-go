@@ -1,4 +1,4 @@
-package job_callback_alarm
+package plug_calc_service
 
 import (
 	"errors"
@@ -10,10 +10,12 @@ import (
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
 )
@@ -29,7 +31,6 @@ func CreatePlugCalcFactory() *PlugCalc {
 }
 
 type PlugCalc struct {
-	alarmBase
 	masterModel *plug_models.PlugDynamicModel
 	alarmModel  *alarm_models.AlarmPlugModel
 	redisClient *redis_factory.RedisClient
@@ -122,6 +123,7 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 		endAt = date_helper.CalcDatetimeByMinute(now, int64(duration))
 	}
 
+	//封堵
 	modelPlug := plug_models.PlugDynamicModel{
 		Id:         md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + now + int_helper.IntRandom2Str(100, 999)),
 		OrgId:      orgId,
@@ -141,6 +143,7 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 		return errors.New("保存动态封堵失败")
 	}
 
+	//告警
 	alarmType := enum_alarm.TypePlugDynamicFromPort
 	if source == enum_plug.SourcePortVirtual {
 		alarmType = enum_alarm.TypePlugDynamicFromLogin
@@ -165,7 +168,7 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 		return errors.New("保存告警失败")
 	}
 
-	//推送到幻势,
+	//推送到幻势
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchPlug); hsCli != nil {
 		hsData := huanshi_platform.AlarmPlug{
 			AlarmBase: huanshi_platform.AlarmBase{
@@ -240,4 +243,41 @@ func (crd *PlugCalc) hasAgentLib(orgId int64, agentId string, attackIp string) b
 		}
 	}
 	return false
+}
+
+// getHuanshiCli 获取幻势客户端
+func (crd *PlugCalc) getHuanshiCli(pushTypeFiled string) *huanshi_platform.RequestHuanshi {
+	dictIds := []string{
+		enum_dictionary.HuanshiCallbackUrl,
+		enum_dictionary.HuanshiCallIp,
+		enum_dictionary.HuanshiSwitch,
+		enum_dictionary.HuanshiUrl,
+		enum_dictionary.HuanshiAlarmSwitch,
+		enum_dictionary.HuanshiAlarmIp,
+		enum_dictionary.HuanshiAlarmPort,
+		enum_dictionary.HuanshiLogSwitch,
+		enum_dictionary.HuanshiLogIp,
+		enum_dictionary.HuanshiLogPort,
+		pushTypeFiled,
+	}
+	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+	if len(vals) != 11 {
+		return nil
+	}
+
+	if string_helper.ToInt(vals[enum_dictionary.HuanshiSwitch]) == enums.SwitchOff ||
+		string_helper.ToInt(vals[enum_dictionary.HuanshiAlarmSwitch]) == enums.SwitchOff ||
+		string_helper.ToInt(vals[pushTypeFiled]) == enums.SwitchOff {
+		return nil
+	}
+
+	config := huanshi_platform.RequestConfig{}
+	config.HuanshiCallbackUrl = vals[enum_dictionary.HuanshiCallbackUrl]
+	config.HuanshiCallIp = vals[enum_dictionary.HuanshiCallIp]
+	config.HuanshiUrl = vals[enum_dictionary.HuanshiUrl]
+	config.HuanshiAlarmIp = vals[enum_dictionary.HuanshiAlarmIp]
+	config.HuanshiAlarmPort = vals[enum_dictionary.HuanshiAlarmPort]
+	config.HuanshiLogIp = vals[enum_dictionary.HuanshiLogIp]
+
+	return huanshi_platform.CreateRequestFactory(config)
 }
