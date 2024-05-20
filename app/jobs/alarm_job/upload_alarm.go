@@ -90,3 +90,17 @@ func UploadSelf(jsonStr string) {
 		return
 	}
 }
+
+func UploadPort(jsonStr string) {
+	model := alarm_models.AlarmPortModel{}
+	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callback_alarm.CreatePortUploadFactory().Add(&model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}
