@@ -331,7 +331,7 @@ func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.HuanshiSwitch == enums.SwitchOff {
+	} else if cache.OrgHsSwitch == enums.SwitchOff {
 		return nil
 	} else {
 		param.DeviceMark = cache.OrgCode
@@ -353,7 +353,7 @@ func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.HuanshiSwitch == enums.SwitchOff {
+	} else if cache.OrgHsSwitch == enums.SwitchOff {
 		return nil
 	} else {
 		param.DeviceMark = cache.OrgCode
@@ -368,7 +368,7 @@ func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 	return nil
 }
 
-type logBase struct {
+type LogBase struct {
 	DeviceMark string `json:"device_mark"` //设备标识
 	DeviceIp   string `json:"device_ip"`   //设备IP
 	Platform   string `json:"platform"`    //来源
@@ -381,7 +381,7 @@ type logBase struct {
 
 // LogProcess 日志数据结构： 进程启动日志
 type LogProcess struct {
-	logBase
+	LogBase
 	ProcHash    string `json:"proc_hash"`
 	ProcId      int    `json:"proc_id"`
 	ProcDir     string `json:"proc_dir"`
@@ -394,7 +394,7 @@ type LogProcess struct {
 
 // LogDns 日志数据结构： DNS日志
 type LogDns struct {
-	logBase
+	LogBase
 	ProcHash   string `json:"proc_hash"`
 	ProcId     int    `json:"proc_id"`
 	ProcDir    string `json:"proc_dir"`
@@ -404,7 +404,7 @@ type LogDns struct {
 
 // LogInner 日志数据结构： 对内通讯日志
 type LogInner struct {
-	logBase
+	LogBase
 	ProcHash         string `json:"proc_hash"`
 	ProcId           int    `json:"proc_id"`
 	ProcDir          string `json:"proc_dir"`
@@ -418,7 +418,7 @@ type LogInner struct {
 
 // LogOuter 日志数据结构： 对外通讯日志
 type LogOuter struct {
-	logBase
+	LogBase
 	ProcHash         string `json:"proc_hash"`
 	ProcId           int    `json:"proc_id"`
 	ProcDir          string `json:"proc_dir"`
@@ -432,7 +432,7 @@ type LogOuter struct {
 
 // LogLogin 日志数据结构： 登录日志
 type LogLogin struct {
-	logBase
+	LogBase
 	SourceIp string `json:"source_ip"`
 	Username string `json:"username"`
 	Type     string `json:"type"`
@@ -446,10 +446,11 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 	param.LogType = LogTypeProcess
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.HuanshiSwitch == enums.SwitchOff {
+	} else if cache.OrgHsSwitch == enums.SwitchOff {
 		return nil
 	} else {
 		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
 	}
 	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
 		return err
@@ -458,13 +459,13 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 }
 
 type CacheAgent struct {
-	OrgCode       string `json:"org_code"`
-	HuanshiSwitch int    `json:"huanshi_switch"`
-	AgentIp       string `json:"agent_ip"`
-	NetIp         string `json:"net_ip"`
-	DeptName      string `json:"dept_name"`
-	ContactName   string `json:"contact_name"`
-	AgentType     string `json:"agent_type"`
+	OrgCode     string `json:"org_code"`
+	OrgHsSwitch int    `json:"org_hs_switch"`
+	AgentIp     string `json:"agent_ip"`
+	NetIp       string `json:"net_ip"`
+	DeptName    string `json:"dept_name"`
+	ContactName string `json:"contact_name"`
+	AgentType   string `json:"agent_type"`
 }
 
 func (aa *RequestHuanshi) cacheAgentKey(orgId int64, agentId string) string {
