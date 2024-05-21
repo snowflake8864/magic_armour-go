@@ -261,7 +261,7 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 		if item.Weight == 0 || item.OpenPort == 0 || string_helper.IsEmpty(item.AttackIp) || string_helper.IsEmpty(item.DestinationIp) {
 			break
 		}
-		unique := crd.uniqueBYPort(item.AttackIp, item.DestinationIp, item.OpenPort)
+		unique := crd.uniqueBYPort(item.AttackIp, item.DestinationIp, item.OpenPort, item.RedirectIp, item.RedirectPort, item.Weight)
 		if _, isOk := attackTotal[unique]; isOk {
 			attackTotal[unique] += 1
 		} else {
@@ -306,6 +306,13 @@ func (crd *AlarmPost) fillPort(param *alarmPort, orgId int64, agentId string, no
 	return &model
 }
 
-func (crd *AlarmPost) uniqueBYPort(attackIp string, targetIp string, targetPort int) string {
-	return md5_encrypt.MD5(attackIp + targetIp + int_helper.IntToStr(targetPort))
+func (crd *AlarmPost) uniqueBYPort(attackIp string, targetIp string, targetPort int, redirectIp string, redirectPort int, weight int) string {
+	str := attackIp
+	str += targetIp
+	str += int_helper.IntToStr(targetPort)
+	str += redirectIp
+	str += int_helper.IntToStr(redirectPort)
+	str += int_helper.IntToStr(weight)
+
+	return md5_encrypt.MD5(str)
 }
