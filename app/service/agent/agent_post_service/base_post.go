@@ -1,5 +1,7 @@
 package agent_post_service
 
+import "encoding/json"
+
 const (
 	ProcTaskAll     string = "all"
 	ProcTaskAuto    string = "auto"
@@ -55,4 +57,29 @@ type alarmPort struct {
 	OpenPort      int    `json:"open_port"`
 	RedirectIp    string `json:"redirect_ip"`
 	RedirectPort  int    `json:"redirect_port"`
+}
+
+type syslogComm struct {
+	LogType       json.Number `json:"log_type"`
+	Time          json.Number `json:"time"`
+	PId           json.Number `json:"p_id"`
+	PDir          string      `json:"p_dir"`
+	DomainName    string      `json:"domain_name"`
+	Hash          string      `json:"hash"`
+	Uid           string      `json:"uid"`
+	SourceIp      string      `json:"source_ip"`
+	SourcePort    json.Number `json:"source_port"`
+	ResIp         string      `json:"res_ip"`
+	RsPort        json.Number `json:"rs_port"` // 注意字段
+	ResPortStatus json.Number `json:"res_port_status"`
+	PParam        string      `json:"p_param"`
+	PpHash        string      `json:"pp_hash"`
+	PpId          json.Number `json:"pp_id"`
+	PpDir         string      `json:"pp_dir"`
+	PpParam       string      `json:"pp_param"`
+	Proto         json.Number `json:"proto"`
+	Ip            string      `json:"ip"`
+	Username      string      `json:"username"`
+	Type          string      `json:"type"`
+	Status        json.Number `json:"status"`
 }

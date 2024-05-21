@@ -70,3 +70,30 @@ func Json2SliceString(jsonStr string) []string {
 	}
 	return strList
 }
+
+// JsonNumber2Int64 json.Number to int64
+func JsonNumber2Int64(number json.Number) int64 {
+	if val, err := number.Int64(); err == nil {
+		return val
+	} else {
+		return 0
+	}
+}
+
+// JsonNumber2Int json.Number to int
+func JsonNumber2Int(number json.Number) int {
+	if val, err := number.Int64(); err == nil {
+		return int(val)
+	} else {
+		return 0
+	}
+}
+
+// JsonNumber2Float64 json.Number to float64
+func JsonNumber2Float64(number json.Number) float64 {
+	if val, err := number.Float64(); err == nil {
+		return val
+	} else {
+		return 0
+	}
+}
