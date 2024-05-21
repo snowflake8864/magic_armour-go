@@ -39,7 +39,7 @@ type PlugCalc struct {
 }
 
 func (crd *PlugCalc) keySuccess(orgId int64, agentId string, attackIp string) string {
-	return crd.cachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + attackIp
+	return md5_encrypt.MD5(crd.cachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + attackIp)
 }
 
 // 是否存在成功数据
@@ -69,7 +69,6 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 	if config.Switch == enums.SwitchOff {
 		return nil
 	}
-
 	//本次攻击不满足条件
 	if sumWeight < config.Weight {
 		//从端口虚开告警计算
@@ -105,6 +104,9 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 	if err := crd.add(orgId, agentId, attackIp, enum_plug.SourcePortVirtual, config.Type, config.PlugTime); err != nil {
 		return err
 	}
+
+	//成功则缓存
+	crd.cacheSuccess(orgId, agentId, attackIp)
 
 	return nil
 }

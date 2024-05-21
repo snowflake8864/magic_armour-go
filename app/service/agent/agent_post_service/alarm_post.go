@@ -272,6 +272,9 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 	}
 	if len(list) > 0 {
 		for _, item := range list {
+			unique := crd.uniqueBYPort(item.AttackIp, item.TargetIp, item.TargetPort, item.RedirectIp, item.RedirectPort, item.Weight)
+			item.AttackTotal = attackTotal[unique]
+
 			msg := &kafka_go.MessageStruct{
 				Type: kafka_go.TypeAlarmPutPort,
 				Data: json_helper.Encode(&item),
