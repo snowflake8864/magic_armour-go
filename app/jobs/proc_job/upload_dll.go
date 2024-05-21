@@ -9,7 +9,7 @@ import (
 
 func UploadDll(jsonStr string) {
 	dllModel := proc_models.DllModel{}
-	if err := json_helper.Json2Struct(jsonStr, &dllModel); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &dllModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -23,7 +23,7 @@ func UploadDll(jsonStr string) {
 
 func UploadDllRunning(jsonStr string) {
 	dllRunningModel := proc_models.DllRunningModel{}
-	if err := json_helper.Json2Struct(jsonStr, &dllRunningModel); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &dllRunningModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return

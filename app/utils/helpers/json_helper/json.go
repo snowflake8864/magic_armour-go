@@ -23,20 +23,20 @@ func ToMap(jsonStr string) map[string]interface{} {
 	return data
 }
 
-// Json2Struct json还原Struct
-// 用法：err := Json2Struct([]byte(jsonStr), &person);println("Name: ", person.Name)
-func Json2Struct(jsonStr string, val interface{}) error {
+// ToStruct json还原Struct
+// 用法：err := ToStruct([]byte(jsonStr), &person);println("Name: ", person.Name)
+func ToStruct(jsonStr string, val interface{}) error {
 	return json.Unmarshal([]byte(jsonStr), &val)
 }
 
-// Json2Any json还原成默认传入数据类型
-// 用法：err := Json2Any([]byte(jsonStr), &person);
-func Json2Any(jsonStr string, val interface{}) error {
+// ToAny json还原成默认传入数据类型
+// 用法：err := ToAny([]byte(jsonStr), &person);
+func ToAny(jsonStr string, val interface{}) error {
 	return json.Unmarshal([]byte(jsonStr), &val)
 }
 
-// Json2SliceInt json还原[]int
-func Json2SliceInt(jsonStr string) []int {
+// ToSliceInt json还原[]int
+func ToSliceInt(jsonStr string) []int {
 	var numbers []int
 
 	// 进行反序列化操作
@@ -47,8 +47,8 @@ func Json2SliceInt(jsonStr string) []int {
 	return numbers
 }
 
-// Json2SliceInt64 json还原[]int
-func Json2SliceInt64(jsonStr string) []int64 {
+// ToSliceInt64 json还原[]int
+func ToSliceInt64(jsonStr string) []int64 {
 	var numbers []int64
 
 	// 进行反序列化操作
@@ -59,8 +59,8 @@ func Json2SliceInt64(jsonStr string) []int64 {
 	return numbers
 }
 
-// Json2SliceString json还原[]string
-func Json2SliceString(jsonStr string) []string {
+// ToSliceString json还原[]string
+func ToSliceString(jsonStr string) []string {
 	var strList []string
 
 	// 进行反序列化操作
@@ -71,8 +71,8 @@ func Json2SliceString(jsonStr string) []string {
 	return strList
 }
 
-// JsonNumber2Int64 json.Number to int64
-func JsonNumber2Int64(number json.Number) int64 {
+// Number2Int64 json.Number to int64
+func Number2Int64(number json.Number) int64 {
 	if val, err := number.Int64(); err == nil {
 		return val
 	} else {
@@ -80,8 +80,8 @@ func JsonNumber2Int64(number json.Number) int64 {
 	}
 }
 
-// JsonNumber2Int json.Number to int
-func JsonNumber2Int(number json.Number) int {
+// Number2Int json.Number to int
+func Number2Int(number json.Number) int {
 	if val, err := number.Int64(); err == nil {
 		return int(val)
 	} else {
@@ -89,8 +89,8 @@ func JsonNumber2Int(number json.Number) int {
 	}
 }
 
-// JsonNumber2Float64 json.Number to float64
-func JsonNumber2Float64(number json.Number) float64 {
+// Number2Float64 json.Number to float64
+func Number2Float64(number json.Number) float64 {
 	if val, err := number.Float64(); err == nil {
 		return val
 	} else {

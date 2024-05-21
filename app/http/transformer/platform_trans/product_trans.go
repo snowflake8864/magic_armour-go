@@ -20,7 +20,7 @@ func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]int
 	data["grant_type"] = model.GrantType
 	data["grant_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.GrantType, enum_product.EnumIntMap)
 	productGrantConfig := enum_product.ProductGrantConfig{}
-	_ = json_helper.Json2Struct(model.GrantModule, &productGrantConfig)
+	_ = json_helper.ToStruct(model.GrantModule, &productGrantConfig)
 	data["grant_module"] = productGrantConfig
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["price"] = model.Price

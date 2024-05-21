@@ -23,14 +23,14 @@ type SyslogPost struct {
 // ToQuery 格式化参数后推送给队列
 func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 	var params []syslogComm
-	if err := json_helper.Json2Any(inputJson, &params); err != nil {
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err
 	}
 	now := date_helper.CurDatetime()
 	fmt.Println("params========================================")
 	fmt.Println(json_helper.Encode(params))
 	for _, item := range params {
-		logType := json_helper.JsonNumber2Int64(item.LogType)
+		logType := json_helper.Number2Int64(item.LogType)
 		//对应的模块
 		switch logType {
 		case 1:
@@ -68,10 +68,10 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 	model := syslog_models.SyslogDnsModel{
 		OrgId:      orgId,
 		AgentId:    agentId,
-		AgentAt:    crd.getAgentAt(json_helper.JsonNumber2Int64(param.Time), now),
+		AgentAt:    crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
 		CreatedAt:  now,
 		ProcHash:   param.Hash,
-		ProcId:     json_helper.JsonNumber2Int(param.PId),
+		ProcId:     json_helper.Number2Int(param.PId),
 		ProcDir:    param.PDir,
 		DomainName: param.DomainName,
 		TargetIp:   param.ResIp,
@@ -92,17 +92,17 @@ func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string,
 	model := syslog_models.SyslogInnerModel{
 		OrgId:            orgId,
 		AgentId:          agentId,
-		AgentAt:          crd.getAgentAt(json_helper.JsonNumber2Int64(param.Time), now),
+		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
 		CreatedAt:        now,
 		ProcHash:         param.Hash,
-		ProcId:           json_helper.JsonNumber2Int(param.PId),
+		ProcId:           json_helper.Number2Int(param.PId),
 		ProcDir:          param.PDir,
 		TargetIp:         param.ResIp,
-		TargetPort:       json_helper.JsonNumber2Int(param.RsPort),
-		TargetPortStatus: json_helper.JsonNumber2Int(param.ResPortStatus),
+		TargetPort:       json_helper.Number2Int(param.RsPort),
+		TargetPortStatus: json_helper.Number2Int(param.ResPortStatus),
 		SourceIp:         param.SourceIp,
-		SourcePort:       json_helper.JsonNumber2Int(param.SourcePort),
-		Proto:            json_helper.JsonNumber2Int(param.Proto),
+		SourcePort:       json_helper.Number2Int(param.SourcePort),
+		Proto:            json_helper.Number2Int(param.Proto),
 	}
 	fmt.Println("sendInner ============================")
 	fmt.Println(json_helper.Encode(&model))
@@ -120,17 +120,17 @@ func (crd *SyslogPost) sendOuter(param *syslogComm, orgId int64, agentId string,
 	model := syslog_models.SyslogOuterModel{
 		OrgId:            orgId,
 		AgentId:          agentId,
-		AgentAt:          crd.getAgentAt(json_helper.JsonNumber2Int64(param.Time), now),
+		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
 		CreatedAt:        now,
 		ProcHash:         param.Hash,
-		ProcId:           json_helper.JsonNumber2Int(param.PId),
+		ProcId:           json_helper.Number2Int(param.PId),
 		ProcDir:          param.PDir,
 		TargetIp:         param.ResIp,
-		TargetPort:       json_helper.JsonNumber2Int(param.RsPort),
-		TargetPortStatus: json_helper.JsonNumber2Int(param.ResPortStatus),
+		TargetPort:       json_helper.Number2Int(param.RsPort),
+		TargetPortStatus: json_helper.Number2Int(param.ResPortStatus),
 		SourceIp:         param.SourceIp,
-		SourcePort:       json_helper.JsonNumber2Int(param.SourcePort),
-		Proto:            json_helper.JsonNumber2Int(param.Proto),
+		SourcePort:       json_helper.Number2Int(param.SourcePort),
+		Proto:            json_helper.Number2Int(param.Proto),
 	}
 	fmt.Println("sendOuter ============================")
 	fmt.Println(json_helper.Encode(&model))
@@ -148,14 +148,14 @@ func (crd *SyslogPost) sendProcess(param *syslogComm, orgId int64, agentId strin
 	model := syslog_models.SyslogProcessModel{
 		OrgId:       orgId,
 		AgentId:     agentId,
-		AgentAt:     crd.getAgentAt(json_helper.JsonNumber2Int64(param.Time), now),
+		AgentAt:     crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
 		CreatedAt:   now,
 		ProcHash:    param.Hash,
-		ProcId:      json_helper.JsonNumber2Int(param.PId),
+		ProcId:      json_helper.Number2Int(param.PId),
 		ProcDir:     param.PDir,
 		ProcParam:   param.PParam,
 		ParentHash:  param.PpHash,
-		ParentId:    json_helper.JsonNumber2Int(param.PpId),
+		ParentId:    json_helper.Number2Int(param.PpId),
 		ParentDir:   param.PpDir,
 		ParentParam: param.PpParam,
 	}
@@ -175,12 +175,12 @@ func (crd *SyslogPost) sendLogin(param *syslogComm, orgId int64, agentId string,
 	model := syslog_models.SyslogLoginModel{
 		OrgId:     orgId,
 		AgentId:   agentId,
-		AgentAt:   crd.getAgentAt(json_helper.JsonNumber2Int64(param.Time), now),
+		AgentAt:   crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
 		CreatedAt: now,
 		SourceIp:  param.Ip,
 		Username:  param.Username,
 		Type:      param.Type,
-		Status:    json_helper.JsonNumber2Int(param.Status),
+		Status:    json_helper.Number2Int(param.Status),
 	}
 	fmt.Println("sendLogin ============================")
 	fmt.Println(json_helper.Encode(&model))

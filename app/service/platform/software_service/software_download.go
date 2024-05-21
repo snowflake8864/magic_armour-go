@@ -57,7 +57,7 @@ func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConf
 	}
 
 	//转成登录结构体
-	err = json_helper.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.ToStruct(jsonStr, &loginInfo)
 	if err != nil {
 		return AgentConfig{}, errors.New("userid json fail")
 	}

@@ -218,7 +218,7 @@ func (crd *UserAuth) DecryptByLogin(token string, isDelay bool) (loginInfo UserC
 	if string_helper.IsEmpty(jsonStr) {
 		return UserCacheLogin{}, errors.New("token expired")
 	}
-	err = json_helper.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.ToStruct(jsonStr, &loginInfo)
 	if err != nil {
 		return UserCacheLogin{}, errors.New("token json fail")
 	}

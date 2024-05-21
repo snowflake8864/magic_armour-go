@@ -26,7 +26,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["grant_type"] = model.GrantType
 	data["grant_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.GrantType, enum_product.EnumIntMap)
 	productGrantConfig := enum_product.ProductGrantConfig{}
-	_ = json_helper.Json2Struct(model.GrantModule, &productGrantConfig)
+	_ = json_helper.ToStruct(model.GrantModule, &productGrantConfig)
 	data["grant_module"] = productGrantConfig
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["sale_price"] = model.SalePrice

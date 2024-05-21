@@ -86,7 +86,7 @@ func (crd *ProcPost) makeRunningId(orgId int64, agentId, hash string, procId int
 // ToQuery 格式化参数后推送给队列
 func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inputJson string) error {
 	var params []procData
-	if err := json_helper.Json2Any(inputJson, &params); err != nil {
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err
 	}
 	now := date_helper.CurDatetime()

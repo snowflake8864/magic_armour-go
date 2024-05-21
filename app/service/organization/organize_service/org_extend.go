@@ -54,7 +54,7 @@ func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.OrgE
 
 // FormatPlugPortConfig 格式化：封堵-端口虚开配置
 func (crd *OrgExtend) FormatPlugPortConfig(configJson string) (data enum_plug.PlugPortConfig) {
-	err := json_helper.Json2Struct(configJson, &data)
+	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
 	}
@@ -63,7 +63,7 @@ func (crd *OrgExtend) FormatPlugPortConfig(configJson string) (data enum_plug.Pl
 
 // FormatLoginSolveConfig 格式化：封堵-口令破解配置
 func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login_solve.LoginSolveConfig) {
-	err := json_helper.Json2Struct(configJson, &data)
+	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
 	}
@@ -72,7 +72,7 @@ func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login
 
 // FormatPlugLoginConfig 格式化：封堵-口令破解配置
 func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.PlugLoginConfig) {
-	err := json_helper.Json2Struct(configJson, &data)
+	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
 	}
@@ -81,7 +81,7 @@ func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.P
 
 // FormatAlarmNoticeConfig 格式化：告警通知配置
 func (crd *OrgExtend) FormatAlarmNoticeConfig(configJson string) (data enum_safety_report.AlarmNoticeConfig) {
-	err := json_helper.Json2Struct(configJson, &data)
+	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
 	}
@@ -90,7 +90,7 @@ func (crd *OrgExtend) FormatAlarmNoticeConfig(configJson string) (data enum_safe
 
 // FormatHardwareNoticeConfig 格式化： 硬件资源通知配置
 func (crd *OrgExtend) FormatHardwareNoticeConfig(configJson string) (data enum_safety_report.HardwareNoticeConfig) {
-	err := json_helper.Json2Struct(configJson, &data)
+	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
 	}

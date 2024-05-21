@@ -181,7 +181,7 @@ func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (errCode int, err error) {
 	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
 	var params []threaten_models.ThreatenPushModel
-	err = json_helper.Json2Any(list, &params)
+	err = json_helper.ToAny(list, &params)
 	if err != nil {
 		return -1, errors.New("参数格式错误")
 	}

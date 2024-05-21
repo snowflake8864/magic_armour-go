@@ -27,7 +27,7 @@ type AlarmPost struct {
 // ToQueryBYComm 格式化参数后推送给队列
 func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) error {
 	var params []alarmComm
-	if err := json_helper.Json2Any(inputJson, &params); err != nil {
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err
 	}
 	now := date_helper.CurDatetime()
@@ -248,7 +248,7 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 // ToQueryBYPort 格式化参数后推送给队列
 func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) error {
 	var params []alarmPort
-	if err := json_helper.Json2Any(inputJson, &params); err != nil {
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err
 	}
 	now := date_helper.CurDatetime()

@@ -215,7 +215,7 @@ func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo Admi
 	if string_helper.IsEmpty(jsonStr) {
 		return AdminCacheLogin{}, errors.New("token expired")
 	}
-	err = json_helper.Json2Struct(jsonStr, &loginInfo)
+	err = json_helper.ToStruct(jsonStr, &loginInfo)
 	if err != nil {
 		return AdminCacheLogin{}, errors.New("token json fail")
 	}

@@ -9,7 +9,7 @@ import (
 
 func UploadProcess(jsonStr string) {
 	model := alarm_models.AlarmProcessModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -23,7 +23,7 @@ func UploadProcess(jsonStr string) {
 
 func UploadDll(jsonStr string) {
 	model := alarm_models.AlarmDllModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -37,7 +37,7 @@ func UploadDll(jsonStr string) {
 
 func UploadTamper(jsonStr string) {
 	model := alarm_models.AlarmTamperModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -51,7 +51,7 @@ func UploadTamper(jsonStr string) {
 
 func UploadBlackmail(jsonStr string) {
 	model := alarm_models.AlarmBlackmailModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -65,7 +65,7 @@ func UploadBlackmail(jsonStr string) {
 
 func UploadUsb(jsonStr string) {
 	model := alarm_models.AlarmUsbModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -79,7 +79,7 @@ func UploadUsb(jsonStr string) {
 
 func UploadSelf(jsonStr string) {
 	model := alarm_models.AlarmSelfModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -93,7 +93,7 @@ func UploadSelf(jsonStr string) {
 
 func UploadPort(jsonStr string) {
 	model := alarm_models.AlarmPortModel{}
-	if err := json_helper.Json2Struct(jsonStr, &model); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return

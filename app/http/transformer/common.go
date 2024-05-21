@@ -80,7 +80,7 @@ func (t *Common) TransThreatenInfo(model *threaten_models.ThreatenCacheModel) ma
 	}
 
 	attrJson := attributeJson
-	err := json_helper.Json2Struct(model.CheckInfo, &attrJson)
+	err := json_helper.ToStruct(model.CheckInfo, &attrJson)
 	if err != nil {
 		result["type"] = 2
 		result["attr"] = strings.Split(model.CheckInfo, "\n")

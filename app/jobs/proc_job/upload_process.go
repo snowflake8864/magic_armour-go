@@ -9,7 +9,7 @@ import (
 
 func UploadProcess(jsonStr string) {
 	processModel := proc_models.ProcessModel{}
-	if err := json_helper.Json2Struct(jsonStr, &processModel); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &processModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return
@@ -23,7 +23,7 @@ func UploadProcess(jsonStr string) {
 
 func UploadProcessRunning(jsonStr string) {
 	processRunningModel := proc_models.ProcessRunningModel{}
-	if err := json_helper.Json2Struct(jsonStr, &processRunningModel); err != nil {
+	if err := json_helper.ToStruct(jsonStr, &processRunningModel); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
 		return

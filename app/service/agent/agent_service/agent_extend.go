@@ -39,7 +39,7 @@ func (crd *AgentExtend) AddDefault(orgId int64, agentId string) bool {
 func (crd *AgentExtend) GetPlugOfPort(orgId int64, agentId string) (config enum_plug.PlugPortConfig) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "plug_port_config")
 	if model != nil && !string_helper.IsEmpty(model.PlugPortConfig) {
-		_ = json_helper.Json2Struct(model.PlugPortConfig, &config)
+		_ = json_helper.ToStruct(model.PlugPortConfig, &config)
 	}
 
 	config.Format()

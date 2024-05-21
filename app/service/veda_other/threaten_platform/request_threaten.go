@@ -45,7 +45,7 @@ func (aa *requestThreaten) checkCode(bodyContext string, err error) error {
 		return errors.New("body_error: " + err.Error())
 	}
 	resp := responseCommon{}
-	err = json_helper.Json2Struct(bodyContext, &resp)
+	err = json_helper.ToStruct(bodyContext, &resp)
 	if err != nil {
 		return errors.New("json_error: " + err.Error())
 	}
@@ -96,7 +96,7 @@ func (aa *requestThreaten) GenerateToken() error {
 	}
 
 	data := ResponseToken{}
-	err = json_helper.Json2Struct(bodyContext, &data)
+	err = json_helper.ToStruct(bodyContext, &data)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error())
 	}
@@ -152,7 +152,7 @@ func (aa *requestThreaten) CheckHashes(list *[]CheckHashes) (error error, result
 		return err, result
 	}
 
-	err = json_helper.Json2Struct(bodyContext, &result)
+	err = json_helper.ToStruct(bodyContext, &result)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error()), result
 	}

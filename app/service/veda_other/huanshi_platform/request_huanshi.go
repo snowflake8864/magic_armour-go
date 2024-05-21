@@ -84,7 +84,7 @@ func (aa *RequestHuanshi) checkCode(bodyContext string, err error) error {
 		return errors.New("body_error: " + err.Error())
 	}
 	resp := responseCommon{}
-	err = json_helper.Json2Struct(bodyContext, &resp)
+	err = json_helper.ToStruct(bodyContext, &resp)
 	if err != nil {
 		return errors.New("json_error: " + err.Error())
 	}
@@ -137,7 +137,7 @@ func (aa *RequestHuanshi) GenerateToken() error {
 	}
 
 	data := ResponseToken{}
-	err = json_helper.Json2Struct(bodyContext, &data)
+	err = json_helper.ToStruct(bodyContext, &data)
 	if err != nil {
 		return errors.New("json_error2: " + err.Error())
 	}
@@ -492,7 +492,7 @@ func (aa *RequestHuanshi) GetAgent(orgId int64, agentId string) (err error, data
 		return errors.New("缓存数据不存在"), data
 	}
 
-	err = json_helper.Json2Struct(jsonStr, &data)
+	err = json_helper.ToStruct(jsonStr, &data)
 	if err != nil {
 		return errors.New("缓存数据错误"), data
 	}
