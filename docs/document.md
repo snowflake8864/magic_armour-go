@@ -309,7 +309,7 @@ func init() {
  
  ###    websocket模块  
  >   1.或许你觉得websocket不应该出现在主线模块，但是在go中，ws长连接的建立确实是通过http升级协议完成的, 因此这块内容我们仍然放在了主线的最后.  
- >   2.启动ws服务，位置：config\config.yaml，找到相关配置开关开启。  
+ >   2.启动ws服务，位置：plugConfig\plugConfig.yaml，找到相关配置开关开启。  
  >   3.控制器位置：app\http\controller\websocket\ws.go  
  >   4.事件监听、处理位置：app\service\websocket\ws.go,[查看详情](../app/service/websocket/ws.go)     
  >   5.关于隐式自动维护心跳抓包图,其中`Server_ping` 为服务器端向浏览器发送的`ping`格式数据包，`F12` 不可见，只有抓包可见。      

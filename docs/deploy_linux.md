@@ -28,7 +28,7 @@ yum remove docker \
 yum install -y yum-utils device-mapper-persistent-data lvm2
 
 #设置镜像源为阿里云
-yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+yum-plugConfig-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
 yum makecache fast
 
 #安装docker免费版本(社区版)
@@ -57,7 +57,7 @@ docker run --name  node_exporter  -d -p 172.19.130.185:9100:9100  -e TZ=Asia/Sha
 /opt/prometheus/prometheus.yml   #  #配置文件参考：https://wwa.lanzous.com/iCFFofevdgj
 #核心配置部分
 scrape_configs:
-  #The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  #The job name is added as a label `job=<job_name>` to any timeseries scraped from this plugConfig.
   - job_name: 'prometheus'
     static_configs:
       - targets: ['172.19.130.185:9090']

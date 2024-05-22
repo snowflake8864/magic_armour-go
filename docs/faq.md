@@ -4,8 +4,8 @@
 #####  2.为什么该项目 go.mod 中的模块名是 goskeleton ,但是下载下来的文件名却是 GinSkeleton ?
 >   本项目一开始我们命名为 ginskeleton , 包名也是这个，但是后来感觉 goskeleton 好听一点,因此改名（现在看是错了）,由于版本已经更新较多，同时不影响使用,此次失误请忽略即可.  
 
-#####  3.为什么编译后的文件提示 config.yml 文件不存在 ?  
->   项目的编译仅限于代码部分，不包括资源部分：config 目录、public 目录、storage 目录，因此编译后的文件使用时，需要带上这个三个目录，否则程序无法正常运行.    
+#####  3.为什么编译后的文件提示 plugConfig.yml 文件不存在 ?  
+>   项目的编译仅限于代码部分，不包括资源部分：plugConfig 目录、public 目录、storage 目录，因此编译后的文件使用时，需要带上这个三个目录，否则程序无法正常运行.    
 
 #####  <font color='red'>4.表单参数验证器代码部分的疑问</font>      
 >   示例代码位置：`app/http/validator/web/users/register.go`  ,如下代码段  
@@ -53,7 +53,7 @@ app/http/validator/common/register_validator/register_validator.go
 #####  6.每个model都要 create 一次，难道每个 model 都是一次数据库连接吗?    
 ```code   
 
-关系型数据库驱动库其实是根据 config.yml中的配置初始化了一次，因此每种数据库全局只有一个连接，以后每一次都是从同一个驱动指针地址，通过ping() 从底层的连接池获取一个连接。用完也是自动释放的.
+关系型数据库驱动库其实是根据 plugConfig.yml中的配置初始化了一次，因此每种数据库全局只有一个连接，以后每一次都是从同一个驱动指针地址，通过ping() 从底层的连接池获取一个连接。用完也是自动释放的.
 看起来每一个表要初始化一次，主要是为了解决任何一个表可以随意切换到别的数据库连接，解决数据库多源场景。
 每种数据库，在整个项目全局就一个数据库驱动初始化后的连接池：app/utils/sql_factory/client.go 
 

@@ -4,7 +4,7 @@
 
 
 ###  前言  
-> 1.`Casbin` 的初始化在 GinSkeleton 主线版本默认没有开启，请参照配置文件(config/config.yml)文件中 `casbin` 部分,自行决定是否开启，默认的配置项属于标准配置，基本不需要改动.    
+> 1.`Casbin` 的初始化在 GinSkeleton 主线版本默认没有开启，请参照配置文件(plugConfig/plugConfig.yml)文件中 `casbin` 部分,自行决定是否开启，默认的配置项属于标准配置，基本不需要改动.    
 > 2.配置文件开启 Casbin 模块后，默认会在连接的数据库创建一张表，具体表名参见配置文件说明.  
 
 ### 根据用户请求接口时头部附带的token解析用户id等信息  
@@ -82,7 +82,7 @@ func CheckCasbinAuth() gin.HandlerFunc {
 
 
 ###  Casbin 核心数据表  
-> 只要在配置文件（config/config.yml）开启Casbin相关的配置项,程序启动会默认创建一个表：tb_auth_casbin_rule ,开发者按照示例将数据写入该表即可.  
+> 只要在配置文件（plugConfig/plugConfig.yml）开启Casbin相关的配置项,程序启动会默认创建一个表：tb_auth_casbin_rule ,开发者按照示例将数据写入该表即可.  
 > 表数据的字段含义介绍请参见截图标注的文本.    
 
 ![tb_casbin_rules](https://www.ginskeleton.com/images/casbin_introduce.jpg)  

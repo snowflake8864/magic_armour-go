@@ -16,8 +16,8 @@
   # 以本项目为例,等待制作镜像的项目目录结构如下
   
     |-- conf  # conf 目录内的文件就是  ginskeleton 自带的目录结构
-    |   |-- config
-    |   |   |-- config.yml
+    |   |-- plugConfig
+    |   |   |-- plugConfig.yml
     |   |   `-- gorm_v2.yml
     |   |-- public
     |   |   |-- favicon.ico

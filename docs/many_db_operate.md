@@ -1,6 +1,6 @@
 ###    同时操作部署在不同服务器的多种数据库  
 > 1.本项目骨架在 [数据库操作单元测试](../test/gormv2_test.go) 已经提供了同时操作多服务器、多种数据库的示例代码,为了将此功能更清晰地展现出来，本篇将单独进行介绍.       
-> 2.面对复杂场景，需要多个客户端连接到部署在多个不同服务器的 `mysql`、`sqlserver`、`postgresql` 等数据库时, 由于配置文件（config/gorm_v2.yml）只提供了一份数据库连接，无法满足需求，这时您可以通过自定义参数直接连接任意数据库，获取一个数据库句柄，供业务使用.  
+> 2.面对复杂场景，需要多个客户端连接到部署在多个不同服务器的 `mysql`、`sqlserver`、`postgresql` 等数据库时, 由于配置文件（plugConfig/gorm_v2.yml）只提供了一份数据库连接，无法满足需求，这时您可以通过自定义参数直接连接任意数据库，获取一个数据库句柄，供业务使用.  
 
     
 ###  相关代码   
@@ -16,7 +16,7 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 		Status        int
 	}
 	// 设置动态参数连接任意多个数据库，以mysql为例进行单元测试
-	// 参数结构体 Write 和 Read 只有设置了具体指，才会生效，否则程序自动使用配置目录（config/gorm_v.yml）中的参数
+	// 参数结构体 Write 和 Read 只有设置了具体指，才会生效，否则程序自动使用配置目录（plugConfig/gorm_v.yml）中的参数
 	confPrams := gorm_v2.ConfigParams{
 		Write: struct {
 			Host     string

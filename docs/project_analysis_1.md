@@ -6,7 +6,7 @@
 >   2.待分析的接口地址：`http://127.0.0.1:20191/api/v1/home/news?newsType=portal&page=1&limit=50`
 
 ###  cpu数据采集步骤  
->   1.`config/config.yml` 文件中，AppDebug 设置为  true , 调试模式才能进行分析.    
+>   1.`plugConfig/plugConfig.yml` 文件中，AppDebug 设置为  true , 调试模式才能进行分析.    
 >   2.访问接口：`http://127.0.0.1:20191/`, 确保项目正常启动.  
 >   3.浏览器访问pprof接口：`http://127.0.0.1:20191/debug/pprof/`, 点击 `profile` 选项,程序会对本项目进程, 进行 cpu 使用情况底层数据采集, 该过程会持续 30 秒.     
 ![pprof地址](https://www.ginskeleton.com/images/pprof_menue.jpg)   

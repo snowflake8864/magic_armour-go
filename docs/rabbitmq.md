@@ -57,7 +57,7 @@
 > 3.六种场景模型我们封装了统一的使用规范。    
  
 ####  1.hello_world、work_queue、publish_subscribe 场景模型使用：      
-> 相关配置参见：config/config.yaml, rbbitmq  部分    
+> 相关配置参见：plugConfig/plugConfig.yaml, rbbitmq  部分    
 ##### 1.1 启动一个消费者，通过回调函数在阻塞模式进行消息处理   
 ```go  
 consumer, err := HelloWorld.CreateConsumer()

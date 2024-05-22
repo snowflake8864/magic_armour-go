@@ -73,24 +73,24 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 	}
 
 	//封堵配置
-	config := agent_service.CreateExtendFactory().GetPlugOfPort(orgId, agentId)
-	if config.Switch == enums.SwitchOff {
+	plugConfig := agent_service.CreateExtendFactory().GetPlugOfPort(orgId, agentId)
+	if plugConfig.Switch == enums.SwitchOff {
 		return nil
 	}
 	//本次攻击不满足条件
-	if sumWeight < config.Weight {
+	if sumWeight < plugConfig.Weight {
 		//从端口虚开告警计算
 		search := alarm_models.SearchConditions{
 			OrgId:        orgId,
 			AgentId:      agentId,
 			AttackIp:     attackIp,
 			HandleStatus: enum_alarm.HandleStatusNot,
-			CreateAtGte:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(config.CountTime)),
+			CreateAtGte:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
 		}
 		fact := alarm_models.CreateAlarmPortFactory()
 		calc := fact.CalcByConditions(search, fact.ColumnSumWeight())
 		//累计权重不满足条件
-		if calc.TotalNumber < config.Weight {
+		if calc.TotalNumber < plugConfig.Weight {
 			return nil
 		}
 	}
@@ -109,7 +109,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 	}
 
 	//入库
-	if err := crd.add(orgId, agentId, attackIp, enum_plug.SourcePortVirtual, config.Type, config.PlugTime); err != nil {
+	if err := crd.add(orgId, agentId, attackIp, enum_plug.SourcePortVirtual, plugConfig.Type, plugConfig.PlugTime); err != nil {
 		return err
 	}
 

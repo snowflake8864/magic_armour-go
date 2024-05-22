@@ -36,16 +36,16 @@ variable.GormDbPostgreSql  <====完全等于==>      gorm.Open(postgres.Open(dsn
 
 
 ### 4.配置文件全局变量 
->  1.为了更方便地操作配置文件 `config/config.yml` 、 `config/gorm_v2.yml` 我们同样在项目启动时封装了全局变量.  
->  2.`variable.ConfigYml` ,该变量相当于配置文件 `config/config.yml` 文件打开后的指针.   
->  3.`variable.ConfigGormv2Yml` ,该变量相当于配置文件 `config/gorm_v2.yml` 文件打开后的指针.  
+>  1.为了更方便地操作配置文件 `plugConfig/plugConfig.yml` 、 `plugConfig/gorm_v2.yml` 我们同样在项目启动时封装了全局变量.  
+>  2.`variable.ConfigYml` ,该变量相当于配置文件 `plugConfig/plugConfig.yml` 文件打开后的指针.   
+>  3.`variable.ConfigGormv2Yml` ,该变量相当于配置文件 `plugConfig/gorm_v2.yml` 文件打开后的指针.  
 >  4.在任何地方您都可以使用以上全局变量直接获取对应配置文件的 键==>值.  
 ```code   
 
-// 获取 config/config.yml 文件中 Websocket.Start 对应的 Int 值
+// 获取 plugConfig/plugConfig.yml 文件中 Websocket.Start 对应的 Int 值
 variable.ConfigYml.GetInt("Websocket.Start")
 
-// 获取 config/gorm_v2.yml 文件中 Gormv2.Mysql.IsInitGlobalGormMysql 对应的 Int 值
+// 获取 plugConfig/gorm_v2.yml 文件中 Gormv2.Mysql.IsInitGlobalGormMysql 对应的 Int 值
 variable.ConfigGormv2Yml.GetInt("Gormv2.Mysql.IsInitGlobalGormMysql")
 
 ```
@@ -68,7 +68,7 @@ variable.ConfigGormv2Yml.GetInt("Gormv2.Mysql.IsInitGlobalGormMysql")
 ```
 
 ###  5.雪花算法(snowflake)生成分布式场景唯一ID 
->   1.相关配置 ` config>config.yml` 配置项 `SnowFlakeMachineId` , 如果本项目同时部署在多台机器，并且需要同时使用该算法，请为每一台机器设置不同的ID，区间范围: [0,1023]  
+>   1.相关配置 ` plugConfig>plugConfig.yml` 配置项 `SnowFlakeMachineId` , 如果本项目同时部署在多台机器，并且需要同时使用该算法，请为每一台机器设置不同的ID，区间范围: [0,1023]  
 >   2.随时随地，您可以非常方便的获取一个分布式场景的唯一ID  
 >   3.更多详情参见: [SnowFlake单元测试](../test/snowflake_test.go)  
 ```code  

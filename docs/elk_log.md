@@ -16,7 +16,7 @@
 >   1.nginx 的 access.log.  
 >   2.nginx 的 error.log.  
 >   3.本项目骨架 的 goskeleton.log ,该日志是项目运行日志,按照行业标准提供了 info 、 warn 、error 、fatal 等不同级别日志.    
->   提醒：本项目骨架版本 >= v1.3.00, 则 `storage/logs/goskeleton.log` 格式已经默认设置ok（json格式，记录的时间字段已经调整为 created_at）,否则，请您升级版本至最新版，或者自行修改配置文件 config/config.yml 中的日志部分，
+>   提醒：本项目骨架版本 >= v1.3.00, 则 `storage/logs/goskeleton.log` 格式已经默认设置ok（json格式，记录的时间字段已经调整为 created_at）,否则，请您升级版本至最新版，或者自行修改配置文件 plugConfig/plugConfig.yml 中的日志部分，
  修改日志格式为 json，此外还需要调整一个地方：
  参见最新版本代码 app/utils/zap_factory/zap_factory.go ，47行，重新定义日志记录的时间字段：encoderConfig.TimeKey = "created_at"
 
@@ -95,7 +95,7 @@ docker   cp  /usr/share/zoneinfo/Asia/Shanghai   fea8df018c15:/etc/localtime
 
 #进入容器修改内存, 如果您的服务器内存超过 8g, 请忽略
 docker  exec  -it  elasticsearch7  /bin/bash
-# 文件位置： /usr/share/elasticsearch/config/jvm.options,默认配置为1g,修改如下：
+# 文件位置： /usr/share/elasticsearch/plugConfig/jvm.options,默认配置为1g,修改如下：
  -Xms512m
  -Xmx512m
 
@@ -114,7 +114,7 @@ docker   cp  /usr/share/zoneinfo/Asia/Shanghai   ffe8df018624:/etc/localtime
 #进入容器修改内存, kibana设置
 docker  exec  -it  kibana7  /bin/bash
 
-vi  /usr/share/kibana/config/kibana.yml
+vi  /usr/share/kibana/plugConfig/kibana.yml
 #修改参数如下，没有的选项复制添加即可
 i18n.locale: "zh-CN"
 xpack.spaces.enabled: false
@@ -143,12 +143,12 @@ docker   cp  /usr/share/zoneinfo/Asia/Shanghai   ffe8df018624:/etc/localtime
 
 #进入容器修改一些内存参数, 如果您的服务器内存超过 8g, 请忽略
 docker  exec  -it  logstash7  /bin/bash
-#文件位置：/usr/share/logstash/config/jvm.options，默认配置为1g，修改如下：
+#文件位置：/usr/share/logstash/plugConfig/jvm.options，默认配置为1g，修改如下：
  -Xms512m
  -Xmx512m
 
 #修改x-pack设置项，该插件负责客户端登录服务器的认证
-#文件位置：/usr/share/logstash/config/logstash.yml ,修改如下
+#文件位置：/usr/share/logstash/plugConfig/logstash.yml ,修改如下
 http.host: "0.0.0.0"
 xpack.monitoring.enabled: true   #启动x-pack插件，172.21.0.13 为 elk 服务器的ip，请自行替换   
 xpack.monitoring.elasticsearch.hosts: [ "http://172.21.0.13:9200" ] 

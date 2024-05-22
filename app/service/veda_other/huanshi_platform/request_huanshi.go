@@ -363,6 +363,26 @@ func (aa *RequestHuanshi) SyncAlarmOutreach(param AlarmOutreach) error {
 	return nil
 }
 
+// SyncAlarmLogin 同步告警: 登录
+func (aa *RequestHuanshi) SyncAlarmLogin(param AlarmLogin) error {
+	param.Platform = aa.RequestPlatform
+	param.Type = AlarmTypeLogin
+	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+		param.ContactName = cache.ContactName
+		param.DeptName = cache.DeptName
+	}
+
+	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SyncAlarmPlug 同步告警: 封堵
 func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 	param.Platform = aa.RequestPlatform

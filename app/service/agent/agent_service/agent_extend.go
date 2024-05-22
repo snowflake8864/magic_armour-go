@@ -1,6 +1,7 @@
 package agent_service
 
 import (
+	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
@@ -33,6 +34,17 @@ func (crd *AgentExtend) AddDefault(orgId int64, agentId string) bool {
 		return false
 	}
 	return true
+}
+
+// GetLoginSolve 获取登录破解配置
+func (crd *AgentExtend) GetLoginSolve(orgId int64, agentId string) (config enum_login_solve.LoginSolveConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "login_solve_config")
+	if model != nil && !string_helper.IsEmpty(model.LoginSolveConfig) {
+		_ = json_helper.ToStruct(model.LoginSolveConfig, &config)
+	}
+
+	config.Format()
+	return config
 }
 
 // GetPlugOfPort 获取封堵配置： 端口虚开

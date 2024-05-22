@@ -36,8 +36,8 @@
 |       `-- main.go
 |-- command		// cli模式代码目录
 |   |-- 
-|-- config		// 项目、数据库参数配置
-|   |-- config.yml
+|-- plugConfig		// 项目、数据库参数配置
+|   |-- plugConfig.yml
 |   `-- gorm_v2.yml
 |-- database
 |-- docs		// 项目文档
