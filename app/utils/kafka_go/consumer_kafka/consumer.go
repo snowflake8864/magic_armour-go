@@ -187,6 +187,9 @@ func (k *ConsumerClient) ConsumeSyslog() {
 		case kafka_go.TypeSyslogPutProcess:
 			syslog_job.UploadProcess(data.Data)
 			break
+		case kafka_go.TypeSyslogPutLogin:
+			syslog_job.UploadLogin(data.Data)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}

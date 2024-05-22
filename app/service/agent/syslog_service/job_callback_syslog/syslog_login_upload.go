@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -54,6 +55,9 @@ func (crd *SyslogLoginUpload) Add(model *syslog_models.SyslogLoginModel) error {
 	//登录失败
 	if model.Status == enums.IsNot {
 		//计算口令破解告警
+		if err := job_callback_alarm.CreateLoginCalcFactory().Calc(model.OrgId, model.AgentId, model.SourceIp, model.CreatedAt); err != nil {
+			variable.ZapLog.Sugar().Debug(err.Error())
+		}
 	}
 	return nil
 }

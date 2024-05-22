@@ -62,3 +62,17 @@ func UploadProcess(jsonStr string) {
 		return
 	}
 }
+
+func UploadLogin(jsonStr string) {
+	model := syslog_models.SyslogLoginModel{}
+	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Info(jsonStr)
+		return
+	}
+
+	if err := job_callback_syslog.CreateLoginUploadFactory().Add(&model); err != nil {
+		variable.ZapLog.Info(err.Error())
+		return
+	}
+}
