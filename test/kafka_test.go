@@ -81,3 +81,8 @@ func TestReadAlarm(t *testing.T) {
 	consumer_kafka.CreateConsumerFactory().ConsumeAlarm()
 
 }
+
+func TestReadSyslog(t *testing.T) {
+	consumer_kafka.CreateConsumerFactory().ConsumeSyslog()
+
+}
