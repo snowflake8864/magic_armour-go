@@ -31,7 +31,7 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.SyslogProcessModel) err
 	model.ProcHash = strings.ToLower(model.ProcHash)
 	model.ProcDir = path_helper.ToStandard(model.ProcDir)
 	model.ProcParam = path_helper.ToStandard(model.ProcParam)
-	model.ProcHash = strings.ToLower(model.ProcHash)
+	model.ParentHash = strings.ToLower(model.ParentHash)
 	model.ParentDir = path_helper.ToStandard(model.ParentDir)
 	model.ParentParam = path_helper.ToStandard(model.ParentParam)
 

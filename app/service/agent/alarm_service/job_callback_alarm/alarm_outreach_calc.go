@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_outreach"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/syslog/syslog_models"
@@ -51,6 +52,13 @@ func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool
 
 // Calc 计算
 func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.SyslogDnsModel) error {
+	//终端开关
+	agentFact := agent_models.CreateAgentFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(dnsModel.OrgId, dnsModel.AgentId, agentFact.ColumnConfig(false))
+	if agentModel == nil || agentModel.PlugSwitch == enums.SwitchOff {
+		return nil
+	}
+
 	//在外联白名单中
 	if crd.inOutreachWhile(dnsModel.OrgId, dnsModel.TargetIp) {
 		return nil

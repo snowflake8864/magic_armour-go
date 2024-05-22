@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -61,6 +62,13 @@ func (crd *PlugCalc) cacheSuccess(orgId int64, agentId string, attackIp string) 
 // CalcByPort 计算: 来源端口虚开告警
 func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, sumWeight int, attackAt string) error {
 	if crd.existSuccess(orgId, agentId, attackIp) {
+		return nil
+	}
+
+	//终端开关
+	agentFact := agent_models.CreateAgentFactory()
+	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false))
+	if agentModel == nil || agentModel.OutreachAlarmSwitch == enums.SwitchOff {
 		return nil
 	}
 

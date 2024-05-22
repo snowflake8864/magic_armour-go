@@ -454,6 +454,23 @@ type LogLogin struct {
 	Status   int    `json:"status"`
 }
 
+// SyncLogDns 同步日志：DNS
+func (aa *RequestHuanshi) SyncLogDns(param LogDns) error {
+	param.DeviceIp = aa.Config.HuanshiCallIp
+	param.Platform = aa.RequestPlatform
+	param.LogType = LogTypeDns
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+	}
+	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SyncLogProcess 同步日志：进程
 func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 	param.DeviceIp = aa.Config.HuanshiCallIp
