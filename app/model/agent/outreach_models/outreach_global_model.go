@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
-	"time"
 )
 
 // 表: 外联全局名单
@@ -63,26 +62,6 @@ func (m *OutreachGlobalModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
-	result := m.Exec(m.TrimSql(sql))
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
-func (m *OutreachGlobalModel) InitData() bool {
-	curTime := time.Now().Format(variable.DateFormat)
-	sql := " INSERT INTO " + m.TableName() +
-		"(`id`, `ip`, `type`, `title`, `is_default`, `open_switch`, " +
-		"`create_id`, `create_name`, `created_at`, `updated_at`)"
-	sql += "VALUES "
-	sql += "('382d29ad257f55c55c75c9f3a906c99e', 'fe80::1/10', '1', '系统默认', 1, 1, 0, '', '" + curTime + "' , '" + curTime + "'),"
-	sql += "('0f39d743e689c10ca2fe6e8f57d3d2cd', '127.0.0.0/8', '1', '系统默认', 1, 1, 0, '', '" + curTime + "' , '" + curTime + "'),"
-	sql += "('738a5b3b5ed9abce50d289ee49772ddd', '192.168.0.0/16', '1', '系统默认', 1, 1, 0, '', '" + curTime + "' , '" + curTime + "'),"
-	sql += "('bb6febec1d21cbfd72a76d25a1ef6622', '172.16.0.0/12', '1', '系统默认', 1, 1, 0, '', '" + curTime + "' , '" + curTime + "'),"
-	sql += "('920069446bf4f6b26db744f88f1106bb', '10.0.0.0/8', '1', '系统默认', 1, 1, 0, '', '" + curTime + "' , '" + curTime + "');"
-
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

@@ -9,6 +9,7 @@ import (
 )
 
 type WorkingPut struct {
+	Service string `form:"service" json:"service" binding:"required"`
 }
 
 func (n WorkingPut) CheckParams(context *gin.Context) {

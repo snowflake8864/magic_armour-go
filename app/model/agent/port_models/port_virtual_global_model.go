@@ -15,6 +15,7 @@ func CreatePortVirtualGlobalFactory() *PortVirtualGlobalModel {
 //结构体
 
 type PortVirtualGlobalModel struct {
+	basePort
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`

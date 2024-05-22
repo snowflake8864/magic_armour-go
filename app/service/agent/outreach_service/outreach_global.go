@@ -17,7 +17,7 @@ type OutreachGlobalCurd struct {
 }
 
 // AddDefault 新增默认数据
-func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
+func (crd *OutreachGlobalCurd) AddDefault(orgId int64, createId int64, createName string) bool {
 	curTime := time.Now().Format(variable.DateFormat)
 
 	list := []outreach_models.OutreachGlobalModel{
@@ -25,12 +25,12 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 			Id:         "382d29ad257f55c55c75c9f3a906c99e",
 			OrgId:      orgId,
 			Ip:         "fe80::1/10",
-			Type:       1,
+			Type:       enum_outreach.TypeWhite,
 			Title:      "系统默认",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
-			CreateId:   0,
-			CreateName: "",
+			CreateId:   createId,
+			CreateName: createName,
 			CreatedAt:  curTime,
 			UpdatedAt:  curTime,
 		},
@@ -42,8 +42,8 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 			Title:      "系统默认",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
-			CreateId:   0,
-			CreateName: "",
+			CreateId:   createId,
+			CreateName: createName,
 			CreatedAt:  curTime,
 			UpdatedAt:  curTime,
 		},
@@ -55,8 +55,8 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 			Title:      "系统默认",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
-			CreateId:   0,
-			CreateName: "",
+			CreateId:   createId,
+			CreateName: createName,
 			CreatedAt:  curTime,
 			UpdatedAt:  curTime,
 		},
@@ -68,8 +68,8 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 			Title:      "系统默认",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
-			CreateId:   0,
-			CreateName: "",
+			CreateId:   createId,
+			CreateName: createName,
 			CreatedAt:  curTime,
 			UpdatedAt:  curTime,
 		},
@@ -81,8 +81,8 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64) bool {
 			Title:      "系统默认",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
-			CreateId:   0,
-			CreateName: "",
+			CreateId:   createId,
+			CreateName: createName,
 			CreatedAt:  curTime,
 			UpdatedAt:  curTime,
 		},

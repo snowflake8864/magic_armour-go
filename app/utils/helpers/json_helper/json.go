@@ -97,3 +97,8 @@ func Number2Float64(number json.Number) float64 {
 		return 0
 	}
 }
+
+// Number2String json.Number to string
+func Number2String(number json.Number) string {
+	return number.String()
+}

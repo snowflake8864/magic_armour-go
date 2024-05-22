@@ -8,6 +8,7 @@ const (
 	ProcTaskRefresh string = "refresh"
 )
 
+// 进程模块数据
 type procData struct {
 	ProcId       int       `json:"id"`
 	Dir          string    `json:"dir"`
@@ -28,6 +29,7 @@ type dllData struct {
 	Attribute string `json:"attribute"`
 }
 
+// 告警：除端口虚开告警外
 type alarmComm struct {
 	Type             int    `json:"type"`
 	AgentTime        int64  `json:"time"`
@@ -49,6 +51,7 @@ type alarmComm struct {
 	PeripheralRemark string `json:"peripheral_remark"`
 }
 
+// 告警：端口虚开
 type alarmPort struct {
 	Weight        int    `json:"weight"`
 	Time          int64  `json:"time"`
@@ -59,6 +62,7 @@ type alarmPort struct {
 	RedirectPort  int    `json:"redirect_port"`
 }
 
+// 通讯日志： 公共
 type syslogComm struct {
 	LogType       json.Number `json:"log_type"`
 	Time          json.Number `json:"time"`
@@ -82,4 +86,13 @@ type syslogComm struct {
 	Username      string      `json:"username"`
 	Type          string      `json:"type"`
 	Status        json.Number `json:"status"`
+}
+
+// 端口： 业务端口
+type portWorking struct {
+	Type    string      `json:"type"`
+	Ip      string      `json:"ip"`
+	Port    json.Number `json:"port"`
+	Process string      `json:"process"`
+	Pid     json.Number `json:"pid"` //linux没有
 }
