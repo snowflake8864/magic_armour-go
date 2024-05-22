@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 	"time"
 )
 
@@ -16,6 +17,7 @@ func CreateOutreachGlobalFactory() *OutreachGlobalModel {
 //结构体
 
 type OutreachGlobalModel struct {
+	baseOutreach
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
@@ -139,5 +141,67 @@ func (m *OutreachGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// GetListByConditions 获取符合条件的全部记录
+func (m *OutreachGlobalModel) GetListByConditions(condition SearchConditions) (items []*OutreachGlobalModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *OutreachGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OutreachGlobalModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *OutreachGlobalModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *OutreachGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OutreachGlobalModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items = m.GetItemsByConditions(condition, offset, limit, order)
+	if len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

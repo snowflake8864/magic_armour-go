@@ -3,7 +3,6 @@ package huanshi_platform
 import (
 	"errors"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
@@ -331,8 +330,26 @@ func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.OrgHsSwitch == enums.SwitchOff {
-		return nil
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+		param.ContactName = cache.ContactName
+		param.DeptName = cache.DeptName
+	}
+
+	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SyncAlarmOutreach 同步告警: 外联
+func (aa *RequestHuanshi) SyncAlarmOutreach(param AlarmOutreach) error {
+	param.Platform = aa.RequestPlatform
+	param.Type = AlarmTypeOutreach
+	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
 	} else {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
@@ -353,8 +370,6 @@ func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 	//variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.OrgHsSwitch == enums.SwitchOff {
-		return nil
 	} else {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
@@ -446,8 +461,6 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 	param.LogType = LogTypeProcess
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
-	} else if cache.OrgHsSwitch == enums.SwitchOff {
-		return nil
 	} else {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
@@ -460,7 +473,6 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 
 type CacheAgent struct {
 	OrgCode     string `json:"org_code"`
-	OrgHsSwitch int    `json:"org_hs_switch"`
 	AgentIp     string `json:"agent_ip"`
 	NetIp       string `json:"net_ip"`
 	DeptName    string `json:"dept_name"`

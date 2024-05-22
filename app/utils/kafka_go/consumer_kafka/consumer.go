@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/proc_job"
+	"goskeleton/app/jobs/syslog_job"
 	"goskeleton/app/utils/kafka_go"
 	"strings"
 )
@@ -159,6 +160,25 @@ func (k *ConsumerClient) ConsumeAlarm() {
 		case kafka_go.TypeAlarmPutPort:
 			alarm_job.UploadPort(data.Data)
 			break
+		default:
+			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
+		}
+	}
+}
+
+// ConsumeSyslog 消费主题： Syslog
+func (k *ConsumerClient) ConsumeSyslog() {
+	for {
+		data, err := k.readMessage(context.Background(), k.Syslog)
+		if err != nil {
+			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
+
+		switch data.Type {
+		case kafka_go.TypeSyslogPutProcess:
+			syslog_job.UploadProcess(data.Data)
+			break
+
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}

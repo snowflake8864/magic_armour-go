@@ -48,14 +48,14 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.SyslogProcessModel) err
 				AgentId:   model.AgentId,
 				CreatedAt: model.CreatedAt,
 			},
-			ProcHash:    "",
-			ProcId:      0,
-			ProcDir:     "",
-			ProcParam:   "",
-			ParentHash:  "",
-			ParentId:    0,
-			ParentDir:   "",
-			ParentParam: "",
+			ProcHash:    model.ProcHash,
+			ProcId:      model.ProcId,
+			ProcDir:     model.ProcDir,
+			ProcParam:   model.ProcParam,
+			ParentHash:  model.ParentHash,
+			ParentId:    model.ParentId,
+			ParentDir:   model.ParentDir,
+			ParentParam: model.ParentParam,
 		}
 		if err := hsCli.SyncLogProcess(hsData); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())
