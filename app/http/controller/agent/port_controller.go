@@ -27,7 +27,7 @@ func (u *PortController) PutWorking(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "service")
-	err := agent_post_service.CreatePortFactory().ToQuery(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	err := agent_post_service.CreatePortFactory().SaveWorking(loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
 		return

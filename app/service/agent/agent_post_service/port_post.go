@@ -8,18 +8,14 @@ import (
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
-	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
 )
 
 func CreatePortFactory() *PortPost {
-	return &PortPost{
-		queryClient: producer_kafka.CreateProducerFactory(),
-	}
+	return &PortPost{}
 }
 
 type PortPost struct {
-	queryClient *producer_kafka.ProducerClient
 }
 
 // MakeId 生成iD
@@ -34,8 +30,8 @@ func (crd *PortPost) MakeId(model port_models.PortWorkingModel) string {
 	return md5_encrypt.MD5(str)
 }
 
-// ToQuery 格式化参数后推送给队列
-func (crd *PortPost) ToQuery(orgId int64, agentId, inputJson string) error {
+// SaveWorking 保存业务端口
+func (crd *PortPost) SaveWorking(orgId int64, agentId, inputJson string) error {
 	var params []portWorking
 	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err

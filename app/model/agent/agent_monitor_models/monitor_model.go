@@ -32,6 +32,20 @@ type MonitorModel struct {
 	CreatedAt  string `json:"created_at"`
 }
 
+type MonitorTop struct {
+	Id       int     `json:"id"`
+	Dir      string  `json:"dir"`
+	Hash     string  `json:"hash"`
+	CpuUsage float64 `json:"cpu_usage"`
+	MemSize  string  `json:"mem_size"`
+	User     string  `json:"user"`
+}
+type MonitorSelf struct {
+	CpuUsage float64 `json:"cpu_usage"`
+	MemSize  string  `json:"mem_size"`
+	User     string  `json:"user"`
+}
+
 // 表名
 
 func (m *MonitorModel) TableName() string {
@@ -101,6 +115,19 @@ func (m *MonitorModel) DeleteByOrg(orgId int64) bool {
 func (m *MonitorModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Where("agent_id=?", agentId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// DeleteByCreateAtLte 通过(创建时间小于节点)删除
+func (m *MonitorModel) DeleteByCreateAtLte(at string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("created_at <= ?", at).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

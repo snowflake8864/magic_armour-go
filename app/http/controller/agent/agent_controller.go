@@ -2,12 +2,14 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -134,6 +136,13 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 
 // MonitorHardware 监控硬件资源
 func (u *AgentController) MonitorHardware(ctx *gin.Context) {
+	loginInfo := u.GetLogin(ctx)
 
-	response.SuccessReturnData(ctx, "监控硬件资源")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "service")
+	err := agent_post_service.CreatePortFactory().SaveWorking(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

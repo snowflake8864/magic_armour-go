@@ -9,6 +9,7 @@ import (
 )
 
 type MonitorHardware struct {
+	Info string `form:"info" json:"info" binding:"required"`
 }
 
 func (n MonitorHardware) CheckParams(context *gin.Context) {

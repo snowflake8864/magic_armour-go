@@ -96,3 +96,27 @@ type portWorking struct {
 	Process string      `json:"process"`
 	Pid     json.Number `json:"pid"` //linux没有
 }
+
+// 终端监控
+type agentMonitor struct {
+	HdSize  string `json:"hd_size"`
+	HdUsage string `json:"hd_usage"`
+
+	CpuNumber string            `json:"cpu_number"`
+	CpuUsage  json.Number       `json:"cpu_usage"`
+	CpuTops   []agentMonitorTop `json:"cpu_tops"`
+
+	MemSize  string            `json:"mem_size"`
+	MemUsage string            `json:"mem_usage"`
+	MemTops  []agentMonitorTop `json:"mem_tops"`
+	Self     []agentMonitorTop `json:"self"`
+}
+
+type agentMonitorTop struct {
+	Id       json.Number `json:"id"`
+	Dir      string      `json:"dir"`
+	Hash     string      `json:"hash"`
+	CpuUsage json.Number `json:"cpu_usage"`
+	MemSize  string      `json:"mem_size"`
+	User     string      `json:"user"`
+}
