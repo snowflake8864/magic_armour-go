@@ -178,6 +178,12 @@ func (k *ConsumerClient) ConsumeSyslog() {
 		case kafka_go.TypeSyslogPutDns:
 			syslog_job.UploadDns(data.Data)
 			break
+		case kafka_go.TypeSyslogPutOuter:
+			syslog_job.UploadOuter(data.Data)
+			break
+		case kafka_go.TypeSyslogPutInner:
+			syslog_job.UploadInner(data.Data)
+			break
 		case kafka_go.TypeSyslogPutProcess:
 			syslog_job.UploadProcess(data.Data)
 			break

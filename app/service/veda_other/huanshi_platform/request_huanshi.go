@@ -417,22 +417,8 @@ type LogDns struct {
 	TargetIp   string `json:"target_ip"`
 }
 
-// LogInner 日志数据结构： 对内通讯日志
-type LogInner struct {
-	LogBase
-	ProcHash         string `json:"proc_hash"`
-	ProcId           int    `json:"proc_id"`
-	ProcDir          string `json:"proc_dir"`
-	TargetIp         string `json:"target_ip"`
-	TargetPort       int    `json:"target_port"`
-	TargetPortStatus int    `json:"target_port_status"`
-	SourceIp         string `json:"source_ip"`
-	SourcePort       int    `json:"source_port"`
-	Proto            int    `json:"proto"`
-}
-
-// LogOuter 日志数据结构： 对外通讯日志
-type LogOuter struct {
+// LogNetwork 日志数据结构： 通讯日志
+type LogNetwork struct {
 	LogBase
 	ProcHash         string `json:"proc_hash"`
 	ProcId           int    `json:"proc_id"`
@@ -471,11 +457,44 @@ func (aa *RequestHuanshi) SyncLogDns(param LogDns) error {
 	return nil
 }
 
+// SyncLogNetwork 同步日志：通讯
+func (aa *RequestHuanshi) SyncLogNetwork(param LogNetwork) error {
+	param.DeviceIp = aa.Config.HuanshiCallIp
+	param.Platform = aa.RequestPlatform
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+	}
+	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
 // SyncLogProcess 同步日志：进程
 func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 	param.DeviceIp = aa.Config.HuanshiCallIp
 	param.Platform = aa.RequestPlatform
 	param.LogType = LogTypeProcess
+	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
+		return err
+	} else {
+		param.DeviceMark = cache.OrgCode
+		param.AgentIp = cache.AgentIp
+	}
+	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+		return err
+	}
+	return nil
+}
+
+// SyncLogLogin 同步日志：登录
+func (aa *RequestHuanshi) SyncLogLogin(param LogLogin) error {
+	param.DeviceIp = aa.Config.HuanshiCallIp
+	param.Platform = aa.RequestPlatform
+	param.LogType = LogTypeLogin
 	if err, cache := aa.GetAgent(param.OrgId, param.AgentId); err != nil {
 		return err
 	} else {
