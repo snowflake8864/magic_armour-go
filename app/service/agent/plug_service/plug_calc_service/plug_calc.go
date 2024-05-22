@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/alarm_service/plug_callback_alarm"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -153,54 +154,9 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 		return errors.New("保存动态封堵失败")
 	}
 
-	//告警
-	alarmType := enum_alarm.TypePlugDynamicFromPort
-	if source == enum_plug.SourcePortVirtual {
-		alarmType = enum_alarm.TypePlugDynamicFromLogin
-	}
-	modelAlarm := alarm_models.AlarmPlugModel{
-		Id:           variable.SnowFlake.GetId(),
-		OrgId:        orgId,
-		AgentId:      agentId,
-		Type:         alarmType,
-		Level:        enum_alarm.LevelSerious,
-		AgentAt:      now,
-		HandleStatus: enum_alarm.HandleStatusNot,
-		CreatedAt:    now,
-		Ip:           modelPlug.Ip,
-		PlugType:     modelPlug.PlugType,
-		Direction:    modelPlug.Direction,
-		Duration:     modelPlug.Duration,
-		StartTime:    modelPlug.StartAt,
-		EndTime:      modelPlug.EndAt,
-	}
-	if !crd.alarmModel.InsertItem(&modelAlarm) {
-		return errors.New("保存告警失败")
-	}
-
-	//推送到幻势
-	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchPlug); hsCli != nil {
-		hsData := huanshi_platform.AlarmPlug{
-			AlarmBase: huanshi_platform.AlarmBase{
-				Type:       huanshi_platform.AlarmTypePlug,
-				OrgId:      modelAlarm.OrgId,
-				AgentId:    modelAlarm.AgentId,
-				Level:      modelAlarm.Level,
-				NoticeType: modelAlarm.Type,
-				NoticeTime: modelAlarm.CreatedAt,
-			},
-
-			Pip:        modelAlarm.Ip,
-			PStartTime: modelAlarm.StartTime,
-			PEndTime:   modelAlarm.EndTime,
-			PMinute:    modelAlarm.Duration,
-			PType:      modelAlarm.PlugType,
-			PTypeTxt:   enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", modelAlarm.PlugType, enum_plug.EnumMap),
-		}
-
-		if err := hsCli.SyncAlarmPlug(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
-		}
+	//同步生成告警
+	if err := plug_callback_alarm.CreatePlugSaveFactory().Add(&modelPlug); err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
 	}
 
 	return nil
