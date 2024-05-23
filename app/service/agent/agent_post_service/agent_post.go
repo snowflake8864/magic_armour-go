@@ -55,7 +55,7 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 	}
 	if len(param.MemTops) > 0 {
 		for _, item := range param.MemTops {
-			cpuTops = append(cpuTops, crd.transTop(item))
+			memTops = append(memTops, crd.transTop(item))
 		}
 	}
 	selfStat := agent_monitor_models.MonitorSelf{
