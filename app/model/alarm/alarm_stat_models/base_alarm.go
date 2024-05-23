@@ -10,8 +10,8 @@ type SearchConditions struct {
 	AgentId     string
 	StatMonth   int
 	StatDay     string
-	CreateAtGte string
-	CreateAtLte string
+	GteCreateAt string
+	LteCreateAt string
 }
 
 const (
@@ -46,11 +46,11 @@ func (crd *baseAlarm) conditions2Where(search SearchConditions) map[string]inter
 	if !string_helper.IsEmpty(search.StatDay) {
 		wheres["stat_day"] = search.StatDay
 	}
-	if !string_helper.IsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
+	if !string_helper.IsEmpty(search.GteCreateAt) {
+		wheres["created_at >="] = search.GteCreateAt
 	}
-	if !string_helper.IsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
+	if !string_helper.IsEmpty(search.LteCreateAt) {
+		wheres["created_at <="] = search.LteCreateAt
 	}
 	return wheres
 }

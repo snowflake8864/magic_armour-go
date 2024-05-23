@@ -8,8 +8,8 @@ type SearchConditionsForProcess struct {
 	Status       int
 	SearchStatus int
 	Dir          string
-	CreateAtGte  string
-	CreateAtLte  string
+	GteCreateAt  string
+	LteCreateAt  string
 }
 
 type baseProc struct {

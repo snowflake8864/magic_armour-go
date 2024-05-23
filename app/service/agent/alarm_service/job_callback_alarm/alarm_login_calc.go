@@ -73,7 +73,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		AgentId:     agentId,
 		SourceIp:    attackIp,
 		LoginStatus: &loginStatus,
-		CreateAtGte: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
+		GteCreateAt: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
 	}
 	fact := syslog_models.CreateSyslogLoginFactory()
 	calc := fact.CalcByConditions(search, fact.ColumnCountLogin())

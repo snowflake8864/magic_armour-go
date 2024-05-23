@@ -86,7 +86,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 			AgentId:      agentId,
 			AttackIp:     attackIp,
 			HandleStatus: enum_alarm.HandleStatusNot,
-			CreateAtGte:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
+			GteCreateAt:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
 		}
 		fact := alarm_models.CreateAlarmPortFactory()
 		calc := fact.CalcByConditions(search, fact.ColumnSumWeight())

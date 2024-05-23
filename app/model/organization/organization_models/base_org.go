@@ -21,8 +21,8 @@ type baseOrg struct {
 	AgentId     string
 	StatMonth   int
 	StatDay     string
-	CreateAtGte string
-	CreateAtLte string
+	GteCreateAt string
+	LteCreateAt string
 }
 
 // search2Where 查询条件转化

@@ -129,3 +129,17 @@ type usbData struct {
 	PeripheralIntro string `json:"peripheral_intro"`
 	PeripheralType  string `json:"peripheral_type"`
 }
+
+// 终端目录信息
+type agentDir struct {
+	Dir        string `json:"dir"`
+	Rw         string `json:"rw"`
+	Group      string `json:"group"`
+	User       string `json:"user"`
+	Size       string `json:"size"`
+	StartTime  string `json:"starttime"`
+	UpdateTime string `json:"updatetime"`
+	Hash       string `json:"hash"`
+	Type       int    `json:"type"`
+	//Pid int `json:"pid"` //策略id(不在使用)
+}

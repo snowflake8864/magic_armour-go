@@ -9,6 +9,7 @@ import (
 )
 
 type DirPut struct {
+	Dir string `form:"dir" json:"dir" binding:"required"`
 }
 
 func (n DirPut) CheckParams(context *gin.Context) {

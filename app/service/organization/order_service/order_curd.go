@@ -382,7 +382,7 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 		OrgId:       orgId,
 		OrderStatus: enum_order.OrderStatusCompleted,
 		IsExpire:    enums.IsNot,
-		ExpireAtGte: expireDate,
+		GteExpireAt: expireDate,
 	}
 	items := crd.masterModel.GetItemsByConditions(search, 0, 0, "")
 	if len(items) == 0 {

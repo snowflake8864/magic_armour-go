@@ -10,8 +10,8 @@ type SearchConditions struct {
 	Id          string
 	Ids         []string
 	Dir         string
-	CreateAtGte string
-	CreateAtLte string
+	GteCreateAt string
+	LteCreateAt string
 	Level       int
 	LevelList   []int
 }
@@ -20,8 +20,8 @@ type baseThreaten struct {
 	Id          string
 	Ids         []string
 	Dir         string
-	CreateAtGte string
-	CreateAtLte string
+	GteCreateAt string
+	LteCreateAt string
 	Level       int
 	LevelList   []int
 }
@@ -35,11 +35,11 @@ func (m *baseThreaten) conditions2Where(search SearchConditions) map[string]inte
 	if search.Ids != nil && len(search.Ids) > 0 {
 		wheres["id in"] = search.Ids
 	}
-	if !string_helper.IsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
+	if !string_helper.IsEmpty(search.GteCreateAt) {
+		wheres["created_at >="] = search.GteCreateAt
 	}
-	if !string_helper.IsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
+	if !string_helper.IsEmpty(search.LteCreateAt) {
+		wheres["created_at <="] = search.LteCreateAt
 	}
 	if search.Level > 0 && search.Level != enums.AllDefaultInt {
 		wheres["level"] = search.Level

@@ -8,8 +8,8 @@ import (
 type SearchConditions struct {
 	OrgId       int64
 	AgentId     string
-	CreateAtGte string
-	CreateAtLte string
+	GteCreateAt string
+	LteCreateAt string
 	SourceIp    string
 	LoginStatus *int
 }
@@ -39,11 +39,11 @@ func (m *baseSyslog) conditions2Where(search SearchConditions) map[string]interf
 	if search.LoginStatus != nil {
 		wheres["handle_status"] = *search.LoginStatus
 	}
-	if !string_helper.IsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
+	if !string_helper.IsEmpty(search.GteCreateAt) {
+		wheres["created_at >="] = search.GteCreateAt
 	}
-	if !string_helper.IsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
+	if !string_helper.IsEmpty(search.LteCreateAt) {
+		wheres["created_at <="] = search.LteCreateAt
 	}
 
 	return wheres

@@ -16,9 +16,9 @@ type SearchConditions struct {
 	GrantType   int
 	OrderStatus int
 	IsExpire    int
-	CreateAtGte string
-	CreateAtLte string
-	ExpireAtGte string
+	GteCreateAt string
+	LteCreateAt string
+	GteExpireAt string
 	StatusList  []int
 }
 
@@ -41,17 +41,17 @@ func (crd *baseOrder) conditions2Where(search SearchConditions) map[string]inter
 	if !string_helper.IsEmpty(search.UserPhone) {
 		wheres["user_phone"] = search.UserPhone
 	}
-	if !string_helper.IsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
+	if !string_helper.IsEmpty(search.GteCreateAt) {
+		wheres["created_at >="] = search.GteCreateAt
 	}
-	if !string_helper.IsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
+	if !string_helper.IsEmpty(search.LteCreateAt) {
+		wheres["created_at <="] = search.LteCreateAt
 	}
 	if !string_helper.IsEmpty(search.OraName) {
 		wheres["org_name like"] = "%" + search.OraName + "%"
 	}
-	if !string_helper.IsEmpty(search.ExpireAtGte) {
-		wheres["expire_at >="] = search.ExpireAtGte
+	if !string_helper.IsEmpty(search.GteExpireAt) {
+		wheres["expire_at >="] = search.GteExpireAt
 	}
 	if !string_helper.IsEmpty(search.ProductName) {
 		wheres["product_title like"] = "%" + search.ProductName + "%"

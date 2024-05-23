@@ -90,8 +90,8 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
-	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
-	searchConditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	searchConditions.GteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	searchConditions.LteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 	return searchConditions
 }
 
@@ -101,8 +101,8 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	conditions := u.getOrderSearchConditions(ctx)
 	conditions.IsExpire = enums.AllDefaultInt
 	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
-	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
-	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	conditions.GteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	conditions.LteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)

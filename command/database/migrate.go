@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/blackmail_models"
+	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/agent/port_models"
@@ -175,6 +176,7 @@ func initTableAndData() {
 		_ = agent_models.CreateAgentExtendFactory().CreateTable()
 		_ = blackmail_models.CreateBlackmailGroupFactory().CreateTable()
 		_ = blackmail_models.CreateBlackmailPolicyFactory().CreateTable()
+		_ = dir_models.CreateDirFactory().CreateTable()
 		_ = proc_models.CreateDllFactory().CreateTable()
 		_ = proc_models.CreateDllRunningFactory().CreateTable()
 		_ = agent_error_models.CreateErrorFactory().CreateTable()

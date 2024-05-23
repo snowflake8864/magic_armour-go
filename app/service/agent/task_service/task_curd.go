@@ -24,6 +24,11 @@ func (crd *TaskCurd) AddTasksForAgents(orgId int64, agentIds []string, types []i
 	}
 }
 
+// AddTaskForAgent 单个终端添加任务
+func (crd *TaskCurd) AddTaskForAgent(orgId int64, agentId string, types int, remark string) {
+	crd.AddTasksForAgent(orgId, agentId, []int{types}, remark)
+}
+
 // AddTasksForAgent 单个终端添加任务
 func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, remark string) {
 	//未完成的任务

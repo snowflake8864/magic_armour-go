@@ -252,6 +252,14 @@ func (r *RedisClient) SCard(key string) (int, error) {
 	return total, err
 }
 
+func (r *RedisClient) SisMember(key string, value interface{}) (bool, error) {
+	exist, err := r.Bool(r.client.Do("SISMEMBER", key, value))
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}
+
 // ReleaseOneRedisClient 释放连接到连接池
 func (r *RedisClient) ReleaseOneRedisClient() {
 	_ = r.client.Close()

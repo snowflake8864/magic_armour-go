@@ -89,3 +89,8 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 
 	return nil
 }
+
+// saveDir 保存目录结构
+func (crd *AgentPost) saveDir(orgId int64, agentId, inputJson string) error {
+	return nil
+}

@@ -35,11 +35,11 @@ type TaskCache struct {
 }
 
 func (crd *TaskCache) keyByEmptyTask(orgId int64, agentId string) string {
-	return crd.emptyNumberPrefix + int_helper.Int64ToStr(orgId) + agentId
+	return crd.emptyNumberPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
 func (crd *TaskCache) keyByUnfinished(orgId int64, agentId string) string {
-	return crd.unfinishedPrefix + int_helper.Int64ToStr(orgId) + agentId
+	return crd.unfinishedPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
 func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
@@ -87,6 +87,15 @@ func (crd *TaskCache) RemUnfinished(orgId int64, agentId string, tasks []int) bo
 		return true
 	}
 	return false
+}
+
+// ExistUnfinished 终端未完成任务:存在某个任务
+func (crd *TaskCache) ExistUnfinished(orgId int64, agentId string, task int) bool {
+	exist, err := crd.redisClient.SisMember(crd.keyByUnfinished(orgId, agentId), task)
+	if err != nil {
+		return false
+	}
+	return exist
 }
 
 // SetHeartbeat 设置心跳,并判断是否需要追加修改配置的任务

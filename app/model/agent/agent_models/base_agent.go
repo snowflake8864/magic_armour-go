@@ -31,8 +31,8 @@ type SearchConditions struct {
 	Alias        string
 	ContactName  string
 	DeptIds      []int64
-	CreateAtGte  string
-	CreateAtLte  string
+	GteCreateAt  string
+	LteCreateAt  string
 }
 
 type baseAgent struct {
@@ -77,11 +77,11 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 	if search.DeptIds != nil && len(search.DeptIds) > 0 {
 		wheres["dept_id in"] = search.DeptIds
 	}
-	if !string_helper.IsEmpty(search.CreateAtGte) {
-		wheres["created_at >="] = search.CreateAtGte
+	if !string_helper.IsEmpty(search.GteCreateAt) {
+		wheres["created_at >="] = search.GteCreateAt
 	}
-	if !string_helper.IsEmpty(search.CreateAtLte) {
-		wheres["created_at <="] = search.CreateAtLte
+	if !string_helper.IsEmpty(search.LteCreateAt) {
+		wheres["created_at <="] = search.LteCreateAt
 	}
 	return wheres
 }
