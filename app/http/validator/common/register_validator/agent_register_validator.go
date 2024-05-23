@@ -46,7 +46,7 @@ func AgentRegisterValidator() {
 	key = consts.ValidatorPrefixAgent + "ErrorFileUpload"
 	containers.Set(key, agent1.UploadErrorFile{})
 	key = consts.ValidatorPrefixAgent + "HardwareMonitor"
-	containers.Set(key, agent1.Uninstall{})
+	containers.Set(key, agent1.MonitorHardware{})
 
 	//任务相关
 	key = consts.ValidatorPrefixAgent + "TaskGet"

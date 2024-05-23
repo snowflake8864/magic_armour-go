@@ -99,17 +99,17 @@ type portWorking struct {
 
 // 终端监控
 type agentMonitor struct {
-	HdSize  string `json:"hd_size"`
-	HdUsage string `json:"hd_usage"`
+	HdSize  string      `json:"hd_size"`
+	HdUsage json.Number `json:"hd_usage"`
 
 	CpuNumber string            `json:"cpu_number"`
 	CpuUsage  json.Number       `json:"cpu_usage"`
 	CpuTops   []agentMonitorTop `json:"cpu_tops"`
 
 	MemSize  string            `json:"mem_size"`
-	MemUsage string            `json:"mem_usage"`
+	MemUsage json.Number       `json:"mem_usage"`
 	MemTops  []agentMonitorTop `json:"mem_tops"`
-	Self     []agentMonitorTop `json:"self"`
+	Self     agentMonitorTop   `json:"self"`
 }
 
 type agentMonitorTop struct {

@@ -138,8 +138,8 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 func (u *AgentController) MonitorHardware(ctx *gin.Context) {
 	loginInfo := u.GetLogin(ctx)
 
-	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "service")
-	err := agent_post_service.CreatePortFactory().SaveWorking(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "info")
+	err := agent_post_service.CreateAgentFactory().MonitorToQuery(loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
 		return

@@ -1,8 +1,9 @@
 package monitor_service
 
 import (
+	"errors"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_monitor_models"
-	"goskeleton/app/model/agent/port_models"
 )
 
 func CreateMonitorFactory() *MonitorCurd {
@@ -14,19 +15,23 @@ type MonitorCurd struct {
 }
 
 // Add 新增
-func (crd *MonitorCurd) Add(orgId int64, agentId string, param *agent_monitor_models.MonitorModel) bool {
+func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
+	if param.Id == 0 {
+		param.Id = variable.SnowFlake.GetId()
+	}
+	if crd.masterModel.InsertItem(param) {
+		return nil
+	}
 
-	return crd.masterModel.InsertBatch(params)
+	return errors.New("保存失败")
 }
 
 // DelByOrg 删除：企业
 func (crd *MonitorCurd) DelByOrg(orgId int64) bool {
-	search := port_models.SearchConditions{OrgId: orgId}
-	return crd.masterModel.DeleteByConditions(search)
+	return crd.masterModel.DeleteByOrg(orgId)
 }
 
 // DelByOrgAndAgent 删除：企业和终端
 func (crd *MonitorCurd) DelByOrgAndAgent(orgId int64, agentId string) bool {
-	search := port_models.SearchConditions{OrgId: orgId, AgentId: agentId}
-	return crd.masterModel.DeleteByConditions(search)
+	return crd.masterModel.DeleteByOrgAndAgent(orgId, agentId)
 }

@@ -97,6 +97,9 @@ func (k *ConsumerClient) ConsumeCommon() {
 		case kafka_go.TypeOrgClean:
 			org_job.Clean(data.OrgId)
 			break
+		case kafka_go.TypeAgentMonitor:
+			agent_job.Monitor(data.Data)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
 		}

@@ -16,7 +16,8 @@ const (
 	TopicAlarm    string = "TopicAlarm"
 	TopicSyslog   string = "TopicSyslog"
 
-	TypeAgentDelete string = "agent_delete"
+	TypeAgentDelete  string = "agent_delete"
+	TypeAgentMonitor string = "agent_monitor"
 
 	TypeOrgClean string = "org_clean"
 

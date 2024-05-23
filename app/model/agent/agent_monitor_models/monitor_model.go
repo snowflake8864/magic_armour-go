@@ -16,20 +16,20 @@ func CreateMonitorFactory() *MonitorModel {
 
 type MonitorModel struct {
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
-	OrgId      int64  `json:"org_id"`
-	AgentId    string `json:"agent_id"`
-	MonitorDay string `json:"monitor_day"`
-	CpuNumber  string `json:"cpu_number"`
-	CpuUsage   string `json:"cpu_usage"`
-	CpuTops    string `json:"cpu_tops"`
-	MemSize    string `json:"mem_size"`
-	MemUsage   string `json:"mem_usage"`
-	MemTops    string `json:"mem_tops"`
-	HdSize     string `json:"hd_size"`
-	HdUsage    string `json:"hd_usage"`
-	SelfStat   string `json:"self_stat"`
-	CreatedAt  string `json:"created_at"`
+	Id         int64   `json:"id" gorm:"primaryKey"`
+	OrgId      int64   `json:"org_id"`
+	AgentId    string  `json:"agent_id"`
+	MonitorDay string  `json:"monitor_day"`
+	CpuNumber  string  `json:"cpu_number"`
+	CpuUsage   float64 `json:"cpu_usage"`
+	CpuTops    string  `json:"cpu_tops"`
+	MemSize    string  `json:"mem_size"`
+	MemUsage   float64 `json:"mem_usage"`
+	MemTops    string  `json:"mem_tops"`
+	HdSize     string  `json:"hd_size"`
+	HdUsage    float64 `json:"hd_usage"`
+	SelfStat   string  `json:"self_stat"`
+	CreatedAt  string  `json:"created_at"`
 }
 
 type MonitorTop struct {
@@ -43,13 +43,12 @@ type MonitorTop struct {
 type MonitorSelf struct {
 	CpuUsage float64 `json:"cpu_usage"`
 	MemSize  string  `json:"mem_size"`
-	User     string  `json:"user"`
 }
 
 // 表名
 
 func (m *MonitorModel) TableName() string {
-	return "a_monitor"
+	return "a_monitors"
 }
 
 func (m *MonitorModel) CreateTable() bool {
@@ -60,15 +59,15 @@ func (m *MonitorModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			monitor_day dateV2 NULL  COMMENT '监控日期(天)',
 			created_at datetime NULL,
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			cpu_number varchar(64)  NOT NULL  DEFAULT '' COMMENT 'cpu:核数',
-			cpu_usage varchar(64)  NOT NULL  DEFAULT '' COMMENT 'cpu:用量%',
+			cpu_usage FLOAT  NOT NULL  DEFAULT '0.00' COMMENT 'cpu:用量%',
 			cpu_tops string  NOT NULL  DEFAULT '' COMMENT 'cpu:占用资源最多进程(json)',
 			mem_size varchar(64)  NOT NULL  DEFAULT '' COMMENT '内存:大小',
-			mem_usage varchar(64)  NOT NULL  DEFAULT '' COMMENT '内存:用量%',
+			mem_usage FLOAT NOT NULL  DEFAULT '0.00' COMMENT '内存:用量%',
 			mem_tops string NOT NULL  DEFAULT '' COMMENT '内存:占用资源最多进程(json)',
 			hd_size varchar(64)  NOT NULL  DEFAULT '' COMMENT '硬盘:大小',
-			hd_usage varchar(64)  NOT NULL  DEFAULT '' COMMENT '硬盘:用量%',
+			hd_usage FLOAT  NOT NULL  DEFAULT '0.00' COMMENT '硬盘:用量%',
 			self_stat string  DEFAULT '' COMMENT '本身统计(json)'
 		)
 		DUPLICATE  KEY(org_id, agent_id, monitor_day, created_at)
