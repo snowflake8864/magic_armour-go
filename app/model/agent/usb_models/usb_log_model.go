@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 外设插拔日志表
@@ -15,6 +16,7 @@ func CreateUsbLogFactory() *UsbLogModel {
 //结构体
 
 type UsbLogModel struct {
+	baseUsb
 	model.BaseModel
 	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
@@ -70,10 +72,28 @@ func (m *UsbLogModel) InsertItem(s *UsbLogModel) bool {
 	}
 }
 
-// DeleteByOrg 通过企业id删除
-func (m *UsbLogModel) DeleteByOrg(orgId int64) bool {
+// InsertBatch 插入多条
+func (m *UsbLogModel) InsertBatch(list *[]UsbLogModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return false
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *UsbLogModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

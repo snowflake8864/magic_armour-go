@@ -6,11 +6,12 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId    int64
-	AgentId  string
-	UsbHash  string
-	Status   int
-	IsOnline int
+	OrgId       int64
+	AgentId     string
+	UsbHash     string
+	UsbHashList []string
+	Status      int
+	IsOnline    int
 }
 
 type baseUsb struct {
@@ -27,6 +28,9 @@ func (m *baseUsb) conditions2Where(search SearchConditions) map[string]interface
 	}
 	if !string_helper.IsEmpty(search.UsbHash) {
 		wheres["usb_hash"] = search.UsbHash
+	}
+	if len(search.UsbHashList) > 0 {
+		wheres["usb_hash in"] = search.UsbHashList
 	}
 	if search.Status > 0 {
 		wheres["status"] = search.Status

@@ -15,6 +15,7 @@ func CreateUsbGlobalFactory() *UsbGlobalModel {
 //结构体
 
 type UsbGlobalModel struct {
+	baseUsb
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`

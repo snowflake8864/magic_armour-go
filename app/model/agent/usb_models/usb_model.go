@@ -18,7 +18,7 @@ func CreateUsbFactory() *UsbModel {
 type UsbModel struct {
 	baseUsb
 	model.BaseModel
-	Id        string `json:"id" gorm:"primaryKey"`
+	Id        int64  `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
 	AgentId   string `json:"agent_id"`
 	UsbHash   string `json:"usb_hash"`
@@ -46,7 +46,7 @@ func (m *UsbModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			usb_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '设备:hash',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			name varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:名称',
 			intro varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:简介',
 			type varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:类型',
@@ -83,6 +83,20 @@ func (m *UsbModel) InsertItem(s *UsbModel) bool {
 	if result.RowsAffected > 0 {
 		return true
 	} else {
+		return false
+	}
+}
+
+// InsertBatch 插入多条
+func (m *UsbModel) InsertBatch(list *[]UsbModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
 	}
 }

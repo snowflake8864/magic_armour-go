@@ -9,6 +9,7 @@ import (
 )
 
 type Put struct {
+	Data string `form:"data" json:"data" binding:"required"`
 }
 
 func (n Put) CheckParams(context *gin.Context) {

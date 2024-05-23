@@ -112,6 +112,7 @@ type agentMonitor struct {
 	Self     agentMonitorTop   `json:"self"`
 }
 
+// 终端监控top列表
 type agentMonitorTop struct {
 	Id       json.Number `json:"id"`
 	Dir      string      `json:"dir"`
@@ -119,4 +120,12 @@ type agentMonitorTop struct {
 	CpuUsage json.Number `json:"cpu_usage"`
 	MemSize  string      `json:"mem_size"`
 	User     string      `json:"user"`
+}
+
+// 外设
+type usbData struct {
+	PeripheralEid   string `json:"peripheral_eid"`
+	PeripheralName  string `json:"peripheral_name"`
+	PeripheralIntro string `json:"peripheral_intro"`
+	PeripheralType  string `json:"peripheral_type"`
 }
