@@ -28,7 +28,7 @@ func (u *TamperController) PutDir(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "dir")
-	err := agent_post_service.CreateUsbFactory().Save(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	err := agent_post_service.CreateAgentFactory().SaveDir(loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
 		return

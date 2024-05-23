@@ -86,9 +86,21 @@ func (crd *DirCurd) GetBySearch(orgId int64, agentId string) string {
 }
 
 // BatchAdd 新增
-func (crd *DirCurd) BatchAdd(orgId int64, agentId string, params []dir_models.DirModel) error {
+func (crd *DirCurd) BatchAdd(orgId int64, agentId string, searchDir string, params *[]dir_models.DirModel) error {
+	//先删除原来查询路径
+	condition := dir_models.SearchConditions{
+		OrgId:     orgId,
+		AgentId:   agentId,
+		SearchDir: searchDir,
+		FileType:  enums.AllDefaultInt,
+	}
+	crd.masterModel.DeleteByConditions(condition)
+
+	//批量参数
+	crd.masterModel.InsertBatch(params)
 
 	return nil
+
 }
 
 // DelByGteCreateAt 删除：大于创建时间

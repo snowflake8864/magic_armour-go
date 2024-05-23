@@ -28,8 +28,8 @@ type DirModel struct {
 	FileUser   string `json:"file_user"`
 	FileSize   string `json:"file_size"`
 	FileHash   string `json:"file_hash"`
-	StartTime  string `json:"start_time"`
-	UpdateTime string `json:"update_time"`
+	StartTime  string `json:"start_time"  gorm:"default:NULL"`
+	UpdateTime string `json:"update_time" gorm:"default:NULL"`
 	CreatedAt  string `json:"created_at"`
 }
 
@@ -99,6 +99,7 @@ func (m *DirModel) DeleteByConditions(condition SearchConditions) bool {
 	if result.Error == nil {
 		return true
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
 	}
 }

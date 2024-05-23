@@ -5,10 +5,13 @@ import (
 	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/dir_models"
+	"goskeleton/app/service/agent/dir_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"strings"
@@ -90,7 +93,57 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 	return nil
 }
 
-// saveDir 保存目录结构
-func (crd *AgentPost) saveDir(orgId int64, agentId, inputJson string) error {
+// SaveDir 保存目录结构
+func (crd *AgentPost) SaveDir(orgId int64, agentId, inputJson string) error {
+	var params []agentDir
+	//忽略错误, 上传数据有为空情况
+	_ = json_helper.ToAny(inputJson, &params)
+
+	//
+	dirFact := dir_service.CreateDirCurdFactory()
+	//获取查询路径
+	searchDir := dirFact.GetBySearch(orgId, agentId)
+	if string_helper.IsEmpty(searchDir) {
+		variable.ZapLog.Sugar().Debug(orgId, agentId, "获取查询路径为空")
+		return nil
+	}
+	//
+	searchDir = path_helper.ToStandard(searchDir)
+	now := date_helper.CurDatetime()
+
+	var models []dir_models.DirModel
+	if len(params) > 0 {
+		for _, item := range params {
+			model := dir_models.DirModel{
+				OrgId:      orgId,
+				AgentId:    agentId,
+				SearchDir:  searchDir,
+				FileName:   item.Dir,
+				FileType:   item.Type,
+				FileRw:     item.Rw,
+				FileGroup:  item.Group,
+				FileUser:   item.User,
+				FileSize:   item.Size,
+				FileHash:   strings.ToLower(item.Hash),
+				StartTime:  crd.getAgentAt(item.StartTime),
+				UpdateTime: crd.getAgentAt(item.UpdateTime),
+				CreatedAt:  now,
+			}
+			models = append(models, model)
+		}
+	}
+	if err := dirFact.BatchAdd(orgId, agentId, searchDir, &models); err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
+	}
+
 	return nil
+}
+
+func (crd *AgentPost) getAgentAt(t string) string {
+	t = strings.Trim(t, "-")
+	if string_helper.IsEmpty(t) {
+		return ""
+	}
+
+	return date_helper.TimestampToDatetime(string_helper.ToInt64(t))
 }
