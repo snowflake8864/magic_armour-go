@@ -7,9 +7,11 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/agent/proc_service/job_callback_proc"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
@@ -244,6 +246,40 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
+
+	return nil
+}
+
+// CollectDll 收集指定进程模块
+func (crd *ProcPost) CollectDll(orgId int64, agentId, inputJson string) error {
+	var params []procData
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
+		return err
+	}
+	for _, itemProcess := range params {
+		//进程hash全部小写
+		procHash := strings.ToLower(itemProcess.Hash)
+
+		var dllList []proc_models.ProcessRunningDll
+		if len(itemProcess.ModuleList) > 0 {
+			for _, itemDll := range itemProcess.ModuleList {
+
+				tmp := proc_models.ProcessRunningDll{
+					Hash:      strings.ToLower(itemDll.Hash),
+					Dir:       path_helper.ToStandard(itemDll.Dir),
+					Attribute: itemDll.Attribute,
+				}
+				tmp.Copyright, tmp.Introduce = crd.parseAttribute(itemDll.Attribute, "", "")
+				dllList = append(dllList, tmp)
+			}
+		}
+
+		//修改
+		if err := job_callback_proc.CreateProcessRunningUploadFactory().UploadDlls(orgId, agentId, procHash, itemProcess.ProcId,
+			itemProcess.ModuleNumber, &dllList); err != nil {
+			variable.ZapLog.Sugar().Debug("CollectDll: " + err.Error())
+		}
+	}
 
 	return nil
 }

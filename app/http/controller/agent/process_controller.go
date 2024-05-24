@@ -84,6 +84,16 @@ func (u *ProcessController) GetAssign(ctx *gin.Context) {
 
 // PutAssign 指定进程:上传对应模块
 func (u *ProcessController) PutAssign(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.getLogin(ctx)
+	tasks := []int{enum_task.TypeProcessCollectDll}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "指定进程:上传对应模块")
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
+	err := agent_post_service.CreateProcFactory().CollectDll(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

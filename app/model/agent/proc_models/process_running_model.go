@@ -30,6 +30,15 @@ type ProcessRunningModel struct {
 	CreatedAt string `json:"created_at"`
 }
 
+type ProcessRunningDll struct {
+	Hash      string `json:"hash"`
+	Dir       string `json:"dir"`
+	Introduce string `json:"introduce"`
+	Copyright string `json:"copyright"`
+	Signature string `json:"signature"`
+	Attribute string `json:"attribute"`
+}
+
 // 表名
 
 func (m *ProcessRunningModel) TableName() string {
@@ -96,7 +105,7 @@ func (m *ProcessRunningModel) InsertItem(s *ProcessRunningModel) bool {
 func (m *ProcessRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		tmp = tmp.Where("org_id=? AND agent_id=? ", orgId, agentId)
+		tmp = tmp.Where("org_id=? AND agent_id=?", orgId, agentId)
 		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
@@ -111,7 +120,7 @@ func (m *ProcessRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) b
 func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		tmp = tmp.Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId)
+		tmp = tmp.Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id=?", orgId, agentId, hash, procId)
 		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
@@ -125,7 +134,7 @@ func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, a
 // GetItemByOrgAndAgentAndHashAndProcId 通过企业id\终端id\hash\ProcId获取一条记录
 func (m *ProcessRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int) (item *ProcessRunningModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id", orgId, agentId, hash, procId).Take(&item)
+		return tx.Model(m).Where("org_id=? AND agent_id=? AND proc_hash=? AND proc_id=?", orgId, agentId, hash, procId).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
