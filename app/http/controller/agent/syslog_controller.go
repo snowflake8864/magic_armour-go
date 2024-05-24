@@ -14,7 +14,7 @@ type SyslogController struct {
 
 // Put 上传通讯日志
 func (u *SyslogController) Put(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "list")
 	err := agent_post_service.CreateSyslogFactory().ToQuery(loginInfo.OrgId, loginInfo.AgentId, inputJson)

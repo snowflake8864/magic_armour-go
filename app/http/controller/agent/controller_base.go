@@ -10,7 +10,7 @@ import (
 type ControllerBase struct {
 }
 
-// GetLogin 获取登录数据
-func (u *ControllerBase) GetLogin(ctx *gin.Context) agent_service.AgentCacheLogin {
+// getLogin 获取登录数据
+func (u *ControllerBase) getLogin(ctx *gin.Context) agent_service.AgentCacheLogin {
 	return cur_userinfo.GetCurrentAgent(ctx)
 }

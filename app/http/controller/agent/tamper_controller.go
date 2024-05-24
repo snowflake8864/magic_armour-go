@@ -22,7 +22,7 @@ func (u *TamperController) GetDir(ctx *gin.Context) {
 
 // PutDir 上传目录信息
 func (u *TamperController) PutDir(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeDirStructureUpload}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())

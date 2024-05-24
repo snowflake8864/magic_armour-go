@@ -7,7 +7,6 @@ import (
 	agentSyslog1 "goskeleton/app/http/validator/agent/agent_syslog"
 	alarm1 "goskeleton/app/http/validator/agent/alarm"
 	auth1 "goskeleton/app/http/validator/agent/auth"
-	blackmail1 "goskeleton/app/http/validator/agent/blackmail"
 	dll1 "goskeleton/app/http/validator/agent/dll"
 	plug1 "goskeleton/app/http/validator/agent/plug"
 	port1 "goskeleton/app/http/validator/agent/port"
@@ -33,24 +32,12 @@ func AgentRegisterValidator() {
 	containers.Set(key, auth1.Login{})
 
 	//终端相关
-	key = consts.ValidatorPrefixAgent + "AgentConfigGet"
-	containers.Set(key, agent1.ConfigGet{})
-	key = consts.ValidatorPrefixAgent + "AgentInfoGet"
-	containers.Set(key, agent1.InfoGet{})
-	key = consts.ValidatorPrefixAgent + "AgentUpgrade"
-	containers.Set(key, agent1.Upgrade{})
-	key = consts.ValidatorPrefixAgent + "AgentUninstall"
-	containers.Set(key, agent1.Uninstall{})
-	key = consts.ValidatorPrefixAgent + "TrustDirGet"
-	containers.Set(key, agent1.GetTrustDir{})
 	key = consts.ValidatorPrefixAgent + "ErrorFileUpload"
 	containers.Set(key, agent1.UploadErrorFile{})
 	key = consts.ValidatorPrefixAgent + "HardwareMonitor"
 	containers.Set(key, agent1.MonitorHardware{})
 
 	//任务相关
-	key = consts.ValidatorPrefixAgent + "TaskGet"
-	containers.Set(key, task1.Get{})
 	key = consts.ValidatorPrefixAgent + "TaskClose"
 	containers.Set(key, task1.Close{})
 
@@ -61,12 +48,6 @@ func AgentRegisterValidator() {
 	containers.Set(key, process1.RunningPut{})
 	key = consts.ValidatorPrefixAgent + "ProcessAutoPut"
 	containers.Set(key, process1.AutoPut{})
-	key = consts.ValidatorPrefixAgent + "ProcessWhiteGet"
-	containers.Set(key, process1.WhiteGet{})
-	key = consts.ValidatorPrefixAgent + "ProcessBlackGet"
-	containers.Set(key, process1.BlackGet{})
-	key = consts.ValidatorPrefixAgent + "ProcessAssignGet"
-	containers.Set(key, process1.AssignGet{})
 	key = consts.ValidatorPrefixAgent + "ProcessAssignPut"
 	containers.Set(key, process1.AssignPut{})
 
@@ -77,52 +58,28 @@ func AgentRegisterValidator() {
 	containers.Set(key, dll1.RunningPut{})
 	key = consts.ValidatorPrefixAgent + "DllAutoPut"
 	containers.Set(key, dll1.AutoPut{})
-	key = consts.ValidatorPrefixAgent + "DllWhiteGet"
-	containers.Set(key, dll1.WhiteGet{})
-	key = consts.ValidatorPrefixAgent + "DllBlackGet"
-	containers.Set(key, dll1.BlackGet{})
 
 	//进程或模块样本
-	key = consts.ValidatorPrefixAgent + "ProcSampleGet"
-	containers.Set(key, procSample1.Get{})
 	key = consts.ValidatorPrefixAgent + "ProcSampleUpload"
 	containers.Set(key, procSample1.Upload{})
 
 	//防篡改相关
-	key = consts.ValidatorPrefixAgent + "TamperDirGet"
-	containers.Set(key, tamper1.DirGet{})
 	key = consts.ValidatorPrefixAgent + "TamperDirPut"
 	containers.Set(key, tamper1.DirPut{})
-	key = consts.ValidatorPrefixAgent + "TamperPolicyGet"
-	containers.Set(key, tamper1.PolicyGet{})
 
 	//勒索相关
-	key = consts.ValidatorPrefixAgent + "BlackmailPolicyGet"
-	containers.Set(key, blackmail1.PolicyGet{})
 
 	//端口相关
 	key = consts.ValidatorPrefixAgent + "PortWorkingPut"
 	containers.Set(key, port1.WorkingPut{})
-	key = consts.ValidatorPrefixAgent + "PortVirtualGet"
-	containers.Set(key, port1.VirtualGet{})
 
 	// 封堵相关
-	key = consts.ValidatorPrefixAgent + "PlugDynamicGet"
-	containers.Set(key, plug1.DynamicGet{})
 	key = consts.ValidatorPrefixAgent + "PlugDynamicPut"
 	containers.Set(key, plug1.DynamicPut{})
-	key = consts.ValidatorPrefixAgent + "PlugIpBlackGet"
-	containers.Set(key, plug1.IpBlackGet{})
-	key = consts.ValidatorPrefixAgent + "PlugIpWhiteGet"
-	containers.Set(key, plug1.IpWhiteGet{})
 
 	//外设相关
 	key = consts.ValidatorPrefixAgent + "UsbPut"
 	containers.Set(key, usb1.Put{})
-	key = consts.ValidatorPrefixAgent + "UsbBlackGet"
-	containers.Set(key, usb1.BlackGet{})
-	key = consts.ValidatorPrefixAgent + "UsbWhiteGet"
-	containers.Set(key, usb1.WhiteGet{})
 
 	//告警相关
 	key = consts.ValidatorPrefixAgent + "AlarmMasterPut"

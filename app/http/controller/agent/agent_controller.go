@@ -29,7 +29,7 @@ type AgentController struct {
 // GetConfig 获取配置信息
 func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
 
 	//终端配置
@@ -111,7 +111,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 // GetInfo 获取终端信息(调试用)
 func (u *AgentController) GetInfo(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	response.SuccessReturnData(ctx, loginInfo)
 }
 
@@ -140,7 +140,7 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
 		uploadParam.Type = "agent_error"
-		loginInfo := u.GetLogin(ctx)
+		loginInfo := u.getLogin(ctx)
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
@@ -161,7 +161,7 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 
 // MonitorHardware 监控硬件资源
 func (u *AgentController) MonitorHardware(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "info")
 	err := agent_post_service.CreateAgentFactory().MonitorToQuery(loginInfo.OrgId, loginInfo.AgentId, inputJson)

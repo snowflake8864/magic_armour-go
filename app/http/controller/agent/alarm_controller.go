@@ -14,7 +14,7 @@ type AlarmController struct {
 
 // PutMaster 上传报警信息(除端口虚开外)
 func (u *AlarmController) PutMaster(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
 	err := agent_post_service.CreateAlarmFactory().ToQueryBYComm(loginInfo.OrgId, loginInfo.AgentId, inputJson)
@@ -27,7 +27,7 @@ func (u *AlarmController) PutMaster(ctx *gin.Context) {
 
 // PutPort 上传端口虚开告警
 func (u *AlarmController) PutPort(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
 	err := agent_post_service.CreateAlarmFactory().ToQueryBYPort(loginInfo.OrgId, loginInfo.AgentId, inputJson)

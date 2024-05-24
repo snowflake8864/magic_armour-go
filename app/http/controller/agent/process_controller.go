@@ -18,7 +18,7 @@ type ProcessController struct {
 // PutAll 上传全部进程
 func (u *ProcessController) PutAll(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeProcessSuffixIsExe}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
@@ -35,7 +35,7 @@ func (u *ProcessController) PutAll(ctx *gin.Context) {
 // PutRunning 上传运行中进程
 func (u *ProcessController) PutRunning(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeProcessRefresh}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
@@ -52,7 +52,7 @@ func (u *ProcessController) PutRunning(ctx *gin.Context) {
 // PutAuto 主动上传进程
 func (u *ProcessController) PutAuto(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.ProcTaskAuto,

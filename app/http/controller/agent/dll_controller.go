@@ -18,7 +18,7 @@ type DllController struct {
 // PutAll 上传全部模块
 func (u *DllController) PutAll(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeDllSuffixIsDll}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
@@ -35,7 +35,7 @@ func (u *DllController) PutAll(ctx *gin.Context) {
 // PutRunning 上传运行中模块
 func (u *DllController) PutRunning(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeDllRefresh}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
@@ -52,7 +52,7 @@ func (u *DllController) PutRunning(ctx *gin.Context) {
 // PutAuto 主动上传模块
 func (u *DllController) PutAuto(ctx *gin.Context) {
 	//关闭任务
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceDll, agent_post_service.ProcTaskAuto,

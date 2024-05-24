@@ -20,7 +20,7 @@ type TaskController struct {
 
 // Get 获取任务
 func (u *TaskController) Get(ctx *gin.Context) {
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 
 	//未完成的任务, 不支持的任务
 	var unfinishedTasks, notSupportTasks []int
@@ -180,7 +180,7 @@ func (u *TaskController) Close(ctx *gin.Context) {
 	taskType := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "tasklist"))
 	types := []int{taskType}
 
-	loginInfo := u.GetLogin(ctx)
+	loginInfo := u.getLogin(ctx)
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, types, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "关闭任务")
