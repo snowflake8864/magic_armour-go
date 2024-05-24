@@ -2,6 +2,7 @@ package agent_post_service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_monitor_models"
@@ -104,8 +105,7 @@ func (crd *AgentPost) SaveDir(orgId int64, agentId, inputJson string) error {
 	//获取查询路径
 	searchDir := dirFact.GetBySearch(orgId, agentId)
 	if string_helper.IsEmpty(searchDir) {
-		variable.ZapLog.Sugar().Debug(orgId, agentId, "获取查询路径为空")
-		return nil
+		return errors.New("获取查询路径为空")
 	}
 	//
 	searchDir = path_helper.ToStandard(searchDir)
@@ -118,7 +118,7 @@ func (crd *AgentPost) SaveDir(orgId int64, agentId, inputJson string) error {
 				OrgId:      orgId,
 				AgentId:    agentId,
 				SearchDir:  searchDir,
-				FileName:   item.Dir,
+				FileName:   path_helper.ToStandard(item.Dir),
 				FileType:   item.Type,
 				FileRw:     item.Rw,
 				FileGroup:  item.Group,
