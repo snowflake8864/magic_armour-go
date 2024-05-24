@@ -58,12 +58,12 @@ func InitOrganizationRouter() *gin.Engine {
 	})
 
 	//  创建一个接口路由组
-	vPlatform := router.Group("/organization/")
+	vOrg := router.Group("/organization/")
 	{
-		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOrganizationOperate())
+		vOrg.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOperate())
 		{
 			//登录认证
-			auth := vPlatform.Group("auth/")
+			auth := vOrg.Group("auth/")
 			{
 				auth.POST("checkUser", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthCheckUser"))
 				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthGetSliderCode"))
@@ -74,17 +74,18 @@ func InitOrganizationRouter() *gin.Engine {
 			}
 
 			// 【需要token】中间件验证的路由
-			vPlatform.Use(middleware_auth_org.CheckOrganizationToken())
+
+			vOrg.Use(middleware_auth_org.CheckToken())
 			{
 				//首页
-				home := vPlatform.Group("home/")
+				home := vOrg.Group("home/")
 				{
 					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefixOrg+"HomeGetAgentStatistic"))
 					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefixOrg+"HomeGetAlarmStatistic"))
 				}
 
 				//终端
-				agent := vPlatform.Group("agent/")
+				agent := vOrg.Group("agent/")
 				{
 					public := agent.Group("public/")
 					{
@@ -127,7 +128,7 @@ func InitOrganizationRouter() *gin.Engine {
 				} //终端
 
 				//进程
-				process := vPlatform.Group("process/")
+				process := vOrg.Group("process/")
 				{
 					public := process.Group("public/")
 					{
@@ -182,7 +183,7 @@ func InitOrganizationRouter() *gin.Engine {
 				} //进程
 
 				//进程和模块样本
-				procSample := vPlatform.Group("procSample/")
+				procSample := vOrg.Group("procSample/")
 				{
 					procSample.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcSamplePage"))
 					procSample.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcSampleDelete"))
@@ -191,7 +192,7 @@ func InitOrganizationRouter() *gin.Engine {
 				} //进程和模块样本
 
 				//防篡改
-				tamper := vPlatform.Group("tamper/")
+				tamper := vOrg.Group("tamper/")
 				{
 					public := tamper.Group("public/")
 					{
@@ -229,6 +230,7 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 				} //防篡改
 			}
+
 		}
 	}
 	return router

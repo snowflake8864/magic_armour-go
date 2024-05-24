@@ -54,6 +54,7 @@ func init() {
 	register_validator.PlatformRegisterValidator()
 	register_validator.ApiRegisterValidator()
 	register_validator.AgentRegisterValidator()
+	register_validator.OrganizationRegisterValidator()
 
 	// 4.启动针对配置文件(confgi.yml、gorm_v2.yml)变化的监听， 配置文件操作指针，初始化为全局变量
 	variable.ConfigYml = yml_config.CreateYamlFactory()

@@ -12,7 +12,6 @@ import (
 	"goskeleton/app/service/organization/org_operate_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -24,8 +23,8 @@ type OrganizationParams struct {
 	Authorization string `header:"Authorization" binding:"required,min=32,max=64"`
 }
 
-// CheckOrganizationToken 检查企业token完整性、有效性中间件
-func CheckOrganizationToken() gin.HandlerFunc {
+// CheckToken 检查企业token完整性、有效性中间件
+func CheckToken() gin.HandlerFunc {
 	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
 	return func(context *gin.Context) {
 		headerParams := OrganizationParams{}
@@ -50,16 +49,16 @@ func CheckOrganizationToken() gin.HandlerFunc {
 	}
 }
 
-// SaveOrganizationOperate 保存企业操作记录
-func SaveOrganizationOperate() gin.HandlerFunc {
+// SaveOperate 保存企业操作记录
+func SaveOperate() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		bodyLogWriter := &authorization.ResponseBody{Body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
-		//开始时间
-		startTime := time.Now()
+
 		//上下文
 		context.Next()
-
+		//开始时间
+		startTime := time.Now()
 		go func(c *gin.Context) {
 			var param = org_operate_models.OperateLogModel{}
 			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
@@ -117,9 +116,11 @@ func SaveOrganizationOperate() gin.HandlerFunc {
 				org_operate_service.CreateCurdFactory().Add(&param)
 			}
 
-			variable.ZapLog.Info("=============================================SaveOrgOperate start =============================================")
-			variable.ZapLog.Info(json_helper.Encode(param))
-			variable.ZapLog.Info("=============================================SaveOrgOperate end =============================================")
+			/*
+				variable.ZapLog.Info("=============================================SaveOrgOperate start =============================================")
+				variable.ZapLog.Info(json_helper.Encode(param))
+				variable.ZapLog.Info("=============================================SaveOrgOperate end =============================================")
+			*/
 		}(context.Copy())
 
 	}

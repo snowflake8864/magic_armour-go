@@ -113,7 +113,7 @@ func (crd *UserAuth) deleteBySms(phone string) {
 // IsLocking  是否锁定中
 func (crd *UserAuth) IsLocking(username string) error {
 	isOK, _ := crd.redisClient.Exists(crd.keyByLocking(username))
-	if isOK {
+	if !isOK {
 		return nil
 	} else {
 		return errors.New("用户已经被锁定，请稍后在试")
