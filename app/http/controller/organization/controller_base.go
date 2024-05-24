@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
@@ -18,8 +18,8 @@ type ControllerBase struct {
 }
 
 // getLogin 获取登录数据
-func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogin {
-	return cur_userinfo.GetCurrentAdmin(ctx)
+func (u *ControllerBase) getLogin(ctx *gin.Context) user_service.UserCacheLogin {
+	return cur_userinfo.GetCurrentUser(ctx)
 }
 
 // getAgentSearchConditions 获取终端查询条件
@@ -27,17 +27,17 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 
 	//页面上传
 	searchConditions := agent_models.SearchConditions{}
-	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrganization + "agentId")
-	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixOrganization + "hostName")
-	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrganization + "agentIp")
-	searchConditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrganization + "netIp")
-	searchConditions.Alias = ctx.GetString(consts.ValidatorPrefixOrganization + "alias")
-	searchConditions.ContactName = ctx.GetString(consts.ValidatorPrefixOrganization + "contactName")
-	searchConditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "isOnline"))
-	searchConditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "isSafe"))
+	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
+	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixOrg + "hostName")
+	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
+	searchConditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
+	searchConditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
+	searchConditions.ContactName = ctx.GetString(consts.ValidatorPrefixOrg + "contactName")
+	searchConditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
+	searchConditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
 
 	var reqDeptIds []int64
-	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrganization + "deptId"); isOk {
+	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
 		reqDeptIds = slice_helper.SliceAny2Int64(tmp)
@@ -82,10 +82,10 @@ func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int6
 
 // getPageAndSort 获取分页参数和排序参数
 func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (offset, pageSize int, order string) {
-	page := int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "page"))
-	pageSize = int(ctx.GetFloat64(consts.ValidatorPrefixOrganization + "pageSize"))
-	orderField := ctx.GetString(consts.ValidatorPrefixOrganization + "field")
-	orderSort := ctx.GetString(consts.ValidatorPrefixOrganization + "sort")
+	page := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "page"))
+	pageSize = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "pageSize"))
+	orderField := ctx.GetString(consts.ValidatorPrefixOrg + "field")
+	orderSort := ctx.GetString(consts.ValidatorPrefixOrg + "sort")
 	if page <= 0 {
 		page = 1
 	}
@@ -135,7 +135,7 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 // getAgentIdsFromGin 从gin上下文获取终端id集合
 // 参数agentIds([]string) 在中间件经过 data_transfer.DataAddContext转义成([]interface{})
 func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string) {
-	if val, ok := ctx.Get(consts.ValidatorPrefixOrganization + "agentIds"); ok && val != nil {
+	if val, ok := ctx.Get(consts.ValidatorPrefixOrg + "agentIds"); ok && val != nil {
 		var tmp []interface{}
 		tmp, _ = val.([]interface{})
 		agentIds = slice_helper.SliceAny2String(tmp)

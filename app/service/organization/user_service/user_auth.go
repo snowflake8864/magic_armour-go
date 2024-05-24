@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
@@ -110,9 +111,13 @@ func (crd *UserAuth) deleteBySms(phone string) {
 }
 
 // IsLocking  是否锁定中
-func (crd *UserAuth) IsLocking(username string) (isOk bool) {
-	isOk, _ = crd.redisClient.Exists(crd.keyByLocking(username))
-	return isOk
+func (crd *UserAuth) IsLocking(username string) error {
+	isOK, _ := crd.redisClient.Exists(crd.keyByLocking(username))
+	if isOK {
+		return nil
+	} else {
+		return errors.New("用户已经被锁定，请稍后在试")
+	}
 }
 
 // setLocking  设置锁定中
@@ -121,24 +126,56 @@ func (crd *UserAuth) setLocking(username string, second int) (isOk bool) {
 	return isOk
 }
 
+// HasUser 存在用户
+func (crd *UserAuth) HasUser(username string) (err error, model *user_models.UserModel) {
+	model = CreateCurdFactory().GetItemByName(username)
+	if model == nil || model.Id == 0 {
+		return errors.New("用户名或密码错误"), nil
+	} else {
+		return nil, model
+	}
+}
+
+// IsPhoneCheck 是否需要手机校验
+func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isPhone bool) {
+	if string_helper.IsEmpty(userPhone) {
+		return nil, false
+	}
+
+	//数据字典
+	if smsSwitch := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch); string_helper.ToInt(smsSwitch) == enums.SwitchOn {
+		return nil, true
+	}
+
+	//企业开关
+	orgModel, _ := organization_models.CreateOrganizationFactory().GetItemById(orgId)
+	if orgModel == nil || orgModel.Id == 0 {
+		return errors.New("用户名或密码错误"), false
+	} else if orgModel.LoginPhoneCheck == enums.SwitchOn {
+		return nil, true
+	} else {
+		return nil, false
+	}
+}
+
 // LoginByPw 密码登录
 func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
-	if crd.IsLocking(username) {
-		return nil, -1, errors.New("用户已经被锁定，请稍后在试")
+	if err = crd.IsLocking(username); err != nil {
+		return nil, -1, err
 	}
 
-	curdFact := CreateCurdFactory()
-	userModel := curdFact.GetItemByName(username)
-	if userModel.Id == 0 {
-		return nil, -1, errors.New("用户名或密码错误")
+	err, userModel := crd.HasUser(username)
+	if err != nil {
+		return nil, -1, err
 	}
 
 	//短信验证
-	SmsSwitch := string_helper.ToInt(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch))
-	if !string_helper.IsEmpty(userModel.Phone) && SmsSwitch == enums.IsYes {
+	if err, smsSwitch := crd.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
+		return nil, -99, err
+	} else if smsSwitch {
 		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
@@ -150,6 +187,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 
 	//用户名和密码不一致
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	curdFact := CreateCurdFactory()
 	if !curdFact.HasByUsernameAndPw(username, pw) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(userModel.Id)

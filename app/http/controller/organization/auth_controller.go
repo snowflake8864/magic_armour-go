@@ -3,8 +3,7 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
-	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -21,24 +20,29 @@ func (u *AuthController) decrypt(data string) (result string) {
 
 // CheckUser 验证用户
 func (u *AuthController) CheckUser(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrganization + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+
+	authFact := user_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
-	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
-	if adminModel.Id == 0 {
-		response.FailSimplify(ctx, "用户名或密码错误")
+	err, userModel := authFact.HasUser(name)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
 	phoneCheck := 0
-	if !string_helper.IsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
+	if err, smsSwitch := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else if smsSwitch {
 		phoneCheck = 1
 	}
 
@@ -47,61 +51,67 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 
 // SendSms 发送短信
 func (u *AuthController) SendSms(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrganization + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+	authFact := user_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
-	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
-	if adminModel.Id == 0 {
-		response.FailSimplify(ctx, "用户名或密码错误")
+	err, userModel := authFact.HasUser(name)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
-
-	if string_helper.IsEmpty(adminModel.Phone) {
-		response.FailRoutine(ctx, -97, "没有添加手机号码")
+	if string_helper.IsEmpty(userModel.Phone) {
+		response.FailRoutine(ctx, -97, "没有开启双因子验证")
 		return
 	}
-	if adminModel.LoginPhoneCheck == enums.IsNot {
+	if err, smsSwitch := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else if !smsSwitch {
 		response.FailRoutine(ctx, -98, "没有开启双因子验证")
 		return
 	}
-	code := admin_service.CreateAuthFactory().GenerateBySms(adminModel.Phone)
-	response.SuccessReturnData(ctx, gin.H{"code": code})
+	authFact.GenerateBySms(userModel.Phone)
+
+	response.SuccessSimplify(ctx)
 }
 
 // GetSliderCode 获取滑块码
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrganization + "name"))
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+	authFact := user_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
-	code := admin_service.CreateAuthFactory().GenerateBySlider(name)
+
+	code := authFact.GenerateBySlider(name)
 	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
 // NormalLogin 登录
 func (u *AuthController) NormalLogin(ctx *gin.Context) {
-	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrganization + "name"))
-	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrganization + "pw"))
-	sliderCode := ctx.GetString(consts.ValidatorPrefixOrganization + "sliderCode")
-	smsCode := ctx.GetString(consts.ValidatorPrefixOrganization + "smsCode")
+	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
+	pw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "pw"))
+	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
+	smsCode := ctx.GetString(consts.ValidatorPrefixOrg + "smsCode")
 	if string_helper.IsEmpty(name) || string_helper.IsEmpty(pw) || string_helper.IsEmpty(sliderCode) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
 
-	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
+	result, errCode, err := user_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

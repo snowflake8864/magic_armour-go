@@ -1,4 +1,4 @@
-package authorization
+package middleware_auth_agent
 
 import (
 	"bytes"
@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
 	accessLogService "goskeleton/app/service/agent/access_log_service"
 	"goskeleton/app/service/agent/agent_service"
@@ -50,7 +51,7 @@ func CheckAgentToken() gin.HandlerFunc {
 // SaveAgentAccess 保存终端访问信息
 func SaveAgentAccess() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		bodyLogWriter := &responseBody{body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
+		bodyLogWriter := &authorization.ResponseBody{Body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
 		//开始时间
 		startTime := time.Now()
@@ -63,10 +64,10 @@ func SaveAgentAccess() gin.HandlerFunc {
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
-			param.Input = GetRequestParams(c)
+			param.Input = authorization.GetRequestParams(c)
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
-			param.Resp = bodyLogWriter.body.String()
+			param.Resp = bodyLogWriter.Body.String()
 			param.Status = enums.IsNot
 			if param.HttpCode == http.StatusOK {
 				param.Status = enums.IsYes
@@ -87,9 +88,11 @@ func SaveAgentAccess() gin.HandlerFunc {
 			if !string_helper.IsEmpty(param.AgentId) {
 				accessLogService.CreateCurdFactory().Add(&param)
 			}
-			/*variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
-			variable.ZapLog.Info(helpers.JsonEncode(param))
-			variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")*/
+			/*
+				variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
+				variable.ZapLog.Info(json_helper.Encode(param))
+				variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")
+			*/
 		}(context.Copy())
 
 	}

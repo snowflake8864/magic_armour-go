@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/middleware/authorization"
+	"goskeleton/app/http/middleware/authorization/middleware_auth_platform"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/cur_app"
@@ -63,7 +64,7 @@ func InitPlatformRouter() *gin.Engine {
 			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())
 		})
 
-		vPlatform.Use(authorization.RequestParams).Use(authorization.SavePlatformOperate())
+		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SavePlatformOperate())
 		{
 			//登录认证
 			auth := vPlatform.Group("auth/")
@@ -76,7 +77,7 @@ func InitPlatformRouter() *gin.Engine {
 			}
 
 			// 【需要token】中间件验证的路由
-			vPlatform.Use(authorization.CheckPlatformToken())
+			vPlatform.Use(middleware_auth_platform.CheckPlatformToken())
 			{
 				//文件上传公共路由
 				uploadFiles := vPlatform.Group("upload/")

@@ -23,174 +23,172 @@ func OrganizationRegisterValidator() {
 	var key string
 
 	//安全认证
-	key = consts.ValidatorPrefixPlatform + "AuthCheckUser"
+	key = consts.ValidatorPrefixOrg + "AuthCheckUser"
 	containers.Set(key, auth3.CheckUser{})
-	key = consts.ValidatorPrefixPlatform + "AuthGetSliderCode"
+	key = consts.ValidatorPrefixOrg + "AuthGetSliderCode"
 	containers.Set(key, auth3.GetSliderCode{})
-	key = consts.ValidatorPrefixPlatform + "AuthSendSms"
+	key = consts.ValidatorPrefixOrg + "AuthSendSms"
 	containers.Set(key, auth3.SendSms{})
-	key = consts.ValidatorPrefixPlatform + "AuthNormalLogin"
+	key = consts.ValidatorPrefixOrg + "AuthNormalLogin"
 	containers.Set(key, auth3.NormalLogin{})
-	key = consts.ValidatorPrefixPlatform + "AuthLogout"
-	containers.Set(key, auth3.Logout{})
-	key = consts.ValidatorPrefixPlatform + "AuthHsLogin"
+	key = consts.ValidatorPrefixOrg + "AuthHsLogin"
 	containers.Set(key, auth3.HsLogin{})
 
 	//首页
-	key = consts.ValidatorPrefixPlatform + "HomeGetAgentStatistic"
+	key = consts.ValidatorPrefixOrg + "HomeGetAgentStatistic"
 	containers.Set(key, home3.GetAgentStatistic{})
-	key = consts.ValidatorPrefixPlatform + "HomeGetAlarmStatistic"
+	key = consts.ValidatorPrefixOrg + "HomeGetAlarmStatistic"
 	containers.Set(key, home3.GetAlarmStatistic{})
 
 	//组织架构
-	key = consts.ValidatorPrefixPlatform + "DepartmentTree"
+	key = consts.ValidatorPrefixOrg + "DepartmentTree"
 	containers.Set(key, department3.Tree{})
-	key = consts.ValidatorPrefixPlatform + "DepartmentAdd"
+	key = consts.ValidatorPrefixOrg + "DepartmentAdd"
 	containers.Set(key, department3.Add{})
-	key = consts.ValidatorPrefixPlatform + "DepartmentEdit"
+	key = consts.ValidatorPrefixOrg + "DepartmentEdit"
 	containers.Set(key, department3.Edit{})
-	key = consts.ValidatorPrefixPlatform + "DepartmentDelete"
+	key = consts.ValidatorPrefixOrg + "DepartmentDelete"
 	containers.Set(key, department3.Delete{})
 
 	//终端
-	key = consts.ValidatorPrefixPlatform + "AgentManagePage"
+	key = consts.ValidatorPrefixOrg + "AgentManagePage"
 	containers.Set(key, agent3.ManagePage{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageDelete"
+	key = consts.ValidatorPrefixOrg + "AgentManageDelete"
 	containers.Set(key, agent3.ManageDelete{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageUninstall"
+	key = consts.ValidatorPrefixOrg + "AgentManageUninstall"
 	containers.Set(key, agent3.ManageUninstall{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageUpgrade"
+	key = consts.ValidatorPrefixOrg + "AgentManageUpgrade"
 	containers.Set(key, agent3.ManageUpgrade{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageBatchDelete"
+	key = consts.ValidatorPrefixOrg + "AgentManageBatchDelete"
 	containers.Set(key, agent3.ManageBatchDelete{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUninstall"
+	key = consts.ValidatorPrefixOrg + "AgentManageBatchUninstall"
 	containers.Set(key, agent3.ManageBatchUninstall{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageBatchUpgrade"
+	key = consts.ValidatorPrefixOrg + "AgentManageBatchUpgrade"
 	containers.Set(key, agent3.ManageBatchUpgrade{})
-	key = consts.ValidatorPrefixPlatform + "AgentManageBatchSetConfig"
+	key = consts.ValidatorPrefixOrg + "AgentManageBatchSetConfig"
 	containers.Set(key, agent3.ManageBatchSetConfig{})
-	key = consts.ValidatorPrefixPlatform + "AgentBasicGet"
+	key = consts.ValidatorPrefixOrg + "AgentBasicGet"
 	containers.Set(key, agent3.BasicGet{})
-	key = consts.ValidatorPrefixPlatform + "AgentBasicSave"
+	key = consts.ValidatorPrefixOrg + "AgentBasicSave"
 	containers.Set(key, agent3.BasicSave{})
-	key = consts.ValidatorPrefixPlatform + "AgentConfigGet"
+	key = consts.ValidatorPrefixOrg + "AgentConfigGet"
 	containers.Set(key, agent3.ConfigGet{})
-	key = consts.ValidatorPrefixPlatform + "AgentConfigSave"
+	key = consts.ValidatorPrefixOrg + "AgentConfigSave"
 	containers.Set(key, agent3.ConfigSave{})
-	key = consts.ValidatorPrefixPlatform + "AgentMonitorList"
+	key = consts.ValidatorPrefixOrg + "AgentMonitorList"
 	containers.Set(key, agent3.MonitorList{})
-	key = consts.ValidatorPrefixPlatform + "AgentMonitorInfo"
+	key = consts.ValidatorPrefixOrg + "AgentMonitorInfo"
 	containers.Set(key, agent3.MonitorInfo{})
-	key = consts.ValidatorPrefixPlatform + "AgentErrorPage"
+	key = consts.ValidatorPrefixOrg + "AgentErrorPage"
 	containers.Set(key, agent3.ErrorPage{})
 
 	//进程
-	key = consts.ValidatorPrefixPlatform + "ProcessManagePage"
+	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
 	containers.Set(key, process3.ManagePage{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageSetSwitch"
+	key = consts.ValidatorPrefixOrg + "ProcessManageSetSwitch"
 	containers.Set(key, process3.ManageSetSwitch{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageSetMode"
+	key = consts.ValidatorPrefixOrg + "ProcessManageSetMode"
 	containers.Set(key, process3.ManageSetMode{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchSetConfig"
+	key = consts.ValidatorPrefixOrg + "ProcessManageBatchSetConfig"
 	containers.Set(key, process3.ManageBatchSetConfig{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchSetWhite"
+	key = consts.ValidatorPrefixOrg + "ProcessManageBatchSetWhite"
 	containers.Set(key, process3.ManageBatchSetWhite{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchRefresh"
+	key = consts.ValidatorPrefixOrg + "ProcessManageBatchRefresh"
 	containers.Set(key, process3.ManageBatchRefresh{})
-	key = consts.ValidatorPrefixPlatform + "ProcessManageBatchCollect"
+	key = consts.ValidatorPrefixOrg + "ProcessManageBatchCollect"
 	containers.Set(key, process3.ManageBatchCollect{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentPageAll"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentPageAll"
 	containers.Set(key, process3.AgentPageAll{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentPageRunning"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentPageRunning"
 	containers.Set(key, process3.AgentPageRunning{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetStatus"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentSetStatus"
 	containers.Set(key, process3.AgentSetStatus{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentCancel"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentCancel"
 	containers.Set(key, process3.AgentCancel{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentClearAll"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentClearAll"
 	containers.Set(key, process3.AgentClearAll{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentClearRunning"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentClearRunning"
 	containers.Set(key, process3.AgentClearRunning{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentRefresh"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentRefresh"
 	containers.Set(key, process3.AgentRefresh{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentCollect"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentCollect"
 	containers.Set(key, process3.AgentCollect{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractRunningDll"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentExtractRunningDll"
 	containers.Set(key, process3.AgentExtractRunningDll{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentShowRunningDll"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentShowRunningDll"
 	containers.Set(key, process3.AgentShowRunningDll{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchWhite"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchWhite"
 	containers.Set(key, process3.AgentShowRunningDll{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentRepeatPage"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentRepeatPage"
 	containers.Set(key, process3.AgentRepeatHash{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentExtractSample"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentExtractSample"
 	containers.Set(key, procSample3.AddFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentSetGlobal"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentSetGlobal"
 	containers.Set(key, procGlobal3.AddFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessAgentBatchGlobalWhite"
+	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchGlobalWhite"
 	containers.Set(key, procGlobal3.BatchWhiteFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessGlobalPage"
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalPage"
 	containers.Set(key, procGlobal3.PageFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessGlobalAdd"
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalAdd"
 	containers.Set(key, procGlobal3.AddFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessGlobalEdit"
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalEdit"
 	containers.Set(key, procGlobal3.Edit{})
-	key = consts.ValidatorPrefixPlatform + "ProcessGlobalDelete"
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalDelete"
 	containers.Set(key, procGlobal3.Delete{})
-	key = consts.ValidatorPrefixPlatform + "ProcessGlobalClear"
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalClear"
 	containers.Set(key, procGlobal3.ClearFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessSearchPage"
+	key = consts.ValidatorPrefixOrg + "ProcessSearchPage"
 	containers.Set(key, process3.SearchPage{})
-	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalWhite"
+	key = consts.ValidatorPrefixOrg + "ProcessSearchBatchGlobalWhite"
 	containers.Set(key, procGlobal3.BatchWhiteFromProcess{})
-	key = consts.ValidatorPrefixPlatform + "ProcessSearchBatchGlobalBlack"
+	key = consts.ValidatorPrefixOrg + "ProcessSearchBatchGlobalBlack"
 	containers.Set(key, procGlobal3.BatchBlackFromProcess{})
 
 	//进程和模块样本
-	key = consts.ValidatorPrefixPlatform + "ProcSamplePage"
+	key = consts.ValidatorPrefixOrg + "ProcSamplePage"
 	containers.Set(key, procSample3.Page{})
-	key = consts.ValidatorPrefixPlatform + "ProcSampleDelete"
+	key = consts.ValidatorPrefixOrg + "ProcSampleDelete"
 	containers.Set(key, procSample3.Delete{})
-	key = consts.ValidatorPrefixPlatform + "ProcSampleClear"
+	key = consts.ValidatorPrefixOrg + "ProcSampleClear"
 	containers.Set(key, procSample3.Clear{})
-	key = consts.ValidatorPrefixPlatform + "ProcSampleDownload"
+	key = consts.ValidatorPrefixOrg + "ProcSampleDownload"
 	containers.Set(key, procSample3.Download{})
 
 	//防篡改
-	key = consts.ValidatorPrefixPlatform + "TamperManagePage"
+	key = consts.ValidatorPrefixOrg + "TamperManagePage"
 	containers.Set(key, tamper3.ManagePage{})
-	key = consts.ValidatorPrefixPlatform + "TamperManageSetSwitch"
+	key = consts.ValidatorPrefixOrg + "TamperManageSetSwitch"
 	containers.Set(key, tamper3.ManageSetSwitch{})
-	key = consts.ValidatorPrefixPlatform + "TamperManageSetMode"
+	key = consts.ValidatorPrefixOrg + "TamperManageSetMode"
 	containers.Set(key, tamper3.ManageSetMode{})
-	key = consts.ValidatorPrefixPlatform + "TamperManageBatchSetConfig"
+	key = consts.ValidatorPrefixOrg + "TamperManageBatchSetConfig"
 	containers.Set(key, tamper3.ManageBatchSetConfig{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyPage"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyPage"
 	containers.Set(key, tamper3.PolicyPage{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicySetSwitch"
+	key = consts.ValidatorPrefixOrg + "TamperPolicySetSwitch"
 	containers.Set(key, tamper3.PolicySetSwitch{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyAddFolder"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyAddFolder"
 	containers.Set(key, tamper3.PolicyAddFolder{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyAddFile"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyAddFile"
 	containers.Set(key, tamper3.PolicyAddFile{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyEditFolder"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyEditFolder"
 	containers.Set(key, tamper3.PolicyEditFolder{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyEditFile"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyEditFile"
 	containers.Set(key, tamper3.PolicyEditFile{})
-	key = consts.ValidatorPrefixPlatform + "TamperPolicyDelete"
+	key = consts.ValidatorPrefixOrg + "TamperPolicyDelete"
 	containers.Set(key, tamper3.PolicyDelete{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalPage"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalPage"
 	containers.Set(key, tamper3.GlobalPage{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalSetSwitch"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalSetSwitch"
 	containers.Set(key, tamper3.GlobalSetSwitch{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalAddFolder"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalAddFolder"
 	containers.Set(key, tamper3.GlobalAddFolder{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalAddFile"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalAddFile"
 	containers.Set(key, tamper3.GlobalAddFile{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalEditFolder"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalEditFolder"
 	containers.Set(key, tamper3.GlobalEditFolder{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalEditFile"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalEditFile"
 	containers.Set(key, tamper3.GlobalEditFile{})
-	key = consts.ValidatorPrefixPlatform + "TamperGlobalDelete"
+	key = consts.ValidatorPrefixOrg + "TamperGlobalDelete"
 	containers.Set(key, tamper3.GlobalDelete{})
 }

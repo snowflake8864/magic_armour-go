@@ -1,4 +1,4 @@
-package operate_log_service
+package platform_operate_service
 
 import (
 	"goskeleton/app/model/platform/operate_models"

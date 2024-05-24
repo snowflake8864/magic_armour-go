@@ -1,4 +1,4 @@
-package authorization
+package middleware_auth_platform
 
 import (
 	"bytes"
@@ -7,9 +7,10 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/platform/operate_models"
 	"goskeleton/app/service/platform/admin_service"
-	"goskeleton/app/service/platform/operate_log_service"
+	"goskeleton/app/service/platform/platform_operate_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -51,7 +52,7 @@ func CheckPlatformToken() gin.HandlerFunc {
 // SavePlatformOperate 保存平台操作记录
 func SavePlatformOperate() gin.HandlerFunc {
 	return func(context *gin.Context) {
-		bodyLogWriter := &responseBody{body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
+		bodyLogWriter := &authorization.ResponseBody{Body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
 		//开始时间
 		startTime := time.Now()
@@ -64,10 +65,10 @@ func SavePlatformOperate() gin.HandlerFunc {
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
-			param.Input = GetRequestParams(c)
+			param.Input = authorization.GetRequestParams(c)
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
-			param.Resp = bodyLogWriter.body.String()
+			param.Resp = bodyLogWriter.Body.String()
 			param.Status = enums.IsNot
 			if param.HttpCode == http.StatusOK {
 				param.Status = enums.IsYes
@@ -109,12 +110,14 @@ func SavePlatformOperate() gin.HandlerFunc {
 			}
 
 			if !string_helper.IsEmpty(param.CreateName) {
-				operate_log_service.CreateCurdFactory().Add(&param)
+				platform_operate_service.CreateCurdFactory().Add(&param)
 			}
 
-			/*variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
-			variable.ZapLog.Info(helpers.JsonEncode(param))
-			variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")*/
+			/*
+				variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
+				variable.ZapLog.Info(json_helper.Encode(param))
+				variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")
+			*/
 		}(context.Copy())
 
 	}

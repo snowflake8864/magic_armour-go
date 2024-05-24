@@ -5,16 +5,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type responseBody struct {
+type ResponseBody struct {
 	gin.ResponseWriter
-	body *bytes.Buffer
+	Body *bytes.Buffer
 }
 
-func (w responseBody) Write(b []byte) (int, error) {
-	w.body.Write(b)
+func (w ResponseBody) Write(b []byte) (int, error) {
+	w.Body.Write(b)
 	return w.ResponseWriter.Write(b)
 }
-func (w responseBody) WriteString(s string) (int, error) {
-	w.body.WriteString(s)
+func (w ResponseBody) WriteString(s string) (int, error) {
+	w.Body.WriteString(s)
 	return w.ResponseWriter.WriteString(s)
 }

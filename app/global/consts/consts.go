@@ -10,7 +10,7 @@ const (
 	ValidatorPrefixPlatform      string = "Platform_Validator_"
 	ValidatorPrefixAgent         string = "Agent_Validator_"
 	ValidatorPrefixApi           string = "Api_Validator_"
-	ValidatorPrefixOrganization  string = "Org_Validator_"
+	ValidatorPrefixOrg           string = "Org_Validator_"
 	ValidatorParamsCheckFailCode int    = -400300
 	ValidatorParamsCheckFailMsg  string = "参数校验失败"
 
@@ -57,6 +57,7 @@ const (
 
 	CurdBaseCode             int    = -1
 	PlatformLoginExpiredCode int    = 500003  //平台:登录过期
+	OrgLoginExpiredCode      int    = 500003  //平台:登录过期
 	AgentParamErrorCode      int    = 1000002 //终端：参数错误
 	AgentINSTALLCode         string = "410"   //终端：卸载
 	AgentLoginExpiredCode    string = "401"   //终端：登录过期

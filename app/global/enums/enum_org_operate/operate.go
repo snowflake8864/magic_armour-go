@@ -76,6 +76,7 @@ var pathModuleLabel = map[string][]string{
 	"/platform/auth/sendSms":       {ModuleAuth, "发送短信验证码"},
 	"/platform/auth/normalLogin":   {ModuleAuth, "密码登录"},
 	"/platform/auth/hsLogin":       {ModuleAuth, "幻势登录"},
+	"/platform/auth/logout":        {ModuleAuth, "幻势登录"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
