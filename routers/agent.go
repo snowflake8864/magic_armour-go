@@ -57,13 +57,13 @@ func InitAgentRouter() *gin.Engine {
 	})
 
 	//  创建一个接口路由组
-	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(middleware_auth_agent.SaveAgentAccess())
+	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(middleware_auth_agent.SaveAccess())
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthLogin"))
 		vAgent.POST("getuserid", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthMakeUserid"))
 
 		// 【需要token】中间件验证的路由
-		vAgent.Use(middleware_auth_agent.CheckAgentToken())
+		vAgent.Use(middleware_auth_agent.CheckToken())
 		{
 			//终端相关
 			vAgent.Any("getconf", (&agent.AgentController{}).GetConfig)                                            // 获取配置信息

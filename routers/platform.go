@@ -64,7 +64,7 @@ func InitPlatformRouter() *gin.Engine {
 			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())
 		})
 
-		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SavePlatformOperate())
+		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SaveOperate())
 		{
 			//登录认证
 			auth := vPlatform.Group("auth/")
@@ -77,7 +77,7 @@ func InitPlatformRouter() *gin.Engine {
 			}
 
 			// 【需要token】中间件验证的路由
-			vPlatform.Use(middleware_auth_platform.CheckPlatformToken())
+			vPlatform.Use(middleware_auth_platform.CheckToken())
 			{
 				//文件上传公共路由
 				uploadFiles := vPlatform.Group("upload/")

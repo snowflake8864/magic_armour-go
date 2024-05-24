@@ -9,47 +9,15 @@ import (
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
 	accessLogService "goskeleton/app/service/agent/access_log_service"
-	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
-	"goskeleton/app/utils/response"
 	"net/http"
 	"strings"
 	"time"
 )
 
-type AgentParams struct {
-	Authorization string `header:"Authorization" binding:"required,min=32,max=64"`
-}
-
-// CheckAgentToken 检查终端token完整性、有效性中间件
-func CheckAgentToken() gin.HandlerFunc {
-	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
-	return func(context *gin.Context) {
-		headerParams := AgentParams{}
-		//  推荐使用 ShouldBindHeader 方式获取头参数
-		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
-			return
-		}
-		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
-		loginInfo, err := agent_service.CreateCacheFactory().DecryptByLogin(headerParams.Authorization, true)
-		// token验证通过，同时绑定在请求上下文
-		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
-		context.Set(key, loginInfo)
-
-		if err != nil {
-			response.ErrorTokenFail(context, consts.AgentLoginExpiredCode, err.Error())
-			return
-		}
-		//variable.ZapLog.Info("loginInfo:" + loginInfo.AgentId)
-
-		context.Next()
-	}
-}
-
-// SaveAgentAccess 保存终端访问信息
-func SaveAgentAccess() gin.HandlerFunc {
+// SaveAccess 保存终端访问信息
+func SaveAccess() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		bodyLogWriter := &authorization.ResponseBody{Body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
@@ -89,9 +57,9 @@ func SaveAgentAccess() gin.HandlerFunc {
 				accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*
-				variable.ZapLog.Info("=============================================SaveAgentAccess start =============================================")
+				variable.ZapLog.Info("=============================================SaveAccess start =============================================")
 				variable.ZapLog.Info(json_helper.Encode(param))
-				variable.ZapLog.Info("=============================================SaveAgentAccess end =============================================")
+				variable.ZapLog.Info("=============================================SaveAccess end =============================================")
 			*/
 		}(context.Copy())
 

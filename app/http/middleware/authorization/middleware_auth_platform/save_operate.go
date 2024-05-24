@@ -14,43 +14,12 @@ import (
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
-	"goskeleton/app/utils/response"
 	"net/http"
 	"time"
 )
 
-type PlatformParams struct {
-	Authorization string `header:"Authorization" binding:"required,min=32,max=64"`
-}
-
-// CheckPlatformToken 检查平台token完整性、有效性中间件
-func CheckPlatformToken() gin.HandlerFunc {
-	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
-	return func(context *gin.Context) {
-		headerParams := PlatformParams{}
-		//  推荐使用 ShouldBindHeader 方式获取头参数
-		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
-			return
-		}
-		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
-		loginInfo, err := admin_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, true)
-		// token验证通过，同时绑定在请求上下文
-		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
-		context.Set(key, loginInfo)
-
-		if err != nil {
-			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, err.Error())
-			return
-		}
-		//variable.ZapLog.Info("loginInfo:" + loginInfo.Username)
-
-		context.Next()
-	}
-}
-
-// SavePlatformOperate 保存平台操作记录
-func SavePlatformOperate() gin.HandlerFunc {
+// SaveOperate 保存平台操作记录
+func SaveOperate() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		bodyLogWriter := &authorization.ResponseBody{Body: bytes.NewBufferString(""), ResponseWriter: context.Writer}
 		context.Writer = bodyLogWriter
@@ -77,7 +46,7 @@ func SavePlatformOperate() gin.HandlerFunc {
 			//是否需要记录
 			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
 			if string_helper.IsEmpty(param.Module) {
-				variable.ZapLog.Debug("SavePlatformOperate path error: " + param.Path)
+				variable.ZapLog.Debug("SaveOperate path error: " + param.Path)
 				return
 			}
 
@@ -93,13 +62,13 @@ func SavePlatformOperate() gin.HandlerFunc {
 				//获取参数中登录名
 				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefixPlatform + "name"))
 				if string_helper.IsEmpty(param.CreateName) {
-					variable.ZapLog.Error("SavePlatformOperate param name is empty, IP: " + param.NetIp)
+					variable.ZapLog.Error("SaveOperate param name is empty, IP: " + param.NetIp)
 					return
 				}
 				//获取管理员
 				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
 				if string_helper.IsEmpty(adminModel.Username) {
-					variable.ZapLog.Error("SavePlatformOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
+					variable.ZapLog.Error("SaveOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
 					return
 				}
 				param.CreateId = adminModel.Id
@@ -114,9 +83,9 @@ func SavePlatformOperate() gin.HandlerFunc {
 			}
 
 			/*
-				variable.ZapLog.Info("=============================================SavePlatformOperate start =============================================")
+				variable.ZapLog.Info("=============================================SaveOperate start =============================================")
 				variable.ZapLog.Info(json_helper.Encode(param))
-				variable.ZapLog.Info("=============================================SavePlatformOperate end =============================================")
+				variable.ZapLog.Info("=============================================SaveOperate end =============================================")
 			*/
 		}(context.Copy())
 
