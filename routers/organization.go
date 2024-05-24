@@ -68,12 +68,12 @@ func InitOrganizationRouter() *gin.Engine {
 				auth.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrganization+"AuthGetSliderCode"))
 				auth.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrganization+"AuthSendSms"))
 				auth.POST("normalLogin", validatorFactory.Create(consts.ValidatorPrefixOrganization+"AuthNormalLogin"))
-				auth.POST("logout", validatorFactory.Create(consts.ValidatorPrefixOrganization+"AuthLogout"))
+				auth.POST("logout", (&organization.AuthController{}).Logout)
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefixOrganization+"AuthHsLogin"))
 			}
 
 			// 【需要token】中间件验证的路由
-			vPlatform.Use(authorization.CheckPlatformPToken())
+			vPlatform.Use(authorization.CheckPlatformToken())
 			{
 				//首页
 				home := vPlatform.Group("home/")

@@ -76,7 +76,7 @@ func InitPlatformRouter() *gin.Engine {
 			}
 
 			// 【需要token】中间件验证的路由
-			vPlatform.Use(authorization.CheckPlatformPToken())
+			vPlatform.Use(authorization.CheckPlatformToken())
 			{
 				//文件上传公共路由
 				uploadFiles := vPlatform.Group("upload/")

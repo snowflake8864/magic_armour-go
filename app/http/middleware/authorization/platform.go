@@ -22,8 +22,8 @@ type PlatformParams struct {
 	Authorization string `header:"Authorization" binding:"required,min=32,max=64"`
 }
 
-// CheckPlatformPToken 检查平台token完整性、有效性中间件
-func CheckPlatformPToken() gin.HandlerFunc {
+// CheckPlatformToken 检查平台token完整性、有效性中间件
+func CheckPlatformToken() gin.HandlerFunc {
 	//variable.ZapLog.Info("检查终端token完整性、有效性中间件----------------")
 	return func(context *gin.Context) {
 		headerParams := PlatformParams{}
