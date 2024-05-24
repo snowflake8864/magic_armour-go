@@ -12,5 +12,12 @@ type SearchConditionsForProcess struct {
 	LteCreateAt  string
 }
 
+type SearchConditionsForSample struct {
+	OrgId   int64
+	AgentId string
+	Id      string
+	Status  int
+}
+
 type baseProc struct {
 }

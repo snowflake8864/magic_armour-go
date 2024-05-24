@@ -17,8 +17,8 @@ type GlobalCurd struct {
 
 // GetOne 获取一条
 func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.ProcGlobalModel) {
-	model, err := crd.masterModel.GetItemByOrgAndId(orgId, hash)
-	if err == nil || string_helper.IsEmpty(model.Id) {
+	model = crd.masterModel.GetItemByOrgAndId(orgId, hash)
+	if model == nil || string_helper.IsEmpty(model.Id) {
 		return nil
 	}
 	return model

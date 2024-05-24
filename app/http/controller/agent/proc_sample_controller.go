@@ -2,6 +2,13 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/variable"
+	"goskeleton/app/service/agent/proc_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -18,6 +25,29 @@ func (u *ProcSampleController) Get(ctx *gin.Context) {
 
 // Upload 上传样本
 func (u *ProcSampleController) Upload(ctx *gin.Context) {
+	id, _ := ctx.GetPostForm("p_hash")
+	if string_helper.IsEmpty(id) {
+		response.SuccessSimplify(ctx)
+	}
 
-	response.SuccessReturnData(ctx, "上传")
+	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
+	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
+		uploadParam.Type = "proc_sample"
+		loginInfo := u.getLogin(ctx)
+		uploadParam.OperateSource = enums.OperateSourceAgent
+		uploadParam.OperateId = loginInfo.OrgId
+		uploadParam.OperateName = loginInfo.AgentId
+		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+			response.FailSimplify(ctx, "保存失败")
+			return
+		}
+
+		if err := proc_service.CreateSampleCurdFactory().Upload(loginInfo.OrgId, loginInfo.AgentId, id, &uploadParam); err != nil {
+			response.FailSimplify(ctx, err.Error())
+			return
+		}
+		response.SuccessSimplify(ctx)
+	} else {
+		response.Fail(ctx, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+	}
 }

@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -136,7 +135,6 @@ func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 // UploadErrorFile 上传转储(错误) 文件
 func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 	remark, _ := ctx.GetPostForm("remark")
-	fmt.Println("remark:", remark)
 	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
 		uploadParam.Type = "agent_error"

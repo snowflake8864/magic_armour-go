@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 )
 
 func CreateErrorCurdFactory() *ErrorCurd {
@@ -24,8 +25,8 @@ func (crd *ErrorCurd) Add(orgId int64, agentId string, remark string, uploadMode
 		OrgId:        orgId,
 		AgentId:      agentId,
 		OriginalName: uploadModel.OriginalName,
-		StoragePath:  uploadModel.StoragePath,
-		FullPath:     uploadModel.FullPath,
+		StoragePath:  path_helper.ToStandard(uploadModel.StoragePath),
+		FullPath:     path_helper.ToStandard(uploadModel.FullPath),
 		Remark:       remark,
 		CreatedAt:    date_helper.CurDatetime(),
 	}

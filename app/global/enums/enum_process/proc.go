@@ -24,14 +24,17 @@ const (
 	SearchStatusThreatenWhite int = 64  //状态： 威胁情报白名单
 	SearchStatusThreatenBlack int = 128 //状态： 威胁情报黑名单
 
-	ProcGetDllStatusDefault = 0 //进程获取指定模块状态： 默认
-	ProcGetDllStatusBegin   = 1 // 进程获取指定模块状态： 开始(等待终端获取任务)
-	ProcGetDllStatusRun     = 2 // 进程获取指定模块状态： 获取中(等待终端上传数据)
-	ProcGetDllStatusFinish  = 3 //进程获取指定模块状态：结束
+	ProcGetDllStatusDefault int = 1 //进程获取指定模块状态： 默认
+	ProcGetDllStatusBegin   int = 2 // 进程获取指定模块状态： 开始(等待终端获取任务)
+	ProcGetDllStatusRun     int = 3 // 进程获取指定模块状态： 获取中(等待终端上传数据)
+	ProcGetDllStatusFinish  int = 4 //进程获取指定模块状态：结束
 
+	SampleStatusDefault  int = 1 //样本状态： 默认
+	SampleStatusGetting  int = 2 //样本状态：提取中
+	SampleStatusFinished int = 3 //样本状态：已完成
 )
 
-var EnumMap = map[string]map[int]string{
+var EnumMapInt = map[string]map[int]string{
 	"search_status": {
 		SearchStatusUnset:         "未设置",
 		SearchStatusUnknown:       "未知",
