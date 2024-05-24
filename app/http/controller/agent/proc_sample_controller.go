@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/agent/proc_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -25,6 +27,11 @@ func (u *ProcSampleController) Get(ctx *gin.Context) {
 
 // Upload 上传样本
 func (u *ProcSampleController) Upload(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypeProcessSampleUpload}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+
 	id, _ := ctx.GetPostForm("p_hash")
 	if string_helper.IsEmpty(id) {
 		response.SuccessSimplify(ctx)
@@ -33,7 +40,7 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
 		uploadParam.Type = "proc_sample"
-		loginInfo := u.getLogin(ctx)
+
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
@@ -48,6 +55,6 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		}
 		response.SuccessSimplify(ctx)
 	} else {
-		response.Fail(ctx, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+		response.Success(ctx, consts.FilesUploadFailMsg, consts.FilesUploadFailCode)
 	}
 }
