@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -8,10 +9,14 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/service/agent/agent_err_service"
 	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -130,8 +135,28 @@ func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 
 // UploadErrorFile 上传转储(错误) 文件
 func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
+	remark, _ := ctx.GetPostForm("remark")
+	fmt.Println("remark:", remark)
+	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
+	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
+		uploadParam.Type = "agent_error"
+		loginInfo := u.GetLogin(ctx)
+		uploadParam.OperateSource = enums.OperateSourceAgent
+		uploadParam.OperateId = loginInfo.OrgId
+		uploadParam.OperateName = loginInfo.AgentId
+		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+			response.FailSimplify(ctx, "保存失败")
+			return
+		}
 
-	response.SuccessReturnData(ctx, "上传转储(错误) 文件")
+		if err := agent_err_service.CreateErrorCurdFactory().Add(loginInfo.OrgId, loginInfo.AgentId, remark, &uploadParam); err != nil {
+			response.FailSimplify(ctx, err.Error())
+			return
+		}
+		response.SuccessSimplify(ctx)
+	} else {
+		response.Fail(ctx, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+	}
 }
 
 // MonitorHardware 监控硬件资源
