@@ -20,7 +20,10 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 	newSavePath, newReturnPath := generateYearMonthPath(savePath)
 
 	//  1.获取上传的文件名(参数验证器已经验证完成了第一步错误，这里简化)
-	file, _ := context.FormFile(variable.ConfigYml.GetString("FileUploadSetting.UploadFileField")) //  file 是一个文件结构体（文件对象）
+	file, err := context.FormFile(variable.ConfigYml.GetString("FileUploadSetting.UploadFileField")) //  file 是一个文件结构体（文件对象）
+	if err != nil {
+		return false, upload
+	}
 
 	//  保存文件，原始文件名进行全局唯一编码加密、md5 加密，保证在后台存储不重复
 	var saveErr error

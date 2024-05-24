@@ -24,8 +24,8 @@ func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
 	return nil
 }
 
-// Upload 上传
-func (crd *SampleCurd) Upload(orgId int64, agentId string, id string, uploadModel *upload_models.UploadModel) error {
+// UploadSuccess 上传成功
+func (crd *SampleCurd) UploadSuccess(orgId int64, agentId string, id string, uploadModel *upload_models.UploadModel) error {
 	conditions := proc_models.SearchConditionsForSample{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -37,6 +37,23 @@ func (crd *SampleCurd) Upload(orgId int64, agentId string, id string, uploadMode
 		"original_name": uploadModel.OriginalName,
 		"storage_path":  path_helper.ToStandard(uploadModel.StoragePath),
 		"full_path":     path_helper.ToStandard(uploadModel.FullPath),
+	}
+	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
+		return errors.New("修改失败")
+	}
+	return nil
+}
+
+// UploadFail 上传失败
+func (crd *SampleCurd) UploadFail(orgId int64, agentId string, id string) error {
+	conditions := proc_models.SearchConditionsForSample{
+		OrgId:   orgId,
+		AgentId: agentId,
+		Id:      id,
+	}
+
+	updates := map[string]interface{}{
+		"status": enum_process.SampleStatusFail,
 	}
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
 		return errors.New("修改失败")

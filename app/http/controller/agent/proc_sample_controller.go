@@ -40,7 +40,6 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
 		uploadParam.Type = "proc_sample"
-
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
@@ -49,12 +48,15 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 			return
 		}
 
-		if err := proc_service.CreateSampleCurdFactory().Upload(loginInfo.OrgId, loginInfo.AgentId, id, &uploadParam); err != nil {
+		if err := proc_service.CreateSampleCurdFactory().UploadSuccess(loginInfo.OrgId, loginInfo.AgentId, id, &uploadParam); err != nil {
 			response.FailSimplify(ctx, err.Error())
 			return
 		}
 		response.SuccessSimplify(ctx)
 	} else {
+		//修改状态
+		_ = proc_service.CreateSampleCurdFactory().UploadFail(loginInfo.OrgId, loginInfo.AgentId, id)
+
 		response.Success(ctx, consts.FilesUploadFailMsg, consts.FilesUploadFailCode)
 	}
 }

@@ -32,6 +32,7 @@ const (
 	SampleStatusDefault  int = 1 //样本状态： 默认
 	SampleStatusGetting  int = 2 //样本状态：提取中
 	SampleStatusFinished int = 3 //样本状态：已完成
+	SampleStatusFail     int = 4 //样本状态：已完成
 )
 
 var EnumMapInt = map[string]map[int]string{
@@ -44,6 +45,12 @@ var EnumMapInt = map[string]map[int]string{
 		SearchStatusGlobalBlack:   "全局黑名单",
 		SearchStatusThreatenWhite: "威胁情报白名单",
 		SearchStatusThreatenBlack: "威胁情报黑名单",
+	},
+	"sample_status": {
+		SampleStatusDefault:  "未开始",
+		SampleStatusGetting:  "提取中",
+		SampleStatusFinished: "完成",
+		SampleStatusFail:     "失败",
 	},
 }
 
