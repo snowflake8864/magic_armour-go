@@ -10,6 +10,7 @@ import (
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
+	registry3 "goskeleton/app/http/validator/organization/registry"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 )
 
@@ -33,6 +34,20 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, auth3.NormalLogin{})
 	key = consts.ValidatorPrefixOrg + "AuthHsLogin"
 	containers.Set(key, auth3.HsLogin{})
+
+	//注册
+	key = consts.ValidatorPrefixOrg + "RegistryCheckOrgName"
+	containers.Set(key, registry3.CheckOrgName{})
+	key = consts.ValidatorPrefixOrg + "RegistryCheckUserName"
+	containers.Set(key, registry3.CheckUserName{})
+	key = consts.ValidatorPrefixOrg + "RegistryCheckUserPhone"
+	containers.Set(key, registry3.CheckUserPhone{})
+	key = consts.ValidatorPrefixOrg + "RegistryGetSliderCode"
+	containers.Set(key, registry3.GetSliderCode{})
+	key = consts.ValidatorPrefixOrg + "RegistrySendSms"
+	containers.Set(key, registry3.SendSms{})
+	key = consts.ValidatorPrefixOrg + "RegistrySignup"
+	containers.Set(key, registry3.Signup{})
 
 	//首页
 	key = consts.ValidatorPrefixOrg + "HomeGetAgentStatistic"

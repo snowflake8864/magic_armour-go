@@ -78,8 +78,22 @@ func InitOrganizationRouter() *gin.Engine {
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthHsLogin"))
 			}
 
-			// 【需要token】中间件验证的路由
+			//接口是否启用
+			vOrg.Use(middleware_auth_org.ApiIsEnabled())
+			{
+				registry := vOrg.POST("registry/")
+				{
+					registry.POST("types", (&organization.RegistryController{}).Types)
+					registry.POST("checkOrgName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckOrgName"))
+					registry.POST("checkUserName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserName"))
+					registry.POST("checkUserPhone", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserPhone"))
+					registry.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySendSms"))
+					registry.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryGetSliderCode"))
+					registry.POST("signup", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySignup"))
+				}
+			}
 
+			// 【需要token】中间件验证的路由
 			vOrg.Use(middleware_auth_org.CheckToken())
 			{
 				//首页
