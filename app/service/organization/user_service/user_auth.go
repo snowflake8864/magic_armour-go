@@ -146,7 +146,7 @@ func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isP
 	if smsSwitch := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch); string_helper.ToInt(smsSwitch) == enums.SwitchOn {
 		return nil, true
 	}
-
+	
 	//企业开关
 	orgModel, _ := organization_models.CreateOrganizationFactory().GetItemById(orgId)
 	if orgModel == nil || orgModel.Id == 0 {

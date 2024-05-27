@@ -138,20 +138,20 @@ func TestRsaCrypt(t *testing.T) {
 	strList := []string{
 		"root",
 		"veda@2022",
-		"admin",
+		"subin123",
 		"root2020",
 	}
 
 	for _, val := range strList {
-		fmt.Println("加密:" + val)
-		encrypted, err := rsaFct.EncryptToBase64("root")
+		fmt.Println("加密:", val)
+		encrypted, err := rsaFct.EncryptToBase64(val)
 		assert.Nil(t, err)
 		fmt.Println(encrypted)
 
 		decrypted, err := rsaFct.DecryptByBase64(encrypted)
 		assert.Nil(t, err)
-		fmt.Println("解密:")
-		fmt.Println(decrypted)
+		fmt.Println("解密:", decrypted)
+		fmt.Println("=====================================")
 	}
 
 }
