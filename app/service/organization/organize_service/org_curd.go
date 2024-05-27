@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
+	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateOrgCurdFactory() *OrgCurd {
@@ -74,6 +75,8 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	}
 
 	//新增企业用户
+	pw, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToHex(userParam.Password)
+	userParam.Password = pw
 	userParam.OrgId = orgParam.Id
 	userParam.Status = enum_user.StatusNormal
 	userParam.LastLoginAt = orgParam.CreatedAt
