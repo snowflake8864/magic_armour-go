@@ -31,6 +31,7 @@ func (m *UserModel) Columns() []string {
 		"pw_error_num",
 		"last_login_at",
 		"is_root",
+		"depts",
 		"status",
 		"create_id",
 		"create_name",

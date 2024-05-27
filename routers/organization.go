@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/http/middleware/cors"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/gin_release"
 	"net/http"
 )
@@ -60,6 +61,10 @@ func InitOrganizationRouter() *gin.Engine {
 	//  创建一个接口路由组
 	vOrg := router.Group("/organization/")
 	{
+		vOrg.GET("customConfig", func(context *gin.Context) {
+			context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
+		})
+
 		vOrg.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOperate())
 		{
 			//登录认证

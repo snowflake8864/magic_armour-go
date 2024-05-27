@@ -42,7 +42,7 @@ func ToSliceInt(jsonStr string) []int {
 	// 进行反序列化操作
 	err := json.Unmarshal([]byte(jsonStr), &numbers)
 	if err != nil {
-		return nil
+		return []int{}
 	}
 	return numbers
 }
@@ -54,7 +54,7 @@ func ToSliceInt64(jsonStr string) []int64 {
 	// 进行反序列化操作
 	err := json.Unmarshal([]byte(jsonStr), &numbers)
 	if err != nil {
-		return nil
+		return []int64{}
 	}
 	return numbers
 }
@@ -66,7 +66,7 @@ func ToSliceString(jsonStr string) []string {
 	// 进行反序列化操作
 	err := json.Unmarshal([]byte(jsonStr), &strList)
 	if err != nil {
-		return nil
+		return []string{}
 	}
 	return strList
 }

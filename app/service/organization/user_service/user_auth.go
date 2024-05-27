@@ -46,11 +46,12 @@ type UserAuth struct {
 }
 
 type UserCacheLogin struct {
-	OrgId    int64  `json:"org_id"`
-	UserId   int64  `json:"user_id"`
-	Username string `json:"username"`
-	IsRoot   int    `json:"is_root"`
-	LoginAt  string `json:"login_at"`
+	OrgId    int64   `json:"org_id"`
+	UserId   int64   `json:"user_id"`
+	Username string  `json:"username"`
+	IsRoot   int     `json:"is_root"`
+	Depts    []int64 `json:"depts"`
+	LoginAt  string  `json:"login_at"`
 }
 
 func (crd *UserAuth) keyByToken(val string) string {
@@ -146,7 +147,7 @@ func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isP
 	if smsSwitch := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginSmsSwitch); string_helper.ToInt(smsSwitch) == enums.SwitchOn {
 		return nil, true
 	}
-	
+
 	//企业开关
 	orgModel, _ := organization_models.CreateOrganizationFactory().GetItemById(orgId)
 	if orgModel == nil || orgModel.Id == 0 {
@@ -223,11 +224,14 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 
 // loginAfter
 func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]interface{} {
+	depts := json_helper.ToSliceInt64(userModel.Depts)
+
 	loginInfo := UserCacheLogin{
 		OrgId:    userModel.OrgId,
 		UserId:   userModel.Id,
 		Username: userModel.Username,
 		IsRoot:   userModel.IsRoot,
+		Depts:    depts,
 		LoginAt:  date_helper.CurDatetime(),
 	}
 
@@ -242,6 +246,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]int
 	result["is_root"] = userModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
+	result["depts"] = depts
 	return result
 }
 
