@@ -6,6 +6,7 @@ import (
 	agent3 "goskeleton/app/http/validator/organization/agent"
 	auth3 "goskeleton/app/http/validator/organization/auth"
 	department3 "goskeleton/app/http/validator/organization/department"
+	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
@@ -48,6 +49,16 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, registry3.SendSms{})
 	key = consts.ValidatorPrefixOrg + "RegistrySignup"
 	containers.Set(key, registry3.Signup{})
+
+	//找回密码
+	key = consts.ValidatorPrefixOrg + "FindPwGetSliderCode"
+	containers.Set(key, findPw3.GetSliderCode{})
+	key = consts.ValidatorPrefixOrg + "FindPwSendSms"
+	containers.Set(key, findPw3.SendSms{})
+	key = consts.ValidatorPrefixOrg + "FindPwCheckSms"
+	containers.Set(key, findPw3.CheckSms{})
+	key = consts.ValidatorPrefixOrg + "FindModifyPw"
+	containers.Set(key, findPw3.ModifyPw{})
 
 	//首页
 	key = consts.ValidatorPrefixOrg + "HomeGetAgentStatistic"
