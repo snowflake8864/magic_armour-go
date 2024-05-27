@@ -51,14 +51,14 @@ func InitApiRouter() *gin.Engine {
 	}
 
 	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Api接口: "+consts.VersionNumber)
+		context.String(http.StatusOK, "Api接口: "+variable.VersionNumber)
 	})
 
 	//  创建一个路由组
 	vApi := router.Group("/api/")
 	{
 		vApi.GET("getVersion", func(ctx *gin.Context) {
-			response.SuccessReturnData(ctx, consts.VersionNumber)
+			response.SuccessReturnData(ctx, variable.VersionNumber)
 		})
 
 		// 软件版本相关

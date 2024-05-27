@@ -2,7 +2,6 @@ package huanshi_platform
 
 import (
 	"errors"
-	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
@@ -46,7 +45,7 @@ func CreateRequestFactory(c RequestConfig) *RequestHuanshi {
 		Config:           c,
 		PrivateRsa:       variable.HuanshiPrivateRsa,
 		RequestPlatform:  "huanjia",
-		Edition:          consts.VersionNumber,
+		Edition:          variable.VersionNumber,
 		agentCachePrefix: "huanshi_agent_",
 	}
 }

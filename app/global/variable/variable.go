@@ -15,12 +15,16 @@ import (
 // 开发者自行封装的全局变量，请做好并发安全检查与确认
 
 var (
-	BasePath           string                  // 定义项目的根目录
-	EventDestroyPrefix = "Destroy_"            //  程序退出时需要销毁的事件前缀
-	ConfigKeyPrefix    = "Config_"             //  配置文件键值缓存时，键的前缀
-	DateFormat         = "2006-01-02 15:04:05" //  设置全局日期时间格式
-	DayFormat          = "2006-01-02"          //  设置全局日期时间格式
-	HuanshiPrivateRsa  = "LWX919787"           //幻势:私钥
+	BasePath           string                         // 定义项目的根目录
+	EventDestroyPrefix        = "Destroy_"            //  程序退出时需要销毁的事件前缀
+	ConfigKeyPrefix           = "Config_"             //  配置文件键值缓存时，键的前缀
+	DateFormat                = "2006-01-02 15:04:05" //  设置全局日期时间格式
+	DayFormat                 = "2006-01-02"          //  设置全局日期时间格式
+	HuanshiPrivateRsa         = "LWX919787"           //幻势:私钥
+	VersionNumber             = "MA_6.0.0.0"          //产品版本号
+
+	AppUsageVersionOffline int = 1 //程序使用版本:离线
+	AppUsageVersionCloud   int = 2 //程序使用版本:云
 
 	// 全局日志指针
 	ZapLog *zap.Logger

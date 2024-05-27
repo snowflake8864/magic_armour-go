@@ -55,7 +55,7 @@ func InitOrganizationRouter() *gin.Engine {
 	}
 
 	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Organization接口: "+consts.VersionNumber)
+		context.String(http.StatusOK, "Organization接口: "+variable.VersionNumber)
 	})
 
 	//  创建一个接口路由组
@@ -81,7 +81,7 @@ func InitOrganizationRouter() *gin.Engine {
 			//接口是否启用
 			vOrg.Use(middleware_auth_org.ApiIsEnabled())
 			{
-				registry := vOrg.POST("registry/")
+				registry := vOrg.Group("registry/")
 				{
 					registry.POST("types", (&organization.RegistryController{}).Types)
 					registry.POST("checkOrgName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckOrgName"))
@@ -91,6 +91,7 @@ func InitOrganizationRouter() *gin.Engine {
 					registry.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryGetSliderCode"))
 					registry.POST("signup", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySignup"))
 				}
+
 			}
 
 			// 【需要token】中间件验证的路由

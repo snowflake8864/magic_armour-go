@@ -53,7 +53,7 @@ func InitAgentRouter() *gin.Engine {
 	}
 
 	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Agent接口: "+consts.VersionNumber)
+		context.String(http.StatusOK, "Agent接口: "+variable.VersionNumber)
 	})
 
 	//  创建一个接口路由组

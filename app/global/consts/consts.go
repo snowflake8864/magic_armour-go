@@ -2,7 +2,6 @@ package consts
 
 // 这里定义的常量，一般是具有错误代码+错误说明组成，一般用于接口返回
 const (
-	VersionNumber string = "MA_6.0.0.0"
 	// 进程被结束
 	ProcessKilled string = "收到信号，进程被结束"
 	// 表单验证器前缀

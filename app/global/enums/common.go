@@ -9,9 +9,6 @@ const (
 	SwitchOn      int    = 1 //开关状态: 开
 	SwitchOff     int    = 0 //开关状态: 否
 
-	AppUsageVersionOffline int = 1 //程序使用版本:离线
-	AppUsageVersionCloud   int = 2 //程序使用版本:云
-
 	OperateSourceOrganize int = 1 //操作来源：企业
 	OperateSourcePlatform int = 2 //操作来源：平台
 	OperateSourceAi       int = 3 //操作来源：AI

@@ -3,10 +3,10 @@ package agent
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/organization/organize_service"
@@ -76,7 +76,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	userInfo, err := software_service.CreateDownloadFactory().DecryptConfig(userId)
 	if err != nil {
 		//@todo 兼容以前离线版本
-		if cur_app.GetAppUsageVersion() == enums.AppUsageVersionOffline {
+		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
 			dictIds := []string{
 				enum_dictionary.AgentCompatibleDefaultOrg,
 				enum_dictionary.AgentCompatibleDefaultUser,

@@ -1,7 +1,6 @@
 package cur_app
 
 import (
-	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 )
 
@@ -14,7 +13,7 @@ func GetAppUsageVersion() int {
 func GetPlatformConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
-	data["ver_number"] = consts.VersionNumber
+	data["ver_number"] = variable.VersionNumber
 
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.IconShow")
@@ -34,7 +33,7 @@ func GetPlatformConfig() map[string]interface{} {
 func GetOrganizationConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
-	data["ver_number"] = consts.VersionNumber
+	data["ver_number"] = variable.VersionNumber
 
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.IconShow")
