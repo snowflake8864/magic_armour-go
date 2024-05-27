@@ -78,31 +78,36 @@ func InitOrganizationRouter() *gin.Engine {
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthHsLogin"))
 			}
 
-			//接口是否启用
-			vOrg.Use(middleware_auth_org.ApiIsEnabled())
+			registry := vOrg.Group("registry/").Use(middleware_auth_org.ApiIsEnabled())
 			{
-				registry := vOrg.Group("registry/")
-				{
-					registry.POST("types", (&organization.RegistryController{}).Types)
-					registry.POST("checkOrgName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckOrgName"))
-					registry.POST("checkUserName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserName"))
-					registry.POST("checkUserPhone", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserPhone"))
-					registry.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySendSms"))
-					registry.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryGetSliderCode"))
-					registry.POST("signup", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySignup"))
-				}
-				find := vOrg.Group("findPw/")
-				{
-					find.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwGetSliderCode"))
-					find.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwSendSms"))
-					find.POST("checkSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwCheckSms"))
-					find.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwModifyPw"))
-				}
+				registry.POST("types", (&organization.RegistryController{}).Types)
+				registry.POST("checkOrgName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckOrgName"))
+				registry.POST("checkUserName", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserName"))
+				registry.POST("checkUserPhone", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryCheckUserPhone"))
+				registry.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySendSms"))
+				registry.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistryGetSliderCode"))
+				registry.POST("signup", validatorFactory.Create(consts.ValidatorPrefixOrg+"RegistrySignup"))
+			}
+			findPwd := vOrg.Group("findPw/").Use(middleware_auth_org.ApiIsEnabled())
+			{
+				findPwd.POST("getSliderCode", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwGetSliderCode"))
+				findPwd.POST("sendSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwSendSms"))
+				findPwd.POST("checkSms", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwCheckSms"))
+				findPwd.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"FindPwModifyPw"))
 			}
 
 			// 【需要token】中间件验证的路由
 			vOrg.Use(middleware_auth_org.CheckToken())
 			{
+				//组织架构
+				department := vOrg.Group("department/")
+				{
+					department.POST("tree", (&organization.DepartmentController{}).Tree)
+					department.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentAdd"))
+					department.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentEdit"))
+					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentDelete"))
+				}
+
 				//首页
 				home := vOrg.Group("home/")
 				{

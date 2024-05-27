@@ -246,7 +246,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]int
 	result["is_root"] = userModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
-	result["depts"] = depts
+	//result["depts"] = depts
 	return result
 }
 

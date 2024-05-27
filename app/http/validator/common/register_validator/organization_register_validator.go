@@ -67,8 +67,6 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, home3.GetAlarmStatistic{})
 
 	//组织架构
-	key = consts.ValidatorPrefixOrg + "DepartmentTree"
-	containers.Set(key, department3.Tree{})
 	key = consts.ValidatorPrefixOrg + "DepartmentAdd"
 	containers.Set(key, department3.Add{})
 	key = consts.ValidatorPrefixOrg + "DepartmentEdit"

@@ -1,7 +1,9 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
@@ -18,6 +20,10 @@ func (u *DepartmentController) Tree(ctx *gin.Context) {
 
 // Add 添加
 func (u *DepartmentController) Add(ctx *gin.Context) {
+	parentId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "parentId"))
+	name := ctx.GetString(consts.ValidatorPrefixOrg + "name")
+	ip := ctx.GetString(consts.ValidatorPrefixOrg + "ip")
+	fmt.Println("============:", parentId, name, ip)
 	response.SuccessReturnData(ctx, "add")
 }
 
