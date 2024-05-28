@@ -9,6 +9,7 @@ import (
 )
 
 type Delete struct {
+	Id int `form:"id" json:"id" binding:"required"`
 }
 
 func (n Delete) CheckParams(context *gin.Context) {

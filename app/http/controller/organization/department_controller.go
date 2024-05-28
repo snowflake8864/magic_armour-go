@@ -62,5 +62,13 @@ func (u *DepartmentController) Edit(ctx *gin.Context) {
 
 // Delete 删除
 func (u *DepartmentController) Delete(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "delete")
+	loginInfo := u.getLogin(ctx)
+	id := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
+
+	if !department_service.CreateCurdFactory().DelSelfWithChildById(loginInfo.OrgId, id) {
+		response.FailSimplify(ctx, "删除失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }

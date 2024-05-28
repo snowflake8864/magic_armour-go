@@ -162,10 +162,40 @@ func (crd *DepartmentCurd) UpdateById(param *department_models.DepartmentModel) 
 	return nil
 }
 
+// DelSelfWithChildById 删除本身以及子集
+func (crd *DepartmentCurd) DelSelfWithChildById(orgId, id int64) bool {
+	conditions := department_models.SearchConditions{
+		OrgId:    orgId,
+		FullCode: int_helper.Int64ToStr(id),
+	}
+	/*models, err := crd.masterModel.GetListByConditions(conditions)
+	if err != nil || models == nil {
+		return true
+	}
+
+	//删除缓存
+	for _, model := range models {
+
+	}*/
+
+	return crd.masterModel.DeleteByConditions(conditions)
+
+}
+
 // DeleteByOrg 通过企业编号删除
 func (crd *DepartmentCurd) DeleteByOrg(orgId int64) bool {
 	conditions := department_models.SearchConditions{
 		OrgId: orgId,
 	}
+	/*models, err := crd.masterModel.GetListByConditions(conditions)
+	if err != nil || models == nil {
+		return true
+	}
+
+	//删除缓存
+	for _, model := range models {
+
+	}*/
+
 	return crd.masterModel.DeleteByConditions(conditions)
 }
