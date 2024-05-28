@@ -2,13 +2,12 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // ProcessController 进程相关
 type ProcessController struct {
-	platform.ControllerBase
+	ControllerBase
 }
 
 // SearchStatus 查询状态

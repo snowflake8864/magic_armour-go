@@ -2,13 +2,12 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/utils/response"
 )
 
 // RoleController 角色相关
 type RoleController struct {
-	platform.ControllerBase
+	ControllerBase
 }
 
 // AllForManage 管理页：全部角色

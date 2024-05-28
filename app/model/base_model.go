@@ -122,6 +122,14 @@ func (m *BaseModel) WhereBuild(conditions map[string]interface{}) (whereSQL stri
 			case "IsNotNull":
 				whereSQL += fmt.Sprint(field, " IS NOT NULL")
 				break
+			case "findInSetLater":
+				whereSQL += fmt.Sprint(" FIND_IN_SET(?, ", field, ")")
+				vals = append(vals, conditionVal)
+				break
+			case "findInSetBefore":
+				whereSQL += fmt.Sprint(" FIND_IN_SET(", field, ", ?)")
+				vals = append(vals, conditionVal)
+				break
 			}
 			break
 		}

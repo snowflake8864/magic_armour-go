@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -140,5 +139,4 @@ func (crd *AgentOnline) autoGrant(orgId int64, agentId string) {
 
 // autoAllocateDept 自动分配组织架构
 func (crd *AgentOnline) autoAllocateDept(orgId int64, agentId, agentIp string) {
-	go department_service.CreateCurdFactory().AutoAllocate(orgId, agentId, agentIp)
 }

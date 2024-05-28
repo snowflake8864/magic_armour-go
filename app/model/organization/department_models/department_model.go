@@ -15,6 +15,7 @@ func CreateDepartmentFactory() *DepartmentModel {
 //结构体
 
 type DepartmentModel struct {
+	baseDept
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
@@ -75,9 +76,12 @@ func (m *DepartmentModel) InsertItem(s *DepartmentModel) bool {
 	}
 }
 
-// UpdateById 通过id修改
-func (m *DepartmentModel) UpdateById(id int64, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("id=?", id).Updates(updates)
+func (m *DepartmentModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Updates(updates)
 	if result.Error == nil {
 		return true
 	} else {
@@ -86,9 +90,9 @@ func (m *DepartmentModel) UpdateById(id int64, updates map[string]interface{}) b
 }
 
 // DeleteByConditions 通过条件删除
-func (m *DepartmentModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *DepartmentModel) DeleteByConditions(condition SearchConditions) bool {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	result := tmp.Delete(m)
@@ -100,8 +104,8 @@ func (m *DepartmentModel) DeleteByConditions(condition map[string]interface{}) b
 }
 
 // GetItemById 通过id获取一条记录
-func (m *DepartmentModel) GetItemById(id int64) (item *DepartmentModel, err error) {
-	result := m.Model(m).Where("id=?", id).Take(&item)
+func (m *DepartmentModel) GetItemById(orgId, id int64) (item *DepartmentModel, err error) {
+	result := m.Model(m).Where("org_id=? AND id=?", orgId, id).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
@@ -109,30 +113,13 @@ func (m *DepartmentModel) GetItemById(id int64) (item *DepartmentModel, err erro
 	}
 }
 
-// GetItemsByIds 通过id集合获取多条记录
-func (m *DepartmentModel) GetItemsByIds(ids []int64) (items []*DepartmentModel, err error) {
-	result := m.Model(m).Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-// GetItemsByConditions 通过条件获取多条记录
-func (m *DepartmentModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*DepartmentModel, err error) {
+// GetListByConditions 通过条件获取多条记录
+func (m *DepartmentModel) GetListByConditions(condition SearchConditions) (items []*DepartmentModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
-	if limit > 0 {
-		tmp = tmp.Offset(offset).Limit(limit)
-	}
-	if !string_helper.IsEmpty(order) {
-		tmp = tmp.Order(order)
-	} else {
-		tmp = tmp.Order("created_at ASC")
-	}
+	tmp = tmp.Order("id ASC")
 	result := m.Find(&items)
 	if result.Error == nil {
 		return items, nil

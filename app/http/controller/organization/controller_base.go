@@ -6,8 +6,8 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
-	"goskeleton/app/service/platform/department_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -116,9 +116,10 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 	}
 	deptStruct := make(map[int64]struct{})
 	var deptIds []int64
+	var orgId int64
 	for _, model := range agentModels {
 		agentIds = append(agentIds, model.AgentId)
-
+		orgId = model.OrgId
 		if _, isOk := deptStruct[model.DeptId]; model.DeptId > 0 && !isOk {
 			deptStruct[model.DeptId] = struct{}{}
 			deptIds = append(deptIds, model.DeptId)
@@ -126,7 +127,7 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 	}
 
 	if needDepartment && len(deptIds) > 0 {
-		departments = department_service.CreateCurdFactory().GetMapsByIds(deptIds)
+		departments = department_service.CreateCurdFactory().GetMapsByIds(orgId, deptIds)
 	}
 
 	return agentIds, departments

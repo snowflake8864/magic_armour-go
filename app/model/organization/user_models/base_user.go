@@ -5,7 +5,6 @@ type SearchConditions struct {
 }
 
 type baseUser struct {
-	OrgId int64
 }
 
 // conditions2Where 查询条件转化
