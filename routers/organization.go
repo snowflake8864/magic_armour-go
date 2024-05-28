@@ -117,7 +117,6 @@ func InitOrganizationRouter() *gin.Engine {
 					user.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserEdit"))
 					user.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserDelete"))
 					user.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserModifyPw"))
-					user.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserModifyPw"))
 				}
 
 				//首页

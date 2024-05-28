@@ -11,8 +11,8 @@ import (
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/model/organization/org_stat_models"
 	"goskeleton/app/service/agent/alarm_service"
+	"goskeleton/app/service/organization/org_log_service"
 	"goskeleton/app/service/organization/org_stat_service"
-	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/response"
@@ -179,7 +179,7 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 
 // UserNewestLogs 用户: 最新日志
 func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
-	models := organize_service.CreateOrgLogFactory().NewestList(10)
+	models := org_log_service.CreateOrgLogFactory().NewestList(10)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogList(models))
 }

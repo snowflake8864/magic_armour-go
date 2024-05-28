@@ -13,6 +13,7 @@ import (
 	process3 "goskeleton/app/http/validator/organization/process"
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
+	user3 "goskeleton/app/http/validator/organization/user"
 )
 
 // OrganizationRegisterValidator 各个业务模块验证器必须进行注册（初始化），程序启动时会自动加载到容器
@@ -73,6 +74,18 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, department3.Edit{})
 	key = consts.ValidatorPrefixOrg + "DepartmentDelete"
 	containers.Set(key, department3.Delete{})
+
+	//用户管理
+	key = consts.ValidatorPrefixOrg + "UserPage"
+	containers.Set(key, user3.Page{})
+	key = consts.ValidatorPrefixOrg + "UserAdd"
+	containers.Set(key, user3.Add{})
+	key = consts.ValidatorPrefixOrg + "UserEdit"
+	containers.Set(key, user3.Edit{})
+	key = consts.ValidatorPrefixOrg + "UserDelete"
+	containers.Set(key, user3.Delete{})
+	key = consts.ValidatorPrefixOrg + "UserModifyPw"
+	containers.Set(key, user3.ModifyPw{})
 
 	//终端
 	key = consts.ValidatorPrefixOrg + "AgentManagePage"

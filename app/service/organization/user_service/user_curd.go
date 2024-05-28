@@ -1,8 +1,14 @@
 package user_service
 
 import (
+	"errors"
 	"gorm.io/gorm"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
+	"goskeleton/app/service/organization/org_log_service"
 	"goskeleton/app/utils/helpers/date_helper"
 )
 
@@ -15,8 +21,38 @@ type UserCurd struct {
 }
 
 // AddSub 添加子用户
-func (crd *UserCurd) AddSub(param *user_models.UserModel) error {
+func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByName(userParam.Username)
+	if userExist.Id > 0 {
+		return errors.New("用户名已存在")
+	}
+	//
+	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userParam.OrgId)
+	if err != nil || orgModel.Id == 0 {
+		return errors.New("企业数据错误")
+	}
 
+	now := date_helper.CurDatetime()
+	userParam.Password = CreateAuthFactory().EncryptPw(userParam.Password)
+	userParam.Status = enum_user.StatusNormal
+	userParam.PwErrorNum = 0
+	userParam.LastLoginAt = now
+	userParam.CreatedAt = now
+	if !crd.masterModel.InsertItem(userParam) {
+		return errors.New("添加子户失败")
+	}
+
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgAddSubUser, netIp)
+	orgLogParam.CreatedAt = userParam.CreatedAt
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
 	return nil
 }
 

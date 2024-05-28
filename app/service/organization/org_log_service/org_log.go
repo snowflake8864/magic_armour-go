@@ -1,4 +1,4 @@
-package organize_service
+package org_log_service
 
 import (
 	"goskeleton/app/model/organization/organization_models"

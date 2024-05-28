@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/organization/org_log_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -85,7 +86,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgParam, enum_organization.LogActionPlatformAdd, netIp)
 	orgLogParam.CreatedAt = orgParam.CreatedAt
 	orgLogParam.OperateSource = orgParam.Source
@@ -121,7 +122,7 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformApprove, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -156,7 +157,7 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformLock, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -193,7 +194,7 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformUnlock, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -230,7 +231,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformClean, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -263,7 +264,7 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformHuanshiSwitch, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -297,7 +298,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformLoginSmsSwitch, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
@@ -352,7 +353,7 @@ func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_s
 	}
 
 	//新增企业日志
-	logFact := CreateOrgLogFactory()
+	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgExist, enum_organization.LogActionPlatformRefuse, netIp)
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId

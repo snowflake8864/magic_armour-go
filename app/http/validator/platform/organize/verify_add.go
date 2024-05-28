@@ -13,8 +13,8 @@ type VerifyAdd struct {
 	OraName   string `form:"oraName" json:"oraName" binding:"required,min=4,max=128"`
 	UserName  string `form:"userName" json:"userName" binding:"required,alphanum,min=4,max=128"`
 	UserPw    string `form:"userPw"   json:"userPw" binding:"required"`
-	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,number,len=11"`
-	UserEmail string `form:"userEmail" json:"userEmail" binding:"omitempty,email,max=64"`
+	UserPhone string `form:"userPhone" json:"userPhone" binding:"required,number,len=11"`
+	UserEmail string `form:"userEmail" json:"userEmail" binding:"required,email,max=64"`
 	Remark    string `form:"remark" json:"remark" binding:"omitempty,max=200"`
 }
 
