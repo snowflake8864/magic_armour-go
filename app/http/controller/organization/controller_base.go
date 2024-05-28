@@ -126,11 +126,18 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 		}
 	}
 
-	if needDepartment && len(deptIds) > 0 {
-		departments = department_service.CreateCurdFactory().GetMapsByIds(orgId, deptIds)
+	if needDepartment {
+		departments = u.getDepartmentMap(orgId, deptIds)
 	}
-
 	return agentIds, departments
+}
+
+// getDepartmentMap 获取组织架构集合
+func (u *ControllerBase) getDepartmentMap(orgId int64, deptIds []int64) map[int64]*department_models.DepartmentModel {
+	if len(deptIds) == 0 {
+		return nil
+	}
+	return department_service.CreateCurdFactory().GetMapsByIds(orgId, deptIds)
 }
 
 // getAgentIdsFromGin 从gin上下文获取终端id集合

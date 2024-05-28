@@ -31,9 +31,9 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["alias"] = model.Alias
 	data["grant_config"] = json_helper.ToMap(model.GrantConfig)
 	data["dept_id"] = model.DeptId
-	data["dept_fullname"] = []string{}
+	data["dept_fullname"] = []interface{}{}
 	if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-		data["dept_fullname"] = json_helper.ToMap(deptModel.FullName)
+		data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
 	}
 	data["process_switch"] = model.ProcessSwitch
 	data["process_mode"] = model.ProcessMode

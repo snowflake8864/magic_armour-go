@@ -3,8 +3,11 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -22,7 +25,27 @@ func (u *UserController) decrypt(data string) (result string) {
 
 // Page 分页
 func (u *UserController) Page(ctx *gin.Context) {
-	response.SuccessSimplify(ctx)
+	loginInfo := u.getLogin(ctx)
+	//查询条件
+	conditions := user_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+	//分页
+	total, userModels := user_models.CreateUserFactory().Page(conditions, offset, pageSize, order)
+
+	departmentMaps := make(map[int64]*department_models.DepartmentModel)
+	if userModels != nil && len(userModels) > 0 {
+		var deptIds []int64
+		for _, model := range userModels {
+			deptIds = append(deptIds, json_helper.ToSliceInt64(model.Depts)...)
+		}
+		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, deptIds)
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.User{}).TransPage(total, userModels, departmentMaps))
 }
 
 // Add 添加
