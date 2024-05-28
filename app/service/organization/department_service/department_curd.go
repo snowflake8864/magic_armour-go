@@ -168,15 +168,6 @@ func (crd *DepartmentCurd) DelSelfWithChildById(orgId, id int64) bool {
 		OrgId:    orgId,
 		FullCode: int_helper.Int64ToStr(id),
 	}
-	/*models, err := crd.masterModel.GetListByConditions(conditions)
-	if err != nil || models == nil {
-		return true
-	}
-
-	//删除缓存
-	for _, model := range models {
-
-	}*/
 
 	return crd.masterModel.DeleteByConditions(conditions)
 
@@ -187,15 +178,6 @@ func (crd *DepartmentCurd) DeleteByOrg(orgId int64) bool {
 	conditions := department_models.SearchConditions{
 		OrgId: orgId,
 	}
-	/*models, err := crd.masterModel.GetListByConditions(conditions)
-	if err != nil || models == nil {
-		return true
-	}
-
-	//删除缓存
-	for _, model := range models {
-
-	}*/
 
 	return crd.masterModel.DeleteByConditions(conditions)
 }

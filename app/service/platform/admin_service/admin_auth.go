@@ -109,9 +109,13 @@ func (crd *AdminAuth) deleteBySms(phone string) {
 }
 
 // IsLocking  是否锁定中
-func (crd *AdminAuth) IsLocking(username string) (isOk bool) {
-	isOk, _ = crd.redisClient.Exists(crd.keyByLocking(username))
-	return isOk
+func (crd *AdminAuth) IsLocking(username string) error {
+	isOK, _ := crd.redisClient.Exists(crd.keyByLocking(username))
+	if !isOK {
+		return nil
+	} else {
+		return errors.New("用户已经被锁定，请稍后在试")
+	}
 }
 
 // setLocking  设置锁定中
@@ -120,19 +124,28 @@ func (crd *AdminAuth) setLocking(username string, second int) (isOk bool) {
 	return isOk
 }
 
+// HasUser 存在用户
+func (crd *AdminAuth) HasUser(username string) (err error, model *admin_models.AdminModel) {
+	model = CreateCurdFactory().GetItemByUsername(username)
+	if model == nil || model.Id == 0 {
+		return errors.New("用户名或密码错误"), nil
+	} else {
+		return nil, model
+	}
+}
+
 // LoginByPw 密码登录
 func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
-	if crd.IsLocking(username) {
-		return nil, -1, errors.New("用户已经被锁定，请稍后在试")
+	if err = crd.IsLocking(username); err != nil {
+		return nil, -1, err
 	}
 
-	curdFact := CreateCurdFactory()
-	adminModel := curdFact.GetItemByUsername(username)
-	if adminModel.Id == 0 {
-		return nil, -1, errors.New("用户名或密码错误")
+	err, adminModel := crd.HasUser(username)
+	if err != nil {
+		return nil, -1, err
 	}
 
 	//短信验证
@@ -148,6 +161,7 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 
 	//用户名和密码不一致
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	curdFact := CreateCurdFactory()
 	if !curdFact.HasByUsernameAndPw(username, pw) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(adminModel.Id)

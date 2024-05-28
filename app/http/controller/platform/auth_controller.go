@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -27,14 +26,16 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+
+	authFact := admin_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
-	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
-	if adminModel.Id == 0 {
-		response.FailSimplify(ctx, "用户名或密码错误")
+	err, adminModel := authFact.HasUser(name)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
@@ -53,14 +54,15 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+	authFact := admin_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
-	adminModel := admin_service.CreateCurdFactory().GetItemByUsername(name)
-	if adminModel.Id == 0 {
-		response.FailSimplify(ctx, "用户名或密码错误")
+	err, adminModel := authFact.HasUser(name)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
@@ -72,8 +74,8 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		response.FailRoutine(ctx, -98, "没有开启双因子验证")
 		return
 	}
-	code := admin_service.CreateAuthFactory().GenerateBySms(adminModel.Phone)
-	variable.ZapLog.Debug("platform SendSms code: " + code)
+	authFact.GenerateBySms(adminModel.Phone)
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -84,11 +86,13 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if admin_service.CreateAuthFactory().IsLocking(name) {
-		response.FailSimplify(ctx, "用户已经被锁定，请稍后在试")
+	authFact := admin_service.CreateAuthFactory()
+	if err := authFact.IsLocking(name); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
-	code := admin_service.CreateAuthFactory().GenerateBySlider(name)
+
+	code := authFact.GenerateBySlider(name)
 	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
@@ -111,12 +115,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
-// HsLogin 幻势登录
-func (u *AuthController) HsLogin(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController HsLogin")
-}
-
-// Logout 幻势登录
+// Logout 退出
 func (u *AuthController) Logout(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "AuthController Logout")
 }
