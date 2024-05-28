@@ -4,12 +4,15 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/org_log_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *UserCurd {
@@ -29,8 +32,8 @@ func (crd *UserCurd) getOrg(OrgId int64) *organization_models.OrganizationModel 
 
 }
 
-// AddSub 添加子用户
-func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) error {
+// AddForSub 添加子用户
+func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) error {
 	//用户已存在
 	userExist := crd.GetItemByName(userParam.Username)
 	if userExist.Id > 0 {
@@ -40,6 +43,15 @@ func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) erro
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
 		return errors.New("企业数据错误")
+	}
+
+	//是否超过限制
+	subUserLimit := string_helper.ToInt64(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationSubUserLimit))
+	if subUserLimit > 0 {
+		condition := user_models.SearchConditions{OrgId: userParam.OrgId}
+		if crd.masterModel.Count(condition) > subUserLimit {
+			return errors.New("子用户已达到最大限制")
+		}
 	}
 
 	now := date_helper.CurDatetime()
@@ -66,12 +78,15 @@ func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) erro
 	return nil
 }
 
-// UpdateSub 修改子用户
-func (crd *UserCurd) UpdateSub(userParam *user_models.UserModel, netIp string) error {
+// UpdateForSub 修改子用户
+func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string) error {
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
 		return errors.New("用户不存在")
+	}
+	if userExist.IsRoot == enums.IsYes {
+		return errors.New("管理员用户不能修改")
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
@@ -94,7 +109,79 @@ func (crd *UserCurd) UpdateSub(userParam *user_models.UserModel, netIp string) e
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()
 	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgEditSubUser, netIp)
-	orgLogParam.CreatedAt = userParam.CreatedAt
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
+}
+
+// ModifyPwForSub 子用户修改密码
+func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	if userExist.IsRoot == enums.IsYes {
+		return errors.New("管理员用户不能修改")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"password": CreateAuthFactory().EncryptPw(userParam.Password),
+	}
+	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgModifyPwSubUser, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
+}
+
+// DeleteForSub 删除子用户
+func (crd *UserCurd) DeleteForSub(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	if userExist.IsRoot == enums.IsYes {
+		return errors.New("管理员用户不能删除")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
+	}
+
+	conditions := user_models.SearchConditions{
+		OrgId: userParam.OrgId,
+		Id:    userParam.Id,
+	}
+	if !crd.masterModel.DeleteByConditions(conditions) {
+		return errors.New("保存失败")
+	}
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgDelSubUser, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
 	orgLogParam.OperateSource = enums.OperateSourceOrganize
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName

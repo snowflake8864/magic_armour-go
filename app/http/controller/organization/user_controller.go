@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/model/organization/user_models"
-	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -47,7 +46,7 @@ func (u *UserController) Add(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
-	if err := user_service.CreateCurdFactory().AddSub(&param, ctx.ClientIP()); err != nil {
+	if err := user_service.CreateCurdFactory().AddForSub(&param, ctx.ClientIP()); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -72,7 +71,7 @@ func (u *UserController) Edit(ctx *gin.Context) {
 		CreateName: loginInfo.Username,
 	}
 
-	if err := user_service.CreateCurdFactory().UpdateSub(&param, ctx.ClientIP()); err != nil {
+	if err := user_service.CreateCurdFactory().UpdateForSub(&param, ctx.ClientIP()); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -83,10 +82,16 @@ func (u *UserController) Edit(ctx *gin.Context) {
 // Delete 删除
 func (u *UserController) Delete(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	id := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
 
-	if !department_service.CreateCurdFactory().DelSelfWithChildById(loginInfo.OrgId, id) {
-		response.FailSimplify(ctx, "删除失败")
+	param := user_models.UserModel{
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		OrgId:      loginInfo.OrgId,
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	if err := user_service.CreateCurdFactory().DeleteForSub(&param, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
@@ -96,10 +101,21 @@ func (u *UserController) Delete(ctx *gin.Context) {
 // ModifyPw 修改密码
 func (u *UserController) ModifyPw(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	id := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
 
-	if !department_service.CreateCurdFactory().DelSelfWithChildById(loginInfo.OrgId, id) {
-		response.FailSimplify(ctx, "删除失败")
+	param := user_models.UserModel{
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		OrgId:      loginInfo.OrgId,
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+	if string_helper.IsEmpty(param.Password) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+
+	if err := user_service.CreateCurdFactory().ModifyPwForSub(&param, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
