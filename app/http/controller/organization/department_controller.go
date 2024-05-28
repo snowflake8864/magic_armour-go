@@ -41,7 +41,23 @@ func (u *DepartmentController) Add(ctx *gin.Context) {
 
 // Edit 编辑
 func (u *DepartmentController) Edit(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "edit")
+	loginInfo := u.getLogin(ctx)
+
+	param := department_models.DepartmentModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	if err := department_service.CreateCurdFactory().UpdateById(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // Delete 删除

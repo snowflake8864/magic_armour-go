@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -24,6 +25,25 @@ type DepartmentCurd struct {
 func (crd *DepartmentCurd) getItemById(orgId, id int64) *department_models.DepartmentModel {
 	model, _ := crd.masterModel.GetItemById(orgId, id)
 	return model
+}
+
+// GetIdsSelfWithChildById 获取本身以及子集的id集合
+func (crd *DepartmentCurd) GetIdsSelfWithChildById(orgId, id int64) (ids []int64) {
+	conditions := department_models.SearchConditions{
+		OrgId:    orgId,
+		FullCode: int_helper.Int64ToStr(id),
+	}
+	models, err := crd.masterModel.GetListByConditions(conditions)
+	if err != nil {
+		return ids
+	}
+	if models == nil {
+		return ids
+	}
+	for _, model := range models {
+		ids = append(ids, model.Id)
+	}
+	return ids
 }
 
 // GetMapsByIds 通过ids获取多条记录, 有映射关系
@@ -88,6 +108,57 @@ func (crd *DepartmentCurd) Add(param *department_models.DepartmentModel) error {
 		return err
 	}
 
+	return nil
+}
+
+// UpdateById 通过id修改
+func (crd *DepartmentCurd) UpdateById(param *department_models.DepartmentModel) error {
+	conditions := department_models.SearchConditions{
+		OrgId:    param.OrgId,
+		FullCode: int_helper.Int64ToStr(param.Id),
+	}
+	models, err := crd.masterModel.GetListByConditions(conditions)
+	if err != nil || models == nil || len(models) == 0 {
+		return errors.New("菜单不存在")
+	}
+	err = crd.masterModel.Transaction(func(tx *gorm.DB) error {
+		for _, model := range models {
+			fullCodeArr := strings.Split(model.FullCode, SEPARATOR)
+			fullNameArr := json_helper.ToSliceString(model.FullName)
+			if len(fullCodeArr) != len(fullNameArr) {
+				continue
+			}
+			for index, code := range fullCodeArr {
+				if string_helper.ToInt64(code) != param.Id {
+					continue
+				}
+				fullNameArr[index] = param.Name
+				conditions := department_models.SearchConditions{
+					OrgId: param.OrgId,
+					Id:    model.Id,
+				}
+				updates := map[string]interface{}{
+					"full_name":   json_helper.Encode(fullNameArr),
+					"create_id":   param.CreateId,
+					"create_name": param.CreateName,
+				}
+				if model.Id == param.Id {
+					updates["name"] = param.Name
+					updates["ip"] = param.Ip
+
+				}
+
+				if !crd.masterModel.UpdateByConditions(conditions, updates) {
+					return errors.New("保存失败")
+				}
+
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

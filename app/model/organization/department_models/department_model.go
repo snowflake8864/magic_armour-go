@@ -120,7 +120,7 @@ func (m *DepartmentModel) GetListByConditions(condition SearchConditions) (items
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	tmp = tmp.Order("id ASC")
-	result := m.Find(&items)
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil
 	} else {
