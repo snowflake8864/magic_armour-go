@@ -52,17 +52,18 @@ func (crd *DepartmentCurd) Add(param *department_models.DepartmentModel) error {
 	param.Level = 1
 	param.CreatedAt = date_helper.CurDatetime()
 
+	var fullName []string
 	if param.ParentId > 0 {
 		if parentModel := crd.getItemById(param.OrgId, param.ParentId); parentModel.Id > 0 {
 			param.Level = parentModel.Level + 1
-			fullName := json_helper.ToSliceString(parentModel.FullName)
-			fullName = append(fullName, param.Name)
-			param.FullName = json_helper.Encode(fullName)
+			fullName = json_helper.ToSliceString(parentModel.FullName)
 			param.FullCode = parentModel.FullCode
 		} else {
 			return errors.New("父级菜单不存在")
 		}
 	}
+	fullName = append(fullName, param.Name)
+	param.FullName = json_helper.Encode(fullName)
 
 	err := crd.masterModel.Transaction(func(tx *gorm.DB) error {
 		if !crd.masterModel.InsertItem(param) {

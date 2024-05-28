@@ -24,7 +24,7 @@ func (u *DepartmentController) Add(ctx *gin.Context) {
 
 	param := department_models.DepartmentModel{
 		OrgId:      loginInfo.OrgId,
-		ParentId:   int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "parentId")),
+		ParentId:   int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "parent_id")),
 		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		CreateId:   loginInfo.UserId,
@@ -36,7 +36,7 @@ func (u *DepartmentController) Add(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessReturnData(ctx, "add")
+	response.SuccessSimplify(ctx)
 }
 
 // Edit 编辑
