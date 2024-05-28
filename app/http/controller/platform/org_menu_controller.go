@@ -20,7 +20,7 @@ func (u *OrgMenuController) Tree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	models := org_menu_service.CreateCurdFactory().GetAll(loginInfo.IsRoot)
 	if models == nil {
-		response.FailSimplify(ctx, "没有数据")
+		response.SuccessReturnData(ctx, []interface{}{})
 		return
 	}
 

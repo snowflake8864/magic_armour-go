@@ -27,23 +27,22 @@ func (crd *DepartmentCurd) getItemById(orgId, id int64) *department_models.Depar
 	return model
 }
 
-// GetIdsSelfWithChildById 获取本身以及子集的id集合
-func (crd *DepartmentCurd) GetIdsSelfWithChildById(orgId, id int64) (ids []int64) {
+// GetIdsSelfWithChildByIds 获取本身以及子集的id集合
+func (crd *DepartmentCurd) GetIdsSelfWithChildByIds(orgId int64, ids []int64) []int64 {
 	conditions := department_models.SearchConditions{
-		OrgId:    orgId,
-		FullCode: int_helper.Int64ToStr(id),
+		OrgId: orgId,
+		Ids:   ids,
 	}
+	var result []int64
 	models, err := crd.masterModel.GetListByConditions(conditions)
-	if err != nil {
-		return ids
+	if err != nil || models == nil {
+		return result
 	}
-	if models == nil {
-		return ids
-	}
+
 	for _, model := range models {
-		ids = append(ids, model.Id)
+		result = append(result, model.Id)
 	}
-	return ids
+	return result
 }
 
 // GetMapsByIds 通过ids获取多条记录, 有映射关系

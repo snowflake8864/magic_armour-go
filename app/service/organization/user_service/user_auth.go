@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
+	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
 	"goskeleton/app/utils/cur_app"
@@ -46,12 +47,13 @@ type UserAuth struct {
 }
 
 type UserCacheLogin struct {
-	OrgId    int64   `json:"org_id"`
-	UserId   int64   `json:"user_id"`
-	Username string  `json:"username"`
-	IsRoot   int     `json:"is_root"`
-	Depts    []int64 `json:"depts"`
-	LoginAt  string  `json:"login_at"`
+	OrgId         int64   `json:"org_id"`
+	UserId        int64   `json:"user_id"`
+	Username      string  `json:"username"`
+	IsRoot        int     `json:"is_root"`
+	DeptIds       []int64 `json:"dept_ids"`        //直接管理的组织架构
+	DeptWithChild []int64 `json:"dept_with_child"` //直接管理的组织架构以及子集
+	LoginAt       string  `json:"login_at"`
 }
 
 func (crd *UserAuth) keyByToken(val string) string {
@@ -224,15 +226,21 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 
 // loginAfter
 func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]interface{} {
-	depts := json_helper.ToSliceInt64(userModel.Depts)
+	var deptIds, deptWithChild []int64
+	//不是管理员
+	if userModel.IsRoot == enums.IsNot {
+		deptIds = json_helper.ToSliceInt64(userModel.Depts)
+		deptWithChild = department_service.CreateCurdFactory().GetIdsSelfWithChildByIds(userModel.OrgId, deptIds)
+	}
 
 	loginInfo := UserCacheLogin{
-		OrgId:    userModel.OrgId,
-		UserId:   userModel.Id,
-		Username: userModel.Username,
-		IsRoot:   userModel.IsRoot,
-		Depts:    depts,
-		LoginAt:  date_helper.CurDatetime(),
+		OrgId:         userModel.OrgId,
+		UserId:        userModel.Id,
+		Username:      userModel.Username,
+		IsRoot:        userModel.IsRoot,
+		DeptIds:       deptIds,
+		DeptWithChild: deptWithChild,
+		LoginAt:       date_helper.CurDatetime(),
 	}
 
 	//缓存
@@ -246,7 +254,6 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]int
 	result["is_root"] = userModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
-	//result["depts"] = depts
 	return result
 }
 

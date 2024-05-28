@@ -3,9 +3,11 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/utils/response"
+	"goskeleton/app/utils/tree"
 )
 
 // DepartmentController 组织架构相关
@@ -15,7 +17,41 @@ type DepartmentController struct {
 
 // Tree 树形列表
 func (u *DepartmentController) Tree(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Tree")
+	loginInfo := u.getLogin(ctx)
+	conditions := department_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+	if loginInfo.IsRoot == enums.IsNot {
+		conditions.Ids = loginInfo.DeptWithChild
+		if conditions.Ids == nil || len(conditions.Ids) == 0 {
+			response.SuccessReturnData(ctx, []interface{}{})
+			return
+		}
+	}
+	models, err := department_models.CreateDepartmentFactory().GetListByConditions(conditions)
+	if err != nil || models == nil {
+		response.SuccessReturnData(ctx, []interface{}{})
+		return
+	}
+
+	var nodes []*tree.Node
+	for _, model := range models {
+		nodes = append(nodes, &tree.Node{
+			ID:       model.Id,
+			ParentId: model.ParentId,
+			Data: map[string]interface{}{
+				"name":        model.Name,
+				"ip":          model.Ip,
+				"full_code":   model.FullCode,
+				"level":       model.Level,
+				"create_name": model.CreateName,
+				"created_at":  model.CreatedAt,
+			},
+			Child: []*tree.Node{},
+		})
+	}
+
+	response.SuccessReturnData(ctx, tree.RealTree(nodes))
 }
 
 // Add 添加
