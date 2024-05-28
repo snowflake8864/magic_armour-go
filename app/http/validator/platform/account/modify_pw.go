@@ -4,14 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
-	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type ModifyPw struct {
-	OldPw string `form:"oldPw"   json:"oldPw" binding:"required,min=6,max=20"`
-	NewPw string `form:"newPw"   json:"newPw" binding:"required,min=6,max=20"`
+	OldPw string `form:"oldPw"   json:"oldPw" binding:"required"`
+	NewPw string `form:"newPw"   json:"newPw" binding:"required"`
 }
 
 func (n ModifyPw) CheckParams(context *gin.Context) {
@@ -19,15 +18,6 @@ func (n ModifyPw) CheckParams(context *gin.Context) {
 	if err := context.ShouldBind(&n); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
 		response.ValidatorError(context, err)
-		return
-	}
-
-	if !common_regexp.CheckPw(n.NewPw) {
-		response.FailSimplify(context, "param [OldPw] error")
-		return
-	}
-	if !common_regexp.CheckPw(n.OldPw) {
-		response.FailSimplify(context, "param [NewPw] error")
 		return
 	}
 

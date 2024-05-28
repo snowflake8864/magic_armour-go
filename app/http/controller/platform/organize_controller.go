@@ -10,12 +10,19 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 )
 
 // OrganizeController 终端相关
 type OrganizeController struct {
 	ControllerBase
+}
+
+func (u *OrganizeController) decrypt(data string) (result string) {
+	result, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(data)
+	return result
 }
 
 // Types 企业类型
@@ -172,8 +179,12 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	userParam.Username = orgParam.UserName
 	userParam.Phone = orgParam.UserPhone
 	userParam.Email = orgParam.UserEmail
-	userParam.Password = ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")
+	userParam.Password = u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw"))
 	userParam.IsRoot = enums.IsYes
+	if string_helper.IsEmpty(userParam.Password) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
 
 	errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, ctx.ClientIP())
 	if err != nil {

@@ -4,9 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
-	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/http/validator/core/data_transfer"
-	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -21,11 +19,6 @@ func (n Edit) CheckParams(context *gin.Context) {
 	if err := context.ShouldBind(&n); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
 		response.ValidatorError(context, err)
-		return
-	}
-
-	if !string_helper.IsEmpty(n.Ip) && !common_regexp.CheckIpWithMask(n.Ip) {
-		response.FailSimplify(context, "param [IP] error")
 		return
 	}
 

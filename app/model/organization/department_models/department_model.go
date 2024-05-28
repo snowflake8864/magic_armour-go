@@ -119,7 +119,7 @@ func (m *DepartmentModel) GetListByConditions(condition SearchConditions) (items
 	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
-	tmp = tmp.Order("id ASC")
+	tmp = tmp.Order("level ASC, sort ASC")
 	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items, nil

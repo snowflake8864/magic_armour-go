@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateCurdFactory() *AdminCurd {
@@ -62,9 +61,9 @@ func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, 
 	}
 
 	//加密
-	AesFact := openssl_encrypt.CreateAesFactory()
-	oldPw, _ = AesFact.CbcEncryptToHex(oldPw)
-	newPw, _ = AesFact.CbcEncryptToHex(newPw)
+	AuthFact := CreateAuthFactory()
+	oldPw = AuthFact.EncryptPw(oldPw)
+	newPw = AuthFact.EncryptPw(newPw)
 
 	//
 	if !crd.HasByUsernameAndPw(adminModel.Username, oldPw) {

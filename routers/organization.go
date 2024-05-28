@@ -106,6 +106,18 @@ func InitOrganizationRouter() *gin.Engine {
 					department.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentAdd"))
 					department.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentEdit"))
 					department.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"DepartmentDelete"))
+
+				}
+
+				//用户列表
+				user := vOrg.Group("user/")
+				{
+					user.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserPage"))
+					user.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserAdd"))
+					user.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserEdit"))
+					user.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserDelete"))
+					user.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserModifyPw"))
+					user.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"UserModifyPw"))
 				}
 
 				//首页

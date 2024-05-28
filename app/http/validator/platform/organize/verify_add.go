@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
-	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
@@ -13,7 +12,7 @@ type VerifyAdd struct {
 	OrgType   int    `form:"orgType" json:"orgType" binding:"required,oneof=1 2"`
 	OraName   string `form:"oraName" json:"oraName" binding:"required,min=4,max=128"`
 	UserName  string `form:"userName" json:"userName" binding:"required,alphanum,min=4,max=128"`
-	UserPw    string `form:"userPw"   json:"userPw" binding:"required,min=6,max=20"`
+	UserPw    string `form:"userPw"   json:"userPw" binding:"required"`
 	UserPhone string `form:"userPhone" json:"userPhone" binding:"omitempty,number,len=11"`
 	UserEmail string `form:"userEmail" json:"userEmail" binding:"omitempty,email,max=64"`
 	Remark    string `form:"remark" json:"remark" binding:"omitempty,max=200"`
@@ -24,11 +23,6 @@ func (n VerifyAdd) CheckParams(context *gin.Context) {
 	if err := context.ShouldBind(&n); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
 		response.ValidatorError(context, err)
-		return
-	}
-
-	if !common_regexp.CheckPw(n.UserPw) {
-		response.FailSimplify(context, "param [UserPw] error")
 		return
 	}
 

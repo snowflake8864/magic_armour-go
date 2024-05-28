@@ -21,7 +21,7 @@ const (
 
 	LogActionOrgRegister   int = 200 //日志行为: 用户注册
 	LogActionOrgAddSubUser int = 201 //日志行为: 添加子用户
-	LogActionOrgDelSubUser int = 202 //日志行为: 添加子用户
+	LogActionOrgDelSubUser int = 202 //日志行为: 删除子用户
 )
 
 var EnumMap = map[string]map[int]string{

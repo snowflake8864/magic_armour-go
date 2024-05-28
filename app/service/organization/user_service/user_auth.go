@@ -161,6 +161,12 @@ func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isP
 	}
 }
 
+// EncryptPw 加密密码
+func (crd *UserAuth) EncryptPw(pw string) string {
+	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	return pw
+}
+
 // LoginByPw 密码登录
 func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
@@ -189,9 +195,8 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 	}
 
 	//用户名和密码不一致
-	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
 	curdFact := CreateCurdFactory()
-	if !curdFact.HasByUsernameAndPw(username, pw) {
+	if !curdFact.HasByUsernameAndPw(username, crd.EncryptPw(pw)) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(userModel.Id)
 

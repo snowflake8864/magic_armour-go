@@ -134,6 +134,12 @@ func (crd *AdminAuth) HasUser(username string) (err error, model *admin_models.A
 	}
 }
 
+// EncryptPw 加密密码
+func (crd *AdminAuth) EncryptPw(pw string) string {
+	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
+	return pw
+}
+
 // LoginByPw 密码登录
 func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
@@ -160,9 +166,8 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 	}
 
 	//用户名和密码不一致
-	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToHex(pw)
 	curdFact := CreateCurdFactory()
-	if !curdFact.HasByUsernameAndPw(username, pw) {
+	if !curdFact.HasByUsernameAndPw(username, crd.EncryptPw(pw)) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(adminModel.Id)
 

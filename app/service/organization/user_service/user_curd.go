@@ -4,7 +4,6 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateCurdFactory() *UserCurd {
@@ -15,18 +14,10 @@ type UserCurd struct {
 	masterModel *user_models.UserModel
 }
 
-// Init 初始化
-func (crd *UserCurd) Init(param *user_models.UserModel) {
-	param.RoleId = 0
-	param.PwErrorNum = 0
-	pw, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToHex(param.Password)
-	param.Password = pw
-}
+// AddSub 添加子用户
+func (crd *UserCurd) AddSub(param *user_models.UserModel) error {
 
-// Register 注册
-func (crd *UserCurd) Register(param *user_models.UserModel) bool {
-	crd.Init(param)
-	return crd.masterModel.InsertItem(param)
+	return nil
 }
 
 // DeleteByOrg 通过企业编号删除
