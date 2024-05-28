@@ -3,7 +3,6 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
@@ -36,7 +35,7 @@ func (u *UserController) Add(ctx *gin.Context) {
 		OrgId:      loginInfo.OrgId,
 		Email:      ctx.GetString(consts.ValidatorPrefixPlatform + "userEmail"),
 		Phone:      ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone"),
-		Password:   (ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")),
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")),
 		Realname:   ctx.GetString(consts.ValidatorPrefixPlatform + "realname"),
 		Position:   ctx.GetString(consts.ValidatorPrefixPlatform + "position"),
 		Intro:      ctx.GetString(consts.ValidatorPrefixPlatform + "intro"),
@@ -60,16 +59,20 @@ func (u *UserController) Add(ctx *gin.Context) {
 func (u *UserController) Edit(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := department_models.DepartmentModel{
+	param := user_models.UserModel{
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Email:      ctx.GetString(consts.ValidatorPrefixPlatform + "userEmail"),
+		Phone:      ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone"),
+		Realname:   ctx.GetString(consts.ValidatorPrefixPlatform + "realname"),
+		Position:   ctx.GetString(consts.ValidatorPrefixPlatform + "position"),
+		Intro:      ctx.GetString(consts.ValidatorPrefixPlatform + "intro"),
+		Depts:      ctx.GetString(consts.ValidatorPrefixPlatform + "departments"),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
 
-	if err := department_service.CreateCurdFactory().UpdateById(&param); err != nil {
+	if err := user_service.CreateCurdFactory().UpdateSub(&param, ctx.ClientIP()); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}

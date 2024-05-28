@@ -20,6 +20,15 @@ type UserCurd struct {
 	masterModel *user_models.UserModel
 }
 
+func (crd *UserCurd) getOrg(OrgId int64) *organization_models.OrganizationModel {
+	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(OrgId)
+	if err != nil || orgModel.Id == 0 {
+		return nil
+	}
+	return orgModel
+
+}
+
 // AddSub 添加子用户
 func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) error {
 	//用户已存在
@@ -28,14 +37,15 @@ func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) erro
 		return errors.New("用户名已存在")
 	}
 	//
-	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userParam.OrgId)
-	if err != nil || orgModel.Id == 0 {
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
 		return errors.New("企业数据错误")
 	}
 
 	now := date_helper.CurDatetime()
 	userParam.Password = CreateAuthFactory().EncryptPw(userParam.Password)
 	userParam.Status = enum_user.StatusNormal
+	userParam.IsRoot = enums.IsNot
 	userParam.PwErrorNum = 0
 	userParam.LastLoginAt = now
 	userParam.CreatedAt = now
@@ -56,18 +66,50 @@ func (crd *UserCurd) AddSub(userParam *user_models.UserModel, netIp string) erro
 	return nil
 }
 
+// UpdateSub 修改子用户
+func (crd *UserCurd) UpdateSub(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"email":    userParam.Email,
+		"phone":    userParam.Phone,
+		"realname": userParam.Realname,
+		"position": userParam.Position,
+		"intro":    userParam.Intro,
+		"depts":    userParam.Depts,
+	}
+	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgEditSubUser, netIp)
+	orgLogParam.CreatedAt = userParam.CreatedAt
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
+}
+
 // DeleteByOrg 通过企业编号删除
 func (crd *UserCurd) DeleteByOrg(orgId int64) bool {
 	conditions := user_models.SearchConditions{
 		OrgId: orgId,
 	}
 	return crd.masterModel.DeleteByConditions(conditions)
-}
-
-// GetItemById 通过用户编号获取
-func (crd *UserCurd) GetItemById(id int64) (model *user_models.UserModel) {
-	model, _ = crd.masterModel.GetItemById(id)
-	return model
 }
 
 // GetItemByOrgAndUser 通过企业和用户获取

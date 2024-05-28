@@ -12,7 +12,6 @@ type Edit struct {
 	Id          int    `form:"id" json:"id" binding:"required"`
 	UserPhone   string `form:"userPhone" json:"userPhone" binding:"omitempty,number,len=11"`
 	UserEmail   string `form:"userEmail" json:"userEmail" binding:"omitempty,email,max=64"`
-	UserPw      string `form:"userPw" json:"userPw" binding:"required"`
 	Position    string `form:"position" json:"position" binding:"omitempty,max=128"`
 	Intro       string `form:"intro" json:"intro" binding:"omitempty,max=200"`
 	Departments string `form:"departments" json:"departments"`
