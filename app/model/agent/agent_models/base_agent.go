@@ -91,6 +91,20 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 	return wheres
 }
 
+// ColumnBasic 字段: 基础
+func (m *baseAgent) ColumnBasic(needId bool) string {
+	column := ""
+	if needId {
+		column = "org_id, agent_id,"
+	}
+	column = column +
+		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +
+		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver," +
+		"is_online, online_at, live_at, is_safe, dept_id,user_id," +
+		"agent_type,alias,contact_name,contact_tel, position, remark"
+	return column
+}
+
 // ColumnConfig 字段:全部配置相关
 func (m *baseAgent) ColumnConfig(needId bool) string {
 	column := ""

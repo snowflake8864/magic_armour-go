@@ -32,8 +32,10 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["grant_product_title"] = model.GrantProductTitle
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
-	if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-		data["dept_fullname"] = json_helper.ToMap(deptModel.FullName)
+	if departments != nil && len(departments) > 0 {
+		if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+			data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
+		}
 	}
 
 	data["created_at"] = model.CreatedAt

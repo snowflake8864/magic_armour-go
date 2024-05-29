@@ -206,7 +206,10 @@ func (m *AlarmStatDailyModel) DeleteByConditions(condition SearchConditions) boo
 // GetItemsByConditions 通过条件获取多条记录
 func (m *AlarmStatDailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(condition)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
@@ -228,8 +231,10 @@ func (m *AlarmStatDailyModel) GetItemsByConditions(condition SearchConditions, o
 // CalcByConditions 通过条件获取多条记录
 func (m *AlarmStatDailyModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
-		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		return tmp.Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
@@ -243,8 +248,10 @@ func (m *AlarmStatDailyModel) CalcByConditions(condition SearchConditions, colum
 // CalcByConditionsGroupDay 通过条件获取多条记录且按天分组
 func (m *AlarmStatDailyModel) CalcByConditionsGroupDay(condition SearchConditions, column string) (items []*AlarmStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
-		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		return tmp.Group("stat_day").Order("stat_day ASC").Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)

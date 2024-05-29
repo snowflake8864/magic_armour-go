@@ -140,7 +140,10 @@ func (m *OrgStatDailyModel) DeleteByConditions(condition SearchConditions) bool 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrgStatDailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgStatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Where(condition)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}

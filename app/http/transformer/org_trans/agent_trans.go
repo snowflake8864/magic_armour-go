@@ -14,7 +14,7 @@ type Agent struct {
 	transformer.Common
 }
 
-func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
+func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
@@ -32,8 +32,10 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["grant_config"] = json_helper.ToMap(model.GrantConfig)
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []interface{}{}
-	if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-		data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
+	if departments != nil && len(departments) > 0 {
+		if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+			data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
+		}
 	}
 	data["process_switch"] = model.ProcessSwitch
 	data["process_mode"] = model.ProcessMode
@@ -50,15 +52,25 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["outreach_alarm_switch"] = model.OutreachAlarmSwitch
 	data["login_solve_switch"] = model.LoginSolveSwitch
 	data["created_at"] = model.CreatedAt
+
+	//扩展信息
+	var tmp interface{}
+	data["extend_info"] = tmp
+	if extendInfo != nil && len(extendInfo) > 0 {
+		if extend, ok := extendInfo[model.AgentId]; ok {
+			data["extend_info"] = extend
+		}
+	}
+
 	return data
 }
 
-// TransAgentManagePage 转换成管理页需要的数据
-func (t *Agent) TransAgentManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
+// TransManagePage 转换成管理分页需要的数据
+func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			tmp := t.pageGeneral(model, departments)
+			tmp := t.pageGeneral(model, departments, nil)
 
 			canUpgrade := 0
 			if isOk, _ := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
@@ -73,4 +85,35 @@ func (t *Agent) TransAgentManagePage(total int64, models []*agent_models.AgentMo
 		"total": total,
 		"items": items,
 	}
+}
+
+// TransOtherPage 转换成其他分页需要的数据
+func (t *Agent) TransOtherPage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageGeneral(model, departments, extendInfo)
+
+			items = append(items, tmp)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
+// TransList 转换列表需要的数据l
+func (t *Agent) TransList(models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageGeneral(model, departments, extendInfo)
+
+			items = append(items, tmp)
+		}
+	}
+
+	return items
 }

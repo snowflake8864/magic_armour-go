@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -46,7 +47,53 @@ func (u *HomeController) AgentStat(ctx *gin.Context) {
 // AlarmAgentTops 告警：终端排行
 func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	response.SuccessReturnData(ctx, loginInfo)
+	alarmConditions := alarm_stat_models.SearchConditions{}
+	alarmConditions.OrgId = loginInfo.OrgId
+	alarmConditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat) //今天
+	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
+	if err != nil {
+		//不是管理员 & 无终端
+		response.SuccessReturnData(ctx, []interface{}{})
+		return
+	} else {
+		//不是管理员有终端
+		if agentIds != nil {
+			alarmConditions.AgentIds = agentIds
+		}
+	}
+	//今天新增最多的8个终端
+	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	alarmModels := alarmFact.GetItemsByConditions(alarmConditions, 0, 8, "add_total desc")
+	if alarmModels == nil || len(alarmModels) == 0 {
+		response.SuccessReturnData(ctx, []interface{}{})
+		return
+	}
+
+	//扩展信息
+	var extendInfo = make(map[string]interface{})
+	var topIds []string
+	for _, model := range alarmModels {
+		topIds = append(topIds, model.AgentId)
+		extendInfo[model.AgentId] = map[string]interface{}{"number_total": model.AddTotal}
+	}
+
+	//终端
+	agentFact := agent_models.CreateAgentFactory()
+	agentMaps := agentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, topIds, agentFact.ColumnBasic(true))
+	if agentMaps == nil || len(agentMaps) == 0 {
+		response.SuccessReturnData(ctx, []interface{}{})
+		return
+	}
+
+	//按照排序返回
+	var list []*agent_models.AgentModel
+	for _, agentId := range topIds {
+		if model, isOK := agentMaps[agentId]; isOK {
+			list = append(list, model)
+		}
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransList(list, nil, extendInfo))
 }
 
 // AlarmTodayStat 告警： 今天统计

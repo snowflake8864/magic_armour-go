@@ -63,7 +63,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	//软件最新发布
 	softwareNewest := software_service.CreateCurdFactory().GetMapsByPublished()
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps, softwareNewest))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransManagePage(total, agentModels, departmentMaps, softwareNewest))
 }
 
 // DeleteForManage 管理: 删除
