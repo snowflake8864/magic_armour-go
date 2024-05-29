@@ -1,6 +1,9 @@
 package enum_agent
 
-import "goskeleton/app/global/enums"
+import (
+	"goskeleton/app/global/enums"
+	"goskeleton/app/utils/helpers/json_helper"
+)
 
 // 终端
 
@@ -26,14 +29,6 @@ const (
 )
 
 var EnumIntMap = map[string]map[int]string{
-	"agent_type": {
-		1: "服务器",
-		2: "业务系统",
-		3: "办公终端",
-		4: "笔记本",
-		5: "台式机",
-		6: "其它",
-	},
 	"is_online": {
 		enums.IsYes: "在线",
 		enums.IsNot: "离线",
@@ -45,14 +40,6 @@ var EnumIntMap = map[string]map[int]string{
 }
 
 var WebMapInt = map[string][]int{
-	"agent_type": {
-		1,
-		2,
-		3,
-		4,
-		5,
-		6,
-	},
 	"is_online": {
 		enums.IsYes,
 		enums.IsNot,
@@ -61,4 +48,41 @@ var WebMapInt = map[string][]int{
 		enums.IsYes,
 		enums.IsNot,
 	},
+}
+
+// AgentTypeDefault 终端类型： 默认
+func AgentTypeDefault() map[int]string {
+	return map[int]string{
+		1: "服务器",
+		2: "业务系统",
+		3: "办公台式机",
+		4: "办公笔记本",
+		5: "其它",
+	}
+}
+
+// GetTypeMap 终端类型： 获取
+func GetTypeMap(jsonStr string) map[int]string {
+	types := make(map[int]string)
+
+	if err := json_helper.ToAny(jsonStr, &types); err != nil {
+		return nil
+	} else {
+		return types
+	}
+}
+
+// GetTypeLabel 终端类型： 获取标签
+func GetTypeLabel(jsonStr string, val int) string {
+	types := GetTypeMap(jsonStr)
+
+	if types == nil {
+		return ""
+	} else {
+		if label, isOK := types[val]; isOK {
+			return label
+		} else {
+			return ""
+		}
+	}
 }

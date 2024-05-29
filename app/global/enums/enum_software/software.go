@@ -140,6 +140,13 @@ var EnumSlice = map[string]map[int][]int{
 	},
 }
 
+var WebMapInt = map[string][]int{
+	"platform_type": {
+		PlatformTypeWindows,
+		PlatformTypeLinux,
+	},
+}
+
 // GetOsTypeByName 获取系统类型
 func GetOsTypeByName(name string) int {
 	name = strings.ToLower(name)

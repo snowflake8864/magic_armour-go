@@ -5,12 +5,15 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/organization/department_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
+	"sort"
 )
 
 // AgentController 终端相关
@@ -32,6 +35,24 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
+// TypeList 类型列表
+func (u *AgentController) TypeList(ctx *gin.Context) {
+
+	jsonStr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentTypes)
+	typeMap := enum_agent.GetTypeMap(jsonStr)
+
+	//先取值
+	var typeVals []int
+	if typeMap != nil {
+		for val, _ := range typeMap {
+			typeVals = append(typeVals, val)
+		}
+	}
+	sort.Ints(typeVals)
+
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(typeVals, typeMap, false))
+}
+
 // StatByOrg 按企业统计终端
 func (u *AgentController) StatByOrg(ctx *gin.Context) {
 	searchConditions := agent_models.SearchConditions{
@@ -43,11 +64,6 @@ func (u *AgentController) StatByOrg(ctx *gin.Context) {
 	agentFact := agent_models.CreateAgentFactory()
 	stat := agentFact.CalcByConditions(searchConditions, agentFact.ColumnCalcAgents(false, true, false, false, false))
 	response.SuccessReturnData(ctx, stat)
-}
-
-// TypeList 类型列表
-func (u *AgentController) TypeList(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "TypeList")
 }
 
 // PageForOwn 终端本身: 分页

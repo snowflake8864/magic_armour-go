@@ -136,7 +136,7 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						public.POST("onlineStatus", (&platform.AgentController{}).OnlineStatus)
 						public.POST("safeStatus", (&platform.AgentController{}).SafeStatus)
-						public.POST("typeList", (&platform.AgentController{}).TypeList)
+						public.POST("types", (&platform.AgentController{}).TypeList)
 					}
 					manage := agent.Group("manage/")
 					{
