@@ -4,10 +4,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_stat_models"
+	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/response"
 )
@@ -156,5 +158,14 @@ func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
 
 // GrantUsedStat 授权： 使用统计
 func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetAlarmStatistic")
+	loginInfo := u.getLogin(ctx)
+	conditions := order_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.IsExpire = enums.AllDefaultInt
+	conditions.OrderStatus = enum_order.OrderStatusCompleted
+
+	orderFact := order_models.CreateOrderFactory()
+	models := orderFact.GetItemsByConditions(conditions, 0, 2, "")
+
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(models))
 }
