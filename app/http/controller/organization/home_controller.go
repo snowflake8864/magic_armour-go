@@ -4,7 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/alarm/alarm_stat_models"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -49,7 +52,26 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 // AlarmTodayStat 告警： 今天统计
 func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	response.SuccessReturnData(ctx, loginInfo)
+	conditions := alarm_stat_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat)
+	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
+	if err != nil {
+		//不是管理员 & 无终端
+		response.SuccessReturnData(ctx, alarm_stat_models.AlarmStatDailyModel{})
+		return
+	} else {
+		//不是管理员有终端
+		if agentIds != nil {
+			conditions.AgentIds = agentIds
+		}
+	}
+	//统计
+	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	result := alarmFact.CalcByConditions(conditions, alarmFact.StatColumnOfAllType(true, false, true, false, false))
+
+	response.SuccessReturnData(ctx, result)
+
 }
 
 // AlarmDailyStat 告警： 每天统计
