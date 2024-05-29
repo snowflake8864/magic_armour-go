@@ -76,9 +76,35 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 
 // AlarmDailyStat 告警： 每天统计
 func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
-	month := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "month"))
-
-	response.SuccessReturnData(ctx, month)
+	loginInfo := u.getLogin(ctx)
+	conditions := alarm_stat_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.StatMonth = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "month"))
+	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
+	if err != nil {
+		//不是管理员 & 无终端
+		response.SuccessReturnData(ctx, alarm_stat_models.AlarmStatDailyModel{})
+		return
+	} else {
+		//不是管理员有终端
+		if agentIds != nil {
+			conditions.AgentIds = agentIds
+		}
+	}
+	//统计
+	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	models := alarmFact.CalcByConditionsGroupDay(conditions, alarmFact.StatColumn(alarm_stat_models.PrefixTotal, true, false, true, false, true))
+	var result []map[string]interface{}
+	if models != nil && len(models) > 0 {
+		for _, model := range models {
+			result = append(result, map[string]interface{}{
+				"date":      date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
+				"total":     model.Total,
+				"add_total": model.AddTotal,
+			})
+		}
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // GrantUsedStat 授权： 使用统计
