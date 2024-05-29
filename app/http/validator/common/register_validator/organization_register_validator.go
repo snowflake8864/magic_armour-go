@@ -62,10 +62,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, findPw3.ModifyPw{})
 
 	//首页
-	key = consts.ValidatorPrefixOrg + "HomeGetAgentStatistic"
-	containers.Set(key, home3.GetAgentStatistic{})
-	key = consts.ValidatorPrefixOrg + "HomeGetAlarmStatistic"
-	containers.Set(key, home3.GetAlarmStatistic{})
+	key = consts.ValidatorPrefixOrg + "HomeAlarmDailyStat"
+	containers.Set(key, home3.AlarmDailyStat{})
 
 	//组织架构
 	key = consts.ValidatorPrefixOrg + "DepartmentAdd"

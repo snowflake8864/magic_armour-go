@@ -447,6 +447,11 @@ func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, colu
 	}
 }
 
+// GetListByConditions 通过条件获取多条记录
+func (m *AgentModel) GetListByConditions(condition SearchConditions, column string) (items []*AgentModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "", column)
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *AgentModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order, column string) (items []*AgentModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

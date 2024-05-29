@@ -8,6 +8,7 @@ import (
 type SearchConditions struct {
 	OrgId       int64
 	AgentId     string
+	AgentIds    []string
 	StatMonth   int
 	StatDay     string
 	GteCreateAt string
@@ -45,6 +46,9 @@ func (crd *baseAlarm) conditions2Where(search SearchConditions) map[string]inter
 	}
 	if !string_helper.IsEmpty(search.StatDay) {
 		wheres["stat_day"] = search.StatDay
+	}
+	if len(search.AgentIds) > 0 {
+		wheres["agent_id in"] = search.AgentIds
 	}
 	if !string_helper.IsEmpty(search.GteCreateAt) {
 		wheres["created_at >="] = search.GteCreateAt
@@ -92,6 +96,7 @@ func (crd *baseAlarm) StatColumn(prefix string, total, handled, addTotal, addHan
 func (crd *baseAlarm) StatColumnOfAllType(total, handled, addTotal, addHandled, statDay bool) string {
 	var columns []string
 	prefixes := []string{
+		PrefixTotal,
 		PrefixProcess,
 		PrefixDll,
 		PrefixBlackmail,

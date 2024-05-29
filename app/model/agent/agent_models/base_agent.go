@@ -1,6 +1,7 @@
 package agent_models
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -13,9 +14,13 @@ type AgentCalc struct {
 	OrgId               int64 `json:"org_id"`
 	TotalNumber         int   `json:"total_number"`
 	OnlineNumber        int   `json:"online_number"`
+	OfflineNumber       int   `json:"offline_number"`
 	SafeNumber          int   `json:"safe_number"`
+	UnsafeNumber        int   `json:"unsafe_number"`
 	WindowsNumber       int   `json:"windows_number"`
 	WindowsOnlineNumber int   `json:"windows_online_number"`
+	LinuxNumber         int   `json:"linux_number"`
+	LinuxOnlineNumber   int   `json:"linux_online_number"`
 }
 
 type SearchConditions struct {
@@ -137,12 +142,18 @@ func (m *baseAgent) ColumnCalcAgents(org, online, safe, win, winOnline bool) str
 		columns = append(columns, "SUM(IF(is_safe ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS safe_number")
 	}
 	if win {
-		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0) AS windows_number")
+		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)) AS windows_number")
 	}
 	if winOnline {
-		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)"+
-			" AND is_online ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS  windows_online_number")
+		columns = append(columns, fmt.Sprintf("SUM(IF(platform_type=%d AND is_online=%d, 1, 0)) AS windows_online_number", enum_software.PlatformTypeWindows, enums.IsYes))
 	}
-
 	return strings.Join(columns, ", ")
+}
+
+func (m *baseAgent) FillCalcData(data *AgentCalc) *AgentCalc {
+	data.UnsafeNumber = data.TotalNumber - data.SafeNumber
+	data.LinuxNumber = data.TotalNumber - data.WindowsNumber
+	data.LinuxOnlineNumber = data.OnlineNumber - data.WindowsOnlineNumber
+
+	return data
 }

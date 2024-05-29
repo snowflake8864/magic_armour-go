@@ -122,8 +122,11 @@ func InitOrganizationRouter() *gin.Engine {
 				//首页
 				home := vOrg.Group("home/")
 				{
-					home.POST("getAgentStatistic", validatorFactory.Create(consts.ValidatorPrefixOrg+"HomeGetAgentStatistic"))
-					home.POST("getAlarmStatistic", validatorFactory.Create(consts.ValidatorPrefixOrg+"HomeGetAlarmStatistic"))
+					home.POST("agentStat", (&organization.HomeController{}).AgentStat)
+					home.POST("alarmAgentTops", (&organization.HomeController{}).AlarmAgentTops)
+					home.POST("alarmTodayStat", (&organization.HomeController{}).AlarmTodayStat)
+					home.POST("alarmDailyStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"HomeAlarmDailyStat"))
+					home.POST("grantUsedStat", (&organization.HomeController{}).GrantUsedStat)
 				}
 
 				//终端

@@ -4,11 +4,13 @@ import (
 	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_userinfo"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -24,60 +26,74 @@ func (u *ControllerBase) getLogin(ctx *gin.Context) user_service.UserCacheLogin 
 
 // getAgentSearchConditions 获取终端查询条件
 func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_models.SearchConditions, error) {
-
+	loginInfo := u.getLogin(ctx)
 	//页面上传
-	searchConditions := agent_models.SearchConditions{}
-	searchConditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
-	searchConditions.HostName = ctx.GetString(consts.ValidatorPrefixOrg + "hostName")
-	searchConditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
-	searchConditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
-	searchConditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
-	searchConditions.ContactName = ctx.GetString(consts.ValidatorPrefixOrg + "contactName")
-	searchConditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
-	searchConditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
+	conditions := agent_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.AgentId = ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
+	conditions.HostName = ctx.GetString(consts.ValidatorPrefixOrg + "hostName")
+	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
+	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
+	conditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
+	conditions.ContactName = ctx.GetString(consts.ValidatorPrefixOrg + "contactName")
+	conditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
+	conditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
 
-	var reqDeptIds []int64
-	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
+	//请求的组织架构
+	deptId := ctx.GetString(consts.ValidatorPrefixOrg + "deptId")
+	reqDeptIds := json_helper.ToSliceInt64(deptId)
+	/*var reqDeptIds []int64
+	if deptIds, isOk := ctx.GetString(consts.ValidatorPrefixOrg + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
 		reqDeptIds = slice_helper.SliceAny2Int64(tmp)
-	}
+	}*/
 
 	//用户管理的组织架构
-	if isAgent, departments := u.getCurrAdminDepartments(ctx); !isAgent {
-		if departments == nil || len(departments) == 0 {
-			return searchConditions, errors.New("没有需要负责的组织架构")
+	if loginInfo.IsRoot == enums.IsNot {
+		if loginInfo.DeptIds == nil || len(loginInfo.DeptIds) == 0 {
+			return conditions, errors.New("没有需要管理的组织架构")
 		}
 		//没有查询组织架构
 		if len(reqDeptIds) == 0 {
-			searchConditions.DeptIds = departments
+			conditions.DeptIds = loginInfo.DeptWithChild
 		} else {
 			//用户管理组织架构与查询组织架构交集
-			intersection := slice_helper.SliceInt64Intersect(reqDeptIds, departments)
+			intersection := slice_helper.SliceInt64Intersect(reqDeptIds, loginInfo.DeptWithChild)
 			if intersection == nil || len(intersection) == 0 {
-				return searchConditions, errors.New("暂无数据")
+				return conditions, errors.New("暂无数据")
 			} else {
-				searchConditions.DeptIds = intersection
+				conditions.DeptIds = intersection
 			}
 		}
 	} else {
-		searchConditions.DeptIds = reqDeptIds
+		//管理员： 可以看全部终端
+		conditions.DeptIds = reqDeptIds
 	}
-	return searchConditions, nil
+	return conditions, nil
 }
 
-// getCurrAdminDepartments 获取当前用户的管理部门
-func (u *ControllerBase) getCurrAdminDepartments(ctx *gin.Context) (bool, []int64) {
-
-	return true, nil
-	/*
-		loginInfo := u.getLogin(ctx)
-		if loginInfo.IsAgent == enums.IsYes {
-			return true, nil
-		}
-		departments := helpers.Json2SliceInt64(loginInfo.Departments)
-		return false, departments
-	*/
+// getCurrUserAgentIds 获取当前用户管理的终端id集合
+func (u *ControllerBase) getCurrUserAgentIds(loginInfo user_service.UserCacheLogin) (error, []string) {
+	//管理员： 可以看全部终端
+	if loginInfo.IsRoot == enums.IsYes {
+		return nil, nil
+	}
+	if loginInfo.DeptIds == nil || len(loginInfo.DeptIds) == 0 {
+		return errors.New("没有需要管理的组织架构"), nil
+	}
+	conditions := agent_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.DeptIds = loginInfo.DeptWithChild
+	agentModels := agent_models.CreateAgentFactory().GetListByConditions(conditions, "agent_id")
+	if agentModels == nil || len(agentModels) == 0 {
+		return errors.New("没有需要管理的终端"), nil
+	}
+	var agentIds []string
+	for _, model := range agentModels {
+		agentIds = append(agentIds, model.AgentId)
+	}
+	return nil, agentIds
 }
 
 // getPageAndSort 获取分页参数和排序参数
