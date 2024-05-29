@@ -85,7 +85,8 @@ func (u *ControllerBase) getCurrUserAgentIds(loginInfo user_service.UserCacheLog
 	conditions := agent_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
 	conditions.DeptIds = loginInfo.DeptWithChild
-	agentModels := agent_models.CreateAgentFactory().GetListByConditions(conditions, "agent_id")
+	AgentFact := agent_models.CreateAgentFactory()
+	agentModels := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
 	if agentModels == nil || len(agentModels) == 0 {
 		return errors.New("没有需要管理的终端"), nil
 	}

@@ -50,10 +50,10 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 		wheres["org_id"] = search.OrgId
 	}
 	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
+		wheres["id"] = search.AgentId
 	}
 	if search.AgentIds != nil && len(search.AgentIds) > 0 {
-		wheres["agent_id in"] = search.AgentIds
+		wheres["id in"] = search.AgentIds
 	}
 	if !string_helper.IsEmpty(search.HostName) {
 		wheres["host_name"] = search.HostName
@@ -91,11 +91,16 @@ func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interfa
 	return wheres
 }
 
-// ColumnBasic 字段: 基础
+// ColumnSimplify 字段: 最简单的
+func (m *baseAgent) ColumnSimplify() string {
+	return "org_id, id"
+}
+
+// ColumnBasic 字段: 基础基础
 func (m *baseAgent) ColumnBasic(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id,"
+		column = "org_id, id,"
 	}
 	column = column +
 		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +
@@ -109,7 +114,7 @@ func (m *baseAgent) ColumnBasic(needId bool) string {
 func (m *baseAgent) ColumnConfig(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id,"
+		column = "org_id, id,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
@@ -124,7 +129,7 @@ func (m *baseAgent) ColumnConfig(needId bool) string {
 func (m *baseAgent) ColumnProc(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id, os_name,"
+		column = "org_id, id, os_name,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, auto_white_switch, alarm_ai_switch"
@@ -135,7 +140,7 @@ func (m *baseAgent) ColumnProc(needId bool) string {
 func (m *baseAgent) ColumnSwitchAndModeForAlarm(needId bool) string {
 	column := ""
 	if needId {
-		column = "org_id, agent_id,"
+		column = "org_id, id,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
@@ -145,7 +150,7 @@ func (m *baseAgent) ColumnSwitchAndModeForAlarm(needId bool) string {
 
 // ColumnCalcAgents 字段： 统计终端
 func (m *baseAgent) ColumnCalcAgents(org, online, safe, win, winOnline bool) string {
-	columns := []string{"COUNT(agent_id) AS total_number"}
+	columns := []string{"COUNT(id) AS total_number"}
 	if org {
 		columns = append(columns, "org_id")
 	}

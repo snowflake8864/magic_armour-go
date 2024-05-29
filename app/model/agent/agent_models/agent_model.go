@@ -1,6 +1,7 @@
 package agent_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -13,12 +14,11 @@ func CreateAgentFactory() *AgentModel {
 	return &AgentModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
-//结构体
-
+// 结构体
 type AgentModel struct {
 	baseAgent
 	model.BaseModel
-	AgentId             string `json:"agent_id" gorm:"primaryKey"`
+	AgentId             string `json:"id"  gorm:"primaryKey;column:id"`
 	OrgId               int64  `json:"org_id"`
 	HostName            string `json:"host_name"`
 	MacId               string `json:"mac_id"`
@@ -94,7 +94,7 @@ func (m *AgentModel) CreateTable() bool {
 	sql += `
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
+			id varchar(128) NOT NULL DEFAULT '' COMMENT '设备id',
 			host_name varchar(128)  NOT NULL DEFAULT '' COMMENT '主机名',
 			mac_id varchar(512)  NOT NULL DEFAULT '' COMMENT '物理地址',
 			agent_ip varchar(512)  NOT NULL DEFAULT '' COMMENT '终端ip',
@@ -162,7 +162,7 @@ func (m *AgentModel) CreateTable() bool {
 			INDEX index_platform_type (platform_type) ,
 			INDEX index_created_at (created_at)
 		)
-		UNIQUE KEY(org_id, agent_id)
+		UNIQUE KEY(org_id, id)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
@@ -209,7 +209,7 @@ func (m *AgentModel) InsertBatch(list *[]AgentModel) bool {
 // UpdateById 通过id修改
 func (m *AgentModel) UpdateById(id string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id=?", id).Updates(updates)
+		return tx.Model(m).Where("id=?", id).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -223,7 +223,7 @@ func (m *AgentModel) UpdateById(id string, updates map[string]interface{}) (bool
 // UpdateByIds 通过id集合修改
 func (m *AgentModel) UpdateByIds(ids []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", ids).Updates(updates)
+		return tx.Model(m).Where("id IN ?", ids).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -236,7 +236,7 @@ func (m *AgentModel) UpdateByIds(ids []string, updates map[string]interface{}) (
 // UpdateByOrgAndAgent 通过企业id和终端id修改
 func (m *AgentModel) UpdateByOrgAndAgent(orgId int64, agentId string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=?", orgId, agentId).Updates(updates)
+		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -249,7 +249,7 @@ func (m *AgentModel) UpdateByOrgAndAgent(orgId int64, agentId string, updates ma
 // UpdateByOrgAndAgents 通过企业id和终端id集合修改
 func (m *AgentModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id IN ?", orgId, agentIds).Updates(updates)
+		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -279,7 +279,7 @@ func (m *AgentModel) UpdateByConditions(condition SearchConditions, updates map[
 // DeleteById 通过id删除
 func (m *AgentModel) DeleteById(id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id=?", id).Delete(m)
+		return tx.Model(m).Where("id=?", id).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -293,7 +293,7 @@ func (m *AgentModel) DeleteById(id string) bool {
 // DeleteByIds 通过id集合删除
 func (m *AgentModel) DeleteByIds(ids []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("agent_id IN ?", ids).Delete(m)
+		return tx.Model(m).Where("id IN ?", ids).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -307,7 +307,7 @@ func (m *AgentModel) DeleteByIds(ids []string) bool {
 // DeleteByOrgAndAgent 通过企业id和终端id删除
 func (m *AgentModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=?", orgId, agentId).Delete(m)
+		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -335,7 +335,7 @@ func (m *AgentModel) DeleteByOrg(orgId int64) bool {
 // DeleteByOrgAndAgents 通通过企业id和终端id集合删除
 func (m *AgentModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id IN ?", orgId).Where("agent_id IN ?", agentIds).Delete(m)
+		return tx.Model(m).Where("org_id=? AND id IN ?", orgId).Where("id IN ?", agentIds).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -366,7 +366,7 @@ func (m *AgentModel) DeleteByConditions(condition SearchConditions) bool {
 // GetItemById 通过id获取一条记录
 func (m *AgentModel) GetItemById(id, column string) (item *AgentModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(m.GetColumn(column)).Where("agent_id=?", id).Take(&item)
+		return tx.Model(m).Select(m.GetColumn(column)).Where("id=?", id).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
@@ -380,7 +380,7 @@ func (m *AgentModel) GetItemById(id, column string) (item *AgentModel) {
 // GetItemsByIds 通过id集合获取多条记录
 func (m *AgentModel) GetItemsByIds(ids []string, column string) (items []*AgentModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(m.GetColumn(column)).Where("agent_id IN ?", ids).Find(&items)
+		return tx.Model(m).Select(m.GetColumn(column)).Where("id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
@@ -394,7 +394,7 @@ func (m *AgentModel) GetItemsByIds(ids []string, column string) (items []*AgentM
 // GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
 func (m *AgentModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND agent_id=?", orgId, agentId).Take(&item)
+		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND id=?", orgId, agentId).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
@@ -436,7 +436,7 @@ func (m *AgentModel) GetMapsByOrgAndAgents(orgId int64, agentIds []string, colum
 // GetItemsByOrgAndAgents 通过企业id和终端id获取多条记录
 func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, column string) (items []*AgentModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND agent_id IN ?", orgId, agentIds).Find(&items)
+		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND id IN ?", orgId, agentIds).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
@@ -482,12 +482,14 @@ func (m *AgentModel) GetItemsByConditions(condition SearchConditions, offset, li
 func (m *AgentModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select("agent_id")
+		tmp := tx.Model(m).Select("id")
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
 	})
+	fmt.Println("=======================================")
+	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
 		return total

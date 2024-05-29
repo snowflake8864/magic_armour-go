@@ -5,14 +5,17 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
+	"sort"
 )
 
 // AgentController 终端相关
@@ -41,7 +44,19 @@ func (u *AgentController) CountOnline(ctx *gin.Context) {
 
 // TypeList 类型列表
 func (u *AgentController) TypeList(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "TypeList")
+	jsonStr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentTypes)
+	typeMap := enum_agent.GetTypeMap(jsonStr)
+
+	//先取值
+	var typeVals []int
+	if typeMap != nil {
+		for val, _ := range typeMap {
+			typeVals = append(typeVals, val)
+		}
+	}
+	sort.Ints(typeVals)
+
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(typeVals, typeMap, false))
 }
 
 // PageForManage 管理: 分页

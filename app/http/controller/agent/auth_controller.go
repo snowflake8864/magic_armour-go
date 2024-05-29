@@ -113,6 +113,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	isOk, data := agent_service.CreateOnlineFactory().RegisterOrLogin(&param)
 	if !isOk {
 		response.FailSimplify(ctx, data)
+		return
 	}
 
 	response.SuccessReturnData(ctx, gin.H{"token": data})

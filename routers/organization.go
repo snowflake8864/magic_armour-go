@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/organization"
-	"goskeleton/app/http/controller/platform"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/http/middleware/cors"
@@ -134,9 +133,9 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					public := agent.Group("public/")
 					{
-						public.POST("onlineStatus", (&platform.AgentController{}).OnlineStatus)
-						public.POST("safeStatus", (&platform.AgentController{}).SafeStatus)
-						public.POST("types", (&platform.AgentController{}).TypeList)
+						public.POST("onlineStatus", (&organization.AgentController{}).OnlineStatus)
+						public.POST("safeStatus", (&organization.AgentController{}).SafeStatus)
+						public.POST("types", (&organization.AgentController{}).TypeList)
 					}
 					manage := agent.Group("manage/")
 					{
