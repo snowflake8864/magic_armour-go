@@ -10,7 +10,6 @@ import (
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -40,14 +39,12 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	conditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
 
 	//请求的组织架构
-	deptId := ctx.GetString(consts.ValidatorPrefixOrg + "deptId")
-	reqDeptIds := json_helper.ToSliceInt64(deptId)
-	/*var reqDeptIds []int64
-	if deptIds, isOk := ctx.GetString(consts.ValidatorPrefixOrg + "deptId"); isOk {
+	var reqDeptIds []int64
+	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
 		reqDeptIds = slice_helper.SliceAny2Int64(tmp)
-	}*/
+	}
 
 	//用户管理的组织架构
 	if loginInfo.IsRoot == enums.IsNot {

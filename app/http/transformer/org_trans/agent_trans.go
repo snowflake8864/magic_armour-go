@@ -2,10 +2,13 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -14,7 +17,7 @@ type Agent struct {
 	transformer.Common
 }
 
-func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) map[string]interface{} {
+func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, agentExtend map[string]interface{}) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
@@ -56,8 +59,8 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	//扩展信息
 	var tmp interface{}
 	data["extend_info"] = tmp
-	if extendInfo != nil && len(extendInfo) > 0 {
-		if extend, ok := extendInfo[model.AgentId]; ok {
+	if agentExtend != nil && len(agentExtend) > 0 {
+		if extend, ok := agentExtend[model.AgentId]; ok {
 			data["extend_info"] = extend
 		}
 	}
@@ -69,6 +72,10 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
+		//终端类型
+		typeJsonStr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentTypes)
+		agentTypes := enum_agent.GetTypeMap(typeJsonStr)
+
 		for _, model := range models {
 			tmp := t.pageGeneral(model, departments, nil)
 
@@ -77,6 +84,7 @@ func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, 
 				return 1
 			}
 			tmp["can_upgrade"] = canUpgrade
+			tmp["agent_type_label"] = enum_agent.GetTypeLabel(agentTypes, model.AgentType)
 			items = append(items, tmp)
 		}
 	}

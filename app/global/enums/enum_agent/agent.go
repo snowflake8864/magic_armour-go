@@ -73,9 +73,7 @@ func GetTypeMap(jsonStr string) map[int]string {
 }
 
 // GetTypeLabel 终端类型： 获取标签
-func GetTypeLabel(jsonStr string, val int) string {
-	types := GetTypeMap(jsonStr)
-
+func GetTypeLabel(types map[int]string, val int) string {
 	if types == nil {
 		return ""
 	} else {

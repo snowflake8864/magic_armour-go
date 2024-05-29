@@ -1,7 +1,6 @@
 package agent_models
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -488,8 +487,6 @@ func (m *AgentModel) Count(condition SearchConditions) int64 {
 		}
 		return tmp.Count(&total)
 	})
-	fmt.Println("=======================================")
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
 		return total
