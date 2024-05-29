@@ -26,7 +26,7 @@ type AgentBatch struct {
 // AgentBasic 终端基础信息
 type AgentBasic struct {
 	DeptId      int64  `form:"deptId" json:"deptId" binding:"required,min=-1"`
-	AgentType   int    `form:"agentType" json:"agentType" binding:"required,min=-1"`
+	AgentType   int    `form:"agentType" json:"agentType" binding:"required"`
 	Alias       string `form:"alias" json:"alias" binding:"required,min=1"`
 	ContactName string `form:"contactName" json:"contactName" binding:"required,min=1"`
 	ContactTel  string `form:"contactTel" json:"contactTel" binding:"required,min=2"`
