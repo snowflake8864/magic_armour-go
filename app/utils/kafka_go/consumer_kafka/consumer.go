@@ -211,7 +211,7 @@ func (k *ConsumerClient) ConsumeThreaten() {
 		}
 
 		switch data.Type {
-		
+
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}
