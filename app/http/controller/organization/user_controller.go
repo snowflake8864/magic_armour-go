@@ -53,15 +53,15 @@ func (u *UserController) Add(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := user_models.UserModel{
-		Username:   ctx.GetString(consts.ValidatorPrefixPlatform + "userName"),
+		Username:   ctx.GetString(consts.ValidatorPrefixOrg + "userName"),
 		OrgId:      loginInfo.OrgId,
-		Email:      ctx.GetString(consts.ValidatorPrefixPlatform + "userEmail"),
-		Phone:      ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone"),
-		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")),
-		Realname:   ctx.GetString(consts.ValidatorPrefixPlatform + "realname"),
-		Position:   ctx.GetString(consts.ValidatorPrefixPlatform + "position"),
-		Intro:      ctx.GetString(consts.ValidatorPrefixPlatform + "intro"),
-		Depts:      ctx.GetString(consts.ValidatorPrefixPlatform + "departments"),
+		Email:      ctx.GetString(consts.ValidatorPrefixOrg + "userEmail"),
+		Phone:      ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"),
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPw")),
+		Realname:   ctx.GetString(consts.ValidatorPrefixOrg + "realname"),
+		Position:   ctx.GetString(consts.ValidatorPrefixOrg + "position"),
+		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
+		Depts:      ctx.GetString(consts.ValidatorPrefixOrg + "departments"),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
@@ -82,14 +82,14 @@ func (u *UserController) Edit(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := user_models.UserModel{
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:      loginInfo.OrgId,
-		Email:      ctx.GetString(consts.ValidatorPrefixPlatform + "userEmail"),
-		Phone:      ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone"),
-		Realname:   ctx.GetString(consts.ValidatorPrefixPlatform + "realname"),
-		Position:   ctx.GetString(consts.ValidatorPrefixPlatform + "position"),
-		Intro:      ctx.GetString(consts.ValidatorPrefixPlatform + "intro"),
-		Depts:      ctx.GetString(consts.ValidatorPrefixPlatform + "departments"),
+		Email:      ctx.GetString(consts.ValidatorPrefixOrg + "userEmail"),
+		Phone:      ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"),
+		Realname:   ctx.GetString(consts.ValidatorPrefixOrg + "realname"),
+		Position:   ctx.GetString(consts.ValidatorPrefixOrg + "position"),
+		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
+		Depts:      ctx.GetString(consts.ValidatorPrefixOrg + "departments"),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
@@ -107,7 +107,7 @@ func (u *UserController) Delete(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := user_models.UserModel{
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:      loginInfo.OrgId,
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
@@ -126,9 +126,9 @@ func (u *UserController) ModifyPw(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := user_models.UserModel{
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id")),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:      loginInfo.OrgId,
-		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw")),
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPw")),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}

@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -13,7 +12,6 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 	"sort"
 )
@@ -178,9 +176,6 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 		SelfProtectSwitch:   &SelfProtectSwitch,
 		AutoWhiteSwitch:     &AutoWhiteSwitch,
 	}
-	fmt.Println("===============================================")
-	fmt.Println("SyslogDnsSwitch:", SyslogDnsSwitch)
-	fmt.Println(json_helper.Encode(param))
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "批量修改")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
