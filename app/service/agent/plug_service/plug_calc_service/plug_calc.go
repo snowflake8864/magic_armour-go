@@ -68,7 +68,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false))
+	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false, false))
 	if agentModel == nil || agentModel.OutreachAlarmSwitch == enums.SwitchOff {
 		return nil
 	}

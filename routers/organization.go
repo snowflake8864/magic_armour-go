@@ -148,7 +148,7 @@ func InitOrganizationRouter() *gin.Engine {
 						manage.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentManageBatchDelete"))
 						manage.POST("batchUninstall", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentManageBatchUninstall"))
 						manage.POST("batchUpgrade", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentManageBatchUpgrade"))
-						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentManageBatchSetConfig"))
+						manage.POST("batchModify", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentManageBatchModify"))
 					}
 					basic := agent.Group("basic/")
 					{

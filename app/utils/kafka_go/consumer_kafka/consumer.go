@@ -94,11 +94,14 @@ func (k *ConsumerClient) ConsumeCommon() {
 		case kafka_go.TypeAgentDelete:
 			agent_job.Delete(data.OrgId, data.AgentId)
 			break
+		case kafka_go.TypeAgentOpenAutoWhite:
+			agent_job.OpenAutoWhite(data.OrgId, data.AgentId)
+			break
 		case kafka_go.TypeOrgClean:
 			org_job.Clean(data.OrgId)
 			break
-		case kafka_go.TypeAgentMonitor:
-			agent_job.Monitor(data.Data)
+		case kafka_go.TypeAgentPutMonitor:
+			agent_job.UploadMonitor(data.Data)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))

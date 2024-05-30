@@ -100,8 +100,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, agent3.ManageBatchUninstall{})
 	key = consts.ValidatorPrefixOrg + "AgentManageBatchUpgrade"
 	containers.Set(key, agent3.ManageBatchUpgrade{})
-	key = consts.ValidatorPrefixOrg + "AgentManageBatchSetConfig"
-	containers.Set(key, agent3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "AgentManageBatchModify"
+	containers.Set(key, agent3.ManageBatchModify{})
 	key = consts.ValidatorPrefixOrg + "AgentBasicGet"
 	containers.Set(key, agent3.BasicGet{})
 	key = consts.ValidatorPrefixOrg + "AgentBasicSave"

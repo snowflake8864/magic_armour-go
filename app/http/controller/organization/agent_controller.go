@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -12,6 +13,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 	"sort"
 )
@@ -82,7 +84,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 // DeleteForManage 管理: 删除
 func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, false)
 	if err != nil {
@@ -95,7 +97,7 @@ func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 // UninstallForManage 管理: 卸载
 func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, true)
 	if err != nil {
@@ -109,7 +111,7 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 // UpgradeForManage 管理: 升级
 func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
+		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
@@ -152,20 +154,34 @@ func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// BatchSetConfigForManage 管理: 批量设置配置
-func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
+// BatchModifyForManage 管理: 批量修改
+func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	var param = agent_service.UpdateColumn{}
-	param.SyslogDnsSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogDnsSwitch"))
-	param.SyslogOuterSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogOuterSwitch"))
-	param.SyslogInnerSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogInnerSwitch"))
-	param.SyslogProcessSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogProcessSwitch"))
-	param.SyslogLoginSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "syslogLoginSwitch"))
-	param.OutreachAlarmSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "outreachAlarmSwitch"))
-	param.SelfProtectSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "selfProtectSwitch"))
-	param.AutoWhiteSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "autoWhiteSwitch"))
+	DeptId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId"))
+	SyslogDnsSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogDnsSwitch"))
+	SyslogOuterSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogOuterSwitch"))
+	SyslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
+	SyslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
+	SyslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
+	OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
+	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, param, "终端管理")
+	var param = agent_service.ManualInterveneColumn{
+		DeptId:              &DeptId,
+		SyslogDnsSwitch:     &SyslogDnsSwitch,
+		SyslogOuterSwitch:   &SyslogOuterSwitch,
+		SyslogInnerSwitch:   &SyslogInnerSwitch,
+		SyslogProcessSwitch: &SyslogProcessSwitch,
+		SyslogLoginSwitch:   &SyslogLoginSwitch,
+		OutreachAlarmSwitch: &OutreachAlarmSwitch,
+		SelfProtectSwitch:   &SelfProtectSwitch,
+		AutoWhiteSwitch:     &AutoWhiteSwitch,
+	}
+	fmt.Println("===============================================")
+	fmt.Println("SyslogDnsSwitch:", SyslogDnsSwitch)
+	fmt.Println(json_helper.Encode(param))
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "批量修改")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

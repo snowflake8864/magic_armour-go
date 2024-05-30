@@ -111,10 +111,13 @@ func (m *baseAgent) ColumnBasic(needId bool) string {
 }
 
 // ColumnConfig 字段:全部配置相关
-func (m *baseAgent) ColumnConfig(needId bool) string {
+func (m *baseAgent) ColumnConfig(needId, grant bool) string {
 	column := ""
 	if needId {
 		column = "org_id, id,"
+	}
+	if grant {
+		column += "grant_config, grant_order_no,grant_expire_at,grant_status,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +

@@ -1,6 +1,9 @@
 package enum_product
 
-import "goskeleton/app/global/enums"
+import (
+	"goskeleton/app/global/enums"
+	"goskeleton/app/utils/helpers/json_helper"
+)
 
 const (
 	StatusNot int = 1 //状态：无效
@@ -125,6 +128,16 @@ func (c *ProductGrantConfig) Default() {
 	} else {
 		c.Login = enums.IsYes
 	}
+}
+
+// Json2Config json转配置
+func Json2Config(jsonStr string) (data ProductGrantConfig) {
+	err := json_helper.ToStruct(jsonStr, &data)
+	if err != nil {
+		data = ProductGrantConfig{}
+	}
+	data.Default()
+	return data
 }
 
 func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {

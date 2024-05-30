@@ -1,25 +1,243 @@
 package agent_service
 
 import (
+	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 )
 
-type UpdateColumn struct {
-	SyslogDnsSwitch     int `json:"syslog_dns_switch"`
-	SyslogOuterSwitch   int `json:"syslog_outer_switch"`
-	SyslogInnerSwitch   int `json:"syslog_inner_switch"`
-	SyslogProcessSwitch int `json:"syslog_process_switch"`
-	SyslogLoginSwitch   int `json:"syslog_login_switch"`
-	OutreachAlarmSwitch int `json:"outreach_alarm_switch"`
-	SelfProtectSwitch   int `json:"self_protect_switch"`
-	AutoWhiteSwitch     int `json:"auto_white_switch"`
+// ManualInterveneColumn 人工可干预字段
+type ManualInterveneColumn struct {
+	UserId              *int64
+	DeptId              *int64
+	AgentType           *int
+	Alias               *string
+	ContactName         *string
+	ContactTel          *string
+	Position            *string
+	Remark              *string
+	ProcessSwitch       *int
+	ProcessMode         *int
+	DllSwitch           *int
+	DllMode             *int
+	TamperSwitch        *int
+	TamperMode          *int
+	BlackmailSwitch     *int
+	BlackmailMode       *int
+	PortSwitch          *int
+	PlugSwitch          *int
+	UsbSwitch           *int
+	UsbMode             *int
+	SyslogDnsSwitch     *int
+	SyslogOuterSwitch   *int
+	SyslogInnerSwitch   *int
+	SyslogProcessSwitch *int
+	SyslogLoginSwitch   *int
+	OutreachAlarmSwitch *int
+	SelfProtectSwitch   *int
+	KernelUpgradeSwitch *int
+	CommonTime          int
+	FastTime            int
+	AutoWhiteSwitch     *int
+	AlarmAiSwitch       *int
+	LoginSolveSwitch    *int
+	HardwareSwitch      *int
+	HardwareTime        int
 }
 
 type AgentBase struct {
+}
+
+// 获取修改数据
+func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualInterveneColumn) (err error, hasTask bool,
+	openAutoWhite bool, updates map[string]interface{}) {
+	if model == nil {
+		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
+	}
+	updates = make(map[string]interface{})
+	if param.DeptId != nil && *param.DeptId != int64(enums.AllDefaultInt) {
+		updates["dept_id"] = *param.DeptId
+	}
+	if param.AgentType != nil && *param.AgentType != enums.AllDefaultInt {
+		updates["agent_type"] = *param.AgentType
+	}
+	if param.Alias != nil && *param.Alias != enums.AllDefaultStr {
+		updates["alias"] = *param.Alias
+	}
+	if param.ContactName != nil && *param.ContactName != enums.AllDefaultStr {
+		updates["contact_name"] = *param.ContactName
+	}
+	if param.ContactTel != nil && *param.ContactTel != enums.AllDefaultStr {
+		updates["contact_tel"] = *param.ContactTel
+	}
+	if param.Position != nil && *param.Position != enums.AllDefaultStr {
+		updates["position"] = *param.Position
+	}
+	if param.Remark != nil && *param.Remark != enums.AllDefaultStr {
+		updates["remark"] = *param.Remark
+	}
+
+	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt && model.SelfProtectSwitch != *param.SelfProtectSwitch {
+		updates["self_protect_switch"] = *param.SelfProtectSwitch
+		hasTask = true
+	}
+	//如果未授权, 下面功能不可用
+	if model.GrantStatus == enums.IsYes {
+		return nil, hasTask, openAutoWhite, updates
+	}
+	//以下授权可用功能
+	grantConfig := enum_product.Json2Config(model.GrantConfig)
+
+	if param.CommonTime > 0 && model.CommonTime != param.CommonTime {
+		updates["common_time"] = param.CommonTime
+		hasTask = true
+	}
+	if param.FastTime > 0 && model.FastTime != param.FastTime {
+		updates["fast_time"] = param.FastTime
+		hasTask = true
+	}
+
+	//可信防护已授权
+	if grantConfig.Process == enums.SwitchOn {
+		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {
+			updates["process_switch"] = *param.ProcessSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.ProcessSwitch == enums.SwitchOn {
+				model.ProcessSwitch = enums.SwitchOn
+			}
+		}
+		if param.ProcessMode != nil && *param.ProcessMode != enums.AllDefaultInt && model.ProcessMode != *param.ProcessMode {
+			updates["ProcessMode"] = *param.ProcessMode
+			hasTask = true
+		}
+		if param.DeptId != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
+			updates["dll_switch"] = *param.DllSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.DllSwitch == enums.SwitchOn {
+				model.DllSwitch = enums.SwitchOn
+			}
+		}
+		if param.DllMode != nil && *param.DllMode != enums.AllDefaultInt && model.DllMode != *param.DllMode {
+			updates["dll_mode"] = *param.DllMode
+			hasTask = true
+		}
+		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
+			updates["auto_white_switch"] = *param.AutoWhiteSwitch
+			if *param.AutoWhiteSwitch == enums.SwitchOn {
+				openAutoWhite = true
+			}
+		}
+	}
+	//防篡改已授权
+	if grantConfig.Tamper == enums.SwitchOn {
+		if param.TamperSwitch != nil && *param.TamperSwitch != enums.AllDefaultInt && model.TamperSwitch != *param.TamperSwitch {
+			updates["tamper_switch"] = *param.TamperSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.TamperSwitch == enums.SwitchOn {
+				model.TamperSwitch = enums.SwitchOn
+			}
+		}
+		if param.TamperMode != nil && *param.TamperMode != enums.AllDefaultInt && model.TamperMode != *param.TamperMode {
+			updates["tamper_mode"] = *param.TamperMode
+			hasTask = true
+		}
+	}
+	//勒索防护已授权
+	if grantConfig.Blackmail == enums.SwitchOn {
+		if param.BlackmailSwitch != nil && *param.BlackmailSwitch != enums.AllDefaultInt && model.BlackmailSwitch != *param.BlackmailSwitch {
+			updates["blackmail_switch"] = *param.BlackmailSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.BlackmailSwitch == enums.SwitchOn {
+				model.BlackmailSwitch = enums.SwitchOn
+			}
+		}
+		if param.BlackmailMode != nil && *param.BlackmailMode != enums.AllDefaultInt && model.BlackmailMode != *param.BlackmailMode {
+			updates["blackmail_mode"] = *param.BlackmailMode
+			hasTask = true
+		}
+	}
+	//端口虚开已授权
+	if grantConfig.Port == enums.SwitchOn {
+		if param.PortSwitch != nil && *param.PortSwitch != enums.AllDefaultInt && model.PortSwitch != *param.PortSwitch {
+			updates["port_switch"] = *param.PortSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.PortSwitch == enums.SwitchOn {
+				model.PortSwitch = enums.SwitchOn
+			}
+		}
+	}
+	//封堵已授权
+	if grantConfig.Plug == enums.SwitchOn {
+		if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt && model.PlugSwitch != *param.PlugSwitch {
+			updates["plug_switch"] = *param.PlugSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.PlugSwitch == enums.SwitchOn {
+				model.PlugSwitch = enums.SwitchOn
+			}
+		}
+	}
+	//外设已授权
+	if grantConfig.Usb == enums.SwitchOn {
+		if param.UsbSwitch != nil && *param.UsbSwitch != enums.AllDefaultInt && model.UsbSwitch != *param.UsbSwitch {
+			updates["usb_switch"] = *param.UsbSwitch
+			hasTask = true
+			//方便下发相关任务
+			if *param.UsbSwitch == enums.SwitchOn {
+				model.UsbSwitch = enums.SwitchOn
+			}
+		}
+		if param.UsbMode != nil && *param.UsbMode != enums.AllDefaultInt && model.UsbMode != *param.UsbMode {
+			updates["usb_mode"] = *param.UsbMode
+			hasTask = true
+		}
+	}
+	//通讯日志已授权
+	if grantConfig.Syslog == enums.SwitchOn {
+		if param.SyslogDnsSwitch != nil && *param.SyslogDnsSwitch != enums.AllDefaultInt && model.SyslogDnsSwitch != *param.SyslogDnsSwitch {
+			updates["syslog_dns_switch"] = *param.SyslogDnsSwitch
+			hasTask = true
+		}
+		if param.SyslogOuterSwitch != nil && *param.SyslogOuterSwitch != enums.AllDefaultInt && model.SyslogOuterSwitch != *param.SyslogOuterSwitch {
+			updates["syslog_outer_switch"] = *param.SyslogOuterSwitch
+			hasTask = true
+		}
+		if param.SyslogInnerSwitch != nil && *param.SyslogInnerSwitch != enums.AllDefaultInt && model.SyslogInnerSwitch != *param.SyslogInnerSwitch {
+			updates["syslog_inner_switch"] = *param.SyslogInnerSwitch
+			hasTask = true
+		}
+		if param.SyslogProcessSwitch != nil && *param.SyslogProcessSwitch != enums.AllDefaultInt && model.SyslogProcessSwitch != *param.SyslogProcessSwitch {
+			updates["syslog_process_switch"] = *param.SyslogProcessSwitch
+			hasTask = true
+		}
+		if param.SyslogLoginSwitch != nil && *param.SyslogLoginSwitch != enums.AllDefaultInt && model.SyslogLoginSwitch != *param.SyslogLoginSwitch {
+			updates["syslog_login_switch"] = *param.SyslogLoginSwitch
+			hasTask = true
+		}
+	}
+	//外联已授权
+	if grantConfig.Outreach == enums.SwitchOn {
+		if param.OutreachAlarmSwitch != nil && *param.OutreachAlarmSwitch != enums.AllDefaultInt && model.OutreachAlarmSwitch != *param.OutreachAlarmSwitch {
+			updates["outreach_alarm_switch"] = *param.OutreachAlarmSwitch
+		}
+	}
+	//口令破解已授权
+	if grantConfig.Login == enums.SwitchOn {
+		if param.LoginSolveSwitch != nil && *param.LoginSolveSwitch != enums.AllDefaultInt && model.LoginSolveSwitch != *param.LoginSolveSwitch {
+			updates["login_solve_switch"] = *param.LoginSolveSwitch
+		}
+	}
+
+	return err, hasTask, openAutoWhite, updates
 }
 
 // addTask 新增任务

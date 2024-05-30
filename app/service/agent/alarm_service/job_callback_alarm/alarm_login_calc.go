@@ -56,7 +56,7 @@ func (crd *AlarmLoginCalc) inOutreachWhile(orgId int64, targetIp string) bool {
 func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, attackAt string) error {
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false))
+	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false, false))
 	if agentModel == nil || agentModel.LoginSolveSwitch == enums.SwitchOff {
 		return nil
 	}

@@ -33,7 +33,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 	//终端配置
 	agentCurdFact := agent_models.CreateAgentFactory()
-	agentModel := agentCurdFact.GetItemByOrgAndAgent(loginInfo.OrgId, loginInfo.AgentId, agentCurdFact.ColumnConfig(true))
+	agentModel := agentCurdFact.GetItemByOrgAndAgent(loginInfo.OrgId, loginInfo.AgentId, agentCurdFact.ColumnConfig(true, false))
 
 	//数据字典
 	dictIds := []string{

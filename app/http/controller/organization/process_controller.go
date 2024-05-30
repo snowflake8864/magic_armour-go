@@ -37,7 +37,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 
 // BatchSetConfigForManage 管理页: 批量设置配置(开关和模式)
 func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchSetConfigForManage")
+	response.SuccessReturnData(ctx, "BatchModifyForManage")
 }
 
 // BatchSetWhiteForManage 管理页: 批量把终端的未设置进程变成白名单

@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
-func Monitor(jsonStr string) {
+func UploadMonitor(jsonStr string) {
 	model := agent_monitor_models.MonitorModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())

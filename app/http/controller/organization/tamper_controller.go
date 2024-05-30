@@ -37,7 +37,7 @@ func (u *TamperController) SetModeForManage(ctx *gin.Context) {
 
 // BatchSetConfigForManage 管理页: 批量设置配置(开关和模式)
 func (u *TamperController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchSetConfigForManage")
+	response.SuccessReturnData(ctx, "BatchModifyForManage")
 }
 
 // PageForPolicy 终端策略: 分页
