@@ -8,7 +8,10 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/platform/server_monitor_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -297,9 +300,17 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 }
 
 // ListForMonitor 监控：列表
-func (u *AgentController) ListForMonitor(ctx *gin.Context) {
-	agentId = u.getAgentIdFromGin(ctx)
+func (u *AgentController) ListForMonitor(ctx *gin.Context) {)
 	date := ctx.GetString(consts.ValidatorPrefixOrg + "date")
+	//页面上传
+	conditions := agent_monitor_models.SearchConditions{}
+	conditions.OrgId = u.getLogin(ctx).OrgId
+	conditions.AgentId = u.getAgentIdFromGin(ctx)
+	conditions.MonitorDay = date
+
+	models := agent_monitor_models.CreateMonitorFactory().GetAllByConditions(conditions, "")
+
+	response.SuccessReturnData(ctx, (&org_trans.Monitor{}).TransList(models))
 
 	response.SuccessReturnData(ctx, "ListForMonitor")
 }

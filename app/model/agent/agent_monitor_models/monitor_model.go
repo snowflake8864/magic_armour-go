@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 //  终端监控数据
@@ -15,6 +16,7 @@ func CreateMonitorFactory() *MonitorModel {
 //结构体
 
 type MonitorModel struct {
+	baseMonitor
 	model.BaseModel
 	Id         int64   `json:"id" gorm:"primaryKey"`
 	OrgId      int64   `json:"org_id"`
@@ -133,5 +135,24 @@ func (m *MonitorModel) DeleteByLteCreateAt(at string) bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// GetAllByConditions 通过条件获取全部记录
+func (m *MonitorModel) GetAllByConditions(condition SearchConditions, order string) (items []*MonitorModel) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	if !string_helper.IsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := tmp.Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
 	}
 }
