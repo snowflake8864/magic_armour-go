@@ -236,7 +236,64 @@ func (u *AgentController) GetForConfig(ctx *gin.Context) {
 
 // SaveForConfig 配置信息：保存
 func (u *AgentController) SaveForConfig(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SaveForConfig")
+	agentIds := []string{
+		u.getAgentIdFromGin(ctx),
+	}
+	processSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processSwitch"))
+	processMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processMode"))
+	dllSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "dllSwitch"))
+	dllMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "dllMode"))
+	tamperSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "tamperSwitch"))
+	tamperMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "tamperMode"))
+	blackmailSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "blackmailSwitch"))
+	blackmailMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "blackmailMode"))
+	portSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "portSwitch"))
+	plugSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "plugSwitch"))
+	usbSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "usbSwitch"))
+	usbMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "usbMode"))
+	loginSolveSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "loginSolveSwitch"))
+	SyslogDnsSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogDnsSwitch"))
+	SyslogOuterSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogOuterSwitch"))
+	SyslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
+	SyslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
+	SyslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
+	OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
+	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
+	commonTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "commonTime"))
+	fastTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "fastTime"))
+
+	var param = agent_service.ManualInterveneColumn{
+		ProcessSwitch:       &processSwitch,
+		ProcessMode:         processMode,
+		DllSwitch:           &dllSwitch,
+		DllMode:             dllMode,
+		TamperSwitch:        &tamperSwitch,
+		TamperMode:          tamperMode,
+		BlackmailSwitch:     &blackmailSwitch,
+		BlackmailMode:       blackmailMode,
+		PortSwitch:          &portSwitch,
+		PlugSwitch:          &plugSwitch,
+		UsbSwitch:           &usbSwitch,
+		UsbMode:             usbMode,
+		LoginSolveSwitch:    &loginSolveSwitch,
+		SyslogDnsSwitch:     &SyslogDnsSwitch,
+		SyslogOuterSwitch:   &SyslogOuterSwitch,
+		SyslogInnerSwitch:   &SyslogInnerSwitch,
+		SyslogProcessSwitch: &SyslogProcessSwitch,
+		SyslogLoginSwitch:   &SyslogLoginSwitch,
+		OutreachAlarmSwitch: &OutreachAlarmSwitch,
+		SelfProtectSwitch:   &SelfProtectSwitch,
+		AutoWhiteSwitch:     &AutoWhiteSwitch,
+		CommonTime:          commonTime,
+		FastTime:            fastTime,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "保存配置信息")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // ListForMonitor 监控：列表

@@ -11,6 +11,29 @@ import (
 
 type ConfigSave struct {
 	data_type.AgentSingle
+	ProcessSwitch       *int `form:"processSwitch" json:"processSwitch" binding:"required,oneof=0 1"`
+	ProcessMode         int  `form:"processMode" json:"processMode" binding:"required,oneof=1 2"`
+	DllSwitch           *int `form:"dllSwitch" json:"dllSwitch" binding:"required,oneof=0 1"`
+	DllMode             int  `form:"dllMode" json:"dllMode" binding:"required,oneof=1 2"`
+	TamperSwitch        *int `form:"tamperSwitch" json:"tamperSwitch" binding:"required,oneof=0 1"`
+	TamperMode          int  `form:"tamperMode" json:"tamperMode" binding:"required,oneof=1 2"`
+	BlackmailSwitch     *int `form:"blackmailSwitch" json:"blackmailSwitch" binding:"required,oneof=0 1"`
+	BlackmailMode       int  `form:"blackmailMode" json:"blackmailMode" binding:"required,oneof=1 2"`
+	PortSwitch          *int `form:"portSwitch" json:"portSwitch" binding:"required,oneof=0 1"`
+	PlugSwitch          *int `form:"plugSwitch" json:"plugSwitch" binding:"required,oneof=0 1"`
+	UsbSwitch           *int `form:"usbSwitch" json:"usbSwitch" binding:"required,oneof=0 1"`
+	UsbMode             int  `form:"usbMode" json:"usbMode" binding:"required,oneof=1 2"`
+	LoginSolveSwitch    *int `form:"loginSolveSwitch" json:"loginSolveSwitch" binding:"required,oneof=0 1"`
+	SyslogDnsSwitch     *int `form:"syslogDnsSwitch" json:"syslogDnsSwitch" binding:"required,oneof=0 1"`
+	SyslogOuterSwitch   *int `form:"syslogOuterSwitch" json:"syslogOuterSwitch" binding:"required,oneof=0 1"`
+	SyslogInnerSwitch   *int `form:"syslogInnerSwitch" json:"syslogInnerSwitch" binding:"required,oneof=0 1"`
+	SyslogProcessSwitch *int `form:"syslogProcessSwitch" json:"syslogProcessSwitch" binding:"required,oneof=0 1"`
+	SyslogLoginSwitch   *int `form:"syslogLoginSwitch" json:"syslogLoginSwitch" binding:"required,oneof=0 1"`
+	OutreachAlarmSwitch *int `form:"outreachAlarmSwitch" json:"outreachAlarmSwitch" binding:"required,oneof=0 1"`
+	SelfProtectSwitch   *int `form:"selfProtectSwitch" json:"selfProtectSwitch" binding:"required,oneof=0 1"`
+	AutoWhiteSwitch     *int `form:"autoWhiteSwitch" json:"autoWhiteSwitch" binding:"required,oneof=0 1"`
+	CommonTime          int  `form:"commonTime" json:"commonTime" binding:"required,min=30,max=300"`
+	FastTime            int  `form:"fastTime" json:"fastTime" binding:"required,min=30,max=300"`
 }
 
 func (n ConfigSave) CheckParams(context *gin.Context) {

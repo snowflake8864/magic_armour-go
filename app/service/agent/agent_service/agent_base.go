@@ -21,17 +21,17 @@ type ManualInterveneColumn struct {
 	Position            *string
 	Remark              *string
 	ProcessSwitch       *int
-	ProcessMode         *int
+	ProcessMode         int
 	DllSwitch           *int
-	DllMode             *int
+	DllMode             int
 	TamperSwitch        *int
-	TamperMode          *int
+	TamperMode          int
 	BlackmailSwitch     *int
-	BlackmailMode       *int
+	BlackmailMode       int
 	PortSwitch          *int
 	PlugSwitch          *int
 	UsbSwitch           *int
-	UsbMode             *int
+	UsbMode             int
 	SyslogDnsSwitch     *int
 	SyslogOuterSwitch   *int
 	SyslogInnerSwitch   *int
@@ -111,8 +111,8 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 				model.ProcessSwitch = enums.SwitchOn
 			}
 		}
-		if param.ProcessMode != nil && *param.ProcessMode != enums.AllDefaultInt && model.ProcessMode != *param.ProcessMode {
-			updates["ProcessMode"] = *param.ProcessMode
+		if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode {
+			updates["ProcessMode"] = param.ProcessMode
 			hasTask = true
 		}
 		if param.DeptId != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
@@ -123,8 +123,8 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 				model.DllSwitch = enums.SwitchOn
 			}
 		}
-		if param.DllMode != nil && *param.DllMode != enums.AllDefaultInt && model.DllMode != *param.DllMode {
-			updates["dll_mode"] = *param.DllMode
+		if param.DllMode > 0 && model.DllMode != param.DllMode {
+			updates["dll_mode"] = param.DllMode
 			hasTask = true
 		}
 		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
@@ -144,8 +144,8 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 				model.TamperSwitch = enums.SwitchOn
 			}
 		}
-		if param.TamperMode != nil && *param.TamperMode != enums.AllDefaultInt && model.TamperMode != *param.TamperMode {
-			updates["tamper_mode"] = *param.TamperMode
+		if param.TamperMode > 0 && model.TamperMode != param.TamperMode {
+			updates["tamper_mode"] = param.TamperMode
 			hasTask = true
 		}
 	}
@@ -159,8 +159,8 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 				model.BlackmailSwitch = enums.SwitchOn
 			}
 		}
-		if param.BlackmailMode != nil && *param.BlackmailMode != enums.AllDefaultInt && model.BlackmailMode != *param.BlackmailMode {
-			updates["blackmail_mode"] = *param.BlackmailMode
+		if param.BlackmailMode > 0 && model.BlackmailMode != param.BlackmailMode {
+			updates["blackmail_mode"] = param.BlackmailMode
 			hasTask = true
 		}
 	}
@@ -196,8 +196,8 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 				model.UsbSwitch = enums.SwitchOn
 			}
 		}
-		if param.UsbMode != nil && *param.UsbMode != enums.AllDefaultInt && model.UsbMode != *param.UsbMode {
-			updates["usb_mode"] = *param.UsbMode
+		if param.UsbMode > 0 && model.UsbMode != param.UsbMode {
+			updates["usb_mode"] = param.UsbMode
 			hasTask = true
 		}
 	}

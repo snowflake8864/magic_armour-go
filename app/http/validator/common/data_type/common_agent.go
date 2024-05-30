@@ -22,14 +22,3 @@ type AgentSingle struct {
 type AgentBatch struct {
 	AgentIds []string `form:"agentIds" json:"agentIds" binding:"required,gt=0,dive,min=8,max=32"`
 }
-
-// AgentBasic 终端基础信息
-type AgentBasic struct {
-	DeptId      int64  `form:"deptId" json:"deptId" binding:"required,min=-1"`
-	AgentType   int    `form:"agentType" json:"agentType" binding:"required"`
-	Alias       string `form:"alias" json:"alias" binding:"required,min=1"`
-	ContactName string `form:"contactName" json:"contactName" binding:"required,min=1"`
-	ContactTel  string `form:"contactTel" json:"contactTel" binding:"required,min=2"`
-	Position    string `form:"position" json:"position" binding:"required,min=2"`
-	Remark      string `form:"remark" json:"remark" binding:"required,min=2"`
-}
