@@ -196,7 +196,32 @@ func (u *AgentController) GetForBasic(ctx *gin.Context) {
 
 // SaveForBasic 基本信息：保存
 func (u *AgentController) SaveForBasic(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SaveForBasic")
+	agentIds := []string{
+		u.getAgentIdFromGin(ctx),
+	}
+	deptId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId"))
+	agentType := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "agentType"))
+	alias := ctx.GetString(consts.ValidatorPrefixOrg + "alias")
+	contactName := ctx.GetString(consts.ValidatorPrefixOrg + "contactName")
+	contactTel := ctx.GetString(consts.ValidatorPrefixOrg + "contactTel")
+	position := ctx.GetString(consts.ValidatorPrefixOrg + "position")
+	remark := ctx.GetString(consts.ValidatorPrefixOrg + "remark")
+
+	var param = agent_service.ManualInterveneColumn{
+		DeptId:      &deptId,
+		AgentType:   &agentType,
+		Alias:       &alias,
+		ContactName: &contactName,
+		ContactTel:  &contactTel,
+		Position:    &position,
+		Remark:      &remark,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "保存基本信息")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // GetForConfig 配置信息：获取

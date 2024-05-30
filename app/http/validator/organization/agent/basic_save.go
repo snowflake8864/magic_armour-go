@@ -11,6 +11,13 @@ import (
 
 type BasicSave struct {
 	data_type.AgentSingle
+	DeptId      *int   `form:"deptId" json:"deptId" binding:"required"`
+	AgentType   *int   `form:"agentType" json:"agentType" binding:"required"`
+	Alias       string `form:"alias" json:"alias" binding:"omitempty,max=64"`
+	ContactName string `form:"contactName" json:"contactName" binding:"omitempty,max=64"`
+	ContactTel  string `form:"contactTel" json:"contactTel" binding:"omitempty,max=64"`
+	Position    string `form:"position" json:"position" binding:"omitempty,max=128"`
+	Remark      string `form:"remark" json:"remark" binding:"omitempty,max=128"`
 }
 
 func (n BasicSave) CheckParams(context *gin.Context) {

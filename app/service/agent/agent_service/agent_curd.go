@@ -104,6 +104,8 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualInterv
 		return -1, errors.New("终端不存在")
 	}
 
+	fmt.Println("================================")
+	fmt.Println(json_helper.Encode(param))
 	for _, model := range models {
 		err, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
 		if err != nil {
