@@ -17,19 +17,26 @@ type TaskCurd struct {
 	masterModel *task_models.TaskModel
 }
 
-// AddTasksForAgents 多个终端添加任务
+// AddTasksForAgents 多个终端添加多任务
 func (crd *TaskCurd) AddTasksForAgents(orgId int64, agentIds []string, types []int, remark string) {
 	for _, agentId := range agentIds {
 		crd.AddTasksForAgent(orgId, agentId, types, remark)
 	}
 }
 
-// AddTaskForAgent 单个终端添加任务
+// AddTaskForAgents 多个终端添加单任务
+func (crd *TaskCurd) AddTaskForAgents(orgId int64, agentIds []string, types int, remark string) {
+	for _, agentId := range agentIds {
+		crd.AddTasksForAgent(orgId, agentId, []int{types}, remark)
+	}
+}
+
+// AddTaskForAgent 单个终端添加单任务
 func (crd *TaskCurd) AddTaskForAgent(orgId int64, agentId string, types int, remark string) {
 	crd.AddTasksForAgent(orgId, agentId, []int{types}, remark)
 }
 
-// AddTasksForAgent 单个终端添加任务
+// AddTasksForAgent 单个终端添加多任务
 func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, remark string) {
 	//未完成的任务
 	cacheFact := CreateCacheFactory()

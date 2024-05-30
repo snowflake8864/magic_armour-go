@@ -53,6 +53,9 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err e
 		return -1, errors.New("删除失败")
 	}
 
+	//添加任务
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentUninstall, "")
+
 	//丢入队列
 	ctx := context.Background()
 	for _, val := range validIds {

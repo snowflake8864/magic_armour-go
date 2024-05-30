@@ -86,7 +86,7 @@ func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -99,12 +99,12 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-	task_service.CreateCurdFactory().AddTasksForAgents(0, agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
+	task_service.CreateCurdFactory().AddTasksForAgents(u.getLogin(ctx).OrgId, agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
 	response.SuccessSimplify(ctx)
 }
 
@@ -113,7 +113,7 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -124,7 +124,7 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 // BatchDeleteForManage 管理: 批量删除
 func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -135,20 +135,20 @@ func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 // BatchUninstallForManage 管理: 批量卸载
 func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
 
-	task_service.CreateCurdFactory().AddTasksForAgents(0, agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
+	task_service.CreateCurdFactory().AddTasksForAgents(u.getLogin(ctx).OrgId, agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
 	response.SuccessSimplify(ctx)
 }
 
 // BatchUpgradeForManage 管理: 批量升级
 func (u *AgentController) BatchUpgradeForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(0, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -169,7 +169,7 @@ func (u *AgentController) BatchSetConfigForManage(ctx *gin.Context) {
 	param.SelfProtectSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "selfProtectSwitch"))
 	param.AutoWhiteSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "autoWhiteSwitch"))
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(0, agentIds, param, "终端管理")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, param, "终端管理")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

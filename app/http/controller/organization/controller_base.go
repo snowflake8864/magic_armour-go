@@ -133,7 +133,9 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 	var orgId int64
 	for _, model := range agentModels {
 		agentIds = append(agentIds, model.AgentId)
-		orgId = model.OrgId
+		if orgId == 0 {
+			orgId = model.OrgId
+		}
 		if _, isOk := deptStruct[model.DeptId]; model.DeptId > 0 && !isOk {
 			deptStruct[model.DeptId] = struct{}{}
 			deptIds = append(deptIds, model.DeptId)

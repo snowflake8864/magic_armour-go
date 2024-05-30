@@ -167,9 +167,6 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 		return -3, errors.New("保存企业日志失败")
 	}
 
-	//企业级卸载任务
-	task_service.CreateCacheFactory().DeleteOrgUninstall(orgId)
-
 	return errCode, err
 }
 
@@ -240,9 +237,16 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 	if !logFact.Add(&orgLogParam) {
 		return -3, errors.New("保存企业日志失败")
 	}
+	
+	//企业级卸载终端任务
+	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
 
-	//后续
-	crd.clearAfter(orgId)
+	//丢入队列
+	msg := &kafka_go.MessageStruct{
+		Type:  kafka_go.TypeOrgClean,
+		OrgId: orgId,
+	}
+	producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
 
 	return errCode, err
 }
@@ -313,17 +317,6 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	}
 
 	return errCode, err
-}
-
-func (crd *OrgCurd) clearAfter(orgId int64) {
-	//企业级卸载任务
-	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
-	//丢入队列
-	msg := &kafka_go.MessageStruct{
-		Type:  kafka_go.TypeOrgClean,
-		OrgId: orgId,
-	}
-	producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
 }
 
 // Refused 审核: 回绝
