@@ -11,6 +11,7 @@ import (
 
 type MonitorList struct {
 	data_type.AgentBatch
+	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
 }
 
 func (n MonitorList) CheckParams(context *gin.Context) {

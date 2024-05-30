@@ -298,6 +298,9 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 
 // ListForMonitor 监控：列表
 func (u *AgentController) ListForMonitor(ctx *gin.Context) {
+	agentId = u.getAgentIdFromGin(ctx)
+	date := ctx.GetString(consts.ValidatorPrefixOrg + "date")
+
 	response.SuccessReturnData(ctx, "ListForMonitor")
 }
 

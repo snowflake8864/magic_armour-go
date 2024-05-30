@@ -14,6 +14,7 @@ func CreateServerMonitorFactory() *ServerMonitorModel {
 
 // 结构体
 type ServerMonitorModel struct {
+	baseMonitor
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	MonitorDay string `json:"monitor_day"`
@@ -63,9 +64,9 @@ func (m *ServerMonitorModel) InsertItem(s *ServerMonitorModel) bool {
 }
 
 // GetAllByConditions 通过条件获取全部记录
-func (m *ServerMonitorModel) GetAllByConditions(condition map[string]interface{}, order string) (items []*ServerMonitorModel, err error) {
+func (m *ServerMonitorModel) GetAllByConditions(condition SearchConditions, order string) (items []*ServerMonitorModel, err error) {
 	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}
 	if !string_helper.IsEmpty(order) {

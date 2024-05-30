@@ -9,8 +9,8 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/model/platform/server_monitor_models"
 	"goskeleton/app/service/platform/dictionary_service"
-	"goskeleton/app/service/platform/monitor_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
@@ -33,10 +33,10 @@ func (u *SystemController) MonitorRecords(ctx *gin.Context) {
 	date := ctx.GetString(consts.ValidatorPrefixPlatform + "date")
 
 	//页面上传
-	conditions := monitor_service.SearchConditions{}
+	conditions := server_monitor_models.SearchConditions{}
 	conditions.MonitorDay = date
 
-	models := monitor_service.CreateCurdFactory().GetList(conditions)
+	models, _ := server_monitor_models.CreateServerMonitorFactory().GetAllByConditions(conditions, "id ASC")
 
 	response.SuccessReturnData(ctx, (&platform_trans.Monitor{}).TransList(models))
 }
