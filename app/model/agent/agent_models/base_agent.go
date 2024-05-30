@@ -97,10 +97,13 @@ func (m *baseAgent) ColumnSimplify() string {
 }
 
 // ColumnBasic 字段: 基础基础
-func (m *baseAgent) ColumnBasic(needId bool) string {
+func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 	column := ""
 	if needId {
 		column = "org_id, id,"
+	}
+	if grant {
+		column += "grant_config, grant_order_no,grant_expire_at,grant_status,"
 	}
 	column = column +
 		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +

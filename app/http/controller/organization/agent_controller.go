@@ -82,7 +82,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 // DeleteForManage 管理: 删除
 func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
+		u.getAgentIdFromGin(ctx),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, false)
 	if err != nil {
@@ -95,7 +95,7 @@ func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 // UninstallForManage 管理: 卸载
 func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
+		u.getAgentIdFromGin(ctx),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, true)
 	if err != nil {
@@ -109,7 +109,7 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 // UpgradeForManage 管理: 升级
 func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 	agentIds := []string{
-		ctx.GetString(consts.ValidatorPrefixOrg + "agentId"),
+		u.getAgentIdFromGin(ctx),
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpgrade(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
@@ -186,7 +186,12 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 
 // GetForBasic 基本信息：获取
 func (u *AgentController) GetForBasic(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetForBasic")
+	agentId := u.getAgentIdFromGin(ctx)
+
+	curdFact := agent_models.CreateAgentFactory()
+	model := curdFact.GetItemByOrgAndAgent(u.getLogin(ctx).OrgId, agentId, curdFact.ColumnBasic(true, false))
+
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransSingle(model))
 }
 
 // SaveForBasic 基本信息：保存
@@ -196,7 +201,12 @@ func (u *AgentController) SaveForBasic(ctx *gin.Context) {
 
 // GetForConfig 配置信息：获取
 func (u *AgentController) GetForConfig(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetForConfig")
+	agentId := u.getAgentIdFromGin(ctx)
+
+	curdFact := agent_models.CreateAgentFactory()
+	model := curdFact.GetItemByOrgAndAgent(u.getLogin(ctx).OrgId, agentId, curdFact.ColumnConfig(true, true))
+
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransSingle(model))
 }
 
 // SaveForConfig 配置信息：保存

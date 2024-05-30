@@ -166,3 +166,8 @@ func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string
 	}
 	return agentIds
 }
+
+// getAgentIdsFromGin 从gin上下文获取终端id
+func (u *ControllerBase) getAgentIdFromGin(ctx *gin.Context) string {
+	return ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
+}

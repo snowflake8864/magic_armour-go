@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
@@ -32,7 +33,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["is_safe"] = model.IsSafe
 	data["contact_name"] = model.ContactName
 	data["alias"] = model.Alias
-	data["grant_config"] = json_helper.ToMap(model.GrantConfig)
+	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []interface{}{}
 	if departments != nil && len(departments) > 0 {
@@ -54,6 +55,13 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["usb_mode"] = model.UsbMode
 	data["outreach_alarm_switch"] = model.OutreachAlarmSwitch
 	data["login_solve_switch"] = model.LoginSolveSwitch
+	data["self_protect_switch"] = model.SelfProtectSwitch
+	data["kernel_upgrade_switch"] = model.KernelUpgradeSwitch
+	data["kernel_upgrade_switch"] = model.KernelUpgradeSwitch
+	data["hardware_switch"] = model.HardwareSwitch
+	data["hardware_time"] = model.HardwareTime
+	data["common_time"] = model.CommonTime
+	data["fast_time"] = model.FastTime
 	data["created_at"] = model.CreatedAt
 
 	//扩展信息
@@ -124,4 +132,9 @@ func (t *Agent) TransList(models []*agent_models.AgentModel, departments map[int
 	}
 
 	return items
+}
+
+// TransSingle 转换单个需要的数据
+func (t *Agent) TransSingle(model *agent_models.AgentModel) interface{} {
+	return t.pageGeneral(model, nil, nil)
 }

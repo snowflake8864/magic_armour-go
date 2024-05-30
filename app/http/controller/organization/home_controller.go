@@ -81,7 +81,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 
 	//终端
 	agentFact := agent_models.CreateAgentFactory()
-	agentMaps := agentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, topIds, agentFact.ColumnBasic(true))
+	agentMaps := agentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, topIds, agentFact.ColumnBasic(true, false))
 	if agentMaps == nil || len(agentMaps) == 0 {
 		response.SuccessReturnData(ctx, []interface{}{})
 		return
