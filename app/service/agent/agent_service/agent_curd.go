@@ -38,7 +38,7 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 }
 
 // BatchDelete 批量删除
-func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err error) {
+func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (errCode int, err error) {
 	var validIds []string
 	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplify()); len(agentModels) == 0 {
 		for _, model := range agentModels {
@@ -53,8 +53,11 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string) (errCode int, err e
 		return -1, errors.New("删除失败")
 	}
 
-	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentUninstall, "")
+	//如是是卸载
+	if isUninstall {
+		//添加任务
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentUninstall, "")
+	}
 
 	//丢入队列
 	ctx := context.Background()
@@ -87,7 +90,7 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 
 	if len(validIds) > 0 {
 		//添加任务
-		task_service.CreateCurdFactory().AddTasksForAgents(orgId, validIds, []int{enum_task.TypeAgentUpgrade}, "")
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentUpgrade, "")
 	}
 	return errCode, err
 }

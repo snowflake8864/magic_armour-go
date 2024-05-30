@@ -6,12 +6,10 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
@@ -86,7 +84,7 @@ func (u *AgentController) DeleteForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, false)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -99,12 +97,12 @@ func (u *AgentController) UninstallForManage(ctx *gin.Context) {
 	agentIds := []string{
 		ctx.GetString(consts.ValidatorPrefixPlatform + "agentId"),
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, true)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-	task_service.CreateCurdFactory().AddTasksForAgents(u.getLogin(ctx).OrgId, agentIds, []int{enum_task.TypeAgentUninstall}, "卸载")
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -124,7 +122,7 @@ func (u *AgentController) UpgradeForManage(ctx *gin.Context) {
 // BatchDeleteForManage 管理: 批量删除
 func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, false)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -135,13 +133,11 @@ func (u *AgentController) BatchDeleteForManage(ctx *gin.Context) {
 // BatchUninstallForManage 管理: 批量卸载
 func (u *AgentController) BatchUninstallForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds)
+	errCode, err := agent_service.CreateCurdFactory().BatchDelete(u.getLogin(ctx).OrgId, agentIds, true)
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-
-	task_service.CreateCurdFactory().AddTasksForAgents(u.getLogin(ctx).OrgId, agentIds, []int{enum_task.TypeAgentUninstall}, "批量卸载")
 	response.SuccessSimplify(ctx)
 }
 
