@@ -58,7 +58,7 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, findPw3.SendSms{})
 	key = consts.ValidatorPrefixOrg + "FindPwCheckSms"
 	containers.Set(key, findPw3.CheckSms{})
-	key = consts.ValidatorPrefixOrg + "FindModifyPw"
+	key = consts.ValidatorPrefixOrg + "FindPwModifyPw"
 	containers.Set(key, findPw3.ModifyPw{})
 
 	//首页
@@ -114,8 +114,6 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, agent3.MonitorList{})
 	key = consts.ValidatorPrefixOrg + "AgentMonitorInfo"
 	containers.Set(key, agent3.MonitorInfo{})
-	key = consts.ValidatorPrefixOrg + "AgentErrorPage"
-	containers.Set(key, agent3.ErrorPage{})
 
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"

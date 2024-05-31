@@ -58,7 +58,7 @@ func InitOrganizationRouter() *gin.Engine {
 	})
 
 	//  创建一个接口路由组
-	vOrg := router.Group("/organization/")
+	vOrg := router.Group("/v5/organization/")
 	{
 		vOrg.GET("customConfig", func(context *gin.Context) {
 			context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
@@ -165,10 +165,7 @@ func InitOrganizationRouter() *gin.Engine {
 						monitor.POST("list", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentMonitorList"))
 						monitor.POST("info", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentMonitorInfo"))
 					}
-					errorV := agent.Group("error")
-					{
-						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentErrorPage"))
-					}
+
 				} //终端
 
 				//进程

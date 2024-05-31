@@ -315,8 +315,3 @@ func (u *AgentController) ListForMonitor(ctx *gin.Context) {
 func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "InfoForMonitor")
 }
-
-// PageForError 错误文件：分页
-func (u *AgentController) PageForError(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForError")
-}

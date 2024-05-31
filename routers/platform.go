@@ -216,6 +216,12 @@ func InitPlatformRouter() *gin.Engine {
 					{
 						own.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentOwnPage"))
 					}
+					//@todo 未实现
+					errorV := agent.Group("error")
+					{
+						errorV.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentErrorPage"))
+						errorV.POST("download", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AgentErrorDownload"))
+					}
 
 				} //终端
 

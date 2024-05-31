@@ -118,3 +118,13 @@ func (u *ControllerBase) parseAgentModels(agentModels []*agent_models.AgentModel
 
 	return agentIds, departments
 }
+
+// PageForError 错误文件：分页
+func (u *AgentController) PageForError(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "PageForError")
+}
+
+// DownloadForError 错误文件：下载
+func (u *AgentController) DownloadForError(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "DownloadForError")
+}
