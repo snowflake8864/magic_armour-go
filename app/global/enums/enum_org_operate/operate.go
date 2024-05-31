@@ -64,6 +64,8 @@ var pathModuleLabel = map[string][]string{
 	"/organization/agent/manage/batchUninstall": {ModuleAgent, "管理页:批量卸载"},
 	"/organization/agent/manage/batchUpgrade":   {ModuleAgent, "管理页:批量升级"},
 	"/organization/agent/manage/batchModify":    {ModuleAgent, "管理页:批量修改"},
+	"/organization/agent/agent/basic/save":      {ModuleAgent, "单页：保存基本信息"},
+	"/organization/agent/agent/config/save":     {ModuleAgent, "单页：保存配置信息"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

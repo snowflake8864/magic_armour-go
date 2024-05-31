@@ -28,12 +28,11 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["os_name"] = model.OsName
 	data["platform_type"] = model.PlatformType
 	data["os_type"] = model.OsType
+
 	data["is_online"] = model.IsOnline
 	data["online_at"] = model.IsOnline
 	data["is_safe"] = model.IsSafe
-	data["contact_name"] = model.ContactName
-	data["alias"] = model.Alias
-	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
+
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []interface{}{}
 	if departments != nil && len(departments) > 0 {
@@ -41,6 +40,17 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 			data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
 		}
 	}
+	data["contact_name"] = model.ContactName
+	data["contact_tel"] = model.ContactTel
+	data["alias"] = model.Alias
+	data["position"] = model.Position
+	data["remark"] = model.Remark
+
+	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
+	data["grant_order_no"] = model.GrantOrderNo
+	data["grant_expire_at"] = model.GrantExpireAt
+	data["grant_status"] = model.GrantStatus
+
 	data["process_switch"] = model.ProcessSwitch
 	data["process_mode"] = model.ProcessMode
 	data["dll_switch"] = model.DllSwitch
@@ -55,13 +65,18 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["usb_mode"] = model.UsbMode
 	data["outreach_alarm_switch"] = model.OutreachAlarmSwitch
 	data["login_solve_switch"] = model.LoginSolveSwitch
+	data["syslog_dns_switch"] = model.SyslogDnsSwitch
+	data["syslog_outer_switch"] = model.SyslogOuterSwitch
+	data["syslog_inner_switch"] = model.SyslogInnerSwitch
+	data["syslog_process_switch"] = model.SyslogProcessSwitch
+	data["syslog_login_switch"] = model.SyslogLoginSwitch
 	data["self_protect_switch"] = model.SelfProtectSwitch
-	data["kernel_upgrade_switch"] = model.KernelUpgradeSwitch
+	data["auto_white_switch"] = model.AutoWhiteSwitch
+	data["common_time"] = model.CommonTime
+	data["fast_time"] = model.FastTime
 	data["kernel_upgrade_switch"] = model.KernelUpgradeSwitch
 	data["hardware_switch"] = model.HardwareSwitch
 	data["hardware_time"] = model.HardwareTime
-	data["common_time"] = model.CommonTime
-	data["fast_time"] = model.FastTime
 	data["created_at"] = model.CreatedAt
 
 	//扩展信息
