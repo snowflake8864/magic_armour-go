@@ -136,7 +136,11 @@ func (m *BaseModel) WhereBuild(conditions []model_comm.Conditions) (whereSQL str
 				whereSQL += fmt.Sprint(" FIND_IN_SET(", field, ", ?)")
 				vals = append(vals, condition.Val)
 				break
+			case "usingVal":
+				vals = append(vals, condition.Val)
+				break
 			}
+
 			break
 		}
 	}
