@@ -39,25 +39,21 @@ func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err 
 
 // GetAll 获取全部
 func (crd *MenuCurd) GetAll(isRoot int) []*org_menu_models.OrgMenuModel {
-	condition := make(map[string]interface{})
+	condition := org_menu_models.SearchConditions{}
 	if isRoot == 0 {
-		condition["is_root"] = enums.IsYes
+		condition.IsRoot = enums.IsYes
 	}
-
-	list, _ := crd.masterModel.GetItemsByConditions(condition)
-	return list
+	return crd.masterModel.GetListByConditions(condition)
 }
 
 // GetItemsByIds 通过id获取
 func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*org_menu_models.OrgMenuModel {
-	condition := make(map[string]interface{})
-	condition["id"] = ids
+	condition := org_menu_models.SearchConditions{}
+	condition.Ids = ids
 	if isRoot == 0 {
-		condition["is_root"] = enums.IsYes
+		condition.IsRoot = enums.IsYes
 	}
-
-	list, _ := crd.masterModel.GetItemsByConditions(condition)
-	return list
+	return crd.masterModel.GetListByConditions(condition)
 }
 
 // UpdateById 修改

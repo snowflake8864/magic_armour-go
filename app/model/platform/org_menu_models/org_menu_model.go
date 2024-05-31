@@ -1,8 +1,10 @@
 package org_menu_models
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // CreateOrgMenuFactory 企业用的菜单表
@@ -13,6 +15,7 @@ func CreateOrgMenuFactory() *OrgMenuModel {
 //结构体
 
 type OrgMenuModel struct {
+	baseMenu
 	model.BaseModel
 	Id        int64  `gorm:"primaryKey" json:"id"`
 	ParentId  int64  `json:"parent_id"`
@@ -145,5 +148,36 @@ func (m *OrgMenuModel) GetItemsByIds(ids []int64) (items []*OrgMenuModel, err er
 		return items, nil
 	} else {
 		return nil, result.Error
+	}
+}
+
+// GetListByConditions 获取符合条件的全部记录
+func (m *OrgMenuModel) GetListByConditions(condition SearchConditions) (items []*OrgMenuModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *OrgMenuModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgMenuModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }

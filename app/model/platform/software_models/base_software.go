@@ -1,7 +1,7 @@
 package software_models
 
 import (
-	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 )
 
 type SearchConditions struct {
@@ -15,18 +15,30 @@ type baseSoftware struct {
 
 // search2Where 查询条件转化
 func (crd *baseSoftware) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
-	wheres := make(map[string]interface{})
-	if search.Id > 0 {
-		wheres["id"] = search.Id
+
+	if condition.Id > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
 	}
-	if search.PlatformType > 0 && search.PlatformType != enums.AllDefaultInt {
-		wheres["platform_type"] = search.PlatformType
+	if condition.PlatformType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.PlatformType,
+		})
 	}
-	if search.OsType > 0 && search.OsType != enums.AllDefaultInt {
-		wheres["os_type"] = search.OsType
+	if condition.OsType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "os_type",
+			Val: condition.OsType,
+		})
 	}
-	if search.IsPublish > 0 && search.IsPublish != enums.AllDefaultInt {
-		wheres["is_publish"] = search.IsPublish
+	if condition.IsPublish > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_publish",
+			Val: condition.IsPublish,
+		})
 	}
 	return wheres
 }

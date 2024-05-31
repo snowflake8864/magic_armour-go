@@ -161,7 +161,6 @@ func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	conditions := order_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
-	conditions.IsExpire = enums.AllDefaultInt
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	orderFact := order_models.CreateOrderFactory()
