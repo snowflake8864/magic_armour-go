@@ -13,6 +13,7 @@ import (
 	process3 "goskeleton/app/http/validator/organization/process"
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
+	threaten3 "goskeleton/app/http/validator/organization/threaten"
 	user3 "goskeleton/app/http/validator/organization/user"
 )
 
@@ -193,7 +194,9 @@ func OrganizationRegisterValidator() {
 
 	//威胁情报
 	key = consts.ValidatorPrefixOrg + "ThreatenGetLevels"
-	containers.Set(key, procSample3.Download{})
+	containers.Set(key, threaten3.GetLevels{})
+	key = consts.ValidatorPrefixOrg + "ThreatenGetAttr"
+	containers.Set(key, threaten3.GetAttr{})
 
 	//防篡改
 	key = consts.ValidatorPrefixOrg + "TamperManagePage"
