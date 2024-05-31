@@ -2,16 +2,16 @@ package threaten_models
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
-	"strings"
 )
 
 type SearchConditions struct {
 	Id          string
 	Ids         []string
 	Dir         string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 	Level       int
 	LevelList   []int
 }
@@ -20,35 +20,58 @@ type baseThreaten struct {
 	Id          string
 	Ids         []string
 	Dir         string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 	Level       int
 	LevelList   []int
 }
 
 // conditions2Where 查询条件转化
-func (m *baseThreaten) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if !string_helper.IsEmpty(search.Id) {
-		wheres["id"] = strings.ToLower(search.Id)
+func (m *baseThreaten) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if !string_helper.IsEmpty(condition.Id) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
 	}
-	if search.Ids != nil && len(search.Ids) > 0 {
-		wheres["id in"] = search.Ids
+
+	if len(condition.Ids) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.Ids,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteCreateAt) {
-		wheres["created_at >="] = search.GteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at >=",
+			Val: condition.CreateAtGte,
+		})
 	}
-	if !string_helper.IsEmpty(search.LteCreateAt) {
-		wheres["created_at <="] = search.LteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
+		})
 	}
-	if search.Level > 0 && search.Level != enums.AllDefaultInt {
-		wheres["level"] = search.Level
+	if condition.Level != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "level",
+			Val: condition.Level,
+		})
 	}
-	if !string_helper.IsEmpty(search.Dir) {
-		wheres["dir like"] = "%" + search.Dir + "%"
+
+	if len(condition.LevelList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "level in",
+			Val: condition.LevelList,
+		})
 	}
-	if search.LevelList != nil && len(search.LevelList) > 0 {
-		wheres["level in"] = search.LevelList
+
+	if !string_helper.IsEmpty(condition.Dir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dir like",
+			Val: "%" + condition.Dir + "%",
+		})
 	}
 
 	return wheres

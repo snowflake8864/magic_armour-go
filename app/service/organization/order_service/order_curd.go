@@ -145,9 +145,10 @@ func (crd *OrderCurd) GetItemByOrderNos(ids []string) (items []*order_models.Ord
 
 // GetValidItemsByOrg 通过企业编号获取有效订单
 func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*order_models.OrderModel) {
+	IsExpire := enums.IsNot
 	search := order_models.SearchConditions{
 		OrgId:       orgId,
-		IsExpire:    enums.IsNot,
+		IsExpire:    &IsExpire,
 		OrderStatus: enum_order.OrderStatusCompleted,
 	}
 
@@ -378,11 +379,12 @@ func (crd *OrderCurd) OrgDelete(orderNo string, orgId int64) (errCode int, err e
 
 // AutoExpire 自动过期
 func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
+	IsExpire := enums.IsNot
 	search := order_models.SearchConditions{
 		OrgId:       orgId,
 		OrderStatus: enum_order.OrderStatusCompleted,
-		IsExpire:    enums.IsNot,
-		GteExpireAt: expireDate,
+		IsExpire:    &IsExpire,
+		ExpireAtLte: expireDate,
 	}
 	items := crd.masterModel.GetItemsByConditions(search, 0, 0, "")
 	if len(items) == 0 {

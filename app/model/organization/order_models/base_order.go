@@ -2,6 +2,7 @@ package order_models
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -15,10 +16,10 @@ type SearchConditions struct {
 	ProductName string
 	GrantType   int
 	OrderStatus int
-	IsExpire    int
-	GteCreateAt string
-	LteCreateAt string
-	GteExpireAt string
+	IsExpire    *int
+	CreateAtGte string
+	CreateAtLte string
+	ExpireAtLte string
 	StatusList  []int
 }
 
@@ -26,47 +27,86 @@ type baseOrder struct {
 }
 
 // conditions2Where 查询条件转化
-func (crd *baseOrder) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if !string_helper.IsEmpty(search.OrderNo) {
-		wheres["order_no"] = search.OrderNo
+func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if !string_helper.IsEmpty(condition.OrderNo) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "order_no",
+			Val: condition.OrderNo,
+		})
 	}
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.UserName) {
-		wheres["user_name"] = search.UserName
+	if !string_helper.IsEmpty(condition.UserName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "user_name",
+			Val: condition.UserName,
+		})
 	}
 
-	if !string_helper.IsEmpty(search.UserPhone) {
-		wheres["user_phone"] = search.UserPhone
+	if !string_helper.IsEmpty(condition.UserPhone) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "user_phone",
+			Val: condition.UserName,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteCreateAt) {
-		wheres["created_at >="] = search.GteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at >=",
+			Val: condition.CreateAtGte,
+		})
 	}
-	if !string_helper.IsEmpty(search.LteCreateAt) {
-		wheres["created_at <="] = search.LteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
+		})
 	}
-	if !string_helper.IsEmpty(search.OraName) {
-		wheres["org_name like"] = "%" + search.OraName + "%"
+	if !string_helper.IsEmpty(condition.ExpireAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "expire_at <=",
+			Val: condition.ExpireAtLte,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteExpireAt) {
-		wheres["expire_at >="] = search.GteExpireAt
+	if !string_helper.IsEmpty(condition.OraName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_name like",
+			Val: "%" + condition.OraName + "%",
+		})
 	}
-	if !string_helper.IsEmpty(search.ProductName) {
-		wheres["product_title like"] = "%" + search.ProductName + "%"
+
+	if !string_helper.IsEmpty(condition.ProductName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "product_title like",
+			Val: "%" + condition.ProductName + "%",
+		})
 	}
-	if search.GrantType > 0 && search.GrantType != enums.AllDefaultInt {
-		wheres["grant_type"] = search.GrantType
+	if condition.GrantType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_type",
+			Val: condition.GrantType,
+		})
 	}
-	if search.OrderStatus > 0 && search.OrderStatus != enums.AllDefaultInt {
-		wheres["order_status"] = search.OrderStatus
+	if condition.OrderStatus > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "order_status",
+			Val: condition.OrderStatus,
+		})
 	}
-	if search.IsExpire != enums.AllDefaultInt {
-		wheres["is_expire"] = search.IsExpire
+	if condition.StatusList != nil && len(condition.StatusList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "order_status in",
+			Val: condition.StatusList,
+		})
 	}
-	if search.StatusList != nil && len(search.StatusList) > 0 {
-		wheres["order_status in"] = search.StatusList
+	if condition.IsExpire != nil && *condition.IsExpire != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_expire",
+			Val: *condition.IsExpire,
+		})
 	}
 
 	return wheres

@@ -16,6 +16,7 @@ func CreateOperateLogFactory() *OperateLogModel {
 //结构体
 
 type OperateLogModel struct {
+	baseOperate
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
@@ -86,10 +87,10 @@ func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{}, offset, limit int, order string) (items []*OperateLogModel, err error) {
+func (m *OperateLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OperateLogModel, err error) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -111,11 +112,11 @@ func (m *OperateLogModel) GetItemsByConditions(condition map[string]interface{},
 }
 
 // Count 通过条件统计
-func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
+func (m *OperateLogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -129,7 +130,7 @@ func (m *OperateLogModel) Count(condition map[string]interface{}) int64 {
 }
 
 // Page 通过条件分页
-func (m *OperateLogModel) Page(condition map[string]interface{}, offset, limit int, order string) (total int64, items []*OperateLogModel) {
+func (m *OperateLogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OperateLogModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

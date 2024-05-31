@@ -2,6 +2,7 @@ package usb_models
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -18,25 +19,43 @@ type baseUsb struct {
 }
 
 // conditions2Where 查询条件转化
-func (m *baseUsb) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id",
+			Val: condition.AgentId,
+		})
 	}
-	if !string_helper.IsEmpty(search.UsbHash) {
-		wheres["usb_hash"] = search.UsbHash
+	if !string_helper.IsEmpty(condition.UsbHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "usb_hash",
+			Val: condition.UsbHash,
+		})
+
 	}
-	if len(search.UsbHashList) > 0 {
-		wheres["usb_hash in"] = search.UsbHashList
+	if len(condition.UsbHashList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "usb_hash in",
+			Val: condition.UsbHashList,
+		})
 	}
-	if search.Status > 0 {
-		wheres["status"] = search.Status
+	if condition.Status > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status",
+			Val: condition.Status,
+		})
 	}
-	if search.IsOnline != enums.AllDefaultInt {
-		wheres["is_online"] = search.IsOnline
+	if condition.IsOnline != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_online",
+			Val: condition.IsOnline,
+		})
 	}
 
 	return wheres

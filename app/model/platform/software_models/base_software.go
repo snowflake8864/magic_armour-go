@@ -14,7 +14,7 @@ type baseSoftware struct {
 }
 
 // search2Where 查询条件转化
-func (crd *baseSoftware) conditions2Where(search SearchConditions) map[string]interface{} {
+func (crd *baseSoftware) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
 	wheres := make(map[string]interface{})
 	if search.Id > 0 {
 		wheres["id"] = search.Id

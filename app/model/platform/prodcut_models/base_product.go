@@ -1,7 +1,7 @@
 package prodcut_models
 
 import (
-	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -15,19 +15,31 @@ type baseProduct struct {
 }
 
 // search2Where 查询条件转化
-func (crd *baseProduct) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.Id > 0 {
-		wheres["id"] = search.Id
+func (crd *baseProduct) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+
+	if condition.Id > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
 	}
-	if search.GrantType > 0 && search.GrantType != enums.AllDefaultInt {
-		wheres["grant_type"] = search.GrantType
+	if condition.GrantType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_type",
+			Val: condition.GrantType,
+		})
 	}
-	if !string_helper.IsEmpty(search.Title) {
-		wheres["title like"] = "%" + search.Title + "%"
+	if !string_helper.IsEmpty(condition.Title) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "title like",
+			Val: "%" + condition.Title + "%",
+		})
 	}
-	if search.IsPublish > 0 && search.IsPublish != enums.AllDefaultInt {
-		wheres["is_publish"] = search.IsPublish
+	if condition.IsPublish > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_publish",
+			Val: condition.IsPublish,
+		})
 	}
 	return wheres
 }

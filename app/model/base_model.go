@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -62,59 +63,64 @@ func (m *BaseModel) GetColumn(column string) string {
 	return column
 }
 
-// WhereBuild 封装map 查询条件
-func (m *BaseModel) WhereBuild(conditions map[string]interface{}) (whereSQL string, vals []interface{}, err error) {
-	for conditionKey, conditionVal := range conditions {
-		fieldAndWhere := strings.Split(conditionKey, " ")
+// WhereBuild 封装查询条件, 保持顺序
+func (m *BaseModel) WhereBuild(conditions []model_comm.Conditions) (whereSQL string, vals []interface{}, err error) {
+	if conditions == nil || len(conditions) == 0 {
+		return whereSQL, vals, err
+	}
+
+	for _, condition := range conditions {
+		fieldAndWhere := strings.Split(condition.Key, " ")
 		if len(fieldAndWhere) > 2 {
-			return "", nil, fmt.Errorf("Error in query condition: %s. ", conditionKey)
+			return "", nil, fmt.Errorf("Error in query condition: %s. ", condition.Key)
 		}
 		if whereSQL != "" {
 			whereSQL += " AND "
 		}
+
 		switch len(fieldAndWhere) {
 		case 1:
 			whereSQL += fmt.Sprint(fieldAndWhere[0], "=?")
-			vals = append(vals, conditionVal)
+			vals = append(vals, condition.Val)
 			break
 		case 2:
 			field := fieldAndWhere[0]
 			switch fieldAndWhere[1] {
 			case "=":
 				whereSQL += fmt.Sprint(field, "=?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case ">":
 				whereSQL += fmt.Sprint(field, ">?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case ">=":
 				whereSQL += fmt.Sprint(field, ">=?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "<":
 				whereSQL += fmt.Sprint(field, "<?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "<=":
 				whereSQL += fmt.Sprint(field, "<=?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "!=":
 				whereSQL += fmt.Sprint(field, "!=?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "<>":
 				whereSQL += fmt.Sprint(field, "!=?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "in":
 				whereSQL += fmt.Sprint(field, " IN ?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "like":
 				whereSQL += fmt.Sprint(field, " LIKE ?")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "IsNull":
 				whereSQL += fmt.Sprint(field, " IS NULL")
@@ -124,11 +130,11 @@ func (m *BaseModel) WhereBuild(conditions map[string]interface{}) (whereSQL stri
 				break
 			case "findInSetLater":
 				whereSQL += fmt.Sprint(" FIND_IN_SET(?, ", field, ")")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			case "findInSetBefore":
 				whereSQL += fmt.Sprint(" FIND_IN_SET(", field, ", ?)")
-				vals = append(vals, conditionVal)
+				vals = append(vals, condition.Val)
 				break
 			}
 			break

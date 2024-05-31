@@ -103,11 +103,11 @@ func (crd *DirCurd) BatchAdd(orgId int64, agentId string, searchDir string, para
 
 }
 
-// DelByGteCreateAt 删除：大于创建时间
-func (crd *DirCurd) DelByGteCreateAt(at string) bool {
+// DelByCreateAtGte 删除：大于创建时间
+func (crd *DirCurd) DelByCreateAtGte(at string) bool {
 	search := dir_models.SearchConditions{
 		FileType:    enums.AllDefaultInt,
-		GteCreateAt: at,
+		CreateAtGte: at,
 	}
 	return crd.masterModel.DeleteByConditions(search)
 }

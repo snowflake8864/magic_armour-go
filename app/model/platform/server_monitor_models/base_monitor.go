@@ -1,6 +1,9 @@
 package server_monitor_models
 
-import "goskeleton/app/utils/helpers/string_helper"
+import (
+	"goskeleton/app/model/model_comm"
+	"goskeleton/app/utils/helpers/string_helper"
+)
 
 type SearchConditions struct {
 	MonitorDay string `json:"monitor_day"`
@@ -10,13 +13,19 @@ type baseMonitor struct {
 }
 
 // search2Where 查询条件转化
-func (crd *baseMonitor) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if !string_helper.IsEmpty(search.MonitorDay) {
-		wheres["monitor_day"] = search.MonitorDay
+func (crd *baseMonitor) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+
+	if !string_helper.IsEmpty(condition.MonitorDay) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "monitor_day",
+			Val: condition.MonitorDay,
+		})
 	}
-	if !string_helper.IsEmpty(search.ServerCode) {
-		wheres["ServerCode"] = search.ServerCode
+	if !string_helper.IsEmpty(condition.ServerCode) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "server_code",
+			Val: condition.ServerCode,
+		})
 	}
 	return wheres
 }

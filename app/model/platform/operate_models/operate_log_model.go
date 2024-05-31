@@ -1,7 +1,6 @@
 package operate_models
 
 import (
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -13,15 +12,10 @@ func CreateOperateLogFactory() *OperateLogModel {
 	return &OperateLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
-type SearchConditions struct {
-	Module     string
-	NetIp      string
-	CreateName string
-}
-
 //结构体
 
 type OperateLogModel struct {
+	baseOperate
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	Path       string `json:"path"`
@@ -72,22 +66,6 @@ func (m *OperateLogModel) CreateTable() bool {
 	} else {
 		return false
 	}
-}
-
-// search2Where 查询条件转化
-func (m *OperateLogModel) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if !string_helper.IsEmpty(search.Module) && search.Module != enums.AllDefaultStr {
-		wheres["module"] = search.Module
-	}
-	if !string_helper.IsEmpty(search.NetIp) {
-		wheres["net_ip"] = search.NetIp
-	}
-	if !string_helper.IsEmpty(search.CreateName) {
-		wheres["create_name"] = search.CreateName
-	}
-	return wheres
-	return wheres
 }
 
 func (m *OperateLogModel) InsertItem(s *OperateLogModel) bool {

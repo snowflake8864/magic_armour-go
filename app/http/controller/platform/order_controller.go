@@ -73,7 +73,8 @@ func (u *OrderController) ValidByOrg(ctx *gin.Context) {
 func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	//查询条件
 	conditions := u.getOrderSearchConditions(ctx)
-	conditions.IsExpire = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isExpire"))
+	IsExpire := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isExpire"))
+	conditions.IsExpire = &IsExpire
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	//分页参数和排序参数
@@ -90,8 +91,8 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
-	searchConditions.GteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
-	searchConditions.LteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	searchConditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 	return searchConditions
 }
 
@@ -99,10 +100,9 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 func (u *OrderController) PageForManage(ctx *gin.Context) {
 	//查询条件
 	conditions := u.getOrderSearchConditions(ctx)
-	conditions.IsExpire = enums.AllDefaultInt
 	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
-	conditions.GteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
-	conditions.LteCreateAt = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)

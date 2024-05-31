@@ -1,6 +1,7 @@
 package org_stat_models
 
 import (
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -10,8 +11,8 @@ type SearchConditions struct {
 	AgentId     string
 	StatMonth   int
 	StatDay     string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 }
 
 type baseStat struct {
@@ -19,30 +20,47 @@ type baseStat struct {
 	AgentId     string
 	StatMonth   int
 	StatDay     string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 }
 
 // conditions2Where 查询条件转化
-func (crd *baseStat) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (crd *baseStat) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id",
+			Val: condition.AgentId,
+		})
 	}
-	if search.StatMonth > 0 {
-		wheres["stat_month"] = search.StatMonth
+	if condition.StatMonth > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "stat_month",
+			Val: condition.StatMonth,
+		})
 	}
-	if !string_helper.IsEmpty(search.StatDay) {
-		wheres["stat_day"] = search.StatDay
+	if !string_helper.IsEmpty(condition.StatDay) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "stat_day",
+			Val: condition.StatDay,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteCreateAt) {
-		wheres["created_at >="] = search.GteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at >=",
+			Val: condition.CreateAtGte,
+		})
 	}
-	if !string_helper.IsEmpty(search.LteCreateAt) {
-		wheres["created_at <="] = search.LteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
+		})
 	}
 	return wheres
 }

@@ -1,7 +1,7 @@
 package organization_models
 
 import (
-	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -21,36 +21,61 @@ type baseOrg struct {
 	AgentId     string
 	StatMonth   int
 	StatDay     string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 }
 
 // search2Where 查询条件转化
-func (crd *baseOrg) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (crd *baseOrg) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if search.OrgType > 0 && search.OrgType != enums.AllDefaultInt {
-		wheres["type"] = search.OrgType
+	if condition.OrgType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.OrgType,
+		})
 	}
-	if !string_helper.IsEmpty(search.OraName) {
-		wheres["name like"] = "%" + search.OraName + "%"
+	if condition.UserId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "user_id",
+			Val: condition.UserId,
+		})
 	}
-	if !string_helper.IsEmpty(search.LogOraName) {
-		wheres["org_name like"] = "%" + search.LogOraName + "%"
+	if !string_helper.IsEmpty(condition.UserName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "user_name",
+			Val: condition.UserName,
+		})
 	}
-	if search.UserId > 0 {
-		wheres["user_id"] = search.UserId
+	if !string_helper.IsEmpty(condition.UserPhone) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "user_phone",
+			Val: condition.UserPhone,
+		})
 	}
-	if !string_helper.IsEmpty(search.UserName) {
-		wheres["user_name"] = search.UserName
+
+	if !string_helper.IsEmpty(condition.OraName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "name like",
+			Val: "%" + condition.OraName + "%",
+		})
 	}
-	if !string_helper.IsEmpty(search.UserPhone) {
-		wheres["user_phone"] = search.UserPhone
+	if !string_helper.IsEmpty(condition.LogOraName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_name like",
+			Val: "%" + condition.LogOraName + "%",
+		})
 	}
-	if search.StatusList != nil && len(search.StatusList) > 0 {
-		wheres["status in"] = search.StatusList
+
+	if condition.StatusList != nil && len(condition.StatusList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status in",
+			Val: condition.StatusList,
+		})
 	}
 	return wheres
 }

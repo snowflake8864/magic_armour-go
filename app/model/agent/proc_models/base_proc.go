@@ -3,6 +3,7 @@ package proc_models
 import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -33,44 +34,74 @@ type SearchConditions struct {
 	Status          int
 	Dir             string
 	Dirs            []string
-	GteSyncStatusAt string
+	SyncStatusAtGte string
 }
 
 type baseProc struct {
 }
 
 // conditions2Where 查询条件转化
-func (m *baseProc) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id",
+			Val: condition.AgentId,
+		})
 	}
-	if len(search.AgentIds) > 0 {
-		wheres["agent_id in"] = search.AgentIds
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
+		})
 	}
-	if !string_helper.IsEmpty(search.ProcHash) {
-		wheres["proc_hash"] = search.ProcHash
+	if !string_helper.IsEmpty(condition.ProcHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_hash",
+			Val: condition.ProcHash,
+		})
 	}
-	if !string_helper.IsEmpty(search.DllHash) {
-		wheres["dll_hash"] = search.DllHash
+	if !string_helper.IsEmpty(condition.DllHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dll_hash",
+			Val: condition.DllHash,
+		})
 	}
-	if !string_helper.IsEmpty(search.Id) {
-		wheres["id"] = search.Id
+	if !string_helper.IsEmpty(condition.Id) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
 	}
-	if !string_helper.IsEmpty(search.Dir) {
-		wheres["dir like"] = "%" + search.Dir + "%"
+	if !string_helper.IsEmpty(condition.Dir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dir like",
+			Val: "%" + condition.Dir + "%",
+		})
+
 	}
-	if len(search.Dirs) > 0 {
-		wheres["dir in"] = search.Dirs
+	if len(condition.Dirs) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dir",
+			Val: condition.Dirs,
+		})
 	}
-	if search.Status > 0 {
-		wheres["status"] = search.Status
+	if condition.Status > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status",
+			Val: condition.Status,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteSyncStatusAt) {
-		wheres["sync_status_at >="] = search.GteSyncStatusAt
+	if !string_helper.IsEmpty(condition.SyncStatusAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "sync_status_at >=",
+			Val: condition.SyncStatusAtGte,
+		})
 	}
 	return wheres
 }

@@ -1,6 +1,7 @@
 package syslog_models
 
 import (
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -8,8 +9,8 @@ import (
 type SearchConditions struct {
 	OrgId       int64
 	AgentId     string
-	GteCreateAt string
-	LteCreateAt string
+	CreateAtGte string
+	CreateAtLte string
 	SourceIp    string
 	LoginStatus *int
 }
@@ -25,25 +26,42 @@ type baseSyslog struct {
 }
 
 // conditions2Where 查询条件转化
-func (m *baseSyslog) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id",
+			Val: condition.AgentId,
+		})
 	}
-	if !string_helper.IsEmpty(search.SourceIp) {
-		wheres["source_ip"] = search.SourceIp
+	if !string_helper.IsEmpty(condition.SourceIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "source_ip",
+			Val: condition.SourceIp,
+		})
 	}
-	if search.LoginStatus != nil {
-		wheres["handle_status"] = *search.LoginStatus
+	if condition.LoginStatus != nil {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "handle_status",
+			Val: *condition.LoginStatus,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteCreateAt) {
-		wheres["created_at >="] = search.GteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at >=",
+			Val: condition.CreateAtGte,
+		})
 	}
-	if !string_helper.IsEmpty(search.LteCreateAt) {
-		wheres["created_at <="] = search.LteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
+		})
 	}
 
 	return wheres

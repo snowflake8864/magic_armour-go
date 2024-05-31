@@ -3,7 +3,6 @@ package org_menu_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // CreateOrgMenuFactory 企业用的菜单表
@@ -142,19 +141,6 @@ func (m *OrgMenuModel) GetItemByParent(id int64) (item *OrgMenuModel, err error)
 
 func (m *OrgMenuModel) GetItemsByIds(ids []int64) (items []*OrgMenuModel, err error) {
 	result := m.Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
-func (m *OrgMenuModel) GetItemsByConditions(condition map[string]interface{}) (items []*OrgMenuModel, err error) {
-	tmp := m.Model(m)
-	if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
-		tmp = tmp.Where(whereSQL, vals...)
-	}
-	result := tmp.Find(&items).Order("level ASC, sort ASC")
 	if result.Error == nil {
 		return items, nil
 	} else {

@@ -16,6 +16,7 @@ func CreateAccessLogFactory() *AccessLogModel {
 //结构体
 
 type AccessLogModel struct {
+	baseAccess
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
@@ -130,10 +131,10 @@ func (m *AccessLogModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bo
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AccessLogModel) DeleteByConditions(condition map[string]interface{}) bool {
+func (m *AccessLogModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(condition); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)

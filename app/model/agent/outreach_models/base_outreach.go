@@ -2,6 +2,7 @@ package outreach_models
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -9,27 +10,37 @@ type SearchConditions struct {
 	OrgId      int64
 	Ip         string
 	Type       int
-	OpenSwitch int
+	OpenSwitch *int
 }
 
 type baseOutreach struct {
 }
 
 // conditions2Where 查询条件转化
-func (m *baseOutreach) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (m *baseOutreach) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.Ip) {
-		wheres["ip"] = search.Ip
+	if !string_helper.IsEmpty(condition.Ip) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "ip",
+			Val: condition.Ip,
+		})
 	}
-	if search.Type > 0 {
-		wheres["type"] = search.Type
+	if condition.Type > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.Type,
+		})
 	}
-	if search.OpenSwitch != enums.AllDefaultInt {
-		wheres["open_switch"] = search.OpenSwitch
+	if condition.OpenSwitch != nil && *condition.OpenSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "open_switch",
+			Val: *condition.OpenSwitch,
+		})
 	}
 	return wheres
 }

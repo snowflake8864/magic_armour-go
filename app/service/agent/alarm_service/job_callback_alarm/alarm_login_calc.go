@@ -30,10 +30,11 @@ type AlarmLoginCalc struct {
 }
 
 func (crd *AlarmLoginCalc) inOutreachWhile(orgId int64, targetIp string) bool {
+	SwitchOn := enums.SwitchOn
 	conditions := outreach_models.SearchConditions{
 		OrgId:      orgId,
 		Type:       enum_outreach.TypeWhite,
-		OpenSwitch: enums.SwitchOn,
+		OpenSwitch: &SwitchOn,
 	}
 	models := outreach_models.CreateOutreachGlobalFactory().GetListByConditions(conditions)
 	if models == nil || len(models) == 0 {
@@ -73,7 +74,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		AgentId:     agentId,
 		SourceIp:    attackIp,
 		LoginStatus: &loginStatus,
-		GteCreateAt: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
+		CreateAtGte: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
 	}
 	fact := syslog_models.CreateSyslogLoginFactory()
 	calc := fact.CalcByConditions(search, fact.ColumnCountLogin())

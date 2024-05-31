@@ -3,7 +3,6 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
@@ -187,7 +186,6 @@ func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
 // GrantUsedStat 授权: 使用统计
 func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
 	searchConditions := order_models.SearchConditions{}
-	searchConditions.IsExpire = enums.AllDefaultInt
 	searchConditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	CurdFact := order_models.CreateOrderFactory()

@@ -16,6 +16,7 @@ func CreateTaskFactory() *TaskModel {
 //结构体
 
 type TaskModel struct {
+	baseTask
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`
@@ -160,26 +161,4 @@ func (m *TaskModel) Page(condition SearchConditions, offset, limit int, order st
 	} else {
 		return 0, nil
 	}
-}
-
-type SearchConditions struct {
-	OrgId   int64
-	AgentId string
-	Types   []int
-}
-
-// conditions2Where 查询条件转化
-func (m *TaskModel) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
-	}
-	if string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
-	}
-	if len(search.Types) > 0 {
-		wheres["type"] = search.Types
-	}
-
-	return wheres
 }

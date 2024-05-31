@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
@@ -36,57 +37,98 @@ type SearchConditions struct {
 	Alias        string
 	ContactName  string
 	DeptIds      []int64
-	GteCreateAt  string
-	LteCreateAt  string
+	CreateAtGte  string
+	CreateAtLte  string
 }
 
 type baseAgent struct {
 }
 
 // conditions2Where 查询条件转化
-func (m *baseAgent) conditions2Where(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
+func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id",
+			Val: condition.OrgId,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["id"] = search.AgentId
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id",
+			Val: condition.AgentId,
+		})
 	}
-	if search.AgentIds != nil && len(search.AgentIds) > 0 {
-		wheres["id in"] = search.AgentIds
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
+		})
 	}
-	if !string_helper.IsEmpty(search.HostName) {
-		wheres["host_name"] = search.HostName
+	if !string_helper.IsEmpty(condition.HostName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "host_name",
+			Val: condition.HostName,
+		})
 	}
-	if !string_helper.IsEmpty(search.NetIp) {
-		wheres["net_ip"] = search.NetIp
+	if !string_helper.IsEmpty(condition.NetIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "net_ip",
+			Val: condition.NetIp,
+		})
 	}
-	if !string_helper.IsEmpty(search.AgentIp) {
-		wheres["agent_ip like"] = "%" + search.AgentIp + "%"
+	if !string_helper.IsEmpty(condition.AgentIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_ip like",
+			Val: "%" + condition.AgentIp + "%",
+		})
 	}
-	if search.PlatformType > 0 {
-		wheres["platform_type"] = search.PlatformType
+	if condition.PlatformType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "platform_type",
+			Val: condition.PlatformType,
+		})
 	}
-	if search.IsOnline != enums.AllDefaultInt {
-		wheres["is_online"] = search.IsOnline
+	if condition.IsOnline != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_online",
+			Val: condition.IsOnline,
+		})
 	}
-	if search.IsSafe != enums.AllDefaultInt {
-		wheres["is_safe"] = search.IsSafe
+	if condition.IsSafe != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_safe",
+			Val: condition.IsSafe,
+		})
 	}
-	if !string_helper.IsEmpty(search.ContactName) {
-		wheres["contact_name"] = search.ContactName
+	if !string_helper.IsEmpty(condition.ContactName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "contact_name",
+			Val: condition.ContactName,
+		})
 	}
-	if !string_helper.IsEmpty(search.Alias) {
-		wheres["alias"] = search.Alias
+	if !string_helper.IsEmpty(condition.Alias) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "alias",
+			Val: condition.Alias,
+		})
 	}
-	if search.DeptIds != nil && len(search.DeptIds) > 0 {
-		wheres["dept_id in"] = search.DeptIds
+	if condition.DeptIds != nil && len(condition.DeptIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dept_id in",
+			Val: condition.DeptIds,
+		})
 	}
-	if !string_helper.IsEmpty(search.GteCreateAt) {
-		wheres["created_at >="] = search.GteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at >=",
+			Val: condition.CreateAtGte,
+		})
 	}
-	if !string_helper.IsEmpty(search.LteCreateAt) {
-		wheres["created_at <="] = search.LteCreateAt
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
+		})
 	}
 	return wheres
 }

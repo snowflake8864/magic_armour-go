@@ -86,7 +86,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 			AgentId:      agentId,
 			AttackIp:     attackIp,
 			HandleStatus: enum_alarm.HandleStatusNot,
-			GteCreateAt:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
+			CreateAtGte:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
 		}
 		fact := alarm_models.CreateAlarmPortFactory()
 		calc := fact.CalcByConditions(search, fact.ColumnSumWeight())
@@ -176,9 +176,10 @@ func (crd *PlugCalc) hasDynamic(orgId int64, agentId string, attackIp string) bo
 
 // 全局IP库中已存在
 func (crd *PlugCalc) hasGlobalLib(orgId int64, attackIp string) bool {
+	SwitchOn := enums.SwitchOn
 	search := plug_models.SearchConditions{
 		OrgId:      orgId,
-		OpenSwitch: enums.SwitchOn,
+		OpenSwitch: &SwitchOn,
 	}
 	models := plug_models.CreatePlugIpGlobalFactory().GetListByConditions(search)
 	if models == nil || len(models) == 0 {
@@ -194,10 +195,11 @@ func (crd *PlugCalc) hasGlobalLib(orgId int64, attackIp string) bool {
 
 // 终端IP库中已存在
 func (crd *PlugCalc) hasAgentLib(orgId int64, agentId string, attackIp string) bool {
+	SwitchOn := enums.SwitchOn
 	search := plug_models.SearchConditions{
 		OrgId:      orgId,
 		AgentId:    agentId,
-		OpenSwitch: enums.SwitchOn,
+		OpenSwitch: &SwitchOn,
 	}
 	models := plug_models.CreatePlugIpPolicyFactory().GetListByConditions(search)
 	if models == nil || len(models) == 0 {
