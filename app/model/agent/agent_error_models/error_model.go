@@ -21,6 +21,7 @@ type ErrorModel struct {
 	Id           int64  `json:"id" gorm:"primaryKey"`
 	OrgId        int64  `json:"org_id"`
 	AgentId      string `json:"agent_id"`
+	OsName       string `json:"os_name"`
 	OriginalName string `json:"original_name"`
 	StoragePath  string `json:"storage_path"`
 	FullPath     string `json:"full_path"`
@@ -41,6 +42,7 @@ func (m *ErrorModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			id BIGINT NOT NULL DEFAULT '0',
+			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
 			original_name varchar(128)  NOT NULL DEFAULT '' COMMENT '原文件名',
 			storage_path varchar(512)  NOT NULL DEFAULT '' COMMENT '存储相对路径(项目下)',
 			full_path varchar(1024)  NOT NULL DEFAULT '' COMMENT '完整路径',

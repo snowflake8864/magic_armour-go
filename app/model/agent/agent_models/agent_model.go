@@ -98,7 +98,7 @@ func (m *AgentModel) CreateTable() bool {
 			mac_id varchar(512)  NOT NULL DEFAULT '' COMMENT '物理地址',
 			agent_ip varchar(512)  NOT NULL DEFAULT '' COMMENT '终端ip',
 			net_ip varchar(64)  NOT NULL DEFAULT '' COMMENT '通讯ip',
-			os_name varchar(64)  NOT NULL DEFAULT '' COMMENT '系统名称',
+			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linux, 统一定义)',
 			os_type smallint NOT NULL DEFAULT '0' COMMENT '系统类别(参考ubuntu|centos等,统一定义)',
 			mem_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '内存',

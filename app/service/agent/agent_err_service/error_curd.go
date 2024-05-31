@@ -19,11 +19,12 @@ type ErrorCurd struct {
 }
 
 // Add 新增
-func (crd *ErrorCurd) Add(orgId int64, agentId string, remark string, uploadModel *upload_models.UploadModel) error {
+func (crd *ErrorCurd) Add(orgId int64, agentId string, osName string, remark string, uploadModel *upload_models.UploadModel) error {
 	masterModel := agent_error_models.ErrorModel{
 		Id:           uploadModel.Id,
 		OrgId:        orgId,
 		AgentId:      agentId,
+		OsName:       osName,
 		OriginalName: uploadModel.OriginalName,
 		StoragePath:  path_helper.ToStandard(uploadModel.StoragePath),
 		FullPath:     path_helper.ToStandard(uploadModel.FullPath),
