@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 )
@@ -19,12 +20,12 @@ type ErrorCurd struct {
 }
 
 // Add 新增
-func (crd *ErrorCurd) Add(orgId int64, agentId string, osName string, remark string, uploadModel *upload_models.UploadModel) error {
+func (crd *ErrorCurd) Add(loginInfo *agent_service.AgentCacheLogin, remark string, uploadModel *upload_models.UploadModel) error {
 	masterModel := agent_error_models.ErrorModel{
 		Id:           uploadModel.Id,
-		OrgId:        orgId,
-		AgentId:      agentId,
-		OsName:       osName,
+		OrgId:        loginInfo.OrgId,
+		AgentId:      loginInfo.AgentId,
+		OsName:       loginInfo.Os,
 		OriginalName: uploadModel.OriginalName,
 		StoragePath:  path_helper.ToStandard(uploadModel.StoragePath),
 		FullPath:     path_helper.ToStandard(uploadModel.FullPath),
