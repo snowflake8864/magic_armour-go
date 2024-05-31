@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -196,5 +197,36 @@ func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order
 		return total, items
 	} else {
 		return 0, nil
+	}
+}
+
+// CalcByConditions 通过条件获取多条记录
+func (m *ProcessModel) CalcByConditions(condition SearchConditions) (item *RepeatCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
+		tmp := tx.Model(m).Select(m.ColumnRepeatCalc(true)).Where(whereSQL, vals...)
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions) (items []*StatusCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
+		tmp := tx.Model(m).Select(m.ColumnStatusCalc()).Where(whereSQL, vals...)
+		return tmp.Group("agent_id").Find(&items)
+	})
+	fmt.Println(sql)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
 	}
 }

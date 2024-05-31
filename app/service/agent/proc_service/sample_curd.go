@@ -26,7 +26,7 @@ func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
 
 // UploadSuccess 上传成功
 func (crd *SampleCurd) UploadSuccess(orgId int64, agentId string, id string, uploadModel *upload_models.UploadModel) error {
-	conditions := proc_models.SearchConditionsForSample{
+	conditions := proc_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 		Id:      id,
@@ -46,7 +46,7 @@ func (crd *SampleCurd) UploadSuccess(orgId int64, agentId string, id string, upl
 
 // UploadFail 上传失败
 func (crd *SampleCurd) UploadFail(orgId int64, agentId string, id string) error {
-	conditions := proc_models.SearchConditionsForSample{
+	conditions := proc_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 		Id:      id,
@@ -63,7 +63,7 @@ func (crd *SampleCurd) UploadFail(orgId int64, agentId string, id string) error 
 
 // DelByOrg 删除：企业
 func (crd *SampleCurd) DelByOrg(orgId int64) bool {
-	search := proc_models.SearchConditionsForSample{
+	search := proc_models.SearchConditions{
 		OrgId: orgId,
 	}
 	return crd.masterModel.DeleteByConditions(search)
@@ -71,7 +71,7 @@ func (crd *SampleCurd) DelByOrg(orgId int64) bool {
 
 // DelByOrgAndAgent 删除：企业和终端
 func (crd *SampleCurd) DelByOrgAndAgent(orgId int64, agentId string) bool {
-	search := proc_models.SearchConditionsForSample{
+	search := proc_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 	}

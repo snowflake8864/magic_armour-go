@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/response"
 )
 
@@ -52,7 +53,14 @@ func (u *ProcessController) PageForManage(ctx *gin.Context) {
 
 // AgentProcStatForManage 管理页: 终端进程统计
 func (u *ProcessController) AgentProcStatForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AgentProcStatForManage")
+	conditions := proc_models.SearchConditions{
+		OrgId:    u.getLogin(ctx).OrgId,
+		AgentIds: u.getAgentIdsFromGin(ctx),
+	}
+	ProcessFact := proc_models.CreateProcessFactory()
+	calc := ProcessFact.CalcByConditionsGroupAgent(conditions)
+
+	response.SuccessReturnData(ctx, calc)
 }
 
 // SetSwitchForManage 管理页: 设置开关
