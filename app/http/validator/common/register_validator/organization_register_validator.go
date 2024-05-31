@@ -120,7 +120,7 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
 	containers.Set(key, process3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageAgentProcStat"
-	containers.Set(key, process3.ManagePage{})
+	containers.Set(key, process3.ManageAgentProcStat{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageSetSwitch"
 	containers.Set(key, process3.ManageSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageSetMode"
