@@ -10,7 +10,7 @@ import (
 )
 
 type MonitorList struct {
-	data_type.AgentBatch
+	data_type.AgentSingle
 	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
 }
 

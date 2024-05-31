@@ -17,7 +17,7 @@ func (crd *baseMonitor) conditions2Where(search SearchConditions) map[string]int
 		wheres["org_id"] = search.OrgId
 	}
 	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["id"] = search.AgentId
+		wheres["agent_id"] = search.AgentId
 	}
 	if !string_helper.IsEmpty(search.MonitorDay) {
 		wheres["monitor_day"] = search.MonitorDay

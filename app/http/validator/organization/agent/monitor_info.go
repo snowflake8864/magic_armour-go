@@ -10,7 +10,7 @@ import (
 )
 
 type MonitorInfo struct {
-	data_type.AgentBatch
+	data_type.AgentSingle
 }
 
 func (n MonitorInfo) CheckParams(context *gin.Context) {

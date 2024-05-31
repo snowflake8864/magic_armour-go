@@ -299,14 +299,13 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 
 // ListForMonitor 监控：列表
 func (u *AgentController) ListForMonitor(ctx *gin.Context) {
-	date := ctx.GetString(consts.ValidatorPrefixOrg + "date")
 	//页面上传
 	conditions := agent_monitor_models.SearchConditions{}
 	conditions.OrgId = u.getLogin(ctx).OrgId
 	conditions.AgentId = u.getAgentIdFromGin(ctx)
-	conditions.MonitorDay = date
+	conditions.MonitorDay = ctx.GetString(consts.ValidatorPrefixOrg + "date")
 
-	models := agent_monitor_models.CreateMonitorFactory().GetAllByConditions(conditions, "")
+	models := agent_monitor_models.CreateMonitorFactory().GetListByConditions(conditions, "")
 
 	response.SuccessReturnData(ctx, (&org_trans.Monitor{}).TransList(models))
 }
