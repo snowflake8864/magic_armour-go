@@ -11,6 +11,8 @@ import (
 
 type MonitorInfo struct {
 	data_type.AgentSingle
+	Date string `form:"date" json:"date" binding:"required,datetime=2006-01-02"`
+	Time string `form:"time" json:"time" binding:"required,datetime=15:04:05"`
 }
 
 func (n MonitorInfo) CheckParams(context *gin.Context) {

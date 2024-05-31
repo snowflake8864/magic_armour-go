@@ -138,6 +138,23 @@ func (m *MonitorModel) DeleteByLteCreateAt(at string) bool {
 	}
 }
 
+// GetItemByConditions 通过条件获取一条记录
+func (m *MonitorModel) GetItemByConditions(condition SearchConditions) (item *MonitorModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
 // GetListByConditions 通过条件获取全部记录
 func (m *MonitorModel) GetListByConditions(condition SearchConditions, order string) (items []*MonitorModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

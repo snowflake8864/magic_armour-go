@@ -5,7 +5,8 @@ import "goskeleton/app/utils/helpers/string_helper"
 type SearchConditions struct {
 	OrgId      int64
 	AgentId    string
-	MonitorDay string `json:"monitor_day"`
+	MonitorDay string
+	CreatedAt  string
 }
 type baseMonitor struct {
 }
@@ -21,6 +22,9 @@ func (crd *baseMonitor) conditions2Where(search SearchConditions) map[string]int
 	}
 	if !string_helper.IsEmpty(search.MonitorDay) {
 		wheres["monitor_day"] = search.MonitorDay
+	}
+	if !string_helper.IsEmpty(search.CreatedAt) {
+		wheres["created_at"] = search.CreatedAt
 	}
 
 	return wheres

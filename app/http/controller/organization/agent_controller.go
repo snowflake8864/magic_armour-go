@@ -312,5 +312,14 @@ func (u *AgentController) ListForMonitor(ctx *gin.Context) {
 
 // InfoForMonitor 监控：信息
 func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "InfoForMonitor")
+	//页面上传
+	conditions := agent_monitor_models.SearchConditions{}
+	conditions.OrgId = u.getLogin(ctx).OrgId
+	conditions.AgentId = u.getAgentIdFromGin(ctx)
+	conditions.MonitorDay = ctx.GetString(consts.ValidatorPrefixOrg + "date")
+	conditions.CreatedAt = conditions.MonitorDay + " " + ctx.GetString(consts.ValidatorPrefixOrg+"time")
+
+	model := agent_monitor_models.CreateMonitorFactory().GetItemByConditions(conditions)
+
+	response.SuccessReturnData(ctx, model)
 }
