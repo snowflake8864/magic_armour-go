@@ -14,6 +14,7 @@ const (
 	PlatformLoginErrorRemind  string = "platform_login_error_remind"  //平台:登录错误次数提醒
 	PlatformLoginLockDuration string = "platform_login_lock_duration" //平台:登录锁定时长(分)
 	PlatformSshSwitch         string = "platform_ssh_switch"          //平台:ssh开关
+	PlatformServiceCodeList   string = "platform_service_code_list"   //平台:服务器编号列表
 
 	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
 	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
@@ -75,6 +76,7 @@ var EnumSlice = map[string][]string{
 		PlatformLoginErrorRemind,
 		PlatformLoginLockDuration,
 		PlatformSshSwitch,
+		PlatformServiceCodeList,
 	},
 	ModuleOrganization: {
 		OrganizationLoginErrorMax,
