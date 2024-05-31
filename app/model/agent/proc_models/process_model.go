@@ -52,7 +52,7 @@ func (m *ProcessModel) CreateTable() bool {
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '进程:路径',
 			status smallint NOT NULL DEFAULT '0' COMMENT '进程状态(文件中宏定义)',
 			sync_status_at datetime NULL COMMENT '同步状态时间(黑白名单下发agent用)',
-			global_status tinyint NOT NULL DEFAULT '0' COMMENT '在全局名单中(0未设置 1白名单 2黑名单)',
+			global_status tinyint NOT NULL DEFAULT '0' COMMENT '在全局名单中',
 			self_status tinyint NOT NULL DEFAULT '0' COMMENT '本身状态(0未设置 1白名单 2黑名单)',
 			threaten_status tinyint NOT NULL DEFAULT '0' COMMENT '在威胁情报中心中(0未设置 1白名单 2黑名单)',
 			auto_white_switch tinyint NOT NULL DEFAULT '0' COMMENT '冗余的agent.auto_white_switch',

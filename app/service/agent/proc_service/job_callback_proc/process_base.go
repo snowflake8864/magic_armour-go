@@ -7,18 +7,9 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
-	"strings"
 )
 
 type ProcessBase struct {
-}
-
-// ColumnCalcOfUsage 字段： 统计使用数
-func (crd *ProcessBase) ColumnCalcOfUsage() string {
-	var columns []string
-	columns = append(columns, "SUM(buy_number) AS buy_number")
-	columns = append(columns, "SUM(usage_number) AS usage_number")
-	return strings.Join(columns, ", ")
 }
 
 // getThreatenStatus 获取威胁情报状态
@@ -49,26 +40,26 @@ func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int, at string) {
 	at = date_helper.CurDatetime()
 	if globalStatus == enum_process.RelyStatusWhite {
-		status = enum_process.StatusWhite
+		status = enum_process.ProcStatusWhite
 	} else if globalStatus == enum_process.RelyStatusBlack {
-		status = enum_process.StatusBlack
+		status = enum_process.ProcStatusBlack
 	} else if selfStatus == enum_process.RelyStatusWhite {
-		status = enum_process.StatusWhite
+		status = enum_process.ProcStatusWhite
 	} else if selfStatus == enum_process.RelyStatusBlack {
-		status = enum_process.StatusBlack
+		status = enum_process.ProcStatusBlack
 	} else if selfStatus == enum_process.RelyStatusUnset {
-		status = enum_process.StatusUnset
+		status = enum_process.ProcStatusUnset
 	} else if autoWhiteSwitch == enums.SwitchOn {
 		if threatenStatus == enum_process.RelyStatusWhite {
-			status = enum_process.StatusWhite
+			status = enum_process.ProcStatusWhite
 		} else if threatenStatus == enum_process.RelyStatusBlack {
-			status = enum_process.StatusBlack
+			status = enum_process.ProcStatusBlack
 		} else {
-			status = enum_process.StatusUnset
+			status = enum_process.ProcStatusUnset
 			at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
 		}
 	} else {
-		status = enum_process.StatusUnset
+		status = enum_process.ProcStatusUnset
 		at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
 	}
 

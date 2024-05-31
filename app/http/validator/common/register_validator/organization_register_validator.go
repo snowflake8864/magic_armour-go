@@ -118,6 +118,8 @@ func OrganizationRegisterValidator() {
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
 	containers.Set(key, process3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "ProcessManageAgentProcStat"
+	containers.Set(key, process3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageSetSwitch"
 	containers.Set(key, process3.ManageSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageSetMode"
@@ -146,15 +148,17 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, process3.AgentRefresh{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentCollect"
 	containers.Set(key, process3.AgentCollect{})
-	key = consts.ValidatorPrefixOrg + "ProcessAgentExtractRunningDll"
-	containers.Set(key, process3.AgentExtractRunningDll{})
-	key = consts.ValidatorPrefixOrg + "ProcessAgentShowRunningDll"
-	containers.Set(key, process3.AgentShowRunningDll{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchWhite"
-	containers.Set(key, process3.AgentShowRunningDll{})
+	containers.Set(key, process3.AgentBatchWhite{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentRunningDllExtract"
+	containers.Set(key, process3.AgentRunningDllExtract{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentRunningDllShow"
+	containers.Set(key, process3.AgentRunningDllShow{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentRepeatStat"
+	containers.Set(key, process3.AgentRepeatStat{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentRepeatPage"
-	containers.Set(key, process3.AgentRepeatHash{})
-	key = consts.ValidatorPrefixOrg + "ProcessAgentExtractSample"
+	containers.Set(key, process3.AgentRepeatPage{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentSampleExtract"
 	containers.Set(key, procSample3.AddFromProcess{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentSetGlobal"
 	containers.Set(key, procGlobal3.AddFromProcess{})
@@ -185,6 +189,10 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "ProcSampleClear"
 	containers.Set(key, procSample3.Clear{})
 	key = consts.ValidatorPrefixOrg + "ProcSampleDownload"
+	containers.Set(key, procSample3.Download{})
+
+	//威胁情报
+	key = consts.ValidatorPrefixOrg + "ThreatenGetLevels"
 	containers.Set(key, procSample3.Download{})
 
 	//防篡改

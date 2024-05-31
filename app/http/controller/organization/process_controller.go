@@ -2,6 +2,9 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,17 +15,26 @@ type ProcessController struct {
 
 // SearchStatus 查询状态
 func (u *ProcessController) SearchStatus(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SearchStatus")
+	keys := enums.Get1stIsStrReturnSliceOfInt("proc_status", enum_process.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // ChangeStatus 可改变状态
 func (u *ProcessController) ChangeStatus(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ChangeStatus")
+	keys := enums.Get1stIsStrReturnSliceOfInt("change_status", enum_process.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // PageForManage 管理页: 分页
 func (u *ProcessController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "PageForOwn")
+}
+
+// AgentProcStatForManage 管理页: 终端进程统计
+func (u *ProcessController) AgentProcStatForManage(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "AgentProcStatForManage")
 }
 
 // SetSwitchForManage 管理页: 设置开关
@@ -70,6 +82,11 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "PageRunningForAgent")
 }
 
+// SearchWhileForAgent 单终端: 查询白名单
+func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SetStatusForAgent")
+}
+
 // SetStatusForAgent 单终端: 设置状态
 func (u *ProcessController) SetStatusForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "SetStatusForAgent")
@@ -105,19 +122,24 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CollectForAgent")
 }
 
-// RepeatHashForAgent 单终端: 重复进程
-func (u *ProcessController) RepeatHashForAgent(ctx *gin.Context) {
+// RepeatStatForAgent 单终端: 重复进程统计
+func (u *ProcessController) RepeatStatForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "RepeatHashForAgent")
 }
 
-// ExtractRunningDllForAgent 单终端: 提取运行中模块
-func (u *ProcessController) ExtractRunningDllForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ExtractRunningDllForAgent")
+// RepeatPageForAgent 单终端: 重复进程分页
+func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "RepeatHashForAgent")
 }
 
-// ShowRunningDllForAgent 单终端: 展示运行中模块
-func (u *ProcessController) ShowRunningDllForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ShowRunningDllForAgent")
+// RunningDllExtractForAgent 单终端: 提取运行中模块
+func (u *ProcessController) RunningDllExtractForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "RunningDllExtractForAgent")
+}
+
+// RunningDllShowForAgent 单终端: 展示运行中模块
+func (u *ProcessController) RunningDllShowForAgent(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "RunningDllShowForAgent")
 }
 
 // PageForSearch 搜索: 分页

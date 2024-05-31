@@ -39,7 +39,7 @@ func (crd *ProcessRunningUpload) Add(processRunningModel *proc_models.ProcessRun
 // UploadDlls 上传模块信息
 func (crd *ProcessRunningUpload) UploadDlls(orgId int64, agentId, procHash string, procId, number int, list *[]proc_models.ProcessRunningDll) error {
 	updates := map[string]interface{}{
-		"dll_status": enum_process.ProcGetDllStatusFinish,
+		"dll_status": enum_process.CollectDllStatusFinish,
 		"dll_number": number,
 		"DllList":    json_helper.Encode(&list),
 	}

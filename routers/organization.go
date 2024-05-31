@@ -179,6 +179,7 @@ func InitOrganizationRouter() *gin.Engine {
 					manage := process.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManagePage"))
+						manage.POST("agentProcStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageAgentProcStat"))
 						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageSetSwitch"))
 						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageSetMode"))
 						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageBatchSetConfig"))
@@ -188,20 +189,25 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					agentV2 := process.Group("agent/")
 					{
+						agentV2.POST("searchWhile", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSearchWhile"))
 						agentV2.POST("pageAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentPageAll"))
 						agentV2.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentPageRunning"))
 						agentV2.POST("setStatus", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSetStatus"))
 						agentV2.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentCancel"))
 						agentV2.POST("clearAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentClearAll"))
 						agentV2.POST("clearRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentClearRunning"))
+						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchWhite"))
 						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRefresh"))
 						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentCollect"))
-						agentV2.POST("extractRunningDll", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentExtractRunningDll"))
-						agentV2.POST("showRunningDll", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentShowRunningDll"))
-						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchWhite"))
-						agentV2.POST("repeatHash", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRepeatPage"))
 
-						agentV2.POST("extractSample", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentExtractSample"))
+						agentV2.POST("runningDllExtract", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRunningDllExtract"))
+						agentV2.POST("runningDllShow", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRunningDllShow"))
+
+						agentV2.POST("repeatStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRepeatStat"))
+						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRepeatPage"))
+
+						agentV2.POST("sampleExtract", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSampleExtract"))
+
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchGlobalWhite"))
 					}
@@ -231,6 +237,13 @@ func InitOrganizationRouter() *gin.Engine {
 					procSample.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcSampleClear"))
 					procSample.POST("download", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcSampleDownload"))
 				} //进程和模块样本
+
+				//威胁情报
+				threaten := vOrg.Group("threaten/")
+				{
+					threaten.POST("getLevels", validatorFactory.Create(consts.ValidatorPrefixOrg+"ThreatenGetLevels"))
+					threaten.POST("getAttr", validatorFactory.Create(consts.ValidatorPrefixOrg+"ThreatenGetAttr"))
+				}
 
 				//防篡改
 				tamper := vOrg.Group("tamper/")

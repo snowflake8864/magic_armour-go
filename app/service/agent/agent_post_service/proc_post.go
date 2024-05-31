@@ -121,7 +121,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 			ProcDir:   processModel.Dir,
 			ProcUser:  itemProcess.User,
 			DllNumber: itemProcess.ModuleNumber,
-			DllStatus: enum_process.ProcGetDllStatusDefault,
+			DllStatus: enum_process.CollectDllStatusDefault,
 			CreatedAt: now,
 		}
 		processRunningModel.Id = crd.makeRunningId(orgId, agentId, procHash, itemProcess.ProcId)

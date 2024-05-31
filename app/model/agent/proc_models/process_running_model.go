@@ -57,7 +57,7 @@ func (m *ProcessRunningModel) CreateTable() bool {
             proc_dir varchar(512)  NOT NULL DEFAULT '' COMMENT '进程:路径',
             proc_user varchar(128)  NOT NULL DEFAULT '' COMMENT '进程:用户',
             dll_number int  NOT NULL DEFAULT '0' COMMENT '模块:数量',
-            dll_status tinyint  NOT NULL DEFAULT '0' COMMENT '模块:状态(0默认 1开始, 2获取中, 3结束)',
+            dll_status tinyint  NOT NULL DEFAULT '0' COMMENT '模块:状态',
             dll_list string  NOT NULL DEFAULT '' COMMENT '模块:列表',
 			created_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
