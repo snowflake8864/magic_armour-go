@@ -85,7 +85,7 @@ func (m *DllModel) CreateTable() bool {
 }
 
 // DllModel 查询条件转化
-func (m *DllModel) DllModel(search SearchConditionsForProcess) map[string]interface{} {
+func (m *DllModel) DllModel(search SearchConditions) map[string]interface{} {
 	wheres := make(map[string]interface{})
 	return wheres
 }
@@ -103,10 +103,10 @@ func (m *DllModel) InsertItem(s *DllModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *DllModel) UpdateByConditions(condition SearchConditionsForProcess, updates map[string]interface{}) (bool, int64) {
+func (m *DllModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Updates(updates)
@@ -120,10 +120,10 @@ func (m *DllModel) UpdateByConditions(condition SearchConditionsForProcess, upda
 }
 
 // DeleteByConditions 通过条件删除
-func (m *DllModel) DeleteByConditions(condition SearchConditionsForProcess) bool {
+func (m *DllModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Delete(m)
@@ -150,15 +150,15 @@ func (m *DllModel) GetItemByOrgAndAgentAndHash(orgId int64, agentId, hash string
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *DllModel) GetListByConditions(condition SearchConditionsForProcess) (items []*DllModel) {
+func (m *DllModel) GetListByConditions(condition SearchConditions) (items []*DllModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *DllModel) GetItemsByConditions(condition SearchConditionsForProcess, offset, limit int, order string) (items []*DllModel) {
+func (m *DllModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DllModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		if limit > 0 {
@@ -181,11 +181,11 @@ func (m *DllModel) GetItemsByConditions(condition SearchConditionsForProcess, of
 }
 
 // Count 通过条件统计
-func (m *DllModel) Count(condition SearchConditionsForProcess) int64 {
+func (m *DllModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
-		if whereSQL, vals, _ := m.WhereBuild(m.DllModel(condition)); !string_helper.IsEmpty(whereSQL) {
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 		return tmp.Count(&total)
@@ -199,7 +199,7 @@ func (m *DllModel) Count(condition SearchConditionsForProcess) int64 {
 }
 
 // Page 通过条件分页
-func (m *DllModel) Page(condition SearchConditionsForProcess, offset, limit int, order string) (total int64, items []*DllModel) {
+func (m *DllModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*DllModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

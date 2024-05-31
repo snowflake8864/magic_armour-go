@@ -79,25 +79,6 @@ func (m *ProcSampleModel) CreateTable() bool {
 	}
 }
 
-// conditions2Where 查询条件转化
-func (m *ProcSampleModel) conditions2Where(search SearchConditionsForSample) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	if search.OrgId > 0 {
-		wheres["org_id"] = search.OrgId
-	}
-	if !string_helper.IsEmpty(search.AgentId) {
-		wheres["agent_id"] = search.AgentId
-	}
-	if !string_helper.IsEmpty(search.Id) {
-		wheres["id"] = search.Id
-	}
-
-	if search.Status > 0 {
-		wheres["status"] = search.Status
-	}
-	return wheres
-}
-
 func (m *ProcSampleModel) InsertItem(s *ProcSampleModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -112,7 +93,7 @@ func (m *ProcSampleModel) InsertItem(s *ProcSampleModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *ProcSampleModel) UpdateByConditions(condition SearchConditionsForSample, updates map[string]interface{}) (bool, int64) {
+func (m *ProcSampleModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -129,7 +110,7 @@ func (m *ProcSampleModel) UpdateByConditions(condition SearchConditionsForSample
 }
 
 // DeleteByConditions 通过条件删除
-func (m *ProcSampleModel) DeleteByConditions(condition SearchConditionsForSample) bool {
+func (m *ProcSampleModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -146,12 +127,12 @@ func (m *ProcSampleModel) DeleteByConditions(condition SearchConditionsForSample
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *ProcSampleModel) GetListByConditions(condition SearchConditionsForSample) (items []*ProcSampleModel) {
+func (m *ProcSampleModel) GetListByConditions(condition SearchConditions) (items []*ProcSampleModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ProcSampleModel) GetItemsByConditions(condition SearchConditionsForSample, offset, limit int, order string) (items []*ProcSampleModel) {
+func (m *ProcSampleModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProcSampleModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -177,7 +158,7 @@ func (m *ProcSampleModel) GetItemsByConditions(condition SearchConditionsForSamp
 }
 
 // Count 通过条件统计
-func (m *ProcSampleModel) Count(condition SearchConditionsForSample) int64 {
+func (m *ProcSampleModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -195,7 +176,7 @@ func (m *ProcSampleModel) Count(condition SearchConditionsForSample) int64 {
 }
 
 // Page 通过条件分页
-func (m *ProcSampleModel) Page(condition SearchConditionsForSample, offset, limit int, order string) (total int64, items []*ProcSampleModel) {
+func (m *ProcSampleModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProcSampleModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

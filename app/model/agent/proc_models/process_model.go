@@ -78,11 +78,6 @@ func (m *ProcessModel) CreateTable() bool {
 	}
 }
 
-// conditions2Where 查询条件转化
-func (m *ProcessModel) conditions2Where(search SearchConditionsForProcess) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	return wheres
-}
 func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -97,7 +92,7 @@ func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *ProcessModel) UpdateByConditions(condition SearchConditionsForProcess, updates map[string]interface{}) (bool, int64) {
+func (m *ProcessModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -114,7 +109,7 @@ func (m *ProcessModel) UpdateByConditions(condition SearchConditionsForProcess, 
 }
 
 // DeleteByConditions 通过条件删除
-func (m *ProcessModel) DeleteByConditions(condition SearchConditionsForProcess) bool {
+func (m *ProcessModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -144,12 +139,12 @@ func (m *ProcessModel) GetItemByOrgAndAgentAndHash(orgId int64, agentId, hash st
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *ProcessModel) GetListByConditions(condition SearchConditionsForProcess) (items []*ProcessModel) {
+func (m *ProcessModel) GetListByConditions(condition SearchConditions) (items []*ProcessModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ProcessModel) GetItemsByConditions(condition SearchConditionsForProcess, offset, limit int, order string) (items []*ProcessModel) {
+func (m *ProcessModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProcessModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -175,7 +170,7 @@ func (m *ProcessModel) GetItemsByConditions(condition SearchConditionsForProcess
 }
 
 // Count 通过条件统计
-func (m *ProcessModel) Count(condition SearchConditionsForProcess) int64 {
+func (m *ProcessModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -193,7 +188,7 @@ func (m *ProcessModel) Count(condition SearchConditionsForProcess) int64 {
 }
 
 // Page 通过条件分页
-func (m *ProcessModel) Page(condition SearchConditionsForProcess, offset, limit int, order string) (total int64, items []*ProcessModel) {
+func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProcessModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
