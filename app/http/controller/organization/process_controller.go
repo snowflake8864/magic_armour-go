@@ -244,7 +244,20 @@ func (u *ProcessController) processSwitchOnByAgents(orgId int64, agentIds []stri
 
 // BatchCollectForManage 管理页: 批量获取全部进程
 func (u *ProcessController) BatchCollectForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "batchCollectForManage")
+	orgId := u.getLogin(ctx).OrgId
+	agentIds := u.getAgentIdsFromGin(ctx)
+	err, validIds := u.processSwitchOnByAgents(orgId, agentIds)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	//添加任务
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessSuffixIsExe, "批量获取全部进程")
+	//修改刷新时间
+	agent_service.CreateExtendFactory().BatchSetProcessFlushAt(orgId, validIds, true)
+
+	response.SuccessSimplify(ctx)
 }
 
 // BatchThreatenWhiteForManage 管理页: 批量把终端的进程推送到威胁情报白名单

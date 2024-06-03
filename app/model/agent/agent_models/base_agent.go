@@ -56,13 +56,13 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 	}
 	if !string_helper.IsEmpty(condition.AgentId) {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "agent_id",
+			Key: "id",
 			Val: condition.AgentId,
 		})
 	}
 	if len(condition.AgentIds) > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "agent_id in",
+			Key: "id in",
 			Val: condition.AgentIds,
 		})
 	}
