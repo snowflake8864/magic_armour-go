@@ -112,6 +112,7 @@ func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
 
 // SetModeForManage 管理页: 设置模式
 func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
+	orgId := u.getLogin(ctx).OrgId
 	agentIds := []string{
 		u.getAgentIdFromGin(ctx),
 	}
@@ -120,7 +121,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 		ProcessMode: Mode,
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "进程管理-模式")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -130,6 +131,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 
 // BatchSetConfigForManage 管理页: 批量设置配置(开关和模式)
 func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
+	orgId := u.getLogin(ctx).OrgId
 	agentIds := u.getAgentIdsFromGin(ctx)
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
@@ -137,7 +139,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 		ProcessSwitch: &Switch,
 		ProcessMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "进程管理-批量")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

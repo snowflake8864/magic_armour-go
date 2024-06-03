@@ -88,12 +88,11 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 	}
 	//如果未授权, 下面功能不可用
 	if model.GrantStatus == enums.IsYes {
-		//return nil, hasTask, openAutoWhite, updates
+		return nil, hasTask, openAutoWhite, updates
 	}
 
 	//以下授权可用功能
 	grantConfig := enum_product.Json2Config(model.GrantConfig)
-	grantConfig.Process = 1
 	if param.CommonTime > 0 && model.CommonTime != param.CommonTime {
 		updates["common_time"] = param.CommonTime
 		hasTask = true
