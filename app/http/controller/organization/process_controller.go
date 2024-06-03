@@ -10,6 +10,8 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -93,22 +95,64 @@ func (u *ProcessController) AgentProcStatForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetSwitchForManage")
+	agentIds := []string{
+		u.getAgentIdFromGin(ctx),
+	}
+	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
+	var param = agent_service.ManualInterveneColumn{
+		ProcessSwitch: &Switch,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-开关")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // SetModeForManage 管理页: 设置模式
 func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetModeForManage")
+	agentIds := []string{
+		u.getAgentIdFromGin(ctx),
+	}
+	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
+	var param = agent_service.ManualInterveneColumn{
+		ProcessMode: Mode,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-模式")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchSetConfigForManage 管理页: 批量设置配置(开关和模式)
 func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchModifyForManage")
+	agentIds := u.getAgentIdsFromGin(ctx)
+	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
+	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
+	var param = agent_service.ManualInterveneColumn{
+		ProcessSwitch: &Switch,
+		ProcessMode:   Mode,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-批量")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
-// BatchSetWhiteForManage 管理页: 批量把终端的未设置进程变成白名单
+// BatchSetWhiteForManage 管理页: 批量把终端未设置进程变成白名单
 func (u *ProcessController) BatchSetWhiteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchSetWhiteForManage")
+	agentIds := u.getAgentIdsFromGin(ctx)
+	err := proc_service.CreateProcessFactory().BatchUnsetToWhiteByAgents(u.getLogin(ctx).OrgId, agentIds)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchRefreshForManage 管理页: 批量刷新(运行中进程)

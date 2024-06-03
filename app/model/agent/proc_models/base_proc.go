@@ -32,9 +32,10 @@ type SearchConditions struct {
 	DllHash         string
 	Id              string
 	Status          int
+	StatusList      []int
 	Dir             string
 	Dirs            []string
-	SyncStatusAtGte string
+	SyncStatusAtGte int64
 }
 
 type baseProc struct {
@@ -97,7 +98,13 @@ func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.Status,
 		})
 	}
-	if !string_helper.IsEmpty(condition.SyncStatusAtGte) {
+	if len(condition.StatusList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status in",
+			Val: condition.StatusList,
+		})
+	}
+	if condition.SyncStatusAtGte > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "sync_status_at >=",
 			Val: condition.SyncStatusAtGte,

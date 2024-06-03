@@ -37,8 +37,8 @@ func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 }
 
 // getProcStatus 获取最终状态
-func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int, at string) {
-	at = date_helper.CurDatetime()
+func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, autoWhiteSwitch int) (status int, at int64) {
+	at = date_helper.CurTimestamp()
 	if globalStatus == enum_process.RelyStatusWhite {
 		status = enum_process.ProcStatusWhite
 	} else if globalStatus == enum_process.RelyStatusBlack {
@@ -56,11 +56,11 @@ func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, 
 			status = enum_process.ProcStatusBlack
 		} else {
 			status = enum_process.ProcStatusUnset
-			at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
+			at = 0
 		}
 	} else {
 		status = enum_process.ProcStatusUnset
-		at = date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
+		at = 0
 	}
 
 	return status, at
