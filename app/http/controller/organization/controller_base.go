@@ -34,9 +34,10 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
 	conditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
-	conditions.ContactName = ctx.GetString(consts.ValidatorPrefixOrg + "contactName")
-	conditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
-	conditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
+	IsOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
+	conditions.IsOnline = &IsOnline
+	IsSafe := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
+	conditions.IsSafe = &IsSafe
 
 	//请求的组织架构
 	var reqDeptIds []int64

@@ -1,17 +1,20 @@
 package organization
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -186,7 +189,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 // BatchSetWhiteForManage 管理页: 批量把终端未设置进程变成白名单
 func (u *ProcessController) BatchSetWhiteForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
-	err := proc_service.CreateProcessFactory().BatchUnsetToWhiteByAgents(u.getLogin(ctx).OrgId, agentIds)
+	err := proc_service.CreateProcessCurdFactory().BatchUnsetToWhiteByAgents(u.getLogin(ctx).OrgId, agentIds)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
@@ -196,7 +199,47 @@ func (u *ProcessController) BatchSetWhiteForManage(ctx *gin.Context) {
 
 // BatchRefreshForManage 管理页: 批量刷新(运行中进程)
 func (u *ProcessController) BatchRefreshForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchRefreshForManage")
+	orgId := u.getLogin(ctx).OrgId
+	agentIds := u.getAgentIdsFromGin(ctx)
+	err, validIds := u.processSwitchOnByAgents(orgId, agentIds)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	//添加任务
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessRefresh, "批量刷新")
+	//删除运行数据
+	//proc_service.CreateProcessRunningFactory().DeleteByAgents(orgId, validIds)
+	//修改刷新时间
+	agent_service.CreateExtendFactory().BatchSetProcessFlushAt(orgId, validIds, true)
+
+	response.SuccessSimplify(ctx)
+}
+
+func (u *ProcessController) processSwitchOnByAgents(orgId int64, agentIds []string) (error, []string) {
+	var validIds []string
+	SwitchOn := enums.SwitchOn
+	condition := agent_models.SearchConditions{
+		OrgId:         orgId,
+		AgentIds:      agentIds,
+		ProcessSwitch: &SwitchOn,
+	}
+	AgentFact := agent_models.CreateAgentFactory()
+	agentModels := AgentFact.GetListByConditions(condition, AgentFact.ColumnSimplify())
+	if agentModels == nil || len(agentModels) == 0 {
+		return errors.New("需要终端进程开关全部开启"), nil
+	} else {
+		if len(agentModels) == len(agentIds) {
+			return nil, agentIds
+		} else {
+			for _, model := range agentModels {
+				validIds = append(validIds, model.AgentId)
+			}
+			return nil, validIds
+		}
+	}
+
 }
 
 // BatchCollectForManage 管理页: 批量获取全部进程

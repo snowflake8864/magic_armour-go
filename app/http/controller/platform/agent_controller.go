@@ -56,9 +56,7 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 // StatByOrg 按企业统计终端
 func (u *AgentController) StatByOrg(ctx *gin.Context) {
 	searchConditions := agent_models.SearchConditions{
-		OrgId:    int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId")),
-		IsSafe:   enums.AllDefaultInt,
-		IsOnline: enums.AllDefaultInt,
+		OrgId: int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId")),
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
@@ -77,8 +75,10 @@ func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixPlatform + "netIp")
 	conditions.Alias = ctx.GetString(consts.ValidatorPrefixPlatform + "alias")
 	conditions.ContactName = ctx.GetString(consts.ValidatorPrefixPlatform + "contactName")
-	conditions.IsOnline = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
-	conditions.IsSafe = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
+	IsOnline := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isOnline"))
+	conditions.IsOnline = &IsOnline
+	IsSafe := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isSafe"))
+	conditions.IsSafe = &IsSafe
 	conditions.DeptIds = u.getWebSliceOfInt64(ctx, "deptId")
 
 	//分页参数和排序参数

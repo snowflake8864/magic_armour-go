@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 )
 
-func CreateProcessFactory() *ProcessCurd {
+func CreateProcessCurdFactory() *ProcessCurd {
 	return &ProcessCurd{
 		masterModel: proc_models.CreateProcessFactory(),
 	}

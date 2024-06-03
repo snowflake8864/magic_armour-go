@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -56,4 +57,29 @@ func (crd *AgentExtend) GetPlugOfPort(orgId int64, agentId string) (config enum_
 
 	config.Format()
 	return config
+}
+
+// SetFlushAt 设置刷新时间
+func (crd *AgentExtend) SetFlushAt(orgId int64, agentId string, process bool) bool {
+	updates := map[string]interface{}{}
+	if process {
+		updates["process_flush_at"] = date_helper.CurDatetime()
+	} else {
+		updates["dll_flush_at"] = date_helper.CurDatetime()
+	}
+
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates)
+	return isOk
+}
+
+// BatchSetProcessFlushAt 批量设置刷新时间
+func (crd *AgentExtend) BatchSetProcessFlushAt(orgId int64, agentIds []string, process bool) bool {
+	updates := map[string]interface{}{}
+	if process {
+		updates["process_flush_at"] = date_helper.CurDatetime()
+	} else {
+		updates["dll_flush_at"] = date_helper.CurDatetime()
+	}
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates)
+	return isOk
 }

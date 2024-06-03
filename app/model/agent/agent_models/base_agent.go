@@ -25,20 +25,22 @@ type AgentCalc struct {
 }
 
 type SearchConditions struct {
-	OrgId        int64
-	AgentId      string
-	AgentIds     []string
-	HostName     string
-	AgentIp      string
-	NetIp        string
-	PlatformType int
-	IsOnline     int
-	IsSafe       int
-	Alias        string
-	ContactName  string
-	DeptIds      []int64
-	CreateAtGte  string
-	CreateAtLte  string
+	OrgId         int64
+	AgentId       string
+	AgentIds      []string
+	HostName      string
+	AgentIp       string
+	NetIp         string
+	PlatformType  int
+	IsOnline      *int
+	IsSafe        *int
+	Alias         string
+	ContactName   string
+	DeptIds       []int64
+	CreateAtGte   string
+	CreateAtLte   string
+	ProcessSwitch *int
+	DllSwitch     *int
 }
 
 type baseAgent struct {
@@ -88,18 +90,19 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 			Val: condition.PlatformType,
 		})
 	}
-	if condition.IsOnline != enums.AllDefaultInt {
+	if condition.IsOnline != nil && *condition.IsOnline != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_online",
-			Val: condition.IsOnline,
+			Val: *condition.IsOnline,
 		})
 	}
-	if condition.IsSafe != enums.AllDefaultInt {
+	if condition.IsSafe != nil && *condition.IsSafe != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_safe",
-			Val: condition.IsSafe,
+			Val: *condition.IsSafe,
 		})
 	}
+
 	if !string_helper.IsEmpty(condition.ContactName) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "contact_name",
@@ -128,6 +131,18 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at <=",
 			Val: condition.CreateAtLte,
+		})
+	}
+	if condition.ProcessSwitch != nil && *condition.ProcessSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "process_switch",
+			Val: *condition.ProcessSwitch,
+		})
+	}
+	if condition.DllSwitch != nil && *condition.DllSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dll_switch",
+			Val: *condition.DllSwitch,
 		})
 	}
 	return wheres

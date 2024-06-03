@@ -3,7 +3,6 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/org_trans"
@@ -25,8 +24,6 @@ func (u *HomeController) AgentStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	conditions := agent_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
-	conditions.IsOnline = enums.AllDefaultInt
-	conditions.IsSafe = enums.AllDefaultInt
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 
 	if err != nil {
