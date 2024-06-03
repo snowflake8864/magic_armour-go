@@ -3,6 +3,7 @@ package agent_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
@@ -87,11 +88,12 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 	}
 	//如果未授权, 下面功能不可用
 	if model.GrantStatus == enums.IsYes {
-		return nil, hasTask, openAutoWhite, updates
+		//return nil, hasTask, openAutoWhite, updates
 	}
+
 	//以下授权可用功能
 	grantConfig := enum_product.Json2Config(model.GrantConfig)
-
+	grantConfig.Process = 1
 	if param.CommonTime > 0 && model.CommonTime != param.CommonTime {
 		updates["common_time"] = param.CommonTime
 		hasTask = true
@@ -103,30 +105,40 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 
 	//可信防护已授权
 	if grantConfig.Process == enums.SwitchOn {
+
+		//进程相关
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {
 			updates["process_switch"] = *param.ProcessSwitch
 			hasTask = true
 			//方便下发相关任务
-			if *param.ProcessSwitch == enums.SwitchOn {
-				model.ProcessSwitch = enums.SwitchOn
+			model.ProcessSwitch = *param.ProcessSwitch
+			//同步模式
+			if *param.ProcessSwitch == enums.SwitchOff {
+				updates["process_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode {
-			updates["ProcessMode"] = param.ProcessMode
+		if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode && model.ProcessSwitch == enums.SwitchOn {
+			updates["process_mode"] = param.ProcessMode
 			hasTask = true
 		}
-		if param.DeptId != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
+
+		//模块相关
+		if param.DllSwitch != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
 			updates["dll_switch"] = *param.DllSwitch
 			hasTask = true
 			//方便下发相关任务
-			if *param.DllSwitch == enums.SwitchOn {
-				model.DllSwitch = enums.SwitchOn
+			model.DllSwitch = *param.DllSwitch
+			//同步模式
+			if *param.DllSwitch == enums.SwitchOff {
+				updates["dll_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.DllMode > 0 && model.DllMode != param.DllMode {
+		if param.DllMode > 0 && model.DllMode != param.DllMode && model.DllSwitch == enums.SwitchOn {
 			updates["dll_mode"] = param.DllMode
 			hasTask = true
 		}
+
+		//自动白名单
 		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
 			updates["auto_white_switch"] = *param.AutoWhiteSwitch
 			if *param.AutoWhiteSwitch == enums.SwitchOn {
@@ -140,11 +152,13 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 			updates["tamper_switch"] = *param.TamperSwitch
 			hasTask = true
 			//方便下发相关任务
-			if *param.TamperSwitch == enums.SwitchOn {
-				model.TamperSwitch = enums.SwitchOn
+			model.TamperSwitch = *param.TamperSwitch
+			//同步模式
+			if *param.DllSwitch == enums.SwitchOff {
+				updates["tamper_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.TamperMode > 0 && model.TamperMode != param.TamperMode {
+		if param.TamperMode > 0 && model.TamperMode != param.TamperMode && model.TamperSwitch == enums.SwitchOn {
 			updates["tamper_mode"] = param.TamperMode
 			hasTask = true
 		}
@@ -155,11 +169,13 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 			updates["blackmail_switch"] = *param.BlackmailSwitch
 			hasTask = true
 			//方便下发相关任务
-			if *param.BlackmailSwitch == enums.SwitchOn {
-				model.BlackmailSwitch = enums.SwitchOn
+			model.BlackmailSwitch = *param.BlackmailSwitch
+			//同步模式
+			if *param.DllSwitch == enums.SwitchOff {
+				updates["blackmail_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.BlackmailMode > 0 && model.BlackmailMode != param.BlackmailMode {
+		if param.BlackmailMode > 0 && model.BlackmailMode != param.BlackmailMode && model.BlackmailSwitch == enums.SwitchOn {
 			updates["blackmail_mode"] = param.BlackmailMode
 			hasTask = true
 		}
@@ -192,11 +208,13 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 			updates["usb_switch"] = *param.UsbSwitch
 			hasTask = true
 			//方便下发相关任务
-			if *param.UsbSwitch == enums.SwitchOn {
-				model.UsbSwitch = enums.SwitchOn
+			model.UsbSwitch = *param.UsbSwitch
+			//同步模式
+			if *param.DllSwitch == enums.SwitchOff {
+				updates["usb_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.UsbMode > 0 && model.UsbMode != param.UsbMode {
+		if param.UsbMode > 0 && model.UsbMode != param.UsbMode && model.UsbSwitch == enums.SwitchOn {
 			updates["usb_mode"] = param.UsbMode
 			hasTask = true
 		}
