@@ -11,6 +11,7 @@ import (
 
 type ManageAgentProcStat struct {
 	data_type.AgentBatch
+	Type string `form:"type" json:"type" binding:"required,oneof=-100 total unset unknown white black"`
 }
 
 func (n ManageAgentProcStat) CheckParams(context *gin.Context) {

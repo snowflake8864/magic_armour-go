@@ -2,6 +2,7 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_process"
@@ -57,8 +58,35 @@ func (u *ProcessController) AgentProcStatForManage(ctx *gin.Context) {
 		OrgId:    u.getLogin(ctx).OrgId,
 		AgentIds: u.getAgentIdsFromGin(ctx),
 	}
+	Type := ctx.GetString(consts.ValidatorPrefixOrg + "type")
 	ProcessFact := proc_models.CreateProcessFactory()
-	calc := ProcessFact.CalcByConditionsGroupAgent(conditions)
+	column := ""
+	switch Type {
+	case "total":
+		column = ProcessFact.ColumnStatusCalc(true, false, false, false, false)
+		break
+	case "unset":
+		column = ProcessFact.ColumnStatusCalc(false, true, false, false, false)
+		conditions.Status = enum_process.ProcStatusUnset
+		break
+	case "unknown":
+		column = ProcessFact.ColumnStatusCalc(false, false, true, false, false)
+		conditions.Status = enum_process.ProcStatusUnknown
+		break
+	case "white":
+		column = ProcessFact.ColumnStatusCalc(false, false, false, true, false)
+		conditions.Status = enum_process.ProcStatusWhite
+		break
+	case "black":
+		column = ProcessFact.ColumnStatusCalc(false, false, false, false, true)
+		conditions.Status = enum_process.ProcStatusBlack
+		break
+	default:
+		column = ProcessFact.ColumnStatusCalc(false, false, false, false, false)
+		break
+	}
+
+	calc := ProcessFact.CalcByConditionsGroupAgent(conditions, column)
 
 	response.SuccessReturnData(ctx, calc)
 }

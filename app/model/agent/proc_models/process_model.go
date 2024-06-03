@@ -218,9 +218,9 @@ func (m *ProcessModel) CalcByConditions(condition SearchConditions) (item *Repea
 }
 
 // CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
-func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions) (items []*StatusCalc) {
+func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*StatusCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select(m.ColumnStatusCalc())
+		tmp := tx.Model(m).Select(column)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
