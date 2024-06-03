@@ -6,10 +6,12 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -237,9 +239,10 @@ func (u *AgentController) GetForConfig(ctx *gin.Context) {
 
 // SaveForConfig 配置信息：保存
 func (u *AgentController) SaveForConfig(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	agentIds := []string{agentId}
+
 	processSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processSwitch"))
 	processMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processMode"))
 	dllSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "dllSwitch"))
@@ -263,6 +266,19 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 	commonTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "commonTime"))
 	fastTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "fastTime"))
+
+	if processSwitch == enums.SwitchOn && processMode == enum_agent.ModeProject {
+		condition := proc_models.SearchConditions{
+			OrgId:   orgId,
+			AgentId: agentId,
+			Status:  enum_process.ProcStatusUnset,
+		}
+		ProcessFact := proc_models.CreateProcessFactory()
+		if ProcessFact.Count(condition) > 0 {
+			response.FailSimplify(ctx, "开启进程保护模式, 不能存在未设置的进程")
+			return
+		}
+	}
 
 	var param = agent_service.ManualInterveneColumn{
 		ProcessSwitch:       &processSwitch,
@@ -289,7 +305,7 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		CommonTime:          commonTime,
 		FastTime:            fastTime,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "保存配置信息")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "保存配置信息")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

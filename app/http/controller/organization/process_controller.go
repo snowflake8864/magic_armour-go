@@ -113,12 +113,24 @@ func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
 // SetModeForManage 管理页: 设置模式
 func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	agentId := u.getAgentIdFromGin(ctx)
+	agentIds := []string{agentId}
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 	var param = agent_service.ManualInterveneColumn{
 		ProcessMode: Mode,
+	}
+
+	if Mode == enum_agent.ModeProject {
+		condition := proc_models.SearchConditions{
+			OrgId:   orgId,
+			AgentId: agentId,
+			Status:  enum_process.ProcStatusUnset,
+		}
+		ProcessFact := proc_models.CreateProcessFactory()
+		if ProcessFact.Count(condition) > 0 {
+			response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的进程")
+			return
+		}
 	}
 
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "进程管理-模式")
@@ -135,11 +147,35 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 	agentIds := u.getAgentIdsFromGin(ctx)
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
+	var validIds []string
+	if Switch == enums.SwitchOn && Mode == enum_agent.ModeProject {
+		condition := proc_models.SearchConditions{
+			OrgId:    orgId,
+			AgentIds: agentIds,
+			Status:   enum_process.ProcStatusUnset,
+		}
+		ProcessFact := proc_models.CreateProcessFactory()
+		column := ProcessFact.ColumnStatusCalc(false, true, false, false, false)
+		calcList := ProcessFact.CalcByConditionsGroupAgent(condition, column)
+		if calcList == nil || len(calcList) == 0 {
+			validIds = agentIds
+		} else {
+			if len(calcList) == len(agentIds) {
+				response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的进程")
+				return
+			} else {
+				for _, calc := range calcList {
+					validIds = append(validIds, calc.AgentId)
+				}
+			}
+		}
+	}
+
 	var param = agent_service.ManualInterveneColumn{
 		ProcessSwitch: &Switch,
 		ProcessMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "进程管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, validIds, &param, "进程管理-批量")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
