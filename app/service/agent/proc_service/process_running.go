@@ -1,7 +1,6 @@
 package proc_service
 
 import (
-	"errors"
 	"goskeleton/app/model/agent/proc_models"
 )
 
@@ -16,7 +15,7 @@ type ProcessRunning struct {
 	masterModel *proc_models.ProcessRunningModel
 }
 
-// DeleteByAgents 批量把终端下未设置变成白名单
+// DeleteByAgents 通过终端集合删除
 func (crd *ProcessRunning) DeleteByAgents(orgId int64, agentIds []string) bool {
 	condition := proc_models.SearchConditions{
 		OrgId:    orgId,
@@ -25,17 +24,12 @@ func (crd *ProcessRunning) DeleteByAgents(orgId int64, agentIds []string) bool {
 	return crd.masterModel.DeleteByConditions(condition)
 }
 
-// ClearRunning 清空运行中
-func (crd *ProcessRunning) ClearRunning(orgId int64, agentId string) error {
+// DeleteByAgent 通过终端删除
+func (crd *ProcessRunning) DeleteByAgent(orgId int64, agentId string) bool {
 
 	condition := proc_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 	}
-	isOk := crd.masterModel.DeleteByConditions(condition)
-	if !isOk {
-		return errors.New("删除失败")
-	}
-
-	return nil
+	return crd.masterModel.DeleteByConditions(condition)
 }

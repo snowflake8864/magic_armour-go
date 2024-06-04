@@ -118,8 +118,8 @@ func (crd *ProcessCurd) Cancel(orgId int64, agentId string, hash string) error {
 	return nil
 }
 
-// ClearAll 清空全部
-func (crd *ProcessCurd) ClearAll(orgId int64, agentId string) error {
+// DeleteByAgent 通过终端删除
+func (crd *ProcessCurd) DeleteByAgent(orgId int64, agentId string, task bool) error {
 
 	condition := proc_models.SearchConditions{
 		OrgId:   orgId,
@@ -130,11 +130,12 @@ func (crd *ProcessCurd) ClearAll(orgId int64, agentId string) error {
 		return errors.New("删除失败")
 	}
 
-	types := []int{
-		enum_task.TypeProcessWhiteDownload,
-		enum_task.TypeProcessBlackDownload,
+	if task {
+		types := []int{
+			enum_task.TypeProcessWhiteDownload,
+			enum_task.TypeProcessBlackDownload,
+		}
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "清空")
 	}
-	task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "清空")
-
 	return nil
 }

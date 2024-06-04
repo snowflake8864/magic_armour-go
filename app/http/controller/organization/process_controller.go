@@ -213,7 +213,7 @@ func (u *ProcessController) BatchRefreshForManage(ctx *gin.Context) {
 	//删除运行数据
 	//proc_service.CreateProcessRunningFactory().DeleteByAgents(orgId, validIds)
 	//修改刷新时间
-	agent_service.CreateExtendFactory().BatchSetProcessFlushAt(orgId, validIds, true)
+	agent_service.CreateExtendFactory().BatchSetFlushAt(orgId, validIds, true)
 
 	response.SuccessSimplify(ctx)
 }
@@ -256,7 +256,7 @@ func (u *ProcessController) BatchCollectForManage(ctx *gin.Context) {
 	//添加任务
 	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessSuffixIsExe, "批量获取全部进程")
 	//修改刷新时间
-	agent_service.CreateExtendFactory().BatchSetProcessFlushAt(orgId, validIds, true)
+	agent_service.CreateExtendFactory().BatchSetFlushAt(orgId, validIds, true)
 
 	response.SuccessSimplify(ctx)
 }
@@ -385,7 +385,7 @@ func (u *ProcessController) ClearAllForAgent(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
 
-	err := proc_service.CreateProcessCurdFactory().ClearAll(orgId, agentId)
+	err := proc_service.CreateProcessCurdFactory().DeleteByAgent(orgId, agentId, true)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
@@ -398,9 +398,8 @@ func (u *ProcessController) ClearRunningForAgent(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
 
-	err := proc_service.CreateProcessRunningFactory().ClearRunning(orgId, agentId)
-	if err != nil {
-		response.FailSimplify(ctx, err.Error())
+	if !proc_service.CreateProcessRunningFactory().DeleteByAgent(orgId, agentId) {
+		response.FailSimplify(ctx, "清空失败")
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -408,12 +407,27 @@ func (u *ProcessController) ClearRunningForAgent(ctx *gin.Context) {
 
 // RefreshForAgent 单终端: 刷新(运行中进程)
 func (u *ProcessController) RefreshForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RefreshForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+
+	//添加任务
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessRefresh, "刷新")
+	//删除运行数据
+	proc_service.CreateProcessRunningFactory().DeleteByAgent(orgId, agentId)
+	//修改刷新时间
+	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, true)
+
+	response.SuccessSimplify(ctx)
 }
 
 // CollectForAgent 单终端: 获取全部进程
 func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "CollectForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	//添加任务
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessSuffixIsExe, "获取全部进程")
+	//修改刷新时间
+	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, true)
 }
 
 // RepeatStatForAgent 单终端: 重复进程统计

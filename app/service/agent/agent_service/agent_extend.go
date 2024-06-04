@@ -72,8 +72,8 @@ func (crd *AgentExtend) SetFlushAt(orgId int64, agentId string, process bool) bo
 	return isOk
 }
 
-// BatchSetProcessFlushAt 批量设置刷新时间
-func (crd *AgentExtend) BatchSetProcessFlushAt(orgId int64, agentIds []string, process bool) bool {
+// BatchSetFlushAt 批量设置刷新时间
+func (crd *AgentExtend) BatchSetFlushAt(orgId int64, agentIds []string, process bool) bool {
 	updates := map[string]interface{}{}
 	if process {
 		updates["process_flush_at"] = date_helper.CurDatetime()
