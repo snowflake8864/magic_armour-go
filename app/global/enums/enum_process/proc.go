@@ -104,6 +104,7 @@ func GetProcStatusReason(GlobalStatus, SelfStatus, ThreatenStatus, AutoWhiteSwit
 	return "未设置"
 }
 
+// BtnChangeEnable 选择按钮是否开启
 func BtnChangeEnable(GlobalStatus int) int {
 	if GlobalStatus == RelyStatusWhite || GlobalStatus == RelyStatusBlack {
 		return 0
@@ -111,6 +112,7 @@ func BtnChangeEnable(GlobalStatus int) int {
 	return 1
 }
 
+// BtnCancelEnable 取消按钮是否开启
 func BtnCancelEnable(SelfStatus int) int {
 	if SelfStatus == RelyStatusWhite || SelfStatus == RelyStatusBlack || SelfStatus == RelyStatusUnknown {
 		return 1
