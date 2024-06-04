@@ -50,3 +50,12 @@ func (crd *ProcessBase) getUpdatesForCancel() map[string]interface{} {
 	updates["status"] = gorm.Expr(str)
 	return updates
 }
+
+func (crd *ProcessBase) getUpdatesForBatchWhite() map[string]interface{} {
+	updates := map[string]interface{}{
+		"self_status":    enum_process.RelyStatusWhite,
+		"sync_status_at": 0,
+		"status":         enum_process.ProcStatusWhite,
+	}
+	return updates
+}

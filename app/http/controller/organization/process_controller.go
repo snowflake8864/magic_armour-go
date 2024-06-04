@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -377,7 +378,21 @@ func (u *ProcessController) CancelForAgent(ctx *gin.Context) {
 
 // BatchWhiteForAgent 单终端: 批量白名单
 func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchWhiteForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
+	hashes := json_helper.ToSliceString(jsonStr)
+	if len(hashes) == 0 {
+		response.FailSimplify(ctx, "数据不能为空")
+		return
+	}
+
+	err := proc_service.CreateProcessCurdFactory().BatchWhiteByHashes(orgId, agentId, hashes)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // ClearAllForAgent 单终端: 清空全部

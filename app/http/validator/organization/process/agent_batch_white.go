@@ -11,6 +11,7 @@ import (
 
 type AgentBatchWhite struct {
 	data_type.AgentSingle
+	Hashes string `form:"hashes" json:"hashes" binding:"required"`
 }
 
 func (n AgentBatchWhite) CheckParams(context *gin.Context) {

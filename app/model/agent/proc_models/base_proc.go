@@ -49,7 +49,9 @@ type SearchConditions struct {
 	AgentId         string
 	AgentIds        []string
 	ProcHash        string
+	ProcHashes      []string
 	DllHash         string
+	DllHashes       []string
 	Id              string
 	Status          int
 	StatusList      []int
@@ -87,10 +89,22 @@ func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.ProcHash,
 		})
 	}
+	if len(condition.ProcHashes) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_hash in",
+			Val: condition.ProcHashes,
+		})
+	}
 	if !string_helper.IsEmpty(condition.DllHash) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dll_hash",
 			Val: condition.DllHash,
+		})
+	}
+	if len(condition.DllHashes) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dll_hash in",
+			Val: condition.DllHashes,
 		})
 	}
 	if !string_helper.IsEmpty(condition.Id) {

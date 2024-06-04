@@ -118,6 +118,36 @@ func (crd *ProcessCurd) Cancel(orgId int64, agentId string, hash string) error {
 	return nil
 }
 
+// BatchWhiteByHashes 批量白名单
+func (crd *ProcessCurd) BatchWhiteByHashes(orgId int64, agentId string, hashes []string) error {
+
+	condition := proc_models.SearchConditions{
+		OrgId:      orgId,
+		AgentId:    agentId,
+		ProcHashes: hashes,
+		StatusList: []int{
+			enum_process.ProcStatusUnset,
+			enum_process.ProcStatusUnknown,
+			enum_process.ProcStatusBlack,
+			enum_process.ProcStatusWhite,
+		},
+	}
+	updates := crd.getUpdatesForBatchWhite()
+	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
+	if !isOk {
+		return errors.New("修改失败")
+	}
+	if rows > 0 {
+		types := []int{
+			enum_task.TypeProcessWhiteDownload,
+			enum_task.TypeProcessBlackDownload,
+		}
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "批量白名单")
+	}
+
+	return nil
+}
+
 // DeleteByAgent 通过终端删除
 func (crd *ProcessCurd) DeleteByAgent(orgId int64, agentId string, task bool) error {
 
