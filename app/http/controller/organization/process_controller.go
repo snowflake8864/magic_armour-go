@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
@@ -471,7 +472,6 @@ func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
 	condition := proc_models.SearchConditions{
 		OrgId:    orgId,
 		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
-		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 	}
 
 	//分页参数和排序参数
@@ -494,12 +494,54 @@ func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
 
 // RunningDllExtractForAgent 单终端: 提取运行中模块
 func (u *ProcessController) RunningDllExtractForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RunningDllExtractForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+	procId := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "procId"))
+
+	AgentFact := agent_models.CreateAgentFactory()
+	agentModel := AgentFact.GetItemByOrgAndAgent(orgId, agentId, AgentFact.ColumnProc(true))
+	if agentModel == nil || agentModel.OrgId == 0 {
+		response.FailSimplify(ctx, "终端不存在")
+		return
+	}
+	if agentModel.PlatformType == enum_software.PlatformTypeLinux {
+		response.FailSimplify(ctx, "Linux暂不支持功能")
+		return
+	}
+	if agentModel.DllSwitch == enums.SwitchOff {
+		response.FailSimplify(ctx, "模块功能没有开启")
+		return
+	}
+
+	if err := proc_service.CreateProcessRunningFactory().ExtractDlls(orgId, agentId, hash, procId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // RunningDllShowForAgent 单终端: 展示运行中模块
 func (u *ProcessController) RunningDllShowForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RunningDllShowForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+	procId := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "procId"))
+
+	hasModel := proc_models.CreateProcessRunningFactory().GetItemByOrgAndAgentAndHashAndProcId(orgId, agentId, hash, procId)
+	if hasModel == nil || hasModel.DllStatus == enum_process.CollectDllStatusDefault {
+		response.SuccessSimplify(ctx)
+		return
+	}
+	if hasModel.DllStatus != enum_process.CollectDllStatusFinish {
+		response.FailRoutine(ctx, 100, "请耐心等待")
+		return
+	}
+
+	var list []proc_models.ProcessRunningDll
+	_ = json_helper.ToAny(hasModel.DllList, &list)
+
+	response.SuccessReturnData(ctx, list)
 }
 
 // PageForSearch 搜索: 分页

@@ -4,11 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type AgentRunningDllShow struct {
+	data_type.AgentSingle
+	Hash
+	ProcId int `form:"procId" json:"procId" binding:"required,max=65535"`
 }
 
 func (n AgentRunningDllShow) CheckParams(context *gin.Context) {

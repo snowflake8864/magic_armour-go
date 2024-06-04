@@ -103,21 +103,6 @@ func (m *ProcessRunningModel) InsertItem(s *ProcessRunningModel) bool {
 	}
 }
 
-// DeleteByOrgAndAgent 通过企业id\终端id删除
-func (m *ProcessRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m)
-		tmp = tmp.Where("org_id=? AND agent_id=?", orgId, agentId)
-		return tmp.Delete(m)
-	})
-	result := m.Exec(m.TrimSql(sql))
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
 // UpdateByOrgAndAgentAndHashAndProcId 通过通过企业id\终端id\hash\ProcId修改
 func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
