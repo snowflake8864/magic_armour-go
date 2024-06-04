@@ -284,7 +284,24 @@ func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
 
 // PageRunningForAgent 单终端: 运行中进程
 func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageRunningForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		AgentId:  agentId,
+		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
+		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "searchStatus")),
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := proc_models.CreateProcessRunningFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransRunningPage(total, models))
 }
 
 // SearchWhileForAgent 单终端: 查询白名单

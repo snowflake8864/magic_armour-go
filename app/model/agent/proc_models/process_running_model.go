@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 // 进程运行中表
@@ -160,5 +161,94 @@ func (m *ProcessRunningModel) DeleteByConditions(condition SearchConditions) boo
 		return true
 	} else {
 		return false
+	}
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *ProcessRunningModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProcessAndRunning) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+
+		t1As := m.TableName() + "."
+		t2Name := CreateProcessFactory().TableName()
+		t2As := "t2."
+
+		columns := []string{
+			t1As + "org_id",
+			t1As + "agent_id",
+			t1As + "proc_hash",
+			t1As + "proc_id",
+			t1As + "id",
+			t1As + "proc_dir",
+			t1As + "proc_user",
+			t1As + "created_at",
+			t2As + "status",
+			t2As + "sync_status_at",
+			t2As + "self_status",
+			t2As + "threaten_status",
+			t2As + "auto_white_switch",
+			t2As + "introduce",
+			t2As + "copyright",
+			t2As + "signature",
+		}
+		tmp := tx.Model(m).
+			Joins(m.getJoinStr(t1As, t2Name, t2As))
+
+		tmp = tmp.Select(strings.Join(columns, ","))
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(t1As + order)
+		} else {
+			tmp = tmp.Order(t1As + "created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *ProcessRunningModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		t1As := m.TableName() + "."
+		t2Name := CreateProcessFactory().TableName()
+		t2As := "t2."
+
+		tmp := tx.Model(m).
+			Joins(m.getJoinStr(t1As, t2Name, t2As))
+		tmp = tmp.Select(t1As + "id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *ProcessRunningModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProcessAndRunning) {
+	if total = m.Count(condition); total == 0 {
+		return total, nil
+	}
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

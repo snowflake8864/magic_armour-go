@@ -24,8 +24,9 @@ type RepeatCalc struct {
 	TotalNumber int   `json:"total_number"`
 }
 
-// ProcessAndRunning
+// ProcessAndRunning 进程和运行中标
 type ProcessAndRunning struct {
+	Id              string `json:"id"`
 	AgentId         string `json:"agent_id"`
 	ProcHash        string `json:"proc_hash"`
 	Status          int    `json:"status"`
@@ -39,7 +40,7 @@ type ProcessAndRunning struct {
 	Signature       string `json:"signature"`
 	CreatedAt       string `json:"created_at"`
 	ProcId          int    `json:"proc_id"`
-	ProcDir         string `json:"dir"`
+	ProcDir         string `json:"proc_dir"`
 	ProcUser        string `json:"proc_user"`
 }
 
@@ -130,6 +131,56 @@ func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_
 		})
 	}
 	return wheres
+}
+
+// conditions2Where 查询条件转化
+func (m *baseProc) conditions2WhereForRunning(condition SearchConditions, t1, t2 string) (wheres []model_comm.Conditions) {
+	if condition.OrgId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "org_id",
+			Val: condition.OrgId,
+		})
+	}
+	if !string_helper.IsEmpty(condition.AgentId) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "agent_id",
+			Val: condition.AgentId,
+		})
+	}
+	if !string_helper.IsEmpty(condition.ProcHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "proc_hash",
+			Val: condition.ProcHash,
+		})
+	}
+	if !string_helper.IsEmpty(condition.DllHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "dll_hash",
+			Val: condition.DllHash,
+		})
+	}
+	if !string_helper.IsEmpty(condition.Dir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "dir like",
+			Val: "%" + condition.Dir + "%",
+		})
+
+	}
+
+	if condition.Status > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t2 + "status",
+			Val: condition.Status,
+		})
+	}
+	return wheres
+}
+
+func (m *baseProc) getJoinStr(t1Alias, t2Name, t2Alias string) string {
+	return "LEFT JOIN " + t2Name + " AS " + strings.Trim(t2Alias, ".") +
+		" ON " + t1Alias + "org_id=" + t2Alias + "org_id" +
+		" AND " + t1Alias + "agent_id=" + t2Alias + "agent_id " +
+		" AND " + t1Alias + "proc_hash=" + t2Alias + "proc_hash"
 }
 
 // ColumnStatusCalc 字段： 统计状态
