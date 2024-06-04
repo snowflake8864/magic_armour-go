@@ -272,7 +272,7 @@ func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
 		AgentId:  agentId,
 		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
 		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "searchStatus")),
+		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}
 
 	//分页参数和排序参数
@@ -294,7 +294,7 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 		AgentId:  agentId,
 		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
 		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "searchStatus")),
+		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}
 
 	//分页参数和排序参数

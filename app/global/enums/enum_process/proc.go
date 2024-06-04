@@ -65,7 +65,6 @@ var WebMapInt = map[string][]int{
 		ProcStatusBlack,
 	},
 	"change_status": {
-		AllStatusUnset,
 		AllStatusUnknown,
 		AllStatusWhite,
 		AllStatusBlack,

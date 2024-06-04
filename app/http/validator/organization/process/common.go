@@ -12,6 +12,18 @@ type Dir struct {
 	Dir string `form:"dir" json:"dir" binding:"omitempty,min=2,max=512"`
 }
 
+type Hash struct {
+	Hash string `form:"hash" json:"hash" binding:"omitempty,min=8,max=32"`
+}
+
 type SearchStatus struct {
-	SearchStatus int `form:"searchStatus" json:"searchStatus" binding:"required"`
+	Status int `form:"status" json:"status" binding:"required"`
+}
+
+type ChangeSelfStatus struct {
+	Status int `form:"status" json:"status" binding:"required,oneof=2,4,8"`
+}
+
+type ChangeGlobalStatus struct {
+	Status int `form:"status" json:"status" binding:"required,oneof=16,32"`
 }
