@@ -131,7 +131,7 @@ func (m *ProcSampleModel) DeleteByConditions(condition SearchConditions) bool {
 // GetItemByOrgAndAgentAndHash 通过企业id\终端id\hash\ProcId获取一条记录
 func (m *ProcSampleModel) GetItemByOrgAndAgentAndHash(orgId int64, agentId, hash string) (item *ProcSampleModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=? AND id=? AND proc_id=?", orgId, agentId, hash).Take(&item)
+		return tx.Model(m).Where("org_id=? AND agent_id=? AND id=?", orgId, agentId, hash).Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {

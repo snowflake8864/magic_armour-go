@@ -65,7 +65,7 @@ func (u *ProcSampleController) add(ctx *gin.Context, dataFrom int) error {
 		Introduce:  ctx.GetString(consts.ValidatorPrefixOrg + "introduce"),
 		Copyright:  ctx.GetString(consts.ValidatorPrefixOrg + "copyright"),
 		Signature:  ctx.GetString(consts.ValidatorPrefixOrg + "signature"),
-		Attribute:  ctx.GetString(consts.ValidatorPrefixOrg + "signature"),
+		Attribute:  ctx.GetString(consts.ValidatorPrefixOrg + "attribute"),
 		DataFrom:   dataFrom,
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
