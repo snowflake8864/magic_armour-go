@@ -1,6 +1,11 @@
 package proc_service
 
-import "goskeleton/app/global/enums/enum_process"
+import (
+	"fmt"
+	"gorm.io/gorm"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_process"
+)
 
 type ProcessBase struct {
 }
@@ -23,5 +28,25 @@ func (crd *ProcessBase) getUpdatesForSetStatus(status int) map[string]interface{
 		break
 	}
 
+	return updates
+}
+
+func (crd *ProcessBase) getUpdatesForCancel() map[string]interface{} {
+	updates := map[string]interface{}{
+		"self_status":    enum_process.RelyStatusUnset,
+		"sync_status_at": 0,
+	}
+
+	str := "(CASE " +
+		"WHEN auto_white_switch=%d THEN %d " +
+		"WHEN threaten_status=%d THEN %d " +
+		"WHEN threaten_status=%d THEN %d " +
+		"ELSE %d " +
+		"END)"
+	str = fmt.Sprintf(str, enums.IsNot, enum_process.ProcStatusUnset,
+		enum_process.RelyStatusWhite, enum_process.ProcStatusWhite,
+		enum_process.RelyStatusBlack, enum_process.ProcStatusBlack,
+		enum_process.ProcStatusUnset)
+	updates["status"] = gorm.Expr(str)
 	return updates
 }

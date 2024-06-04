@@ -87,3 +87,33 @@ func (crd *ProcessCurd) SetStatus(orgId int64, agentId string, hash string, stat
 
 	return nil
 }
+
+// Cancel 取消
+func (crd *ProcessCurd) Cancel(orgId int64, agentId string, hash string) error {
+	hasModel := crd.getOne(orgId, agentId, hash)
+	if hasModel == nil {
+		return errors.New("数据不存在")
+	}
+	if isOk := enum_process.BtnCancelEnable(hasModel.SelfStatus); isOk == 0 {
+		return errors.New("当前数据不允许取消")
+	}
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		AgentId:  agentId,
+		ProcHash: hash,
+	}
+	updates := crd.getUpdatesForCancel()
+	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
+	if !isOk {
+		return errors.New("修改失败")
+	}
+	if rows > 0 {
+		types := []int{
+			enum_task.TypeProcessWhiteDownload,
+			enum_task.TypeProcessBlackDownload,
+		}
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "取消")
+	}
+
+	return nil
+}

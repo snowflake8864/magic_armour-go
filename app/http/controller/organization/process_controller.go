@@ -361,14 +361,23 @@ func (u *ProcessController) SetStatusForAgent(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// CancelForAgent 单终端: 取消
+func (u *ProcessController) CancelForAgent(ctx *gin.Context) {
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+
+	err := proc_service.CreateProcessCurdFactory().Cancel(orgId, agentId, hash)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // BatchWhiteForAgent 单终端: 批量白名单
 func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "BatchWhiteForAgent")
-}
-
-// CancelForAgent 单终端: 取消
-func (u *ProcessController) CancelForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "CancelForAgent")
 }
 
 // ClearAllForAgent 单终端: 清空全部

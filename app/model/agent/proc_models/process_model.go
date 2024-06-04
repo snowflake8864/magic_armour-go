@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -100,6 +101,8 @@ func (m *ProcessModel) UpdateByConditions(condition SearchConditions, updates ma
 		}
 		return tmp.Updates(updates)
 	})
+	fmt.Println("==========")
+	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true, result.RowsAffected
