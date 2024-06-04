@@ -74,6 +74,7 @@ var WebMapInt = map[string][]int{
 	},
 }
 
+// GetProcStatusReason 获取状态原因
 func GetProcStatusReason(GlobalStatus, SelfStatus, ThreatenStatus, AutoWhiteSwitch int) string {
 	if GlobalStatus == RelyStatusWhite {
 		return "全局白名单"
