@@ -22,3 +22,8 @@ type AgentSingle struct {
 type AgentBatch struct {
 	AgentIds []string `form:"agentIds" json:"agentIds" binding:"required,gt=0,dive,min=8,max=32"`
 }
+
+// AgentSingleOmitempty 终端单个
+type AgentSingleOmitempty struct {
+	AgentId string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
+}

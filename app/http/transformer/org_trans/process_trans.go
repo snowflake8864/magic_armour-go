@@ -58,7 +58,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["agent_id"] = model.AgentId
 			data["proc_hash"] = model.ProcHash
 			data["proc_dir"] = model.ProcDir
-			data["proc_dir"] = model.ProcId
+			data["proc_id"] = model.ProcId
 			data["procUser"] = model.ProcUser
 			data["status"] = model.Status
 			data["sync_status_at"] = model.SyncStatusAt

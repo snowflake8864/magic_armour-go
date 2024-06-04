@@ -175,6 +175,7 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						public.POST("searchStatus", (&organization.ProcessController{}).SearchStatus)
 						public.POST("changeStatus", (&organization.ProcessController{}).ChangeStatus)
+						public.POST("searchWhile", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSearchWhile"))
 					}
 					manage := process.Group("manage/")
 					{
@@ -189,7 +190,7 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					agentV2 := process.Group("agent/")
 					{
-						agentV2.POST("searchWhile", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSearchWhile"))
+
 						agentV2.POST("pageAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentPageAll"))
 						agentV2.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentPageRunning"))
 						agentV2.POST("setStatus", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSetStatus"))

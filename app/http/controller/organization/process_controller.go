@@ -2,6 +2,7 @@ package organization
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -15,6 +16,8 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -306,7 +309,44 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 
 // SearchWhileForAgent 单终端: 查询白名单
 func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetStatusForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	Type := ctx.GetString(consts.ValidatorPrefixOrg + "type")
+	Val := ctx.GetString(consts.ValidatorPrefixOrg + "val")
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+		Status:  enum_process.ProcStatusWhite,
+	}
+
+	switch Type {
+	case "dir":
+		condition.Dir = Val
+		break
+	case "hash":
+		condition.ProcHash = Val
+		break
+	}
+	fmt.Println(json_helper.Encode(condition))
+	var models []*proc_models.ProcessModel
+	if string_helper.IsEmpty(agentId) {
+		models = proc_models.CreateProcessFactory().GetListByConditionsGroupHash(condition)
+	} else {
+		models = proc_models.CreateProcessFactory().GetListByConditions(condition)
+	}
+
+	var result []map[string]interface{}
+	if models != nil || len(models) > 0 {
+		for _, model := range models {
+			result = append(result, map[string]interface{}{
+				"val":   model.ProcHash,
+				"label": model.Dir,
+			})
+		}
+
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // SetStatusForAgent 单终端: 设置状态

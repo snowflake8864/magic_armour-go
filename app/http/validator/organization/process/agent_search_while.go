@@ -4,11 +4,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type AgentSearchWhile struct {
+	data_type.AgentSingleOmitempty
+	Type string `form:"type" json:"type" binding:"required,oneof=dir hash"`
+	Val  string `form:"val" json:"val" binding:"required,min=2"`
 }
 
 func (n AgentSearchWhile) CheckParams(context *gin.Context) {

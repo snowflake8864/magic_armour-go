@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -160,6 +161,7 @@ func (m *ProcessModel) GetItemsByConditions(condition SearchConditions, offset, 
 		}
 		return tmp.Find(&items)
 	})
+
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
@@ -229,6 +231,28 @@ func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions, co
 	if result.Error == nil {
 		return items
 	} else {
+		return nil
+	}
+}
+
+// GetListByConditionsGroupHash 通过条件获取多条记录
+func (m *ProcessModel) GetListByConditionsGroupHash(condition SearchConditions) (items []*ProcessModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		tmp.Select("distinct(proc_hash), dir, agent_id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+
+		return tmp.Find(&items)
+	})
+	fmt.Println("================")
+	fmt.Println(sql)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return nil
 	}
 }
