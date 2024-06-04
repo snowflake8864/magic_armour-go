@@ -2,7 +2,6 @@ package organization
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -16,7 +15,6 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -328,7 +326,6 @@ func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
 		condition.ProcHash = Val
 		break
 	}
-	fmt.Println(json_helper.Encode(condition))
 	var models []*proc_models.ProcessModel
 	if string_helper.IsEmpty(agentId) {
 		models = proc_models.CreateProcessFactory().GetListByConditionsGroupHash(condition)

@@ -1,7 +1,6 @@
 package proc_models
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -246,8 +245,6 @@ func (m *ProcessModel) GetListByConditionsGroupHash(condition SearchConditions) 
 
 		return tmp.Find(&items)
 	})
-	fmt.Println("================")
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
