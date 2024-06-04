@@ -133,6 +133,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, process3.ManageBatchRefresh{})
 	key = consts.ValidatorPrefixOrg + "ProcessManageBatchCollect"
 	containers.Set(key, process3.ManageBatchCollect{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentSearchWhile"
+	containers.Set(key, process3.AgentSearchWhile{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentPageAll"
 	containers.Set(key, process3.AgentPageAll{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentPageRunning"

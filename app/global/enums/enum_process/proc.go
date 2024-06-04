@@ -1,5 +1,7 @@
 package enum_process
 
+import "goskeleton/app/global/enums"
+
 // 进程或模块
 
 const (
@@ -72,4 +74,45 @@ var WebMapInt = map[string][]int{
 	},
 }
 
-//
+func GetProcStatusReason(GlobalStatus, SelfStatus, ThreatenStatus, AutoWhiteSwitch int) string {
+	if GlobalStatus == RelyStatusWhite {
+		return "全局白名单"
+	}
+	if GlobalStatus == RelyStatusBlack {
+		return "全局黑名单"
+	}
+	if SelfStatus == RelyStatusWhite {
+		return "白名单"
+	}
+	if SelfStatus == RelyStatusBlack {
+		return "黑名单"
+	}
+	if SelfStatus == RelyStatusUnknown {
+		return "未知"
+	}
+
+	if AutoWhiteSwitch == enums.SwitchOn {
+		if ThreatenStatus == RelyStatusWhite {
+			return "威胁情报白名单"
+		}
+		if ThreatenStatus == RelyStatusBlack {
+			return "威胁情报黑名单"
+		}
+	}
+
+	return "未设置"
+}
+
+func BtnChangeEnable(GlobalStatus int) int {
+	if GlobalStatus == RelyStatusWhite || GlobalStatus == RelyStatusBlack {
+		return 0
+	}
+	return 1
+}
+
+func BtnCancelEnable(SelfStatus int) int {
+	if SelfStatus == RelyStatusWhite || SelfStatus == RelyStatusBlack || SelfStatus == RelyStatusUnknown {
+		return 1
+	}
+	return 0
+}

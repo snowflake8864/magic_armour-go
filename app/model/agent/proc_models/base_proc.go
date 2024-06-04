@@ -24,6 +24,25 @@ type RepeatCalc struct {
 	TotalNumber int   `json:"total_number"`
 }
 
+// ProcessAndRunning
+type ProcessAndRunning struct {
+	AgentId         string `json:"agent_id"`
+	ProcHash        string `json:"proc_hash"`
+	Status          int    `json:"status"`
+	SyncStatusAt    int64  `json:"sync_status_at"`
+	GlobalStatus    int    `json:"global_status"`
+	SelfStatus      int    `json:"self_status"`
+	ThreatenStatus  int    `json:"threaten_status"`
+	AutoWhiteSwitch int    `json:"auto_white_switch"`
+	Introduce       string `json:"introduce"`
+	Copyright       string `json:"copyright"`
+	Signature       string `json:"signature"`
+	CreatedAt       string `json:"created_at"`
+	ProcId          int    `json:"proc_id"`
+	ProcDir         string `json:"dir"`
+	ProcUser        string `json:"proc_user"`
+}
+
 type SearchConditions struct {
 	OrgId           int64
 	AgentId         string

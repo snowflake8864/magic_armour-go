@@ -260,14 +260,26 @@ func (u *ProcessController) BatchCollectForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// BatchThreatenWhiteForManage 管理页: 批量把终端的进程推送到威胁情报白名单
-func (u *ProcessController) BatchThreatenWhiteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchThreatenWhiteForManage")
-}
-
 // PageAllForAgent 单终端: 全部进程
 func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageAllForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		AgentId:  agentId,
+		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
+		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "searchStatus")),
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := proc_models.CreateProcessFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransMasterPage(total, models))
 }
 
 // PageRunningForAgent 单终端: 运行中进程
