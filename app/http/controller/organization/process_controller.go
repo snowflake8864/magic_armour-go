@@ -348,7 +348,17 @@ func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
 
 // SetStatusForAgent 单终端: 设置状态
 func (u *ProcessController) SetStatusForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetStatusForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+	status := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status"))
+
+	err := proc_service.CreateProcessCurdFactory().SetStatus(orgId, agentId, hash, status)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchWhiteForAgent 单终端: 批量白名单

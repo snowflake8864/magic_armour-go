@@ -19,6 +19,16 @@ type ProcessCurd struct {
 	masterModel *proc_models.ProcessModel
 }
 
+// SetStatus 设置状态
+func (crd *ProcessCurd) getOne(orgId int64, agentId string, hash string) *proc_models.ProcessModel {
+	model := crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
+	if model == nil || model.OrgId == 0 {
+		return nil
+	} else {
+		return model
+	}
+}
+
 // BatchUnsetToWhiteByAgents 批量把终端下未设置变成白名单
 func (crd *ProcessCurd) BatchUnsetToWhiteByAgents(orgId int64, agentIds []string) error {
 	condition := proc_models.SearchConditions{
@@ -43,6 +53,36 @@ func (crd *ProcessCurd) BatchUnsetToWhiteByAgents(orgId int64, agentIds []string
 			enum_task.TypeProcessBlackDownload,
 		}
 		task_service.CreateCurdFactory().AddTasksForAgents(orgId, agentIds, types, "批量把终端下未设置变成白名单")
+	}
+
+	return nil
+}
+
+// SetStatus 设置状态
+func (crd *ProcessCurd) SetStatus(orgId int64, agentId string, hash string, status int) error {
+	hasModel := crd.getOne(orgId, agentId, hash)
+	if hasModel == nil {
+		return errors.New("数据不存在")
+	}
+	if isOk := enum_process.BtnChangeEnable(hasModel.GlobalStatus); isOk == 0 {
+		return errors.New("当前数据不允许修改状态")
+	}
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		AgentId:  agentId,
+		ProcHash: hash,
+	}
+	updates := crd.getUpdatesForSetStatus(status)
+	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
+	if !isOk {
+		return errors.New("修改失败")
+	}
+	if rows > 0 {
+		types := []int{
+			enum_task.TypeProcessWhiteDownload,
+			enum_task.TypeProcessBlackDownload,
+		}
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "设置状态")
 	}
 
 	return nil

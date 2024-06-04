@@ -12,7 +12,7 @@ import (
 type AgentSetStatus struct {
 	data_type.AgentSingle
 	Hash
-	ChangeStatus
+	ChangeSelfStatus
 }
 
 func (n AgentSetStatus) CheckParams(context *gin.Context) {
