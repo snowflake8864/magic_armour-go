@@ -16,6 +16,10 @@ type Hash struct {
 	Hash string `form:"hash" json:"hash" binding:"required,min=8,max=32"`
 }
 
+type Hashes struct {
+	Hashes string `form:"hashes" json:"hashes" binding:"required"`
+}
+
 type SearchStatus struct {
 	Status int `form:"status" json:"status" binding:"required"`
 }

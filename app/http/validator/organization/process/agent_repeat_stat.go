@@ -9,6 +9,7 @@ import (
 )
 
 type AgentRepeatStat struct {
+	Hashes
 }
 
 func (n AgentRepeatStat) CheckParams(context *gin.Context) {

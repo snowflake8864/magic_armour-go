@@ -329,7 +329,7 @@ func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
 	}
 	var models []*proc_models.ProcessModel
 	if string_helper.IsEmpty(agentId) {
-		models = proc_models.CreateProcessFactory().GetListByConditionsGroupHash(condition)
+		models = proc_models.CreateProcessFactory().GetListByConditionsDistinctHash(condition)
 	} else {
 		models = proc_models.CreateProcessFactory().GetListByConditions(condition)
 	}
@@ -447,12 +447,49 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 
 // RepeatStatForAgent 单终端: 重复进程统计
 func (u *ProcessController) RepeatStatForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RepeatHashForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
+	hashes := json_helper.ToSliceString(jsonStr)
+	if len(hashes) == 0 {
+		response.FailSimplify(ctx, "数据不能为空")
+		return
+	}
+	conditions := proc_models.SearchConditions{
+		OrgId:      orgId,
+		ProcHashes: hashes,
+	}
+	ProcessFact := proc_models.CreateProcessFactory()
+	calc := ProcessFact.CalcByConditionsGroupHash(conditions)
+	response.SuccessReturnData(ctx, calc)
 }
 
 // RepeatPageForAgent 单终端: 重复进程分页
 func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "RepeatHashForAgent")
+	orgId := u.getLogin(ctx).OrgId
+
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := proc_models.CreateProcessFactory().Page(condition, offset, pageSize, order)
+
+	var agentIds []string
+	var agentMap = make(map[string]*agent_models.AgentModel)
+	if models != nil || len(models) > 0 {
+		for _, model := range models {
+			agentIds = append(agentIds, model.AgentId)
+		}
+		AgentFact := agent_models.CreateAgentFactory()
+		agentMap = AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransRepeatPage(total, models, agentMap))
 }
 
 // RunningDllExtractForAgent 单终端: 提取运行中模块

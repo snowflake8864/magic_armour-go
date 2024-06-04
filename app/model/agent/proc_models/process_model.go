@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -200,18 +201,19 @@ func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order
 	}
 }
 
-// CalcByConditions 通过条件获取多条记录
-func (m *ProcessModel) CalcByConditions(condition SearchConditions) (item *RepeatCalc) {
+// CalcByConditionsGroupHash 通过条件获取多条记录且按hash分组
+func (m *ProcessModel) CalcByConditionsGroupHash(condition SearchConditions) (items []*RepeatCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(m.ColumnRepeatCalc(true))
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
-		return tmp.Take(&item)
+		return tmp.Group("proc_hash").Find(&items)
 	})
-	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	fmt.Println(sql)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return item
+		return items
 	} else {
 		return nil
 	}
@@ -234,8 +236,8 @@ func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions, co
 	}
 }
 
-// GetListByConditionsGroupHash 通过条件获取多条记录
-func (m *ProcessModel) GetListByConditionsGroupHash(condition SearchConditions) (items []*ProcessModel) {
+// GetListByConditionsDistinctHash 通过条件获取多条记录
+func (m *ProcessModel) GetListByConditionsDistinctHash(condition SearchConditions) (items []*ProcessModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		tmp.Select("distinct(proc_hash), dir, agent_id")

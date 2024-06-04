@@ -20,8 +20,8 @@ type StatusCalc struct {
 
 // RepeatCalc 重复hash统计
 type RepeatCalc struct {
-	Hash        int64 `json:"hash"`
-	TotalNumber int   `json:"total_number"`
+	Hash        string `json:"hash"`
+	TotalNumber int    `json:"total_number"`
 }
 
 // ProcessAndRunning 进程和运行中标

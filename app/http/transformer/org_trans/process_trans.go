@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 )
 
@@ -74,6 +75,47 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
+
+			items = append(items, data)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
+// TransRepeatPage 转换成运行中进程分页需要的数据
+func (t *Process) TransRepeatPage(total int64, models []*proc_models.ProcessModel, agentModels map[string]*agent_models.AgentModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+
+		for _, model := range models {
+			data := make(map[string]interface{})
+			data["id"] = model.Id
+			data["agent_id"] = model.AgentId
+			data["proc_dir"] = model.Dir
+			data["created_at"] = model.CreatedAt
+			//终端信息
+			data["host_name"] = ""
+			data["mac_id"] = ""
+			data["agent_ip"] = ""
+			data["net_ip"] = ""
+			data["os_name"] = ""
+			data["contact_name"] = ""
+			data["contact_tel"] = ""
+			data["alias"] = ""
+			if agentModel, isOK := agentModels[model.AgentId]; isOK {
+				data["host_name"] = agentModel.HostName
+				data["mac_id"] = agentModel.MacId
+				data["agent_ip"] = agentModel.AgentIp
+				data["net_ip"] = agentModel.NetIp
+				data["os_name"] = agentModel.OsName
+				data["contact_name"] = agentModel.ContactName
+				data["contact_tel"] = agentModel.ContactTel
+				data["alias"] = agentModel.Alias
+			}
 
 			items = append(items, data)
 		}

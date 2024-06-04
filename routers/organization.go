@@ -188,6 +188,7 @@ func InitOrganizationRouter() *gin.Engine {
 						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageBatchRefresh"))
 						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessManageBatchCollect"))
 					}
+
 					agentV2 := process.Group("agent/")
 					{
 

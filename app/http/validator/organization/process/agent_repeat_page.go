@@ -9,6 +9,7 @@ import (
 )
 
 type AgentRepeatPage struct {
+	Hash
 }
 
 func (n AgentRepeatPage) CheckParams(context *gin.Context) {
