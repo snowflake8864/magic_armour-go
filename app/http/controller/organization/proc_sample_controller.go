@@ -2,6 +2,10 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -32,10 +36,40 @@ func (u *ProcSampleController) Download(ctx *gin.Context) {
 
 // AddFromProcess 添加来源进程
 func (u *ProcSampleController) AddFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFromProcess")
+	if err := u.add(ctx, enum_process.SourceProcess); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+
 }
 
 // AddFromDll 添加来源模块
 func (u *ProcSampleController) AddFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFromDll")
+	if err := u.add(ctx, enum_process.SourceDll); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// AddFromDll 添加来源模块
+func (u *ProcSampleController) add(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+
+	param := proc_models.ProcSampleModel{
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Introduce:  ctx.GetString(consts.ValidatorPrefixOrg + "introduce"),
+		Copyright:  ctx.GetString(consts.ValidatorPrefixOrg + "copyright"),
+		Signature:  ctx.GetString(consts.ValidatorPrefixOrg + "signature"),
+		Attribute:  ctx.GetString(consts.ValidatorPrefixOrg + "signature"),
+		DataFrom:   dataFrom,
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	return proc_service.CreateSampleCurdFactory().Add(&param)
 }

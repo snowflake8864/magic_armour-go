@@ -62,7 +62,7 @@ func (m *DllModel) CreateTable() bool {
 			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:描述',
 			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:版权',
 			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:签名',
-			attribute text  NOT NULL COMMENT '模块:属性',
+			attribute text  NOT NULL DEFAULT '' COMMENT '模块:属性',
 			proc_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '进程:hash',
 			proc_dir varchar(512)  NOT NULL DEFAULT '' COMMENT '进程:路径',
 			created_at datetime NULL,

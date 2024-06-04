@@ -25,6 +25,7 @@ type ProcSampleModel struct {
 	Introduce    string `json:"introduce"`
 	Copyright    string `json:"copyright"`
 	Signature    string `json:"signature"`
+	Attribute    string `json:"attribute"`
 	DataFrom     int    `json:"data_from"`
 	Status       int    `json:"status"`
 	OriginalName string `json:"original_name"`
@@ -49,10 +50,11 @@ func (m *ProcSampleModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'hash值',
-			dir varchar(8)  NOT NULL DEFAULT '' COMMENT '路径',
+			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '路径',
 			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '描述',
 			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '版权',
 			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '签名',
+			attribute text  NOT NULL DEFAULT '' COMMENT '属性',
 			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
 			status tinyint NOT NULL DEFAULT '1' COMMENT '状态',
 			original_name varchar(128)  NOT NULL DEFAULT '' COMMENT '原文件名',
