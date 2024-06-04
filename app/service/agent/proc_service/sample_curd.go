@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 )
 
@@ -20,6 +21,23 @@ type SampleCurd struct {
 
 // Add 新增
 func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
+	hasModel := crd.masterModel.GetItemByOrgAndAgentAndHash(model.OrgId, model.AgentId, model.Id)
+	if hasModel != nil {
+		if hasModel.Status == enum_process.SampleStatusFinished {
+			return errors.New("数据已存在且提取样本成功")
+		}
+		if hasModel.Status == enum_process.SampleStatusGetting {
+			return errors.New("数据已存在且正在提取中")
+		}
+	}
+
+	model.Status = enum_process.SampleStatusDefault
+	model.CreatedAt = date_helper.CurDatetime()
+	model.UpdatedAt = model.CreatedAt
+
+	if !crd.masterModel.InsertItem(model) {
+		return errors.New("保存失败")
+	}
 
 	return nil
 }
