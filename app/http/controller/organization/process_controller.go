@@ -382,12 +382,28 @@ func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
 
 // ClearAllForAgent 单终端: 清空全部
 func (u *ProcessController) ClearAllForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ClearAllForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+
+	err := proc_service.CreateProcessCurdFactory().ClearAll(orgId, agentId)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // ClearRunningForAgent 单终端: 清空运行中
 func (u *ProcessController) ClearRunningForAgent(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ClearRunningForAgent")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+
+	err := proc_service.CreateProcessRunningFactory().ClearRunning(orgId, agentId)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // RefreshForAgent 单终端: 刷新(运行中进程)

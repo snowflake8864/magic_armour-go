@@ -72,7 +72,10 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/process/manage/batchSetWhite":  {ModuleProcess, "管理页：未设置批量白名单"},
 	"/v5/organization/process/manage/batchRefresh":   {ModuleProcess, "管理页：批量获刷新"},
 	"/v5/organization/process/manage/batchCollect":   {ModuleProcess, "管理页：批量获取所有进程"},
-	"/v5/organization/process/agent/setStatus":       {ModuleProcess, "终端页：设置状态"},
+	"/v5/organization/process/agent/setStatus":       {ModuleProcess, "单终端：设置状态"},
+	"/v5/organization/process/agent/cancel":          {ModuleProcess, "单终端：取消"},
+	"/v5/organization/process/agent/clearAll":        {ModuleProcess, "单终端：清空全部"},
+	"/v5/organization/process/agent/clearRunning":    {ModuleProcess, "单终端：清空运行中"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
