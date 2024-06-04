@@ -77,6 +77,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/process/agent/clearAll":        {ModuleProcess, "单终端：清空全部"},
 	"/v5/organization/process/agent/clearRunning":    {ModuleProcess, "单终端：清空运行中"},
 	"/v5/organization/process/agent/refresh":         {ModuleProcess, "单终端：刷新"},
+	"/v5/organization/process/agent/collect":         {ModuleProcess, "单终端：获取全部进程"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
