@@ -3,8 +3,10 @@ package proc_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/common/upload_models"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 )
@@ -38,6 +40,9 @@ func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
 	if !crd.masterModel.InsertItem(model) {
 		return errors.New("保存失败")
 	}
+
+	//
+	task_service.CreateCurdFactory().AddTaskForAgent(model.OrgId, model.AgentId, enum_task.TypeProcessSampleUpload, "")
 
 	return nil
 }
