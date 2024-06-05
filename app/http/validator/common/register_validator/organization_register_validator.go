@@ -232,7 +232,7 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "DllAgentBatchGlobalWhite"
 	containers.Set(key, procGlobal3.BatchWhiteFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalPage"
-	containers.Set(key, procGlobal3.AddFromDll{})
+	containers.Set(key, procGlobal3.PageFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalAdd"
 	containers.Set(key, procGlobal3.AddFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalSetSwitch"

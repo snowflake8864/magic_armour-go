@@ -19,7 +19,7 @@ type ProcessGlobalController struct {
 
 // PageFromProcess 分页
 func (u *ProcessGlobalController) PageFromProcess(ctx *gin.Context) {
-	u.page(ctx, enum_process.DataFromProcess)
+	_ = u.page(ctx, enum_process.DataFromProcess)
 }
 
 // add
@@ -31,6 +31,7 @@ func (u *ProcessGlobalController) page(ctx *gin.Context, dataFrom int) error {
 		GlobalType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
 		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
 		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		DataFrom:   dataFrom,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
@@ -43,7 +44,8 @@ func (u *ProcessGlobalController) page(ctx *gin.Context, dataFrom int) error {
 
 // PageFromDll 分页
 func (u *ProcessGlobalController) PageFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageFromDll")
+	_ = u.page(ctx, enum_process.DataFromDll)
+
 }
 
 // AddFromProcess 添加
