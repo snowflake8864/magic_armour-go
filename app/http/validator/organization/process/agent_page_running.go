@@ -12,7 +12,7 @@ import (
 type AgentPageRunning struct {
 	data_type.Page
 	data_type.AgentSingle
-	ProcHash
+	HashOmitempty
 	Dir
 	SearchStatus
 }

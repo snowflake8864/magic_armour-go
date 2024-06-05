@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -84,11 +85,6 @@ func (m *DllModel) CreateTable() bool {
 	}
 }
 
-// DllModel 查询条件转化
-func (m *DllModel) DllModel(search SearchConditions) map[string]interface{} {
-	wheres := make(map[string]interface{})
-	return wheres
-}
 func (m *DllModel) InsertItem(s *DllModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -171,6 +167,7 @@ func (m *DllModel) GetItemsByConditions(condition SearchConditions, offset, limi
 		}
 		return tmp.Find(&items)
 	})
+
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
@@ -207,5 +204,60 @@ func (m *DllModel) Page(condition SearchConditions, offset, limit int, order str
 		return total, items
 	} else {
 		return 0, nil
+	}
+}
+
+// CalcByConditionsGroupHash 通过条件获取多条记录且按hash分组
+func (m *DllModel) CalcByConditionsGroupHash(condition SearchConditions) (items []*RepeatCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(m.ColumnRepeatCalc(false))
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("dll_hash").Find(&items)
+	})
+	fmt.Println(sql)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *DllModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*StatusCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// GetListByConditionsDistinctHash 通过条件获取多条记录
+func (m *DllModel) GetListByConditionsDistinctHash(condition SearchConditions) (items []*DllModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		tmp.Select("distinct(dll_hash), dir, agent_id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }

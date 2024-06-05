@@ -104,6 +104,13 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 
 	//可信防护已授权
 	if grantConfig.Process == enums.SwitchOn {
+		//自动白名单
+		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
+			updates["auto_white_switch"] = *param.AutoWhiteSwitch
+			if *param.AutoWhiteSwitch == enums.SwitchOn {
+				openAutoWhite = true
+			}
+		}
 
 		//进程相关
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {
@@ -122,28 +129,23 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 		}
 
 		//模块相关
-		if param.DllSwitch != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
-			updates["dll_switch"] = *param.DllSwitch
-			hasTask = true
-			//方便下发相关任务
-			model.DllSwitch = *param.DllSwitch
-			//同步模式
-			if *param.DllSwitch == enums.SwitchOff {
-				updates["dll_mode"] = enum_agent.ModeMonitor
+		if model.PlatformType == enum_software.PlatformTypeWindows {
+			if param.DllSwitch != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
+				updates["dll_switch"] = *param.DllSwitch
+				hasTask = true
+				//方便下发相关任务
+				model.DllSwitch = *param.DllSwitch
+				//同步模式
+				if *param.DllSwitch == enums.SwitchOff {
+					updates["dll_mode"] = enum_agent.ModeMonitor
+				}
 			}
-		}
-		if param.DllMode > 0 && model.DllMode != param.DllMode && model.DllSwitch == enums.SwitchOn {
-			updates["dll_mode"] = param.DllMode
-			hasTask = true
+			if param.DllMode > 0 && model.DllMode != param.DllMode && model.DllSwitch == enums.SwitchOn {
+				updates["dll_mode"] = param.DllMode
+				hasTask = true
+			}
 		}
 
-		//自动白名单
-		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
-			updates["auto_white_switch"] = *param.AutoWhiteSwitch
-			if *param.AutoWhiteSwitch == enums.SwitchOn {
-				openAutoWhite = true
-			}
-		}
 	}
 	//防篡改已授权
 	if grantConfig.Tamper == enums.SwitchOn {
@@ -180,27 +182,33 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualIn
 		}
 	}
 	//端口虚开已授权
-	if grantConfig.Port == enums.SwitchOn {
-		if param.PortSwitch != nil && *param.PortSwitch != enums.AllDefaultInt && model.PortSwitch != *param.PortSwitch {
-			updates["port_switch"] = *param.PortSwitch
-			hasTask = true
-			//方便下发相关任务
-			if *param.PortSwitch == enums.SwitchOn {
-				model.PortSwitch = enums.SwitchOn
+	if model.OsType != enum_software.OsTypeWinXp {
+		if grantConfig.Port == enums.SwitchOn {
+			if param.PortSwitch != nil && *param.PortSwitch != enums.AllDefaultInt && model.PortSwitch != *param.PortSwitch {
+				updates["port_switch"] = *param.PortSwitch
+				hasTask = true
+				//方便下发相关任务
+				if *param.PortSwitch == enums.SwitchOn {
+					model.PortSwitch = enums.SwitchOn
+				}
 			}
 		}
 	}
+
 	//封堵已授权
-	if grantConfig.Plug == enums.SwitchOn {
-		if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt && model.PlugSwitch != *param.PlugSwitch {
-			updates["plug_switch"] = *param.PlugSwitch
-			hasTask = true
-			//方便下发相关任务
-			if *param.PlugSwitch == enums.SwitchOn {
-				model.PlugSwitch = enums.SwitchOn
+	if model.OsType != enum_software.OsTypeWinXp {
+		if grantConfig.Plug == enums.SwitchOn {
+			if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt && model.PlugSwitch != *param.PlugSwitch {
+				updates["plug_switch"] = *param.PlugSwitch
+				hasTask = true
+				//方便下发相关任务
+				if *param.PlugSwitch == enums.SwitchOn {
+					model.PlugSwitch = enums.SwitchOn
+				}
 			}
 		}
 	}
+
 	//外设已授权
 	if grantConfig.Usb == enums.SwitchOn {
 		if param.UsbSwitch != nil && *param.UsbSwitch != enums.AllDefaultInt && model.UsbSwitch != *param.UsbSwitch {
@@ -290,7 +298,7 @@ func (crd *AgentBase) addTask(param *agent_models.AgentModel, isTrustDir bool, r
 	//端口虚开开启
 	if param.PortSwitch == enums.SwitchOn {
 		//windows XP和2003  不支持
-		if param.OsType == enum_software.OsTypeWinXp {
+		if param.OsType != enum_software.OsTypeWinXp {
 			tasks = append(tasks, enum_task.TypePortWorkingUpload, enum_task.TypePortVirtualPolicyDownload)
 		}
 	}

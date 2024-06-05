@@ -272,7 +272,7 @@ func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
 	condition := proc_models.SearchConditions{
 		OrgId:    orgId,
 		AgentId:  agentId,
-		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
+		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
 		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}
@@ -294,7 +294,7 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 	condition := proc_models.SearchConditions{
 		OrgId:    orgId,
 		AgentId:  agentId,
-		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "procHash"),
+		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
 		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}

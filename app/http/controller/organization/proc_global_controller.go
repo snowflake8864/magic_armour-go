@@ -37,7 +37,7 @@ func (u *ProcessGlobalController) page(ctx *gin.Context, dataFrom int) error {
 
 	total, models := proc_models.CreateProcGlobalFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransGlobalPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.ProcGlobalTrans{}).TransPage(total, models))
 	return nil
 }
 

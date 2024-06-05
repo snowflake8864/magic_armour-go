@@ -45,6 +45,25 @@ type ProcessAndRunning struct {
 	ProcUser        string `json:"proc_user"`
 }
 
+// DllAndRunning 进程和运行中标
+type DllAndRunning struct {
+	Id              string `json:"id"`
+	AgentId         string `json:"agent_id"`
+	DllHash         string `json:"dll_hash"`
+	DllDir          string `json:"dll_dir"`
+	Status          int    `json:"status"`
+	SyncStatusAt    int64  `json:"sync_status_at"`
+	GlobalStatus    int    `json:"global_status"`
+	SelfStatus      int    `json:"self_status"`
+	ThreatenStatus  int    `json:"threaten_status"`
+	AutoWhiteSwitch int    `json:"auto_white_switch"`
+	Introduce       string `json:"introduce"`
+	Copyright       string `json:"copyright"`
+	Signature       string `json:"signature"`
+	Attribute       string `json:"attribute"`
+	CreatedAt       string `json:"created_at"`
+}
+
 type SearchConditions struct {
 	OrgId           int64
 	AgentId         string

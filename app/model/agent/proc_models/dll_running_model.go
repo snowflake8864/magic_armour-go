@@ -4,6 +4,8 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 // 模块运行中表
@@ -104,31 +106,107 @@ func (m *DllRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool 
 	}
 }
 
-// UpdateByOrgAndAgentAndHashAndProcId 通过通过企业id\终端id\hash\ProcId修改
-func (m *DllRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) (bool, int64) {
+// DeleteByConditions 通过条件删除
+func (m *DllRunningModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
-		tmp = tmp.Where("org_id=? AND agent_id=? AND dll_hash=? AND proc_id", orgId, agentId, hash, procId)
-		return tmp.Updates(updates)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true, result.RowsAffected
+		return true
 	} else {
-		return false, 0
+		return false
 	}
 }
 
-// GetItemByOrgAndAgentAndHashAndProcId 通过企业id\终端id\hash\ProcId获取一条记录
-func (m *DllRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int) (item *DllRunningModel) {
+// GetItemsByConditions 通过条件获取多条记录
+func (m *DllRunningModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DllAndRunning) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=? AND dll_hash=? AND proc_id", orgId, agentId, hash, procId).Take(&item)
+
+		t1As := m.TableName() + "."
+		t2Name := CreateDllFactory().TableName()
+		t2As := "t2."
+
+		columns := []string{
+			t1As + "org_id",
+			t1As + "agent_id",
+			t1As + "dll_hash",
+			t1As + "id",
+			t1As + "dll_dir",
+			t1As + "created_at",
+			t2As + "status",
+			t2As + "sync_status_at",
+			t2As + "self_status",
+			t2As + "threaten_status",
+			t2As + "auto_white_switch",
+			t2As + "introduce",
+			t2As + "copyright",
+			t2As + "signature",
+			t2As + "attribute",
+		}
+		tmp := tx.Model(m).
+			Joins(m.getJoinStr(t1As, t2Name, t2As))
+
+		tmp = tmp.Select(strings.Join(columns, ","))
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(t1As + order)
+		} else {
+			tmp = tmp.Order(t1As + "created_at ASC")
+		}
+		return tmp.Find(&items)
 	})
-	result := m.Raw(m.TrimSql(sql)).Take(&item)
+
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
-		return item
+		return items
 	} else {
 		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *DllRunningModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		t1As := m.TableName() + "."
+		t2Name := CreateDllFactory().TableName()
+		t2As := "t2."
+
+		tmp := tx.Model(m).
+			Joins(m.getJoinStr(t1As, t2Name, t2As))
+		tmp = tmp.Select(t1As + "id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *DllRunningModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*DllAndRunning) {
+	if total = m.Count(condition); total == 0 {
+		return total, nil
+	}
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

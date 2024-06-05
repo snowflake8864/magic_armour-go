@@ -1,11 +1,7 @@
 package dll
 
-type ProcHash struct {
-	ProcHash string `form:"procHash" json:"procHash" binding:"omitempty,min=8,max=32"`
-}
-
-type DllHash struct {
-	DllHash string `form:"dllHash" json:"dllHash" binding:"omitempty,min=8,max=32"`
+type HashOmitempty struct {
+	Hash string `form:"hash" json:"hash" binding:"omitempty,min=8,max=32"`
 }
 
 type Dir struct {
