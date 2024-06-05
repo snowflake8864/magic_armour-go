@@ -217,7 +217,7 @@ func InitOrganizationRouter() *gin.Engine {
 					global := process.Group("global/")
 					{
 						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalPage"))
-						//global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalAdd"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalAdd"))
 						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalSetSwitch"))
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalDelete"))
 						global.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalClear"))

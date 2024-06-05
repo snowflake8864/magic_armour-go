@@ -121,3 +121,63 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 
 	return nil
 }
+
+// SetSwitch 通过hash设置开关
+func (crd *GlobalCurd) SetSwitch(orgId int64, id string, openSwitch int, dataFrom int) error {
+	hasModel := crd.masterModel.GetItemByOrgAndId(orgId, id)
+
+	condition := proc_models.SearchConditions{
+		OrgId: orgId,
+		Id:    id,
+	}
+	updates := map[string]interface{}{
+		"updated_at":  date_helper.CurDatetime(),
+		"open_switch": openSwitch,
+	}
+	crd.masterModel.UpdateByConditions(condition, updates)
+
+	if dataFrom == enum_process.DataFromProcess {
+		if openSwitch == enums.SwitchOn {
+			if hasModel != nil && hasModel.OrgId > 0 {
+				CreateProcessCurdFactory().GlobalCallbackAddByHash(orgId, hasModel.Type, id)
+			}
+		} else {
+			CreateProcessCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
+		}
+
+	} else {
+
+	}
+
+	return nil
+}
+
+// DeleteById 通过hash删除
+func (crd *GlobalCurd) DeleteById(orgId int64, id string, dataFrom int) error {
+
+	if !crd.masterModel.DeleteByOrgAndId(orgId, id) {
+		return errors.New("删除失败")
+	}
+
+	if dataFrom == enum_process.DataFromProcess {
+		CreateProcessCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
+	} else {
+
+	}
+
+	return nil
+}
+
+// DeleteByOrg 通过企业删除
+func (crd *GlobalCurd) DeleteByOrg(orgId int64, task bool) error {
+
+	if !crd.masterModel.DeleteByOrg(orgId) {
+		return errors.New("删除失败")
+	}
+
+	if task {
+
+	}
+
+	return nil
+}

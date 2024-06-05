@@ -151,12 +151,39 @@ func (u *ProcessGlobalController) BatchBlackFromDll(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// SetSwitch 编辑
-func (u *ProcessGlobalController) SetSwitch(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Edit")
+// SetSwitchFromProcess 设置开关来源进程
+func (u *ProcessGlobalController) SetSwitchFromProcess(ctx *gin.Context) {
+	if err := u.setSwitch(ctx, enum_process.DataFromProcess); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
-// Delete 删除
-func (u *ProcessGlobalController) Delete(ctx *gin.Context) {
+// setSwitch
+func (u *ProcessGlobalController) setSwitch(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+	openSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
+	id := ctx.GetString(consts.ValidatorPrefixOrg + "id")
+
+	return proc_service.CreateGlobalCurdFactory().SetSwitch(loginInfo.OrgId, id, openSwitch, dataFrom)
+}
+
+// SetSwitchFromDll 设置开关来源模块
+func (u *ProcessGlobalController) SetSwitchFromDll(ctx *gin.Context) {
+	if err := u.setSwitch(ctx, enum_process.DataFromDll); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DeleteFromProcess 删除来源进程
+func (u *ProcessGlobalController) DeleteFromProcess(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "Delete")
+}
+
+// DeleteFromDll 删除来源模块
+func (u *ProcessGlobalController) DeleteFromDll(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "Delete")
 }

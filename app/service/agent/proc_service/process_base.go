@@ -44,7 +44,8 @@ func (crd *ProcessBase) getUpdatesForCancel() map[string]interface{} {
 		"WHEN threaten_status=%d THEN %d " +
 		"ELSE %d " +
 		"END)"
-	str = fmt.Sprintf(str, enums.IsNot, enum_process.ProcStatusUnset,
+	str = fmt.Sprintf(str,
+		enums.IsNot, enum_process.ProcStatusUnset,
 		enum_process.RelyStatusWhite, enum_process.ProcStatusWhite,
 		enum_process.RelyStatusBlack, enum_process.ProcStatusBlack,
 		enum_process.ProcStatusUnset)
@@ -76,6 +77,33 @@ func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interf
 		updates["status"] = enum_process.ProcStatusWhite
 		break
 	}
+
+	return updates
+}
+
+func (crd *ProcessBase) getUpdatesForDeleteGlobal() map[string]interface{} {
+	updates := map[string]interface{}{
+		"sync_status_at": date_helper.CurTimestamp(),
+		"global_status":  enum_process.RelyStatusUnset,
+	}
+	str := "(CASE " +
+		"WHEN self_status=%d THEN %d " +
+		"WHEN self_status=%d THEN %d " +
+		"WHEN self_status=%d THEN %d " +
+		"WHEN auto_white_switch=%d THEN %d " +
+		"WHEN threaten_status=%d THEN %d " +
+		"WHEN threaten_status=%d THEN %d " +
+		"ELSE %d " +
+		"END)"
+	str = fmt.Sprintf(str,
+		enum_process.RelyStatusWhite, enum_process.ProcStatusWhite,
+		enum_process.RelyStatusBlack, enum_process.ProcStatusBlack,
+		enum_process.RelyStatusUnknown, enum_process.ProcStatusUnknown,
+		enums.IsNot, enum_process.ProcStatusUnset,
+		enum_process.RelyStatusWhite, enum_process.ProcStatusWhite,
+		enum_process.RelyStatusBlack, enum_process.ProcStatusBlack,
+		enum_process.ProcStatusUnset)
+	updates["status"] = gorm.Expr(str)
 
 	return updates
 }

@@ -170,6 +170,20 @@ func (crd *ProcessCurd) DeleteByAgent(orgId int64, agentId string, task bool) er
 	return nil
 }
 
+// DeleteByOrg 通过企业删除
+func (crd *ProcessCurd) DeleteByOrg(orgId int64) error {
+
+	condition := proc_models.SearchConditions{
+		OrgId: orgId,
+	}
+	isOk := crd.masterModel.DeleteByConditions(condition)
+	if !isOk {
+		return errors.New("删除失败")
+	}
+
+	return nil
+}
+
 // GlobalCallbackAddByHash 全局名单回调： 新增一条
 func (crd *ProcessCurd) GlobalCallbackAddByHash(orgId int64, globalType int, hash string) {
 	condition := proc_models.SearchConditions{
@@ -187,5 +201,15 @@ func (crd *ProcessCurd) GlobalCallbackAddByHashes(orgId int64, globalType int, h
 		ProcHashes: hashes,
 	}
 	updates := crd.getUpdatesForAddGlobal(globalType)
+	crd.masterModel.UpdateByConditions(condition, updates)
+}
+
+// GlobalCallbackDeleteByHash 全局名单回调： 新增多条
+func (crd *ProcessCurd) GlobalCallbackDeleteByHash(orgId int64, hash string) {
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		ProcHash: hash,
+	}
+	updates := crd.getUpdatesForDeleteGlobal()
 	crd.masterModel.UpdateByConditions(condition, updates)
 }

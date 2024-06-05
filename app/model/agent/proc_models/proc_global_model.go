@@ -125,6 +125,23 @@ func (m *ProcGlobalModel) GetItemsByOrgAndIds(orgId int64, ids []string) (items 
 	}
 }
 
+// UpdateByConditions 通过条件修改
+func (m *ProcGlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
 // DeleteByOrg 通过企业id删除
 func (m *ProcGlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
