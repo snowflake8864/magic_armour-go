@@ -2,10 +2,11 @@ package proc_service
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -31,6 +32,23 @@ func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.Proc
 	return model
 }
 
+// isMaxLimit 是否到达最大限制数
+func (crd *GlobalCurd) isMaxLimit(orgId int64, dataFrom int, number int) error {
+	limit := string_helper.ToInt64(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentProcGlobalLimit))
+
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		DataFrom: dataFrom,
+	}
+	total := crd.masterModel.Count(condition)
+
+	if (limit - total - int64(number)) < 0 {
+		return errors.New("全局名单库已达到最大限制条目)")
+	}
+	return nil
+}
+
 // Add 添加
 func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 	param.Id = strings.ToLower(param.Id)
@@ -38,8 +56,10 @@ func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 
 	hasModel := crd.masterModel.GetItemByOrgAndId(param.OrgId, param.Id)
 	if hasModel != nil && hasModel.OrgId != 0 {
-		fmt.Println(hasModel.OrgId)
-		return errors.New("数据已存在1")
+		return errors.New("数据已存在")
+	}
+	if err := crd.isMaxLimit(param.OrgId, param.DataFrom, 1); err != nil {
+		return err
 	}
 
 	param.OpenSwitch = enums.SwitchOn
@@ -105,8 +125,12 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 			})
 		}
 	}
-	if len(inserts) == 0 {
+	number := len(inserts)
+	if number == 0 {
 		return nil
+	}
+	if err := crd.isMaxLimit(param.OrgId, param.DataFrom, number); err != nil {
+		return err
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {

@@ -34,7 +34,7 @@ const (
 	AgentProcGlobalLimit       string = "agent_proc_global_limit"       //终端:进程全局名单限制数目
 	AgentCompatibleDefaultOrg  string = "agent_compatible_default_org"  //终端:兼容以前离线版本默认企业编号
 	AgentCompatibleDefaultUser string = "agent_compatible_default_user" //终端:兼容以前离线版本默认用户编号
-	AgentTypes                 string = "agent_types"                   //终端:终端类型-离线版 @todo http://192.168.19.9/zentao/story-view-781.html
+	AgentTypes                 string = "agent_types"                   //终端:终端类型-离线版 todo http://192.168.19.9/zentao/story-view-781.html
 
 	ThreatenSwitch      string = "threaten_switch"       //威胁情报:开关
 	ThreatenUrl         string = "threaten_url"          //威胁情报:服务器地址
