@@ -1,6 +1,8 @@
 package json_helper
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 // Encode 转成json
 func Encode(param interface{}) string {

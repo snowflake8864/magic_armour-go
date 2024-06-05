@@ -78,8 +78,12 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 	}
 }
 
-func (m *ThreatenCacheModel) GetListColumns() string {
+func (m *ThreatenCacheModel) ColumnList() string {
 	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
+}
+
+func (m *ThreatenCacheModel) ColumnLevel() string {
+	return "id,level"
 }
 
 func (m *ThreatenCacheModel) TruncateTable() bool {
@@ -164,7 +168,7 @@ func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *Threat
 
 // GetLevelById 通过id获取等级
 func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
-	model := m.GetItemById(id, "id, level")
+	model := m.GetItemById(id, m.ColumnLevel())
 	if string_helper.IsEmpty(model.Id) {
 		return false, enum_threaten.LevelUnknown
 	}
@@ -174,7 +178,7 @@ func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
 // GetItemsByIds 通过id集合获取多条记录
 func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items []*ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Select(column).Select(m.GetListColumns()).Where("id IN ?", ids).Find(&items)
+		return tx.Model(m).Select(column).Where("id IN ?", ids).Find(&items)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
@@ -189,7 +193,7 @@ func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items [
 func (m *ThreatenCacheModel) GetLevelsByIds(ids []string) map[string]int {
 	result := make(map[string]int)
 
-	models := m.GetItemsByIds(ids, "id, level")
+	models := m.GetItemsByIds(ids, m.ColumnLevel())
 	if models == nil {
 		return nil
 	}
@@ -203,7 +207,7 @@ func (m *ThreatenCacheModel) GetLevelsByIds(ids []string) map[string]int {
 func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCacheModel {
 	result := make(map[string]*ThreatenCacheModel)
 
-	models := m.GetItemsByIds(ids, m.GetListColumns())
+	models := m.GetItemsByIds(ids, m.ColumnList())
 	if models == nil {
 		return nil
 	}
@@ -216,7 +220,7 @@ func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCach
 // GetItemsByConditions 通过条件获取多条记录
 func (m *ThreatenCacheModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenCacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select(m.GetListColumns())
+		tmp := tx.Model(m).Select(m.ColumnList())
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

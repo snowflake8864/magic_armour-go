@@ -9,6 +9,7 @@ import (
 )
 
 type GetAttr struct {
+	Hash string `form:"hash" json:"hash" binding:"required,max=32"`
 }
 
 func (n GetAttr) CheckParams(context *gin.Context) {

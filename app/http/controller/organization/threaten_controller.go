@@ -2,6 +2,14 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,10 +20,37 @@ type ThreatenController struct {
 
 // GetLevels 通过hashes获取集合
 func (u *ThreatenController) GetLevels(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetLevels")
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
+	hashes := json_helper.ToSliceString(jsonStr)
+	if hashes == nil || len(hashes) == 0 {
+		response.FailSimplify(ctx, "参数错误")
+		return
+	}
+
+	CacheFact := threaten_models.CreateThreatenCacheFactory()
+	maps := CacheFact.GetLevelsByIds(slice_helper.StringRemoveRepeatByMap(hashes))
+	var result []map[string]interface{}
+	if maps != nil && len(maps) > 0 {
+		for id, level := range maps {
+			result = append(result, map[string]interface{}{
+				"id":    id,
+				"level": level,
+				"label": enums.Get1stIsStrAnd2ndIsIntReturnStr("level", level, enum_threaten.EnumMap),
+			})
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // GetAttr 获取属性
 func (u *ThreatenController) GetAttr(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetLevels")
+	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+
+	model := threaten_models.CreateThreatenCacheFactory().GetItemById(hash, "*")
+	if model == nil || string_helper.IsEmpty(model.Id) {
+		response.FailSimplify(ctx, "数据不存在")
+		return
+	}
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransThreatenInfo(model))
 }

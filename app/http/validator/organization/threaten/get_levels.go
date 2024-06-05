@@ -9,6 +9,7 @@ import (
 )
 
 type GetLevels struct {
+	Hashes string `form:"hashes" json:"hashes" binding:"required,min=32"`
 }
 
 func (n GetLevels) CheckParams(context *gin.Context) {

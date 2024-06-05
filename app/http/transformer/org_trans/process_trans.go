@@ -29,6 +29,7 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 			data["global_status"] = model.GlobalStatus
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
+			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright
@@ -66,6 +67,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["global_status"] = model.GlobalStatus
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
+			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright

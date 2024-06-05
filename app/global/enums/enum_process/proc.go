@@ -58,6 +58,10 @@ var EnumIntMap = map[string]map[int]string{
 		SampleStatusFinished: "完成",
 		SampleStatusFail:     "失败",
 	},
+	"rely_status": {
+		RelyStatusWhite: "白名单",
+		RelyStatusBlack: "黑名单",
+	},
 }
 
 var WebMapInt = map[string][]int{
