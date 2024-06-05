@@ -11,7 +11,6 @@ import (
 
 type AgentRepeatPage struct {
 	data_type.Page
-	data_type.AgentSingle
 	Hash
 }
 

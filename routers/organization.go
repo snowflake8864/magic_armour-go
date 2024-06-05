@@ -262,6 +262,8 @@ func InitOrganizationRouter() *gin.Engine {
 						agentV2.POST("repeatStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentRepeatStat"))
 						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentRepeatPage"))
 
+						agentV2.POST("sampleExtract", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentSampleExtract"))
+
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentBatchGlobalWhite"))
 					}

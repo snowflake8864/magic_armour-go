@@ -228,19 +228,19 @@ func OrganizationRegisterValidator() {
 
 	//模块全局名单
 	key = consts.ValidatorPrefixOrg + "DllAgentSetGlobal"
-	containers.Set(key, procGlobal3.AddFromProcess{})
+	containers.Set(key, procGlobal3.AddFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllAgentBatchGlobalWhite"
-	containers.Set(key, procGlobal3.BatchWhiteFromProcess{})
+	containers.Set(key, procGlobal3.BatchWhiteFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalPage"
-	containers.Set(key, procGlobal3.PageFromProcess{})
+	containers.Set(key, procGlobal3.AddFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalAdd"
-	containers.Set(key, procGlobal3.AddFromProcess{})
+	containers.Set(key, procGlobal3.AddFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalSetSwitch"
-	containers.Set(key, procGlobal3.SetSwitchFromProcess{})
+	containers.Set(key, procGlobal3.SetSwitchFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalDelete"
-	containers.Set(key, procGlobal3.DeleteFromProcess{})
+	containers.Set(key, procGlobal3.DeleteFromDll{})
 	key = consts.ValidatorPrefixOrg + "DllGlobalClear"
-	containers.Set(key, procGlobal3.ClearFromProcess{})
+	containers.Set(key, procGlobal3.ClearFromDll{})
 
 	//进程和模块样本
 	key = consts.ValidatorPrefixOrg + "ProcessAgentSampleExtract"

@@ -54,7 +54,7 @@ func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 	if param.DataFrom == enum_process.DataFromProcess {
 		CreateProcessCurdFactory().GlobalCallbackAddByHash(param.OrgId, param.Type, param.Id)
 	} else {
-
+		CreateDllCurdFactory().GlobalCallbackAddByHash(param.OrgId, param.Type, param.Id)
 	}
 
 	return nil
@@ -116,7 +116,7 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 	if param.DataFrom == enum_process.DataFromProcess {
 		CreateProcessCurdFactory().GlobalCallbackAddByHashes(param.OrgId, param.Type, hashes)
 	} else {
-
+		CreateDllCurdFactory().GlobalCallbackAddByHashes(param.OrgId, param.Type, hashes)
 	}
 
 	return nil
@@ -143,7 +143,13 @@ func (crd *GlobalCurd) SetSwitch(orgId int64, id string, openSwitch int, dataFro
 			CreateProcessCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
 		}
 	} else {
-
+		if openSwitch == enums.SwitchOn {
+			if hasModel := crd.masterModel.GetItemByOrgAndId(orgId, id); hasModel != nil && hasModel.OrgId > 0 {
+				CreateDllCurdFactory().GlobalCallbackAddByHash(orgId, hasModel.Type, id)
+			}
+		} else {
+			CreateDllCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
+		}
 	}
 
 	return nil
@@ -158,7 +164,7 @@ func (crd *GlobalCurd) DeleteById(orgId int64, id string, dataFrom int) error {
 	if dataFrom == enum_process.DataFromProcess {
 		CreateProcessCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
 	} else {
-
+		CreateDllCurdFactory().GlobalCallbackDeleteByHash(orgId, id)
 	}
 
 	return nil
@@ -176,7 +182,7 @@ func (crd *GlobalCurd) DeleteByDataFrom(orgId int64, dataFrom int) error {
 	if dataFrom == enum_process.DataFromProcess {
 		CreateProcessCurdFactory().GlobalCallbackDeleteAll(orgId)
 	} else {
-
+		CreateDllCurdFactory().GlobalCallbackDeleteAll(orgId)
 	}
 	return nil
 }
