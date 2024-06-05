@@ -4,8 +4,8 @@ import (
 	"strconv"
 )
 
-// SliceString2Map  slice 转为 map[string]struct{}
-func SliceString2Map(sl []string) map[string]struct{} {
+// String2Map  slice 转为 map[string]struct{}
+func String2Map(sl []string) map[string]struct{} {
 	set := make(map[string]struct{}, len(sl))
 	for _, v := range sl {
 		set[v] = struct{}{}
@@ -13,8 +13,8 @@ func SliceString2Map(sl []string) map[string]struct{} {
 	return set
 }
 
-// SliceInt2Map 数字类型slice 转为 map[int]struct{}
-func SliceInt2Map(sl []int) map[int]struct{} {
+// Int2Map 数字类型slice 转为 map[int]struct{}
+func Int2Map(sl []int) map[int]struct{} {
 	set := make(map[int]struct{}, len(sl))
 	for _, v := range sl {
 		set[v] = struct{}{}
@@ -22,8 +22,8 @@ func SliceInt2Map(sl []int) map[int]struct{} {
 	return set
 }
 
-// SliceInt642Map 数字类型slice 转为 map[int]struct{}
-func SliceInt642Map(sl []int64) map[int64]struct{} {
+// Int642Map 数字类型slice 转为 map[int]struct{}
+func Int642Map(sl []int64) map[int64]struct{} {
 	set := make(map[int64]struct{}, len(sl))
 	for _, v := range sl {
 		set[v] = struct{}{}
@@ -31,8 +31,8 @@ func SliceInt642Map(sl []int64) map[int64]struct{} {
 	return set
 }
 
-// SliceAny2Int 将[]interface{} 转成 []int
-func SliceAny2Int(sl []interface{}) []int {
+// Any2Int 将[]interface{} 转成 []int
+func Any2Int(sl []interface{}) []int {
 	intSlice := make([]int, 0, len(sl))
 	for _, item := range sl {
 		switch v := item.(type) {
@@ -50,8 +50,8 @@ func SliceAny2Int(sl []interface{}) []int {
 	return intSlice
 }
 
-// SliceAny2Int64 将[]interface{} 转成 []int64
-func SliceAny2Int64(sl []interface{}) []int64 {
+// Any2Int64 将[]interface{} 转成 []int64
+func Any2Int64(sl []interface{}) []int64 {
 	intSlice := make([]int64, 0, len(sl))
 	for _, item := range sl {
 		switch v := item.(type) {
@@ -71,8 +71,8 @@ func SliceAny2Int64(sl []interface{}) []int64 {
 	return intSlice
 }
 
-// SliceAny2String 将[]interface{} 转成 []int64
-func SliceAny2String(sl []interface{}) []string {
+// Any2String 将[]interface{} 转成 []int64
+func Any2String(sl []interface{}) []string {
 	strSlice := make([]string, 0, len(sl))
 	for _, item := range sl {
 		switch v := item.(type) {
@@ -87,13 +87,13 @@ func SliceAny2String(sl []interface{}) []string {
 	return strSlice
 }
 
-// SliceIntIntersect 2个数字类型slice的交集
-func SliceIntIntersect(s1, s2 []int) (intersection []int) {
+// IntIntersect 2个数字类型slice的交集
+func IntIntersect(s1, s2 []int) (intersection []int) {
 	if s1 == nil || s2 == nil || len(s1) == 0 || len(s2) == 0 {
 		return nil
 	}
 	// 创建map
-	m := SliceInt2Map(s1)
+	m := Int2Map(s1)
 
 	// 查找交集
 	for _, v := range s2 {
@@ -104,13 +104,13 @@ func SliceIntIntersect(s1, s2 []int) (intersection []int) {
 	return intersection
 }
 
-// SliceInt64Intersect 2个数字类型slice的交集
-func SliceInt64Intersect(s1, s2 []int64) (intersection []int64) {
+// Int64Intersect 2个数字类型slice的交集
+func Int64Intersect(s1, s2 []int64) (intersection []int64) {
 	if s1 == nil || s2 == nil || len(s1) == 0 || len(s2) == 0 {
 		return nil
 	}
 	// 创建map
-	m := SliceInt642Map(s1)
+	m := Int642Map(s1)
 
 	// 查找交集
 	for _, v := range s2 {
@@ -119,4 +119,32 @@ func SliceInt64Intersect(s1, s2 []int64) (intersection []int64) {
 		}
 	}
 	return intersection
+}
+
+// IntRemoveRepeatByMap 通过map主键唯一的特性过滤重复元素
+func IntRemoveRepeatByMap(slc []int) []int {
+	var result []int
+	tempMap := map[int]byte{} // 存放不重复主键
+	for _, e := range slc {
+		l := len(tempMap)
+		tempMap[e] = 0
+		if len(tempMap) != l { // 加入map后，map长度变化，则元素不重复
+			result = append(result, e)
+		}
+	}
+	return result
+}
+
+// StringRemoveRepeatByMap 通过map主键唯一的特性过滤重复元素
+func StringRemoveRepeatByMap(slc []string) []string {
+	var result []string
+	tempMap := map[string]byte{} // 存放不重复主键
+	for _, e := range slc {
+		l := len(tempMap)
+		tempMap[e] = 0
+		if len(tempMap) != l { // 加入map后，map长度变化，则元素不重复
+			result = append(result, e)
+		}
+	}
+	return result
 }

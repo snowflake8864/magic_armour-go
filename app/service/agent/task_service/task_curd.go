@@ -40,7 +40,7 @@ func (crd *TaskCurd) AddTaskForAgent(orgId int64, agentId string, types int, rem
 func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, remark string) {
 	//未完成的任务
 	cacheFact := CreateCacheFactory()
-	unfinishedMap := slice_helper.SliceInt2Map(cacheFact.GetUnfinished(orgId, agentId))
+	unfinishedMap := slice_helper.Int2Map(cacheFact.GetUnfinished(orgId, agentId))
 
 	//需要缓存列表
 	var caches []int

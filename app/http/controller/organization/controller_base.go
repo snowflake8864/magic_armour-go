@@ -44,7 +44,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		reqDeptIds = slice_helper.SliceAny2Int64(tmp)
+		reqDeptIds = slice_helper.Any2Int64(tmp)
 	}
 
 	//用户管理的组织架构
@@ -57,7 +57,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 			conditions.DeptIds = loginInfo.DeptWithChild
 		} else {
 			//用户管理组织架构与查询组织架构交集
-			intersection := slice_helper.SliceInt64Intersect(reqDeptIds, loginInfo.DeptWithChild)
+			intersection := slice_helper.Int64Intersect(reqDeptIds, loginInfo.DeptWithChild)
 			if intersection == nil || len(intersection) == 0 {
 				return conditions, errors.New("暂无数据")
 			} else {
@@ -163,7 +163,7 @@ func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string
 	if val, ok := ctx.Get(consts.ValidatorPrefixOrg + "agentIds"); ok && val != nil {
 		var tmp []interface{}
 		tmp, _ = val.([]interface{})
-		agentIds = slice_helper.SliceAny2String(tmp)
+		agentIds = slice_helper.Any2String(tmp)
 	}
 	return agentIds
 }

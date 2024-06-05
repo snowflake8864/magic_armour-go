@@ -63,7 +63,7 @@ func (u *ControllerBase) getWebSliceOfInt64(ctx *gin.Context, field string) []in
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		list = slice_helper.SliceAny2Int64(tmp)
+		list = slice_helper.Any2Int64(tmp)
 	}
 	return list
 }
@@ -74,7 +74,7 @@ func (u *ControllerBase) getWebSliceOfInt(ctx *gin.Context, field string) []int 
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixPlatform + field); isOk {
 		var tmp []interface{}
 		tmp, _ = deptIds.([]interface{})
-		list = slice_helper.SliceAny2Int(tmp)
+		list = slice_helper.Any2Int(tmp)
 	}
 	return list
 }
