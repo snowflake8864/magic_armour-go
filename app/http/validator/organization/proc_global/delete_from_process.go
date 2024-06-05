@@ -9,6 +9,7 @@ import (
 )
 
 type DeleteFromProcess struct {
+	IdSingle
 }
 
 func (n DeleteFromProcess) CheckParams(context *gin.Context) {

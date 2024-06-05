@@ -103,16 +103,27 @@ func (u *ProcessGlobalController) batchAdd(ctx *gin.Context, dataFrom int, globa
 
 // ClearFromProcess 清空
 func (u *ProcessGlobalController) ClearFromProcess(ctx *gin.Context) {
-	if err := u.batchAdd(ctx, enum_process.DataFromProcess, enum_process.GlobalTypeWhite); err != nil {
+	if err := u.clear(ctx, enum_process.DataFromProcess); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
+// clear
+func (u *ProcessGlobalController) clear(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+
+	return proc_service.CreateGlobalCurdFactory().DeleteByDataFrom(loginInfo.OrgId, dataFrom)
+}
+
 // ClearFromDll 清空
 func (u *ProcessGlobalController) ClearFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ClearFromDll")
+	if err := u.clear(ctx, enum_process.DataFromDll); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchWhiteFromProcess 批量白来源进程
@@ -180,10 +191,26 @@ func (u *ProcessGlobalController) SetSwitchFromDll(ctx *gin.Context) {
 
 // DeleteFromProcess 删除来源进程
 func (u *ProcessGlobalController) DeleteFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Delete")
+	if err := u.delete(ctx, enum_process.DataFromProcess); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// delete
+func (u *ProcessGlobalController) delete(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+	id := ctx.GetString(consts.ValidatorPrefixOrg + "id")
+
+	return proc_service.CreateGlobalCurdFactory().DeleteById(loginInfo.OrgId, id, dataFrom)
 }
 
 // DeleteFromDll 删除来源模块
 func (u *ProcessGlobalController) DeleteFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Delete")
+	if err := u.delete(ctx, enum_process.DataFromDll); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

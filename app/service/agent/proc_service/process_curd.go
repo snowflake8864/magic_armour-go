@@ -213,3 +213,12 @@ func (crd *ProcessCurd) GlobalCallbackDeleteByHash(orgId int64, hash string) {
 	updates := crd.getUpdatesForDeleteGlobal()
 	crd.masterModel.UpdateByConditions(condition, updates)
 }
+
+// GlobalCallbackDeleteAll 全局名单回调： 删除全部
+func (crd *ProcessCurd) GlobalCallbackDeleteAll(orgId int64) {
+	condition := proc_models.SearchConditions{
+		OrgId: orgId,
+	}
+	updates := crd.getUpdatesForDeleteGlobal()
+	crd.masterModel.UpdateByConditions(condition, updates)
+}

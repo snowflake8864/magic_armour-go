@@ -9,6 +9,7 @@ import (
 )
 
 type DeleteFromDll struct {
+	IdSingle
 }
 
 func (n DeleteFromDll) CheckParams(context *gin.Context) {
