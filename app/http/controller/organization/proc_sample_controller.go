@@ -57,12 +57,31 @@ func (u *ProcSampleController) Delete(ctx *gin.Context) {
 
 // Clear 清空
 func (u *ProcSampleController) Clear(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Clear")
+	loginInfo := u.getLogin(ctx)
+	if !proc_service.CreateSampleCurdFactory().DelByOrg(loginInfo.OrgId) {
+		response.FailSimplify(ctx, "删除失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // Download 下载
 func (u *ProcSampleController) Download(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Download")
+	loginInfo := u.getLogin(ctx)
+	Id := ctx.GetString(consts.ValidatorPrefixOrg + "id")
+	agentId := u.getAgentIdFromGin(ctx)
+
+	model := proc_models.CreateProcSampleFactory().GetItemByOrgAndAgentAndHash(loginInfo.OrgId, agentId, Id)
+	if model == nil || model.OrgId == 0 {
+		response.FailSimplify(ctx, "数据不存在")
+		return
+	}
+	if model.Status != enum_process.SampleStatusFinished {
+		response.FailSimplify(ctx, "样本没有上传")
+		return
+	}
+
+	response.FileDownload(ctx, model.FullPath)
 }
 
 // AddFromProcess 添加来源进程

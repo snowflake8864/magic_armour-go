@@ -166,6 +166,7 @@ func (t *Process) TransSamplePage(total int64, models []*proc_models.ProcSampleM
 			data["id"] = model.Id
 			data["agent_id"] = model.AgentId
 			data["dir"] = model.Dir
+			data["original_name"] = model.OriginalName
 			data["data_from"] = model.DataFrom
 			data["status"] = model.Status
 			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("sample_status", model.Status, enum_process.EnumIntMap)
