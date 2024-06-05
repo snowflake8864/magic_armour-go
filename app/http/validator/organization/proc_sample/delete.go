@@ -4,11 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type Delete struct {
+	data_type.AgentSingle
+	IdSingle
 }
 
 func (n Delete) CheckParams(context *gin.Context) {

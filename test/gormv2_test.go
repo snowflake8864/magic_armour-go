@@ -325,7 +325,7 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 //func TestSqlResultToTreeStruct(t *testing.T) {
 //	// 定义一个原始数据集的接受结构体
 //	var res1 []struct {
-//		Id   int
+//		IdSingle   int
 //		Name string
 //		Fid  int
 //	}
@@ -337,9 +337,9 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 //	fmt.Printf("%+v\n", res1)
 //
 //	type ProvinceCity struct {
-//		Id       int            `primaryKey:"yes" json:"id"`
+//		IdSingle       int            `primaryKey:"yes" json:"id"`
 //		Name     string         `json:"name"`
-//		Fid      int            `fid:"Id" json:"fid"`
+//		Fid      int            `fid:"IdSingle" json:"fid"`
 //		Children []ProvinceCity `json:"children"`
 //	}
 //	var dest = make([]ProvinceCity, 0)

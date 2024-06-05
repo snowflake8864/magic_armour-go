@@ -17,7 +17,7 @@ type User struct {
 
 func (t *User) pageGeneral(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["Id"] = model.Id
+	data["IdSingle"] = model.Id
 	data["username"] = model.Username
 	data["email"] = model.Email
 	data["phone"] = model.Phone

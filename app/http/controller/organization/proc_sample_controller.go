@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/response"
@@ -16,7 +18,29 @@ type ProcSampleController struct {
 
 // Page 分页
 func (u *ProcSampleController) Page(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Page")
+	orgId := u.getLogin(ctx).OrgId
+
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId: orgId,
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := proc_models.CreateProcSampleFactory().Page(condition, offset, pageSize, order)
+
+	var agentIds []string
+	var agentMap = make(map[string]*agent_models.AgentModel)
+	if models != nil || len(models) > 0 {
+		for _, model := range models {
+			agentIds = append(agentIds, model.AgentId)
+		}
+		AgentFact := agent_models.CreateAgentFactory()
+		agentMap = AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransSamplePage(total, models, agentMap))
 }
 
 // Delete 删除

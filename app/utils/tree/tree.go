@@ -4,7 +4,7 @@ package tree
 var nodes []*tree.Node
 for _, model := range models {
 	nodes = append(nodes, &tree.Node{
-		ID:       model.Id,
+		ID:       model.IdSingle,
 		ParentId: model.ParentId,
 		Data: map[string]interface{}{
 			"name":       model.Name,

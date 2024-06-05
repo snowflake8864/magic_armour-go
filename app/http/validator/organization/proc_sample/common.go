@@ -8,3 +8,7 @@ type Add struct {
 	Signature string `form:"signature" json:"signature" binding:"omitempty,max=512"`
 	Attribute string `form:"attribute" json:"attribute" binding:"omitempty,max=1024"`
 }
+
+type IdSingle struct {
+	Id string `form:"id" json:"id" binding:"required,min=8,max=32"`
+}

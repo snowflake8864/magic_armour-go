@@ -18,7 +18,7 @@ func TestGetItems(t *testing.T) {
 	fmt.Println("------------------------------")
 	l1 := fact.GetAll()
 	for _, obj := range l1 {
-		fmt.Println("Id:" + obj.Id + " VAL:" + obj.Val)
+		fmt.Println("IdSingle:" + obj.Id + " VAL:" + obj.Val)
 	}
 }
 
