@@ -44,7 +44,7 @@ func (crd *GlobalCurd) isMaxLimit(orgId int64, dataFrom int, number int) error {
 	total := crd.masterModel.Count(condition)
 
 	if (limit - total - int64(number)) < 0 {
-		return errors.New("全局名单库已达到最大限制条目)")
+		return errors.New("全局名单库已达到最大限制条目")
 	}
 	return nil
 }
