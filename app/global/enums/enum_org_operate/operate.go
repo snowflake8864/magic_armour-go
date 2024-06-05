@@ -82,6 +82,13 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/process/agent/sampleExtract":     {ModuleProcess, "单终端：提取样本"},
 	"/v5/organization/process/agent/setGlobal":         {ModuleProcess, "单终端：设置全局名单"},
 	"/v5/organization/process/agent/batchGlobalWhite":  {ModuleProcess, "单终端：批量全局白名单"},
+	"/v5/organization/process/global/add":              {ModuleProcess, "进程全局名单：添加"},
+	"/v5/organization/process/global/setSwitch":        {ModuleProcess, "进程全局名单：开关"},
+	"/v5/organization/process/global/delete":           {ModuleProcess, "进程全局名单：删除"},
+	"/v5/organization/process/global/clear":            {ModuleProcess, "进程全局名单：清空"},
+	"/v5/organization/procSample/delete":               {ModuleSample, "删除"},
+	"/v5/organization/procSample/clear":                {ModuleSample, "清空"},
+	"/v5/organization/procSample/download":             {ModuleSample, "下载"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

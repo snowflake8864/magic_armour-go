@@ -100,3 +100,13 @@ func (crd *SampleCurd) DelByOrgAndAgent(orgId int64, agentId string) bool {
 	}
 	return crd.masterModel.DeleteByConditions(search)
 }
+
+// DeleteById 通过hash删除
+func (crd *SampleCurd) DeleteById(orgId int64, agentId string, id string) bool {
+	search := proc_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+		Id:      id,
+	}
+	return crd.masterModel.DeleteByConditions(search)
+}

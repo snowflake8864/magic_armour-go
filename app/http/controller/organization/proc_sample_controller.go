@@ -45,7 +45,14 @@ func (u *ProcSampleController) Page(ctx *gin.Context) {
 
 // Delete 删除
 func (u *ProcSampleController) Delete(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "Delete")
+	loginInfo := u.getLogin(ctx)
+	Id := ctx.GetString(consts.ValidatorPrefixOrg + "id")
+	agentId := u.getAgentIdFromGin(ctx)
+	if !proc_service.CreateSampleCurdFactory().DeleteById(loginInfo.OrgId, agentId, Id) {
+		response.FailSimplify(ctx, "删除失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // Clear 清空
