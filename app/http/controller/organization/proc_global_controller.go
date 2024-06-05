@@ -2,6 +2,10 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -22,12 +26,37 @@ func (u *ProcessGlobalController) PageFromDll(ctx *gin.Context) {
 
 // AddFromProcess 添加
 func (u *ProcessGlobalController) AddFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFromProcess")
+	if err := u.add(ctx, enum_process.DataFromProcess); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // AddFromDll 添加
 func (u *ProcessGlobalController) AddFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddFromDll")
+	if err := u.add(ctx, enum_process.DataFromDll); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// add
+func (u *ProcessGlobalController) add(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+
+	param := proc_models.ProcGlobalModel{
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		OrgId:      loginInfo.OrgId,
+		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		DataFrom:   dataFrom,
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	return proc_service.CreateGlobalCurdFactory().Add(&param)
 }
 
 // ClearFromProcess 清空

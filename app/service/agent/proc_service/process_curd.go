@@ -169,3 +169,13 @@ func (crd *ProcessCurd) DeleteByAgent(orgId int64, agentId string, task bool) er
 	}
 	return nil
 }
+
+// GlobalCallbackAddByHash 全局名单回调： 新增一条
+func (crd *ProcessCurd) GlobalCallbackAddByHash(orgId int64, globalType int, hash string) {
+	condition := proc_models.SearchConditions{
+		OrgId:    orgId,
+		ProcHash: hash,
+	}
+	updates := crd.getUpdatesForAddGlobal(globalType)
+	crd.masterModel.UpdateByConditions(condition, updates)
+}

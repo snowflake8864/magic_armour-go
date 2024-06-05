@@ -76,7 +76,7 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentAlarmExpire + `', '10','终端：告警保留时长(天)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentSyslogExpire + `', '10','终端：通讯日志保留时长(天)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentProcGlobalSwitch + `', '1','终端：进程全局名单是否下发给终端开关'),
-			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentProcGlobalLimit + `', '10000','终端：进程全局名单限制数目'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentProcGlobalLimit + `', '2000','终端：进程全局名单限制数目'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentCompatibleDefaultOrg + `', '1','终端：兼容以前离线版本默认企业编号'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentCompatibleDefaultUser + `', '1','终端：兼容以前离线版本默认用户编号'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentTypes + `', '` + json_helper.Encode(enum_agent.AgentTypeDefault()) + `','终端：终端类型'),

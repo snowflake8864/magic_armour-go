@@ -23,7 +23,7 @@ func (u *ProcessController) PutAll(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "list")
-	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.ProcTaskAll,
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromProcess, agent_post_service.ProcTaskAll,
 		loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
@@ -40,7 +40,7 @@ func (u *ProcessController) PutRunning(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
-	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.ProcTaskRefresh,
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromProcess, agent_post_service.ProcTaskRefresh,
 		loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
@@ -55,7 +55,7 @@ func (u *ProcessController) PutAuto(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
-	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.SourceProcess, agent_post_service.ProcTaskAuto,
+	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromProcess, agent_post_service.ProcTaskAuto,
 		loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())

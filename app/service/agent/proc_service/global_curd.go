@@ -1,7 +1,11 @@
 package proc_service
 
 import (
+	"errors"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -25,7 +29,27 @@ func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.Proc
 }
 
 // Add 添加
-func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) (errCode int, err error) {
+func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 
-	return errCode, err
+	hasModel := crd.masterModel.GetItemByOrgAndId(param.OrgId, param.Id)
+	if hasModel != nil || hasModel.OrgId != 0 {
+		return errors.New("数据已存在")
+	}
+
+	param.OpenSwitch = enums.SwitchOn
+	param.CreatedAt = date_helper.CurDatetime()
+	param.UpdatedAt = param.CreatedAt
+
+	if !crd.masterModel.InsertItem(param) {
+		return errors.New("保存失败")
+	}
+
+	//
+	if param.DataFrom == enum_process.DataFromProcess {
+		CreateProcessCurdFactory().GlobalCallbackAddByHash(param.OrgId, param.Type, param.Id)
+	} else {
+
+	}
+
+	return nil
 }

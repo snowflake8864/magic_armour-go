@@ -223,12 +223,15 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalClear"))
 					}
 
-					search := process.Group("search/")
-					{
-						search.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchPage"))
-						search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchBatchGlobalWhite"))
-						search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchBatchGlobalBlack"))
-					}
+					/*
+						//@todo 目的为了解决全局防篡改、防篡改、勒索防护的信任进程问题，新增获取进程白名单改成查询方式，不在使用
+						search := process.Group("search/")
+						{
+							search.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchPage"))
+							search.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchBatchGlobalWhite"))
+							search.POST("batchGlobalBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessSearchBatchGlobalBlack"))
+						}
+					*/
 				} //进程
 
 				//进程和模块样本

@@ -5,8 +5,11 @@ import "goskeleton/app/global/enums"
 // 进程或模块
 
 const (
-	SourceProcess int = 1 //数据来源:进程
-	SourceDll     int = 2 //数据来源:模块
+	DataFromProcess int = 1 //数据来源:进程
+	DataFromDll     int = 2 //数据来源:模块
+
+	GlobalTypeWhite int = 1 //全局白名单
+	GlobalTypeBlack int = 2 //全局黑名单
 
 	ProcStatusUnset   int = 1 //状态： 未设置(默认)
 	ProcStatusUnknown int = 2 //状态： 未知

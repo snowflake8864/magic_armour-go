@@ -2,6 +2,7 @@ package proc_models
 
 import (
 	"fmt"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -57,6 +58,9 @@ type SearchConditions struct {
 	StatusList      []int
 	Dir             string
 	Dirs            []string
+	GlobalType      int
+	DataFrom        int
+	OpenSwitch      *int
 	SyncStatusAtGte int64
 }
 
@@ -142,6 +146,24 @@ func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "sync_status_at >=",
 			Val: condition.SyncStatusAtGte,
+		})
+	}
+	if condition.GlobalType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.GlobalType,
+		})
+	}
+	if condition.DataFrom > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "data_from",
+			Val: condition.DataFrom,
+		})
+	}
+	if condition.OpenSwitch != nil && *condition.OpenSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "open_switch",
+			Val: *condition.OpenSwitch,
 		})
 	}
 	return wheres

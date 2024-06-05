@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/utils/helpers/date_helper"
 )
 
 type ProcessBase struct {
@@ -57,5 +58,24 @@ func (crd *ProcessBase) getUpdatesForBatchWhite() map[string]interface{} {
 		"sync_status_at": 0,
 		"status":         enum_process.ProcStatusWhite,
 	}
+	return updates
+}
+
+func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interface{} {
+	updates := map[string]interface{}{
+		"sync_status_at": date_helper.CurDatetime(),
+	}
+
+	switch globalType {
+	case enum_process.GlobalTypeWhite:
+		updates["global_status"] = enum_process.RelyStatusWhite
+		updates["status"] = enum_process.ProcStatusWhite
+		break
+	case enum_process.ProcStatusBlack:
+		updates["global_status"] = enum_process.RelyStatusWhite
+		updates["status"] = enum_process.ProcStatusWhite
+		break
+	}
+
 	return updates
 }

@@ -180,7 +180,7 @@ func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inpu
 
 // 发送进程数据
 func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.ProcessModel) error {
-	if source != enum_process.SourceProcess {
+	if source != enum_process.DataFromProcess {
 		return errors.New("数据主体不是进程")
 	}
 	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
@@ -198,7 +198,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 
 // 发送进程运行中数据
 func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_models.ProcessRunningModel) error {
-	if source != enum_process.SourceProcess {
+	if source != enum_process.DataFromProcess {
 		return errors.New("数据主体不是进程")
 	}
 	if task != ProcTaskRefresh {
@@ -216,7 +216,7 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 
 // 发送模块数据
 func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllModel) error {
-	if source != enum_process.SourceDll {
+	if source != enum_process.DataFromDll {
 		return errors.New("数据主体不是模块")
 	}
 	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.DllHash) {
@@ -234,7 +234,7 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 
 // 发送模块运行中数据
 func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.DllRunningModel) error {
-	if source != enum_process.SourceDll {
+	if source != enum_process.DataFromDll {
 		return errors.New("数据主体不是模块")
 	}
 	if task != ProcTaskRefresh {

@@ -36,7 +36,7 @@ func (u *ProcSampleController) Download(ctx *gin.Context) {
 
 // AddFromProcess 添加来源进程
 func (u *ProcSampleController) AddFromProcess(ctx *gin.Context) {
-	if err := u.add(ctx, enum_process.SourceProcess); err != nil {
+	if err := u.add(ctx, enum_process.DataFromProcess); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -46,14 +46,14 @@ func (u *ProcSampleController) AddFromProcess(ctx *gin.Context) {
 
 // AddFromDll 添加来源模块
 func (u *ProcSampleController) AddFromDll(ctx *gin.Context) {
-	if err := u.add(ctx, enum_process.SourceDll); err != nil {
+	if err := u.add(ctx, enum_process.DataFromDll); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// AddFromDll 添加来源模块
+// add
 func (u *ProcSampleController) add(ctx *gin.Context, dataFrom int) error {
 	loginInfo := u.getLogin(ctx)
 
