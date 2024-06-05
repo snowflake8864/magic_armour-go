@@ -213,7 +213,6 @@ func InitOrganizationRouter() *gin.Engine {
 						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentSetGlobal"))
 						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchGlobalWhite"))
 					}
-
 					global := process.Group("global/")
 					{
 						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessGlobalPage"))
@@ -233,6 +232,49 @@ func InitOrganizationRouter() *gin.Engine {
 						}
 					*/
 				} //进程
+
+				//模块
+				dll := vOrg.Group("dll/")
+				{
+					manage := dll.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManagePage"))
+						manage.POST("agentProcStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageAgentProcStat"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageSetSwitch"))
+						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageSetMode"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageBatchSetConfig"))
+						manage.POST("batchSetWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageBatchSetWhite"))
+						manage.POST("batchRefresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageBatchRefresh"))
+						manage.POST("batchCollect", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllManageBatchCollect"))
+					}
+					agentV2 := dll.Group("agent/")
+					{
+						agentV2.POST("pageAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentPageAll"))
+						agentV2.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentPageRunning"))
+						agentV2.POST("setStatus", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentSetStatus"))
+						agentV2.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentCancel"))
+						agentV2.POST("clearAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentClearAll"))
+						agentV2.POST("clearRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentClearRunning"))
+						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentBatchWhite"))
+						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentRefresh"))
+						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentCollect"))
+
+						agentV2.POST("repeatStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentRepeatStat"))
+						agentV2.POST("repeatPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentRepeatPage"))
+
+						agentV2.POST("setGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentSetGlobal"))
+						agentV2.POST("batchGlobalWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllAgentBatchGlobalWhite"))
+					}
+
+					global := dll.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllGlobalPage"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllGlobalAdd"))
+						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllGlobalSetSwitch"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllGlobalDelete"))
+						global.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"DllGlobalClear"))
+					}
+				} //模块
 
 				//进程和模块样本
 				procSample := vOrg.Group("procSample/")

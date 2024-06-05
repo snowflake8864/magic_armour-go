@@ -6,6 +6,7 @@ import (
 	agent3 "goskeleton/app/http/validator/organization/agent"
 	auth3 "goskeleton/app/http/validator/organization/auth"
 	department3 "goskeleton/app/http/validator/organization/department"
+	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
@@ -161,8 +162,7 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, process3.AgentRepeatStat{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentRepeatPage"
 	containers.Set(key, process3.AgentRepeatPage{})
-	key = consts.ValidatorPrefixOrg + "ProcessAgentSampleExtract"
-	containers.Set(key, procSample3.AddFromProcess{})
+
 	//进程全局名单
 	key = consts.ValidatorPrefixOrg + "ProcessAgentSetGlobal"
 	containers.Set(key, procGlobal3.AddFromProcess{})
@@ -185,7 +185,68 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "ProcessSearchBatchGlobalBlack"
 	containers.Set(key, procGlobal3.BatchBlackFromProcess{})*/
 
+	//模块
+	key = consts.ValidatorPrefixOrg + "DllManagePage"
+	containers.Set(key, dll3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "DllManageAgentProcStat"
+	containers.Set(key, dll3.ManageAgentProcStat{})
+	key = consts.ValidatorPrefixOrg + "DllManageSetSwitch"
+	containers.Set(key, dll3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "DllManageSetMode"
+	containers.Set(key, dll3.ManageSetMode{})
+	key = consts.ValidatorPrefixOrg + "DllManageBatchSetConfig"
+	containers.Set(key, dll3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "DllManageBatchSetWhite"
+	containers.Set(key, dll3.ManageBatchSetWhite{})
+	key = consts.ValidatorPrefixOrg + "DllManageBatchRefresh"
+	containers.Set(key, dll3.ManageBatchRefresh{})
+	key = consts.ValidatorPrefixOrg + "DllManageBatchCollect"
+	containers.Set(key, dll3.ManageBatchCollect{})
+	key = consts.ValidatorPrefixOrg + "DllAgentPageAll"
+	containers.Set(key, dll3.AgentPageAll{})
+	key = consts.ValidatorPrefixOrg + "DllAgentPageRunning"
+	containers.Set(key, dll3.AgentPageRunning{})
+	key = consts.ValidatorPrefixOrg + "DllAgentSetStatus"
+	containers.Set(key, dll3.AgentSetStatus{})
+	key = consts.ValidatorPrefixOrg + "DllAgentCancel"
+	containers.Set(key, dll3.AgentCancel{})
+	key = consts.ValidatorPrefixOrg + "DllAgentClearAll"
+	containers.Set(key, dll3.AgentClearAll{})
+	key = consts.ValidatorPrefixOrg + "DllAgentClearRunning"
+	containers.Set(key, dll3.AgentClearRunning{})
+	key = consts.ValidatorPrefixOrg + "DllAgentRefresh"
+	containers.Set(key, dll3.AgentRefresh{})
+	key = consts.ValidatorPrefixOrg + "DllAgentCollect"
+	containers.Set(key, dll3.AgentCollect{})
+	key = consts.ValidatorPrefixOrg + "DllAgentBatchWhite"
+	containers.Set(key, dll3.AgentBatchWhite{})
+	key = consts.ValidatorPrefixOrg + "DllAgentRunningDllExtract"
+	key = consts.ValidatorPrefixOrg + "DllAgentRepeatStat"
+	containers.Set(key, dll3.AgentRepeatStat{})
+	key = consts.ValidatorPrefixOrg + "DllAgentRepeatPage"
+	containers.Set(key, dll3.AgentRepeatPage{})
+
+	//模块全局名单
+	key = consts.ValidatorPrefixOrg + "DllAgentSetGlobal"
+	containers.Set(key, procGlobal3.AddFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllAgentBatchGlobalWhite"
+	containers.Set(key, procGlobal3.BatchWhiteFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllGlobalPage"
+	containers.Set(key, procGlobal3.PageFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllGlobalAdd"
+	containers.Set(key, procGlobal3.AddFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllGlobalSetSwitch"
+	containers.Set(key, procGlobal3.SetSwitchFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllGlobalDelete"
+	containers.Set(key, procGlobal3.DeleteFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllGlobalClear"
+	containers.Set(key, procGlobal3.ClearFromProcess{})
+
 	//进程和模块样本
+	key = consts.ValidatorPrefixOrg + "ProcessAgentSampleExtract"
+	containers.Set(key, procSample3.AddFromProcess{})
+	key = consts.ValidatorPrefixOrg + "DllAgentSampleExtract"
+	containers.Set(key, procSample3.AddFromDll{})
 	key = consts.ValidatorPrefixOrg + "ProcSamplePage"
 	containers.Set(key, procSample3.Page{})
 	key = consts.ValidatorPrefixOrg + "ProcSampleDelete"

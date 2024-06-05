@@ -231,11 +231,17 @@ func (m *baseProc) conditions2WhereForRunning(condition SearchConditions, t1, t2
 	return wheres
 }
 
-func (m *baseProc) getJoinStr(t1Alias, t2Name, t2Alias string) string {
+func (m *baseProc) getJoinStrForProcess(t1Alias, t2Name, t2Alias string) string {
 	return "LEFT JOIN " + t2Name + " AS " + strings.Trim(t2Alias, ".") +
 		" ON " + t1Alias + "org_id=" + t2Alias + "org_id" +
 		" AND " + t1Alias + "agent_id=" + t2Alias + "agent_id " +
 		" AND " + t1Alias + "proc_hash=" + t2Alias + "proc_hash"
+}
+func (m *baseProc) getJoinStrForDll(t1Alias, t2Name, t2Alias string) string {
+	return "LEFT JOIN " + t2Name + " AS " + strings.Trim(t2Alias, ".") +
+		" ON " + t1Alias + "org_id=" + t2Alias + "org_id" +
+		" AND " + t1Alias + "agent_id=" + t2Alias + "agent_id " +
+		" AND " + t1Alias + "dll_hash=" + t2Alias + "dll_hash"
 }
 
 // ColumnStatusCalc 字段： 统计状态

@@ -1,6 +1,7 @@
 package proc_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -149,7 +150,7 @@ func (m *DllRunningModel) GetItemsByConditions(condition SearchConditions, offse
 			t2As + "attribute",
 		}
 		tmp := tx.Model(m).
-			Joins(m.getJoinStr(t1As, t2Name, t2As))
+			Joins(m.getJoinStrForDll(t1As, t2Name, t2As))
 
 		tmp = tmp.Select(strings.Join(columns, ","))
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
@@ -165,7 +166,7 @@ func (m *DllRunningModel) GetItemsByConditions(condition SearchConditions, offse
 		}
 		return tmp.Find(&items)
 	})
-
+	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
@@ -184,7 +185,7 @@ func (m *DllRunningModel) Count(condition SearchConditions) int64 {
 		t2As := "t2."
 
 		tmp := tx.Model(m).
-			Joins(m.getJoinStr(t1As, t2Name, t2As))
+			Joins(m.getJoinStrForDll(t1As, t2Name, t2As))
 		tmp = tmp.Select(t1As + "id")
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)

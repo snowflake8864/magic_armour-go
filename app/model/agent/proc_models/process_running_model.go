@@ -176,7 +176,7 @@ func (m *ProcessRunningModel) GetItemsByConditions(condition SearchConditions, o
 			t2As + "signature",
 		}
 		tmp := tx.Model(m).
-			Joins(m.getJoinStr(t1As, t2Name, t2As))
+			Joins(m.getJoinStrForProcess(t1As, t2Name, t2As))
 
 		tmp = tmp.Select(strings.Join(columns, ","))
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
@@ -211,7 +211,7 @@ func (m *ProcessRunningModel) Count(condition SearchConditions) int64 {
 		t2As := "t2."
 
 		tmp := tx.Model(m).
-			Joins(m.getJoinStr(t1As, t2Name, t2As))
+			Joins(m.getJoinStrForProcess(t1As, t2Name, t2As))
 		tmp = tmp.Select(t1As + "id")
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2WhereForRunning(condition, t1As, t2As)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
