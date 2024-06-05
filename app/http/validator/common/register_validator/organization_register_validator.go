@@ -171,8 +171,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, procGlobal3.PageFromProcess{})
 	key = consts.ValidatorPrefixOrg + "ProcessGlobalAdd"
 	containers.Set(key, procGlobal3.AddFromProcess{})
-	key = consts.ValidatorPrefixOrg + "ProcessGlobalEdit"
-	containers.Set(key, procGlobal3.Edit{})
+	key = consts.ValidatorPrefixOrg + "ProcessGlobalSetSwitch"
+	containers.Set(key, procGlobal3.SetSwitch{})
 	key = consts.ValidatorPrefixOrg + "ProcessGlobalDelete"
 	containers.Set(key, procGlobal3.Delete{})
 	key = consts.ValidatorPrefixOrg + "ProcessGlobalClear"

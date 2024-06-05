@@ -63,7 +63,7 @@ func (crd *ProcessBase) getUpdatesForBatchWhite() map[string]interface{} {
 
 func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interface{} {
 	updates := map[string]interface{}{
-		"sync_status_at": date_helper.CurDatetime(),
+		"sync_status_at": date_helper.CurTimestamp(),
 	}
 
 	switch globalType {

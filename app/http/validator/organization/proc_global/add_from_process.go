@@ -9,6 +9,7 @@ import (
 )
 
 type AddFromProcess struct {
+	AddSingle
 }
 
 func (n AddFromProcess) CheckParams(context *gin.Context) {

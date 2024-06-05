@@ -89,8 +89,8 @@ func (u *ProcessGlobalController) BatchBlackFromDll(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "BatchBlackFromDll")
 }
 
-// Edit 编辑
-func (u *ProcessGlobalController) Edit(ctx *gin.Context) {
+// SetSwitch 编辑
+func (u *ProcessGlobalController) SetSwitch(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "Edit")
 }
 

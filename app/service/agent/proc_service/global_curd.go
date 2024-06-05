@@ -2,6 +2,7 @@ package proc_service
 
 import (
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
@@ -32,8 +33,9 @@ func (crd *GlobalCurd) GetOne(orgId int64, hash string) (model *proc_models.Proc
 func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 
 	hasModel := crd.masterModel.GetItemByOrgAndId(param.OrgId, param.Id)
-	if hasModel != nil || hasModel.OrgId != 0 {
-		return errors.New("数据已存在")
+	if hasModel != nil && hasModel.OrgId != 0 {
+		fmt.Println(hasModel.OrgId)
+		return errors.New("数据已存在1")
 	}
 
 	param.OpenSwitch = enums.SwitchOn
