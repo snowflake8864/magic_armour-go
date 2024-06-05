@@ -163,6 +163,7 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, process3.AgentRepeatPage{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentSampleExtract"
 	containers.Set(key, procSample3.AddFromProcess{})
+	//进程全局名单
 	key = consts.ValidatorPrefixOrg + "ProcessAgentSetGlobal"
 	containers.Set(key, procGlobal3.AddFromProcess{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchGlobalWhite"
@@ -177,12 +178,12 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, procGlobal3.Delete{})
 	key = consts.ValidatorPrefixOrg + "ProcessGlobalClear"
 	containers.Set(key, procGlobal3.ClearFromProcess{})
-	key = consts.ValidatorPrefixOrg + "ProcessSearchPage"
+	/*key = consts.ValidatorPrefixOrg + "ProcessSearchPage"
 	containers.Set(key, process3.SearchPage{})
 	key = consts.ValidatorPrefixOrg + "ProcessSearchBatchGlobalWhite"
 	containers.Set(key, procGlobal3.BatchWhiteFromProcess{})
 	key = consts.ValidatorPrefixOrg + "ProcessSearchBatchGlobalBlack"
-	containers.Set(key, procGlobal3.BatchBlackFromProcess{})
+	containers.Set(key, procGlobal3.BatchBlackFromProcess{})*/
 
 	//进程和模块样本
 	key = consts.ValidatorPrefixOrg + "ProcSamplePage"

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -18,7 +19,26 @@ type ProcessGlobalController struct {
 
 // PageFromProcess 分页
 func (u *ProcessGlobalController) PageFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageFromProcess")
+	u.page(ctx, enum_process.DataFromProcess)
+}
+
+// add
+func (u *ProcessGlobalController) page(ctx *gin.Context, dataFrom int) error {
+	loginInfo := u.getLogin(ctx)
+	//查询条件
+	condition := proc_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		GlobalType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := proc_models.CreateProcGlobalFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransGlobalPage(total, models))
+	return nil
 }
 
 // PageFromDll 分页

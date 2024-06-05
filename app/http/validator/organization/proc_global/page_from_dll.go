@@ -4,11 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type PageFromDll struct {
+	data_type.Page
+	PageSearch
 }
 
 func (n PageFromDll) CheckParams(context *gin.Context) {
