@@ -9,6 +9,7 @@ import (
 )
 
 type BatchWhiteFromDll struct {
+	AddBatch
 }
 
 func (n BatchWhiteFromDll) CheckParams(context *gin.Context) {

@@ -9,6 +9,7 @@ import (
 )
 
 type BatchBlackFromProcess struct {
+	AddBatch
 }
 
 func (n BatchBlackFromProcess) CheckParams(context *gin.Context) {

@@ -9,6 +9,7 @@ import (
 )
 
 type AddFromDll struct {
+	AddSingle
 }
 
 func (n AddFromDll) CheckParams(context *gin.Context) {

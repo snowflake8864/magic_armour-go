@@ -179,3 +179,13 @@ func (crd *ProcessCurd) GlobalCallbackAddByHash(orgId int64, globalType int, has
 	updates := crd.getUpdatesForAddGlobal(globalType)
 	crd.masterModel.UpdateByConditions(condition, updates)
 }
+
+// GlobalCallbackAddByHashes 全局名单回调： 新增多条
+func (crd *ProcessCurd) GlobalCallbackAddByHashes(orgId int64, globalType int, hashes []string) {
+	condition := proc_models.SearchConditions{
+		OrgId:      orgId,
+		ProcHashes: hashes,
+	}
+	updates := crd.getUpdatesForAddGlobal(globalType)
+	crd.masterModel.UpdateByConditions(condition, updates)
+}

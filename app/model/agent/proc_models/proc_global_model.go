@@ -83,6 +83,20 @@ func (m *ProcGlobalModel) InsertItem(s *ProcGlobalModel) bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *ProcGlobalModel) InsertBatch(list *[]ProcGlobalModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return false
+	}
+}
+
 // GetItemByOrgAndId 通过企业id\hash获取一条记录
 func (m *ProcGlobalModel) GetItemByOrgAndId(orgId int64, id string) (item *ProcGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

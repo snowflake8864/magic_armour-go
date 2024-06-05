@@ -1,11 +1,13 @@
 package organization
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -47,7 +49,7 @@ func (u *ProcessGlobalController) add(ctx *gin.Context, dataFrom int) error {
 	loginInfo := u.getLogin(ctx)
 
 	param := proc_models.ProcGlobalModel{
-		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
 		OrgId:      loginInfo.OrgId,
 		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
@@ -59,9 +61,33 @@ func (u *ProcessGlobalController) add(ctx *gin.Context, dataFrom int) error {
 	return proc_service.CreateGlobalCurdFactory().Add(&param)
 }
 
+// add
+func (u *ProcessGlobalController) batchAdd(ctx *gin.Context, dataFrom int, globalType int) error {
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "list")
+	var list []proc_models.ProcGlobalModel
+	if err := json_helper.ToAny(jsonStr, &list); err != nil {
+		return errors.New("参数错误")
+	}
+
+	loginInfo := u.getLogin(ctx)
+	param := proc_models.ProcGlobalModel{
+		OrgId:      loginInfo.OrgId,
+		Type:       globalType,
+		DataFrom:   dataFrom,
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	return proc_service.CreateGlobalCurdFactory().BatchAdd(&param, &list)
+}
+
 // ClearFromProcess 清空
 func (u *ProcessGlobalController) ClearFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "ClearFromProcess")
+	if err := u.batchAdd(ctx, enum_process.DataFromProcess, enum_process.GlobalTypeWhite); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // ClearFromDll 清空
@@ -71,22 +97,38 @@ func (u *ProcessGlobalController) ClearFromDll(ctx *gin.Context) {
 
 // BatchWhiteFromProcess 批量白来源进程
 func (u *ProcessGlobalController) BatchWhiteFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchWhiteFromProcess")
+	if err := u.batchAdd(ctx, enum_process.DataFromProcess, enum_process.GlobalTypeWhite); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchBlackFromProcess 批量黑来源进程
 func (u *ProcessGlobalController) BatchBlackFromProcess(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchBlackFromProcess")
+	if err := u.batchAdd(ctx, enum_process.DataFromProcess, enum_process.GlobalTypeBlack); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchWhiteFromDll 批量白来源模块
 func (u *ProcessGlobalController) BatchWhiteFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchWhiteFromDll")
+	if err := u.batchAdd(ctx, enum_process.DataFromDll, enum_process.GlobalTypeWhite); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchBlackFromDll 批量黑来源模块
 func (u *ProcessGlobalController) BatchBlackFromDll(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchBlackFromDll")
+	if err := u.batchAdd(ctx, enum_process.DataFromDll, enum_process.GlobalTypeBlack); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // SetSwitch 编辑
