@@ -56,7 +56,7 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.Type = enum_tamper.TypeFolder
-	param.OpenSwitch = enums.SwitchOn
+	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 	if param.DeptId < 0 {
@@ -75,7 +75,7 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 	}
 
 	//组织架构
-	err, deptIds := crd.getDeptIds(param.OrgId, param.DeptId)
+	err, _ := crd.getDeptIds(param.OrgId, param.DeptId)
 	if err != nil {
 		return err
 	}
@@ -83,9 +83,6 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
 	}
-
-	//新增任务
-	crd.addTask(param.OrgId, param.PlatformType, deptIds)
 
 	return nil
 }

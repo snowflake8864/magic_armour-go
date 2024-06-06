@@ -27,6 +27,12 @@ type Calc struct {
 	OnNumber    int    `json:"on_number"`
 }
 
+// Process 信任进程
+type Process struct {
+	Hash string `json:"hash"`
+	Dir  string `json:"dir"`
+}
+
 type baseTamper struct {
 }
 

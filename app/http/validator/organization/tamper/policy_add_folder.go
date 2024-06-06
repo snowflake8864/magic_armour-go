@@ -4,16 +4,33 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type PolicyAddFolder struct {
+	data_type.AgentSingle
+	Dir
+	ProtectRw
+	IncludeSuffix
+	ExcludeSuffix
+	ExcludeFolder
+	IsExtend
+	Processes
+	Remark
+	DeptId
 }
 
 func (n PolicyAddFolder) CheckParams(context *gin.Context) {
 	//1.先按照验证器提供的基本语法，基本可以校验90%以上的不合格参数
 	if err := context.ShouldBind(&n); err != nil {
+		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
+		response.ValidatorError(context, err)
+		return
+	}
+
+	if err := checkSuffix(n.IncludeSuffix.IncludeSuffix, n.ExcludeSuffix.ExcludeSuffix); err != nil {
 		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
 		response.ValidatorError(context, err)
 		return
