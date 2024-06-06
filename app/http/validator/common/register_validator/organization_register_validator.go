@@ -15,6 +15,7 @@ import (
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 	threaten3 "goskeleton/app/http/validator/organization/threaten"
+	trust_dir3 "goskeleton/app/http/validator/organization/trust_dir"
 	user3 "goskeleton/app/http/validator/organization/user"
 )
 
@@ -116,6 +117,18 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, agent3.MonitorList{})
 	key = consts.ValidatorPrefixOrg + "AgentMonitorInfo"
 	containers.Set(key, agent3.MonitorInfo{})
+
+	//信任目录
+	key = consts.ValidatorPrefixOrg + "TrustDirGlobalPage"
+	containers.Set(key, trust_dir3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "TrustDirGlobalAdd"
+	containers.Set(key, trust_dir3.GlobalAdd{})
+	key = consts.ValidatorPrefixOrg + "TrustDirGlobalEdit"
+	containers.Set(key, trust_dir3.GlobalEdit{})
+	key = consts.ValidatorPrefixOrg + "TrustDirGlobalSetSwitch"
+	containers.Set(key, trust_dir3.GlobalSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "TrustDirGlobalDelete"
+	containers.Set(key, trust_dir3.GlobalDelete{})
 
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"

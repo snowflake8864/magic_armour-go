@@ -17,13 +17,6 @@ type SearchConditions struct {
 }
 
 type baseThreaten struct {
-	Id          string
-	Ids         []string
-	Dir         string
-	CreateAtGte string
-	CreateAtLte string
-	Level       int
-	LevelList   []int
 }
 
 // conditions2Where 查询条件转化
