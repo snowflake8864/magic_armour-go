@@ -3,6 +3,7 @@ package transformer
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
@@ -111,6 +112,24 @@ func (t *Common) TransThreatenInfo(model *threaten_models.ThreatenCacheModel) ma
 		attr["malicious"] = len(maliciousList)
 		attr["detections"] = append(maliciousList, undetectedList...)
 		result["attr"] = attr
+		return result
+	}
+}
+
+func (t *Common) GetDeptFullname(id int64, departments map[int64]*department_models.DepartmentModel) interface{} {
+	var result []interface{}
+	if id == 0 {
+		result = append(result, "全部")
+		return result
+	}
+	if departments == nil && len(departments) == 0 {
+		result = append(result, "组织架构为空")
+		return result
+	}
+	if deptModel, ok := departments[id]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+		return json_helper.ToSliceString(deptModel.FullName)
+	} else {
+		result = append(result, "组织架构已删除")
 		return result
 	}
 }

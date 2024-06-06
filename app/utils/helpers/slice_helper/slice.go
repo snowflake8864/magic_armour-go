@@ -148,3 +148,17 @@ func StringRemoveRepeatByMap(slc []string) []string {
 	}
 	return result
 }
+
+// Int64RemoveRepeatByMap 通过map主键唯一的特性过滤重复元素
+func Int64RemoveRepeatByMap(slc []int64) []int64 {
+	var result []int64
+	tempMap := map[int64]byte{} // 存放不重复主键
+	for _, e := range slc {
+		l := len(tempMap)
+		tempMap[e] = 0
+		if len(tempMap) != l { // 加入map后，map长度变化，则元素不重复
+			result = append(result, e)
+		}
+	}
+	return result
+}

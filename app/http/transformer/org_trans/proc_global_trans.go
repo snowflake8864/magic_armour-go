@@ -10,7 +10,7 @@ type ProcGlobalTrans struct {
 	transformer.Common
 }
 
-// TransGlobalPage 转换成全局名单分页需要的数据
+// TransPage 转换成全局名单分页需要的数据
 func (t *ProcGlobalTrans) TransPage(total int64, models []*proc_models.ProcGlobalModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
