@@ -22,10 +22,11 @@ type GlobalCurd struct {
 	masterModel *trust_models.TrustGlobalModel
 }
 
-func (crd *GlobalCurd) addTask(orgId int64, deptIds []int64) {
+func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64) {
 	conditions := agent_models.SearchConditions{
-		OrgId:   orgId,
-		DeptIds: deptIds,
+		OrgId:        orgId,
+		PlatformType: platformType,
+		DeptIds:      deptIds,
 	}
 	AgentFact := agent_models.CreateAgentFactory()
 	models := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
@@ -63,6 +64,16 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 		param.DeptId = 0
 	}
 
+	conditions := trust_models.SearchConditions{
+		OrgId:        param.OrgId,
+		PlatformType: param.PlatformType,
+		DeptId:       param.DeptId,
+		DirFull:      param.Dir,
+	}
+	if total := crd.masterModel.Count(conditions); total > 0 {
+		return errors.New("'已存在相同策略，不能重复添加")
+	}
+
 	err, deptIds := crd.getDeptIds(param.OrgId, param.DeptId)
 	if err != nil {
 		return err
@@ -73,7 +84,7 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 	}
 
 	//
-	crd.addTask(param.OrgId, deptIds)
+	crd.addTask(param.OrgId, param.PlatformType, deptIds)
 
 	return nil
 }

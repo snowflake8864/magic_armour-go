@@ -15,6 +15,7 @@ type SearchConditions struct {
 	DeptIds      []int64
 	OpenSwitch   *int
 	Name         string
+	DirFull      string
 }
 
 type baseTrust struct {
@@ -57,6 +58,13 @@ func (m *baseTrust) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dept_id in",
 			Val: condition.DeptIds,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.DirFull) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dir",
+			Val: condition.DirFull,
 		})
 	}
 
