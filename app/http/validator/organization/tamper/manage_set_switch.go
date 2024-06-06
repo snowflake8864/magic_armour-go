@@ -11,9 +11,8 @@ import (
 )
 
 type ManageSetSwitch struct {
-	data_type.AgentBatch
+	data_type.AgentSingle
 	agent_common_data.CommonSwitch
-	agent_common_data.CommonMode
 }
 
 func (n ManageSetSwitch) CheckParams(context *gin.Context) {

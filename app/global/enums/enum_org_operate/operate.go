@@ -112,6 +112,9 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/procSample/delete":               {ModuleSample, "删除"},
 	"/v5/organization/procSample/clear":                {ModuleSample, "清空"},
 	"/v5/organization/procSample/download":             {ModuleSample, "下载"},
+	"/v5/organization/tamper/manage/setSwitch":         {ModuleTamper, "管理页：开关"},
+	"/v5/organization/tamper/manage/setMode":           {ModuleTamper, "管理页：模式"},
+	"/v5/organization/tamper/manage/batchSetConfig":    {ModuleTamper, "管理页：批量设置配置"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

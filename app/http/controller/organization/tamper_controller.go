@@ -2,10 +2,12 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/tamper_models"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -56,17 +58,56 @@ func (u *TamperController) PageForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *TamperController) SetSwitchForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetSwitchForManage")
+	agentIds := []string{
+		u.getAgentIdFromGin(ctx),
+	}
+	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
+	var param = agent_service.ManualInterveneColumn{
+		TamperSwitch: &Switch,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "防篡改管理-开关")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // SetModeForManage 管理页: 设置模式
 func (u *TamperController) SetModeForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetModeForManage")
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	agentIds := []string{agentId}
+	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
+	var param = agent_service.ManualInterveneColumn{
+		TamperMode: Mode,
+	}
+
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "防篡改管理-模式")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // BatchSetConfigForManage 管理页: 批量设置配置(开关和模式)
 func (u *TamperController) BatchSetConfigForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "BatchModifyForManage")
+	orgId := u.getLogin(ctx).OrgId
+	agentIds := u.getAgentIdsFromGin(ctx)
+	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
+	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
+
+	var param = agent_service.ManualInterveneColumn{
+		TamperSwitch: &Switch,
+		TamperMode:   Mode,
+	}
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "防篡改管理-批量")
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PageForPolicy 终端策略: 分页
