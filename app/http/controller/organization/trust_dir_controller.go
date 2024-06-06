@@ -99,10 +99,39 @@ func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 
 // SetSwitchForGlobal 全局： 设置开关
 func (u *TrustDirController) SetSwitchForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "FilePowers")
+	loginInfo := u.getLogin(ctx)
+
+	param := trust_models.TrustGlobalModel{
+		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		CreateId:     loginInfo.UserId,
+		CreateName:   loginInfo.Username,
+	}
+
+	if err := trust_dir_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForGlobal 全局： 删除
 func (u *TrustDirController) DeleteForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "FilePowers")
+	loginInfo := u.getLogin(ctx)
+
+	param := trust_models.TrustGlobalModel{
+		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		CreateId:     loginInfo.UserId,
+		CreateName:   loginInfo.Username,
+	}
+
+	if err := trust_dir_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

@@ -111,8 +111,8 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 		return errors.New("只能修改自己添加的策略(管理员除外)")
 	} else if hashModel.Dir != param.Dir {
 		conditions := trust_models.SearchConditions{
-			OrgId:        param.OrgId,
-			PlatformType: param.PlatformType,
+			OrgId:        hashModel.OrgId,
+			PlatformType: hashModel.PlatformType,
 			DeptId:       param.DeptId,
 			DirFull:      param.Dir,
 		}
@@ -122,7 +122,7 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	}
 
 	//组织架构
-	err, deptIds := crd.getDeptIds(param.OrgId, param.DeptId)
+	err, deptIds := crd.getDeptIds(hashModel.OrgId, param.DeptId)
 	if err != nil {
 		return err
 	}
@@ -135,15 +135,97 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	updates["dept_id"] = param.DeptId
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
-		OrgId:        param.OrgId,
-		Id:           param.Id,
-		PlatformType: param.PlatformType,
+		OrgId:        hashModel.OrgId,
+		Id:           hashModel.Id,
+		PlatformType: hashModel.PlatformType,
 	}, updates); !isOk {
 		return errors.New("保存失败")
 	}
 
 	//新增任务
-	crd.addTask(param.OrgId, param.PlatformType, deptIds)
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
 
 	return nil
+}
+
+// SetSwitch 开关
+func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot int) error {
+
+	//验证数据
+	hashModel := crd.masterModel.GetItemByConditions(trust_models.SearchConditions{
+		OrgId:        param.OrgId,
+		Id:           param.Id,
+		PlatformType: param.PlatformType,
+	})
+	if hashModel == nil || hashModel.OrgId == 0 {
+		return errors.New("数据不存在")
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+		return errors.New("只能修改自己添加的策略(管理员除外)")
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	updates["open_switch"] = param.OpenSwitch
+	updates["updated_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
+		OrgId:        hashModel.OrgId,
+		Id:           hashModel.Id,
+		PlatformType: hashModel.PlatformType,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
+
+	//组织架构
+	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
+	if err != nil {
+		return err
+	}
+
+	//新增任务
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+
+	return nil
+}
+
+// DeleteById 删除
+func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot int) error {
+
+	//验证数据
+	hashModel := crd.masterModel.GetItemByConditions(trust_models.SearchConditions{
+		OrgId:        param.OrgId,
+		Id:           param.Id,
+		PlatformType: param.PlatformType,
+	})
+	if hashModel == nil || hashModel.OrgId == 0 {
+		return errors.New("数据不存在")
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+		return errors.New("只能删除自己添加的策略(管理员除外)")
+	}
+
+	//修改
+	if !crd.masterModel.DeleteByConditions(trust_models.SearchConditions{
+		OrgId:        hashModel.OrgId,
+		Id:           hashModel.Id,
+		PlatformType: hashModel.PlatformType,
+	}) {
+		return errors.New("删除失败")
+	}
+
+	//组织架构
+	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
+	if err != nil {
+		return err
+	}
+
+	//新增任务
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+
+	return nil
+}
+
+// DeleteByOrg 删除
+func (crd *GlobalCurd) DeleteByOrg(orgId int64) {
+	crd.masterModel.DeleteByConditions(trust_models.SearchConditions{
+		OrgId: orgId,
+	})
 }

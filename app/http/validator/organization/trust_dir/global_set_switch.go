@@ -5,12 +5,14 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/http/validator/organization/agent_common_data"
 	"goskeleton/app/utils/response"
 )
 
 type GlobalSetSwitch struct {
 	Id
 	PlatformType
+	agent_common_data.CommonSwitch
 }
 
 func (n GlobalSetSwitch) CheckParams(context *gin.Context) {
