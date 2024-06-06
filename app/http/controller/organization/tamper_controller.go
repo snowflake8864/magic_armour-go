@@ -2,6 +2,10 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/utils/response"
 )
 
@@ -22,7 +26,32 @@ func (u *TamperController) FolderPower(ctx *gin.Context) {
 
 // PageForManage 分页
 func (u *TamperController) PageForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForOwn")
+
+	//查询条件
+	conditions, err := u.getAgentSearchConditions(ctx)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
+
+	//终端分页
+	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)
+	//转化数据
+	agentIds, departmentMaps := u.parseAgentModels(agentModels, true)
+
+	var extendInfo = make(map[string]interface{})
+	if len(agentIds) > 0 {
+		//规则统计数据
+		PolicyFact := tamper_models.CreateTamperPolicyFactory()
+		extendInfo = PolicyFact.CalcByConditionsGroupAgentReturnMap(tamper_models.SearchConditions{
+			OrgId:    u.getLogin(ctx).OrgId,
+			AgentIds: agentIds,
+		}, PolicyFact.ColumnCalc(true))
+	}
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
 
 // SetSwitchForManage 管理页: 设置开关

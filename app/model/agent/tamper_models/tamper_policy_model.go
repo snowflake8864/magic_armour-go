@@ -1,8 +1,10 @@
 package tamper_models
 
 import (
+	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 //终端:防篡改策略
@@ -14,6 +16,7 @@ func CreateTamperPolicyFactory() *TamperPolicyModel {
 //结构体
 
 type TamperPolicyModel struct {
+	baseTamper
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
 	OrgId         int64  `json:"org_id"`
@@ -74,4 +77,151 @@ func (m *TamperPolicyModel) CreateTable() bool {
 	} else {
 		return false
 	}
+}
+
+// UpdateByConditions 通过条件修改
+func (m *TamperPolicyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *TamperPolicyModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetItemByConditions 通过id获取一条记录
+func (m *TamperPolicyModel) GetItemByConditions(condition SearchConditions) (item *TamperPolicyModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// GetListByConditions 获取符合条件的全部记录
+func (m *TamperPolicyModel) GetListByConditions(condition SearchConditions) (items []*TamperPolicyModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *TamperPolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TamperPolicyModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *TamperPolicyModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *TamperPolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TamperPolicyModel) {
+	if total = m.Count(condition); total == 0 {
+		return total, nil
+	}
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
+	}
+}
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *TamperPolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
+func (m *TamperPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
+	var result = make(map[string]interface{})
+
+	items := m.CalcByConditionsGroupAgent(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.AgentId] = *item
+	}
+
+	return result
 }

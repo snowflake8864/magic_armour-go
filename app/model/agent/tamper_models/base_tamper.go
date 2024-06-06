@@ -1,14 +1,17 @@
 package tamper_models
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 type SearchConditions struct {
 	OrgId        int64
 	AgentId      string
+	AgentIds     []string
 	Id           int64
 	PlatformType int
 	DeptId       int64
@@ -17,7 +20,25 @@ type SearchConditions struct {
 	DirFull      string
 }
 
+// Calc 统计
+type Calc struct {
+	AgentId     string `json:"agent_id"`
+	TotalNumber int    `json:"total_number"`
+	OnNumber    int    `json:"on_number"`
+}
+
 type baseTamper struct {
+}
+
+// ColumnCalc 字段：统计
+func (m *baseTamper) ColumnCalc(switchOn bool) string {
+	var columns []string
+	columns = append(columns, "agent_id AS agent_id")
+	columns = append(columns, "COUNT(id) AS total_number")
+	if switchOn {
+		columns = append(columns, fmt.Sprintf("SUM(IF(open_switch=%d, 1, 0)) AS on_number", enums.SwitchOn))
+	}
+	return strings.Join(columns, ", ")
 }
 
 // conditions2Where 查询条件转化
@@ -32,6 +53,12 @@ func (m *baseTamper) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "agent_id",
 			Val: condition.AgentId,
+		})
+	}
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
 		})
 	}
 	if condition.PlatformType > 0 {
