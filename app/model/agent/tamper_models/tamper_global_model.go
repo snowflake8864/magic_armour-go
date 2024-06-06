@@ -16,9 +16,10 @@ func CreateTamperGlobalFactory() *TamperGlobalModel {
 
 type TamperGlobalModel struct {
 	model.BaseModel
-	Id            string `json:"id" gorm:"primaryKey"`
+	Id            int64  `json:"id" gorm:"primaryKey"`
 	OrgId         int64  `json:"org_id"`
 	PlatformType  int    `json:"platform_type"`
+	DeptId        int64  `json:"dept_id"`
 	Type          int    `json:"type"`
 	Dir           string `json:"dir"`
 	ProtectRw     int    `json:"protect_rw"`
@@ -46,7 +47,8 @@ func (m *TamperGlobalModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(统一定义)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
+			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			type tinyint NOT NULL DEFAULT '0' COMMENT '类型(1文件夹 2单文件)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
 			protect_rw int NOT NULL DEFAULT '0' COMMENT '保护权限(1读,2写,4删除,8重命名,16新建)',

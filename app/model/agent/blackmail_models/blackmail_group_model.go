@@ -16,7 +16,7 @@ func CreateBlackmailGroupFactory() *BlackmailGroupModel {
 
 type BlackmailGroupModel struct {
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
 	Title      string `json:"title"`
 	Suffix     string `json:"suffix"`
@@ -37,7 +37,7 @@ func (m *BlackmailGroupModel) CreateTable() bool {
 	sql += `
 		(	
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
 			suffix varchar(128)  NOT NULL DEFAULT '' COMMENT '后缀,英文逗号隔开',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
