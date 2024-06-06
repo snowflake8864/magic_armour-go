@@ -41,7 +41,7 @@ type Processes struct {
 }
 
 type ProtectRw struct {
-	ProtectRw string `form:"protectRw" json:"protectRw" binding:"omitempty,min=3,min=32"`
+	ProtectRw string `form:"protectRw" json:"protectRw" binding:"omitempty,min=3,max=32"`
 }
 
 type DeptId struct {

@@ -19,7 +19,6 @@ type PolicyAddFolder struct {
 	IsExtend
 	Processes
 	Remark
-	DeptId
 }
 
 func (n PolicyAddFolder) CheckParams(context *gin.Context) {
