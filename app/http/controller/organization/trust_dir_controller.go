@@ -72,7 +72,29 @@ func (u *TrustDirController) AddForGlobal(ctx *gin.Context) {
 
 // EditForGlobal 全局： 编辑
 func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "FilePowers")
+	loginInfo := u.getLogin(ctx)
+
+	param := trust_models.TrustGlobalModel{
+		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
+		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Name:         ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+		IsExtend:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend")),
+		CreateId:     loginInfo.UserId,
+		CreateName:   loginInfo.Username,
+	}
+
+	if err := u.isBelongUserDepartment(loginInfo.IsRoot, &loginInfo.DeptWithChild, param.DeptId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	if err := trust_dir_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // SetSwitchForGlobal 全局： 设置开关
