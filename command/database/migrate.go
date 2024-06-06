@@ -174,6 +174,7 @@ func initTableAndData() {
 		_ = agent_access_models.CreateAccessLogFactory().CreateTable()
 		_ = agent_models.CreateAgentFactory().CreateTable()
 		_ = agent_models.CreateAgentExtendFactory().CreateTable()
+		_ = blackmail_models.CreateBlackmailGlobalFactory().CreateTable()
 		_ = blackmail_models.CreateBlackmailGroupFactory().CreateTable()
 		_ = blackmail_models.CreateBlackmailPolicyFactory().CreateTable()
 		_ = dir_models.CreateDirFactory().CreateTable()
