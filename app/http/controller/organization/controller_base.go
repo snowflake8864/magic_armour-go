@@ -172,3 +172,29 @@ func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string
 func (u *ControllerBase) getAgentIdFromGin(ctx *gin.Context) string {
 	return ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
 }
+
+// IsBelongUserDepartment 是否属于用户的组织架构
+func (u *ControllerBase) isBelongUserDepartment(isRoot int, manageDeptIds *[]int64, deptId int64) error {
+	//管理员可看全部组织架构
+	if isRoot == enums.IsYes {
+		return nil
+	}
+	if deptId <= 0 {
+		return errors.New("必须选择一个组织组织架构")
+	}
+	if manageDeptIds == nil || len(*manageDeptIds) == 0 {
+		return errors.New("没有需要管理的组织架构")
+	}
+
+	var exists bool
+	for _, id := range *manageDeptIds {
+		if id == deptId {
+			exists = true
+			break
+		}
+	}
+	if !exists {
+		return errors.New("只能选择属于自己的组织架构")
+	}
+	return nil
+}
