@@ -98,7 +98,7 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 }
 
 // BatchUpdate 批量修改
-func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualInterveneColumn, remark string) (errCode int, err error) {
+func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn, remark string) (errCode int, err error) {
 	models := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnConfig(true, true))
 	if models == nil || len(models) == 0 {
 		return -1, errors.New("终端不存在")

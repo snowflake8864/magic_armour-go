@@ -105,7 +105,7 @@ func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
 		u.getAgentIdFromGin(ctx),
 	}
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		ProcessSwitch: &Switch,
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-开关")
@@ -122,7 +122,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 	agentIds := []string{agentId}
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		ProcessMode: Mode,
 	}
 
@@ -177,7 +177,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 		}
 	}
 
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		ProcessSwitch: &Switch,
 		ProcessMode:   Mode,
 	}

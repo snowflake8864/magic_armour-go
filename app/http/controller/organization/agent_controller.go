@@ -168,7 +168,7 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
 	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		DeptId:              &DeptId,
 		SyslogDnsSwitch:     &SyslogDnsSwitch,
 		SyslogOuterSwitch:   &SyslogOuterSwitch,
@@ -210,7 +210,7 @@ func (u *AgentController) SaveForBasic(ctx *gin.Context) {
 	position := ctx.GetString(consts.ValidatorPrefixOrg + "position")
 	remark := ctx.GetString(consts.ValidatorPrefixOrg + "remark")
 
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		DeptId:      &deptId,
 		AgentType:   &agentType,
 		Alias:       &alias,
@@ -280,7 +280,7 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		}
 	}
 
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		ProcessSwitch:       &processSwitch,
 		ProcessMode:         processMode,
 		DllSwitch:           &dllSwitch,

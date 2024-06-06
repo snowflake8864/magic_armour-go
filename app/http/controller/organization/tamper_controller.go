@@ -62,7 +62,7 @@ func (u *TamperController) SetSwitchForManage(ctx *gin.Context) {
 		u.getAgentIdFromGin(ctx),
 	}
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		TamperSwitch: &Switch,
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "防篡改管理-开关")
@@ -79,7 +79,7 @@ func (u *TamperController) SetModeForManage(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 	agentIds := []string{agentId}
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		TamperMode: Mode,
 	}
 
@@ -98,7 +98,7 @@ func (u *TamperController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 
-	var param = agent_service.ManualInterveneColumn{
+	var param = agent_service.ManualColumn{
 		TamperSwitch: &Switch,
 		TamperMode:   Mode,
 	}

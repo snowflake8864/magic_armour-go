@@ -11,8 +11,8 @@ import (
 	"goskeleton/app/service/agent/task_service"
 )
 
-// ManualInterveneColumn 人工可干预字段
-type ManualInterveneColumn struct {
+// ManualColumn 人工可干预字段
+type ManualColumn struct {
 	UserId              *int64
 	DeptId              *int64
 	AgentType           *int
@@ -54,7 +54,7 @@ type AgentBase struct {
 }
 
 // 获取修改数据
-func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualInterveneColumn) (err error, hasTask bool,
+func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
 	openAutoWhite bool, updates map[string]interface{}) {
 	if model == nil {
 		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
