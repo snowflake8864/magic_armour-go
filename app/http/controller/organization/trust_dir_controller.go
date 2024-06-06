@@ -21,9 +21,6 @@ func (u *TrustDirController) PageForGlobal(ctx *gin.Context) {
 // AddForGlobal 全局： 添加
 func (u *TrustDirController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	var result []int64
-	println("result:", result)
-	println("len(result)=", len(result))
 
 	param := trust_models.TrustGlobalModel{
 		OrgId:        loginInfo.OrgId,

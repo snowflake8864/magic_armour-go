@@ -5,7 +5,7 @@ type Dir struct {
 }
 
 type PlatformType struct {
-	PlatformType string `form:"platformType" json:"platformType" binding:"required,oneof=1 2"`
+	PlatformType int `form:"platformType" json:"platformType" binding:"required,oneof=1 2"`
 }
 
 type Id struct {
