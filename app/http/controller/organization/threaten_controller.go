@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
-	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
@@ -52,5 +52,5 @@ func (u *ThreatenController) GetAttr(ctx *gin.Context) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
 	}
-	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransThreatenInfo(model))
+	response.SuccessReturnData(ctx, (&transformer.Common{}).TransThreatenInfo(model))
 }
