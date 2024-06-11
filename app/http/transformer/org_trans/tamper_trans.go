@@ -16,7 +16,7 @@ type TamperTrans struct {
 }
 
 // TransGlobalPage 转换成全局名单分页需要的数据
-func (t *TamperTrans) TransGlobalPage(total int64, models []*tamper_models.TamperGlobalModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+func (t *TamperTrans) TransGlobalPage(total int64, models []*tamper_models.GlobalModel, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -60,7 +60,7 @@ func (t *TamperTrans) TransGlobalPage(total int64, models []*tamper_models.Tampe
 }
 
 // TransPolicyPage 转换成策略页需要的数据
-func (t *TamperTrans) TransPolicyPage(total int64, models []*tamper_models.TamperPolicyModel) interface{} {
+func (t *TamperTrans) TransPolicyPage(total int64, models []*tamper_models.PolicyModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 

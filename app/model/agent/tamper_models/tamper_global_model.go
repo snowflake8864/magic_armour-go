@@ -9,13 +9,13 @@ import (
 
 //防篡改-全局
 
-func CreateTamperGlobalFactory() *TamperGlobalModel {
-	return &TamperGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateGlobalFactory() *GlobalModel {
+	return &GlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type TamperGlobalModel struct {
+type GlobalModel struct {
 	baseTamper
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
@@ -42,11 +42,11 @@ type TamperGlobalModel struct {
 
 // 表名
 
-func (m *TamperGlobalModel) TableName() string {
+func (m *GlobalModel) TableName() string {
 	return "a_tamper_global"
 }
 
-func (m *TamperGlobalModel) CreateTable() bool {
+func (m *GlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -87,7 +87,7 @@ func (m *TamperGlobalModel) CreateTable() bool {
 	}
 }
 
-func (m *TamperGlobalModel) InsertItem(s *TamperGlobalModel) bool {
+func (m *GlobalModel) InsertItem(s *GlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -101,7 +101,7 @@ func (m *TamperGlobalModel) InsertItem(s *TamperGlobalModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *TamperGlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *GlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -118,7 +118,7 @@ func (m *TamperGlobalModel) UpdateByConditions(condition SearchConditions, updat
 }
 
 // DeleteByConditions 通过条件删除
-func (m *TamperGlobalModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *GlobalModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -135,7 +135,7 @@ func (m *TamperGlobalModel) DeleteByConditions(condition SearchConditions) bool 
 }
 
 // GetItemByConditions 通过id获取一条记录
-func (m *TamperGlobalModel) GetItemByConditions(condition SearchConditions) (item *TamperGlobalModel) {
+func (m *GlobalModel) GetItemByConditions(condition SearchConditions) (item *GlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -153,12 +153,12 @@ func (m *TamperGlobalModel) GetItemByConditions(condition SearchConditions) (ite
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *TamperGlobalModel) GetListByConditions(condition SearchConditions) (items []*TamperGlobalModel) {
+func (m *GlobalModel) GetListByConditions(condition SearchConditions) (items []*GlobalModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *TamperGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TamperGlobalModel) {
+func (m *GlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*GlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -185,7 +185,7 @@ func (m *TamperGlobalModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *TamperGlobalModel) Count(condition SearchConditions) int64 {
+func (m *GlobalModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -203,7 +203,7 @@ func (m *TamperGlobalModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *TamperGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TamperGlobalModel) {
+func (m *GlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*GlobalModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

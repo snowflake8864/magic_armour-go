@@ -9,13 +9,13 @@ import (
 
 //终端:防篡改策略
 
-func CreateTamperPolicyFactory() *TamperPolicyModel {
-	return &TamperPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreatePolicyFactory() *PolicyModel {
+	return &PolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type TamperPolicyModel struct {
+type PolicyModel struct {
 	baseTamper
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
@@ -41,11 +41,11 @@ type TamperPolicyModel struct {
 
 // 表名
 
-func (m *TamperPolicyModel) TableName() string {
+func (m *PolicyModel) TableName() string {
 	return "a_tamper_policy"
 }
 
-func (m *TamperPolicyModel) CreateTable() bool {
+func (m *PolicyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -85,7 +85,7 @@ func (m *TamperPolicyModel) CreateTable() bool {
 	}
 }
 
-func (m *TamperPolicyModel) InsertItem(s *TamperPolicyModel) bool {
+func (m *PolicyModel) InsertItem(s *PolicyModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -99,7 +99,7 @@ func (m *TamperPolicyModel) InsertItem(s *TamperPolicyModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *TamperPolicyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *PolicyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -116,7 +116,7 @@ func (m *TamperPolicyModel) UpdateByConditions(condition SearchConditions, updat
 }
 
 // DeleteByConditions 通过条件删除
-func (m *TamperPolicyModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *PolicyModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -133,7 +133,7 @@ func (m *TamperPolicyModel) DeleteByConditions(condition SearchConditions) bool 
 }
 
 // GetItemByConditions 通过id获取一条记录
-func (m *TamperPolicyModel) GetItemByConditions(condition SearchConditions) (item *TamperPolicyModel) {
+func (m *PolicyModel) GetItemByConditions(condition SearchConditions) (item *PolicyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -151,12 +151,12 @@ func (m *TamperPolicyModel) GetItemByConditions(condition SearchConditions) (ite
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *TamperPolicyModel) GetListByConditions(condition SearchConditions) (items []*TamperPolicyModel) {
+func (m *PolicyModel) GetListByConditions(condition SearchConditions) (items []*PolicyModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *TamperPolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TamperPolicyModel) {
+func (m *PolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PolicyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -183,7 +183,7 @@ func (m *TamperPolicyModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *TamperPolicyModel) Count(condition SearchConditions) int64 {
+func (m *PolicyModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -201,7 +201,7 @@ func (m *TamperPolicyModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *TamperPolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TamperPolicyModel) {
+func (m *PolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PolicyModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
@@ -213,7 +213,7 @@ func (m *TamperPolicyModel) Page(condition SearchConditions, offset, limit int, 
 }
 
 // CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
-func (m *TamperPolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
+func (m *PolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(column)
@@ -231,7 +231,7 @@ func (m *TamperPolicyModel) CalcByConditionsGroupAgent(condition SearchCondition
 }
 
 // CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
-func (m *TamperPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
+func (m *PolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
 	var result = make(map[string]interface{})
 
 	items := m.CalcByConditionsGroupAgent(condition, column)

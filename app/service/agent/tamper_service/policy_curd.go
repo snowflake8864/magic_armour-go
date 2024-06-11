@@ -12,11 +12,11 @@ import (
 )
 
 func CreatePolicyCurdFactory() *PolicyCurd {
-	return &PolicyCurd{masterModel: tamper_models.CreateTamperPolicyFactory()}
+	return &PolicyCurd{masterModel: tamper_models.CreatePolicyFactory()}
 }
 
 type PolicyCurd struct {
-	masterModel *tamper_models.TamperPolicyModel
+	masterModel *tamper_models.PolicyModel
 }
 
 // 新增任务
@@ -25,7 +25,7 @@ func (crd *PolicyCurd) addTask(orgId int64, agentId string, remark string) {
 }
 
 // Add 新增
-func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
+func (crd *PolicyCurd) Add(param *tamper_models.PolicyModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.OpenSwitch = enums.SwitchOff
@@ -50,7 +50,7 @@ func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
 }
 
 // Edit 修改
-func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) error {
+func (crd *PolicyCurd) Edit(param *tamper_models.PolicyModel, isRoot int) error {
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 
@@ -96,7 +96,7 @@ func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) 
 }
 
 // SetSwitch 开关
-func (crd *PolicyCurd) SetSwitch(param *tamper_models.TamperPolicyModel, isRoot int) error {
+func (crd *PolicyCurd) SetSwitch(param *tamper_models.PolicyModel, isRoot int) error {
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
@@ -131,7 +131,7 @@ func (crd *PolicyCurd) SetSwitch(param *tamper_models.TamperPolicyModel, isRoot 
 }
 
 // DeleteById 删除
-func (crd *PolicyCurd) DeleteById(param *tamper_models.TamperPolicyModel, isRoot int) error {
+func (crd *PolicyCurd) DeleteById(param *tamper_models.PolicyModel, isRoot int) error {
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{

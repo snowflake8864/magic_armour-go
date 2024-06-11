@@ -60,7 +60,7 @@ func (u *TamperController) PageForManage(ctx *gin.Context) {
 	var extendInfo = make(map[string]interface{})
 	if len(agentIds) > 0 {
 		//规则统计数据
-		PolicyFact := tamper_models.CreateTamperPolicyFactory()
+		PolicyFact := tamper_models.CreatePolicyFactory()
 		extendInfo = PolicyFact.CalcByConditionsGroupAgentReturnMap(tamper_models.SearchConditions{
 			OrgId:    u.getLogin(ctx).OrgId,
 			AgentIds: agentIds,
@@ -134,7 +134,7 @@ func (u *TamperController) PageForPolicy(ctx *gin.Context) {
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := tamper_models.CreateTamperPolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := tamper_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
 }
@@ -143,7 +143,7 @@ func (u *TamperController) PageForPolicy(ctx *gin.Context) {
 func (u *TamperController) SetSwitchForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.TamperPolicyModel{
+	param := tamper_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -198,7 +198,7 @@ func (u *TamperController) AddFileForPolicy(ctx *gin.Context) {
 
 func (u *TamperController) addForPolicy(ctx *gin.Context, Type int) error {
 	loginInfo := u.getLogin(ctx)
-	param := tamper_models.TamperPolicyModel{
+	param := tamper_models.PolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
 		Type:       Type,
@@ -253,7 +253,7 @@ func (u *TamperController) EditFileForPolicy(ctx *gin.Context) {
 
 func (u *TamperController) editForPolicy(ctx *gin.Context, Type int) error {
 	loginInfo := u.getLogin(ctx)
-	param := tamper_models.TamperPolicyModel{
+	param := tamper_models.PolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -298,7 +298,7 @@ func (u *TamperController) EditFolderForPolicy(ctx *gin.Context) {
 func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.TamperPolicyModel{
+	param := tamper_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -323,7 +323,7 @@ func (u *TamperController) PageForGlobal(ctx *gin.Context) {
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := tamper_models.CreateTamperGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := tamper_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
 
 	//获取组织架构
 	departmentMaps := map[int64]*department_models.DepartmentModel{}
@@ -344,7 +344,7 @@ func (u *TamperController) PageForGlobal(ctx *gin.Context) {
 func (u *TamperController) SetSwitchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.TamperGlobalModel{
+	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
@@ -370,7 +370,7 @@ func (u *TamperController) AddFileForGlobal(ctx *gin.Context) {
 
 func (u *TamperController) addForGlobal(ctx *gin.Context, Type int) error {
 	loginInfo := u.getLogin(ctx)
-	param := tamper_models.TamperGlobalModel{
+	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		Type:         Type,
@@ -425,7 +425,7 @@ func (u *TamperController) EditForGlobal(ctx *gin.Context) {
 
 func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
 	loginInfo := u.getLogin(ctx)
-	param := tamper_models.TamperGlobalModel{
+	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -471,7 +471,7 @@ func (u *TamperController) EditFolderForGlobal(ctx *gin.Context) {
 func (u *TamperController) DeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.TamperGlobalModel{
+	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		UpdateId:     loginInfo.UserId,

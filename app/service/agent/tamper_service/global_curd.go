@@ -14,11 +14,11 @@ import (
 )
 
 func CreateGlobalCurdFactory() *GlobalCurd {
-	return &GlobalCurd{masterModel: tamper_models.CreateTamperGlobalFactory()}
+	return &GlobalCurd{masterModel: tamper_models.CreateGlobalFactory()}
 }
 
 type GlobalCurd struct {
-	masterModel *tamper_models.TamperGlobalModel
+	masterModel *tamper_models.GlobalModel
 }
 
 // 新增任务
@@ -53,7 +53,7 @@ func (crd *GlobalCurd) getDeptIds(orgId int64, deptId int64) (error, []int64) {
 }
 
 // Add 新增
-func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
+func (crd *GlobalCurd) Add(param *tamper_models.GlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.OpenSwitch = enums.SwitchOff
@@ -88,7 +88,7 @@ func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
 }
 
 // Edit 修改
-func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error {
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
@@ -145,7 +145,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 }
 
 // SetSwitch 开关
-func (crd *GlobalCurd) SetSwitch(param *tamper_models.TamperGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) SetSwitch(param *tamper_models.GlobalModel, isRoot int) error {
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
@@ -186,7 +186,7 @@ func (crd *GlobalCurd) SetSwitch(param *tamper_models.TamperGlobalModel, isRoot 
 }
 
 // DeleteById 删除
-func (crd *GlobalCurd) DeleteById(param *tamper_models.TamperGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) DeleteById(param *tamper_models.GlobalModel, isRoot int) error {
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
