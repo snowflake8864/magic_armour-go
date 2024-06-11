@@ -11,9 +11,11 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/tamper_models"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/tamper_service"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -313,7 +315,29 @@ func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
 
 // PageForGlobal 全局策略: 分页
 func (u *TamperController) PageForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForGlobal")
+	loginInfo := u.getLogin(ctx)
+	//查询条件
+	condition := tamper_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := tamper_models.CreateTamperGlobalFactory().Page(condition, offset, pageSize, order)
+
+	//获取组织架构
+	departmentMaps := map[int64]*department_models.DepartmentModel{}
+	if models != nil && len(models) > 0 {
+		var deptIds []int64
+		for _, model := range models {
+			if model.DeptId > 0 {
+				deptIds = append(deptIds, model.DeptId)
+			}
+		}
+		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // SetSwitchForGlobal 全局策略: 设置开关
@@ -405,6 +429,7 @@ func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
 		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,

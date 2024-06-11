@@ -122,6 +122,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 	updates["exclude_folder"] = param.ExcludeFolder
 	updates["is_extend"] = param.IsExtend
 	updates["processes"] = param.Processes
+	updates["dept_id"] = param.DeptId
 	updates["remark"] = param.Remark
 	updates["open_switch"] = param.OpenSwitch
 	updates["update_id"] = param.UpdateId
