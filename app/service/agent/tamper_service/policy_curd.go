@@ -113,6 +113,8 @@ func (crd *PolicyCurd) SetSwitch(param *tamper_models.TamperPolicyModel, isRoot 
 	//修改
 	updates := make(map[string]interface{})
 	updates["open_switch"] = param.OpenSwitch
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
 		OrgId:   hashModel.OrgId,

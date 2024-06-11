@@ -122,7 +122,22 @@ func (u *TamperController) PageForPolicy(ctx *gin.Context) {
 
 // SetSwitchForPolicy 终端策略: 设置开关
 func (u *TamperController) SetSwitchForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetSwitchForPolicy")
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.TamperPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 func (u *TamperController) getProtectRw(ctx *gin.Context) (error, int) {
