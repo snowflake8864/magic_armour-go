@@ -12,6 +12,7 @@ import (
 type PolicyEditFile struct {
 	data_type.AgentSingle
 	Id
+	Dir
 	ProtectRw
 	Processes
 	Remark

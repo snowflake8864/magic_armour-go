@@ -12,6 +12,7 @@ import (
 type PolicyEditFolder struct {
 	data_type.AgentSingle
 	Id
+	Dir
 	ProtectRw
 	IncludeSuffix
 	ExcludeSuffix

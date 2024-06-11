@@ -12,6 +12,7 @@ type GlobalEditFile struct {
 	PlatformType
 	DeptId
 	Id
+	Dir
 	ProtectRw
 	Processes
 	Remark

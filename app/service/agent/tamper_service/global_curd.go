@@ -106,6 +106,16 @@ func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error 
 		return errors.New("数据不存在")
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
+	} else if hashModel.Dir != param.Dir {
+		conditions := tamper_models.SearchConditions{
+			OrgId:        hashModel.OrgId,
+			PlatformType: hashModel.PlatformType,
+			DeptId:       param.DeptId,
+			DirFull:      param.Dir,
+		}
+		if total := crd.masterModel.Count(conditions); total > 0 {
+			return errors.New("已存在相同策略，不能重复添加")
+		}
 	}
 
 	//组织架构
@@ -116,6 +126,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error 
 
 	//修改
 	updates := make(map[string]interface{})
+	updates["dir"] = param.Dir
 	updates["protect_rw"] = param.ProtectRw
 	updates["include_suffix"] = param.IncludeSuffix
 	updates["exclude_suffix"] = param.ExcludeSuffix

@@ -12,6 +12,7 @@ type GlobalEditFolder struct {
 	PlatformType
 	DeptId
 	Id
+	Dir
 	ProtectRw
 	IncludeSuffix
 	ExcludeSuffix
