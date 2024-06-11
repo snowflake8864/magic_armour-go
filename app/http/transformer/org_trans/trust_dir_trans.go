@@ -35,6 +35,8 @@ func (t *TrustDirTrans) TransGlobalPage(total int64, models []*trust_models.Trus
 			data["create_id"] = model.CreateId
 			data["create_name"] = model.CreateName
 			data["created_at"] = model.CreatedAt
+			data["update_id"] = model.UpdateId
+			data["update_name"] = model.UpdateName
 			data["updated_at"] = model.UpdatedAt
 
 			items = append(items, data)

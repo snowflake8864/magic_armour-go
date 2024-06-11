@@ -105,7 +105,7 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
 	}
 
@@ -121,6 +121,8 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	updates["is_extend"] = param.IsExtend
 	updates["open_switch"] = enums.SwitchOff
 	updates["dept_id"] = param.DeptId
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
@@ -148,13 +150,15 @@ func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot in
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
 	}
 
 	//修改
 	updates := make(map[string]interface{})
 	updates["open_switch"] = param.OpenSwitch
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
@@ -187,7 +191,7 @@ func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot i
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能删除自己添加的策略(管理员除外)")
 	}
 

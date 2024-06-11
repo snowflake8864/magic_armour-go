@@ -57,6 +57,8 @@ func (u *TrustDirController) AddForGlobal(ctx *gin.Context) {
 		IsExtend:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend")),
 		CreateId:     loginInfo.UserId,
 		CreateName:   loginInfo.Username,
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
 	}
 
 	if err := u.isBelongUserDepartment(loginInfo.IsRoot, &loginInfo.DeptWithChild, param.DeptId); err != nil {
@@ -81,8 +83,8 @@ func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
 		Name:         ctx.GetString(consts.ValidatorPrefixOrg + "name"),
 		IsExtend:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend")),
-		CreateId:     loginInfo.UserId,
-		CreateName:   loginInfo.Username,
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
 	}
 
 	if err := u.isBelongUserDepartment(loginInfo.IsRoot, &loginInfo.DeptWithChild, param.DeptId); err != nil {
@@ -105,8 +107,8 @@ func (u *TrustDirController) SetSwitchForGlobal(ctx *gin.Context) {
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		CreateId:     loginInfo.UserId,
-		CreateName:   loginInfo.Username,
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
 	}
 
 	if err := trust_dir_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
@@ -124,8 +126,8 @@ func (u *TrustDirController) DeleteForGlobal(ctx *gin.Context) {
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		CreateId:     loginInfo.UserId,
-		CreateName:   loginInfo.Username,
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
 	}
 
 	if err := trust_dir_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
