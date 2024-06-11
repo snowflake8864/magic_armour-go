@@ -39,12 +39,6 @@ var EnumMapInt = map[string]map[int]string{
 		PowerRename: "重命名",
 		PowerCreate: "新建",
 	},
-	"power_file": {
-		PowerRead:   "读取",
-		PowerWrite:  "写入",
-		PowerDelete: "删除",
-		PowerRename: "重命名",
-	},
 	"is_extend": {
 		ExtendYes: "是",
 		ExtendNot: "否",

@@ -312,8 +312,8 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					public := tamper.Group("public/")
 					{
-						public.POST("FilePower", (&organization.TamperController{}).FilePower)
-						public.POST("FolderPower", (&organization.TamperController{}).FolderPower)
+						public.POST("filePower", (&organization.TamperController{}).FilePower)
+						public.POST("folderPower", (&organization.TamperController{}).FolderPower)
 					}
 					manage := tamper.Group("manage/")
 					{
