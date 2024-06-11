@@ -129,6 +129,7 @@ func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) err
 	//修改
 	updates := make(map[string]interface{})
 	updates["name"] = param.Name
+	updates["dir"] = param.Dir
 	updates["is_extend"] = param.IsExtend
 	updates["open_switch"] = enums.SwitchOff
 	updates["dept_id"] = param.DeptId
