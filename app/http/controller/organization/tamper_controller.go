@@ -415,8 +415,8 @@ func (u *TamperController) AddFolderForGlobal(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// EditForGlobal 全局策略: 编辑
-func (u *TamperController) EditForGlobal(ctx *gin.Context) {
+// EditFileForGlobal 全局策略: 编辑
+func (u *TamperController) EditFileForGlobal(ctx *gin.Context) {
 	if err := u.editForGlobal(ctx, enum_tamper.TypeFile); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
