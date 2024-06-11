@@ -159,7 +159,7 @@ func initTableAndData() {
 		_ = agent_type_models.CreateAgentTypeFactory().CreateTable()
 		_ = custom_table_models.CreateCustomTableFactory().CreateTable()
 		_ = department_models.CreateDepartmentFactory().CreateTable()
-		_ = org_operate_models.CreateOperateLogFactory().CreateTable()
+		_ = org_operate_models.CreateLogFactory().CreateTable()
 		_ = order_models.CreateOrderLogFactory().CreateTable()
 		_ = order_models.CreateOrderFactory().CreateTable()
 		_ = organization_models.CreateOrgExtendFactory().CreateTable()
