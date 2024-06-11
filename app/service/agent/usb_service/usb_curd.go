@@ -13,13 +13,13 @@ import (
 func CreateUsbCurdFactory() *UsbCurd {
 	return &UsbCurd{
 		masterModel: usb_models.CreateUsbFactory(),
-		logModel:    usb_models.CreateUsbLogFactory(),
+		logModel:    usb_models.CreateLogFactory(),
 	}
 }
 
 type UsbCurd struct {
 	masterModel *usb_models.UsbModel
-	logModel    *usb_models.UsbLogModel
+	logModel    *usb_models.LogModel
 }
 
 // 终端下线设备
@@ -71,8 +71,8 @@ func (crd *UsbCurd) setOfflineByAgent(orgId int64, agentId string) {
 	}
 	crd.masterModel.UpdateByConditions(condition, updates)
 }
-func (crd *UsbCurd) initLog(orgId int64, agentId, at string, plugStatus int, usbModel usb_models.UsbModel) usb_models.UsbLogModel {
-	return usb_models.UsbLogModel{
+func (crd *UsbCurd) initLog(orgId int64, agentId, at string, plugStatus int, usbModel usb_models.UsbModel) usb_models.LogModel {
+	return usb_models.LogModel{
 		OrgId:      orgId,
 		AgentId:    agentId,
 		UsbHash:    strings.ToLower(usbModel.UsbHash),
@@ -145,7 +145,7 @@ func (crd *UsbCurd) BatchAdd(orgId int64, agentId string, hashList []string, par
 
 	now := date_helper.CurDatetime()
 	var masters []usb_models.UsbModel
-	var logs []usb_models.UsbLogModel
+	var logs []usb_models.LogModel
 
 	//确认那些设备离线, 并记录日志
 	if len(onlineMap) > 0 {

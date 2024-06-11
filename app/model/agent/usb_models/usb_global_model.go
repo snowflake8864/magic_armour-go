@@ -8,13 +8,13 @@ import (
 
 // 外设全局名单表
 
-func CreateUsbGlobalFactory() *UsbGlobalModel {
-	return &UsbGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateGlobalFactory() *GlobalModel {
+	return &GlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type UsbGlobalModel struct {
+type GlobalModel struct {
 	baseUsb
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type UsbGlobalModel struct {
 
 // 表名
 
-func (m *UsbGlobalModel) TableName() string {
+func (m *GlobalModel) TableName() string {
 	return "a_usb_global"
 }
 
-func (m *UsbGlobalModel) CreateTable() bool {
+func (m *GlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -73,7 +73,7 @@ func (m *UsbGlobalModel) CreateTable() bool {
 	}
 }
 
-func (m *UsbGlobalModel) InsertItem(s *UsbGlobalModel) bool {
+func (m *GlobalModel) InsertItem(s *GlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -87,7 +87,7 @@ func (m *UsbGlobalModel) InsertItem(s *UsbGlobalModel) bool {
 }
 
 // DeleteByOrg 通过企业id删除
-func (m *UsbGlobalModel) DeleteByOrg(orgId int64) bool {
+func (m *GlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -100,7 +100,7 @@ func (m *UsbGlobalModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndAndId 通过企业id、ID删除
-func (m *UsbGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+func (m *GlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
 	})

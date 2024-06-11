@@ -201,8 +201,8 @@ func initTableAndData() {
 		_ = trust_dir_models.CreateGlobalFactory().CreateTable()
 		_ = trust_dir_models.CreatePolicyFactory().CreateTable()
 		_ = usb_models.CreateUsbFactory().CreateTable()
-		_ = usb_models.CreateUsbGlobalFactory().CreateTable()
-		_ = usb_models.CreateUsbLogFactory().CreateTable()
+		_ = usb_models.CreateGlobalFactory().CreateTable()
+		_ = usb_models.CreateLogFactory().CreateTable()
 	}
 
 	//下面开始创建表 (alarm库)

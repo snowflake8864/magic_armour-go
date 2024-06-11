@@ -9,13 +9,13 @@ import (
 
 // 外设插拔日志表
 
-func CreateUsbLogFactory() *UsbLogModel {
-	return &UsbLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateLogFactory() *LogModel {
+	return &LogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type UsbLogModel struct {
+type LogModel struct {
 	baseUsb
 	model.BaseModel
 	OrgId      int64  `json:"org_id"`
@@ -29,11 +29,11 @@ type UsbLogModel struct {
 
 // 表名
 
-func (m *UsbLogModel) TableName() string {
+func (m *LogModel) TableName() string {
 	return "a_usb_logs"
 }
 
-func (m *UsbLogModel) CreateTable() bool {
+func (m *LogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -59,7 +59,7 @@ func (m *UsbLogModel) CreateTable() bool {
 	}
 }
 
-func (m *UsbLogModel) InsertItem(s *UsbLogModel) bool {
+func (m *LogModel) InsertItem(s *LogModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -73,7 +73,7 @@ func (m *UsbLogModel) InsertItem(s *UsbLogModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *UsbLogModel) InsertBatch(list *[]UsbLogModel) bool {
+func (m *LogModel) InsertBatch(list *[]LogModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -87,7 +87,7 @@ func (m *UsbLogModel) InsertBatch(list *[]UsbLogModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *UsbLogModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *LogModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
