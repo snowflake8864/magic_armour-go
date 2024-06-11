@@ -25,7 +25,7 @@ import (
 func CreatePlugCalcFactory() *PlugCalc {
 	return &PlugCalc{
 		masterModel: plug_models.CreateDynamicFactory(),
-		alarmModel:  alarm_models.CreateAlarmPlugFactory(),
+		alarmModel:  alarm_models.CreatePlugFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "plug_",
 		cacheExpire: 90,
@@ -34,7 +34,7 @@ func CreatePlugCalcFactory() *PlugCalc {
 
 type PlugCalc struct {
 	masterModel *plug_models.DynamicModel
-	alarmModel  *alarm_models.AlarmPlugModel
+	alarmModel  *alarm_models.PlugModel
 	redisClient *redis_factory.RedisClient
 	cachePrefix string
 	cacheExpire int
@@ -88,7 +88,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 			HandleStatus: enum_alarm.HandleStatusNot,
 			CreateAtGte:  date_helper.CalcDatetimeByMinute(attackAt, 0-int64(plugConfig.CountTime)),
 		}
-		fact := alarm_models.CreateAlarmPortFactory()
+		fact := alarm_models.CreatePortFactory()
 		calc := fact.CalcByConditions(search, fact.ColumnSumWeight())
 		//累计权重不满足条件
 		if calc.TotalNumber < plugConfig.Weight {

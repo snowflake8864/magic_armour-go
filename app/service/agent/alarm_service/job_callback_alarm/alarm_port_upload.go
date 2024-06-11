@@ -13,17 +13,17 @@ import (
 
 func CreatePortUploadFactory() *AlarmPortUpload {
 	return &AlarmPortUpload{
-		masterModel: alarm_models.CreateAlarmPortFactory(),
+		masterModel: alarm_models.CreatePortFactory(),
 	}
 }
 
 type AlarmPortUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmPortModel
+	masterModel *alarm_models.PortModel
 }
 
 // Add 添加
-func (crd *AlarmPortUpload) Add(model *alarm_models.AlarmPortModel) error {
+func (crd *AlarmPortUpload) Add(model *alarm_models.PortModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

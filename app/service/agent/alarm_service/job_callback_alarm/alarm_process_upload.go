@@ -14,17 +14,17 @@ import (
 
 func CreateProcessUploadFactory() *AlarmProcessUpload {
 	return &AlarmProcessUpload{
-		masterModel: alarm_models.CreateAlarmProcessFactory(),
+		masterModel: alarm_models.CreateProcessFactory(),
 	}
 }
 
 type AlarmProcessUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmProcessModel
+	masterModel *alarm_models.ProcessModel
 }
 
 // Add 添加
-func (crd *AlarmProcessUpload) Add(model *alarm_models.AlarmProcessModel) error {
+func (crd *AlarmProcessUpload) Add(model *alarm_models.ProcessModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

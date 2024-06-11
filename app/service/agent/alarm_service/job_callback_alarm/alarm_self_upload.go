@@ -14,17 +14,17 @@ import (
 
 func CreateSelfUploadFactory() *AlarmSelfUpload {
 	return &AlarmSelfUpload{
-		masterModel: alarm_models.CreateAlarmSelfFactory(),
+		masterModel: alarm_models.CreateSelfFactory(),
 	}
 }
 
 type AlarmSelfUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmSelfModel
+	masterModel *alarm_models.SelfModel
 }
 
 // Add 添加
-func (crd *AlarmSelfUpload) Add(model *alarm_models.AlarmSelfModel) error {
+func (crd *AlarmSelfUpload) Add(model *alarm_models.SelfModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

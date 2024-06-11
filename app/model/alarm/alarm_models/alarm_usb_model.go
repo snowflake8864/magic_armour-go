@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmUsbFactory 告警: 外设
-func CreateAlarmUsbFactory() *AlarmUsbModel {
-	return &AlarmUsbModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateUsbFactory 告警: 外设
+func CreateUsbFactory() *UsbModel {
+	return &UsbModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmUsbModel struct {
+type UsbModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type AlarmUsbModel struct {
 }
 
 // 表名
-func (m *AlarmUsbModel) TableName() string {
+func (m *UsbModel) TableName() string {
 	return "a_alarm_usb"
 }
 
-func (m *AlarmUsbModel) CreateTable() bool {
+func (m *UsbModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -75,7 +75,7 @@ func (m *AlarmUsbModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmUsbModel) InsertItem(s *AlarmUsbModel) bool {
+func (m *UsbModel) InsertItem(s *UsbModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -89,7 +89,7 @@ func (m *AlarmUsbModel) InsertItem(s *AlarmUsbModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmUsbModel) InsertBatch(list *[]AlarmUsbModel) bool {
+func (m *UsbModel) InsertBatch(list *[]UsbModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -102,7 +102,7 @@ func (m *AlarmUsbModel) InsertBatch(list *[]AlarmUsbModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmUsbModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *UsbModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -119,7 +119,7 @@ func (m *AlarmUsbModel) UpdateByConditions(condition SearchConditions, updates m
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmUsbModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *UsbModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -136,7 +136,7 @@ func (m *AlarmUsbModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmUsbModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmUsbModel) {
+func (m *UsbModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*UsbModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -161,7 +161,7 @@ func (m *AlarmUsbModel) GetItemsByConditions(condition SearchConditions, offset,
 }
 
 // Count 通过条件统计
-func (m *AlarmUsbModel) Count(condition SearchConditions) int64 {
+func (m *UsbModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -179,7 +179,7 @@ func (m *AlarmUsbModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmUsbModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmUsbModel) {
+func (m *UsbModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*UsbModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

@@ -14,17 +14,17 @@ import (
 
 func CreateBlackmailUploadFactory() *BlackmailUpload {
 	return &BlackmailUpload{
-		masterModel: alarm_models.CreateAlarmBlackmailFactory(),
+		masterModel: alarm_models.CreateBlackmailFactory(),
 	}
 }
 
 type BlackmailUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmBlackmailModel
+	masterModel *alarm_models.BlackmailModel
 }
 
 // Add 添加
-func (crd *BlackmailUpload) Add(model *alarm_models.AlarmBlackmailModel) error {
+func (crd *BlackmailUpload) Add(model *alarm_models.BlackmailModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

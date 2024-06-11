@@ -18,13 +18,13 @@ import (
 
 func CreateOutreachCalcFactory() *AlarmOutreachCalc {
 	return &AlarmOutreachCalc{
-		masterModel: alarm_models.CreateAlarmOutreachFactory(),
+		masterModel: alarm_models.CreateOutreachFactory(),
 	}
 }
 
 type AlarmOutreachCalc struct {
 	alarmBase
-	masterModel *alarm_models.AlarmOutreachModel
+	masterModel *alarm_models.OutreachModel
 }
 
 func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool {
@@ -65,7 +65,7 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.SyslogDnsModel) error
 		return nil
 	}
 
-	model := alarm_models.AlarmOutreachModel{
+	model := alarm_models.OutreachModel{
 		Id:           dnsModel.Id,
 		OrgId:        dnsModel.OrgId,
 		AgentId:      dnsModel.AgentId,

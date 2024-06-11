@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmProcessFactory 告警: 进程
-func CreateAlarmProcessFactory() *AlarmProcessModel {
-	return &AlarmProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateProcessFactory 告警: 进程
+func CreateProcessFactory() *ProcessModel {
+	return &ProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmProcessModel struct {
+type ProcessModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -35,11 +35,11 @@ type AlarmProcessModel struct {
 }
 
 // 表名
-func (m *AlarmProcessModel) TableName() string {
+func (m *ProcessModel) TableName() string {
 	return "a_alarm_process"
 }
 
-func (m *AlarmProcessModel) CreateTable() bool {
+func (m *ProcessModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -78,7 +78,7 @@ func (m *AlarmProcessModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmProcessModel) InsertItem(s *AlarmProcessModel) bool {
+func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -92,7 +92,7 @@ func (m *AlarmProcessModel) InsertItem(s *AlarmProcessModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmProcessModel) InsertBatch(list *[]AlarmProcessModel) bool {
+func (m *ProcessModel) InsertBatch(list *[]ProcessModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -105,7 +105,7 @@ func (m *AlarmProcessModel) InsertBatch(list *[]AlarmProcessModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmProcessModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *ProcessModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -122,7 +122,7 @@ func (m *AlarmProcessModel) UpdateByConditions(condition SearchConditions, updat
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmProcessModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *ProcessModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -139,7 +139,7 @@ func (m *AlarmProcessModel) DeleteByConditions(condition SearchConditions) bool 
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmProcessModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmProcessModel) {
+func (m *ProcessModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProcessModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -164,7 +164,7 @@ func (m *AlarmProcessModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *AlarmProcessModel) Count(condition SearchConditions) int64 {
+func (m *ProcessModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -182,7 +182,7 @@ func (m *AlarmProcessModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmProcessModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmProcessModel) {
+func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProcessModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

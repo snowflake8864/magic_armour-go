@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmDllFactory  告警: 模块
-func CreateAlarmDllFactory() *AlarmDllModel {
-	return &AlarmDllModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateDllFactory  告警: 模块
+func CreateDllFactory() *DllModel {
+	return &DllModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmDllModel struct {
+type DllModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type AlarmDllModel struct {
 }
 
 // 表名
-func (m *AlarmDllModel) TableName() string {
+func (m *DllModel) TableName() string {
 	return "a_alarm_dll"
 }
 
-func (m *AlarmDllModel) CreateTable() bool {
+func (m *DllModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -76,7 +76,7 @@ func (m *AlarmDllModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmDllModel) InsertItem(s *AlarmDllModel) bool {
+func (m *DllModel) InsertItem(s *DllModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -90,7 +90,7 @@ func (m *AlarmDllModel) InsertItem(s *AlarmDllModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmDllModel) InsertBatch(list *[]AlarmDllModel) bool {
+func (m *DllModel) InsertBatch(list *[]DllModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -103,7 +103,7 @@ func (m *AlarmDllModel) InsertBatch(list *[]AlarmDllModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmDllModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *DllModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -120,7 +120,7 @@ func (m *AlarmDllModel) UpdateByConditions(condition SearchConditions, updates m
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmDllModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *DllModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -137,7 +137,7 @@ func (m *AlarmDllModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmDllModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmDllModel) {
+func (m *DllModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DllModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -162,7 +162,7 @@ func (m *AlarmDllModel) GetItemsByConditions(condition SearchConditions, offset,
 }
 
 // Count 通过条件统计
-func (m *AlarmDllModel) Count(condition SearchConditions) int64 {
+func (m *DllModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -180,7 +180,7 @@ func (m *AlarmDllModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmDllModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmDllModel) {
+func (m *DllModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*DllModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

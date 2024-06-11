@@ -14,13 +14,13 @@ import (
 
 func CreatePlugSaveFactory() *AlarmPlugSave {
 	return &AlarmPlugSave{
-		masterModel: alarm_models.CreateAlarmPlugFactory(),
+		masterModel: alarm_models.CreatePlugFactory(),
 	}
 }
 
 type AlarmPlugSave struct {
 	alarmBase
-	masterModel *alarm_models.AlarmPlugModel
+	masterModel *alarm_models.PlugModel
 }
 
 // Add 新增
@@ -30,7 +30,7 @@ func (crd *AlarmPlugSave) Add(plugModel *plug_models.DynamicModel) error {
 		alarmType = enum_alarm.TypePlugDynamicFromLogin
 	}
 
-	modelAlarm := alarm_models.AlarmPlugModel{
+	modelAlarm := alarm_models.PlugModel{
 		Id:           variable.SnowFlake.GetId(),
 		OrgId:        plugModel.OrgId,
 		AgentId:      plugModel.AgentId,

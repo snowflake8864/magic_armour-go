@@ -20,13 +20,13 @@ import (
 
 func CreateLoginCalcFactory() *AlarmLoginCalc {
 	return &AlarmLoginCalc{
-		masterModel: alarm_models.CreateAlarmLoginFactory(),
+		masterModel: alarm_models.CreateLoginFactory(),
 	}
 }
 
 type AlarmLoginCalc struct {
 	alarmBase
-	masterModel *alarm_models.AlarmLoginModel
+	masterModel *alarm_models.LoginModel
 }
 
 func (crd *AlarmLoginCalc) inOutreachWhile(orgId int64, targetIp string) bool {
@@ -84,7 +84,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 	}
 
 	//告警数据
-	model := alarm_models.AlarmLoginModel{
+	model := alarm_models.LoginModel{
 		Id:           variable.SnowFlake.GetId(),
 		OrgId:        orgId,
 		AgentId:      agentId,

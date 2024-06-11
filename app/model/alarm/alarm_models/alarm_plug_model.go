@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmPlugFactory 告警: 封堵
-func CreateAlarmPlugFactory() *AlarmPlugModel {
-	return &AlarmPlugModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreatePlugFactory 告警: 封堵
+func CreatePlugFactory() *PlugModel {
+	return &PlugModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmPlugModel struct {
+type PlugModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -37,11 +37,11 @@ type AlarmPlugModel struct {
 }
 
 // 表名
-func (m *AlarmPlugModel) TableName() string {
+func (m *PlugModel) TableName() string {
 	return "a_alarm_plug"
 }
 
-func (m *AlarmPlugModel) CreateTable() bool {
+func (m *PlugModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -81,7 +81,7 @@ func (m *AlarmPlugModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmPlugModel) InsertItem(s *AlarmPlugModel) bool {
+func (m *PlugModel) InsertItem(s *PlugModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -95,7 +95,7 @@ func (m *AlarmPlugModel) InsertItem(s *AlarmPlugModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmPlugModel) InsertBatch(list *[]AlarmPlugModel) bool {
+func (m *PlugModel) InsertBatch(list *[]PlugModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -108,7 +108,7 @@ func (m *AlarmPlugModel) InsertBatch(list *[]AlarmPlugModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmPlugModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *PlugModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -125,7 +125,7 @@ func (m *AlarmPlugModel) UpdateByConditions(condition SearchConditions, updates 
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmPlugModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *PlugModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -142,7 +142,7 @@ func (m *AlarmPlugModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmPlugModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmPlugModel) {
+func (m *PlugModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PlugModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -167,7 +167,7 @@ func (m *AlarmPlugModel) GetItemsByConditions(condition SearchConditions, offset
 }
 
 // Count 通过条件统计
-func (m *AlarmPlugModel) Count(condition SearchConditions) int64 {
+func (m *PlugModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -185,7 +185,7 @@ func (m *AlarmPlugModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmPlugModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmPlugModel) {
+func (m *PlugModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PlugModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

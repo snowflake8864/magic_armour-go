@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmPortFactory 告警: 端口
-func CreateAlarmPortFactory() *AlarmPortModel {
-	return &AlarmPortModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreatePortFactory 告警: 端口
+func CreatePortFactory() *PortModel {
+	return &PortModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmPortModel struct {
+type PortModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -38,10 +38,10 @@ type AlarmPortModel struct {
 }
 
 // 表名
-func (m *AlarmPortModel) TableName() string {
+func (m *PortModel) TableName() string {
 	return "a_alarm_port"
 }
-func (m *AlarmPortModel) CreateTable() bool {
+func (m *PortModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -82,7 +82,7 @@ func (m *AlarmPortModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmPortModel) InsertItem(s *AlarmPortModel) bool {
+func (m *PortModel) InsertItem(s *PortModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -96,7 +96,7 @@ func (m *AlarmPortModel) InsertItem(s *AlarmPortModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmPortModel) InsertBatch(list *[]AlarmPortModel) bool {
+func (m *PortModel) InsertBatch(list *[]PortModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -109,7 +109,7 @@ func (m *AlarmPortModel) InsertBatch(list *[]AlarmPortModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmPortModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *PortModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -126,7 +126,7 @@ func (m *AlarmPortModel) UpdateByConditions(condition SearchConditions, updates 
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmPortModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *PortModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -143,7 +143,7 @@ func (m *AlarmPortModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmPortModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmPortModel) {
+func (m *PortModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PortModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -168,7 +168,7 @@ func (m *AlarmPortModel) GetItemsByConditions(condition SearchConditions, offset
 }
 
 // Count 通过条件统计
-func (m *AlarmPortModel) Count(condition SearchConditions) int64 {
+func (m *PortModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -186,7 +186,7 @@ func (m *AlarmPortModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmPortModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmPortModel) {
+func (m *PortModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PortModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
@@ -200,7 +200,7 @@ func (m *AlarmPortModel) Page(condition SearchConditions, offset, limit int, ord
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *AlarmPortModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmCalc) {
+func (m *PortModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(m.GetColumn(column)).Where(whereSQL, vals...)

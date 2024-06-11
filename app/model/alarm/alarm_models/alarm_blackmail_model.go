@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmBlackmailFactory 告警: 勒索
-func CreateAlarmBlackmailFactory() *AlarmBlackmailModel {
-	return &AlarmBlackmailModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateBlackmailFactory 告警: 勒索
+func CreateBlackmailFactory() *BlackmailModel {
+	return &BlackmailModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmBlackmailModel struct {
+type BlackmailModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -35,11 +35,11 @@ type AlarmBlackmailModel struct {
 
 // 表名
 
-func (m *AlarmBlackmailModel) TableName() string {
+func (m *BlackmailModel) TableName() string {
 	return "a_alarm_blackmail"
 }
 
-func (m *AlarmBlackmailModel) CreateTable() bool {
+func (m *BlackmailModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -77,7 +77,7 @@ func (m *AlarmBlackmailModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmBlackmailModel) InsertItem(s *AlarmBlackmailModel) bool {
+func (m *BlackmailModel) InsertItem(s *BlackmailModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -91,7 +91,7 @@ func (m *AlarmBlackmailModel) InsertItem(s *AlarmBlackmailModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmBlackmailModel) InsertBatch(list *[]AlarmBlackmailModel) bool {
+func (m *BlackmailModel) InsertBatch(list *[]BlackmailModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -104,7 +104,7 @@ func (m *AlarmBlackmailModel) InsertBatch(list *[]AlarmBlackmailModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmBlackmailModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *BlackmailModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -121,7 +121,7 @@ func (m *AlarmBlackmailModel) UpdateByConditions(condition SearchConditions, upd
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmBlackmailModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *BlackmailModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -138,7 +138,7 @@ func (m *AlarmBlackmailModel) DeleteByConditions(condition SearchConditions) boo
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmBlackmailModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmBlackmailModel) {
+func (m *BlackmailModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*BlackmailModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -163,7 +163,7 @@ func (m *AlarmBlackmailModel) GetItemsByConditions(condition SearchConditions, o
 }
 
 // Count 通过条件统计
-func (m *AlarmBlackmailModel) Count(condition SearchConditions) int64 {
+func (m *BlackmailModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -181,7 +181,7 @@ func (m *AlarmBlackmailModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmBlackmailModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmBlackmailModel) {
+func (m *BlackmailModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*BlackmailModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

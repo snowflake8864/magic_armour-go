@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmSelfFactory 告警: 自保
-func CreateAlarmSelfFactory() *AlarmSelfModel {
-	return &AlarmSelfModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateSelfFactory 告警: 自保
+func CreateSelfFactory() *SelfModel {
+	return &SelfModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmSelfModel struct {
+type SelfModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -36,11 +36,11 @@ type AlarmSelfModel struct {
 }
 
 // 表名
-func (m *AlarmSelfModel) TableName() string {
+func (m *SelfModel) TableName() string {
 	return "a_alarm_self"
 }
 
-func (m *AlarmSelfModel) CreateTable() bool {
+func (m *SelfModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -80,7 +80,7 @@ func (m *AlarmSelfModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmSelfModel) InsertItem(s *AlarmSelfModel) bool {
+func (m *SelfModel) InsertItem(s *SelfModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -94,7 +94,7 @@ func (m *AlarmSelfModel) InsertItem(s *AlarmSelfModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmSelfModel) InsertBatch(list *[]AlarmSelfModel) bool {
+func (m *SelfModel) InsertBatch(list *[]SelfModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -107,7 +107,7 @@ func (m *AlarmSelfModel) InsertBatch(list *[]AlarmSelfModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmSelfModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *SelfModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -124,7 +124,7 @@ func (m *AlarmSelfModel) UpdateByConditions(condition SearchConditions, updates 
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmSelfModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *SelfModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -141,7 +141,7 @@ func (m *AlarmSelfModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmSelfModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmSelfModel) {
+func (m *SelfModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SelfModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -166,7 +166,7 @@ func (m *AlarmSelfModel) GetItemsByConditions(condition SearchConditions, offset
 }
 
 // Count 通过条件统计
-func (m *AlarmSelfModel) Count(condition SearchConditions) int64 {
+func (m *SelfModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -184,7 +184,7 @@ func (m *AlarmSelfModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmSelfModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmSelfModel) {
+func (m *SelfModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SelfModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

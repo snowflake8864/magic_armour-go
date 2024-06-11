@@ -8,7 +8,7 @@ import (
 )
 
 func UploadProcess(jsonStr string) {
-	model := alarm_models.AlarmProcessModel{}
+	model := alarm_models.ProcessModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -22,7 +22,7 @@ func UploadProcess(jsonStr string) {
 }
 
 func UploadDll(jsonStr string) {
-	model := alarm_models.AlarmDllModel{}
+	model := alarm_models.DllModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -36,7 +36,7 @@ func UploadDll(jsonStr string) {
 }
 
 func UploadTamper(jsonStr string) {
-	model := alarm_models.AlarmTamperModel{}
+	model := alarm_models.TamperModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -50,7 +50,7 @@ func UploadTamper(jsonStr string) {
 }
 
 func UploadBlackmail(jsonStr string) {
-	model := alarm_models.AlarmBlackmailModel{}
+	model := alarm_models.BlackmailModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -64,7 +64,7 @@ func UploadBlackmail(jsonStr string) {
 }
 
 func UploadUsb(jsonStr string) {
-	model := alarm_models.AlarmUsbModel{}
+	model := alarm_models.UsbModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -78,7 +78,7 @@ func UploadUsb(jsonStr string) {
 }
 
 func UploadSelf(jsonStr string) {
-	model := alarm_models.AlarmSelfModel{}
+	model := alarm_models.SelfModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -92,7 +92,7 @@ func UploadSelf(jsonStr string) {
 }
 
 func UploadPort(jsonStr string) {
-	model := alarm_models.AlarmPortModel{}
+	model := alarm_models.PortModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)

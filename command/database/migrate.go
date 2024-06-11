@@ -207,17 +207,17 @@ func initTableAndData() {
 
 	//下面开始创建表 (alarm库)
 	if !existMigration("db_alarm_init_tables") {
-		_ = alarm_models.CreateAlarmBlackmailFactory().CreateTable()
-		_ = alarm_models.CreateAlarmDllFactory().CreateTable()
-		_ = alarm_models.CreateAlarmLoginFactory().CreateTable()
-		_ = alarm_models.CreateAlarmOutreachFactory().CreateTable()
-		_ = alarm_models.CreateAlarmPlugFactory().CreateTable()
-		_ = alarm_models.CreateAlarmPortFactory().CreateTable()
-		_ = alarm_models.CreateAlarmProcessFactory().CreateTable()
-		_ = alarm_models.CreateAlarmSelfFactory().CreateTable()
+		_ = alarm_models.CreateBlackmailFactory().CreateTable()
+		_ = alarm_models.CreateDllFactory().CreateTable()
+		_ = alarm_models.CreateLoginFactory().CreateTable()
+		_ = alarm_models.CreateOutreachFactory().CreateTable()
+		_ = alarm_models.CreatePlugFactory().CreateTable()
+		_ = alarm_models.CreatePortFactory().CreateTable()
+		_ = alarm_models.CreateProcessFactory().CreateTable()
+		_ = alarm_models.CreateSelfFactory().CreateTable()
 		_ = alarm_stat_models.CreateAlarmStatDailyFactory().CreateTable()
-		_ = alarm_models.CreateAlarmTamperFactory().CreateTable()
-		_ = alarm_models.CreateAlarmUsbFactory().CreateTable()
+		_ = alarm_models.CreateTamperFactory().CreateTable()
+		_ = alarm_models.CreateUsbFactory().CreateTable()
 	}
 
 	//下面开始创建表 (syslog库)

@@ -14,17 +14,17 @@ import (
 
 func CreateTamperUploadFactory() *AlarmTamperUpload {
 	return &AlarmTamperUpload{
-		masterModel: alarm_models.CreateAlarmTamperFactory(),
+		masterModel: alarm_models.CreateTamperFactory(),
 	}
 }
 
 type AlarmTamperUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmTamperModel
+	masterModel *alarm_models.TamperModel
 }
 
 // Add 添加
-func (crd *AlarmTamperUpload) Add(model *alarm_models.AlarmTamperModel) error {
+func (crd *AlarmTamperUpload) Add(model *alarm_models.TamperModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

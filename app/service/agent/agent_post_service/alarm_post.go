@@ -79,7 +79,7 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 		return
 	}
 
-	model := alarm_models.AlarmProcessModel{
+	model := alarm_models.ProcessModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -109,7 +109,7 @@ func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now
 		return
 	}
 
-	model := alarm_models.AlarmDllModel{
+	model := alarm_models.DllModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -137,7 +137,7 @@ func (crd *AlarmPost) sendTamper(param *alarmComm, orgId int64, agentId string, 
 		return
 	}
 
-	model := alarm_models.AlarmTamperModel{
+	model := alarm_models.TamperModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -165,7 +165,7 @@ func (crd *AlarmPost) sendBlackmail(param *alarmComm, orgId int64, agentId strin
 		return
 	}
 
-	model := alarm_models.AlarmBlackmailModel{
+	model := alarm_models.BlackmailModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -193,7 +193,7 @@ func (crd *AlarmPost) sendUsb(param *alarmComm, orgId int64, agentId string, now
 		return
 	}
 
-	model := alarm_models.AlarmUsbModel{
+	model := alarm_models.UsbModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -221,7 +221,7 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 		return
 	}
 
-	model := alarm_models.AlarmSelfModel{
+	model := alarm_models.SelfModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -256,7 +256,7 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 	fmt.Println(json_helper.Encode(params))
 	//统计攻击次数
 	var attackTotal = make(map[string]int)
-	var list []*alarm_models.AlarmPortModel
+	var list []*alarm_models.PortModel
 	for _, item := range params {
 		if item.Weight == 0 || item.OpenPort == 0 || string_helper.IsEmpty(item.AttackIp) || string_helper.IsEmpty(item.DestinationIp) {
 			break
@@ -287,9 +287,9 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 }
 
 // 发送自保告警
-func (crd *AlarmPost) fillPort(param *alarmPort, orgId int64, agentId string, now string) *alarm_models.AlarmPortModel {
+func (crd *AlarmPost) fillPort(param *alarmPort, orgId int64, agentId string, now string) *alarm_models.PortModel {
 
-	model := alarm_models.AlarmPortModel{
+	model := alarm_models.PortModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         enum_alarm.TypePortVirtual,

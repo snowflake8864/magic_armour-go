@@ -14,17 +14,17 @@ import (
 
 func CreateDllUploadFactory() *DllUpload {
 	return &DllUpload{
-		masterModel: alarm_models.CreateAlarmDllFactory(),
+		masterModel: alarm_models.CreateDllFactory(),
 	}
 }
 
 type DllUpload struct {
 	alarmBase
-	masterModel *alarm_models.AlarmDllModel
+	masterModel *alarm_models.DllModel
 }
 
 // Add 添加
-func (crd *DllUpload) Add(model *alarm_models.AlarmDllModel) error {
+func (crd *DllUpload) Add(model *alarm_models.DllModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

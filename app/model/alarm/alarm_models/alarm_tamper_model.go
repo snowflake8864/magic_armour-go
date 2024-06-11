@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmTamperFactory 告警: 防篡改
-func CreateAlarmTamperFactory() *AlarmTamperModel {
-	return &AlarmTamperModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateTamperFactory 告警: 防篡改
+func CreateTamperFactory() *TamperModel {
+	return &TamperModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmTamperModel struct {
+type TamperModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type AlarmTamperModel struct {
 }
 
 // 表名
-func (m *AlarmTamperModel) TableName() string {
+func (m *TamperModel) TableName() string {
 	return "a_alarm_tamper"
 }
 
-func (m *AlarmTamperModel) CreateTable() bool {
+func (m *TamperModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -76,7 +76,7 @@ func (m *AlarmTamperModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmTamperModel) InsertItem(s *AlarmTamperModel) bool {
+func (m *TamperModel) InsertItem(s *TamperModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -90,7 +90,7 @@ func (m *AlarmTamperModel) InsertItem(s *AlarmTamperModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmTamperModel) InsertBatch(list *[]AlarmTamperModel) bool {
+func (m *TamperModel) InsertBatch(list *[]TamperModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -103,7 +103,7 @@ func (m *AlarmTamperModel) InsertBatch(list *[]AlarmTamperModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmTamperModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *TamperModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -120,7 +120,7 @@ func (m *AlarmTamperModel) UpdateByConditions(condition SearchConditions, update
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmTamperModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *TamperModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -137,7 +137,7 @@ func (m *AlarmTamperModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmTamperModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmTamperModel) {
+func (m *TamperModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TamperModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -162,7 +162,7 @@ func (m *AlarmTamperModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *AlarmTamperModel) Count(condition SearchConditions) int64 {
+func (m *TamperModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -180,7 +180,7 @@ func (m *AlarmTamperModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmTamperModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmTamperModel) {
+func (m *TamperModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TamperModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

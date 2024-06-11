@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateAlarmOutreachFactory 告警: 外联
-func CreateAlarmOutreachFactory() *AlarmOutreachModel {
-	return &AlarmOutreachModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateOutreachFactory 告警: 外联
+func CreateOutreachFactory() *OutreachModel {
+	return &OutreachModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 //结构体
 
-type AlarmOutreachModel struct {
+type OutreachModel struct {
 	baseAlarm
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -36,11 +36,11 @@ type AlarmOutreachModel struct {
 }
 
 // 表名
-func (m *AlarmOutreachModel) TableName() string {
+func (m *OutreachModel) TableName() string {
 	return "a_alarm_outreach"
 }
 
-func (m *AlarmOutreachModel) CreateTable() bool {
+func (m *OutreachModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -80,7 +80,7 @@ func (m *AlarmOutreachModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AlarmOutreachModel) InsertItem(s *AlarmOutreachModel) bool {
+func (m *OutreachModel) InsertItem(s *OutreachModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -94,7 +94,7 @@ func (m *AlarmOutreachModel) InsertItem(s *AlarmOutreachModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AlarmOutreachModel) InsertBatch(list *[]AlarmOutreachModel) bool {
+func (m *OutreachModel) InsertBatch(list *[]OutreachModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -107,7 +107,7 @@ func (m *AlarmOutreachModel) InsertBatch(list *[]AlarmOutreachModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AlarmOutreachModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *OutreachModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -124,7 +124,7 @@ func (m *AlarmOutreachModel) UpdateByConditions(condition SearchConditions, upda
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AlarmOutreachModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *OutreachModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -141,7 +141,7 @@ func (m *AlarmOutreachModel) DeleteByConditions(condition SearchConditions) bool
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AlarmOutreachModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*AlarmOutreachModel) {
+func (m *OutreachModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OutreachModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -166,7 +166,7 @@ func (m *AlarmOutreachModel) GetItemsByConditions(condition SearchConditions, of
 }
 
 // Count 通过条件统计
-func (m *AlarmOutreachModel) Count(condition SearchConditions) int64 {
+func (m *OutreachModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -184,7 +184,7 @@ func (m *AlarmOutreachModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AlarmOutreachModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AlarmOutreachModel) {
+func (m *OutreachModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OutreachModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
