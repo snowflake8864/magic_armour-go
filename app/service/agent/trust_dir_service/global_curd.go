@@ -171,7 +171,7 @@ func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot in
 	//组织架构
 	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	//新增任务
@@ -207,13 +207,11 @@ func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot i
 	//组织架构
 	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
 	if err != nil {
-		return err
+		return nil
 	}
 
-	if hashModel.OpenSwitch == enums.SwitchOn {
-		//新增任务
-		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局:删除")
-	}
+	//新增任务
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局:删除")
 
 	return nil
 }
