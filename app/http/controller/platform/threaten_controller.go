@@ -94,7 +94,7 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, models := threaten_models.CreateThreatenCacheFactory().Page(conditions, offset, pageSize, order)
+	total, models := threaten_models.CreateCacheFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
 }
@@ -131,7 +131,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 // GetAttrForCache 缓存: 获取属性
 func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
-	model := threaten_models.CreateThreatenCacheFactory().GetItemById(id, "*")
+	model := threaten_models.CreateCacheFactory().GetItemById(id, "*")
 	if model == nil || string_helper.IsEmpty(model.Id) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
@@ -149,7 +149,7 @@ func (u *ThreatenController) PageForPush(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, models := threaten_models.CreateThreatenPushFactory().Page(conditions, offset, pageSize, order)
+	total, models := threaten_models.CreatePushFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransPushPage(total, models))
 }
@@ -180,7 +180,7 @@ func (u *ThreatenController) BatchBlackForPush(ctx *gin.Context) {
 // BatchBlackForPush 推送: 批量黑
 func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (errCode int, err error) {
 	list := ctx.GetString(consts.ValidatorPrefixPlatform + "list")
-	var params []threaten_models.ThreatenPushModel
+	var params []threaten_models.PushModel
 	err = json_helper.ToAny(list, &params)
 	if err != nil {
 		return -1, errors.New("参数格式错误")

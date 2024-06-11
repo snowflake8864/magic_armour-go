@@ -12,7 +12,7 @@ type Threaten struct {
 	transformer.Common
 }
 
-func (t *Threaten) pageCacheGeneral(model *threaten_models.ThreatenCacheModel) map[string]interface{} {
+func (t *Threaten) pageCacheGeneral(model *threaten_models.CacheModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
@@ -33,7 +33,7 @@ func (t *Threaten) pageCacheGeneral(model *threaten_models.ThreatenCacheModel) m
 }
 
 // TransCachePage 转换成管理页需要的数据
-func (t *Threaten) TransCachePage(total int64, models []*threaten_models.ThreatenCacheModel) interface{} {
+func (t *Threaten) TransCachePage(total int64, models []*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -48,7 +48,7 @@ func (t *Threaten) TransCachePage(total int64, models []*threaten_models.Threate
 	}
 }
 
-func (t *Threaten) pagePushGeneral(model *threaten_models.ThreatenPushModel) map[string]interface{} {
+func (t *Threaten) pagePushGeneral(model *threaten_models.PushModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
@@ -72,7 +72,7 @@ func (t *Threaten) pagePushGeneral(model *threaten_models.ThreatenPushModel) map
 }
 
 // TransPushPage 转换成推送页需要的数据
-func (t *Threaten) TransPushPage(total int64, models []*threaten_models.ThreatenPushModel) interface{} {
+func (t *Threaten) TransPushPage(total int64, models []*threaten_models.PushModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

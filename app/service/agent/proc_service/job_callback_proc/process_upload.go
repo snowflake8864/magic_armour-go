@@ -74,7 +74,7 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 }
 
 func (crd *ProcessUpload) pushThreaten(processModel *proc_models.ProcessModel, agentOs string) {
-	param := threaten_models.ThreatenCacheModel{
+	param := threaten_models.CacheModel{
 		Id:        processModel.ProcHash,
 		Source:    enum_threaten.SourceAgentUpload,
 		Dir:       processModel.Dir,

@@ -72,7 +72,7 @@ var attributeJson struct {
 // TransThreatenInfo 转换威胁情报信息
 // @result["type"]: 1空 2遍历换行, 3表格形式
 // @result["attr"]: 根据type变化
-func (t *Common) TransThreatenInfo(model *threaten_models.ThreatenCacheModel) map[string]interface{} {
+func (t *Common) TransThreatenInfo(model *threaten_models.CacheModel) map[string]interface{} {
 	result := make(map[string]interface{})
 	if string_helper.IsEmpty(model.CheckInfo) {
 		result["type"] = 1

@@ -10,16 +10,16 @@ import (
 )
 
 func CreatePushFactory() *ThreatenPush {
-	return &ThreatenPush{masterModel: threaten_models.CreateThreatenPushFactory()}
+	return &ThreatenPush{masterModel: threaten_models.CreatePushFactory()}
 }
 
 type ThreatenPush struct {
-	masterModel *threaten_models.ThreatenPushModel
+	masterModel *threaten_models.PushModel
 }
 
 // GetMapsByIds 通过ids获取, 有映射关系
-func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*threaten_models.ThreatenPushModel {
-	result := make(map[string]*threaten_models.ThreatenPushModel)
+func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*threaten_models.PushModel {
+	result := make(map[string]*threaten_models.PushModel)
 
 	models := crd.masterModel.GetItemsByIds(ids)
 	if models == nil {
@@ -37,7 +37,7 @@ func (crd *ThreatenPush) Clear() bool {
 }
 
 // BatchAdd 批量添加
-func (crd *ThreatenPush) BatchAdd(list []threaten_models.ThreatenPushModel, level int, operateId int64, operateName string) (errCode int, err error) {
+func (crd *ThreatenPush) BatchAdd(list []threaten_models.PushModel, level int, operateId int64, operateName string) (errCode int, err error) {
 	//取出id
 	var ids []string
 	for _, model := range list {
@@ -49,11 +49,11 @@ func (crd *ThreatenPush) BatchAdd(list []threaten_models.ThreatenPushModel, leve
 	existPushes := crd.GetMapsByIds(ids)
 	currTime := date_helper.CurDatetime()
 
-	var inserts []threaten_models.ThreatenPushModel
+	var inserts []threaten_models.PushModel
 	for _, model := range list {
 		tmpId := strings.ToLower(model.Id)
 		if _, isOK := existPushes[tmpId]; !isOK {
-			inserts = append(inserts, threaten_models.ThreatenPushModel{
+			inserts = append(inserts, threaten_models.PushModel{
 				Id:         tmpId,
 				Level:      level,
 				Dir:        path_helper.ToStandard(model.Dir),

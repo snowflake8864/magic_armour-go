@@ -9,13 +9,13 @@ import (
 
 // 威胁情报缓存表
 
-func CreateThreatenPushFactory() *ThreatenPushModel {
-	return &ThreatenPushModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreatePushFactory() *PushModel {
+	return &PushModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type ThreatenPushModel struct {
+type PushModel struct {
 	baseThreaten
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -37,11 +37,11 @@ type ThreatenPushModel struct {
 
 // 表名
 
-func (m *ThreatenPushModel) TableName() string {
+func (m *PushModel) TableName() string {
 	return "a_threaten_pushes"
 }
 
-func (m *ThreatenPushModel) CreateTable() bool {
+func (m *PushModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -79,7 +79,7 @@ func (m *ThreatenPushModel) CreateTable() bool {
 	}
 }
 
-func (m *ThreatenPushModel) TruncateTable() bool {
+func (m *PushModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -90,7 +90,7 @@ func (m *ThreatenPushModel) TruncateTable() bool {
 }
 
 // InsertBatch 插入多条
-func (m *ThreatenPushModel) InsertBatch(list *[]ThreatenPushModel) bool {
+func (m *PushModel) InsertBatch(list *[]PushModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -103,7 +103,7 @@ func (m *ThreatenPushModel) InsertBatch(list *[]ThreatenPushModel) bool {
 }
 
 // UpdateByIds 通过id集合修改
-func (m *ThreatenPushModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
+func (m *PushModel) UpdateByIds(ids []string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id IN ?", ids).Updates(updates)
 	})
@@ -116,7 +116,7 @@ func (m *ThreatenPushModel) UpdateByIds(ids []string, updates map[string]interfa
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *ThreatenPushModel) GetItemsByIds(ids []string) (items []*ThreatenPushModel) {
+func (m *PushModel) GetItemsByIds(ids []string) (items []*PushModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id IN ?", ids).Find(&items)
 	})
@@ -130,7 +130,7 @@ func (m *ThreatenPushModel) GetItemsByIds(ids []string) (items []*ThreatenPushMo
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ThreatenPushModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenPushModel) {
+func (m *PushModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PushModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -156,7 +156,7 @@ func (m *ThreatenPushModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *ThreatenPushModel) Count(condition SearchConditions) int64 {
+func (m *PushModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -174,7 +174,7 @@ func (m *ThreatenPushModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *ThreatenPushModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ThreatenPushModel) {
+func (m *PushModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PushModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

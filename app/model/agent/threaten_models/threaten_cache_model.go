@@ -10,13 +10,13 @@ import (
 
 // 威胁情报缓存表
 
-func CreateThreatenCacheFactory() *ThreatenCacheModel {
-	return &ThreatenCacheModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateCacheFactory() *CacheModel {
+	return &CacheModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type ThreatenCacheModel struct {
+type CacheModel struct {
 	baseThreaten
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
@@ -37,11 +37,11 @@ type ThreatenCacheModel struct {
 
 // 表名
 
-func (m *ThreatenCacheModel) TableName() string {
+func (m *CacheModel) TableName() string {
 	return "a_threaten_caches"
 }
 
-func (m *ThreatenCacheModel) CreateTable() bool {
+func (m *CacheModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -78,15 +78,15 @@ func (m *ThreatenCacheModel) CreateTable() bool {
 	}
 }
 
-func (m *ThreatenCacheModel) ColumnList() string {
+func (m *CacheModel) ColumnList() string {
 	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
 }
 
-func (m *ThreatenCacheModel) ColumnLevel() string {
+func (m *CacheModel) ColumnLevel() string {
 	return "id,level"
 }
 
-func (m *ThreatenCacheModel) TruncateTable() bool {
+func (m *CacheModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -96,7 +96,7 @@ func (m *ThreatenCacheModel) TruncateTable() bool {
 	}
 }
 
-func (m *ThreatenCacheModel) InsertItem(s *ThreatenCacheModel) bool {
+func (m *CacheModel) InsertItem(s *CacheModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -110,7 +110,7 @@ func (m *ThreatenCacheModel) InsertItem(s *ThreatenCacheModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{}) bool {
+func (m *CacheModel) UpdateById(id string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id=?", id).Updates(updates)
 	})
@@ -123,7 +123,7 @@ func (m *ThreatenCacheModel) UpdateById(id string, updates map[string]interface{
 }
 
 // UpdateByConditions 通过条件修改
-func (m *ThreatenCacheModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *CacheModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -140,7 +140,7 @@ func (m *ThreatenCacheModel) UpdateByConditions(condition SearchConditions, upda
 }
 
 // DeleteById 通过id删除
-func (m *ThreatenCacheModel) DeleteById(id string) bool {
+func (m *CacheModel) DeleteById(id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id=?", id).Delete(m)
 	})
@@ -153,7 +153,7 @@ func (m *ThreatenCacheModel) DeleteById(id string) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *ThreatenCacheModel) {
+func (m *CacheModel) GetItemById(id string, column string) (item *CacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(column).Where("id=?", id).Take(&item)
 	})
@@ -167,7 +167,7 @@ func (m *ThreatenCacheModel) GetItemById(id string, column string) (item *Threat
 }
 
 // GetLevelById 通过id获取等级
-func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
+func (m *CacheModel) GetLevelById(id string) (isExist bool, level int) {
 	model := m.GetItemById(id, m.ColumnLevel())
 	if string_helper.IsEmpty(model.Id) {
 		return false, enum_threaten.LevelUnknown
@@ -176,7 +176,7 @@ func (m *ThreatenCacheModel) GetLevelById(id string) (isExist bool, level int) {
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items []*ThreatenCacheModel) {
+func (m *CacheModel) GetItemsByIds(ids []string, column string) (items []*CacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(column).Where("id IN ?", ids).Find(&items)
 	})
@@ -190,7 +190,7 @@ func (m *ThreatenCacheModel) GetItemsByIds(ids []string, column string) (items [
 }
 
 // GetLevelsByIds 通过id集合获取多条记录, 有映射关系
-func (m *ThreatenCacheModel) GetLevelsByIds(ids []string) map[string]int {
+func (m *CacheModel) GetLevelsByIds(ids []string) map[string]int {
 	result := make(map[string]int)
 
 	models := m.GetItemsByIds(ids, m.ColumnLevel())
@@ -204,8 +204,8 @@ func (m *ThreatenCacheModel) GetLevelsByIds(ids []string) map[string]int {
 }
 
 // GetMapsByIds 通过id集合获取多条记录, 有映射关系
-func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCacheModel {
-	result := make(map[string]*ThreatenCacheModel)
+func (m *CacheModel) GetMapsByIds(ids []string) map[string]*CacheModel {
+	result := make(map[string]*CacheModel)
 
 	models := m.GetItemsByIds(ids, m.ColumnList())
 	if models == nil {
@@ -218,7 +218,7 @@ func (m *ThreatenCacheModel) GetMapsByIds(ids []string) map[string]*ThreatenCach
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *ThreatenCacheModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ThreatenCacheModel) {
+func (m *CacheModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*CacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(m.ColumnList())
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -244,7 +244,7 @@ func (m *ThreatenCacheModel) GetItemsByConditions(condition SearchConditions, of
 }
 
 // Count 通过条件统计
-func (m *ThreatenCacheModel) Count(condition SearchConditions) int64 {
+func (m *CacheModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -262,7 +262,7 @@ func (m *ThreatenCacheModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *ThreatenCacheModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ThreatenCacheModel) {
+func (m *CacheModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*CacheModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

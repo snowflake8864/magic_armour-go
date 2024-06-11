@@ -14,7 +14,7 @@ type ProcessBase struct {
 
 // getThreatenStatus 获取威胁情报状态
 func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, status int) {
-	isExist, level := threaten_models.CreateThreatenCacheFactory().GetLevelById(hash)
+	isExist, level := threaten_models.CreateCacheFactory().GetLevelById(hash)
 	if !isExist {
 		return isExist, enum_process.RelyStatusUnset
 	}

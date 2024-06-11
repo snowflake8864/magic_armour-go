@@ -75,7 +75,7 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 }
 
 func (crd *DllUpload) pushThreaten(dllModel *proc_models.DllModel, agentOs string) {
-	param := threaten_models.ThreatenCacheModel{
+	param := threaten_models.CacheModel{
 		Id:        dllModel.DllHash,
 		Source:    enum_threaten.SourceAgentUpload,
 		Dir:       dllModel.Dir,

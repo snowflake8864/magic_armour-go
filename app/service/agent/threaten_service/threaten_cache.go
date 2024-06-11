@@ -9,15 +9,15 @@ import (
 )
 
 func CreateCacheFactory() *ThreatenCache {
-	return &ThreatenCache{masterModel: threaten_models.CreateThreatenCacheFactory()}
+	return &ThreatenCache{masterModel: threaten_models.CreateCacheFactory()}
 }
 
 type ThreatenCache struct {
-	masterModel *threaten_models.ThreatenCacheModel
+	masterModel *threaten_models.CacheModel
 }
 
 // Add 新增
-func (crd *ThreatenCache) Add(param *threaten_models.ThreatenCacheModel, checkExist bool) bool {
+func (crd *ThreatenCache) Add(param *threaten_models.CacheModel, checkExist bool) bool {
 	if checkExist {
 		if isExist, _ := crd.masterModel.GetLevelById(param.Id); isExist {
 			return true
@@ -53,7 +53,7 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 }
 
 // Rewrite 根据第三方返回重写本地信息
-func (crd *ThreatenCache) Rewrite(param *threaten_models.ThreatenCacheModel) bool {
+func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	updates := map[string]interface{}{
 		"level":     param.Level,
 		"attribute": param.Attribute,

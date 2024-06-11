@@ -27,7 +27,7 @@ func (u *ThreatenController) GetLevels(ctx *gin.Context) {
 		return
 	}
 
-	CacheFact := threaten_models.CreateThreatenCacheFactory()
+	CacheFact := threaten_models.CreateCacheFactory()
 	maps := CacheFact.GetLevelsByIds(slice_helper.StringRemoveRepeatByMap(hashes))
 	var result []map[string]interface{}
 	if maps != nil && len(maps) > 0 {
@@ -47,7 +47,7 @@ func (u *ThreatenController) GetLevels(ctx *gin.Context) {
 func (u *ThreatenController) GetAttr(ctx *gin.Context) {
 	hash := ctx.GetString(consts.ValidatorPrefixOrg + "hash")
 
-	model := threaten_models.CreateThreatenCacheFactory().GetItemById(hash, "*")
+	model := threaten_models.CreateCacheFactory().GetItemById(hash, "*")
 	if model == nil || string_helper.IsEmpty(model.Id) {
 		response.FailSimplify(ctx, "数据不存在")
 		return
