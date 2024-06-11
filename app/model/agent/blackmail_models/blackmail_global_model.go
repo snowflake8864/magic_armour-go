@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 //勒索防护-全局
@@ -15,6 +16,7 @@ func CreateBlackmailGlobalFactory() *BlackmailGlobalModel {
 //结构体
 
 type BlackmailGlobalModel struct {
+	baseBlackmail
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
 	OrgId        int64  `json:"org_id"`
@@ -90,10 +92,31 @@ func (m *BlackmailGlobalModel) InsertItem(s *BlackmailGlobalModel) bool {
 	}
 }
 
-// DeleteByOrg 通过企业id删除
-func (m *BlackmailGlobalModel) DeleteByOrg(orgId int64) bool {
+// UpdateByConditions 通过条件修改
+func (m *BlackmailGlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *BlackmailGlobalModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -103,15 +126,82 @@ func (m *BlackmailGlobalModel) DeleteByOrg(orgId int64) bool {
 	}
 }
 
-// DeleteByOrgAndAndId 通过企业id、ID删除
-func (m *BlackmailGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+// GetItemByConditions 通过id获取一条记录
+func (m *BlackmailGlobalModel) GetItemByConditions(condition SearchConditions) (item *BlackmailGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
 	})
-	result := m.Exec(m.TrimSql(sql))
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return true
+		return item
 	} else {
-		return false
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// GetListByConditions 获取符合条件的全部记录
+func (m *BlackmailGlobalModel) GetListByConditions(condition SearchConditions) (items []*BlackmailGlobalModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *BlackmailGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*BlackmailGlobalModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		if limit > 0 {
+			tmp = tmp.Offset(offset).Limit(limit)
+		}
+		if !string_helper.IsEmpty(order) {
+			tmp = tmp.Order(order)
+		} else {
+			tmp = tmp.Order("created_at ASC")
+		}
+		return tmp.Find(&items)
+	})
+
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *BlackmailGlobalModel) Count(condition SearchConditions) int64 {
+	var total int64
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Count(&total)
+	})
+	result := m.Raw(m.TrimSql(sql)).Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *BlackmailGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*BlackmailGlobalModel) {
+	if total = m.Count(condition); total == 0 {
+		return total, nil
+	}
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }
