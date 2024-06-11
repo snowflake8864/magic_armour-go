@@ -9,18 +9,18 @@ import (
 )
 
 func CreateGlobalFactory() *OutreachGlobalCurd {
-	return &OutreachGlobalCurd{outreach_models.CreateOutreachGlobalFactory()}
+	return &OutreachGlobalCurd{outreach_models.CreateGlobalFactory()}
 }
 
 type OutreachGlobalCurd struct {
-	masterModel *outreach_models.OutreachGlobalModel
+	masterModel *outreach_models.GlobalModel
 }
 
 // AddDefault 新增默认数据
 func (crd *OutreachGlobalCurd) AddDefault(orgId int64, createId int64, createName string) bool {
 	curTime := time.Now().Format(variable.DateFormat)
 
-	list := []outreach_models.OutreachGlobalModel{
+	list := []outreach_models.GlobalModel{
 		{
 			Id:         "382d29ad257f55c55c75c9f3a906c99e",
 			OrgId:      orgId,
@@ -94,7 +94,7 @@ func (crd *OutreachGlobalCurd) AddDefault(orgId int64, createId int64, createNam
 }
 
 // Add 新增
-func (crd *OutreachGlobalCurd) Add(param *outreach_models.OutreachGlobalModel) bool {
+func (crd *OutreachGlobalCurd) Add(param *outreach_models.GlobalModel) bool {
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk

@@ -182,7 +182,7 @@ func initTableAndData() {
 		_ = proc_models.CreateDllRunningFactory().CreateTable()
 		_ = agent_error_models.CreateErrorFactory().CreateTable()
 		_ = agent_monitor_models.CreateMonitorFactory().CreateTable()
-		_ = outreach_models.CreateOutreachGlobalFactory().CreateTable()
+		_ = outreach_models.CreateGlobalFactory().CreateTable()
 		_ = plug_models.CreatePlugDynamicFactory().CreateTable()
 		_ = plug_models.CreatePlugIpGlobalFactory().CreateTable()
 		_ = plug_models.CreatePlugIpPolicyFactory().CreateTable()

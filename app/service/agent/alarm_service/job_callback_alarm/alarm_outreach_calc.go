@@ -34,7 +34,7 @@ func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool
 		Type:       enum_outreach.TypeWhite,
 		OpenSwitch: &SwitchOn,
 	}
-	models := outreach_models.CreateOutreachGlobalFactory().GetListByConditions(conditions)
+	models := outreach_models.CreateGlobalFactory().GetListByConditions(conditions)
 	if models == nil || len(models) == 0 {
 		return true
 	}

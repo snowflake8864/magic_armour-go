@@ -9,13 +9,13 @@ import (
 
 // 表: 外联全局名单
 
-func CreateOutreachGlobalFactory() *OutreachGlobalModel {
-	return &OutreachGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateGlobalFactory() *GlobalModel {
+	return &GlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type OutreachGlobalModel struct {
+type GlobalModel struct {
 	baseOutreach
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -33,11 +33,11 @@ type OutreachGlobalModel struct {
 
 // 表名
 
-func (m *OutreachGlobalModel) TableName() string {
+func (m *GlobalModel) TableName() string {
 	return "a_outreach_global"
 }
 
-func (m *OutreachGlobalModel) CreateTable() bool {
+func (m *GlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -71,7 +71,7 @@ func (m *OutreachGlobalModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *OutreachGlobalModel) InsertItem(s *OutreachGlobalModel) bool {
+func (m *GlobalModel) InsertItem(s *GlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -85,7 +85,7 @@ func (m *OutreachGlobalModel) InsertItem(s *OutreachGlobalModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *OutreachGlobalModel) InsertBatch(list *[]OutreachGlobalModel) bool {
+func (m *GlobalModel) InsertBatch(list *[]GlobalModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -98,7 +98,7 @@ func (m *OutreachGlobalModel) InsertBatch(list *[]OutreachGlobalModel) bool {
 }
 
 // DeleteByOrg 通过企业id删除
-func (m *OutreachGlobalModel) DeleteByOrg(orgId int64) bool {
+func (m *GlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -111,7 +111,7 @@ func (m *OutreachGlobalModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndAndId 通过企业id、ID删除
-func (m *OutreachGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+func (m *GlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
 	})
@@ -124,12 +124,12 @@ func (m *OutreachGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *OutreachGlobalModel) GetListByConditions(condition SearchConditions) (items []*OutreachGlobalModel) {
+func (m *GlobalModel) GetListByConditions(condition SearchConditions) (items []*GlobalModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OutreachGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OutreachGlobalModel) {
+func (m *GlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*GlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -154,7 +154,7 @@ func (m *OutreachGlobalModel) GetItemsByConditions(condition SearchConditions, o
 }
 
 // Count 通过条件统计
-func (m *OutreachGlobalModel) Count(condition SearchConditions) int64 {
+func (m *GlobalModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -172,7 +172,7 @@ func (m *OutreachGlobalModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *OutreachGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OutreachGlobalModel) {
+func (m *GlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*GlobalModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
