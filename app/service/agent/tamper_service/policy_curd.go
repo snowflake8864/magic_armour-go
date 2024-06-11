@@ -28,7 +28,7 @@ func (crd *PolicyCurd) addTask(orgId int64, agentId string, remark string) {
 func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
-	param.OpenSwitch = enums.SwitchOn
+	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 
@@ -45,9 +45,6 @@ func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
 	}
-
-	//新增任务
-	crd.addTask(param.OrgId, param.AgentId, "添加")
 
 	return nil
 }
