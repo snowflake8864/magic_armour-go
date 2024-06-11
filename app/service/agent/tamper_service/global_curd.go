@@ -23,17 +23,19 @@ type GlobalCurd struct {
 }
 
 // 新增任务
-func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64) {
+func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64, remark string) {
+	isOnline := enums.IsYes
 	conditions := agent_models.SearchConditions{
 		OrgId:        orgId,
 		PlatformType: platformType,
 		DeptIds:      deptIds,
+		IsOnline:     &isOnline,
 	}
 	AgentFact := agent_models.CreateAgentFactory()
 	models := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
 	if models != nil || len(models) > 0 {
 		for _, model := range models {
-			task_service.CreateCurdFactory().AddTaskForAgent(orgId, model.AgentId, enum_task.TypeTamperPolicyDownload, "新增全局")
+			task_service.CreateCurdFactory().AddTaskForAgent(orgId, model.AgentId, enum_task.TypeTamperPolicyDownload, remark)
 		}
 	}
 }
@@ -56,7 +58,7 @@ func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.Type = enum_tamper.TypeFolder
-	param.OpenSwitch = enums.SwitchOn
+	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 	if param.DeptId < 0 {
@@ -75,7 +77,7 @@ func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
 	}
 
 	//组织架构
-	err, deptIds := crd.getDeptIds(param.OrgId, param.DeptId)
+	err, _ := crd.getDeptIds(param.OrgId, param.DeptId)
 	if err != nil {
 		return err
 	}
@@ -83,9 +85,6 @@ func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
 	}
-
-	//新增任务
-	crd.addTask(param.OrgId, param.PlatformType, deptIds)
 
 	return nil
 }
@@ -132,6 +131,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 	updates["name"] = param.Name
 	updates["dir"] = param.Dir
 	updates["is_extend"] = param.IsExtend
+	updates["open_switch"] = enums.SwitchOff
 	updates["dept_id"] = param.DeptId
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
@@ -142,8 +142,10 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 		return errors.New("保存失败")
 	}
 
-	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	if hashModel.OpenSwitch == enums.SwitchOn {
+		//新增任务
+		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局：编辑")
+	}
 
 	return nil
 }
@@ -182,7 +184,7 @@ func (crd *GlobalCurd) SetSwitch(param *tamper_models.TamperGlobalModel, isRoot 
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局：开关")
 
 	return nil
 }
@@ -217,8 +219,10 @@ func (crd *GlobalCurd) DeleteById(param *tamper_models.TamperGlobalModel, isRoot
 		return err
 	}
 
-	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	if hashModel.OpenSwitch == enums.SwitchOn {
+		//新增任务
+		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局：删除")
+	}
 
 	return nil
 }
