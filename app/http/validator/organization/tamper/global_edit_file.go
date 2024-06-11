@@ -9,6 +9,12 @@ import (
 )
 
 type GlobalEditFile struct {
+	PlatformType
+	DeptId
+	Id
+	ProtectRw
+	Processes
+	Remark
 }
 
 func (n GlobalEditFile) CheckParams(context *gin.Context) {

@@ -321,9 +321,59 @@ func (u *TamperController) SetSwitchForGlobal(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "SetSwitchForGlobal")
 }
 
-// AddForGlobal 全局策略: 添加
-func (u *TamperController) AddForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddForGlobal")
+// AddFileForGlobal 全局策略: 添加
+func (u *TamperController) AddFileForGlobal(ctx *gin.Context) {
+	if err := u.addForGlobal(ctx, enum_tamper.TypeFile); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+func (u *TamperController) addForGlobal(ctx *gin.Context, Type int) error {
+	loginInfo := u.getLogin(ctx)
+	param := tamper_models.TamperGlobalModel{
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		Type:         Type,
+		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:     loginInfo.UserId,
+		CreateName:   loginInfo.Username,
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
+	}
+	if err, protectRw := u.getProtectRw(ctx); err != nil {
+		return err
+	} else {
+		param.ProtectRw = protectRw
+	}
+	if err, processes := u.getProcesses(ctx); err != nil {
+		return err
+	} else {
+		param.Processes = processes
+	}
+
+	if Type == enum_tamper.TypeFolder {
+		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
+		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
+		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
+	}
+
+	if err := tamper_service.CreateGlobalCurdFactory().Add(&param); err != nil {
+		return err
+	}
+	return nil
+}
+
+// AddFolderForGlobal 全局策略: 添加
+func (u *TamperController) AddFolderForGlobal(ctx *gin.Context) {
+	if err := u.addForGlobal(ctx, enum_tamper.TypeFolder); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // EditForGlobal 全局策略: 编辑

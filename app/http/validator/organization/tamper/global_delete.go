@@ -9,6 +9,8 @@ import (
 )
 
 type GlobalDelete struct {
+	PlatformType
+	Id
 }
 
 func (n GlobalDelete) CheckParams(context *gin.Context) {

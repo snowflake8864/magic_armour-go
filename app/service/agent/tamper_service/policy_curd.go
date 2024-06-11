@@ -145,7 +145,7 @@ func (crd *PolicyCurd) DeleteById(param *tamper_models.TamperPolicyModel, isRoot
 		return errors.New("只能删除自己添加的策略(管理员除外)")
 	}
 
-	//修改
+	//删除
 	if !crd.masterModel.DeleteByConditions(tamper_models.SearchConditions{
 		OrgId:   hashModel.OrgId,
 		Id:      hashModel.Id,

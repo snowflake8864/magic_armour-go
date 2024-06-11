@@ -3,7 +3,6 @@ package tamper_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -57,7 +56,6 @@ func (crd *GlobalCurd) getDeptIds(orgId int64, deptId int64) (error, []int64) {
 func (crd *GlobalCurd) Add(param *tamper_models.TamperGlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
-	param.Type = enum_tamper.TypeFolder
 	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
@@ -108,16 +106,6 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 		return errors.New("数据不存在")
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
-	} else if hashModel.Dir != param.Dir {
-		conditions := tamper_models.SearchConditions{
-			OrgId:        hashModel.OrgId,
-			PlatformType: hashModel.PlatformType,
-			DeptId:       param.DeptId,
-			DirFull:      param.Dir,
-		}
-		if total := crd.masterModel.Count(conditions); total > 0 {
-			return errors.New("已存在相同策略，不能重复添加")
-		}
 	}
 
 	//组织架构
@@ -128,11 +116,16 @@ func (crd *GlobalCurd) Edit(param *tamper_models.TamperGlobalModel, isRoot int) 
 
 	//修改
 	updates := make(map[string]interface{})
-	updates["name"] = param.Name
-	updates["dir"] = param.Dir
+	updates["protect_rw"] = param.ProtectRw
+	updates["include_suffix"] = param.IncludeSuffix
+	updates["exclude_suffix"] = param.ExcludeSuffix
+	updates["exclude_folder"] = param.ExcludeFolder
 	updates["is_extend"] = param.IsExtend
-	updates["open_switch"] = enums.SwitchOff
-	updates["dept_id"] = param.DeptId
+	updates["processes"] = param.Processes
+	updates["remark"] = param.Remark
+	updates["open_switch"] = param.OpenSwitch
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
@@ -168,6 +161,8 @@ func (crd *GlobalCurd) SetSwitch(param *tamper_models.TamperGlobalModel, isRoot 
 	//修改
 	updates := make(map[string]interface{})
 	updates["open_switch"] = param.OpenSwitch
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
@@ -180,7 +175,7 @@ func (crd *GlobalCurd) SetSwitch(param *tamper_models.TamperGlobalModel, isRoot 
 	//组织架构
 	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	//新增任务
@@ -204,7 +199,7 @@ func (crd *GlobalCurd) DeleteById(param *tamper_models.TamperGlobalModel, isRoot
 		return errors.New("只能删除自己添加的策略(管理员除外)")
 	}
 
-	//修改
+	//删除
 	if !crd.masterModel.DeleteByConditions(tamper_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
 		Id:           hashModel.Id,
@@ -216,13 +211,11 @@ func (crd *GlobalCurd) DeleteById(param *tamper_models.TamperGlobalModel, isRoot
 	//组织架构
 	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
 	if err != nil {
-		return err
+		return nil
 	}
 
-	if hashModel.OpenSwitch == enums.SwitchOn {
-		//新增任务
-		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局：删除")
-	}
+	//新增任务
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局：删除")
 
 	return nil
 }

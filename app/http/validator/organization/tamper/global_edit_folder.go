@@ -9,6 +9,16 @@ import (
 )
 
 type GlobalEditFolder struct {
+	PlatformType
+	DeptId
+	Id
+	ProtectRw
+	IncludeSuffix
+	ExcludeSuffix
+	ExcludeFolder
+	IsExtend
+	Processes
+	Remark
 }
 
 func (n GlobalEditFolder) CheckParams(context *gin.Context) {
