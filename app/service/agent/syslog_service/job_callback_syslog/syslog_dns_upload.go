@@ -14,17 +14,17 @@ import (
 
 func CreateDnsUploadFactory() *SyslogDnsUpload {
 	return &SyslogDnsUpload{
-		masterModel: syslog_models.CreateSyslogDnsFactory(),
+		masterModel: syslog_models.CreateDnsFactory(),
 	}
 }
 
 type SyslogDnsUpload struct {
 	syslogBase
-	masterModel *syslog_models.SyslogDnsModel
+	masterModel *syslog_models.DnsModel
 }
 
 // Add 添加
-func (crd *SyslogDnsUpload) Add(model *syslog_models.SyslogDnsModel) error {
+func (crd *SyslogDnsUpload) Add(model *syslog_models.DnsModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

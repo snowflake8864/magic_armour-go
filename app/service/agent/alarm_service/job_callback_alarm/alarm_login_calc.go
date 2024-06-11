@@ -76,7 +76,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		LoginStatus: &loginStatus,
 		CreateAtGte: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
 	}
-	fact := syslog_models.CreateSyslogLoginFactory()
+	fact := syslog_models.CreateLoginFactory()
 	calc := fact.CalcByConditions(search, fact.ColumnCountLogin())
 	//重不满足条件
 	if calc.TotalNumber < loginConfig.Threshold {

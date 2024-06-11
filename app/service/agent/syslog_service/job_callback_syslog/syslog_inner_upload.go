@@ -13,17 +13,17 @@ import (
 
 func CreateInnerUploadFactory() *SyslogInnerUpload {
 	return &SyslogInnerUpload{
-		masterModel: syslog_models.CreateSyslogInnerFactory(),
+		masterModel: syslog_models.CreateInnerFactory(),
 	}
 }
 
 type SyslogInnerUpload struct {
 	syslogBase
-	masterModel *syslog_models.SyslogInnerModel
+	masterModel *syslog_models.InnerModel
 }
 
 // Add 添加
-func (crd *SyslogInnerUpload) Add(model *syslog_models.SyslogInnerModel) error {
+func (crd *SyslogInnerUpload) Add(model *syslog_models.InnerModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

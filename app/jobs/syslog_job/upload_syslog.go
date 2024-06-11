@@ -8,7 +8,7 @@ import (
 )
 
 func UploadDns(jsonStr string) {
-	model := syslog_models.SyslogDnsModel{}
+	model := syslog_models.DnsModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -22,7 +22,7 @@ func UploadDns(jsonStr string) {
 }
 
 func UploadOuter(jsonStr string) {
-	model := syslog_models.SyslogOuterModel{}
+	model := syslog_models.OuterModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -36,7 +36,7 @@ func UploadOuter(jsonStr string) {
 }
 
 func UploadInner(jsonStr string) {
-	model := syslog_models.SyslogInnerModel{}
+	model := syslog_models.InnerModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -50,7 +50,7 @@ func UploadInner(jsonStr string) {
 }
 
 func UploadProcess(jsonStr string) {
-	model := syslog_models.SyslogProcessModel{}
+	model := syslog_models.ProcessModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)
@@ -64,7 +64,7 @@ func UploadProcess(jsonStr string) {
 }
 
 func UploadLogin(jsonStr string) {
-	model := syslog_models.SyslogLoginModel{}
+	model := syslog_models.LoginModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Info(err.Error())
 		variable.ZapLog.Info(jsonStr)

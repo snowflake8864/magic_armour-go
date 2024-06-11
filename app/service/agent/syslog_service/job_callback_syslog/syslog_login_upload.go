@@ -13,17 +13,17 @@ import (
 
 func CreateLoginUploadFactory() *SyslogLoginUpload {
 	return &SyslogLoginUpload{
-		masterModel: syslog_models.CreateSyslogLoginFactory(),
+		masterModel: syslog_models.CreateLoginFactory(),
 	}
 }
 
 type SyslogLoginUpload struct {
 	syslogBase
-	masterModel *syslog_models.SyslogLoginModel
+	masterModel *syslog_models.LoginModel
 }
 
 // Add 添加
-func (crd *SyslogLoginUpload) Add(model *syslog_models.SyslogLoginModel) error {
+func (crd *SyslogLoginUpload) Add(model *syslog_models.LoginModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

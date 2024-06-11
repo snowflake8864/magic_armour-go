@@ -7,13 +7,13 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateSyslogDnsFactory 通讯日志：DNS解析
-func CreateSyslogDnsFactory() *SyslogDnsModel {
-	return &SyslogDnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateDnsFactory 通讯日志：DNS解析
+func CreateDnsFactory() *DnsModel {
+	return &DnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 // 结构体
-type SyslogDnsModel struct {
+type DnsModel struct {
 	baseSyslog
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey" `
@@ -29,11 +29,11 @@ type SyslogDnsModel struct {
 }
 
 // 表名
-func (m *SyslogDnsModel) TableName() string {
+func (m *DnsModel) TableName() string {
 	return "a_syslog_dns"
 }
 
-func (m *SyslogDnsModel) CreateTable() bool {
+func (m *DnsModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -71,7 +71,7 @@ func (m *SyslogDnsModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *SyslogDnsModel) InsertItem(s *SyslogDnsModel) bool {
+func (m *DnsModel) InsertItem(s *DnsModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -85,7 +85,7 @@ func (m *SyslogDnsModel) InsertItem(s *SyslogDnsModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *SyslogDnsModel) InsertBatch(list *[]SyslogDnsModel) bool {
+func (m *DnsModel) InsertBatch(list *[]DnsModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -98,7 +98,7 @@ func (m *SyslogDnsModel) InsertBatch(list *[]SyslogDnsModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *SyslogDnsModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *DnsModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -115,7 +115,7 @@ func (m *SyslogDnsModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *SyslogDnsModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SyslogDnsModel) {
+func (m *DnsModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DnsModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -140,7 +140,7 @@ func (m *SyslogDnsModel) GetItemsByConditions(condition SearchConditions, offset
 }
 
 // Count 通过条件统计
-func (m *SyslogDnsModel) Count(condition SearchConditions) int64 {
+func (m *DnsModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -158,7 +158,7 @@ func (m *SyslogDnsModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *SyslogDnsModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SyslogDnsModel) {
+func (m *DnsModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*DnsModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

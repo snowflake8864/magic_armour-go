@@ -52,7 +52,7 @@ func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool
 }
 
 // Calc 计算
-func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.SyslogDnsModel) error {
+func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(dnsModel.OrgId, dnsModel.AgentId, agentFact.ColumnConfig(false, false))

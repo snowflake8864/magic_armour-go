@@ -7,13 +7,13 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateSyslogLoginFactory 通讯日志：登录
-func CreateSyslogLoginFactory() *SyslogLoginModel {
-	return &SyslogLoginModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateLoginFactory 通讯日志：登录
+func CreateLoginFactory() *LoginModel {
+	return &LoginModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 // 结构体
-type SyslogLoginModel struct {
+type LoginModel struct {
 	baseSyslog
 	model.BaseModel
 	Id        int64  `json:"id" gorm:"primaryKey" `
@@ -28,11 +28,11 @@ type SyslogLoginModel struct {
 }
 
 // 表名
-func (m *SyslogLoginModel) TableName() string {
+func (m *LoginModel) TableName() string {
 	return "a_syslog_login"
 }
 
-func (m *SyslogLoginModel) CreateTable() bool {
+func (m *LoginModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -69,7 +69,7 @@ func (m *SyslogLoginModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *SyslogLoginModel) InsertItem(s *SyslogLoginModel) bool {
+func (m *LoginModel) InsertItem(s *LoginModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -83,7 +83,7 @@ func (m *SyslogLoginModel) InsertItem(s *SyslogLoginModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *SyslogLoginModel) InsertBatch(list *[]SyslogLoginModel) bool {
+func (m *LoginModel) InsertBatch(list *[]LoginModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -96,7 +96,7 @@ func (m *SyslogLoginModel) InsertBatch(list *[]SyslogLoginModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *SyslogLoginModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *LoginModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -113,7 +113,7 @@ func (m *SyslogLoginModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *SyslogLoginModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SyslogLoginModel) {
+func (m *LoginModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*LoginModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -138,7 +138,7 @@ func (m *SyslogLoginModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *SyslogLoginModel) Count(condition SearchConditions) int64 {
+func (m *LoginModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -156,7 +156,7 @@ func (m *SyslogLoginModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *SyslogLoginModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SyslogLoginModel) {
+func (m *LoginModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*LoginModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
@@ -170,7 +170,7 @@ func (m *SyslogLoginModel) Page(condition SearchConditions, offset, limit int, o
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *SyslogLoginModel) CalcByConditions(condition SearchConditions, column string) (item *SyslogCalc) {
+func (m *LoginModel) CalcByConditions(condition SearchConditions, column string) (item *SyslogCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(m.GetColumn(column)).Where(whereSQL, vals...)

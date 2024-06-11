@@ -65,7 +65,7 @@ func (crd *SyslogPost) getAgentAt(t int64, now string) string {
 // 发送DNS日志
 func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, now string) {
 
-	model := syslog_models.SyslogDnsModel{
+	model := syslog_models.DnsModel{
 		OrgId:      orgId,
 		AgentId:    agentId,
 		AgentAt:    crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -89,7 +89,7 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 // 发送对内通讯日志
 func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string, now string) {
 
-	model := syslog_models.SyslogInnerModel{
+	model := syslog_models.InnerModel{
 		OrgId:            orgId,
 		AgentId:          agentId,
 		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -117,7 +117,7 @@ func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string,
 // 发送对外通讯日志
 func (crd *SyslogPost) sendOuter(param *syslogComm, orgId int64, agentId string, now string) {
 
-	model := syslog_models.SyslogOuterModel{
+	model := syslog_models.OuterModel{
 		OrgId:            orgId,
 		AgentId:          agentId,
 		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -145,7 +145,7 @@ func (crd *SyslogPost) sendOuter(param *syslogComm, orgId int64, agentId string,
 // 发送进程启动日志
 func (crd *SyslogPost) sendProcess(param *syslogComm, orgId int64, agentId string, now string) {
 
-	model := syslog_models.SyslogProcessModel{
+	model := syslog_models.ProcessModel{
 		OrgId:       orgId,
 		AgentId:     agentId,
 		AgentAt:     crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -172,7 +172,7 @@ func (crd *SyslogPost) sendProcess(param *syslogComm, orgId int64, agentId strin
 // 发送登录志
 func (crd *SyslogPost) sendLogin(param *syslogComm, orgId int64, agentId string, now string) {
 
-	model := syslog_models.SyslogLoginModel{
+	model := syslog_models.LoginModel{
 		OrgId:     orgId,
 		AgentId:   agentId,
 		AgentAt:   crd.getAgentAt(json_helper.Number2Int64(param.Time), now),

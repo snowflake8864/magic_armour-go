@@ -7,13 +7,13 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateSyslogProcessFactory 通讯日志：进程启动
-func CreateSyslogProcessFactory() *SyslogProcessModel {
-	return &SyslogProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateProcessFactory 通讯日志：进程启动
+func CreateProcessFactory() *ProcessModel {
+	return &ProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 // 结构体
-type SyslogProcessModel struct {
+type ProcessModel struct {
 	baseSyslog
 	model.BaseModel
 	Id          int64  `json:"id" gorm:"primaryKey" `
@@ -32,11 +32,11 @@ type SyslogProcessModel struct {
 }
 
 // 表名
-func (m *SyslogProcessModel) TableName() string {
+func (m *ProcessModel) TableName() string {
 	return "a_syslog_process"
 }
 
-func (m *SyslogProcessModel) CreateTable() bool {
+func (m *ProcessModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -77,7 +77,7 @@ func (m *SyslogProcessModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *SyslogProcessModel) InsertItem(s *SyslogProcessModel) bool {
+func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -91,7 +91,7 @@ func (m *SyslogProcessModel) InsertItem(s *SyslogProcessModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *SyslogProcessModel) InsertBatch(list *[]SyslogProcessModel) bool {
+func (m *ProcessModel) InsertBatch(list *[]ProcessModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -104,7 +104,7 @@ func (m *SyslogProcessModel) InsertBatch(list *[]SyslogProcessModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *SyslogProcessModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *ProcessModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -121,7 +121,7 @@ func (m *SyslogProcessModel) DeleteByConditions(condition SearchConditions) bool
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *SyslogProcessModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SyslogProcessModel) {
+func (m *ProcessModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*ProcessModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -146,7 +146,7 @@ func (m *SyslogProcessModel) GetItemsByConditions(condition SearchConditions, of
 }
 
 // Count 通过条件统计
-func (m *SyslogProcessModel) Count(condition SearchConditions) int64 {
+func (m *ProcessModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -164,7 +164,7 @@ func (m *SyslogProcessModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *SyslogProcessModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SyslogProcessModel) {
+func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*ProcessModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

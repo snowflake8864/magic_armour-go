@@ -7,13 +7,13 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateSyslogInnerFactory 通讯日志：对内通讯
-func CreateSyslogInnerFactory() *SyslogInnerModel {
-	return &SyslogInnerModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+// CreateInnerFactory 通讯日志：对内通讯
+func CreateInnerFactory() *InnerModel {
+	return &InnerModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
 }
 
 // 结构体
-type SyslogInnerModel struct {
+type InnerModel struct {
 	baseSyslog
 	model.BaseModel
 	Id               int64  `json:"id" gorm:"primaryKey" `
@@ -33,11 +33,11 @@ type SyslogInnerModel struct {
 }
 
 // 表名
-func (m *SyslogInnerModel) TableName() string {
+func (m *InnerModel) TableName() string {
 	return "a_syslog_inner"
 }
 
-func (m *SyslogInnerModel) CreateTable() bool {
+func (m *InnerModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -79,7 +79,7 @@ func (m *SyslogInnerModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *SyslogInnerModel) InsertItem(s *SyslogInnerModel) bool {
+func (m *InnerModel) InsertItem(s *InnerModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -93,7 +93,7 @@ func (m *SyslogInnerModel) InsertItem(s *SyslogInnerModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *SyslogInnerModel) InsertBatch(list *[]SyslogInnerModel) bool {
+func (m *InnerModel) InsertBatch(list *[]InnerModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -106,7 +106,7 @@ func (m *SyslogInnerModel) InsertBatch(list *[]SyslogInnerModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *SyslogInnerModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *InnerModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -123,7 +123,7 @@ func (m *SyslogInnerModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *SyslogInnerModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SyslogInnerModel) {
+func (m *InnerModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*InnerModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -148,7 +148,7 @@ func (m *SyslogInnerModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *SyslogInnerModel) Count(condition SearchConditions) int64 {
+func (m *InnerModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -166,7 +166,7 @@ func (m *SyslogInnerModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *SyslogInnerModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*SyslogInnerModel) {
+func (m *InnerModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*InnerModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

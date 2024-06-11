@@ -222,11 +222,11 @@ func initTableAndData() {
 
 	//下面开始创建表 (syslog库)
 	if !existMigration("db_syslog_init_tables") {
-		_ = syslog_models.CreateSyslogDnsFactory().CreateTable()
-		_ = syslog_models.CreateSyslogInnerFactory().CreateTable()
-		_ = syslog_models.CreateSyslogLoginFactory().CreateTable()
-		_ = syslog_models.CreateSyslogOuterFactory().CreateTable()
-		_ = syslog_models.CreateSyslogProcessFactory().CreateTable()
+		_ = syslog_models.CreateDnsFactory().CreateTable()
+		_ = syslog_models.CreateInnerFactory().CreateTable()
+		_ = syslog_models.CreateLoginFactory().CreateTable()
+		_ = syslog_models.CreateOuterFactory().CreateTable()
+		_ = syslog_models.CreateProcessFactory().CreateTable()
 	}
 
 	//保存迁移数据

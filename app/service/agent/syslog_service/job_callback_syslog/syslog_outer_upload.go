@@ -13,17 +13,17 @@ import (
 
 func CreateOuterUploadFactory() *SyslogOuterUpload {
 	return &SyslogOuterUpload{
-		masterModel: syslog_models.CreateSyslogOuterFactory(),
+		masterModel: syslog_models.CreateOuterFactory(),
 	}
 }
 
 type SyslogOuterUpload struct {
 	syslogBase
-	masterModel *syslog_models.SyslogOuterModel
+	masterModel *syslog_models.OuterModel
 }
 
 // Add 添加
-func (crd *SyslogOuterUpload) Add(model *syslog_models.SyslogOuterModel) error {
+func (crd *SyslogOuterUpload) Add(model *syslog_models.OuterModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}

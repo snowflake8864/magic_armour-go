@@ -13,17 +13,17 @@ import (
 
 func CreateProcessUploadFactory() *SyslogProcessUpload {
 	return &SyslogProcessUpload{
-		masterModel: syslog_models.CreateSyslogProcessFactory(),
+		masterModel: syslog_models.CreateProcessFactory(),
 	}
 }
 
 type SyslogProcessUpload struct {
 	syslogBase
-	masterModel *syslog_models.SyslogProcessModel
+	masterModel *syslog_models.ProcessModel
 }
 
 // Add 添加
-func (crd *SyslogProcessUpload) Add(model *syslog_models.SyslogProcessModel) error {
+func (crd *SyslogProcessUpload) Add(model *syslog_models.ProcessModel) error {
 	if string_helper.IsEmpty(model.CreatedAt) {
 		model.CreatedAt = date_helper.CurDatetime()
 	}
