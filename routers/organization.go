@@ -333,7 +333,6 @@ func InitOrganizationRouter() *gin.Engine {
 						policy.POST("editFile", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyEditFile"))
 						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyDelete"))
 					}
-
 					global := tamper.Group("global/")
 					{
 						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperGlobalPage"))
@@ -345,6 +344,43 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperGlobalDelete"))
 					}
 				} //防篡改
+
+				//勒索防护
+				blackmail := vOrg.Group("blackmail/")
+				{
+					group := blackmail.Group("group/")
+					{
+						group.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupPage"))
+						group.POST("getAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupGetAll"))
+						group.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupAdd"))
+						group.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupEdit"))
+						group.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupDelete"))
+					}
+
+					manage := blackmail.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailManageSetSwitch"))
+						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailManageSetMode"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailManageBatchSetConfig"))
+					}
+					policy := blackmail.Group("policy/")
+					{
+						policy.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailPolicyPage"))
+						policy.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailPolicySetSwitch"))
+						policy.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailPolicyAdd"))
+						policy.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailPolicyEdit"))
+						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailPolicyDelete"))
+					}
+					global := blackmail.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalPage"))
+						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalSetSwitch"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalAdd"))
+						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalEdit"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalDelete"))
+					}
+				} //勒索防护
 			}
 
 		}
