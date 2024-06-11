@@ -348,6 +348,10 @@ func InitOrganizationRouter() *gin.Engine {
 				//勒索防护
 				blackmail := vOrg.Group("blackmail/")
 				{
+					public := tamper.Group("public/")
+					{
+						public.POST("types", (&organization.BlackmailController{}).Types)
+					}
 					group := blackmail.Group("group/")
 					{
 						group.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupPage"))
@@ -356,7 +360,6 @@ func InitOrganizationRouter() *gin.Engine {
 						group.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupEdit"))
 						group.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGroupDelete"))
 					}
-
 					manage := blackmail.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailManagePage"))

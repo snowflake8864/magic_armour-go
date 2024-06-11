@@ -42,6 +42,7 @@ func (t *TamperTrans) TransGlobalPage(total int64, models []*tamper_models.Globa
 			data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
 
 			data["open_switch"] = model.OpenSwitch
+			data["remark"] = model.Remark
 			data["create_id"] = model.CreateId
 			data["create_name"] = model.CreateName
 			data["created_at"] = model.CreatedAt
@@ -83,6 +84,7 @@ func (t *TamperTrans) TransPolicyPage(total int64, models []*tamper_models.Polic
 			data["processes"] = processes
 
 			data["open_switch"] = model.OpenSwitch
+			data["remark"] = model.Remark
 			data["create_id"] = model.CreateId
 			data["create_name"] = model.CreateName
 			data["created_at"] = model.CreatedAt

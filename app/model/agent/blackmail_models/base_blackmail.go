@@ -18,7 +18,7 @@ type SearchConditions struct {
 	DeptIds      []int64
 	OpenSwitch   *int
 	Type         int
-	typeVal      string
+	TypeVal      string
 }
 
 // Calc 统计
@@ -101,10 +101,10 @@ func (m *baseBlackmail) conditions2Where(condition SearchConditions) (wheres []m
 		})
 	}
 
-	if !string_helper.IsEmpty(condition.typeVal) {
+	if !string_helper.IsEmpty(condition.TypeVal) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "type_val",
-			Val: condition.typeVal,
+			Val: condition.TypeVal,
 		})
 	}
 
