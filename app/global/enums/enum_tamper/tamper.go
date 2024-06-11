@@ -78,3 +78,15 @@ var WebMapInt = map[string][]int{
 		PowerRename,
 	},
 }
+
+func GetPowerLabels(rw int) []string {
+	var labels []string
+
+	for _, val := range WebMapInt["power_folder"] {
+		if (rw & val) > 0 {
+			labels = append(labels, EnumMapInt["power_folder"][val])
+		}
+	}
+
+	return labels
+}

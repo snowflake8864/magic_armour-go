@@ -117,7 +117,18 @@ func (u *TamperController) BatchSetConfigForManage(ctx *gin.Context) {
 
 // PageForPolicy 终端策略: 分页
 func (u *TamperController) PageForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "PageForPolicy")
+	loginInfo := u.getLogin(ctx)
+
+	condition := tamper_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := tamper_models.CreateTamperPolicyFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
 }
 
 // SetSwitchForPolicy 终端策略: 设置开关
