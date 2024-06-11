@@ -91,6 +91,7 @@ func (crd *GlobalCurd) Add(param *trust_dir_models.GlobalModel) error {
 
 // Edit 修改
 func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) error {
+	param.Dir = path_helper.ToStandard(param.Dir)
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 	if param.DeptId < 0 {
@@ -107,6 +108,16 @@ func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) err
 		return errors.New("数据不存在")
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
+	} else if hashModel.Dir != param.Dir {
+		conditions := trust_dir_models.SearchConditions{
+			OrgId:        hashModel.OrgId,
+			PlatformType: hashModel.PlatformType,
+			DeptId:       param.DeptId,
+			DirFull:      param.Dir,
+		}
+		if total := crd.masterModel.Count(conditions); total > 0 {
+			return errors.New("已存在相同策略，不能重复添加")
+		}
 	}
 
 	//组织架构

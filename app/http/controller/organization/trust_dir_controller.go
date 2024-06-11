@@ -81,6 +81,7 @@ func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
+		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Name:         ctx.GetString(consts.ValidatorPrefixOrg + "name"),
 		IsExtend:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend")),
 		UpdateId:     loginInfo.UserId,
