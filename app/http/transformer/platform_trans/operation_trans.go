@@ -12,7 +12,7 @@ type Operation struct {
 	transformer.Common
 }
 
-func (t *Operation) pageGeneral(model *operate_models.OperateLogModel) map[string]interface{} {
+func (t *Operation) pageGeneral(model *operate_models.LogModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["path"] = model.Path
@@ -33,7 +33,7 @@ func (t *Operation) pageGeneral(model *operate_models.OperateLogModel) map[strin
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Operation) TransPage(total int64, models []*operate_models.OperateLogModel) interface{} {
+func (t *Operation) TransPage(total int64, models []*operate_models.LogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

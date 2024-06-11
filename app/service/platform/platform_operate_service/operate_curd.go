@@ -5,15 +5,15 @@ import (
 )
 
 func CreateCurdFactory() *OperateLogCurd {
-	return &OperateLogCurd{masterModel: operate_models.CreateOperateLogFactory()}
+	return &OperateLogCurd{masterModel: operate_models.CreateLogFactory()}
 }
 
 type OperateLogCurd struct {
-	masterModel *operate_models.OperateLogModel
+	masterModel *operate_models.LogModel
 }
 
 // Add 新增
-func (crd *OperateLogCurd) Add(param *operate_models.OperateLogModel) bool {
+func (crd *OperateLogCurd) Add(param *operate_models.LogModel) bool {
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk

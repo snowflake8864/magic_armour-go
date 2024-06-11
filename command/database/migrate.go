@@ -143,7 +143,7 @@ func initTableAndData() {
 		_ = adminFact.CreateTable()
 		_ = adminFact.InitData()
 		_ = dictionary_models.CreateDictionaryFactory().CreateTable()
-		_ = operate_models.CreateOperateLogFactory().CreateTable()
+		_ = operate_models.CreateLogFactory().CreateTable()
 		_ = org_menu_models.CreateOrgMenuFactory().CreateTable()
 		productFact := prodcut_models.CreateProductFactory()
 		_ = productFact.CreateTable()
