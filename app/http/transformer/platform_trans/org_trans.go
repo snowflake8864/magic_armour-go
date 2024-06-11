@@ -57,7 +57,7 @@ func (t *Org) TransDetail(model *organization_models.OrganizationModel) map[stri
 	return t.pageGeneral(model)
 }
 
-func (t *Org) pageLogGeneral(model *organization_models.OrgLogModel) map[string]interface{} {
+func (t *Org) pageLogGeneral(model *organization_models.LogModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["module"] = model.Module
@@ -77,7 +77,7 @@ func (t *Org) pageLogGeneral(model *organization_models.OrgLogModel) map[string]
 }
 
 // TransLogPage 转换成日志页需要的数据
-func (t *Org) TransLogPage(total int64, models []*organization_models.OrgLogModel) interface{} {
+func (t *Org) TransLogPage(total int64, models []*organization_models.LogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -93,7 +93,7 @@ func (t *Org) TransLogPage(total int64, models []*organization_models.OrgLogMode
 }
 
 // TransLogList 转换成日志列表
-func (t *Org) TransLogList(models []*organization_models.OrgLogModel) interface{} {
+func (t *Org) TransLogList(models []*organization_models.LogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

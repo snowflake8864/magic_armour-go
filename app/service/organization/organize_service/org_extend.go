@@ -10,15 +10,15 @@ import (
 )
 
 func CreateOrgExtendFactory() *OrgExtend {
-	return &OrgExtend{masterModel: organization_models.CreateOrgExtendFactory()}
+	return &OrgExtend{masterModel: organization_models.CreateExtendFactory()}
 }
 
 type OrgExtend struct {
-	masterModel *organization_models.OrgExtendModel
+	masterModel *organization_models.ExtendModel
 }
 
 // InitDefault 初始化默认数据
-func (crd *OrgExtend) InitDefault(orgId int64) organization_models.OrgExtendModel {
+func (crd *OrgExtend) InitDefault(orgId int64) organization_models.ExtendModel {
 	plugPortConfig := enum_plug.PlugPortConfig{}
 	plugPortConfig.Format()
 	plugLoginConfig := enum_plug.PlugLoginConfig{}
@@ -30,7 +30,7 @@ func (crd *OrgExtend) InitDefault(orgId int64) organization_models.OrgExtendMode
 	hardwareNoticeConfig := enum_safety_report.HardwareNoticeConfig{}
 	hardwareNoticeConfig.Format()
 
-	return organization_models.OrgExtendModel{
+	return organization_models.ExtendModel{
 		Id:                   orgId,
 		PlugPortConfig:       json_helper.Encode(plugPortConfig),
 		PlugLoginConfig:      json_helper.Encode(plugLoginConfig),
@@ -47,7 +47,7 @@ func (crd *OrgExtend) DeleteByOrg(orgId int64) bool {
 }
 
 // GetItemByOrg 通过企业编号获取
-func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.OrgExtendModel) {
+func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.ExtendModel) {
 	model, _ = crd.masterModel.GetItemById(orgId)
 	return model
 }

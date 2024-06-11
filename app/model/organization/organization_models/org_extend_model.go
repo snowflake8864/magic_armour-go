@@ -7,13 +7,13 @@ import (
 
 // 企业扩展表
 
-func CreateOrgExtendFactory() *OrgExtendModel {
-	return &OrgExtendModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+func CreateExtendFactory() *ExtendModel {
+	return &ExtendModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
-type OrgExtendModel struct {
+type ExtendModel struct {
 	baseOrg
 	model.BaseModel
 	Id                   int64  `json:"id" gorm:"primaryKey"`
@@ -26,11 +26,11 @@ type OrgExtendModel struct {
 }
 
 // 表名
-func (m *OrgExtendModel) TableName() string {
+func (m *ExtendModel) TableName() string {
 	return "o_org_extend"
 }
 
-func (m *OrgExtendModel) CreateTable() bool {
+func (m *ExtendModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -53,7 +53,7 @@ func (m *OrgExtendModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *OrgExtendModel) InsertItem(s *OrgExtendModel) bool {
+func (m *ExtendModel) InsertItem(s *ExtendModel) bool {
 	result := m.Model(m).Create(s)
 	if result.Error == nil {
 		return true
@@ -63,7 +63,7 @@ func (m *OrgExtendModel) InsertItem(s *OrgExtendModel) bool {
 }
 
 // UpdateById 通过id修改
-func (m *OrgExtendModel) UpdateById(id int64, updates map[string]interface{}) bool {
+func (m *ExtendModel) UpdateById(id int64, updates map[string]interface{}) bool {
 	result := m.Model(m).Where("id=?", id).Updates(updates)
 	if result.Error == nil {
 		return true
@@ -72,7 +72,7 @@ func (m *OrgExtendModel) UpdateById(id int64, updates map[string]interface{}) bo
 	}
 }
 
-func (m *OrgExtendModel) DeleteById(id int64) bool {
+func (m *ExtendModel) DeleteById(id int64) bool {
 	result := m.Where("id=?", id).Delete(m)
 	if result.Error == nil {
 		return true
@@ -82,7 +82,7 @@ func (m *OrgExtendModel) DeleteById(id int64) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *OrgExtendModel) GetItemById(id int64) (item *OrgExtendModel, err error) {
+func (m *ExtendModel) GetItemById(id int64) (item *ExtendModel, err error) {
 	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
@@ -92,7 +92,7 @@ func (m *OrgExtendModel) GetItemById(id int64) (item *OrgExtendModel, err error)
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *OrgExtendModel) GetItemsByIds(ids []int64) (items []*OrgExtendModel, err error) {
+func (m *ExtendModel) GetItemsByIds(ids []int64) (items []*ExtendModel, err error) {
 	result := m.Model(m).Where("id IN ?", ids).Find(&items)
 	if result.Error == nil {
 		return items, nil

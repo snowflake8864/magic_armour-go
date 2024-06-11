@@ -7,16 +7,16 @@ import (
 )
 
 func CreateOrgLogFactory() *OrgLog {
-	return &OrgLog{masterModel: organization_models.CreateOrgLogFactory()}
+	return &OrgLog{masterModel: organization_models.CreateLogFactory()}
 }
 
 type OrgLog struct {
-	masterModel *organization_models.OrgLogModel
+	masterModel *organization_models.LogModel
 }
 
 // InitByOrg 初始化企业日志结构体
-func (crd *OrgLog) InitByOrg(orgParam *organization_models.OrganizationModel, module int, netIp string) organization_models.OrgLogModel {
-	param := organization_models.OrgLogModel{}
+func (crd *OrgLog) InitByOrg(orgParam *organization_models.OrganizationModel, module int, netIp string) organization_models.LogModel {
+	param := organization_models.LogModel{}
 	param.Module = module
 	param.NetIp = netIp
 	param.OrgId = orgParam.Id
@@ -28,7 +28,7 @@ func (crd *OrgLog) InitByOrg(orgParam *organization_models.OrganizationModel, mo
 }
 
 // Add 新增企业日志
-func (crd *OrgLog) Add(param *organization_models.OrgLogModel) bool {
+func (crd *OrgLog) Add(param *organization_models.LogModel) bool {
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
@@ -36,7 +36,7 @@ func (crd *OrgLog) Add(param *organization_models.OrgLogModel) bool {
 }
 
 // NewestList 最新列表
-func (crd *OrgLog) NewestList(limit int) (items []*organization_models.OrgLogModel) {
+func (crd *OrgLog) NewestList(limit int) (items []*organization_models.LogModel) {
 	where := organization_models.SearchConditions{}
 
 	items = crd.masterModel.GetItemsByConditions(where, 0, limit, "created_at DESC")

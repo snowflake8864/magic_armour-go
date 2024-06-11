@@ -8,13 +8,13 @@ import (
 
 // 企业日志构表
 
-func CreateOrgLogFactory() *OrgLogModel {
-	return &OrgLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+func CreateLogFactory() *LogModel {
+	return &LogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
-type OrgLogModel struct {
+type LogModel struct {
 	baseOrg
 	model.BaseModel
 	Id            int64  `json:"id" gorm:"primaryKey"`
@@ -33,11 +33,11 @@ type OrgLogModel struct {
 }
 
 // 表名
-func (m *OrgLogModel) TableName() string {
+func (m *LogModel) TableName() string {
 	return "o_org_logs"
 }
 
-func (m *OrgLogModel) CreateTable() bool {
+func (m *LogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -71,7 +71,7 @@ func (m *OrgLogModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
+func (m *LogModel) InsertItem(s *LogModel) bool {
 	result := m.Model(m).Create(s)
 	if result.Error == nil {
 		return true
@@ -81,7 +81,7 @@ func (m *OrgLogModel) InsertItem(s *OrgLogModel) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgLogModel) {
+func (m *LogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*LogModel) {
 	tmp := m.Model(m)
 	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
@@ -103,7 +103,7 @@ func (m *OrgLogModel) GetItemsByConditions(condition SearchConditions, offset, l
 }
 
 // Count 通过条件统计
-func (m *OrgLogModel) Count(condition SearchConditions) int64 {
+func (m *LogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	tmp := m.Model(m).Select("id")
 	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -118,7 +118,7 @@ func (m *OrgLogModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *OrgLogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OrgLogModel) {
+func (m *LogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*LogModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
