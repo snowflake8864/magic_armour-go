@@ -52,36 +52,17 @@ func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
 func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) error {
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
-	if param.DeptId < 0 {
-		param.DeptId = 0
-	}
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
-		OrgId:        param.OrgId,
-		Id:           param.Id,
-		PlatformType: param.PlatformType,
+		OrgId:   param.OrgId,
+		Id:      param.Id,
+		AgentId: param.AgentId,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
-	} else if hashModel.Dir != param.Dir {
-		conditions := tamper_models.SearchConditions{
-			OrgId:        hashModel.OrgId,
-			PlatformType: hashModel.PlatformType,
-			DeptId:       param.DeptId,
-			DirFull:      param.Dir,
-		}
-		if total := crd.masterModel.Count(conditions); total > 0 {
-			return errors.New("已存在相同策略，不能重复添加")
-		}
-	}
-
-	//组织架构
-	err, deptIds := crd.getDeptIds(hashModel.OrgId, param.DeptId)
-	if err != nil {
-		return err
 	}
 
 	//修改
@@ -89,18 +70,17 @@ func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) 
 	updates["name"] = param.Name
 	updates["dir"] = param.Dir
 	updates["is_extend"] = param.IsExtend
-	updates["dept_id"] = param.DeptId
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
-		OrgId:        hashModel.OrgId,
-		Id:           hashModel.Id,
-		PlatformType: hashModel.PlatformType,
+		OrgId:   hashModel.OrgId,
+		Id:      hashModel.Id,
+		AgentId: hashModel.AgentId,
 	}, updates); !isOk {
 		return errors.New("保存失败")
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	crd.addTask(hashModel.OrgId, hashModel.AgentId, "编辑")
 
 	return nil
 }
@@ -110,9 +90,9 @@ func (crd *PolicyCurd) SetSwitch(param *tamper_models.TamperPolicyModel, isRoot 
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
-		OrgId:        param.OrgId,
-		Id:           param.Id,
-		PlatformType: param.PlatformType,
+		OrgId:   param.OrgId,
+		Id:      param.Id,
+		AgentId: param.AgentId,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
@@ -125,21 +105,15 @@ func (crd *PolicyCurd) SetSwitch(param *tamper_models.TamperPolicyModel, isRoot 
 	updates["open_switch"] = param.OpenSwitch
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
-		OrgId:        hashModel.OrgId,
-		Id:           hashModel.Id,
-		PlatformType: hashModel.PlatformType,
+		OrgId:   hashModel.OrgId,
+		Id:      hashModel.Id,
+		AgentId: param.AgentId,
 	}, updates); !isOk {
 		return errors.New("保存失败")
 	}
 
-	//组织架构
-	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
-	if err != nil {
-		return err
-	}
-
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	crd.addTask(hashModel.OrgId, hashModel.AgentId, "开关")
 
 	return nil
 }
@@ -149,9 +123,9 @@ func (crd *PolicyCurd) DeleteById(param *tamper_models.TamperPolicyModel, isRoot
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
-		OrgId:        param.OrgId,
-		Id:           param.Id,
-		PlatformType: param.PlatformType,
+		OrgId:   param.OrgId,
+		Id:      param.Id,
+		AgentId: param.AgentId,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
@@ -161,21 +135,15 @@ func (crd *PolicyCurd) DeleteById(param *tamper_models.TamperPolicyModel, isRoot
 
 	//修改
 	if !crd.masterModel.DeleteByConditions(tamper_models.SearchConditions{
-		OrgId:        hashModel.OrgId,
-		Id:           hashModel.Id,
-		PlatformType: hashModel.PlatformType,
+		OrgId:   hashModel.OrgId,
+		Id:      hashModel.Id,
+		AgentId: hashModel.AgentId,
 	}) {
 		return errors.New("删除失败")
 	}
 
-	//组织架构
-	err, deptIds := crd.getDeptIds(hashModel.OrgId, hashModel.DeptId)
-	if err != nil {
-		return err
-	}
-
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds)
+	crd.addTask(hashModel.OrgId, hashModel.AgentId, "删除")
 
 	return nil
 }
