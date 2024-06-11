@@ -18,6 +18,7 @@ type GlobalAddFolder struct {
 	ExcludeFolder
 	IsExtend
 	Processes
+	Remark
 }
 
 func (n GlobalAddFolder) CheckParams(context *gin.Context) {

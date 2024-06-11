@@ -318,7 +318,21 @@ func (u *TamperController) PageForGlobal(ctx *gin.Context) {
 
 // SetSwitchForGlobal 全局策略: 设置开关
 func (u *TamperController) SetSwitchForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetSwitchForGlobal")
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.TamperGlobalModel{
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
+	}
+
+	if err := tamper_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // AddFileForGlobal 全局策略: 添加
@@ -378,10 +392,70 @@ func (u *TamperController) AddFolderForGlobal(ctx *gin.Context) {
 
 // EditForGlobal 全局策略: 编辑
 func (u *TamperController) EditForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditForGlobal")
+	if err := u.editForGlobal(ctx, enum_tamper.TypeFile); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
+	loginInfo := u.getLogin(ctx)
+	param := tamper_models.TamperGlobalModel{
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
+	}
+	if err, protectRw := u.getProtectRw(ctx); err != nil {
+		return err
+	} else {
+		param.ProtectRw = protectRw
+	}
+	if err, processes := u.getProcesses(ctx); err != nil {
+		return err
+	} else {
+		param.Processes = processes
+	}
+
+	if Type == enum_tamper.TypeFolder {
+		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
+		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
+		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
+	}
+
+	if err := tamper_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		return err
+	}
+	return nil
+}
+
+// EditFolderForGlobal 全局策略: 编辑
+func (u *TamperController) EditFolderForGlobal(ctx *gin.Context) {
+	if err := u.editForGlobal(ctx, enum_tamper.TypeFolder); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForGlobal 全局策略: 删除
 func (u *TamperController) DeleteForGlobal(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForGlobal")
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.TamperGlobalModel{
+		OrgId:        loginInfo.OrgId,
+		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		UpdateId:     loginInfo.UserId,
+		UpdateName:   loginInfo.Username,
+	}
+
+	if err := tamper_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
