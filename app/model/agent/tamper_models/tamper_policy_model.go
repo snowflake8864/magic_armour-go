@@ -30,7 +30,8 @@ type TamperPolicyModel struct {
 	IsExtend      int    `json:"is_extend"`
 	Processes     string `json:"processes"`
 	OpenSwitch    int    `json:"open_switch"`
-	CreateId      int64  `json:"create_id"`
+	Remark        string `json:"remark"`
+	CreateId      string `json:"create_id"`
 	CreateName    string `json:"create_name"`
 	CreatedAt     string `json:"created_at"`
 	UpdateId      int64  `json:"update_id"`
@@ -60,6 +61,7 @@ func (m *TamperPolicyModel) CreateTable() bool {
 			is_extend tinyint NOT NULL DEFAULT '0' COMMENT '是否向下继承',
 			processes string  NOT NULL DEFAULT ''  COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
+			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,

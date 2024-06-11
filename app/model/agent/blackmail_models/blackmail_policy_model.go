@@ -22,8 +22,8 @@ type BlackmailPolicyModel struct {
 	TypeVal    string `json:"type_val"`
 	GroupId    int64  `json:"group_id"`
 	Processes  string `json:"processes"`
-	Remark     string `json:"remark"`
 	OpenSwitch int    `json:"open_switch"`
+	Remark     string `json:"remark"`
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
@@ -50,7 +50,7 @@ func (m *BlackmailPolicyModel) CreateTable() bool {
 			group_id int  NOT NULL DEFAULT '0' COMMENT '类型组(blackmail_group.id)',
 			processes string NOT NULL DEFAULT '' COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
+			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
