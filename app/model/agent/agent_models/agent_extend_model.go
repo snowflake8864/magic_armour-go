@@ -8,13 +8,13 @@ import (
 
 // 终端扩展表
 
-func CreateAgentExtendFactory() *AgentExtendModel {
-	return &AgentExtendModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateExtendFactory() *ExtendModel {
+	return &ExtendModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type AgentExtendModel struct {
+type ExtendModel struct {
 	model.BaseModel
 	AgentId          string `json:"id" gorm:"primaryKey;column:id"`
 	OrgId            int64  `json:"org_id"`
@@ -27,11 +27,11 @@ type AgentExtendModel struct {
 
 // 表名
 
-func (m *AgentExtendModel) TableName() string {
+func (m *ExtendModel) TableName() string {
 	return "a_agent_extend"
 }
 
-func (m *AgentExtendModel) CreateTable() bool {
+func (m *ExtendModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -60,7 +60,7 @@ func (m *AgentExtendModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AgentExtendModel) InsertItem(s *AgentExtendModel) bool {
+func (m *ExtendModel) InsertItem(s *ExtendModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -74,7 +74,7 @@ func (m *AgentExtendModel) InsertItem(s *AgentExtendModel) bool {
 }
 
 // UpdateByOrgAndAgent 通过企业id和终端id修改
-func (m *AgentExtendModel) UpdateByOrgAndAgent(orgId int64, agentId string, updates map[string]interface{}) (bool, int64) {
+func (m *ExtendModel) UpdateByOrgAndAgent(orgId int64, agentId string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Updates(updates)
 	})
@@ -87,7 +87,7 @@ func (m *AgentExtendModel) UpdateByOrgAndAgent(orgId int64, agentId string, upda
 }
 
 // UpdateByOrgAndAgents 通过企业id和终端id集合修改
-func (m *AgentExtendModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
+func (m *ExtendModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Updates(updates)
 	})
@@ -100,7 +100,7 @@ func (m *AgentExtendModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, 
 }
 
 // DeleteByOrgAndAgent 通过企业id和终端id删除
-func (m *AgentExtendModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+func (m *ExtendModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Delete(m)
 	})
@@ -114,7 +114,7 @@ func (m *AgentExtendModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool
 }
 
 // DeleteByOrg 通过企业i删除
-func (m *AgentExtendModel) DeleteByOrg(orgId int64) bool {
+func (m *ExtendModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -128,7 +128,7 @@ func (m *AgentExtendModel) DeleteByOrg(orgId int64) bool {
 }
 
 // GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
-func (m *AgentExtendModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentExtendModel) {
+func (m *ExtendModel) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *ExtendModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND id=?", orgId, agentId).Take(&item)
 	})

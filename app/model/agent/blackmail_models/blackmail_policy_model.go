@@ -9,13 +9,13 @@ import (
 
 // 勒索防护策略表
 
-func CreateBlackmailPolicyFactory() *BlackmailPolicyModel {
-	return &BlackmailPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreatePolicyFactory() *PolicyModel {
+	return &PolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type BlackmailPolicyModel struct {
+type PolicyModel struct {
 	baseBlackmail
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
@@ -37,11 +37,11 @@ type BlackmailPolicyModel struct {
 
 // 表名
 
-func (m *BlackmailPolicyModel) TableName() string {
+func (m *PolicyModel) TableName() string {
 	return "a_blackmail_policy"
 }
 
-func (m *BlackmailPolicyModel) CreateTable() bool {
+func (m *PolicyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
@@ -76,7 +76,7 @@ func (m *BlackmailPolicyModel) CreateTable() bool {
 	}
 }
 
-func (m *BlackmailPolicyModel) InsertItem(s *BlackmailPolicyModel) bool {
+func (m *PolicyModel) InsertItem(s *PolicyModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -90,7 +90,7 @@ func (m *BlackmailPolicyModel) InsertItem(s *BlackmailPolicyModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *BlackmailPolicyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *PolicyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -107,7 +107,7 @@ func (m *BlackmailPolicyModel) UpdateByConditions(condition SearchConditions, up
 }
 
 // DeleteByConditions 通过条件删除
-func (m *BlackmailPolicyModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *PolicyModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -124,7 +124,7 @@ func (m *BlackmailPolicyModel) DeleteByConditions(condition SearchConditions) bo
 }
 
 // GetItemByConditions 通过id获取一条记录
-func (m *BlackmailPolicyModel) GetItemByConditions(condition SearchConditions) (item *BlackmailPolicyModel) {
+func (m *PolicyModel) GetItemByConditions(condition SearchConditions) (item *PolicyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -142,12 +142,12 @@ func (m *BlackmailPolicyModel) GetItemByConditions(condition SearchConditions) (
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *BlackmailPolicyModel) GetListByConditions(condition SearchConditions) (items []*BlackmailPolicyModel) {
+func (m *PolicyModel) GetListByConditions(condition SearchConditions) (items []*PolicyModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *BlackmailPolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*BlackmailPolicyModel) {
+func (m *PolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PolicyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -174,7 +174,7 @@ func (m *BlackmailPolicyModel) GetItemsByConditions(condition SearchConditions, 
 }
 
 // Count 通过条件统计
-func (m *BlackmailPolicyModel) Count(condition SearchConditions) int64 {
+func (m *PolicyModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -192,7 +192,7 @@ func (m *BlackmailPolicyModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *BlackmailPolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*BlackmailPolicyModel) {
+func (m *PolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PolicyModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
@@ -204,7 +204,7 @@ func (m *BlackmailPolicyModel) Page(condition SearchConditions, offset, limit in
 }
 
 // CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
-func (m *BlackmailPolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
+func (m *PolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(column)
@@ -222,7 +222,7 @@ func (m *BlackmailPolicyModel) CalcByConditionsGroupAgent(condition SearchCondit
 }
 
 // CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
-func (m *BlackmailPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
+func (m *PolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
 	var result = make(map[string]interface{})
 
 	items := m.CalcByConditionsGroupAgent(condition, column)

@@ -11,12 +11,12 @@ import (
 )
 
 func CreateExtendFactory() *AgentExtend {
-	return &AgentExtend{masterModel: agent_models.CreateAgentExtendFactory()}
+	return &AgentExtend{masterModel: agent_models.CreateExtendFactory()}
 }
 
 type AgentExtend struct {
 	AgentBase
-	masterModel *agent_models.AgentExtendModel
+	masterModel *agent_models.ExtendModel
 }
 
 // AddDefault 存在登录，不存在注册
@@ -24,7 +24,7 @@ func (crd *AgentExtend) AddDefault(orgId int64, agentId string) bool {
 	orgExtendFact := organize_service.CreateOrgExtendFactory()
 	orgConfig := orgExtendFact.GetItemByOrg(orgId)
 
-	var param = agent_models.AgentExtendModel{}
+	var param = agent_models.ExtendModel{}
 	param.OrgId = orgId
 	param.AgentId = agentId
 	param.PlugPortConfig = json_helper.Encode(orgExtendFact.FormatPlugPortConfig(orgConfig.PlugPortConfig))
