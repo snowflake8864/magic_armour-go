@@ -10,13 +10,13 @@ import (
 
 // 表: 动态封堵
 
-func CreatePlugDynamicFactory() *PlugDynamicModel {
-	return &PlugDynamicModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateDynamicFactory() *DynamicModel {
+	return &DynamicModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PlugDynamicModel struct {
+type DynamicModel struct {
 	basePlug
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -36,11 +36,11 @@ type PlugDynamicModel struct {
 
 // 表名
 
-func (m *PlugDynamicModel) TableName() string {
+func (m *DynamicModel) TableName() string {
 	return "a_plug_dynamic"
 }
 
-func (m *PlugDynamicModel) CreateTable() bool {
+func (m *DynamicModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -75,7 +75,7 @@ func (m *PlugDynamicModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *PlugDynamicModel) InsertItem(s *PlugDynamicModel) bool {
+func (m *DynamicModel) InsertItem(s *DynamicModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -89,7 +89,7 @@ func (m *PlugDynamicModel) InsertItem(s *PlugDynamicModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *PlugDynamicModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *DynamicModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -106,7 +106,7 @@ func (m *PlugDynamicModel) UpdateByConditions(condition SearchConditions, update
 }
 
 // DeleteByConditions 通过条件删除
-func (m *PlugDynamicModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *DynamicModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -123,12 +123,12 @@ func (m *PlugDynamicModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *PlugDynamicModel) GetListByConditions(condition SearchConditions) (items []*PlugDynamicModel) {
+func (m *DynamicModel) GetListByConditions(condition SearchConditions) (items []*DynamicModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *PlugDynamicModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PlugDynamicModel) {
+func (m *DynamicModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DynamicModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -153,7 +153,7 @@ func (m *PlugDynamicModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *PlugDynamicModel) Count(condition SearchConditions) int64 {
+func (m *DynamicModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -171,7 +171,7 @@ func (m *PlugDynamicModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *PlugDynamicModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PlugDynamicModel) {
+func (m *DynamicModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*DynamicModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
@@ -185,7 +185,7 @@ func (m *PlugDynamicModel) Page(condition SearchConditions, offset, limit int, o
 }
 
 // GetValidByOrgAndAgentAndIp 通过企业id\终端id\hash获取有效记录
-func (m *PlugDynamicModel) GetValidByOrgAndAgentAndIp(orgId int64, agentId, ip string) (item *PlugDynamicModel) {
+func (m *DynamicModel) GetValidByOrgAndAgentAndIp(orgId int64, agentId, ip string) (item *DynamicModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND agent_id=? AND ip=? AND open_switch=?", orgId, agentId, ip, enums.SwitchOn).Take(&item)
 	})

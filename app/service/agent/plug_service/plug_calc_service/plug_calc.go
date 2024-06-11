@@ -24,7 +24,7 @@ import (
 
 func CreatePlugCalcFactory() *PlugCalc {
 	return &PlugCalc{
-		masterModel: plug_models.CreatePlugDynamicFactory(),
+		masterModel: plug_models.CreateDynamicFactory(),
 		alarmModel:  alarm_models.CreateAlarmPlugFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "plug_",
@@ -33,7 +33,7 @@ func CreatePlugCalcFactory() *PlugCalc {
 }
 
 type PlugCalc struct {
-	masterModel *plug_models.PlugDynamicModel
+	masterModel *plug_models.DynamicModel
 	alarmModel  *alarm_models.AlarmPlugModel
 	redisClient *redis_factory.RedisClient
 	cachePrefix string
@@ -135,7 +135,7 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 	}
 
 	//封堵
-	modelPlug := plug_models.PlugDynamicModel{
+	modelPlug := plug_models.DynamicModel{
 		Id:         md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + now + int_helper.IntRandom2Str(100, 999)),
 		OrgId:      orgId,
 		AgentId:    agentId,
@@ -181,7 +181,7 @@ func (crd *PlugCalc) hasGlobalLib(orgId int64, attackIp string) bool {
 		OrgId:      orgId,
 		OpenSwitch: &SwitchOn,
 	}
-	models := plug_models.CreatePlugIpGlobalFactory().GetListByConditions(search)
+	models := plug_models.CreateIpGlobalFactory().GetListByConditions(search)
 	if models == nil || len(models) == 0 {
 		return false
 	}
@@ -201,7 +201,7 @@ func (crd *PlugCalc) hasAgentLib(orgId int64, agentId string, attackIp string) b
 		AgentId:    agentId,
 		OpenSwitch: &SwitchOn,
 	}
-	models := plug_models.CreatePlugIpPolicyFactory().GetListByConditions(search)
+	models := plug_models.CreateIpPolicyFactory().GetListByConditions(search)
 	if models == nil || len(models) == 0 {
 		return false
 	}

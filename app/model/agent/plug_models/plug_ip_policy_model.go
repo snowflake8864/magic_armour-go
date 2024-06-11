@@ -9,13 +9,13 @@ import (
 
 // 表: 终端封堵IP名单库
 
-func CreatePlugIpPolicyFactory() *PlugIpPolicyModel {
-	return &PlugIpPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateIpPolicyFactory() *IpPolicyModel {
+	return &IpPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PlugIpPolicyModel struct {
+type IpPolicyModel struct {
 	basePlug
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type PlugIpPolicyModel struct {
 
 // 表名
 
-func (m *PlugIpPolicyModel) TableName() string {
+func (m *IpPolicyModel) TableName() string {
 	return "a_plug_ip_policy"
 }
 
-func (m *PlugIpPolicyModel) CreateTable() bool {
+func (m *IpPolicyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -72,7 +72,7 @@ func (m *PlugIpPolicyModel) CreateTable() bool {
 	}
 }
 
-func (m *PlugIpPolicyModel) InsertItem(s *PlugIpPolicyModel) bool {
+func (m *IpPolicyModel) InsertItem(s *IpPolicyModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -86,7 +86,7 @@ func (m *PlugIpPolicyModel) InsertItem(s *PlugIpPolicyModel) bool {
 }
 
 // DeleteByOrg 通过企业id删除
-func (m *PlugIpPolicyModel) DeleteByOrg(orgId int64) bool {
+func (m *IpPolicyModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -99,7 +99,7 @@ func (m *PlugIpPolicyModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndAgentAndId 通过企业id\终端、ID删除
-func (m *PlugIpPolicyModel) DeleteByOrgAndAgentAndId(orgId int64, agentId string, id string) bool {
+func (m *IpPolicyModel) DeleteByOrgAndAgentAndId(orgId int64, agentId string, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND agent_id=? AND id=?", orgId, agentId, id).Delete(m)
 	})
@@ -112,12 +112,12 @@ func (m *PlugIpPolicyModel) DeleteByOrgAndAgentAndId(orgId int64, agentId string
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *PlugIpPolicyModel) GetListByConditions(condition SearchConditions) (items []*PlugIpPolicyModel) {
+func (m *IpPolicyModel) GetListByConditions(condition SearchConditions) (items []*IpPolicyModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *PlugIpPolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PlugIpPolicyModel) {
+func (m *IpPolicyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*IpPolicyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -142,7 +142,7 @@ func (m *PlugIpPolicyModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *PlugIpPolicyModel) Count(condition SearchConditions) int64 {
+func (m *IpPolicyModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -160,7 +160,7 @@ func (m *PlugIpPolicyModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *PlugIpPolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PlugIpPolicyModel) {
+func (m *IpPolicyModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*IpPolicyModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

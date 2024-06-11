@@ -9,13 +9,13 @@ import (
 
 // 表: 全局封堵IP名单库
 
-func CreatePlugIpGlobalFactory() *PlugIpGlobalModel {
-	return &PlugIpGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateIpGlobalFactory() *IpGlobalModel {
+	return &IpGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PlugIpGlobalModel struct {
+type IpGlobalModel struct {
 	basePlug
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
@@ -33,11 +33,11 @@ type PlugIpGlobalModel struct {
 
 // 表名
 
-func (m *PlugIpGlobalModel) TableName() string {
+func (m *IpGlobalModel) TableName() string {
 	return "a_plug_ip_global"
 }
 
-func (m *PlugIpGlobalModel) CreateTable() bool {
+func (m *IpGlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -70,7 +70,7 @@ func (m *PlugIpGlobalModel) CreateTable() bool {
 	}
 }
 
-func (m *PlugIpGlobalModel) InsertItem(s *PlugIpGlobalModel) bool {
+func (m *IpGlobalModel) InsertItem(s *IpGlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -84,7 +84,7 @@ func (m *PlugIpGlobalModel) InsertItem(s *PlugIpGlobalModel) bool {
 }
 
 // DeleteByOrg 通过企业id删除
-func (m *PlugIpGlobalModel) DeleteByOrg(orgId int64) bool {
+func (m *IpGlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -97,7 +97,7 @@ func (m *PlugIpGlobalModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndId 通过企业id、ID删除
-func (m *PlugIpGlobalModel) DeleteByOrgAndId(orgId int64, id string) bool {
+func (m *IpGlobalModel) DeleteByOrgAndId(orgId int64, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
 	})
@@ -110,12 +110,12 @@ func (m *PlugIpGlobalModel) DeleteByOrgAndId(orgId int64, id string) bool {
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *PlugIpGlobalModel) GetListByConditions(condition SearchConditions) (items []*PlugIpGlobalModel) {
+func (m *IpGlobalModel) GetListByConditions(condition SearchConditions) (items []*IpGlobalModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *PlugIpGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PlugIpGlobalModel) {
+func (m *IpGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*IpGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -140,7 +140,7 @@ func (m *PlugIpGlobalModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // Count 通过条件统计
-func (m *PlugIpGlobalModel) Count(condition SearchConditions) int64 {
+func (m *IpGlobalModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -158,7 +158,7 @@ func (m *PlugIpGlobalModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *PlugIpGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PlugIpGlobalModel) {
+func (m *IpGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*IpGlobalModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil
