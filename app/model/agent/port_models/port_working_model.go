@@ -9,13 +9,13 @@ import (
 
 // 表: 终端正常业务端口
 
-func CreatePortWorkingFactory() *PortWorkingModel {
-	return &PortWorkingModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateWorkingFactory() *WorkingModel {
+	return &WorkingModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PortWorkingModel struct {
+type WorkingModel struct {
 	basePort
 	model.BaseModel
 	Id        string `json:"id" gorm:"primaryKey"`
@@ -31,11 +31,11 @@ type PortWorkingModel struct {
 
 // 表名
 
-func (m *PortWorkingModel) TableName() string {
+func (m *WorkingModel) TableName() string {
 	return "a_port_working"
 }
 
-func (m *PortWorkingModel) CreateTable() bool {
+func (m *WorkingModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -66,7 +66,7 @@ func (m *PortWorkingModel) CreateTable() bool {
 }
 
 // InsertBatch 插入多条
-func (m *PortWorkingModel) InsertBatch(list *[]PortWorkingModel) bool {
+func (m *WorkingModel) InsertBatch(list *[]WorkingModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -80,7 +80,7 @@ func (m *PortWorkingModel) InsertBatch(list *[]PortWorkingModel) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *PortWorkingModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *WorkingModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -97,7 +97,7 @@ func (m *PortWorkingModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *PortWorkingModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*PortWorkingModel) {
+func (m *WorkingModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*WorkingModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -122,7 +122,7 @@ func (m *PortWorkingModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *PortWorkingModel) Count(condition SearchConditions) int64 {
+func (m *WorkingModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -140,7 +140,7 @@ func (m *PortWorkingModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *PortWorkingModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*PortWorkingModel) {
+func (m *WorkingModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*WorkingModel) {
 	total = m.Count(condition)
 	if total == 0 {
 		return total, nil

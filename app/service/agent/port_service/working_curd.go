@@ -5,15 +5,15 @@ import (
 )
 
 func CreateWorkingFactory() *WorkingCurd {
-	return &WorkingCurd{port_models.CreatePortWorkingFactory()}
+	return &WorkingCurd{port_models.CreateWorkingFactory()}
 }
 
 type WorkingCurd struct {
-	masterModel *port_models.PortWorkingModel
+	masterModel *port_models.WorkingModel
 }
 
 // BatchAdd 新增
-func (crd *WorkingCurd) BatchAdd(orgId int64, agentId string, params *[]port_models.PortWorkingModel) bool {
+func (crd *WorkingCurd) BatchAdd(orgId int64, agentId string, params *[]port_models.WorkingModel) bool {
 	//先删除
 	crd.DelByOrgAndAgent(orgId, agentId)
 

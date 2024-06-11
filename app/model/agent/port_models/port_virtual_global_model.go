@@ -8,13 +8,13 @@ import (
 
 // 表: 全局端口虚开策略
 
-func CreatePortVirtualGlobalFactory() *PortVirtualGlobalModel {
-	return &PortVirtualGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateVirtualGlobalFactory() *VirtualGlobalModel {
+	return &VirtualGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PortVirtualGlobalModel struct {
+type VirtualGlobalModel struct {
 	basePort
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
@@ -35,11 +35,11 @@ type PortVirtualGlobalModel struct {
 
 // 表名
 
-func (m *PortVirtualGlobalModel) TableName() string {
+func (m *VirtualGlobalModel) TableName() string {
 	return "a_port_virtual_global"
 }
 
-func (m *PortVirtualGlobalModel) CreateTable() bool {
+func (m *VirtualGlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -74,7 +74,7 @@ func (m *PortVirtualGlobalModel) CreateTable() bool {
 	}
 }
 
-func (m *PortVirtualGlobalModel) InsertItem(s *PortVirtualGlobalModel) bool {
+func (m *VirtualGlobalModel) InsertItem(s *VirtualGlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -88,7 +88,7 @@ func (m *PortVirtualGlobalModel) InsertItem(s *PortVirtualGlobalModel) bool {
 }
 
 // DeleteByOrg 通过企业id删除
-func (m *PortVirtualGlobalModel) DeleteByOrg(orgId int64) bool {
+func (m *VirtualGlobalModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -101,7 +101,7 @@ func (m *PortVirtualGlobalModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndAndId 通过企业id、ID删除
-func (m *PortVirtualGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
+func (m *VirtualGlobalModel) DeleteByOrgAndAndId(orgId int64, id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
 	})

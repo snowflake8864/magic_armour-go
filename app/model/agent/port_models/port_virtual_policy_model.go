@@ -7,13 +7,13 @@ import (
 
 // 表: 终端端口虚开策略
 
-func CreatePortVirtualPolicyFactory() *PortVirtualPolicyModel {
-	return &PortVirtualPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateVirtualPolicyFactory() *VirtualPolicyModel {
+	return &VirtualPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type PortVirtualPolicyModel struct {
+type VirtualPolicyModel struct {
 	basePort
 	model.BaseModel
 	Id          string `json:"id" gorm:"primaryKey"`
@@ -35,11 +35,11 @@ type PortVirtualPolicyModel struct {
 
 // 表名
 
-func (m *PortVirtualPolicyModel) TableName() string {
+func (m *VirtualPolicyModel) TableName() string {
 	return "a_port_virtual_policy"
 }
 
-func (m *PortVirtualPolicyModel) CreateTable() bool {
+func (m *VirtualPolicyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(

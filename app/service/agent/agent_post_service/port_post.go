@@ -19,7 +19,7 @@ type PortPost struct {
 }
 
 // MakeId 生成iD
-func (crd *PortPost) MakeId(model port_models.PortWorkingModel) string {
+func (crd *PortPost) MakeId(model port_models.WorkingModel) string {
 	str := int_helper.Int64ToStr(model.OrgId)
 	str += model.AgentId
 	str += model.CreatedAt
@@ -38,9 +38,9 @@ func (crd *PortPost) SaveWorking(orgId int64, agentId, inputJson string) error {
 	}
 	now := date_helper.CurDatetime()
 
-	var models []port_models.PortWorkingModel
+	var models []port_models.WorkingModel
 	for _, item := range params {
-		model := port_models.PortWorkingModel{
+		model := port_models.WorkingModel{
 			OrgId:     orgId,
 			AgentId:   agentId,
 			Type:      item.Type,
