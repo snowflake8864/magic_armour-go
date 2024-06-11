@@ -12,11 +12,11 @@ import (
 )
 
 func CreateDownloadFactory() *SoftwareDownload {
-	return &SoftwareDownload{masterModel: software_models.CreateSoftwareDownloadFactory()}
+	return &SoftwareDownload{masterModel: software_models.CreateDownloadFactory()}
 }
 
 type SoftwareDownload struct {
-	masterModel *software_models.SoftwareDownloadModel
+	masterModel *software_models.DownloadModel
 }
 
 type AgentConfig struct {

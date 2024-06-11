@@ -7,13 +7,13 @@ import (
 
 // 软件下载表
 
-func CreateSoftwareDownloadFactory() *SoftwareDownloadModel {
-	return &SoftwareDownloadModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+func CreateDownloadFactory() *DownloadModel {
+	return &DownloadModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
-type SoftwareDownloadModel struct {
+type DownloadModel struct {
 	model.BaseModel
 	Id          int64  `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`
@@ -32,11 +32,11 @@ type SoftwareDownloadModel struct {
 
 // 表名
 
-func (m *SoftwareDownloadModel) TableName() string {
+func (m *DownloadModel) TableName() string {
 	return "p_software_download"
 }
 
-func (m *SoftwareDownloadModel) CreateTable() bool {
+func (m *DownloadModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
@@ -65,7 +65,7 @@ func (m *SoftwareDownloadModel) CreateTable() bool {
 	}
 }
 
-func (m *SoftwareDownloadModel) TruncateTable() bool {
+func (m *DownloadModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -76,7 +76,7 @@ func (m *SoftwareDownloadModel) TruncateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *SoftwareDownloadModel) InsertItem(s *SoftwareDownloadModel) bool {
+func (m *DownloadModel) InsertItem(s *DownloadModel) bool {
 	result := m.Model(m).Create(s)
 	if result.Error == nil {
 		return true
@@ -86,7 +86,7 @@ func (m *SoftwareDownloadModel) InsertItem(s *SoftwareDownloadModel) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *SoftwareDownloadModel) GetItemById(id int64) (item *SoftwareDownloadModel, err error) {
+func (m *DownloadModel) GetItemById(id int64) (item *DownloadModel, err error) {
 	result := m.Model(m).Where("id=?", id).Take(&item)
 	if result.Error == nil {
 		return item, nil
@@ -96,7 +96,7 @@ func (m *SoftwareDownloadModel) GetItemById(id int64) (item *SoftwareDownloadMod
 }
 
 // GetItemByUnique 通过id获取一条记录
-func (m *SoftwareDownloadModel) GetItemByUnique(orgId, softwareId, userId int64, serviceIp string) (item *SoftwareDownloadModel, err error) {
+func (m *DownloadModel) GetItemByUnique(orgId, softwareId, userId int64, serviceIp string) (item *DownloadModel, err error) {
 	result := m.Model(m).Where("org_id=? AND software_id=? AND create_id=? AND service_ip=?", orgId, softwareId, userId, serviceIp).Take(&item)
 	if result.Error == nil {
 		return item, nil

@@ -151,7 +151,7 @@ func initTableAndData() {
 		_ = server_monitor_models.CreateServerMonitorFactory().CreateTable()
 		_ = sms_models.CreateSmsLogFactory().CreateTable()
 		_ = software_models.CreateSoftwareFactory().CreateTable()
-		_ = software_models.CreateSoftwareDownloadFactory().CreateTable()
+		_ = software_models.CreateDownloadFactory().CreateTable()
 		_ = upload_models.CreateUploadFactory().CreateTable()
 	}
 	//下面开始创建表 (organization库)
