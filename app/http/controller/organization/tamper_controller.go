@@ -208,9 +208,56 @@ func (u *TamperController) AddFolderForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// EditForPolicy 终端策略: 编辑
-func (u *TamperController) EditForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditForPolicy")
+// EditFileForPolicy 终端策略: 编辑
+func (u *TamperController) EditFileForPolicy(ctx *gin.Context) {
+	if err := u.editForPolicy(ctx, enum_tamper.TypeFile); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+func (u *TamperController) editForPolicy(ctx *gin.Context, Type int) error {
+	loginInfo := u.getLogin(ctx)
+	param := tamper_models.TamperPolicyModel{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+	if err, protectRw := u.getProtectRw(ctx); err != nil {
+		return err
+	} else {
+		param.ProtectRw = protectRw
+	}
+	if err, processes := u.getProcesses(ctx); err != nil {
+		return err
+	} else {
+		param.Processes = processes
+	}
+
+	if Type == enum_tamper.TypeFolder {
+		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
+		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
+		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
+	}
+
+	if err := tamper_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		return err
+	}
+	return nil
+}
+
+// EditFolderForPolicy 终端策略: 编辑
+func (u *TamperController) EditFolderForPolicy(ctx *gin.Context) {
+	if err := u.editForPolicy(ctx, enum_tamper.TypeFolder); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForPolicy 终端策略: 删除

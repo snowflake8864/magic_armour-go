@@ -68,9 +68,16 @@ func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) 
 
 	//修改
 	updates := make(map[string]interface{})
-	updates["name"] = param.Name
-	updates["dir"] = param.Dir
+	updates["protect_rw"] = param.ProtectRw
+	updates["include_suffix"] = param.IncludeSuffix
+	updates["exclude_suffix"] = param.ExcludeSuffix
+	updates["exclude_folder"] = param.ExcludeFolder
 	updates["is_extend"] = param.IsExtend
+	updates["processes"] = param.Processes
+	updates["remark"] = param.Remark
+	updates["open_switch"] = param.OpenSwitch
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(tamper_models.SearchConditions{
 		OrgId:   hashModel.OrgId,
@@ -80,8 +87,10 @@ func (crd *PolicyCurd) Edit(param *tamper_models.TamperPolicyModel, isRoot int) 
 		return errors.New("保存失败")
 	}
 
-	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.AgentId, "编辑")
+	if hashModel.OpenSwitch == enums.SwitchOn {
+		//新增任务
+		crd.addTask(hashModel.OrgId, hashModel.AgentId, "编辑")
+	}
 
 	return nil
 }
