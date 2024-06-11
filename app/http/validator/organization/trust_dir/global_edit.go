@@ -12,7 +12,6 @@ type GlobalEdit struct {
 	Id
 	Name
 	PlatformType
-	Dir
 	IsExtend
 	DeptId
 }
