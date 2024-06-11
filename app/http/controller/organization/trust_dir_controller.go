@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/transformer/org_trans"
-	"goskeleton/app/model/agent/trust_models"
+	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/trust_dir_service"
 	"goskeleton/app/utils/helpers/slice_helper"
@@ -20,14 +20,14 @@ type TrustDirController struct {
 func (u *TrustDirController) PageForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
-	condition := trust_models.SearchConditions{
+	condition := trust_dir_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
 		Name:  ctx.GetString(consts.ValidatorPrefixOrg + "name"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := trust_models.CreateTrustGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := trust_dir_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
 
 	//获取组织架构
 	departmentMaps := map[int64]*department_models.DepartmentModel{}
@@ -48,7 +48,7 @@ func (u *TrustDirController) PageForGlobal(ctx *gin.Context) {
 func (u *TrustDirController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := trust_models.TrustGlobalModel{
+	param := trust_dir_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
@@ -76,7 +76,7 @@ func (u *TrustDirController) AddForGlobal(ctx *gin.Context) {
 func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := trust_models.TrustGlobalModel{
+	param := trust_dir_models.GlobalModel{
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
@@ -102,7 +102,7 @@ func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 func (u *TrustDirController) SetSwitchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := trust_models.TrustGlobalModel{
+	param := trust_dir_models.GlobalModel{
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
@@ -122,7 +122,7 @@ func (u *TrustDirController) SetSwitchForGlobal(ctx *gin.Context) {
 func (u *TrustDirController) DeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := trust_models.TrustGlobalModel{
+	param := trust_dir_models.GlobalModel{
 		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),

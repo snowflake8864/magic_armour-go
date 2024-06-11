@@ -1,4 +1,4 @@
-package trust_models
+package trust_dir_models
 
 import (
 	"gorm.io/gorm"
@@ -9,13 +9,13 @@ import (
 
 //全局信任目录
 
-func CreateTrustGlobalFactory() *TrustGlobalModel {
-	return &TrustGlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateGlobalFactory() *GlobalModel {
+	return &GlobalModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type TrustGlobalModel struct {
+type GlobalModel struct {
 	baseTrust
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
@@ -37,11 +37,11 @@ type TrustGlobalModel struct {
 
 // 表名
 
-func (m *TrustGlobalModel) TableName() string {
+func (m *GlobalModel) TableName() string {
 	return "a_trust_global"
 }
 
-func (m *TrustGlobalModel) CreateTable() bool {
+func (m *GlobalModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -77,7 +77,7 @@ func (m *TrustGlobalModel) CreateTable() bool {
 	}
 }
 
-func (m *TrustGlobalModel) InsertItem(s *TrustGlobalModel) bool {
+func (m *GlobalModel) InsertItem(s *GlobalModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -91,7 +91,7 @@ func (m *TrustGlobalModel) InsertItem(s *TrustGlobalModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *TrustGlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *GlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -108,7 +108,7 @@ func (m *TrustGlobalModel) UpdateByConditions(condition SearchConditions, update
 }
 
 // DeleteByConditions 通过条件删除
-func (m *TrustGlobalModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *GlobalModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -125,7 +125,7 @@ func (m *TrustGlobalModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemByConditions 通过id获取一条记录
-func (m *TrustGlobalModel) GetItemByConditions(condition SearchConditions) (item *TrustGlobalModel) {
+func (m *GlobalModel) GetItemByConditions(condition SearchConditions) (item *GlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -143,12 +143,12 @@ func (m *TrustGlobalModel) GetItemByConditions(condition SearchConditions) (item
 }
 
 // GetListByConditions 获取符合条件的全部记录
-func (m *TrustGlobalModel) GetListByConditions(condition SearchConditions) (items []*TrustGlobalModel) {
+func (m *GlobalModel) GetListByConditions(condition SearchConditions) (items []*GlobalModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *TrustGlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TrustGlobalModel) {
+func (m *GlobalModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*GlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -175,7 +175,7 @@ func (m *TrustGlobalModel) GetItemsByConditions(condition SearchConditions, offs
 }
 
 // Count 通过条件统计
-func (m *TrustGlobalModel) Count(condition SearchConditions) int64 {
+func (m *GlobalModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -193,7 +193,7 @@ func (m *TrustGlobalModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *TrustGlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*TrustGlobalModel) {
+func (m *GlobalModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*GlobalModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

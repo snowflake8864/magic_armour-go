@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/http/transformer"
-	"goskeleton/app/model/agent/trust_models"
+	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/organization/department_models"
 )
 
@@ -15,7 +15,7 @@ type TrustDirTrans struct {
 }
 
 // TransGlobalPage 转换成全局名单分页需要的数据
-func (t *TrustDirTrans) TransGlobalPage(total int64, models []*trust_models.TrustGlobalModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+func (t *TrustDirTrans) TransGlobalPage(total int64, models []*trust_dir_models.GlobalModel, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 

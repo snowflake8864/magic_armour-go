@@ -1,4 +1,4 @@
-package trust_models
+package trust_dir_models
 
 import (
 	"goskeleton/app/global/enums"

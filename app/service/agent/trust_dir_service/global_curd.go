@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/trust_models"
+	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -15,11 +15,11 @@ import (
 )
 
 func CreateGlobalCurdFactory() *GlobalCurd {
-	return &GlobalCurd{masterModel: trust_models.CreateTrustGlobalFactory()}
+	return &GlobalCurd{masterModel: trust_dir_models.CreateGlobalFactory()}
 }
 
 type GlobalCurd struct {
-	masterModel *trust_models.TrustGlobalModel
+	masterModel *trust_dir_models.GlobalModel
 }
 
 // 新增任务
@@ -54,7 +54,7 @@ func (crd *GlobalCurd) getDeptIds(orgId int64, deptId int64) (error, []int64) {
 }
 
 // Add 新增
-func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
+func (crd *GlobalCurd) Add(param *trust_dir_models.GlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Dir = path_helper.ToStandard(param.Dir)
 	param.Type = enum_tamper.TypeFolder
@@ -66,7 +66,7 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 	}
 
 	//验证数据
-	conditions := trust_models.SearchConditions{
+	conditions := trust_dir_models.SearchConditions{
 		OrgId:        param.OrgId,
 		PlatformType: param.PlatformType,
 		DeptId:       param.DeptId,
@@ -90,7 +90,7 @@ func (crd *GlobalCurd) Add(param *trust_models.TrustGlobalModel) error {
 }
 
 // Edit 修改
-func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) error {
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 	if param.DeptId < 0 {
@@ -98,7 +98,7 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	}
 
 	//验证数据
-	hashModel := crd.masterModel.GetItemByConditions(trust_models.SearchConditions{
+	hashModel := crd.masterModel.GetItemByConditions(trust_dir_models.SearchConditions{
 		OrgId:        param.OrgId,
 		Id:           param.Id,
 		PlatformType: param.PlatformType,
@@ -124,7 +124,7 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
-	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
+	if isOk, _ := crd.masterModel.UpdateByConditions(trust_dir_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
 		Id:           hashModel.Id,
 		PlatformType: hashModel.PlatformType,
@@ -140,10 +140,10 @@ func (crd *GlobalCurd) Edit(param *trust_models.TrustGlobalModel, isRoot int) er
 }
 
 // SetSwitch 开关
-func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) SetSwitch(param *trust_dir_models.GlobalModel, isRoot int) error {
 
 	//验证数据
-	hashModel := crd.masterModel.GetItemByConditions(trust_models.SearchConditions{
+	hashModel := crd.masterModel.GetItemByConditions(trust_dir_models.SearchConditions{
 		OrgId:        param.OrgId,
 		Id:           param.Id,
 		PlatformType: param.PlatformType,
@@ -160,7 +160,7 @@ func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot in
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
-	if isOk, _ := crd.masterModel.UpdateByConditions(trust_models.SearchConditions{
+	if isOk, _ := crd.masterModel.UpdateByConditions(trust_dir_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
 		Id:           hashModel.Id,
 		PlatformType: hashModel.PlatformType,
@@ -181,10 +181,10 @@ func (crd *GlobalCurd) SetSwitch(param *trust_models.TrustGlobalModel, isRoot in
 }
 
 // DeleteById 删除
-func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot int) error {
+func (crd *GlobalCurd) DeleteById(param *trust_dir_models.GlobalModel, isRoot int) error {
 
 	//验证数据
-	hashModel := crd.masterModel.GetItemByConditions(trust_models.SearchConditions{
+	hashModel := crd.masterModel.GetItemByConditions(trust_dir_models.SearchConditions{
 		OrgId:        param.OrgId,
 		Id:           param.Id,
 		PlatformType: param.PlatformType,
@@ -196,7 +196,7 @@ func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot i
 	}
 
 	//修改
-	if !crd.masterModel.DeleteByConditions(trust_models.SearchConditions{
+	if !crd.masterModel.DeleteByConditions(trust_dir_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
 		Id:           hashModel.Id,
 		PlatformType: hashModel.PlatformType,
@@ -218,7 +218,7 @@ func (crd *GlobalCurd) DeleteById(param *trust_models.TrustGlobalModel, isRoot i
 
 // DeleteByOrg 删除
 func (crd *GlobalCurd) DeleteByOrg(orgId int64) {
-	crd.masterModel.DeleteByConditions(trust_models.SearchConditions{
+	crd.masterModel.DeleteByConditions(trust_dir_models.SearchConditions{
 		OrgId: orgId,
 	})
 }

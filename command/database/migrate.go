@@ -16,7 +16,7 @@ import (
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/model/agent/task_models"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/model/agent/trust_models"
+	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/alarm/alarm_stat_models"
@@ -198,8 +198,8 @@ func initTableAndData() {
 		_ = task_models.CreateTaskFactory().CreateTable()
 		_ = threaten_models.CreateCacheFactory().CreateTable()
 		_ = threaten_models.CreatePushFactory().CreateTable()
-		_ = trust_models.CreateTrustGlobalFactory().CreateTable()
-		_ = trust_models.CreateTrustPolicyFactory().CreateTable()
+		_ = trust_dir_models.CreateGlobalFactory().CreateTable()
+		_ = trust_dir_models.CreatePolicyFactory().CreateTable()
 		_ = usb_models.CreateUsbFactory().CreateTable()
 		_ = usb_models.CreateUsbGlobalFactory().CreateTable()
 		_ = usb_models.CreateUsbLogFactory().CreateTable()

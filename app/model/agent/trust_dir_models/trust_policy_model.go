@@ -1,4 +1,4 @@
-package trust_models
+package trust_dir_models
 
 import (
 	"goskeleton/app/global/variable"
@@ -7,13 +7,13 @@ import (
 
 //终端信任目录
 
-func CreateTrustPolicyFactory() *TrustPolicyModel {
-	return &TrustPolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreatePolicyFactory() *PolicyModel {
+	return &PolicyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type TrustPolicyModel struct {
+type PolicyModel struct {
 	baseTrust
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
@@ -34,11 +34,11 @@ type TrustPolicyModel struct {
 
 // 表名
 
-func (m *TrustPolicyModel) TableName() string {
+func (m *PolicyModel) TableName() string {
 	return "a_trust_policy"
 }
 
-func (m *TrustPolicyModel) CreateTable() bool {
+func (m *PolicyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
