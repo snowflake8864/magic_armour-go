@@ -164,7 +164,7 @@ func initTableAndData() {
 		_ = order_models.CreateOrderFactory().CreateTable()
 		_ = organization_models.CreateOrgExtendFactory().CreateTable()
 		_ = organization_models.CreateOrgLogFactory().CreateTable()
-		_ = org_stat_models.CreateOrgStatDailyFactory().CreateTable()
+		_ = org_stat_models.CreateDailyFactory().CreateTable()
 		_ = organization_models.CreateOrganizationFactory().CreateTable()
 		_ = role_models.CreateRoleFactory().CreateTable()
 		_ = user_models.CreateUserFactory().CreateTable()

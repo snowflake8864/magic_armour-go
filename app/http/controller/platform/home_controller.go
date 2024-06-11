@@ -83,7 +83,7 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfAgent(false, true, false, false,
+	column := org_stat_models.CreateDailyFactory().ColumnOfAgent(false, true, false, false,
 		false, false, false, false, false, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
@@ -103,7 +103,7 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfAgent(false, false, false, false,
+	column := org_stat_models.CreateDailyFactory().ColumnOfAgent(false, false, false, false,
 		true, false, false, true, false, true)
 	models := StatDailyFact.SumByMonthGroupDay(month, column)
 
@@ -127,7 +127,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfUser(false, true, true, false)
+	column := org_stat_models.CreateDailyFactory().ColumnOfUser(false, true, true, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)
 
@@ -161,7 +161,7 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
 	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateOrgStatDailyFactory().ColumnOfUser(false, true, false, true)
+	column := org_stat_models.CreateDailyFactory().ColumnOfUser(false, true, false, true)
 	models := StatDailyFact.SumByMonthGroupDay(month, column)
 
 	var result []map[string]interface{}

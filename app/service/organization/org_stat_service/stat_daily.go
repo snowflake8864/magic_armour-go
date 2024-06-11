@@ -7,15 +7,15 @@ import (
 )
 
 func CreateStatDailyFactory() *StatDaily {
-	return &StatDaily{masterModel: org_stat_models.CreateOrgStatDailyFactory()}
+	return &StatDaily{masterModel: org_stat_models.CreateDailyFactory()}
 }
 
 type StatDaily struct {
-	masterModel *org_stat_models.OrgStatDailyModel
+	masterModel *org_stat_models.DailyModel
 }
 
 // Add 新增
-func (crd *StatDaily) Add(param *org_stat_models.OrgStatDailyModel) bool {
+func (crd *StatDaily) Add(param *org_stat_models.DailyModel) bool {
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
@@ -23,7 +23,7 @@ func (crd *StatDaily) Add(param *org_stat_models.OrgStatDailyModel) bool {
 }
 
 // SumByDay 计算： 每天
-func (crd *StatDaily) SumByDay(day, column string) (result *org_stat_models.OrgStatDailyModel) {
+func (crd *StatDaily) SumByDay(day, column string) (result *org_stat_models.DailyModel) {
 	search := org_stat_models.SearchConditions{
 		StatDay: day,
 	}
@@ -35,7 +35,7 @@ func (crd *StatDaily) SumByDay(day, column string) (result *org_stat_models.OrgS
 }
 
 // SumByMonthGroupDay 计算： 每月并且按照天分组
-func (crd *StatDaily) SumByMonthGroupDay(month int, column string) (items []*org_stat_models.OrgStatDailyModel) {
+func (crd *StatDaily) SumByMonthGroupDay(month int, column string) (items []*org_stat_models.DailyModel) {
 	search := org_stat_models.SearchConditions{
 		StatMonth: month,
 	}

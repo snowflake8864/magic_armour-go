@@ -7,14 +7,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// CreateOrgStatDailyFactory 企业统计: 每天的
-func CreateOrgStatDailyFactory() *OrgStatDailyModel {
-	return &OrgStatDailyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+// CreateDailyFactory 企业统计: 每天的
+func CreateDailyFactory() *DailyModel {
+	return &DailyModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 //结构体
 
-type OrgStatDailyModel struct {
+type DailyModel struct {
 	baseStat
 	model.BaseModel
 	OrgId            int64  `json:"org_id"`
@@ -36,11 +36,11 @@ type OrgStatDailyModel struct {
 }
 
 // 表名
-func (m *OrgStatDailyModel) TableName() string {
+func (m *DailyModel) TableName() string {
 	return "o_org_stat_daily"
 }
 
-func (m *OrgStatDailyModel) CreateTable() bool {
+func (m *DailyModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -77,7 +77,7 @@ func (m *OrgStatDailyModel) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *OrgStatDailyModel) InsertItem(s *OrgStatDailyModel) bool {
+func (m *DailyModel) InsertItem(s *DailyModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -91,7 +91,7 @@ func (m *OrgStatDailyModel) InsertItem(s *OrgStatDailyModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *OrgStatDailyModel) InsertBatch(list *[]OrgStatDailyModel) bool {
+func (m *DailyModel) InsertBatch(list *[]DailyModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -104,7 +104,7 @@ func (m *OrgStatDailyModel) InsertBatch(list *[]OrgStatDailyModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *OrgStatDailyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *DailyModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -121,7 +121,7 @@ func (m *OrgStatDailyModel) UpdateByConditions(condition SearchConditions, updat
 }
 
 // DeleteByConditions 通过条件删除
-func (m *OrgStatDailyModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *DailyModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -138,7 +138,7 @@ func (m *OrgStatDailyModel) DeleteByConditions(condition SearchConditions) bool 
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OrgStatDailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgStatDailyModel) {
+func (m *DailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*DailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -163,7 +163,7 @@ func (m *OrgStatDailyModel) GetItemsByConditions(condition SearchConditions, off
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *OrgStatDailyModel) CalcByConditions(condition SearchConditions, column string) (item *OrgStatDailyModel) {
+func (m *DailyModel) CalcByConditions(condition SearchConditions, column string) (item *DailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
@@ -178,7 +178,7 @@ func (m *OrgStatDailyModel) CalcByConditions(condition SearchConditions, column 
 }
 
 // CalcByConditionsGroupDay 通过条件获取多条记录且按天分组
-func (m *OrgStatDailyModel) CalcByConditionsGroupDay(condition SearchConditions, column string) (items []*OrgStatDailyModel) {
+func (m *DailyModel) CalcByConditionsGroupDay(condition SearchConditions, column string) (items []*DailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
 		tmp := tx.Model(m).Select(column).Where(whereSQL, vals...)
