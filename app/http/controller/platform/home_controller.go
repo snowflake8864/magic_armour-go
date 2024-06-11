@@ -60,7 +60,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := alarm_service.CreateStatDailyFactory()
-	column := alarm_stat_models.CreateAlarmStatDailyFactory().StatColumn(alarm_stat_models.PrefixTotal, false,
+	column := alarm_stat_models.CreateStatDailyFactory().StatColumn(alarm_stat_models.PrefixTotal, false,
 		false, true, false, false)
 	statToday := StatDailyFact.SumByDay(today, column)
 	statYesterday := StatDailyFact.SumByDay(yesterday, column)

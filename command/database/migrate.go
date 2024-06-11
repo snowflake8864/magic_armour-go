@@ -215,7 +215,7 @@ func initTableAndData() {
 		_ = alarm_models.CreatePortFactory().CreateTable()
 		_ = alarm_models.CreateProcessFactory().CreateTable()
 		_ = alarm_models.CreateSelfFactory().CreateTable()
-		_ = alarm_stat_models.CreateAlarmStatDailyFactory().CreateTable()
+		_ = alarm_stat_models.CreateStatDailyFactory().CreateTable()
 		_ = alarm_models.CreateTamperFactory().CreateTable()
 		_ = alarm_models.CreateUsbFactory().CreateTable()
 	}

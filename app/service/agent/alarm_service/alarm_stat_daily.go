@@ -7,15 +7,15 @@ import (
 )
 
 func CreateStatDailyFactory() *AlarmStatDaily {
-	return &AlarmStatDaily{masterModel: alarm_stat_models.CreateAlarmStatDailyFactory()}
+	return &AlarmStatDaily{masterModel: alarm_stat_models.CreateStatDailyFactory()}
 }
 
 type AlarmStatDaily struct {
-	masterModel *alarm_stat_models.AlarmStatDailyModel
+	masterModel *alarm_stat_models.StatDailyModel
 }
 
 // Add 新增
-func (crd *AlarmStatDaily) Add(param *alarm_stat_models.AlarmStatDailyModel) bool {
+func (crd *AlarmStatDaily) Add(param *alarm_stat_models.StatDailyModel) bool {
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
@@ -23,7 +23,7 @@ func (crd *AlarmStatDaily) Add(param *alarm_stat_models.AlarmStatDailyModel) boo
 }
 
 // SumByDay 计算： 每天
-func (crd *AlarmStatDaily) SumByDay(day, column string) (result *alarm_stat_models.AlarmStatDailyModel) {
+func (crd *AlarmStatDaily) SumByDay(day, column string) (result *alarm_stat_models.StatDailyModel) {
 	where := alarm_stat_models.SearchConditions{
 		StatDay: day,
 	}
@@ -35,7 +35,7 @@ func (crd *AlarmStatDaily) SumByDay(day, column string) (result *alarm_stat_mode
 }
 
 // SumByMonthGroupDay 计算： 每月并且按照天分组
-func (crd *AlarmStatDaily) SumByMonthGroupDay(month int, column string) (items []*alarm_stat_models.AlarmStatDailyModel) {
+func (crd *AlarmStatDaily) SumByMonthGroupDay(month int, column string) (items []*alarm_stat_models.StatDailyModel) {
 	where := alarm_stat_models.SearchConditions{
 		StatMonth: month,
 	}

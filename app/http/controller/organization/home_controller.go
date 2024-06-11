@@ -61,7 +61,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 		}
 	}
 	//今天新增最多的8个终端
-	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	alarmFact := alarm_stat_models.CreateStatDailyFactory()
 	alarmModels := alarmFact.GetItemsByConditions(alarmConditions, 0, 8, "add_total desc")
 	if alarmModels == nil || len(alarmModels) == 0 {
 		response.SuccessReturnData(ctx, []interface{}{})
@@ -104,7 +104,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
-		response.SuccessReturnData(ctx, alarm_stat_models.AlarmStatDailyModel{})
+		response.SuccessReturnData(ctx, alarm_stat_models.StatDailyModel{})
 		return
 	} else {
 		//不是管理员有终端
@@ -113,7 +113,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 		}
 	}
 	//统计
-	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	alarmFact := alarm_stat_models.CreateStatDailyFactory()
 	result := alarmFact.CalcByConditions(conditions, alarmFact.StatColumnOfAllType(true, false, true, false, false))
 
 	response.SuccessReturnData(ctx, result)
@@ -129,7 +129,7 @@ func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
-		response.SuccessReturnData(ctx, alarm_stat_models.AlarmStatDailyModel{})
+		response.SuccessReturnData(ctx, alarm_stat_models.StatDailyModel{})
 		return
 	} else {
 		//不是管理员有终端
@@ -138,7 +138,7 @@ func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
 		}
 	}
 	//统计
-	alarmFact := alarm_stat_models.CreateAlarmStatDailyFactory()
+	alarmFact := alarm_stat_models.CreateStatDailyFactory()
 	models := alarmFact.CalcByConditionsGroupDay(conditions, alarmFact.StatColumn(alarm_stat_models.PrefixTotal, true, false, true, false, true))
 	var result []map[string]interface{}
 	if models != nil && len(models) > 0 {
