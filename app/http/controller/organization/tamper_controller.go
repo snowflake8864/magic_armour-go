@@ -277,7 +277,21 @@ func (u *TamperController) EditFolderForPolicy(ctx *gin.Context) {
 
 // DeleteForPolicy 终端策略: 删除
 func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForPolicy")
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.TamperPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := tamper_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PageForGlobal 全局策略: 分页
