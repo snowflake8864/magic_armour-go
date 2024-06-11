@@ -184,7 +184,7 @@ func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
 	//日志分页
-	total, logModels := order_models.CreateOrderLogFactory().Page(searchConditions, offset, pageSize, order)
+	total, logModels := order_models.CreateLogFactory().Page(searchConditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransLogsPage(total, logModels))
 }

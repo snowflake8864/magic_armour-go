@@ -8,7 +8,7 @@ import (
 
 // 订单日志表
 
-func CreateOrderLogFactory() *OrderLogModel {
+func CreateLogFactory() *OrderLogModel {
 	return &OrderLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 

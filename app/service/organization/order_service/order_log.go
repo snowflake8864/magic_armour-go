@@ -7,7 +7,7 @@ import (
 )
 
 func CreateLogFactory() *OrderLog {
-	return &OrderLog{masterModel: order_models.CreateOrderLogFactory()}
+	return &OrderLog{masterModel: order_models.CreateLogFactory()}
 }
 
 type OrderLog struct {
