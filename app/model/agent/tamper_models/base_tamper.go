@@ -18,6 +18,7 @@ type SearchConditions struct {
 	DeptIds      []int64
 	OpenSwitch   *int
 	DirFull      string
+	Type         int
 }
 
 // Calc 统计
@@ -83,6 +84,13 @@ func (m *baseTamper) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dept_id",
 			Val: condition.DeptId,
+		})
+	}
+
+	if condition.Type > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.Type,
 		})
 	}
 

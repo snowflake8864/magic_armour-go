@@ -42,6 +42,10 @@ func (crd *PolicyCurd) Add(param *tamper_models.TamperPolicyModel) error {
 		return errors.New("已存在相同策略，不能重复添加")
 	}
 
+	if !crd.masterModel.InsertItem(param) {
+		return errors.New("保存失败")
+	}
+
 	//新增任务
 	crd.addTask(param.OrgId, param.AgentId, "添加")
 

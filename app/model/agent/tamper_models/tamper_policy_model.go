@@ -31,7 +31,7 @@ type TamperPolicyModel struct {
 	Processes     string `json:"processes"`
 	OpenSwitch    int    `json:"open_switch"`
 	Remark        string `json:"remark"`
-	CreateId      string `json:"create_id"`
+	CreateId      int64  `json:"create_id"`
 	CreateName    string `json:"create_name"`
 	CreatedAt     string `json:"created_at"`
 	UpdateId      int64  `json:"update_id"`
@@ -77,6 +77,19 @@ func (m *TamperPolicyModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *TamperPolicyModel) InsertItem(s *TamperPolicyModel) bool {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(s)
+	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
