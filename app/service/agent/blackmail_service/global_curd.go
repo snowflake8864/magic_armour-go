@@ -24,18 +24,16 @@ type GlobalCurd struct {
 // 新增任务
 func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64, remark string) {
 	isOnline := enums.IsYes
+	switchOn := enums.SwitchOn
 	conditions := agent_models.SearchConditions{
-		OrgId:        orgId,
-		PlatformType: platformType,
-		DeptIds:      deptIds,
-		IsOnline:     &isOnline,
+		OrgId:           orgId,
+		PlatformType:    platformType,
+		DeptIds:         deptIds,
+		IsOnline:        &isOnline,
+		BlackmailSwitch: &switchOn,
 	}
-	AgentFact := agent_models.CreateAgentFactory()
-	models := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
-	if models != nil || len(models) > 0 {
-		for _, model := range models {
-			task_service.CreateCurdFactory().AddTaskForAgent(orgId, model.AgentId, enum_task.TypeBlackmailPolicyDownload, remark)
-		}
+	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil || len(ids) > 0 {
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, ids, enum_task.TypeBlackmailPolicyDownload, remark)
 	}
 }
 

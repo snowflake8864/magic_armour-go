@@ -37,15 +37,14 @@ func (u *BlackmailController) PageForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	condition := blackmail_models.SearchConditions{
-		OrgId:   loginInfo.OrgId,
-		AgentId: u.getAgentIdFromGin(ctx),
+		OrgId: loginInfo.OrgId,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := blackmail_models.CreateGroupFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGroupPage(total, models))
 }
 
 // GetAllForGroup 文件类型组: 全部
@@ -53,40 +52,28 @@ func (u *BlackmailController) GetAllForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	condition := blackmail_models.SearchConditions{
-		OrgId:   loginInfo.OrgId,
-		AgentId: u.getAgentIdFromGin(ctx),
+		OrgId: loginInfo.OrgId,
 	}
-	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+	models := blackmail_models.CreateGroupFactory().GetListByConditions(condition)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGroupList(models))
 }
 
 // AddForGroup 文件类型组: 添加
 func (u *BlackmailController) AddForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.PolicyModel{
+	param := blackmail_models.GroupModel{
 		OrgId:      loginInfo.OrgId,
-		AgentId:    u.getAgentIdFromGin(ctx),
-		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
+		Suffix:     ctx.GetString(consts.ValidatorPrefixOrg + "suffix"),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
-	}
 
-	if err := blackmail_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+	if err := blackmail_service.CreateGroupCurdFactory().Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -96,24 +83,16 @@ func (u *BlackmailController) AddForGroup(ctx *gin.Context) {
 // EditForGroup 文件类型组: 编辑
 func (u *BlackmailController) EditForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.PolicyModel{
+	param := blackmail_models.GroupModel{
 		OrgId:      loginInfo.OrgId,
-		AgentId:    u.getAgentIdFromGin(ctx),
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
+		Suffix:     ctx.GetString(consts.ValidatorPrefixOrg + "suffix"),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
-	}
-	if err := blackmail_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+
+	if err := blackmail_service.CreateGroupCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -124,15 +103,14 @@ func (u *BlackmailController) EditForGroup(ctx *gin.Context) {
 func (u *BlackmailController) DeleteForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := blackmail_models.PolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
+	param := blackmail_models.GroupModel{
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := blackmail_service.CreateGroupCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}

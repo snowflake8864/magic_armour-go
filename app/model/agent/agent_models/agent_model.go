@@ -446,6 +446,20 @@ func (m *AgentModel) GetItemsByOrgAndAgents(orgId int64, agentIds []string, colu
 	}
 }
 
+// GetIdsByByConditions s 通过条件获取ID集合
+func (m *AgentModel) GetIdsByByConditions(condition SearchConditions) (ids []string) {
+	models := m.GetListByConditions(condition, m.ColumnBasic(true, false))
+
+	if models == nil {
+		return ids
+	}
+
+	for _, item := range models {
+		ids = append(ids, item.AgentId)
+	}
+	return ids
+}
+
 // GetListByConditions 通过条件获取多条记录
 func (m *AgentModel) GetListByConditions(condition SearchConditions, column string) (items []*AgentModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "", column)

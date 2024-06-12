@@ -90,3 +90,49 @@ func (t *BlackmailTrans) TransPolicyPage(total int64, models []*blackmail_models
 		"items": items,
 	}
 }
+
+// TransGroupPage 转换成文件类型组页需要的数据
+func (t *BlackmailTrans) TransGroupPage(total int64, models []*blackmail_models.GroupModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+
+		for _, model := range models {
+			data := make(map[string]interface{})
+			data["id"] = model.Id
+			data["suffix"] = model.Suffix
+			data["create_id"] = model.CreateId
+			data["create_name"] = model.CreateName
+			data["created_at"] = model.CreatedAt
+			data["update_id"] = model.UpdateId
+			data["update_name"] = model.UpdateName
+			data["updated_at"] = model.UpdatedAt
+
+			items = append(items, data)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
+// TransGroupList 转换成文件类型组页需要的数据
+func (t *BlackmailTrans) TransGroupList(models []*blackmail_models.GroupModel) (items []map[string]interface{}) {
+	if models != nil {
+		for _, model := range models {
+			data := make(map[string]interface{})
+			data["id"] = model.Id
+			data["suffix"] = model.Suffix
+			data["create_id"] = model.CreateId
+			data["create_name"] = model.CreateName
+			data["created_at"] = model.CreatedAt
+			data["update_id"] = model.UpdateId
+			data["update_name"] = model.UpdateName
+			data["updated_at"] = model.UpdatedAt
+
+			items = append(items, data)
+		}
+	}
+	return items
+}

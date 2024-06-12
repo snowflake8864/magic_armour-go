@@ -25,22 +25,27 @@ type AgentCalc struct {
 }
 
 type SearchConditions struct {
-	OrgId         int64
-	AgentId       string
-	AgentIds      []string
-	HostName      string
-	AgentIp       string
-	NetIp         string
-	PlatformType  int
-	IsOnline      *int
-	IsSafe        *int
-	Alias         string
-	ContactName   string
-	DeptIds       []int64
-	CreateAtGte   string
-	CreateAtLte   string
-	ProcessSwitch *int
-	DllSwitch     *int
+	OrgId           int64
+	AgentId         string
+	AgentIds        []string
+	HostName        string
+	AgentIp         string
+	NetIp           string
+	PlatformType    int
+	IsOnline        *int
+	IsSafe          *int
+	Alias           string
+	ContactName     string
+	DeptIds         []int64
+	CreateAtGte     string
+	CreateAtLte     string
+	ProcessSwitch   *int
+	DllSwitch       *int
+	TamperSwitch    *int
+	BlackmailSwitch *int
+	PortSwitch      *int
+	PlugSwitch      *int
+	UsbSwitch       *int
 }
 
 type baseAgent struct {
@@ -143,6 +148,36 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dll_switch",
 			Val: *condition.DllSwitch,
+		})
+	}
+	if condition.TamperSwitch != nil && *condition.TamperSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "tamper_switch",
+			Val: *condition.TamperSwitch,
+		})
+	}
+	if condition.BlackmailSwitch != nil && *condition.BlackmailSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "blackmail_switch",
+			Val: *condition.BlackmailSwitch,
+		})
+	}
+	if condition.PortSwitch != nil && *condition.PortSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "port_switch",
+			Val: *condition.PortSwitch,
+		})
+	}
+	if condition.PlugSwitch != nil && *condition.PlugSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "plug_switch",
+			Val: *condition.PlugSwitch,
+		})
+	}
+	if condition.UsbSwitch != nil && *condition.UsbSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "usb_switch",
+			Val: *condition.UsbSwitch,
 		})
 	}
 	return wheres

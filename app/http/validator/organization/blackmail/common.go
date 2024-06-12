@@ -1,9 +1,5 @@
 package blackmail
 
-type Suffix struct {
-	Suffix string `form:"suffix" json:"suffix" binding:"required,max=64"`
-}
-
 type PlatformType struct {
 	PlatformType int `form:"platformType" json:"platformType" binding:"required,oneof=1 2"`
 }
@@ -18,10 +14,6 @@ type Id struct {
 	Id int64 `form:"id" json:"id" binding:"required"`
 }
 
-type Title struct {
-	Title string `form:"title" json:"title" binding:"omitempty,max=128"`
-}
-
 type Remark struct {
 	Remark string `form:"remark" json:"remark" binding:"omitempty,max=128"`
 }
@@ -32,4 +24,12 @@ type Processes struct {
 
 type DeptId struct {
 	DeptId int `form:"deptId" json:"deptId"`
+}
+
+type Title struct {
+	Title string `form:"title" json:"title" binding:"omitempty,max=128"`
+}
+
+type Suffix struct {
+	Suffix string `form:"suffix" json:"suffix" binding:"required,max=64"`
 }

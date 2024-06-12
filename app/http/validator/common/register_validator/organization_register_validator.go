@@ -316,15 +316,15 @@ func OrganizationRegisterValidator() {
 
 	//勒索防护
 	key = consts.ValidatorPrefixOrg + "BlackmailGroupPage"
-	containers.Set(key, blackmail3.PolicyPage{})
+	containers.Set(key, blackmail3.GroupPage{})
 	key = consts.ValidatorPrefixOrg + "BlackmailGroupGetAll"
-	containers.Set(key, blackmail3.PolicySetSwitch{})
+	containers.Set(key, blackmail3.GroupGetAll{})
 	key = consts.ValidatorPrefixOrg + "BlackmailGroupAdd"
-	containers.Set(key, blackmail3.PolicyAdd{})
+	containers.Set(key, blackmail3.GroupAdd{})
 	key = consts.ValidatorPrefixOrg + "BlackmailGroupEdit"
-	containers.Set(key, blackmail3.PolicyEdit{})
+	containers.Set(key, blackmail3.GroupEdit{})
 	key = consts.ValidatorPrefixOrg + "BlackmailGroupDelete"
-	containers.Set(key, blackmail3.PolicyDelete{})
+	containers.Set(key, blackmail3.GroupDelete{})
 	key = consts.ValidatorPrefixOrg + "BlackmailManagePage"
 	containers.Set(key, blackmail3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "BlackmailManageSetSwitch"
