@@ -16,7 +16,7 @@ func CreateVirtualPolicyFactory() *VirtualPolicyModel {
 type VirtualPolicyModel struct {
 	basePort
 	model.BaseModel
-	Id          string `json:"id" gorm:"primaryKey"`
+	Id          int64  `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`
 	AgentId     string `json:"agent_id"`
 	Type        string `json:"type"`
@@ -30,6 +30,8 @@ type VirtualPolicyModel struct {
 	CreateId    int64  `json:"create_id"`
 	CreateName  string `json:"create_name"`
 	CreatedAt   string `json:"created_at"`
+	UpdateId    int64  `json:"update_id"`
+	UpdateName  string `json:"update_name"`
 	UpdatedAt   string `json:"updated_at"`
 }
 
@@ -45,7 +47,7 @@ func (m *VirtualPolicyModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			protocol varchar(8)  NOT NULL DEFAULT '' COMMENT '传输协议(tcp,udp)',
 			source_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '源ip',
@@ -57,7 +59,9 @@ func (m *VirtualPolicyModel) CreateTable() bool {
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
-			updated_at datetime NOT NULL,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
+			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id, id) 

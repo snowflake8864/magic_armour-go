@@ -41,7 +41,7 @@ func (m *WorkingModel) CreateTable() bool {
 		(
 	   		org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			port varchar(8)  NOT NULL DEFAULT '' COMMENT '端口',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'IP地址',
