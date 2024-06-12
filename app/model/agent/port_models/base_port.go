@@ -14,6 +14,13 @@ type SearchConditions struct {
 	OpenSwitch *int
 }
 
+// Calc 统计
+type Calc struct {
+	AgentId     string `json:"agent_id"`
+	TotalNumber int    `json:"total_number"`
+	OnNumber    int    `json:"on_number"`
+}
+
 type basePort struct {
 }
 
