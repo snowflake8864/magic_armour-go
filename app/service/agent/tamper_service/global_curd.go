@@ -24,11 +24,13 @@ type GlobalCurd struct {
 // 新增任务
 func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64, remark string) {
 	isOnline := enums.IsYes
+	switchOn := enums.SwitchOn
 	conditions := agent_models.SearchConditions{
 		OrgId:        orgId,
 		PlatformType: platformType,
 		DeptIds:      deptIds,
 		IsOnline:     &isOnline,
+		TamperSwitch: &switchOn,
 	}
 	AgentFact := agent_models.CreateAgentFactory()
 	models := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
