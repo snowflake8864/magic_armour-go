@@ -31,8 +31,7 @@ func (crd *GroupCurd) Add(param *blackmail_models.GroupModel) error {
 
 // Edit 修改
 func (crd *GroupCurd) Edit(param *blackmail_models.GroupModel, isRoot int) error {
-	param.CreatedAt = date_helper.CurDatetime()
-	param.UpdatedAt = param.CreatedAt
+	param.UpdatedAt = date_helper.CurDatetime()
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(blackmail_models.SearchConditions{

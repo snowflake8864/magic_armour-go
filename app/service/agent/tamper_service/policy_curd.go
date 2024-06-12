@@ -52,8 +52,7 @@ func (crd *PolicyCurd) Add(param *tamper_models.PolicyModel) error {
 // Edit 修改
 func (crd *PolicyCurd) Edit(param *tamper_models.PolicyModel, isRoot int) error {
 	param.Dir = path_helper.ToStandard(param.Dir)
-	param.CreatedAt = date_helper.CurDatetime()
-	param.UpdatedAt = param.CreatedAt
+	param.UpdatedAt = date_helper.CurDatetime()
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(tamper_models.SearchConditions{
@@ -86,7 +85,7 @@ func (crd *PolicyCurd) Edit(param *tamper_models.PolicyModel, isRoot int) error 
 	updates["is_extend"] = param.IsExtend
 	updates["processes"] = param.Processes
 	updates["remark"] = param.Remark
-	updates["open_switch"] = param.OpenSwitch
+	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()

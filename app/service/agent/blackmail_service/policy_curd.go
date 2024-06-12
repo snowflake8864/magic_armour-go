@@ -56,8 +56,7 @@ func (crd *PolicyCurd) Add(param *blackmail_models.PolicyModel) error {
 // Edit 修改
 func (crd *PolicyCurd) Edit(param *blackmail_models.PolicyModel, isRoot int) error {
 	param.TypeVal = path_helper.ToStandard(param.TypeVal)
-	param.CreatedAt = date_helper.CurDatetime()
-	param.UpdatedAt = param.CreatedAt
+	param.UpdatedAt = date_helper.CurDatetime()
 	if param.Type == enum_blackmail.TypeDir {
 		param.GroupId = 0
 	}
@@ -90,7 +89,7 @@ func (crd *PolicyCurd) Edit(param *blackmail_models.PolicyModel, isRoot int) err
 	updates["group_id"] = param.GroupId
 	updates["processes"] = param.Processes
 	updates["remark"] = param.Remark
-	updates["open_switch"] = param.OpenSwitch
+	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()

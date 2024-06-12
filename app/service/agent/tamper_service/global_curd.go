@@ -88,8 +88,7 @@ func (crd *GlobalCurd) Add(param *tamper_models.GlobalModel) error {
 // Edit 修改
 func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error {
 	param.Dir = path_helper.ToStandard(param.Dir)
-	param.CreatedAt = date_helper.CurDatetime()
-	param.UpdatedAt = param.CreatedAt
+	param.UpdatedAt = date_helper.CurDatetime()
 	if param.DeptId < 0 {
 		param.DeptId = 0
 	}
@@ -133,7 +132,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error 
 	updates["processes"] = param.Processes
 	updates["dept_id"] = param.DeptId
 	updates["remark"] = param.Remark
-	updates["open_switch"] = param.OpenSwitch
+	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()

@@ -88,8 +88,7 @@ func (crd *GlobalCurd) Add(param *trust_dir_models.GlobalModel) error {
 // Edit 修改
 func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) error {
 	param.Dir = path_helper.ToStandard(param.Dir)
-	param.CreatedAt = date_helper.CurDatetime()
-	param.UpdatedAt = param.CreatedAt
+	param.UpdatedAt = date_helper.CurDatetime()
 	if param.DeptId < 0 {
 		param.DeptId = 0
 	}
