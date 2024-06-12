@@ -115,15 +115,16 @@ func (u *PortController) BatchSetConfigForManage(ctx *gin.Context) {
 func (u *PortController) PageForWorking(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	condition := blackmail_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
+	condition := port_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := blackmail_models.CreateGroupFactory().Page(condition, offset, pageSize, order)
+	total, models := port_models.CreateWorkingFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGroupPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransWorkingPage(total, models))
 }
 
 // RefreshForWorking 正常端口: 刷新
@@ -135,16 +136,16 @@ func (u *PortController) RefreshForWorking(ctx *gin.Context) {
 func (u *PortController) PageForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	condition := blackmail_models.SearchConditions{
+	condition := port_models.SearchConditions{
 		OrgId:   loginInfo.OrgId,
 		AgentId: u.getAgentIdFromGin(ctx),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := port_models.CreateVirtualPolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransPolicyPage(total, models))
 }
 
 // SetSwitchForPolicy 终端策略: 设置开关
