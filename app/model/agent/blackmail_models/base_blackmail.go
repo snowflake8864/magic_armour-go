@@ -86,7 +86,6 @@ func (m *baseBlackmail) conditions2Where(condition SearchConditions) (wheres []m
 			Val: condition.DeptId,
 		})
 	}
-
 	if condition.Type > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "type",

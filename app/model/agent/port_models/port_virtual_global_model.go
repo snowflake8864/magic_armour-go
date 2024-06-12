@@ -20,6 +20,7 @@ type VirtualGlobalModel struct {
 	model.BaseModel
 	Id          int64  `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`
+	DeptId      int64  `json:"dept_id"`
 	Type        string `json:"type"`
 	Protocol    string `json:"protocol"`
 	SourceIp    string `json:"source_ip"`
@@ -48,6 +49,7 @@ func (m *VirtualGlobalModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id BIGINT NOT NULL DEFAULT '0',
+			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			protocol varchar(8)  NOT NULL DEFAULT '' COMMENT '传输协议(tcp,udp)',
 			source_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '源ip',

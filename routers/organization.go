@@ -384,6 +384,44 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"BlackmailGlobalDelete"))
 					}
 				} //勒索防护
+
+				//端口虚开
+				port := vOrg.Group("port/")
+				{
+					public := port.Group("public/")
+					{
+						public.POST("protocols", (&organization.PortController{}).Protocols)
+						public.POST("ipTypes", (&organization.PortController{}).IpTypes)
+						public.POST("alarmLevels", (&organization.PortController{}).AlarmLevels)
+					}
+					working := port.Group("working/")
+					{
+						working.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortWorkingPage"))
+						working.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortWorkingRefresh"))
+					}
+					manage := port.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortManageBatchSetConfig"))
+					}
+					policy := port.Group("policy/")
+					{
+						policy.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortPolicyPage"))
+						policy.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortPolicySetSwitch"))
+						policy.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortPolicyAdd"))
+						policy.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortPolicyEdit"))
+						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortPolicyDelete"))
+					}
+					global := port.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalPage"))
+						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalSetSwitch"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalAdd"))
+						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalEdit"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalDelete"))
+					}
+				} //端口虚开
 			}
 
 		}

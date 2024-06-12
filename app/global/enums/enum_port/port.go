@@ -49,7 +49,7 @@ var WebMapInt = map[string][]int{
 	},
 }
 
-var WebMapSrt = map[string][]string{
+var WebMapStr = map[string][]string{
 	"ip_type": {
 		IpTypeIpv4,
 		IpTypeIpv6,
