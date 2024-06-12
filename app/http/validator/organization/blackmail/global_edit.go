@@ -12,7 +12,7 @@ type GlobalEdit struct {
 	PlatformType
 	DeptId
 	Id
-	GroupAdd
+	AddPolicy
 	Processes
 	Remark
 }

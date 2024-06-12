@@ -348,7 +348,7 @@ func InitOrganizationRouter() *gin.Engine {
 				//勒索防护
 				blackmail := vOrg.Group("blackmail/")
 				{
-					public := tamper.Group("public/")
+					public := blackmail.Group("public/")
 					{
 						public.POST("types", (&organization.BlackmailController{}).Types)
 					}

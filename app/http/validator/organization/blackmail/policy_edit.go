@@ -12,7 +12,7 @@ import (
 type PolicyEdit struct {
 	data_type.AgentSingle
 	Id
-	GroupAdd
+	AddPolicy
 	Processes
 	Remark
 }

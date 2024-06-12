@@ -32,6 +32,113 @@ func (u *BlackmailController) Types(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
+// PageForGroup 文件类型组: 分页
+func (u *BlackmailController) PageForGroup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	condition := blackmail_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+}
+
+// GetAllForGroup 文件类型组: 全部
+func (u *BlackmailController) GetAllForGroup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	condition := blackmail_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+}
+
+// AddForGroup 文件类型组: 添加
+func (u *BlackmailController) AddForGroup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := blackmail_models.PolicyModel{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
+		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+	if err, processes := u.getProcesses(ctx); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else {
+		param.Processes = processes
+	}
+
+	if err := blackmail_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// EditForGroup 文件类型组: 编辑
+func (u *BlackmailController) EditForGroup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := blackmail_models.PolicyModel{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
+		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+	if err, processes := u.getProcesses(ctx); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else {
+		param.Processes = processes
+	}
+	if err := blackmail_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DeleteForGroup 文件类型组: 删除
+func (u *BlackmailController) DeleteForGroup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := blackmail_models.PolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := blackmail_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // PageForManage 分页
 func (u *BlackmailController) PageForManage(ctx *gin.Context) {
 

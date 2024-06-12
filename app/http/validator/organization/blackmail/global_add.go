@@ -11,7 +11,7 @@ import (
 type GlobalAdd struct {
 	PlatformType
 	DeptId
-	GroupAdd
+	AddPolicy
 	Processes
 	Remark
 }

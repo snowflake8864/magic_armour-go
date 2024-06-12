@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	agent3 "goskeleton/app/http/validator/organization/agent"
 	auth3 "goskeleton/app/http/validator/organization/auth"
+	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
 	department3 "goskeleton/app/http/validator/organization/department"
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
@@ -15,7 +16,7 @@ import (
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 	threaten3 "goskeleton/app/http/validator/organization/threaten"
-	trust_dir3 "goskeleton/app/http/validator/organization/trust_dir"
+	trustDir3 "goskeleton/app/http/validator/organization/trust_dir"
 	user3 "goskeleton/app/http/validator/organization/user"
 )
 
@@ -120,15 +121,15 @@ func OrganizationRegisterValidator() {
 
 	//信任目录
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalPage"
-	containers.Set(key, trust_dir3.GlobalPage{})
+	containers.Set(key, trustDir3.GlobalPage{})
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalAdd"
-	containers.Set(key, trust_dir3.GlobalAdd{})
+	containers.Set(key, trustDir3.GlobalAdd{})
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalEdit"
-	containers.Set(key, trust_dir3.GlobalEdit{})
+	containers.Set(key, trustDir3.GlobalEdit{})
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalSetSwitch"
-	containers.Set(key, trust_dir3.GlobalSetSwitch{})
+	containers.Set(key, trustDir3.GlobalSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalDelete"
-	containers.Set(key, trust_dir3.GlobalDelete{})
+	containers.Set(key, trustDir3.GlobalDelete{})
 
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
@@ -312,4 +313,44 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, tamper3.GlobalEditFile{})
 	key = consts.ValidatorPrefixOrg + "TamperGlobalDelete"
 	containers.Set(key, tamper3.GlobalDelete{})
+
+	//勒索防护
+	key = consts.ValidatorPrefixOrg + "BlackmailGroupPage"
+	containers.Set(key, blackmail3.PolicyPage{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGroupGetAll"
+	containers.Set(key, blackmail3.PolicySetSwitch{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGroupAdd"
+	containers.Set(key, blackmail3.PolicyAdd{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGroupEdit"
+	containers.Set(key, blackmail3.PolicyEdit{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGroupDelete"
+	containers.Set(key, blackmail3.PolicyDelete{})
+	key = consts.ValidatorPrefixOrg + "BlackmailManagePage"
+	containers.Set(key, blackmail3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "BlackmailManageSetSwitch"
+	containers.Set(key, blackmail3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "BlackmailManageSetMode"
+	containers.Set(key, blackmail3.ManageSetMode{})
+	key = consts.ValidatorPrefixOrg + "BlackmailManageBatchSetConfig"
+	containers.Set(key, blackmail3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "BlackmailPolicyPage"
+	containers.Set(key, blackmail3.PolicyPage{})
+	key = consts.ValidatorPrefixOrg + "BlackmailPolicySetSwitch"
+	containers.Set(key, blackmail3.PolicySetSwitch{})
+	key = consts.ValidatorPrefixOrg + "BlackmailPolicyAdd"
+	containers.Set(key, blackmail3.PolicyAdd{})
+	key = consts.ValidatorPrefixOrg + "BlackmailPolicyEdit"
+	containers.Set(key, blackmail3.PolicyEdit{})
+	key = consts.ValidatorPrefixOrg + "BlackmailPolicyDelete"
+	containers.Set(key, blackmail3.PolicyDelete{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGlobalPage"
+	containers.Set(key, blackmail3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGlobalSetSwitch"
+	containers.Set(key, blackmail3.GlobalSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGlobalAdd"
+	containers.Set(key, blackmail3.GlobalAdd{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGlobalEdit"
+	containers.Set(key, blackmail3.GlobalEdit{})
+	key = consts.ValidatorPrefixOrg + "BlackmailGlobalDelete"
+	containers.Set(key, blackmail3.GlobalDelete{})
 }

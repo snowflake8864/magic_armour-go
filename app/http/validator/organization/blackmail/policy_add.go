@@ -11,7 +11,7 @@ import (
 
 type PolicyAdd struct {
 	data_type.AgentSingle
-	GroupAdd
+	AddPolicy
 	Processes
 	Remark
 }
