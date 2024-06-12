@@ -32,12 +32,8 @@ func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64, r
 		IsOnline:     &isOnline,
 		TamperSwitch: &switchOn,
 	}
-	AgentFact := agent_models.CreateAgentFactory()
-	models := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
-	if models != nil || len(models) > 0 {
-		for _, model := range models {
-			task_service.CreateCurdFactory().AddTaskForAgent(orgId, model.AgentId, enum_task.TypeTamperPolicyDownload, remark)
-		}
+	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil || len(ids) > 0 {
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, ids, enum_task.TypeBlackmailPolicyDownload, remark)
 	}
 }
 
