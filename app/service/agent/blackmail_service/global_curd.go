@@ -2,7 +2,9 @@ package blackmail_service
 
 import (
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_blackmail"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -10,6 +12,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 )
 
@@ -60,6 +63,9 @@ func (crd *GlobalCurd) Add(param *blackmail_models.GlobalModel) error {
 	if param.DeptId < 0 {
 		param.DeptId = 0
 	}
+	if param.Type == enum_blackmail.TypeDir {
+		param.GroupId = 0
+	}
 
 	//验证数据
 	conditions := blackmail_models.SearchConditions{
@@ -92,6 +98,9 @@ func (crd *GlobalCurd) Edit(param *blackmail_models.GlobalModel, isRoot int) err
 	param.UpdatedAt = param.CreatedAt
 	if param.DeptId < 0 {
 		param.DeptId = 0
+	}
+	if param.Type == enum_blackmail.TypeDir {
+		param.GroupId = 0
 	}
 
 	//验证数据
@@ -134,6 +143,7 @@ func (crd *GlobalCurd) Edit(param *blackmail_models.GlobalModel, isRoot int) err
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
+	fmt.Println(json_helper.Encode(updates))
 	if isOk, _ := crd.masterModel.UpdateByConditions(blackmail_models.SearchConditions{
 		OrgId:        hashModel.OrgId,
 		Id:           hashModel.Id,

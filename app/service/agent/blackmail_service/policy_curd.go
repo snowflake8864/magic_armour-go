@@ -3,6 +3,7 @@ package blackmail_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_blackmail"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/blackmail_models"
@@ -31,6 +32,9 @@ func (crd *PolicyCurd) Add(param *blackmail_models.PolicyModel) error {
 	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
+	if param.Type == enum_blackmail.TypeDir {
+		param.GroupId = 0
+	}
 
 	//验证数据
 	conditions := blackmail_models.SearchConditions{
@@ -54,6 +58,9 @@ func (crd *PolicyCurd) Edit(param *blackmail_models.PolicyModel, isRoot int) err
 	param.TypeVal = path_helper.ToStandard(param.TypeVal)
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
+	if param.Type == enum_blackmail.TypeDir {
+		param.GroupId = 0
+	}
 
 	//验证数据
 	hashModel := crd.masterModel.GetItemByConditions(blackmail_models.SearchConditions{

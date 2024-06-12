@@ -7,7 +7,7 @@ type PlatformType struct {
 type AddPolicy struct {
 	Type    int    `form:"type" json:"type" binding:"required,oneof=1 2"`
 	TypeVal string `form:"typeVal" json:"typeVal" binding:"required,max=512"`
-	GroupId *int64 `form:"groupId" json:"groupId" binding:"required_if=Type 1"`
+	GroupId int64  `form:"groupId" json:"groupId" binding:"required_if=Type 1"`
 }
 
 type Id struct {

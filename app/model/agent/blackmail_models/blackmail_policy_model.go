@@ -50,7 +50,7 @@ func (m *PolicyModel) CreateTable() bool {
 			id BIGINT NOT NULL DEFAULT '0',
 			type tinyint NOT NULL DEFAULT '1' COMMENT '策略类型(1后缀 2路径)',
 			type_val varchar(512)  NOT NULL DEFAULT '' COMMENT '策略类型值',
-			group_id int  NOT NULL DEFAULT '0' COMMENT '类型组(blackmail_group.id)',
+			group_id BIGINT NOT NULL DEFAULT '0' COMMENT '类型组(blackmail_group.id)',
 			processes string NOT NULL DEFAULT '' COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',

@@ -379,6 +379,7 @@ func (u *BlackmailController) AddForGlobal(ctx *gin.Context) {
 		TypeVal:      ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
 		GroupId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
 		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
 		CreateId:     loginInfo.UserId,
 		CreateName:   loginInfo.Username,
 		UpdateId:     loginInfo.UserId,
@@ -408,6 +409,7 @@ func (u *BlackmailController) EditForGlobal(ctx *gin.Context) {
 		TypeVal:      ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
 		GroupId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
 		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,
 	}
