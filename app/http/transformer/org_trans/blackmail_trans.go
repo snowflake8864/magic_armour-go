@@ -99,6 +99,7 @@ func (t *BlackmailTrans) TransGroupPage(total int64, models []*blackmail_models.
 		for _, model := range models {
 			data := make(map[string]interface{})
 			data["id"] = model.Id
+			data["title"] = model.Title
 			data["suffix"] = model.Suffix
 			data["create_id"] = model.CreateId
 			data["create_name"] = model.CreateName
@@ -124,12 +125,13 @@ func (t *BlackmailTrans) TransGroupList(models []*blackmail_models.GroupModel) (
 			data := make(map[string]interface{})
 			data["id"] = model.Id
 			data["suffix"] = model.Suffix
-			data["create_id"] = model.CreateId
+			data["title"] = model.Title
+			/*data["create_id"] = model.CreateId
 			data["create_name"] = model.CreateName
 			data["created_at"] = model.CreatedAt
 			data["update_id"] = model.UpdateId
 			data["update_name"] = model.UpdateName
-			data["updated_at"] = model.UpdatedAt
+			data["updated_at"] = model.UpdatedAt*/
 
 			items = append(items, data)
 		}
