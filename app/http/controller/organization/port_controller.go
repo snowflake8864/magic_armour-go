@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -10,13 +9,11 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/port_models"
-	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/agent/blackmail_service"
-	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/service/agent/port_service"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
 )
@@ -118,6 +115,7 @@ func (u *PortController) PageForWorking(ctx *gin.Context) {
 	condition := port_models.SearchConditions{
 		OrgId:   loginInfo.OrgId,
 		AgentId: u.getAgentIdFromGin(ctx),
+		Port:    int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "port"))),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
@@ -152,7 +150,7 @@ func (u *PortController) PageForPolicy(ctx *gin.Context) {
 func (u *PortController) SetSwitchForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := blackmail_models.PolicyModel{
+	param := port_models.VirtualPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -161,47 +159,32 @@ func (u *PortController) SetSwitchForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-func (u *PortController) getProcesses(ctx *gin.Context) (error, string) {
-	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "processes")
-
-	var processes []tamper_models.Process
-	err := json_helper.ToAny(jsonStr, &processes)
-	if err != nil {
-		return errors.New("信任进程数据数据错误"), ""
-	}
-	return nil, json_helper.Encode(processes)
-}
-
 // AddForPolicy 终端策略: 添加
 func (u *PortController) AddForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.PolicyModel{
-		OrgId:      loginInfo.OrgId,
-		AgentId:    u.getAgentIdFromGin(ctx),
-		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		CreateId:   loginInfo.UserId,
-		CreateName: loginInfo.Username,
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
+	param := port_models.VirtualPolicyModel{
+		OrgId:       loginInfo.OrgId,
+		AgentId:     u.getAgentIdFromGin(ctx),
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		CreateId:    loginInfo.UserId,
+		CreateName:  loginInfo.Username,
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+	if err := port_service.CreatePolicyCurdFactory().Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -211,24 +194,21 @@ func (u *PortController) AddForPolicy(ctx *gin.Context) {
 // EditForPolicy 终端策略: 编辑
 func (u *PortController) EditForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.PolicyModel{
-		OrgId:      loginInfo.OrgId,
-		AgentId:    u.getAgentIdFromGin(ctx),
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
+	param := port_models.VirtualPolicyModel{
+		OrgId:       loginInfo.OrgId,
+		AgentId:     u.getAgentIdFromGin(ctx),
+		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
 	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
-	}
-	if err := blackmail_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+
+	if err := port_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -239,7 +219,7 @@ func (u *PortController) EditForPolicy(ctx *gin.Context) {
 func (u *PortController) DeleteForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := blackmail_models.PolicyModel{
+	param := port_models.VirtualPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -247,7 +227,7 @@ func (u *PortController) DeleteForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -258,13 +238,13 @@ func (u *PortController) DeleteForPolicy(ctx *gin.Context) {
 func (u *PortController) PageForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
-	condition := blackmail_models.SearchConditions{
+	condition := port_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := blackmail_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := port_models.CreateVirtualGlobalFactory().Page(condition, offset, pageSize, order)
 
 	//获取组织架构
 	departmentMaps := map[int64]*department_models.DepartmentModel{}
@@ -278,22 +258,21 @@ func (u *PortController) PageForGlobal(ctx *gin.Context) {
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // SetSwitchForGlobal 全局策略: 设置开关
 func (u *PortController) SetSwitchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := blackmail_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := port_models.VirtualGlobalModel{
+		OrgId:      loginInfo.OrgId,
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -303,26 +282,21 @@ func (u *PortController) SetSwitchForGlobal(ctx *gin.Context) {
 // AddForGlobal 全局策略: 添加
 func (u *PortController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		Type:         int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:      ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		CreateId:     loginInfo.UserId,
-		CreateName:   loginInfo.Username,
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := port_models.VirtualGlobalModel{
+		OrgId:       loginInfo.OrgId,
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		DeptId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
+		CreateId:    loginInfo.UserId,
+		CreateName:  loginInfo.Username,
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
 	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
-	}
-	if err := blackmail_service.CreateGlobalCurdFactory().Add(&param); err != nil {
+	if err := port_service.CreateGlobalCurdFactory().Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -332,25 +306,20 @@ func (u *PortController) AddForGlobal(ctx *gin.Context) {
 // EditForGlobal 全局策略: 编辑
 func (u *PortController) EditForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := blackmail_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Type:         int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
-		TypeVal:      ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
-		GroupId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
-		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := port_models.VirtualGlobalModel{
+		OrgId:       loginInfo.OrgId,
+		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		DeptId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
 	}
-	if err, processes := u.getProcesses(ctx); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	} else {
-		param.Processes = processes
-	}
-	if err := blackmail_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+
+	if err := port_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -361,14 +330,14 @@ func (u *PortController) EditForGlobal(ctx *gin.Context) {
 func (u *PortController) DeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := blackmail_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := port_models.VirtualGlobalModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
-	if err := blackmail_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}

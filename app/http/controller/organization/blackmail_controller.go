@@ -432,6 +432,7 @@ func (u *BlackmailController) DeleteForGlobal(ctx *gin.Context) {
 
 	param := blackmail_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
+		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,
