@@ -10,6 +10,7 @@ import (
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
+	port3 "goskeleton/app/http/validator/organization/port"
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
@@ -353,4 +354,36 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, blackmail3.GlobalEdit{})
 	key = consts.ValidatorPrefixOrg + "BlackmailGlobalDelete"
 	containers.Set(key, blackmail3.GlobalDelete{})
+
+	//端口虚开
+	key = consts.ValidatorPrefixOrg + "PortWorkingPage"
+	containers.Set(key, port3.WorkingPage{})
+	key = consts.ValidatorPrefixOrg + "PortWorkingRefresh"
+	containers.Set(key, port3.WorkingRefresh{})
+	key = consts.ValidatorPrefixOrg + "PortManagePage"
+	containers.Set(key, port3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "PortManageSetSwitch"
+	containers.Set(key, port3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PortManageBatchSetConfig"
+	containers.Set(key, port3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "PortPolicyPage"
+	containers.Set(key, port3.PolicyPage{})
+	key = consts.ValidatorPrefixOrg + "PortPolicySetSwitch"
+	containers.Set(key, port3.PolicySetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PortPolicyAdd"
+	containers.Set(key, port3.PolicyAdd{})
+	key = consts.ValidatorPrefixOrg + "PortPolicyEdit"
+	containers.Set(key, port3.PolicyEdit{})
+	key = consts.ValidatorPrefixOrg + "PortPolicyDelete"
+	containers.Set(key, port3.PolicyDelete{})
+	key = consts.ValidatorPrefixOrg + "PortGlobalPage"
+	containers.Set(key, port3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "PortGlobalSetSwitch"
+	containers.Set(key, port3.GlobalSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PortGlobalAdd"
+	containers.Set(key, port3.GlobalAdd{})
+	key = consts.ValidatorPrefixOrg + "PortGlobalEdit"
+	containers.Set(key, port3.GlobalEdit{})
+	key = consts.ValidatorPrefixOrg + "PortGlobalDelete"
+	containers.Set(key, port3.GlobalDelete{})
 }
