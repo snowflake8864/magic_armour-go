@@ -4,13 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type WorkingRefresh struct {
-	Title
-	Suffix
+	data_type.AgentSingle
 }
 
 func (n WorkingRefresh) CheckParams(context *gin.Context) {

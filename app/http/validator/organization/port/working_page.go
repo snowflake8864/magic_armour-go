@@ -11,6 +11,7 @@ import (
 
 type WorkingPage struct {
 	data_type.Page
+	data_type.AgentSingle
 }
 
 func (n WorkingPage) CheckParams(context *gin.Context) {

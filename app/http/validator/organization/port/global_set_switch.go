@@ -10,7 +10,6 @@ import (
 )
 
 type GlobalSetSwitch struct {
-	PlatformType
 	Id
 	agent_common_data.CommonSwitch
 }

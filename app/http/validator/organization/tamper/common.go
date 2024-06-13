@@ -14,7 +14,7 @@ type PlatformType struct {
 }
 
 type Id struct {
-	Id int64 `form:"id" json:"id" binding:"required"`
+	Id int64 `form:"id" json:"id" binding:"required,min=1"`
 }
 
 type IsExtend struct {

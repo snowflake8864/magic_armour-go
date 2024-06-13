@@ -9,11 +9,8 @@ import (
 )
 
 type GlobalAdd struct {
-	PlatformType
 	DeptId
 	AddPolicy
-	Processes
-	Remark
 }
 
 func (n GlobalAdd) CheckParams(context *gin.Context) {

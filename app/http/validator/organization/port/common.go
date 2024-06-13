@@ -1,33 +1,20 @@
 package port
 
-type PlatformType struct {
-	PlatformType int `form:"platformType" json:"platformType" binding:"required,oneof=1 2"`
-}
-
 type AddPolicy struct {
-	Type    int    `form:"type" json:"type" binding:"required,oneof=1 2"`
-	TypeVal string `form:"typeVal" json:"typeVal" binding:"required,max=512"`
-	GroupId int64  `form:"groupId" json:"groupId" binding:"required_if=Type 1"`
+	Protocol    string `form:"protocol" json:"protocol" binding:"required,oneof=tcp"`
+	Type        string `form:"type" json:"type" binding:"required,oneof=ipv4 ipv6"`
+	SourcePort  string `form:"sourcePort" json:"sourcePort" binding:"required"`
+	AlarmLevel  int    `form:"alarmLevel" json:"alarmLevel" binding:"required,min=1,max=5"`
+	ForwardIp   string `form:"forwardIp" json:"forwardIp" binding:"omitempty,ip"`
+	ForwardPort int    `form:"forwardPort" json:"forwardPort" binding:"omitempty,min=1,max=65535"`
 }
 
 type Id struct {
-	Id int64 `form:"id" json:"id" binding:"required"`
-}
-
-type Remark struct {
-	Remark string `form:"remark" json:"remark" binding:"omitempty,max=128"`
-}
-
-type Processes struct {
-	Processes string `form:"processes" json:"processes" binding:"required,min=32"`
+	Id int64 `form:"id" json:"id" binding:"required,min=1"`
 }
 
 type DeptId struct {
 	DeptId int `form:"deptId" json:"deptId"`
-}
-
-type Title struct {
-	Title string `form:"title" json:"title" binding:"omitempty,max=128"`
 }
 
 type Suffix struct {

@@ -13,8 +13,6 @@ type PolicyEdit struct {
 	data_type.AgentSingle
 	Id
 	AddPolicy
-	Processes
-	Remark
 }
 
 func (n PolicyEdit) CheckParams(context *gin.Context) {

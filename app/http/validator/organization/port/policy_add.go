@@ -12,8 +12,6 @@ import (
 type PolicyAdd struct {
 	data_type.AgentSingle
 	AddPolicy
-	Processes
-	Remark
 }
 
 func (n PolicyAdd) CheckParams(context *gin.Context) {

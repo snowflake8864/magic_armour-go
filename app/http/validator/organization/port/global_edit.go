@@ -9,12 +9,9 @@ import (
 )
 
 type GlobalEdit struct {
-	PlatformType
 	DeptId
 	Id
 	AddPolicy
-	Processes
-	Remark
 }
 
 func (n GlobalEdit) CheckParams(context *gin.Context) {

@@ -13,7 +13,6 @@ import (
 type ManageBatchSetConfig struct {
 	data_type.AgentBatch
 	agent_common_data.CommonSwitch
-	agent_common_data.CommonMode
 }
 
 func (n ManageBatchSetConfig) CheckParams(context *gin.Context) {
