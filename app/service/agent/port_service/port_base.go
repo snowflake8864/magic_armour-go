@@ -2,7 +2,6 @@ package port_service
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/port_whether_occupy"
 	"regexp"
@@ -16,11 +15,8 @@ type PortBase struct {
 // @param portStr 支持单个、多个(10,20)英文逗号隔开、范围(90-99)、混合(10,20-25,80)
 func (crd *PortBase) checkSourcePort(portStr string) error {
 	portArr := strings.Split(portStr, ",")
-	fmt.Println("==================================")
-	fmt.Println(portStr)
 
 	occupyFact := port_whether_occupy.CreateFactory()
-
 	for _, port := range portArr {
 		if strings.Contains(port, "-") {
 			currPort := strings.Split(portStr, "-")
