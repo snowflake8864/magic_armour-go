@@ -18,5 +18,5 @@ type DeptId struct {
 }
 
 type SearchPort struct {
-	Port int `form:"port" json:"port" binding:"omitempty,min=1,max=65535"`
+	Port int `form:"port" json:"port" binding:"omitempty,max=65535"`
 }
