@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_port"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -13,6 +14,7 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/port_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
@@ -127,6 +129,16 @@ func (u *PortController) PageForWorking(ctx *gin.Context) {
 
 // RefreshForWorking 正常端口: 刷新
 func (u *PortController) RefreshForWorking(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	if !port_service.CreateWorkingFactory().DelByOrgAndAgent(loginInfo.OrgId, agentId) {
+		response.FailSimplify(ctx, "刷新失败")
+		return
+	}
+
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePortWorkingUpload, "刷新")
+
 	response.SuccessSimplify(ctx)
 }
 
