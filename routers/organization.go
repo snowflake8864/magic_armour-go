@@ -483,9 +483,9 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						config := global.Group("config/")
 						{
-							config.POST("getPort", (&organization.PlugController{}).PlugTypes)
+							config.POST("getPort", (&organization.PlugController{}).ConfigGetPortForGlobal)
 							config.POST("setPort", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigSetPort"))
-							config.POST("getLogin", (&organization.PlugController{}).PlugTypes)
+							config.POST("getLogin", (&organization.PlugController{}).ConfigGetLoginForGlobal)
 							config.POST("setLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigSetLogin"))
 						}
 						ipWhite := global.Group("ipWhite/")
@@ -496,7 +496,7 @@ func InitOrganizationRouter() *gin.Engine {
 							ipWhite.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteEdit"))
 							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
 							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
-							ipWhite.POST("clear", (&organization.PlugController{}).PlugTypes) //仅管理员
+							ipWhite.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteClear")) //仅管理员
 						}
 
 						ipBlack := global.Group("ipBlack/")
@@ -506,7 +506,7 @@ func InitOrganizationRouter() *gin.Engine {
 							ipBlack.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackAdd"))
 							ipBlack.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackEdit"))
 							ipBlack.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackDelete"))
-							ipBlack.POST("clear", (&organization.PlugController{}).PlugTypes) //仅管理员
+							ipBlack.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackClear")) //仅管理员
 						}
 						dynamic := global.Group("dynamic/")
 						{

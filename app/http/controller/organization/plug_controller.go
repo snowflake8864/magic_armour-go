@@ -67,9 +67,9 @@ func (u *PlugController) SetSwitchForManage(ctx *gin.Context) {
 	}
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	var param = agent_service.ManualColumn{
-		PortSwitch: &Switch,
+		PlugSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "端口虚开管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "动态封堵管理-开关")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -84,9 +84,9 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 
 	var param = agent_service.ManualColumn{
-		PortSwitch: &Switch,
+		PlugSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "端口虚开管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "动态封堵管理-批量")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -94,8 +94,60 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// PageForPolicy 终端策略: 分页
-func (u *PlugController) PageForPolicy(ctx *gin.Context) {
+/*
+// IpWhitePageForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhitePageForPolicy(ctx *gin.Context) {
+
+}
+
+// IpWhiteSetSwitchForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhiteSetSwitchForPolicy(ctx *gin.Context) {
+
+}
+
+// IpWhiteAddForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhiteAddForPolicy(ctx *gin.Context) {
+
+}
+
+// IpWhiteEditForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhiteEditForPolicy(ctx *gin.Context) {
+
+}
+
+// IpWhiteDeleteForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhiteDeleteForPolicy(ctx *gin.Context) {
+
+}
+
+// IpWhiteClearForPolicy 终端策略 - ip白名单
+func (u *PlugController) IpWhiteClearForPolicy(ctx *gin.Context) {
+
+}
+*/
+
+// ConfigGetPortForPolicy 终端策略 - 端口虚开
+func (u *PlugController) ConfigGetPortForPolicy(ctx *gin.Context) {
+
+}
+
+// ConfigSetPortForPolicy 终端策略 - 端口虚开
+func (u *PlugController) ConfigSetPortForPolicy(ctx *gin.Context) {
+
+}
+
+// ConfigGetLoginForPolicy 终端策略 - 口令破解
+func (u *PlugController) ConfigGetLoginForPolicy(ctx *gin.Context) {
+
+}
+
+// ConfigSetLoginForPolicy 终端策略 - 口令破解
+func (u *PlugController) ConfigSetLoginForPolicy(ctx *gin.Context) {
+
+}
+
+// IpPageForPolicy 终端策略 - ip名单库: 分页
+func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
 	condition := port_models.SearchConditions{
@@ -110,8 +162,8 @@ func (u *PlugController) PageForPolicy(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransPolicyPage(total, models))
 }
 
-// SetSwitchForPolicy 终端策略: 设置开关
-func (u *PlugController) SetSwitchForPolicy(ctx *gin.Context) {
+// IpSetSwitchForPolicy 终端策略 - ip名单库: 设置开关
+func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
 	param := port_models.VirtualPolicyModel{
@@ -122,7 +174,6 @@ func (u *PlugController) SetSwitchForPolicy(ctx *gin.Context) {
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
-
 	if err := port_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
@@ -130,8 +181,8 @@ func (u *PlugController) SetSwitchForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// AddForPolicy 终端策略: 添加
-func (u *PlugController) AddForPolicy(ctx *gin.Context) {
+// IpAddForPolicy 终端策略 - ip名单库: 添加
+func (u *PlugController) IpAddForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 	param := port_models.VirtualPolicyModel{
 		OrgId:       loginInfo.OrgId,
@@ -155,8 +206,8 @@ func (u *PlugController) AddForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// EditForPolicy 终端策略: 编辑
-func (u *PlugController) EditForPolicy(ctx *gin.Context) {
+// IpEditForPolicy 终端策略 - ip名单库: 编辑
+func (u *PlugController) IpEditForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 	param := port_models.VirtualPolicyModel{
 		OrgId:       loginInfo.OrgId,
@@ -179,8 +230,8 @@ func (u *PlugController) EditForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// DeleteForPolicy 终端策略: 删除
-func (u *PlugController) DeleteForPolicy(ctx *gin.Context) {
+// IpDeleteForPolicy 终端策略 - ip名单库: 删除
+func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
 	param := port_models.VirtualPolicyModel{
@@ -198,8 +249,27 @@ func (u *PlugController) DeleteForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// PageForGlobal 全局策略: 分页
-func (u *PlugController) PageForGlobal(ctx *gin.Context) {
+// IpClearForPolicy 终端策略 - ip名单库: 删除
+func (u *PlugController) IpClearForPolicy(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicPageForPolicy 终端策略 - 动态封堵: 分页
+func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, plugType int) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
 	condition := port_models.SearchConditions{
@@ -225,83 +295,317 @@ func (u *PlugController) PageForGlobal(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
 }
 
-// SetSwitchForGlobal 全局策略: 设置开关
-func (u *PlugController) SetSwitchForGlobal(ctx *gin.Context) {
+// DynamicDisableForPolicy 终端策略 - 动态封堵: 解封
+func (u *PlugController) DynamicDisableForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualGlobalModel{
-		OrgId:      loginInfo.OrgId,
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
-
-	if err := port_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	}
-	response.SuccessSimplify(ctx)
-}
-
-// AddForGlobal 全局策略: 添加
-func (u *PlugController) AddForGlobal(ctx *gin.Context) {
-	loginInfo := u.getLogin(ctx)
-	param := port_models.VirtualGlobalModel{
-		OrgId:       loginInfo.OrgId,
-		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
-		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
-		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
-		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
-		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
-		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
-		DeptId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		CreateId:    loginInfo.UserId,
-		CreateName:  loginInfo.Username,
-		UpdateId:    loginInfo.UserId,
-		UpdateName:  loginInfo.Username,
-	}
-	if err := port_service.CreateGlobalCurdFactory().Add(&param); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	}
-	response.SuccessSimplify(ctx)
-}
-
-// EditForGlobal 全局策略: 编辑
-func (u *PlugController) EditForGlobal(ctx *gin.Context) {
-	loginInfo := u.getLogin(ctx)
-	param := port_models.VirtualGlobalModel{
-		OrgId:       loginInfo.OrgId,
-		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
-		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
-		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
-		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
-		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
-		DeptId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		UpdateId:    loginInfo.UserId,
-		UpdateName:  loginInfo.Username,
-	}
-
-	if err := port_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	}
-	response.SuccessSimplify(ctx)
-}
-
-// DeleteForGlobal 全局策略: 删除
-func (u *PlugController) DeleteForGlobal(ctx *gin.Context) {
-	loginInfo := u.getLogin(ctx)
-
-	param := port_models.VirtualGlobalModel{
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDisableAllForPolicy 终端策略 - 动态封堵: 解封全部
+func (u *PlugController) DynamicDisableAllForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDeleteForPolicy 终端策略 - 动态封堵: 删除
+func (u *PlugController) DynamicDeleteForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDeleteAllForPolicy 终端策略 - 动态封堵: 删除全部
+func (u *PlugController) DynamicDeleteAllForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// ConfigGetPortForGlobal 全局策略 - 端口虚开
+func (u *PlugController) ConfigGetPortForGlobal(ctx *gin.Context) {
+
+}
+
+// ConfigSetPortForGlobal 全局策略 - 端口虚开
+func (u *PlugController) ConfigSetPortForGlobal(ctx *gin.Context) {
+
+}
+
+// ConfigGetLoginForGlobal 全局策略 - 口令破解
+func (u *PlugController) ConfigGetLoginForGlobal(ctx *gin.Context) {
+
+}
+
+// ConfigSetLoginForGlobal 全局策略 - 口令破解
+func (u *PlugController) ConfigSetLoginForGlobal(ctx *gin.Context) {
+
+}
+
+// IpPageForGlobal 全局策略 - ip名单库: 分页
+func (u *PlugController) IpPageForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+
+	condition := port_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := port_models.CreateVirtualPolicyFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransPolicyPage(total, models))
+}
+
+// IpSetSwitchForGlobal 全局策略 - ip名单库: 设置开关
+func (u *PlugController) IpSetSwitchForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+	if err := port_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// IpAddForGlobal 全局策略 - ip名单库: 添加
+func (u *PlugController) IpAddForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+	param := port_models.VirtualPolicyModel{
+		OrgId:       loginInfo.OrgId,
+		AgentId:     u.getAgentIdFromGin(ctx),
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		CreateId:    loginInfo.UserId,
+		CreateName:  loginInfo.Username,
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// IpEditForGlobal 全局策略 - ip名单库: 编辑
+func (u *PlugController) IpEditForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+	param := port_models.VirtualPolicyModel{
+		OrgId:       loginInfo.OrgId,
+		AgentId:     u.getAgentIdFromGin(ctx),
+		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
+		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
+		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
+		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
+		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// IpDeleteForGlobal 全局策略 - ip名单库: 删除
+func (u *PlugController) IpDeleteForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// IpClearForGlobal 全局策略 - ip名单库: 删除
+func (u *PlugController) IpClearForGlobal(ctx *gin.Context, ipType int) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicPageForGlobal 全局策略 - 动态封堵: 分页
+func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, plugType int) {
+	loginInfo := u.getLogin(ctx)
+	//查询条件
+	condition := port_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := port_models.CreateVirtualGlobalFactory().Page(condition, offset, pageSize, order)
+
+	//获取组织架构
+	departmentMaps := map[int64]*department_models.DepartmentModel{}
+	if models != nil && len(models) > 0 {
+		var deptIds []int64
+		for _, model := range models {
+			if model.DeptId > 0 {
+				deptIds = append(deptIds, model.DeptId)
+			}
+		}
+		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
+}
+
+// DynamicDisableForGlobal 全局策略 - 动态封堵: 解封
+func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDisableAllForGlobal 全局策略 - 动态封堵: 解封全部
+func (u *PlugController) DynamicDisableAllForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDeleteForGlobal 全局策略 - 动态封堵: 删除
+func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DynamicDeleteAllForGlobal 全局策略 - 动态封堵: 删除全部
+func (u *PlugController) DynamicDeleteAllForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := port_models.VirtualPolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
