@@ -130,7 +130,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/tamper/global/addFile":        {ModuleTamper, "全局策略：添加文件策略"},
 	"/v5/organization/tamper/global/editFolder":     {ModuleTamper, "全局策略：编辑目录策略"},
 	"/v5/organization/tamper/global/editFile":       {ModuleTamper, "全局策略：编辑文件策略"},
-	"/v5/organization/tamper/global/setSwitch":      {ModuleTamper, "终端策略：开关"},
+	"/v5/organization/tamper/global/setSwitch":      {ModuleTamper, "全局策略：开关"},
 	"/v5/organization/tamper/global/delete":         {ModuleTamper, "全局策略：删除"},
 
 	"/v5/organization/blackmail/manage/setSwitch":      {ModuleBlackmail, "管理页：开关"},
@@ -142,11 +142,23 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/blackmail/policy/delete":         {ModuleBlackmail, "终端策略：删除"},
 	"/v5/organization/blackmail/global/add":            {ModuleBlackmail, "全局策略：添加"},
 	"/v5/organization/blackmail/global/edit":           {ModuleBlackmail, "全局策略：编辑"},
-	"/v5/organization/blackmail/global/setSwitch":      {ModuleBlackmail, "终端策略：开关"},
+	"/v5/organization/blackmail/global/setSwitch":      {ModuleBlackmail, "全局策略：开关"},
 	"/v5/organization/blackmail/global/delete":         {ModuleBlackmail, "全局策略：删除"},
 	"/v5/organization/blackmail/group/add":             {ModuleBlackmail, "文件类型组：添加"},
 	"/v5/organization/blackmail/group/edit":            {ModuleBlackmail, "文件类型组：编辑"},
 	"/v5/organization/blackmail/group/delete":          {ModuleBlackmail, "文件类型组：删除"},
+
+	"/v5/organization/port/manage/setSwitch":      {ModulePort, "管理页：开关"},
+	"/v5/organization/port/manage/batchSetConfig": {ModulePort, "管理页：批量设置配置"},
+	"/v5/organization/port/policy/add":            {ModulePort, "终端策略：添加"},
+	"/v5/organization/port/policy/edit":           {ModulePort, "终端策略：编辑"},
+	"/v5/organization/port/policy/setSwitch":      {ModulePort, "终端策略：开关"},
+	"/v5/organization/port/policy/delete":         {ModulePort, "终端策略：删除"},
+	"/v5/organization/port/global/add":            {ModulePort, "全局策略：添加"},
+	"/v5/organization/port/global/edit":           {ModulePort, "全局策略：编辑"},
+	"/v5/organization/port/global/setSwitch":      {ModulePort, "全局策略：开关"},
+	"/v5/organization/port/global/delete":         {ModulePort, "全局策略：删除"},
+	"/v5/organization/port/working/refresh":       {ModulePort, "终端正常业务端口：刷新"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
