@@ -30,13 +30,10 @@ func (crd *Curd) SetPort(port int) {
 	crd.bitArr[index] = crd.bitArr[index] | 1<<bit
 }
 
-// CheckPort 将位检查端口是否在位图中被标记为已使用
+// CheckPort 将位检查端口是否在位图中被标记为已使用, 未使用返回true
 func (crd *Curd) CheckPort(port int) bool {
 	index := crd.toIndex(port)
 	bit := crd.toBit(port)
-	if crd.bitArr[index] == 0 {
-		return true
-	}
 
-	return (crd.bitArr[index] & (1 << bit)) != 0
+	return (crd.bitArr[index] & (1 << bit)) == 0
 }
