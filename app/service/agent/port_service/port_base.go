@@ -14,34 +14,34 @@ type PortBase struct {
 // 校验虚开端口
 // @param portStr 支持单个、多个(10,20)英文逗号隔开、范围(90-99)、混合(10,20-25,80)
 func (crd *PortBase) checkSourcePort(portStr string) error {
-	portArr := strings.Split(portStr, ",")
-
 	occupyFact := port_whether_occupy.CreateFactory()
-	for _, port := range portArr {
-		if strings.Contains(port, "-") {
-			currPort := strings.Split(portStr, "-")
+
+	portArr := strings.Split(portStr, ",")
+	for _, portRange := range portArr {
+		if strings.Contains(portRange, "-") {
+			currPort := strings.Split(portRange, "-")
 			if !crd.checkPortRange(currPort[0]) || !crd.checkPortRange(currPort[1]) {
-				return errors.New("无效的端口【" + port + "】")
+				return errors.New("无效的端口【" + portRange + "】")
 			}
 			minPort := string_helper.ToInt(currPort[0])
 			maxPort := string_helper.ToInt(currPort[1])
 			if minPort >= maxPort {
-				return errors.New("端口范围无效【" + port + "】")
+				return errors.New("端口范围无效【" + portRange + "】")
 			}
 			for i := minPort; i <= maxPort; i++ {
 				if !occupyFact.CheckPort(i) {
-					return errors.New("本次端口有重复添加【" + port + "】")
+					return errors.New("本次端口有重复添加【" + portRange + "】")
 				}
 				occupyFact.SetPort(1)
 			}
 		} else {
-			if !crd.checkPortRange(port) {
-				return errors.New("端口无效【" + port + "】")
+			if !crd.checkPortRange(portRange) {
+				return errors.New("端口无效【" + portRange + "】")
 			}
-			intPort := string_helper.ToInt(port)
+			intPort := string_helper.ToInt(portRange)
 
 			if !occupyFact.CheckPort(intPort) {
-				return errors.New("本次端口有重复添加【" + port + "】")
+				return errors.New("本次端口有重复添加【" + portRange + "】")
 			}
 			occupyFact.SetPort(intPort)
 		}
@@ -68,6 +68,45 @@ func (crd *PortBase) checkPortRange(portStr string) bool {
 func (crd *PortBase) checkPortUnique(portStr string, existsList []string) error {
 	if existsList == nil || len(existsList) == 0 {
 		return nil
+	}
+	//
+	occupyFact := port_whether_occupy.CreateFactory()
+
+	//设置已占用的
+	for _, existsStr := range existsList {
+		portArr := strings.Split(existsStr, ",")
+		for _, portRange := range portArr {
+			if strings.Contains(portRange, "-") {
+				currPort := strings.Split(portRange, "-")
+				minPort := string_helper.ToInt(currPort[0])
+				maxPort := string_helper.ToInt(currPort[1])
+				for i := minPort; i <= maxPort; i++ {
+					occupyFact.SetPort(1)
+				}
+			} else {
+				occupyFact.SetPort(string_helper.ToInt(portRange))
+			}
+		}
+	}
+
+	//校验是否占用
+	portArr := strings.Split(portStr, ",")
+	for _, portRange := range portArr {
+		if strings.Contains(portRange, "-") {
+			currPort := strings.Split(portRange, "-")
+			minPort := string_helper.ToInt(currPort[0])
+			maxPort := string_helper.ToInt(currPort[1])
+			for i := minPort; i <= maxPort; i++ {
+				if !occupyFact.CheckPort(i) {
+					return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
+				}
+			}
+		} else {
+			intPort := string_helper.ToInt(portRange)
+			if !occupyFact.CheckPort(intPort) {
+				return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
+			}
+		}
 	}
 	return nil
 }
