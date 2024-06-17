@@ -15,7 +15,6 @@ type PortBase struct {
 // @param portStr 支持单个、多个(10,20)英文逗号隔开、范围(90-99)、混合(10,20-25,80)
 func (crd *PortBase) checkSourcePort(portStr string) error {
 	occupyFact := port_whether_occupy.CreateFactory()
-
 	portArr := strings.Split(portStr, ",")
 	for _, portRange := range portArr {
 		if strings.Contains(portRange, "-") {
@@ -32,7 +31,7 @@ func (crd *PortBase) checkSourcePort(portStr string) error {
 				if !occupyFact.CheckPort(i) {
 					return errors.New("本次端口有重复添加【" + portRange + "】")
 				}
-				occupyFact.SetPort(1)
+				occupyFact.SetPort(i)
 			}
 		} else {
 			if !crd.checkPortRange(portRange) {
@@ -81,7 +80,7 @@ func (crd *PortBase) checkPortUnique(portStr string, existsList []string) error 
 				minPort := string_helper.ToInt(currPort[0])
 				maxPort := string_helper.ToInt(currPort[1])
 				for i := minPort; i <= maxPort; i++ {
-					occupyFact.SetPort(1)
+					occupyFact.SetPort(i)
 				}
 			} else {
 				occupyFact.SetPort(string_helper.ToInt(portRange))
