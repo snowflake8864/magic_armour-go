@@ -422,6 +422,105 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PortGlobalDelete"))
 					}
 				} //端口虚开
+
+				//动态封堵
+				plug := vOrg.Group("plug/")
+				{
+					public := plug.Group("public/")
+					{
+						public.POST("plugTypes", (&organization.PlugController{}).PlugTypes)
+					}
+					manage := plug.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugManageBatchSetConfig"))
+					}
+
+					//策略
+					policy := plug.Group("policy/")
+					{
+						config := policy.Group("config/")
+						{
+							config.POST("getPort", (&organization.PlugController{}).PlugTypes)
+							config.POST("setPort", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigSetPort"))
+							config.POST("getLogin", (&organization.PlugController{}).PlugTypes)
+							config.POST("setLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigSetLogin"))
+						}
+						ipWhite := policy.Group("ipWhite/")
+						{
+							ipWhite.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhitePage"))
+							ipWhite.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteSetSwitch"))
+							ipWhite.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteAdd"))
+							ipWhite.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteEdit"))
+							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteDelete"))
+							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteDelete"))
+							ipWhite.POST("clear", (&organization.PlugController{}).PlugTypes)
+						}
+
+						ipBlack := policy.Group("ipBlack/")
+						{
+							ipBlack.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackPage"))
+							ipBlack.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackSetSwitch"))
+							ipBlack.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackAdd"))
+							ipBlack.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackEdit"))
+							ipBlack.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackDelete"))
+							ipBlack.POST("clear", (&organization.PlugController{}).PlugTypes)
+						}
+						dynamic := policy.Group("dynamic/")
+						{
+
+							dynamic.POST("pageEnabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicPageEnabled"))
+							dynamic.POST("pageDisabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicPageDisabled"))
+							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
+							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
+							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDelete"))
+							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
+						}
+					}
+
+					//全局
+					global := plug.Group("global/")
+					{
+						config := global.Group("config/")
+						{
+							config.POST("getPort", (&organization.PlugController{}).PlugTypes)
+							config.POST("setPort", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigSetPort"))
+							config.POST("getLogin", (&organization.PlugController{}).PlugTypes)
+							config.POST("setLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigSetLogin"))
+						}
+						ipWhite := global.Group("ipWhite/")
+						{
+							ipWhite.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhitePage"))
+							ipWhite.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteSetSwitch"))
+							ipWhite.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteAdd"))
+							ipWhite.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteEdit"))
+							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
+							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
+							ipWhite.POST("clear", (&organization.PlugController{}).PlugTypes) //仅管理员
+						}
+
+						ipBlack := global.Group("ipBlack/")
+						{
+							ipBlack.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackPage"))
+							ipBlack.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackSetSwitch"))
+							ipBlack.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackAdd"))
+							ipBlack.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackEdit"))
+							ipBlack.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackDelete"))
+							ipBlack.POST("clear", (&organization.PlugController{}).PlugTypes) //仅管理员
+						}
+						dynamic := global.Group("dynamic/")
+						{
+
+							dynamic.POST("pageEnabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicPageEnabled"))
+							dynamic.POST("pageDisabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicPageDisabled"))
+							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
+							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
+							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDelete"))
+							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
+						}
+					}
+				} //动态封堵
 			}
 
 		}
