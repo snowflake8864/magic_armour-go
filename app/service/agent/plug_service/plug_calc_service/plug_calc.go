@@ -136,7 +136,7 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 
 	//封堵
 	modelPlug := plug_models.DynamicModel{
-		Id:         md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + now + int_helper.IntRandom2Str(100, 999)),
+		Id:         variable.SnowFlake.GetId(),
 		OrgId:      orgId,
 		AgentId:    agentId,
 		PlugType:   plugType,
@@ -164,10 +164,14 @@ func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugTyp
 
 // 动态封堵中已存在
 func (crd *PlugCalc) hasDynamic(orgId int64, agentId string, attackIp string) bool {
-	model := crd.masterModel.GetValidByOrgAndAgentAndIp(orgId, agentId, attackIp)
-	if model == nil {
-		return false
-	} else if model.OrgId == 0 {
+	SwitchOn := enums.SwitchOn
+	search := plug_models.SearchConditions{
+		OrgId:      orgId,
+		AgentId:    agentId,
+		Ip:         attackIp,
+		OpenSwitch: &SwitchOn,
+	}
+	if crd.masterModel.Count(search) > 1 {
 		return false
 	} else {
 		return true

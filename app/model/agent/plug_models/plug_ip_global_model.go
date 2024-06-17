@@ -20,6 +20,7 @@ type IpGlobalModel struct {
 	model.BaseModel
 	Id         string `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
+	DeptId     int64  `json:"dept_id"`
 	Ip         string `json:"ip"`
 	Type       int    `json:"type"`
 	Duration   int    `json:"duration"`
@@ -28,6 +29,8 @@ type IpGlobalModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	UpdateId   int64  `json:"update_id"`
+	UpdateName string `json:"update_name"`
 	UpdatedAt  string `json:"updated_at"`
 }
 
@@ -42,17 +45,19 @@ func (m *IpGlobalModel) CreateTable() bool {
 	sql += `
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
+			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1白 2黑)',
 			direction tinyint(1) NOT NULL DEFAULT '0' COMMENT '方向(1IN 2OUT),二进制表示',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
-			updated_at datetime NOT NULL,
-			INDEX index_ip (ip) USING INVERTED,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
+			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id,id) 

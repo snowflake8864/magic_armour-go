@@ -2,7 +2,6 @@ package plug_models
 
 import (
 	"gorm.io/gorm"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -19,7 +18,7 @@ func CreateDynamicFactory() *DynamicModel {
 type DynamicModel struct {
 	basePlug
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
 	PlugType   int    `json:"plug_type"`
@@ -31,6 +30,8 @@ type DynamicModel struct {
 	EndAt      string `json:"end_at"`
 	OpenSwitch int    `json:"open_switch"`
 	CreatedAt  string `json:"created_at"`
+	UpdateId   int64  `json:"update_id"`
+	UpdateName string `json:"update_name"`
 	UpdatedAt  string `json:"updated_at"`
 }
 
@@ -46,20 +47,22 @@ func (m *DynamicModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			created_at datetime NULL,
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			plug_type smallint DEFAULT '0' COMMENT '封堵类型(1临时 2永久)',
-			source tinyint NOT NULL DEFAULT '0' COMMENT '封堵来源(1端口虚开)',
+			source tinyint NOT NULL DEFAULT '0' COMMENT '封堵来源',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT '封堵ip',
 			direction tinyint NOT NULL DEFAULT '0' COMMENT '方向(1IN 2OUT),二进制表示',
 			duration int NOT NULL DEFAULT '0' COMMENT '封堵时长(分钟),0为永久',
 			start_at datetime DEFAULT NULL COMMENT '封堵开始时间',
 			end_at datetime DEFAULT NULL COMMENT '封堵结束时间',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-			updated_at datetime NOT NULL,
-			INDEX index_id (id) USING INVERTED
+			created_at datetime NOT NULL,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
+			updated_at datetime NULL,
+			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, agent_id, created_at) 
+		UNIQUE KEY(org_id, agent_id, id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
@@ -184,16 +187,35 @@ func (m *DynamicModel) Page(condition SearchConditions, offset, limit int, order
 	}
 }
 
-// GetValidByOrgAndAgentAndIp 通过企业id\终端id\hash获取有效记录
-func (m *DynamicModel) GetValidByOrgAndAgentAndIp(orgId int64, agentId, ip string) (item *DynamicModel) {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND agent_id=? AND ip=? AND open_switch=?", orgId, agentId, ip, enums.SwitchOn).Take(&item)
-	})
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *DynamicModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
 
-	result := m.Raw(m.TrimSql(sql)).Take(&item)
-	if result.Error == nil && item.OrgId > 0 {
-		return item
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
 	} else {
 		return nil
 	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
+func (m *DynamicModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
+	var result = make(map[string]interface{})
+
+	items := m.CalcByConditionsGroupAgent(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.AgentId] = *item
+	}
+
+	return result
 }

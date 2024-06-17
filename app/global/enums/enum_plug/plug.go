@@ -12,7 +12,7 @@ const (
 	PlugTypePermanent int = 2 //封堵类型:永久
 
 	SourcePortVirtual int = 1 //来源:端口虚开
-	SourceLoginSolve  int = 3 //来源:口令破解
+	SourceLoginSolve  int = 2 //来源:口令破解
 
 	DirectionIn  int = 1 //方向:IN，二进制表示
 	DirectionOut int = 2 //方向:OUT，二进制表示
@@ -30,6 +30,13 @@ var EnumMap = map[string]map[int]string{
 	"source": {
 		SourcePortVirtual: "端口虚开",
 		SourceLoginSolve:  "口令暴力破解",
+	},
+}
+
+var WebMapInt = map[string][]int{
+	"plug_type": {
+		PlugTypeTemporary,
+		PlugTypeTemporary,
 	},
 }
 

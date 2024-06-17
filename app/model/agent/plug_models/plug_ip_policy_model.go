@@ -18,7 +18,7 @@ func CreateIpPolicyFactory() *IpPolicyModel {
 type IpPolicyModel struct {
 	basePlug
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
 	AgentId    string `json:"agent_id"`
 	Ip         string `json:"ip"`
@@ -29,6 +29,8 @@ type IpPolicyModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	UpdateId   int64  `json:"update_id"`
+	UpdateName string `json:"update_name"`
 	UpdatedAt  string `json:"updated_at"`
 }
 
@@ -44,17 +46,18 @@ func (m *IpPolicyModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1白 2黑)',
 			direction tinyint(1) NOT NULL DEFAULT '0' COMMENT '方向(1IN 2OUT),二进制表示',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
-			updated_at datetime NOT NULL,
-			INDEX index_agent_id (agent_id) USING INVERTED,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
+			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id, id) 
@@ -171,4 +174,37 @@ func (m *IpPolicyModel) Page(condition SearchConditions, offset, limit int, orde
 	} else {
 		return 0, nil
 	}
+}
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *IpPolicyModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
+func (m *IpPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
+	var result = make(map[string]interface{})
+
+	items := m.CalcByConditionsGroupAgent(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.AgentId] = *item
+	}
+
+	return result
 }
