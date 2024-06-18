@@ -10,7 +10,6 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/agent/port_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -80,9 +79,8 @@ func (u *PortController) PageForManage(ctx *gin.Context) {
 				"on_number":    0,
 			}
 			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
-				tmp, _ := item.(plug_models.Calc)
-				gg["total_number"] = tmp.TotalNumber
-				gg["on_number"] = tmp.OnNumber
+				gg["total_number"] = item.TotalNumber
+				gg["on_number"] = item.OnNumber
 
 			}
 			extendInfo[agentModel.AgentId] = gg

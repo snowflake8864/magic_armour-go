@@ -227,15 +227,15 @@ func (m *VirtualPolicyModel) CalcByConditionsGroupAgent(condition SearchConditio
 }
 
 // CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
-func (m *VirtualPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
-	var result = make(map[string]interface{})
+func (m *VirtualPolicyModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]*Calc {
+	var result = make(map[string]*Calc)
 
 	items := m.CalcByConditionsGroupAgent(condition, column)
 	if items == nil || len(items) == 0 {
 		return result
 	}
 	for _, item := range items {
-		result[item.AgentId] = *item
+		result[item.AgentId] = item
 	}
 
 	return result
