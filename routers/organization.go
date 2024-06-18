@@ -468,13 +468,12 @@ func InitOrganizationRouter() *gin.Engine {
 						}
 						dynamic := policy.Group("dynamic/")
 						{
-
-							dynamic.POST("pageEnabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicPageEnabled"))
-							dynamic.POST("pageDisabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicPageDisabled"))
+							dynamic.POST("enabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicEnabledPage"))
+							dynamic.POST("disabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisabledPage"))
 							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
-							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
+							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisableAll"))
 							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDelete"))
-							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
+							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDeleteAll"))
 						}
 					}
 
@@ -510,12 +509,12 @@ func InitOrganizationRouter() *gin.Engine {
 						dynamic := global.Group("dynamic/")
 						{
 
-							dynamic.POST("pageEnabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicPageEnabled"))
-							dynamic.POST("pageDisabled", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicPageDisabled"))
+							dynamic.POST("enabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicEnabledPage"))
+							dynamic.POST("disabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisabledPage"))
 							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
-							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
+							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisableAll"))
 							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDelete"))
-							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
+							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDeleteAll"))
 						}
 					}
 				} //动态封堵

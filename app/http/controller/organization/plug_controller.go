@@ -269,7 +269,7 @@ func (u *PlugController) IpClearForPolicy(ctx *gin.Context, ipType int) {
 }
 
 // DynamicPageForPolicy 终端策略 - 动态封堵: 分页
-func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, plugType int) {
+func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
 	condition := port_models.SearchConditions{
@@ -512,7 +512,7 @@ func (u *PlugController) IpClearForGlobal(ctx *gin.Context, ipType int) {
 }
 
 // DynamicPageForGlobal 全局策略 - 动态封堵: 分页
-func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, plugType int) {
+func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
 	condition := port_models.SearchConditions{

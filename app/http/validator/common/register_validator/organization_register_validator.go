@@ -404,7 +404,18 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.PolicyConfigGetLogin{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigSetLogin"
 	containers.Set(key, plug3.PolicyConfigSetLogin{})
-
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicEnabledPage"
+	containers.Set(key, plug3.PolicyDynamicEnabledPage{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisabledPage"
+	containers.Set(key, plug3.PolicyDynamicDisabledPage{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisable"
+	containers.Set(key, plug3.PolicyDynamicDisable{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisableAll"
+	containers.Set(key, plug3.PolicyDynamicDisableAll{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDelete"
+	containers.Set(key, plug3.PolicyDynamicDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDeleteAll"
+	containers.Set(key, plug3.PolicyDynamicDeleteAll{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhitePage"
 	containers.Set(key, plug3.PolicyIpWhitePage{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteSetSwitch"
@@ -429,4 +440,5 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.PolicyIpBlackDelete{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackClear"
 	containers.Set(key, plug3.PolicyIpBlackClear{})
+
 }
