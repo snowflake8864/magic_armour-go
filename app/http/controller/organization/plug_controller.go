@@ -138,8 +138,8 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// ConfigGetPortForPolicy 终端策略 - 端口虚开
-func (u *PlugController) ConfigGetPortForPolicy(ctx *gin.Context) {
+// ConfigPortGetForPolicy 终端策略 - 端口虚开
+func (u *PlugController) ConfigPortGetForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
@@ -149,18 +149,18 @@ func (u *PlugController) ConfigGetPortForPolicy(ctx *gin.Context) {
 
 }
 
-// ConfigSetPortForPolicy 终端策略 - 端口虚开
-func (u *PlugController) ConfigSetPortForPolicy(ctx *gin.Context) {
+// ConfigPortSetForPolicy 终端策略 - 端口虚开
+func (u *PlugController) ConfigPortSetForPolicy(ctx *gin.Context) {
 
 }
 
-// ConfigGetLoginForPolicy 终端策略 - 口令破解
-func (u *PlugController) ConfigGetLoginForPolicy(ctx *gin.Context) {
+// ConfigLoginGetForPolicy 终端策略 - 口令破解
+func (u *PlugController) ConfigLoginGetForPolicy(ctx *gin.Context) {
 
 }
 
-// ConfigSetLoginForPolicy 终端策略 - 口令破解
-func (u *PlugController) ConfigSetLoginForPolicy(ctx *gin.Context) {
+// ConfigLoginSetForPolicy 终端策略 - 口令破解
+func (u *PlugController) ConfigLoginSetForPolicy(ctx *gin.Context) {
 
 }
 
@@ -388,23 +388,23 @@ func (u *PlugController) DynamicDeleteAllForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// ConfigGetPortForGlobal 全局策略 - 端口虚开
-func (u *PlugController) ConfigGetPortForGlobal(ctx *gin.Context) {
+// ConfigPortGetForGlobal 全局策略 - 端口虚开
+func (u *PlugController) ConfigPortGetForGlobal(ctx *gin.Context) {
 
 }
 
-// ConfigSetPortForGlobal 全局策略 - 端口虚开
-func (u *PlugController) ConfigSetPortForGlobal(ctx *gin.Context) {
+// ConfigPortSetForGlobal 全局策略 - 端口虚开
+func (u *PlugController) ConfigPortSetForGlobal(ctx *gin.Context) {
 
 }
 
-// ConfigGetLoginForGlobal 全局策略 - 口令破解
-func (u *PlugController) ConfigGetLoginForGlobal(ctx *gin.Context) {
+// ConfigLoginGetForGlobal 全局策略 - 口令破解
+func (u *PlugController) ConfigLoginGetForGlobal(ctx *gin.Context) {
 
 }
 
-// ConfigSetLoginForGlobal 全局策略 - 口令破解
-func (u *PlugController) ConfigSetLoginForGlobal(ctx *gin.Context) {
+// ConfigLoginSetForGlobal 全局策略 - 口令破解
+func (u *PlugController) ConfigLoginSetForGlobal(ctx *gin.Context) {
 
 }
 

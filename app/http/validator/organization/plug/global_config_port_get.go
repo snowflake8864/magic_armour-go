@@ -25,7 +25,7 @@ func (n GlobalConfigPortGet) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[organization plug GlobalConfigPortGet]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&organization.PlugController{}).ConfigGetPortForGlobal(extraAddBindDataContext)
+		(&organization.PlugController{}).ConfigPortGetForGlobal(extraAddBindDataContext)
 	}
 
 }
