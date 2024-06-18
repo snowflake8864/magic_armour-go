@@ -88,10 +88,31 @@ func (m *IpGlobalModel) InsertItem(s *IpGlobalModel) bool {
 	}
 }
 
-// DeleteByOrg 通过企业id删除
-func (m *IpGlobalModel) DeleteByOrg(orgId int64) bool {
+// UpdateByConditions 通过条件修改
+func (m *IpGlobalModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *IpGlobalModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -101,16 +122,21 @@ func (m *IpGlobalModel) DeleteByOrg(orgId int64) bool {
 	}
 }
 
-// DeleteByOrgAndId 通过企业id、ID删除
-func (m *IpGlobalModel) DeleteByOrgAndId(orgId int64, id string) bool {
+// GetItemByConditions 通过id获取一条记录
+func (m *IpGlobalModel) GetItemByConditions(condition SearchConditions) (item *IpGlobalModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=?", orgId).Where("id=?", id).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
 	})
-	result := m.Exec(m.TrimSql(sql))
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
 	if result.Error == nil {
-		return true
+		return item
 	} else {
-		return false
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
 	}
 }
 

@@ -16,6 +16,7 @@ const (
 
 	DirectionIn  int = 1 //方向:IN，二进制表示
 	DirectionOut int = 2 //方向:OUT，二进制表示
+	DirectionAll int = 3 //封堵类型:
 )
 
 var EnumMap = map[string]map[int]string{

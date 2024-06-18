@@ -92,7 +92,7 @@ func (m *DynamicModel) InsertItem(s *DynamicModel) bool {
 }
 
 // UpdateByConditions 通过条件修改
-func (m *DynamicModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+func (m *DynamicModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -102,9 +102,9 @@ func (m *DynamicModel) UpdateByConditions(condition SearchConditions, updates ma
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
-		return true
+		return true, result.RowsAffected
 	} else {
-		return false
+		return false, 0
 	}
 }
 

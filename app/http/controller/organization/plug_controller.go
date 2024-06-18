@@ -193,7 +193,7 @@ func (u *PlugController) ConfigLoginSetForPolicy(ctx *gin.Context) {
 
 // IpPageForPolicy 终端策略 - ip名单库: 分页
 func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
-	fmt.Println("===================ipType", ipType)
+
 	loginInfo := u.getLogin(ctx)
 
 	condition := port_models.SearchConditions{
@@ -229,20 +229,19 @@ func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 
 // IpAddForPolicy 终端策略 - ip名单库: 添加
 func (u *PlugController) IpAddForPolicy(ctx *gin.Context, ipType int) {
+	fmt.Println("===================ipType", ipType)
+
 	loginInfo := u.getLogin(ctx)
-	param := port_models.VirtualPolicyModel{
-		OrgId:       loginInfo.OrgId,
-		AgentId:     u.getAgentIdFromGin(ctx),
-		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
-		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
-		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
-		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
-		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
-		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
-		CreateId:    loginInfo.UserId,
-		CreateName:  loginInfo.Username,
-		UpdateId:    loginInfo.UserId,
-		UpdateName:  loginInfo.Username,
+	param := plug_models.IpPolicyModel{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Type:       ipType,
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
 	if err := port_service.CreatePolicyCurdFactory().Add(&param); err != nil {
