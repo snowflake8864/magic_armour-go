@@ -441,4 +441,49 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackClear"
 	containers.Set(key, plug3.PolicyIpBlackClear{})
 
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigGetPort"
+	containers.Set(key, plug3.GlobalConfigGetPort{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigSetPort"
+	containers.Set(key, plug3.GlobalConfigGetPort{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigGetLogin"
+	containers.Set(key, plug3.GlobalConfigGetLogin{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigSetLogin"
+	containers.Set(key, plug3.GlobalConfigSetLogin{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicEnabledPage"
+	containers.Set(key, plug3.GlobalDynamicEnabledPage{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisabledPage"
+	containers.Set(key, plug3.GlobalDynamicDisabledPage{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisable"
+	containers.Set(key, plug3.GlobalDynamicDisable{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisableAll"
+	containers.Set(key, plug3.GlobalDynamicDisableAll{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDelete"
+	containers.Set(key, plug3.GlobalDynamicDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDeleteAll"
+	containers.Set(key, plug3.GlobalDynamicDeleteAll{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhitePage"
+	containers.Set(key, plug3.GlobalIpWhitePage{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteSetSwitch"
+	containers.Set(key, plug3.GlobalIpWhiteSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteAdd"
+	containers.Set(key, plug3.GlobalIpWhiteAdd{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteEdit"
+	containers.Set(key, plug3.GlobalIpWhiteEdit{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteDelete"
+	containers.Set(key, plug3.GlobalIpWhiteDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteClear"
+	containers.Set(key, plug3.GlobalIpWhiteClear{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackPage"
+	containers.Set(key, plug3.GlobalIpBlackPage{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackSetSwitch"
+	containers.Set(key, plug3.GlobalIpBlackSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackAdd"
+	containers.Set(key, plug3.GlobalIpBlackAdd{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackEdit"
+	containers.Set(key, plug3.GlobalIpBlackEdit{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackDelete"
+	containers.Set(key, plug3.GlobalIpBlackDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackClear"
+	containers.Set(key, plug3.GlobalIpBlackClear{})
+
 }
