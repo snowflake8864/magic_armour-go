@@ -55,24 +55,24 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 		loginInfo := u.getLogin(ctx)
 
 		//规则统计数据
-		DynamicFact := plug_models.CreateDynamicFactory()
-		calcDynamic := DynamicFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
+		PolicyFact := plug_models.CreateDynamicFactory()
+		calcPolicy := PolicyFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
 			OrgId:    loginInfo.OrgId,
 			AgentIds: agentIds,
-		}, DynamicFact.ColumnCalc(true))
+		}, PolicyFact.ColumnCalc(true))
 
 		IpPolicyFact := plug_models.CreateIpPolicyFactory()
 		calcWhite := IpPolicyFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
 			OrgId:    loginInfo.OrgId,
 			AgentIds: agentIds,
 			IpType:   enum_plug.IpTypeWhite,
-		}, DynamicFact.ColumnCalc(false))
+		}, IpPolicyFact.ColumnCalc(false))
 
 		calcBlack := IpPolicyFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
 			OrgId:    loginInfo.OrgId,
 			AgentIds: agentIds,
 			IpType:   enum_plug.IpTypeBlack,
-		}, DynamicFact.ColumnCalc(false))
+		}, IpPolicyFact.ColumnCalc(false))
 
 		for _, agentModel := range agentModels {
 			gg := map[string]interface{}{
@@ -82,7 +82,7 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 				"ip_black_total_number": 0,
 			}
 
-			if item, isOk := calcDynamic[agentModel.AgentId]; isOk {
+			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
 				tmp, _ := item.(plug_models.Calc)
 				gg["dynamic_total_number"] = tmp.TotalNumber
 				gg["dynamic_on_number"] = tmp.OnNumber

@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -61,10 +62,24 @@ func (u *TamperController) PageForManage(ctx *gin.Context) {
 	if len(agentIds) > 0 {
 		//规则统计数据
 		PolicyFact := tamper_models.CreatePolicyFactory()
-		extendInfo = PolicyFact.CalcByConditionsGroupAgentReturnMap(tamper_models.SearchConditions{
+		calcPolicy := PolicyFact.CalcByConditionsGroupAgentReturnMap(tamper_models.SearchConditions{
 			OrgId:    u.getLogin(ctx).OrgId,
 			AgentIds: agentIds,
 		}, PolicyFact.ColumnCalc(true))
+
+		for _, agentModel := range agentModels {
+			gg := map[string]interface{}{
+				"total_number": 0,
+				"on_number":    0,
+			}
+			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
+				tmp, _ := item.(plug_models.Calc)
+				gg["total_number"] = tmp.TotalNumber
+				gg["on_number"] = tmp.OnNumber
+
+			}
+			extendInfo[agentModel.AgentId] = gg
+		}
 	}
 	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
