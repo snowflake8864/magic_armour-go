@@ -6,13 +6,11 @@ import (
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/validator/core/data_transfer"
-	"goskeleton/app/http/validator/organization/agent_common_data"
 	"goskeleton/app/utils/response"
 )
 
 type GlobalIpWhiteAdd struct {
 	IpAdd
-	agent_common_data.CommonSwitch
 }
 
 func (n GlobalIpWhiteAdd) CheckParams(context *gin.Context) {
