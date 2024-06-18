@@ -10,6 +10,7 @@ import (
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
+	plug3 "goskeleton/app/http/validator/organization/plug"
 	port3 "goskeleton/app/http/validator/organization/port"
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
@@ -386,4 +387,46 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, port3.GlobalEdit{})
 	key = consts.ValidatorPrefixOrg + "PortGlobalDelete"
 	containers.Set(key, port3.GlobalDelete{})
+
+	//动态封堵
+	key = consts.ValidatorPrefixOrg + "PlugManagePage"
+	containers.Set(key, plug3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "PlugManageSetSwitch"
+	containers.Set(key, plug3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PlugManageBatchSetConfig"
+	containers.Set(key, plug3.ManageBatchSetConfig{})
+
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigGetPort"
+	containers.Set(key, plug3.PolicyConfigGetPort{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigSetPort"
+	containers.Set(key, plug3.PolicyConfigGetPort{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigGetLogin"
+	containers.Set(key, plug3.PolicyConfigGetLogin{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigSetLogin"
+	containers.Set(key, plug3.PolicyConfigSetLogin{})
+
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhitePage"
+	containers.Set(key, plug3.PolicyIpWhitePage{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteSetSwitch"
+	containers.Set(key, plug3.PolicyIpWhiteSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteAdd"
+	containers.Set(key, plug3.PolicyIpWhiteAdd{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteEdit"
+	containers.Set(key, plug3.PolicyIpWhiteEdit{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteDelete"
+	containers.Set(key, plug3.PolicyIpWhiteDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteClear"
+	containers.Set(key, plug3.PolicyIpWhiteClear{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackPage"
+	containers.Set(key, plug3.PolicyIpBlackPage{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackSetSwitch"
+	containers.Set(key, plug3.PolicyIpBlackSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackAdd"
+	containers.Set(key, plug3.PolicyIpBlackAdd{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackEdit"
+	containers.Set(key, plug3.PolicyIpBlackEdit{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackDelete"
+	containers.Set(key, plug3.PolicyIpBlackDelete{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackClear"
+	containers.Set(key, plug3.PolicyIpBlackClear{})
 }

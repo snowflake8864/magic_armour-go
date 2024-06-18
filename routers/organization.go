@@ -430,6 +430,7 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						public.POST("plugTypes", (&organization.PlugController{}).PlugTypes)
 					}
+
 					manage := plug.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugManagePage"))
@@ -456,7 +457,6 @@ func InitOrganizationRouter() *gin.Engine {
 							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteDelete"))
 							ipWhite.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpWhiteClear"))
 						}
-
 						ipBlack := policy.Group("ipBlack/")
 						{
 							ipBlack.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyIpBlackPage"))
@@ -498,7 +498,6 @@ func InitOrganizationRouter() *gin.Engine {
 							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
 							ipWhite.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteClear")) //仅管理员
 						}
-
 						ipBlack := global.Group("ipBlack/")
 						{
 							ipBlack.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpBlackPage"))
