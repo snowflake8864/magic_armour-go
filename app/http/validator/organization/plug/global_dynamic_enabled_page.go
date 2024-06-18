@@ -5,11 +5,14 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type GlobalDynamicEnabledPage struct {
+	data_type.Page
+	data_type.AgentSingleOmitempty
 }
 
 func (n GlobalDynamicEnabledPage) CheckParams(context *gin.Context) {

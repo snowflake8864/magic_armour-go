@@ -494,7 +494,6 @@ func InitOrganizationRouter() *gin.Engine {
 							ipWhite.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteAdd"))
 							ipWhite.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteEdit"))
 							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
-							ipWhite.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteDelete"))
 							ipWhite.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalIpWhiteClear")) //仅管理员
 						}
 						ipBlack := global.Group("ipBlack/")
