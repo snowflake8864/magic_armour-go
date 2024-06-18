@@ -206,15 +206,15 @@ func (m *DynamicModel) CalcByConditionsGroupAgent(condition SearchConditions, co
 }
 
 // CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
-func (m *DynamicModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]interface{} {
-	var result = make(map[string]interface{})
+func (m *DynamicModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]*Calc {
+	var result = make(map[string]*Calc)
 
 	items := m.CalcByConditionsGroupAgent(condition, column)
 	if items == nil || len(items) == 0 {
 		return result
 	}
 	for _, item := range items {
-		result[item.AgentId] = *item
+		result[item.AgentId] = item
 	}
 
 	return result

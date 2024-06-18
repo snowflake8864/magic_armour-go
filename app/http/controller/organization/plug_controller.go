@@ -83,18 +83,15 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 			}
 
 			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
-				tmp, _ := item.(plug_models.Calc)
-				gg["dynamic_total_number"] = tmp.TotalNumber
-				gg["dynamic_on_number"] = tmp.OnNumber
+				gg["dynamic_total_number"] = item.TotalNumber
+				gg["dynamic_on_number"] = item.OnNumber
 
 			}
 			if item, isOk := calcWhite[agentModel.AgentId]; isOk {
-				tmp, _ := item.(plug_models.Calc)
-				gg["ip_white_total_number"] = tmp.TotalNumber
+				gg["ip_white_total_number"] = item.TotalNumber
 			}
 			if item, isOk := calcBlack[agentModel.AgentId]; isOk {
-				tmp, _ := item.(plug_models.Calc)
-				gg["ip_black_total_number"] = tmp.TotalNumber
+				gg["ip_black_total_number"] = item.TotalNumber
 			}
 			extendInfo[agentModel.AgentId] = gg
 		}
