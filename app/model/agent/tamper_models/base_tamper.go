@@ -19,6 +19,7 @@ type SearchConditions struct {
 	OpenSwitch   *int
 	DirFull      string
 	Type         int
+	CreateId     int64
 }
 
 // Calc 统计
@@ -112,6 +113,12 @@ func (m *baseTamper) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "open_switch",
 			Val: *condition.OpenSwitch,
+		})
+	}
+	if condition.CreateId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "create_id",
+			Val: condition.CreateId,
 		})
 	}
 

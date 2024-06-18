@@ -16,6 +16,7 @@ type SearchConditions struct {
 	OpenSwitch   *int
 	Name         string
 	DirFull      string
+	CreateId     int64
 }
 
 type baseTrust struct {
@@ -78,6 +79,12 @@ func (m *baseTrust) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "name like",
 			Val: "%" + condition.Name + "%",
+		})
+	}
+	if condition.CreateId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "create_id",
+			Val: condition.CreateId,
 		})
 	}
 

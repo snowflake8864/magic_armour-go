@@ -19,6 +19,7 @@ type SearchConditions struct {
 	OpenSwitch   *int
 	Type         int
 	TypeVal      string
+	CreateId     int64
 }
 
 // Calc 统计
@@ -111,6 +112,13 @@ func (m *baseBlackmail) conditions2Where(condition SearchConditions) (wheres []m
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "open_switch",
 			Val: *condition.OpenSwitch,
+		})
+	}
+
+	if condition.CreateId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "create_id",
+			Val: condition.CreateId,
 		})
 	}
 

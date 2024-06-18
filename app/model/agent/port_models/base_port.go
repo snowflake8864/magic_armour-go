@@ -17,6 +17,7 @@ type SearchConditions struct {
 	DeptIds    []int64
 	Port       string
 	OpenSwitch *int
+	CreateId   int64
 }
 
 // Calc 统计
@@ -88,6 +89,13 @@ func (m *basePort) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "open_switch",
 			Val: *condition.OpenSwitch,
+		})
+	}
+
+	if condition.CreateId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "create_id",
+			Val: condition.CreateId,
 		})
 	}
 

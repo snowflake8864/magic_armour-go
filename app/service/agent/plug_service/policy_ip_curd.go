@@ -174,6 +174,7 @@ func (crd *PolicyIpCurd) DeleteByAgentAndType(param *plug_models.IpPolicyModel, 
 		AgentId: param.AgentId,
 		IpType:  param.Type,
 	}
+	//不是管理员只能删除自己创建的
 	if isRoot == enums.IsNot {
 		conditions.CreateId = param.CreateId
 	}
