@@ -5,15 +5,15 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/http/controller/organization"
-	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
+	"goskeleton/app/http/validator/organization/agent_common_data"
 	"goskeleton/app/utils/response"
 )
 
 type GlobalIpWhiteEdit struct {
-	data_type.AgentSingle
 	Id
 	IpAdd
+	agent_common_data.CommonSwitch
 }
 
 func (n GlobalIpWhiteEdit) CheckParams(context *gin.Context) {

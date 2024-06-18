@@ -12,7 +12,6 @@ import (
 
 type GlobalIpBlackPage struct {
 	data_type.Page
-	data_type.AgentSingle
 }
 
 func (n GlobalIpBlackPage) CheckParams(context *gin.Context) {
