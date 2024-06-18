@@ -16,6 +16,7 @@ type SearchConditions struct {
 	DeptId     int64
 	DeptIds    []int64
 	Ip         string
+	IpType     int
 	OpenSwitch *int
 }
 
@@ -70,6 +71,12 @@ func (m *basePlug) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "ip",
 			Val: condition.Ip,
+		})
+	}
+	if condition.IpType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.IpType,
 		})
 	}
 	if condition.DeptId > 0 {

@@ -36,7 +36,7 @@ var EnumMap = map[string]map[int]string{
 var WebMapInt = map[string][]int{
 	"plug_type": {
 		PlugTypeTemporary,
-		PlugTypeTemporary,
+		PlugTypePermanent,
 	},
 }
 

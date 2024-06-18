@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -9,6 +10,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/agent/port_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -25,7 +27,7 @@ type PlugController struct {
 
 // PlugTypes 封堵类型
 func (u *PlugController) PlugTypes(ctx *gin.Context) {
-	keys := enums.Get1stIsStrReturnSliceOfInt("alarm_level", enum_plug.WebMapInt)
+	keys := enums.Get1stIsStrReturnSliceOfInt("plug_type", enum_plug.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("plug_type", enum_plug.EnumMap)
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
@@ -50,13 +52,55 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 
 	var extendInfo = make(map[string]interface{})
 	if len(agentIds) > 0 {
+		loginInfo := u.getLogin(ctx)
+
 		//规则统计数据
-		PolicyFact := port_models.CreateVirtualPolicyFactory()
-		extendInfo = PolicyFact.CalcByConditionsGroupAgentReturnMap(port_models.SearchConditions{
-			OrgId:    u.getLogin(ctx).OrgId,
+		DynamicFact := plug_models.CreateDynamicFactory()
+		calcDynamic := DynamicFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
+			OrgId:    loginInfo.OrgId,
 			AgentIds: agentIds,
-		}, PolicyFact.ColumnCalc(true))
+		}, DynamicFact.ColumnCalc(true))
+
+		IpPolicyFact := plug_models.CreateIpPolicyFactory()
+		calcWhite := IpPolicyFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
+			OrgId:    loginInfo.OrgId,
+			AgentIds: agentIds,
+			IpType:   enum_plug.IpTypeWhite,
+		}, DynamicFact.ColumnCalc(false))
+
+		calcBlack := IpPolicyFact.CalcByConditionsGroupAgentReturnMap(plug_models.SearchConditions{
+			OrgId:    loginInfo.OrgId,
+			AgentIds: agentIds,
+			IpType:   enum_plug.IpTypeBlack,
+		}, DynamicFact.ColumnCalc(false))
+
+		for _, agentModel := range agentModels {
+			gg := map[string]interface{}{
+				"dynamic_total_number":  0,
+				"dynamic_on_number":     0,
+				"ip_white_total_number": 0,
+				"ip_black_total_number": 0,
+			}
+
+			if item, isOk := calcDynamic[agentModel.AgentId]; isOk {
+				tmp, _ := item.(plug_models.Calc)
+				gg["dynamic_total_number"] = tmp.TotalNumber
+				gg["dynamic_on_number"] = tmp.OnNumber
+
+			}
+			if item, isOk := calcWhite[agentModel.AgentId]; isOk {
+				tmp, _ := item.(plug_models.Calc)
+				gg["ip_white_total_number"] = tmp.TotalNumber
+			}
+			if item, isOk := calcBlack[agentModel.AgentId]; isOk {
+				tmp, _ := item.(plug_models.Calc)
+				gg["ip_black_total_number"] = tmp.TotalNumber
+			}
+			extendInfo[agentModel.AgentId] = gg
+		}
+
 	}
+
 	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
 
@@ -94,38 +138,6 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-/*
-// IpWhitePageForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhitePageForPolicy(ctx *gin.Context) {
-
-}
-
-// IpWhiteSetSwitchForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhiteSetSwitchForPolicy(ctx *gin.Context) {
-
-}
-
-// IpWhiteAddForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhiteAddForPolicy(ctx *gin.Context) {
-
-}
-
-// IpWhiteEditForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhiteEditForPolicy(ctx *gin.Context) {
-
-}
-
-// IpWhiteDeleteForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhiteDeleteForPolicy(ctx *gin.Context) {
-
-}
-
-// IpWhiteClearForPolicy 终端策略 - ip白名单
-func (u *PlugController) IpWhiteClearForPolicy(ctx *gin.Context) {
-
-}
-*/
-
 // ConfigGetPortForPolicy 终端策略 - 端口虚开
 func (u *PlugController) ConfigGetPortForPolicy(ctx *gin.Context) {
 
@@ -148,6 +160,7 @@ func (u *PlugController) ConfigSetLoginForPolicy(ctx *gin.Context) {
 
 // IpPageForPolicy 终端策略 - ip名单库: 分页
 func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
+	fmt.Println("===================ipType", ipType)
 	loginInfo := u.getLogin(ctx)
 
 	condition := port_models.SearchConditions{
