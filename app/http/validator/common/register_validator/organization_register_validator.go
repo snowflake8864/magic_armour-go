@@ -396,14 +396,14 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "PlugManageBatchSetConfig"
 	containers.Set(key, plug3.ManageBatchSetConfig{})
 
-	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigGetPort"
-	containers.Set(key, plug3.PolicyConfigGetPort{})
-	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigSetPort"
-	containers.Set(key, plug3.PolicyConfigGetPort{})
-	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigGetLogin"
-	containers.Set(key, plug3.PolicyConfigGetLogin{})
-	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigSetLogin"
-	containers.Set(key, plug3.PolicyConfigSetLogin{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigPortGet"
+	containers.Set(key, plug3.PolicyConfigPortGet{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigPortSet"
+	containers.Set(key, plug3.PolicyConfigPortSet{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigLoginGet"
+	containers.Set(key, plug3.PolicyConfigLoginGet{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigLoginSet"
+	containers.Set(key, plug3.PolicyConfigLoginSet{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicEnabledPage"
 	containers.Set(key, plug3.PolicyDynamicEnabledPage{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisabledPage"
@@ -441,14 +441,14 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackClear"
 	containers.Set(key, plug3.PolicyIpBlackClear{})
 
-	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigGetPort"
-	containers.Set(key, plug3.GlobalConfigGetPort{})
-	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigSetPort"
-	containers.Set(key, plug3.GlobalConfigGetPort{})
-	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigGetLogin"
-	containers.Set(key, plug3.GlobalConfigGetLogin{})
-	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigSetLogin"
-	containers.Set(key, plug3.GlobalConfigSetLogin{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigPortGet"
+	containers.Set(key, plug3.GlobalConfigPortGet{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigPortSet"
+	containers.Set(key, plug3.GlobalConfigPortSet{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigLoginGet"
+	containers.Set(key, plug3.GlobalConfigLoginGet{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigLoginSet"
+	containers.Set(key, plug3.GlobalConfigLoginSet{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicEnabledPage"
 	containers.Set(key, plug3.GlobalDynamicEnabledPage{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisabledPage"

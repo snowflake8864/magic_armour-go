@@ -140,6 +140,12 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 
 // ConfigGetPortForPolicy 终端策略 - 端口虚开
 func (u *PlugController) ConfigGetPortForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := agent_service.CreateExtendFactory().GetPlugOfPort(loginInfo.OrgId, agentId)
+
+	response.SuccessReturnData(ctx, config)
 
 }
 
