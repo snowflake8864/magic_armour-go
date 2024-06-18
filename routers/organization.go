@@ -448,8 +448,8 @@ func InitOrganizationRouter() *gin.Engine {
 						}
 						configLogin := policy.Group("configLogin/")
 						{
-							configLogin.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigGetLogin"))
-							configLogin.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigSetLogin"))
+							configLogin.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigLoginGet"))
+							configLogin.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyConfigLoginSet"))
 						}
 
 						ipWhite := policy.Group("ipWhite/")
@@ -484,15 +484,15 @@ func InitOrganizationRouter() *gin.Engine {
 					//全局
 					global := plug.Group("global/")
 					{
-						configPort := policy.Group("configPort/")
+						configPort := global.Group("configPort/")
 						{
 							configPort.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigPortGet"))
 							configPort.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigPortSet"))
 						}
-						configLogin := policy.Group("configLogin/")
+						configLogin := global.Group("configLogin/")
 						{
-							configLogin.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigGetLogin"))
-							configLogin.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigSetLogin"))
+							configLogin.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigLoginGet"))
+							configLogin.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalConfigLoginSet"))
 						}
 
 						ipWhite := global.Group("ipWhite/")
