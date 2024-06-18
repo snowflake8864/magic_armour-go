@@ -143,22 +143,52 @@ func (u *PlugController) ConfigPortGetForPolicy(ctx *gin.Context) {
 	config := agent_service.CreateExtendFactory().GetPlugOfPort(loginInfo.OrgId, agentId)
 
 	response.SuccessReturnData(ctx, config)
-
 }
 
 // ConfigPortSetForPolicy 终端策略 - 端口虚开
 func (u *PlugController) ConfigPortSetForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
+	config := enum_plug.PlugPortConfig{
+		Switch:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Weight:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "weight")),
+		Type:      int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		CountTime: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "countTime")),
+		PlugTime:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "plugTime")),
+	}
+	if err := agent_service.CreateExtendFactory().SetPlugOfPort(loginInfo.OrgId, agentId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // ConfigLoginGetForPolicy 终端策略 - 口令破解
 func (u *PlugController) ConfigLoginGetForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
+	config := agent_service.CreateExtendFactory().GetPlugOfLogin(loginInfo.OrgId, agentId)
+
+	response.SuccessReturnData(ctx, config)
 }
 
 // ConfigLoginSetForPolicy 终端策略 - 口令破解
 func (u *PlugController) ConfigLoginSetForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
+	config := enum_plug.PlugLoginConfig{
+		Switch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		PlugTime: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "plugTime")),
+	}
+	if err := agent_service.CreateExtendFactory().SetPlugOfLogin(loginInfo.OrgId, agentId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // IpPageForPolicy 终端策略 - ip名单库: 分页

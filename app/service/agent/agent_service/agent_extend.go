@@ -1,6 +1,7 @@
 package agent_service
 
 import (
+	"errors"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/model/agent/agent_models"
@@ -57,6 +58,43 @@ func (crd *AgentExtend) GetPlugOfPort(orgId int64, agentId string) (config enum_
 
 	config.Format()
 	return config
+}
+
+// GetPlugOfLogin 获取封堵配置： 口令破解
+func (crd *AgentExtend) GetPlugOfLogin(orgId int64, agentId string) (config enum_plug.PlugLoginConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "plug_login_config")
+	if model != nil && !string_helper.IsEmpty(model.PlugLoginConfig) {
+		_ = json_helper.ToStruct(model.PlugLoginConfig, &config)
+	}
+
+	config.Format()
+	return config
+}
+
+// SetPlugOfPort 设置封堵配置： 端口虚开
+func (crd *AgentExtend) SetPlugOfPort(orgId int64, agentId string, config enum_plug.PlugPortConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_port_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// SetPlugOfLogin 设置封堵配置： 口令破解
+func (crd *AgentExtend) SetPlugOfLogin(orgId int64, agentId string, config enum_plug.PlugLoginConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_login_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
 }
 
 // SetFlushAt 设置刷新时间
