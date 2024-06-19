@@ -13,6 +13,7 @@ type SearchConditions struct {
 	AgentId    string
 	AgentIds   []string
 	Id         int64
+	Ids        []int64
 	DeptId     int64
 	DeptIds    []int64
 	Ip         string
@@ -66,6 +67,12 @@ func (m *basePlug) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "id",
 			Val: condition.Id,
+		})
+	}
+	if len(condition.Ids) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.Ids,
 		})
 	}
 	if !string_helper.IsEmpty(condition.Ip) {

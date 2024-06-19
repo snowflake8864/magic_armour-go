@@ -4,7 +4,6 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -39,12 +38,13 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 	}
 
 	//修改
+	now := date_helper.CurDatetime()
 	updates := make(map[string]interface{})
-	updates["end_at"] = date_helper.CurDatetime()
+	updates["end_at"] = now
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
-	updates["updated_at"] = date_helper.CurDatetime()
+	updates["updated_at"] = now
 	if isOk, _ := crd.masterModel.UpdateByConditions(plug_models.SearchConditions{
 		OrgId:   hashModel.OrgId,
 		Id:      hashModel.Id,
@@ -59,71 +59,54 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 	return nil
 }
 
-// DisableByAgent 解封
-func (crd *PolicyDynamicCurd) DisableByAgent(param *plug_models.DynamicModel) error {
+// DisableByAgentAndIds 解封
+func (crd *PolicyDynamicCurd) DisableByAgentAndIds(param *plug_models.DynamicModel, ids []int64) error {
 	OpenSwitch := enums.SwitchOn
+	now := date_helper.CurDatetime()
 	//修改
 	updates := make(map[string]interface{})
-	updates["end_at"] = date_helper.CurDatetime()
+	updates["end_at"] = now
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
-	updates["updated_at"] = date_helper.CurDatetime()
+	updates["updated_at"] = now
 	if isOk, _ := crd.masterModel.UpdateByConditions(plug_models.SearchConditions{
 		OrgId:      param.OrgId,
 		AgentId:    param.AgentId,
+		Ids:        ids,
 		OpenSwitch: &OpenSwitch,
 	}, updates); !isOk {
 		return errors.New("保存失败")
 	}
 
 	//新增任务
-	crd.addTask(param.OrgId, param.AgentId, "终端全部解封")
+	crd.addTask(param.OrgId, param.AgentId, "终端批量解封")
 
 	return nil
 }
 
-// DisableByAgents 解封
-func (crd *PolicyDynamicCurd) DisableByAgents(param *plug_models.DynamicModel, isRoot int, agentIds []string) error {
+// DisableByAgentsAndIds 解封
+func (crd *PolicyDynamicCurd) DisableByAgentsAndIds(param *plug_models.DynamicModel, ids []int64, agentIds []string) error {
 	OpenSwitch := enums.SwitchOn
-	conditions := plug_models.SearchConditions{
-		OrgId:      param.OrgId,
-		OpenSwitch: &OpenSwitch,
-	}
-	if isRoot == enums.IsNot {
-		if agentIds == nil || len(agentIds) == 0 {
-			return nil
-		}
-		conditions.AgentIds = agentIds
-	}
-
+	now := date_helper.CurDatetime()
 	//修改
 	updates := make(map[string]interface{})
-	updates["end_at"] = date_helper.CurDatetime()
+	updates["end_at"] = now
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
-	updates["updated_at"] = date_helper.CurDatetime()
-	isOk, rows := crd.masterModel.UpdateByConditions(conditions, updates)
-	if !isOk {
+	updates["updated_at"] = now
+	if isOk, _ := crd.masterModel.UpdateByConditions(plug_models.SearchConditions{
+		OrgId:      param.OrgId,
+		AgentIds:   agentIds,
+		Ids:        ids,
+		OpenSwitch: &OpenSwitch,
+	}, updates); !isOk {
 		return errors.New("保存失败")
 	}
 
 	//任务
-	if rows > 0 {
-		isOnline := enums.IsYes
-		conditions1 := agent_models.SearchConditions{
-			OrgId:      param.OrgId,
-			IsOnline:   &isOnline,
-			PlugSwitch: &OpenSwitch,
-		}
-		if isRoot == enums.IsNot {
-			conditions.AgentIds = agentIds
-		}
-		if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions1); ids != nil || len(ids) > 0 {
-			task_service.CreateCurdFactory().AddTaskForAgents(param.OrgId, ids, enum_task.TypePluggingDownload, "全部解封")
-		}
-	}
+	task_service.CreateCurdFactory().AddTaskForAgents(param.OrgId, agentIds, enum_task.TypePluggingDownload, "批量解封")
 
 	return nil
 }
@@ -145,10 +128,9 @@ func (crd *PolicyDynamicCurd) DeleteById(param *plug_models.DynamicModel) error 
 
 	//删除
 	if !crd.masterModel.DeleteByConditions(plug_models.SearchConditions{
-		OrgId:      hashModel.OrgId,
-		Id:         hashModel.Id,
-		AgentId:    hashModel.AgentId,
-		OpenSwitch: &OpenSwitch,
+		OrgId:   hashModel.OrgId,
+		Id:      hashModel.Id,
+		AgentId: hashModel.AgentId,
 	}) {
 		return errors.New("删除失败")
 	}
@@ -156,15 +138,14 @@ func (crd *PolicyDynamicCurd) DeleteById(param *plug_models.DynamicModel) error 
 	return nil
 }
 
-// DeleteByAgent 删除
-func (crd *PolicyDynamicCurd) DeleteByAgent(param *plug_models.DynamicModel) error {
+// DeleteByAgentAndIds 删除
+func (crd *PolicyDynamicCurd) DeleteByAgentAndIds(param *plug_models.DynamicModel, ids []int64) error {
 
-	OpenSwitch := enums.SwitchOff
 	//删除
 	if !crd.masterModel.DeleteByConditions(plug_models.SearchConditions{
-		OrgId:      param.OrgId,
-		AgentId:    param.AgentId,
-		OpenSwitch: &OpenSwitch,
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Ids:     ids,
 	}) {
 		return errors.New("删除失败")
 	}
@@ -172,20 +153,15 @@ func (crd *PolicyDynamicCurd) DeleteByAgent(param *plug_models.DynamicModel) err
 	return nil
 }
 
-// DeleteByAgents 删除
-func (crd *PolicyDynamicCurd) DeleteByAgents(param *plug_models.DynamicModel, isRoot int, agentIds []string) error {
+// DeleteByAgentsAndIds 删除
+func (crd *PolicyDynamicCurd) DeleteByAgentsAndIds(param *plug_models.DynamicModel, ids []int64, agentIds []string) error {
 
-	OpenSwitch := enums.SwitchOff
 	conditions := plug_models.SearchConditions{
-		OrgId:      param.OrgId,
-		OpenSwitch: &OpenSwitch,
+		OrgId:    param.OrgId,
+		AgentIds: agentIds,
+		Ids:      ids,
 	}
-	if isRoot == enums.IsNot {
-		if agentIds == nil || len(agentIds) == 0 {
-			return nil
-		}
-		conditions.AgentIds = agentIds
-	}
+
 	//删除
 	if !crd.masterModel.DeleteByConditions(conditions) {
 		return errors.New("删除失败")

@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_userinfo"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -171,6 +172,13 @@ func (u *ControllerBase) getAgentIdsFromGin(ctx *gin.Context) (agentIds []string
 // getAgentIdsFromGin 从gin上下文获取终端id
 func (u *ControllerBase) getAgentIdFromGin(ctx *gin.Context) string {
 	return ctx.GetString(consts.ValidatorPrefixOrg + "agentId")
+}
+
+// getIdsOfInt64 获取整形ID集合
+func (u *PlugController) getIdsOfInt64(ctx *gin.Context) (ids []int64) {
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "ids")
+	ids = json_helper.ToSliceInt64(jsonStr)
+	return ids
 }
 
 // IsBelongUserDepartment 是否属于用户的组织架构

@@ -357,7 +357,7 @@ func (u *PlugController) DynamicDisableBatchForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableByAgent(&param); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgentAndIds(&param, u.getIdsOfInt64(ctx)); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -388,13 +388,12 @@ func (u *PlugController) DynamicDeleteBatchForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := plug_models.DynamicModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgent(&param); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgentsAndIds(&param, u.getIdsOfInt64(ctx), u.getAgentIdsFromGin(ctx)); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
