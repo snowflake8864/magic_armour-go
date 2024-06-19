@@ -42,16 +42,16 @@ func (m *GroupModel) CreateTable() bool {
 		(	
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id BIGINT NOT NULL DEFAULT '0',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
 			suffix varchar(256)  NOT NULL DEFAULT '' COMMENT '后缀,英文逗号隔开',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
 			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
 			updated_at datetime NULL
 		)
-		UNIQUE KEY(org_id, id) 
+		UNIQUE KEY(org_id, id,create_id) 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

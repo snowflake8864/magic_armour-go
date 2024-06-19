@@ -49,6 +49,7 @@ func (m *GlobalModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(统一定义)',
 			id BIGINT NOT NULL DEFAULT '0',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			type tinyint NOT NULL DEFAULT '1' COMMENT '策略类型(1后缀 2路径)',
 			type_val varchar(512)  NOT NULL DEFAULT '' COMMENT '策略类型值',
@@ -56,7 +57,6 @@ func (m *GlobalModel) CreateTable() bool {
 			processes string NOT NULL DEFAULT '' COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
@@ -64,7 +64,7 @@ func (m *GlobalModel) CreateTable() bool {
 			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, platform_type, id) 
+		UNIQUE KEY(org_id, platform_type, id,create_id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

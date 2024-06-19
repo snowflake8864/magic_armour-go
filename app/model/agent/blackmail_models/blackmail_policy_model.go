@@ -48,20 +48,20 @@ func (m *PolicyModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			id BIGINT NOT NULL DEFAULT '0',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			type tinyint NOT NULL DEFAULT '1' COMMENT '策略类型(1后缀 2路径)',
 			type_val varchar(512)  NOT NULL DEFAULT '' COMMENT '策略类型值',
 			group_id BIGINT NOT NULL DEFAULT '0' COMMENT '类型组(blackmail_group.id)',
 			processes string NOT NULL DEFAULT '' COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
 			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
 			updated_at datetime NOT NULL
 		)
-		UNIQUE KEY(org_id, agent_id, id) 
+		UNIQUE KEY(org_id, agent_id, id,create_id) 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
