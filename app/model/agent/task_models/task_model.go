@@ -18,7 +18,7 @@ func CreateTaskFactory() *TaskModel {
 type TaskModel struct {
 	baseTask
 	model.BaseModel
-	Id          string `json:"id" gorm:"primaryKey"`
+	Id          int64  `json:"id" gorm:"primaryKey"`
 	OrgId       int64  `json:"org_id"`
 	AgentId     string `json:"agent_id"`
 	Type        int    `json:"type"`
@@ -43,7 +43,7 @@ func (m *TaskModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			type smallint  NOT NULL DEFAULT '0' COMMENT '类型',
 			created_at datetime NULL,
- 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+ 			id BIGINT NOT NULL DEFAULT '0',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
 			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(0进行中, 1已完成)',
 			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',

@@ -53,6 +53,7 @@ func (m *GlobalModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(统一定义)',
 			id BIGINT NOT NULL DEFAULT '0',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			type tinyint NOT NULL DEFAULT '0' COMMENT '类型(1文件夹 2单文件)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '文件路径',
@@ -63,8 +64,7 @@ func (m *GlobalModel) CreateTable() bool {
 			is_extend tinyint NOT NULL DEFAULT '0' COMMENT '是否向下继承',
 			processes string  NOT NULL DEFAULT ''  COMMENT '信任进程json',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注'
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
@@ -72,7 +72,7 @@ func (m *GlobalModel) CreateTable() bool {
 			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, platform_type, id) 
+		UNIQUE KEY(org_id, platform_type, id, create_id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

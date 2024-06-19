@@ -28,6 +28,8 @@ type ProcGlobalModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	UpdateId   int64  `json:"update_id"`
+	UpdateName string `json:"update_name"`
 	UpdatedAt  string `json:"updated_at"`
 }
 
@@ -43,19 +45,21 @@ func (m *ProcGlobalModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'hash',
+			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
 			type tinyint  NOT NULL DEFAULT '0' COMMENT '类型(1白名单,2黑名单)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			dir varchar(512)  NOT NULL DEFAULT '' COMMENT '路径',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
-			data_from tinyint NOT NULL DEFAULT '1' COMMENT '数据来源(1进程 2模块)',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-            create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
-			updated_at datetime NOT NULL,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
+			updated_at datetime NULL,
 			INDEX index_dir (dir) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id,id) 
+		UNIQUE KEY(org_id,id,data_from,type,create_id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

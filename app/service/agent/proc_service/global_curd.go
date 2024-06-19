@@ -120,6 +120,8 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 				OpenSwitch: enums.SwitchOn,
 				CreateId:   param.CreateId,
 				CreateName: param.CreateName,
+				UpdateId:   param.CreateId,
+				UpdateName: param.CreateName,
 				CreatedAt:  now,
 				UpdatedAt:  now,
 			})

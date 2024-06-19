@@ -2,11 +2,10 @@ package task_service
 
 import (
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/task_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
-	"goskeleton/app/utils/md5_encrypt"
-	"strconv"
 )
 
 func CreateCurdFactory() *TaskCurd {
@@ -52,7 +51,7 @@ func (crd *TaskCurd) AddTasksForAgent(orgId int64, agentId string, types []int, 
 		if _, has := unfinishedMap[val]; !has {
 			caches = append(caches, val)
 			inserts = append(inserts, task_models.TaskModel{
-				Id:        md5_encrypt.MD5(agentId + strconv.Itoa(val) + nowDate),
+				Id:        variable.SnowFlake.GetId(),
 				OrgId:     orgId,
 				AgentId:   agentId,
 				Type:      val,

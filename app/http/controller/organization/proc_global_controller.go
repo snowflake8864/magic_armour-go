@@ -78,6 +78,8 @@ func (u *ProcessGlobalController) add(ctx *gin.Context, dataFrom int) error {
 		DataFrom:   dataFrom,
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
 	return proc_service.CreateGlobalCurdFactory().Add(&param)
@@ -98,6 +100,8 @@ func (u *ProcessGlobalController) batchAdd(ctx *gin.Context, dataFrom int, globa
 		DataFrom:   dataFrom,
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
 	return proc_service.CreateGlobalCurdFactory().BatchAdd(&param, &list)
