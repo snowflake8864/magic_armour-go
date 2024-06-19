@@ -12,7 +12,6 @@ import (
 
 type PolicyIpWhiteClear struct {
 	data_type.AgentSingle
-	Id
 }
 
 func (n PolicyIpWhiteClear) CheckParams(context *gin.Context) {

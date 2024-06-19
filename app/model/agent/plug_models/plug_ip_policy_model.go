@@ -47,12 +47,12 @@ func (m *IpPolicyModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			id BIGINT NOT NULL DEFAULT '0',
-			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1白 2黑)',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
+			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			direction tinyint(1) NOT NULL DEFAULT '0' COMMENT '方向(1IN 2OUT),二进制表示',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
@@ -60,8 +60,8 @@ func (m *IpPolicyModel) CreateTable() bool {
 			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, agent_id, id) 
-		DISTRIBUTED BY HASH(id) BUCKETS AUTO
+		UNIQUE KEY(org_id, agent_id, id, type,create_id) 
+		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
 			'replication_allocation' = 'tag.location.default: 1'

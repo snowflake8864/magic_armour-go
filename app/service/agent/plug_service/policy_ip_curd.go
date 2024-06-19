@@ -66,7 +66,7 @@ func (crd *PolicyIpCurd) Edit(param *plug_models.IpPolicyModel, isRoot int) erro
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
 	} else if hashModel.Ip != param.Ip {
 		conditions := plug_models.SearchConditions{
@@ -114,7 +114,7 @@ func (crd *PolicyIpCurd) SetSwitch(param *plug_models.IpPolicyModel, isRoot int)
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能修改自己添加的策略(管理员除外)")
 	}
 
@@ -151,7 +151,7 @@ func (crd *PolicyIpCurd) DeleteById(param *plug_models.IpPolicyModel, isRoot int
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
 		return errors.New("数据不存在")
-	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
+	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
 		return errors.New("只能删除自己添加的策略(管理员除外)")
 	}
 
@@ -181,7 +181,7 @@ func (crd *PolicyIpCurd) DeleteByAgentAndType(param *plug_models.IpPolicyModel, 
 	}
 	//不是管理员只能删除自己创建的
 	if isRoot == enums.IsNot {
-		conditions.CreateId = param.CreateId
+		conditions.CreateId = param.UpdateId
 	}
 
 	if !crd.masterModel.DeleteByConditions(conditions) {
