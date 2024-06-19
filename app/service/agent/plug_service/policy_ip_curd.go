@@ -28,7 +28,7 @@ func (crd *PolicyIpCurd) addTask(orgId int64, agentId string, remark string) {
 func (crd *PolicyIpCurd) Add(param *plug_models.IpPolicyModel) error {
 	param.Id = variable.SnowFlake.GetId()
 	param.Direction = enum_plug.DirectionAll
-	param.OpenSwitch = enums.SwitchOff
+	param.OpenSwitch = enums.SwitchOn
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
 
