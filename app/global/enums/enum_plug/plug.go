@@ -92,3 +92,20 @@ func (c *PlugLoginConfig) Format() {
 		c.PlugTime = 0
 	}
 }
+
+func GetDirectionLabel(val int) string {
+	str := ""
+	switch val {
+	case DirectionIn:
+		str = "in"
+		break
+	case DirectionOut:
+		str = "out"
+		break
+	case DirectionAll:
+		str = "in,out"
+		break
+	}
+
+	return str
+}

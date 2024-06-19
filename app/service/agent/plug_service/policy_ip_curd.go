@@ -27,7 +27,7 @@ func (crd *PolicyIpCurd) addTask(orgId int64, agentId string, remark string) {
 // Add 新增
 func (crd *PolicyIpCurd) Add(param *plug_models.IpPolicyModel) error {
 	param.Id = variable.SnowFlake.GetId()
-	param.Duration = enum_plug.DirectionAll
+	param.Direction = enum_plug.DirectionAll
 	param.OpenSwitch = enums.SwitchOff
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
@@ -44,6 +44,11 @@ func (crd *PolicyIpCurd) Add(param *plug_models.IpPolicyModel) error {
 
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
+	}
+
+	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
+		//新增任务
+		crd.addTask(param.OrgId, param.AgentId, "添加")
 	}
 
 	return nil
@@ -76,9 +81,9 @@ func (crd *PolicyIpCurd) Edit(param *plug_models.IpPolicyModel, isRoot int) erro
 
 	//修改
 	updates := make(map[string]interface{})
-	updates["ip"] = param.Type
+	updates["ip"] = param.Ip
 	updates["remark"] = param.Remark
-	updates["open_switch"] = enums.SwitchOff
+	//updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()

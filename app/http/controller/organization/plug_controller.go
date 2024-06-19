@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -197,16 +196,17 @@ func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
 
 	loginInfo := u.getLogin(ctx)
 
-	condition := port_models.SearchConditions{
+	condition := plug_models.SearchConditions{
 		OrgId:   loginInfo.OrgId,
 		AgentId: u.getAgentIdFromGin(ctx),
+		IpType:  ipType,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := port_models.CreateVirtualPolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := plug_models.CreateIpPolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranIpPolicyPage(total, models))
 }
 
 // IpSetSwitchForPolicy 终端策略 - ip名单库: 设置开关
@@ -230,8 +230,6 @@ func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 
 // IpAddForPolicy 终端策略 - ip名单库: 添加
 func (u *PlugController) IpAddForPolicy(ctx *gin.Context, ipType int) {
-	fmt.Println("===================ipType", ipType)
-
 	loginInfo := u.getLogin(ctx)
 	param := plug_models.IpPolicyModel{
 		OrgId:      loginInfo.OrgId,
@@ -258,6 +256,7 @@ func (u *PlugController) IpEditForPolicy(ctx *gin.Context, ipType int) {
 	param := plug_models.IpPolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		Type:       ipType,
 		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
