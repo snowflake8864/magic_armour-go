@@ -50,6 +50,7 @@ func (m *VirtualPolicyModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			id BIGINT NOT NULL DEFAULT '0',
+			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			type varchar(8)  NOT NULL DEFAULT '' COMMENT 'ip类型(ipv4,ipv6)',
 			protocol varchar(8)  NOT NULL DEFAULT '' COMMENT '传输协议(tcp,udp)',
 			source_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '源ip',
@@ -58,7 +59,6 @@ func (m *VirtualPolicyModel) CreateTable() bool {
 			forward_port varchar(64)  NOT NULL DEFAULT '' COMMENT '转发端口',
 			alarm_level tinyint NOT NULL DEFAULT '0' COMMENT '告警级别',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
-			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
@@ -66,7 +66,7 @@ func (m *VirtualPolicyModel) CreateTable() bool {
 			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id, agent_id, id) 
+		UNIQUE KEY(org_id, agent_id, id,create_id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
