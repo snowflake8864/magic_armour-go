@@ -59,6 +59,8 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginErrorRemind + `', '3','管理员:登录错误次数提醒'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginLockDuration + `', '30','管理员:登录锁定时长(分)'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshSwitch + `', '1','管理员:系统ssh开关'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStart + `', 'systemctl start sshd','ssh服务开启命令'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStop + `', 'systemctl stop sshd','ssh服务停止命令'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformServiceCodeList + `', '["s0001"]','管理员:服务器编号列表'),
 
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorMax + `', '10','企业:登录错误次数最大值(100)'),

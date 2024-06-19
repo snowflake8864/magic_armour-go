@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/model/agent/port_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/plug_service"
 	"goskeleton/app/service/agent/port_service"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
@@ -212,7 +213,7 @@ func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
 func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -220,7 +221,7 @@ func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
-	if err := port_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyIpCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -244,7 +245,7 @@ func (u *PlugController) IpAddForPolicy(ctx *gin.Context, ipType int) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+	if err := plug_service.CreatePolicyIpCurdFactory().Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -254,21 +255,17 @@ func (u *PlugController) IpAddForPolicy(ctx *gin.Context, ipType int) {
 // IpEditForPolicy 终端策略 - ip名单库: 编辑
 func (u *PlugController) IpEditForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
-	param := port_models.VirtualPolicyModel{
-		OrgId:       loginInfo.OrgId,
-		AgentId:     u.getAgentIdFromGin(ctx),
-		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
-		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
-		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
-		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
-		ForwardPort: int_helper.IntToStr(int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "forwardPort"))),
-		AlarmLevel:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmLevel")),
-		UpdateId:    loginInfo.UserId,
-		UpdateName:  loginInfo.Username,
+	param := plug_models.IpPolicyModel{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Type:       ipType,
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyIpCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -279,7 +276,7 @@ func (u *PlugController) IpEditForPolicy(ctx *gin.Context, ipType int) {
 func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -287,7 +284,7 @@ func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyIpCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -298,15 +295,14 @@ func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 func (u *PlugController) IpClearForPolicy(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyIpCurdFactory().DeleteByAgentAndType(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
