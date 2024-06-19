@@ -40,7 +40,7 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 
 	//修改
 	updates := make(map[string]interface{})
-	updates["end_at"] = enums.SwitchOff
+	updates["end_at"] = date_helper.CurDatetime()
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
@@ -64,7 +64,7 @@ func (crd *PolicyDynamicCurd) DisableByAgent(param *plug_models.DynamicModel) er
 	OpenSwitch := enums.SwitchOn
 	//修改
 	updates := make(map[string]interface{})
-	updates["end_at"] = enums.SwitchOff
+	updates["end_at"] = date_helper.CurDatetime()
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
@@ -99,7 +99,7 @@ func (crd *PolicyDynamicCurd) DisableByAgents(param *plug_models.DynamicModel, i
 
 	//修改
 	updates := make(map[string]interface{})
-	updates["end_at"] = enums.SwitchOff
+	updates["end_at"] = date_helper.CurDatetime()
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName

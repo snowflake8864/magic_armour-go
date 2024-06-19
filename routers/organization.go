@@ -475,9 +475,9 @@ func InitOrganizationRouter() *gin.Engine {
 							dynamic.POST("enabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicEnabledPage"))
 							dynamic.POST("disabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisabledPage"))
 							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisable"))
-							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisableAll"))
+							dynamic.POST("disableBatch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDisableBatch"))
 							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDelete"))
-							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDeleteAll"))
+							dynamic.POST("deleteBatch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugPolicyDynamicDeleteBatch"))
 						}
 					}
 
@@ -519,9 +519,9 @@ func InitOrganizationRouter() *gin.Engine {
 							dynamic.POST("enabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicEnabledPage"))
 							dynamic.POST("disabledPage", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisabledPage"))
 							dynamic.POST("disable", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisable"))
-							dynamic.POST("disableAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisableAll"))
+							dynamic.POST("disableBatch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDisableBatch"))
 							dynamic.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDelete"))
-							dynamic.POST("deleteAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDeleteAll"))
+							dynamic.POST("deleteBatch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PlugGlobalDynamicDeleteBatch"))
 						}
 					}
 				} //动态封堵

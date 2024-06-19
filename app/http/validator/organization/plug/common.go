@@ -21,6 +21,10 @@ type Id struct {
 	Id int64 `form:"id" json:"id" binding:"required,min=1"`
 }
 
+type Ids struct {
+	Ids string `form:"ids" json:"ids" binding:"required,min=3"`
+}
+
 type DeptId struct {
 	DeptId int `form:"deptId" json:"deptId"`
 }

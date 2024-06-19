@@ -410,12 +410,12 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.PolicyDynamicDisabledPage{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisable"
 	containers.Set(key, plug3.PolicyDynamicDisable{})
-	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisableAll"
-	containers.Set(key, plug3.PolicyDynamicDisableAll{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDisableBatch"
+	containers.Set(key, plug3.PolicyDynamicDisableBatch{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDelete"
 	containers.Set(key, plug3.PolicyDynamicDelete{})
-	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDeleteAll"
-	containers.Set(key, plug3.PolicyDynamicDeleteAll{})
+	key = consts.ValidatorPrefixOrg + "PlugPolicyDynamicDeleteBatch"
+	containers.Set(key, plug3.PolicyDynamicDeleteBatch{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhitePage"
 	containers.Set(key, plug3.PolicyIpWhitePage{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpWhiteSetSwitch"
@@ -455,12 +455,12 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.GlobalDynamicDisabledPage{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisable"
 	containers.Set(key, plug3.GlobalDynamicDisable{})
-	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisableAll"
-	containers.Set(key, plug3.GlobalDynamicDisableAll{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDisableBatch"
+	containers.Set(key, plug3.GlobalDynamicDisableBatch{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDelete"
 	containers.Set(key, plug3.GlobalDynamicDelete{})
-	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDeleteAll"
-	containers.Set(key, plug3.GlobalDynamicDeleteAll{})
+	key = consts.ValidatorPrefixOrg + "PlugGlobalDynamicDeleteBatch"
+	containers.Set(key, plug3.GlobalDynamicDeleteBatch{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhitePage"
 	containers.Set(key, plug3.GlobalIpWhitePage{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalIpWhiteSetSwitch"

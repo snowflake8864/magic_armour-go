@@ -331,7 +331,7 @@ func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, openSwitch int) 
 func (u *PlugController) DynamicDisableForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -339,25 +339,25 @@ func (u *PlugController) DynamicDisableForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableById(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// DynamicDisableAllForPolicy 终端策略 - 动态封堵: 解封全部
-func (u *PlugController) DynamicDisableAllForPolicy(ctx *gin.Context) {
+// DynamicDisableBatchForPolicy 终端策略 - 动态封堵: 批量解封
+func (u *PlugController) DynamicDisableBatchForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableByAgent(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -368,7 +368,7 @@ func (u *PlugController) DynamicDisableAllForPolicy(ctx *gin.Context) {
 func (u *PlugController) DynamicDeleteForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -376,25 +376,25 @@ func (u *PlugController) DynamicDeleteForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteById(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// DynamicDeleteAllForPolicy 终端策略 - 动态封堵: 删除全部
-func (u *PlugController) DynamicDeleteAllForPolicy(ctx *gin.Context) {
+// DynamicDeleteBatchForPolicy 终端策略 - 动态封堵: 批量删除
+func (u *PlugController) DynamicDeleteBatchForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgent(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -589,8 +589,8 @@ func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// DynamicDisableAllForGlobal 全局策略 - 动态封堵: 解封全部
-func (u *PlugController) DynamicDisableAllForGlobal(ctx *gin.Context) {
+// DynamicDisableBatchForGlobal 全局策略 - 动态封堵: 批量解封
+func (u *PlugController) DynamicDisableBatchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := port_models.VirtualPolicyModel{
@@ -626,8 +626,8 @@ func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// DynamicDeleteAllForGlobal 全局策略 - 动态封堵: 删除全部
-func (u *PlugController) DynamicDeleteAllForGlobal(ctx *gin.Context) {
+// DynamicDeleteBatchForGlobal 全局策略 - 动态封堵: 批量删除
+func (u *PlugController) DynamicDeleteBatchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := port_models.VirtualPolicyModel{
