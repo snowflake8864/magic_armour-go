@@ -125,6 +125,24 @@ func (m *DynamicModel) DeleteByConditions(condition SearchConditions) bool {
 	}
 }
 
+// GetItemByConditions 通过id获取一条记录
+func (m *DynamicModel) GetItemByConditions(condition SearchConditions) (item *DynamicModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
 // GetListByConditions 获取符合条件的全部记录
 func (m *DynamicModel) GetListByConditions(condition SearchConditions) (items []*DynamicModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")

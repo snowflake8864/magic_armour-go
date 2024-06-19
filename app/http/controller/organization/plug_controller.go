@@ -314,27 +314,17 @@ func (u *PlugController) IpClearForPolicy(ctx *gin.Context, ipType int) {
 func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
-	condition := port_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
+	condition := plug_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OpenSwitch: &openSwitch,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := port_models.CreateVirtualGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := plug_models.CreateDynamicFactory().Page(condition, offset, pageSize, order)
 
-	//获取组织架构
-	departmentMaps := map[int64]*department_models.DepartmentModel{}
-	if models != nil && len(models) > 0 {
-		var deptIds []int64
-		for _, model := range models {
-			if model.DeptId > 0 {
-				deptIds = append(deptIds, model.DeptId)
-			}
-		}
-		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
-	}
-
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicPolicyPage(total, models))
 }
 
 // DynamicDisableForPolicy 终端策略 - 动态封堵: 解封

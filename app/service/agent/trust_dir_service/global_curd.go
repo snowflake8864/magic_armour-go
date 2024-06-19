@@ -222,10 +222,3 @@ func (crd *GlobalCurd) DeleteById(param *trust_dir_models.GlobalModel, isRoot in
 
 	return nil
 }
-
-// DeleteByOrg 删除
-func (crd *GlobalCurd) DeleteByOrg(orgId int64) {
-	crd.masterModel.DeleteByConditions(trust_dir_models.SearchConditions{
-		OrgId: orgId,
-	})
-}

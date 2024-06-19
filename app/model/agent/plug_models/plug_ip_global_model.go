@@ -23,7 +23,7 @@ type IpGlobalModel struct {
 	DeptId     int64  `json:"dept_id"`
 	Ip         string `json:"ip"`
 	Type       int    `json:"type"`
-	Duration   int    `json:"duration"`
+	Direction  int    `json:"direction"`
 	Remark     string `json:"remark"`
 	OpenSwitch int    `json:"open_switch"`
 	CreateId   int64  `json:"create_id"`
