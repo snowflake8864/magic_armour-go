@@ -279,6 +279,7 @@ func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Type:       ipType,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -297,6 +298,7 @@ func (u *PlugController) IpClearForPolicy(ctx *gin.Context, ipType int) {
 	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
+		Type:       ipType,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
