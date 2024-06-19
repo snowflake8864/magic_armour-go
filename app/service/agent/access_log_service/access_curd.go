@@ -1,6 +1,7 @@
 package access_log_service
 
 import (
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_access_models"
 )
 
@@ -14,6 +15,7 @@ type AccessLogCurd struct {
 
 // Add 新增
 func (crd *AccessLogCurd) Add(param *agent_access_models.AccessLogModel) bool {
+	param.Id = variable.SnowFlake.GetId()
 	isOk := crd.masterModel.InsertItem(param)
 
 	return isOk

@@ -18,7 +18,7 @@ func CreateAccessLogFactory() *AccessLogModel {
 type AccessLogModel struct {
 	baseAccess
 	model.BaseModel
-	Id        string `json:"id" gorm:"primaryKey"`
+	Id        int64  `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
 	AgentId   string `json:"agent_id"`
 	Path      string `json:"path"`
@@ -45,7 +45,7 @@ func (m *AccessLogModel) CreateTable() bool {
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			path varchar(128)  NOT NULL DEFAULT '' COMMENT '请求地址',
 			created_at datetime NULL,
-			id varchar(64)  NOT NULL DEFAULT '' COMMENT 'md5值',
+			id BIGINT NOT NULL DEFAULT '0',
 			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			input text NULL COMMENT '请求参数',
 			method varchar(8) NULL COMMENT '请求方法',
