@@ -18,7 +18,7 @@ func CreateIpGlobalFactory() *IpGlobalModel {
 type IpGlobalModel struct {
 	basePlug
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
+	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
 	DeptId     int64  `json:"dept_id"`
 	Ip         string `json:"ip"`
@@ -45,8 +45,8 @@ func (m *IpGlobalModel) CreateTable() bool {
 	sql += `
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			id BIGINT NOT NULL DEFAULT '0',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型(1白 2黑)',
+			id BIGINT NOT NULL DEFAULT '0',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
@@ -60,7 +60,7 @@ func (m *IpGlobalModel) CreateTable() bool {
 			updated_at datetime NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id,id) 
+		UNIQUE KEY(org_id,type,id,create_id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

@@ -10,7 +10,6 @@ import (
 )
 
 type GlobalIpWhiteClear struct {
-	Id
 }
 
 func (n GlobalIpWhiteClear) CheckParams(context *gin.Context) {
