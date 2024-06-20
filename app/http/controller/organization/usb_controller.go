@@ -133,6 +133,22 @@ func (u *UsbController) BatchSetConfigForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// PageForLog 外设插拔日志:分页
+func (u *UsbController) PageForLog(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	condition := tamper_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: u.getAgentIdFromGin(ctx),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := tamper_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
+}
+
 // PageForPolicy 终端策略: 分页
 func (u *UsbController) PageForPolicy(ctx *gin.Context, isOnline int) {
 	loginInfo := u.getLogin(ctx)

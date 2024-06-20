@@ -23,7 +23,6 @@ type GlobalModel struct {
 	Intro      string `json:"intro"`
 	Type       string `json:"type"`
 	Status     int    `json:"status"`
-	IsOnline   int    `json:"is_online"`
 	Alias      string `json:"alias"`
 	Remark     string `json:"remark"`
 	CreateId   int64  `json:"create_id"`
@@ -50,7 +49,6 @@ func (m *GlobalModel) CreateTable() bool {
 			intro varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:简介',
 			type varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:类型',
 			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(0默认 1信任 2禁止)',
-			is_online tinyint NOT NULL DEFAULT '0' COMMENT '是否在线(0离线 1在线)',
 			alias varchar(256)  NOT NULL DEFAULT '' COMMENT '别名',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
