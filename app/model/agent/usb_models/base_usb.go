@@ -7,12 +7,13 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId       int64
-	AgentId     string
-	UsbHash     string
-	UsbHashList []string
-	Status      int
-	IsOnline    int
+	OrgId    int64
+	AgentId  string
+	Id       string
+	IdList   []string
+	UsbHash  string
+	Status   *int
+	IsOnline *int
 }
 
 type baseUsb struct {
@@ -32,6 +33,19 @@ func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_c
 			Val: condition.AgentId,
 		})
 	}
+	if !string_helper.IsEmpty(condition.Id) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
+
+	}
+	if len(condition.IdList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.IdList,
+		})
+	}
 	if !string_helper.IsEmpty(condition.UsbHash) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "usb_hash",
@@ -39,22 +53,17 @@ func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_c
 		})
 
 	}
-	if len(condition.UsbHashList) > 0 {
-		wheres = append(wheres, model_comm.Conditions{
-			Key: "usb_hash in",
-			Val: condition.UsbHashList,
-		})
-	}
-	if condition.Status > 0 {
+
+	if condition.Status != nil && *condition.Status != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status",
-			Val: condition.Status,
+			Val: *condition.Status,
 		})
 	}
-	if condition.IsOnline != enums.AllDefaultInt {
+	if condition.IsOnline != nil && *condition.IsOnline != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_online",
-			Val: condition.IsOnline,
+			Val: *condition.IsOnline,
 		})
 	}
 

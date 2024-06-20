@@ -68,7 +68,7 @@ var WebMapStr = map[string][]string{
 		ModuleSyslog,
 		ModuleOutreach,
 		ModuleLogin,
-		ModuleThreaten,
+		//ModuleThreaten,
 	},
 }
 
@@ -133,7 +133,7 @@ func (c *ProductGrantConfig) Default() {
 		c.Login = enums.IsYes
 	}
 	if c.Threaten == 0 {
-		c.Threaten = enums.IsNot
+		c.Threaten = enums.IsYes
 	} else {
 		c.Threaten = enums.IsYes
 	}
@@ -178,7 +178,7 @@ func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
 		txtList = append(txtList, "口令破解")
 	}
 	if c.Threaten == enums.IsYes {
-		txtList = append(txtList, "威胁情报")
+		//txtList = append(txtList, "威胁情报")
 	}
 	return txtList
 }
