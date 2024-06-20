@@ -30,7 +30,9 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
+			data["threaten_level"] = model.ThreatenLevel
 			data["auto_white_switch"] = model.AutoWhiteSwitch
+			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright
 			data["signature"] = model.Signature
@@ -68,7 +70,9 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
+			data["threaten_level"] = model.ThreatenLevel
 			data["auto_white_switch"] = model.AutoWhiteSwitch
+			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright
 			data["signature"] = model.Signature

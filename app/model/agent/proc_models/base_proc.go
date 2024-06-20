@@ -27,41 +27,45 @@ type RepeatCalc struct {
 
 // ProcessAndRunning 进程和运行中标
 type ProcessAndRunning struct {
-	Id              string `json:"id"`
-	AgentId         string `json:"agent_id"`
-	ProcHash        string `json:"proc_hash"`
-	Status          int    `json:"status"`
-	SyncStatusAt    int64  `json:"sync_status_at"`
-	GlobalStatus    int    `json:"global_status"`
-	SelfStatus      int    `json:"self_status"`
-	ThreatenStatus  int    `json:"threaten_status"`
-	AutoWhiteSwitch int    `json:"auto_white_switch"`
-	Introduce       string `json:"introduce"`
-	Copyright       string `json:"copyright"`
-	Signature       string `json:"signature"`
-	CreatedAt       string `json:"created_at"`
-	ProcId          int    `json:"proc_id"`
-	ProcDir         string `json:"proc_dir"`
-	ProcUser        string `json:"proc_user"`
+	Id                  string `json:"id"`
+	AgentId             string `json:"agent_id"`
+	ProcHash            string `json:"proc_hash"`
+	Status              int    `json:"status"`
+	SyncStatusAt        int64  `json:"sync_status_at"`
+	GlobalStatus        int    `json:"global_status"`
+	SelfStatus          int    `json:"self_status"`
+	ThreatenStatus      int    `json:"threaten_status"`
+	ThreatenLevel       int    `json:"threaten_level"`
+	AutoWhiteSwitch     int    `json:"auto_white_switch"`
+	GrantThreatenSwitch int    `json:"grant_threaten_switch"`
+	Introduce           string `json:"introduce"`
+	Copyright           string `json:"copyright"`
+	Signature           string `json:"signature"`
+	CreatedAt           string `json:"created_at"`
+	ProcId              int    `json:"proc_id"`
+	ProcDir             string `json:"proc_dir"`
+	ProcUser            string `json:"proc_user"`
 }
 
 // DllAndRunning 进程和运行中标
 type DllAndRunning struct {
-	Id              string `json:"id"`
-	AgentId         string `json:"agent_id"`
-	DllHash         string `json:"dll_hash"`
-	DllDir          string `json:"dll_dir"`
-	Status          int    `json:"status"`
-	SyncStatusAt    int64  `json:"sync_status_at"`
-	GlobalStatus    int    `json:"global_status"`
-	SelfStatus      int    `json:"self_status"`
-	ThreatenStatus  int    `json:"threaten_status"`
-	AutoWhiteSwitch int    `json:"auto_white_switch"`
-	Introduce       string `json:"introduce"`
-	Copyright       string `json:"copyright"`
-	Signature       string `json:"signature"`
-	Attribute       string `json:"attribute"`
-	CreatedAt       string `json:"created_at"`
+	Id                  string `json:"id"`
+	AgentId             string `json:"agent_id"`
+	DllHash             string `json:"dll_hash"`
+	DllDir              string `json:"dll_dir"`
+	Status              int    `json:"status"`
+	SyncStatusAt        int64  `json:"sync_status_at"`
+	GlobalStatus        int    `json:"global_status"`
+	SelfStatus          int    `json:"self_status"`
+	ThreatenStatus      int    `json:"threaten_status"`
+	ThreatenLevel       int    `json:"threaten_level"`
+	AutoWhiteSwitch     int    `json:"auto_white_switch"`
+	GrantThreatenSwitch int    `json:"grant_threaten_switch"`
+	Introduce           string `json:"introduce"`
+	Copyright           string `json:"copyright"`
+	Signature           string `json:"signature"`
+	Attribute           string `json:"attribute"`
+	CreatedAt           string `json:"created_at"`
 }
 
 type SearchConditions struct {
