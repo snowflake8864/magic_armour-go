@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/plug_service"
 	"goskeleton/app/service/agent/port_service"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
@@ -402,22 +403,66 @@ func (u *PlugController) DynamicDeleteBatchForPolicy(ctx *gin.Context) {
 
 // ConfigPortGetForGlobal 全局策略 - 端口虚开
 func (u *PlugController) ConfigPortGetForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	model := OrgExtendFact.GetItemByOrg(loginInfo.OrgId)
+	response.SuccessReturnData(ctx, OrgExtendFact.FormatPlugPortConfig(model.PlugPortConfig))
 }
 
 // ConfigPortSetForGlobal 全局策略 - 端口虚开
 func (u *PlugController) ConfigPortSetForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	config := enum_plug.PlugPortConfig{
+		Switch:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Weight:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "weight")),
+		Type:      int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		CountTime: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "countTime")),
+		PlugTime:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "plugTime")),
+	}
+	if err := organize_service.CreateOrgExtendFactory().SetPlugOfPort(loginInfo.OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	//用户管理的终端
+	if err, agentIds := u.getCurrUserAgentIds(loginInfo); err == nil {
+		_ = agent_service.CreateExtendFactory().BatchSetPlugOfPort(loginInfo.OrgId, agentIds, config)
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // ConfigLoginGetForGlobal 全局策略 - 口令破解
 func (u *PlugController) ConfigLoginGetForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	model := OrgExtendFact.GetItemByOrg(loginInfo.OrgId)
+	response.SuccessReturnData(ctx, OrgExtendFact.FormatPlugLoginConfig(model.PlugLoginConfig))
 }
 
 // ConfigLoginSetForGlobal 全局策略 - 口令破解
 func (u *PlugController) ConfigLoginSetForGlobal(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	config := enum_plug.PlugLoginConfig{
+		Switch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Type:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		PlugTime: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "plugTime")),
+	}
+	if err := organize_service.CreateOrgExtendFactory().SetPlugOfLogin(loginInfo.OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	//用户管理的终端
+	if err, agentIds := u.getCurrUserAgentIds(loginInfo); err == nil {
+		_ = agent_service.CreateExtendFactory().BatchSetPlugOfLogin(loginInfo.OrgId, agentIds, config)
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // IpPageForGlobal 全局策略 - ip名单库: 分页

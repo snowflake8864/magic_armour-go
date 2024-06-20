@@ -85,13 +85,9 @@ func (u *ControllerBase) getCurrUserAgentIds(loginInfo user_service.UserCacheLog
 	conditions.OrgId = loginInfo.OrgId
 	conditions.DeptIds = loginInfo.DeptWithChild
 	AgentFact := agent_models.CreateAgentFactory()
-	agentModels := AgentFact.GetListByConditions(conditions, AgentFact.ColumnSimplify())
-	if agentModels == nil || len(agentModels) == 0 {
+	agentIds := AgentFact.GetIdsByByConditions(conditions)
+	if agentIds == nil || len(agentIds) == 0 {
 		return errors.New("没有需要管理的终端"), nil
-	}
-	var agentIds []string
-	for _, model := range agentModels {
-		agentIds = append(agentIds, model.AgentId)
 	}
 	return nil, agentIds
 }

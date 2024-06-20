@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 终端扩展表
@@ -15,6 +16,7 @@ func CreateExtendFactory() *ExtendModel {
 //结构体
 
 type ExtendModel struct {
+	baseAgent
 	model.BaseModel
 	AgentId          string `json:"id" gorm:"primaryKey;column:id"`
 	OrgId            int64  `json:"org_id"`
@@ -90,6 +92,23 @@ func (m *ExtendModel) UpdateByOrgAndAgent(orgId int64, agentId string, updates m
 func (m *ExtendModel) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Updates(updates)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// UpdateByConditions 通过条件修改
+func (m *ExtendModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

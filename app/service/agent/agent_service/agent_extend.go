@@ -84,6 +84,24 @@ func (crd *AgentExtend) SetPlugOfPort(orgId int64, agentId string, config enum_p
 	}
 }
 
+// BatchSetPlugOfPort 批量设置封堵配置： 端口虚开
+func (crd *AgentExtend) BatchSetPlugOfPort(orgId int64, agentIds []string, config enum_plug.PlugPortConfig) error {
+	conditions := agent_models.SearchConditions{
+		OrgId:    orgId,
+		AgentIds: agentIds,
+	}
+
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_port_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
 // SetPlugOfLogin 设置封堵配置： 口令破解
 func (crd *AgentExtend) SetPlugOfLogin(orgId int64, agentId string, config enum_plug.PlugLoginConfig) error {
 	config.Format()
@@ -91,6 +109,24 @@ func (crd *AgentExtend) SetPlugOfLogin(orgId int64, agentId string, config enum_
 	updates["plug_login_config"] = json_helper.Encode(config)
 
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// BatchSetPlugOfLogin 批量设置封堵配置：  口令破解
+func (crd *AgentExtend) BatchSetPlugOfLogin(orgId int64, agentIds []string, config enum_plug.PlugLoginConfig) error {
+	conditions := agent_models.SearchConditions{
+		OrgId:    orgId,
+		AgentIds: agentIds,
+	}
+
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_login_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
 		return nil
 	} else {
 		return errors.New("保存失败")

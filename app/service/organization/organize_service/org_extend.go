@@ -1,6 +1,7 @@
 package organize_service
 
 import (
+	"errors"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_safety_report"
@@ -47,8 +48,11 @@ func (crd *OrgExtend) DeleteByOrg(orgId int64) bool {
 }
 
 // GetItemByOrg 通过企业编号获取
-func (crd *OrgExtend) GetItemByOrg(orgId int64) (model *organization_models.ExtendModel) {
-	model, _ = crd.masterModel.GetItemById(orgId)
+func (crd *OrgExtend) GetItemByOrg(orgId int64) *organization_models.ExtendModel {
+	model, _ := crd.masterModel.GetItemById(orgId)
+	if model == nil {
+		model = &organization_models.ExtendModel{}
+	}
 	return model
 }
 
@@ -61,8 +65,8 @@ func (crd *OrgExtend) FormatPlugPortConfig(configJson string) (data enum_plug.Pl
 	return data
 }
 
-// FormatLoginSolveConfig 格式化：封堵-口令破解配置
-func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login_solve.LoginSolveConfig) {
+// FormatPlugLoginConfig 格式化：封堵-口令破解配置
+func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.PlugLoginConfig) {
 	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
@@ -70,8 +74,8 @@ func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login
 	return data
 }
 
-// FormatPlugLoginConfig 格式化：封堵-口令破解配置
-func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.PlugLoginConfig) {
+// FormatLoginSolveConfig 格式化：封堵-口令破解配置
+func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login_solve.LoginSolveConfig) {
 	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
@@ -95,4 +99,30 @@ func (crd *OrgExtend) FormatHardwareNoticeConfig(configJson string) (data enum_s
 		data.Format()
 	}
 	return data
+}
+
+// SetPlugOfPort 设置封堵配置： 端口虚开
+func (crd *OrgExtend) SetPlugOfPort(orgId int64, config enum_plug.PlugPortConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_port_config"] = json_helper.Encode(config)
+
+	if crd.masterModel.UpdateById(orgId, updates) {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// SetPlugOfLogin 设置封堵配置： 口令破解
+func (crd *OrgExtend) SetPlugOfLogin(orgId int64, config enum_plug.PlugLoginConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["plug_login_config"] = json_helper.Encode(config)
+
+	if crd.masterModel.UpdateById(orgId, updates) {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
 }
