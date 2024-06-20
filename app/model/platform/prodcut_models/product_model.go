@@ -72,7 +72,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲测试授权",
 			GrantType:   enum_product.TypeTest,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       0.00,
 			Remark:      "",
 			IsPublish:   enums.IsYes,
@@ -81,7 +81,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲企业版（终端）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":0,\"login\":0,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":0,\"login\":0,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       40.00,
 			Remark:      "支持功能：可信防护、外设管理、通讯日志、外联管控、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -90,7 +90,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲企业版（服务器）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":0,\"login\":0,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":0,\"login\":0,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       120.00,
 			Remark:      "支持功能：可信防护、外设管理、通讯日志、外联管控、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -99,7 +99,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       80.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -108,7 +108,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       240.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。",
 			IsPublish:   enums.IsYes,
@@ -117,7 +117,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       880.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、防篡改、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改模块。",
 			IsPublish:   enums.IsYes,
@@ -126,7 +126,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       1040.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改模块。",
 			IsPublish:   enums.IsYes,
@@ -135,7 +135,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       880.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
@@ -144,7 +144,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       1040.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
@@ -153,7 +153,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       880.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+动态封堵。",
 			IsPublish:   enums.IsYes,
@@ -162,7 +162,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":0,\"blackmail\":0,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       1040.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+动态封堵。",
 			IsPublish:   enums.IsYes,
@@ -171,7 +171,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       1680.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
@@ -180,7 +180,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改+勒索防护",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":0,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       1840.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。",
 			IsPublish:   enums.IsYes,
@@ -189,7 +189,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（终端）+防篡改+勒索防护+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       2480.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。\n+动态封堵",
 			IsPublish:   enums.IsYes,
@@ -198,7 +198,7 @@ func (m *ProductModel) InitData() bool {
 		{
 			Title:       "幻甲旗舰版（服务器）+防篡改+勒索防护+动态封堵",
 			GrantType:   enum_product.TypeGold,
-			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1}",
+			GrantModule: "{\"process\":1,\"tamper\":1,\"blackmail\":1,\"port\":1,\"login\":1,\"plug\":1,\"usb\":1,\"outreach\":1,\"syslog\":1,\"threaten\":1}",
 			Price:       2640.00,
 			Remark:      "支持功能：威胁情报模块、可信防护、端口虚开、口令破解防护、外设管理、外联管控、通讯日志、安全报告、安全通知等。\n+防篡改。\n+勒索防护。\n+动态封堵",
 			IsPublish:   enums.IsYes,
