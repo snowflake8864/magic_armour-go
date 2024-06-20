@@ -28,3 +28,7 @@ type Ids struct {
 type DeptId struct {
 	DeptId int `form:"deptId" json:"deptId"`
 }
+
+type IpPlug struct {
+	PlugIp string `form:"plugIp" json:"plugIp" binding:"omitempty,ip"`
+}

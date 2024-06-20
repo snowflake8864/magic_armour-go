@@ -13,6 +13,7 @@ import (
 type GlobalDynamicDisabledPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
+	IpPlug
 }
 
 func (n GlobalDynamicDisabledPage) CheckParams(context *gin.Context) {

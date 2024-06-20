@@ -10,13 +10,9 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
-	"goskeleton/app/model/agent/port_models"
-	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/plug_service"
-	"goskeleton/app/service/agent/port_service"
 	"goskeleton/app/service/organization/organize_service"
-	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -355,7 +351,7 @@ func (u *PlugController) DynamicDisableBatchForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgentAndIds(&param, u.getIdsOfInt64(ctx)); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableByAgentAndIds(&param, u.getIdsOfInt64(ctx)); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -576,34 +572,35 @@ func (u *PlugController) IpClearForGlobal(ctx *gin.Context, ipType int) {
 func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
-	condition := port_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
+	condition := plug_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OpenSwitch: &openSwitch,
+		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := port_models.CreateVirtualGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := plug_models.CreateDynamicFactory().Page(condition, offset, pageSize, order)
 
-	//获取组织架构
-	departmentMaps := map[int64]*department_models.DepartmentModel{}
-	if models != nil && len(models) > 0 {
-		var deptIds []int64
+	var agentIds []string
+	var agentMap = make(map[string]*agent_models.AgentModel)
+	if models != nil || len(models) > 0 {
 		for _, model := range models {
-			if model.DeptId > 0 {
-				deptIds = append(deptIds, model.DeptId)
-			}
+			agentIds = append(agentIds, model.AgentId)
 		}
-		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
+		AgentFact := agent_models.CreateAgentFactory()
+		agentMap = AgentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(total, models, agentMap, nil))
 }
 
 // DynamicDisableForGlobal 全局策略 - 动态封堵: 解封
 func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -611,7 +608,7 @@ func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableById(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -621,15 +618,15 @@ func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
 // DynamicDisableBatchForGlobal 全局策略 - 动态封堵: 批量解封
 func (u *PlugController) DynamicDisableBatchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-
-	param := port_models.VirtualPolicyModel{
+	agentIds := u.getAgentIdsFromGin(ctx)
+	ids := u.getIdsOfInt64(ctx)
+	param := plug_models.DynamicModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DisableByAgentsAndIds(&param, ids, agentIds); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -640,7 +637,7 @@ func (u *PlugController) DynamicDisableBatchForGlobal(ctx *gin.Context) {
 func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := port_models.VirtualPolicyModel{
+	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
 		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
@@ -648,7 +645,7 @@ func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteById(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -658,15 +655,15 @@ func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
 // DynamicDeleteBatchForGlobal 全局策略 - 动态封堵: 批量删除
 func (u *PlugController) DynamicDeleteBatchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-
-	param := port_models.VirtualPolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
+	agentIds := u.getAgentIdsFromGin(ctx)
+	ids := u.getIdsOfInt64(ctx)
+	param := plug_models.DynamicModel{
 		OrgId:      loginInfo.OrgId,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := plug_service.CreatePolicyDynamicCurdFactory().DeleteByAgentsAndIds(&param, ids, agentIds); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
