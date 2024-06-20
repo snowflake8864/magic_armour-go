@@ -525,6 +525,43 @@ func InitOrganizationRouter() *gin.Engine {
 						}
 					}
 				} //动态封堵
+
+				//外接设备
+				usb := vOrg.Group("usb/")
+				{
+					public := usb.Group("public/")
+					{
+						public.POST("status", (&organization.TamperController{}).FilePower)
+						public.POST("searchStatus", (&organization.TamperController{}).FolderPower)
+					}
+					manage := usb.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbManageSetSwitch"))
+						manage.POST("setMode", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbManageSetMode"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbManageBatchSetConfig"))
+					}
+					policy := usb.Group("policy/")
+					{
+						policy.POST("pageRunning", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyPageRunning"))
+						policy.POST("pageHistory", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyPageHistory"))
+						policy.POST("pageLog", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyPageLog"))
+						policy.POST("setWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetWhite"))
+						policy.POST("setBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetBlack"))
+						policy.POST("setAlias", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetAlias"))
+						policy.POST("addGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyAddGlobal"))
+						policy.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyRefresh"))
+						policy.POST("hasUpload", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyHasUpload"))
+					}
+					global := usb.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalPage"))
+						policy.POST("setWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetWhite"))
+						policy.POST("setBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetBlack"))
+						policy.POST("setAlias", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetAlias"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalDelete"))
+					}
+				} //外接设备
 			}
 
 		}

@@ -29,6 +29,8 @@ type GlobalModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	UpdateId   int64  `json:"update_id"`
+	UpdateName string `json:"update_name"`
 	UpdatedAt  string `json:"updated_at"`
 }
 
@@ -54,8 +56,9 @@ func (m *GlobalModel) CreateTable() bool {
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
+			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
 			updated_at datetime NULL,
-			INDEX index_id (id) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id,id) 
