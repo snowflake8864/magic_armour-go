@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
@@ -31,6 +32,7 @@ func (t *Dll) TransMasterPage(total int64, models []*proc_models.DllModel) inter
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.ThreatenLevel, enum_threaten.EnumMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -69,6 +71,7 @@ func (t *Dll) TransRunningPage(total int64, models []*proc_models.DllAndRunning)
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.ThreatenLevel, enum_threaten.EnumMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
