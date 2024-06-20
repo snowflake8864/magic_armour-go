@@ -54,7 +54,7 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 
 	//威胁情报状态
 	isExist := false
-	if isExist, processModel.ThreatenStatus = crd.getThreatenStatus(processModel.ProcHash); !isExist {
+	if isExist, processModel.ThreatenStatus, processModel.ThreatenLevel = crd.getThreatenStatus(processModel.ProcHash); !isExist {
 		//加入威胁情报缓存
 		crd.pushThreaten(processModel, agentModel.OsName)
 	}

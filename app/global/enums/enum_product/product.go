@@ -22,6 +22,7 @@ const (
 	ModuleSyslog    string = "syslog"    //模块:通信日志
 	ModuleOutreach  string = "outreach"  //模块:外联
 	ModuleLogin     string = "login"     //模块:登录口令破解
+	ModuleThreaten  string = "threaten"  //模块:威胁情报
 )
 
 var EnumIntMap = map[string]map[int]string{
@@ -46,6 +47,7 @@ var EnumStrMap = map[string]map[string]string{
 		ModuleSyslog:    "通信日志",
 		ModuleOutreach:  "外联管控",
 		ModuleLogin:     "口令破解",
+		ModuleThreaten:  "威胁情报",
 	},
 }
 
@@ -66,6 +68,7 @@ var WebMapStr = map[string][]string{
 		ModuleSyslog,
 		ModuleOutreach,
 		ModuleLogin,
+		ModuleThreaten,
 	},
 }
 
@@ -80,6 +83,7 @@ type ProductGrantConfig struct {
 	Syslog    int `json:"syslog"`
 	Outreach  int `json:"outreach"`
 	Login     int `json:"login"`
+	Threaten  int `json:"threaten"`
 }
 
 func (c *ProductGrantConfig) Default() {
@@ -128,6 +132,11 @@ func (c *ProductGrantConfig) Default() {
 	} else {
 		c.Login = enums.IsYes
 	}
+	if c.Threaten == 0 {
+		c.Threaten = enums.IsNot
+	} else {
+		c.Threaten = enums.IsYes
+	}
 }
 
 // Json2Config json转配置
@@ -167,6 +176,9 @@ func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
 	}
 	if c.Login == enums.IsYes {
 		txtList = append(txtList, "口令破解")
+	}
+	if c.Threaten == enums.IsYes {
+		txtList = append(txtList, "威胁情报")
 	}
 	return txtList
 }

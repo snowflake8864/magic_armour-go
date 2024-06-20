@@ -13,17 +13,17 @@ type ProcessBase struct {
 }
 
 // getThreatenStatus 获取威胁情报状态
-func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, status int) {
-	isExist, level := threaten_models.CreateCacheFactory().GetLevelById(hash)
+func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenStatus int, threatenLevel int) {
+	isExist, threatenLevel = threaten_models.CreateCacheFactory().GetLevelById(hash)
 	if !isExist {
-		return isExist, enum_process.RelyStatusUnset
+		return isExist, enum_process.RelyStatusUnset, threatenLevel
 	}
-	if enum_threaten.IsWhite(level) {
-		return isExist, enum_process.RelyStatusWhite
-	} else if enum_threaten.IsBlack(level) {
-		return isExist, enum_process.RelyStatusBlack
+	if enum_threaten.IsWhite(threatenLevel) {
+		return isExist, enum_process.RelyStatusWhite, threatenLevel
+	} else if enum_threaten.IsBlack(threatenLevel) {
+		return isExist, enum_process.RelyStatusBlack, threatenLevel
 	} else {
-		return isExist, enum_process.RelyStatusUnset
+		return isExist, enum_process.RelyStatusUnset, threatenLevel
 	}
 }
 

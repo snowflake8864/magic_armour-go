@@ -2,6 +2,7 @@ package job_callback_proc
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/agent_models"
@@ -40,6 +41,7 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	}
 	dllModel.Dir = path_helper.ToStandard(dllModel.Dir)
 	dllModel.ProcDir = path_helper.ToStandard(dllModel.ProcDir)
+	dllModel.GrantThreatenSwitch = enums.SwitchOn
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)
@@ -55,7 +57,7 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 
 	//威胁情报状态
 	isExist := false
-	if isExist, dllModel.ThreatenStatus = crd.getThreatenStatus(dllModel.DllHash); !isExist {
+	if isExist, dllModel.ThreatenStatus, dllModel.ThreatenLevel = crd.getThreatenStatus(dllModel.DllHash); !isExist {
 		//加入威胁情报缓存
 		crd.pushThreaten(dllModel, agentModel.OsName)
 	}

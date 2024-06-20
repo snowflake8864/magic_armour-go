@@ -16,10 +16,10 @@ const (
 	ProcStatusWhite   int = 4 //状态： 白名单
 	ProcStatusBlack   int = 8 //状态： 黑名单
 
-	RelyStatusUnset   int = 0 //(self_status,threaten_status,global_status)状态： 未设置
-	RelyStatusWhite   int = 1 //(self_status,threaten_status,global_status)状态： 白名单
-	RelyStatusBlack   int = 2 //(self_status,threaten_status,global_status)状态： 黑名单
-	RelyStatusUnknown int = 3 //(self_status,threaten_status,global_status)状态： 未知
+	RelyStatusUnset   int = 0 //(self_status,global_status)状态： 未设置
+	RelyStatusWhite   int = 1 //(self_status,global_status)状态： 白名单
+	RelyStatusBlack   int = 2 //(self_status,global_status)状态： 黑名单
+	RelyStatusUnknown int = 3 //(self_status,global_status)状态： 未知
 
 	AllStatusUnset         int = 1   //状态： 未设置
 	AllStatusUnknown       int = 2   //状态： 未知

@@ -19,24 +19,26 @@ func CreateDllFactory() *DllModel {
 type DllModel struct {
 	baseProc
 	model.BaseModel
-	Id              string `json:"id" gorm:"primaryKey"`
-	OrgId           int64  `json:"org_id"`
-	AgentId         string `json:"agent_id"`
-	DllHash         string `json:"dll_hash"`
-	Dir             string `json:"dir"`
-	Status          int    `json:"status"`
-	SyncStatusAt    int64  `json:"sync_status_at"`
-	GlobalStatus    int    `json:"global_status"`
-	SelfStatus      int    `json:"self_status"`
-	ThreatenStatus  int    `json:"threaten_status"`
-	AutoWhiteSwitch int    `json:"auto_white_switch"`
-	Introduce       string `json:"introduce"`
-	Copyright       string `json:"copyright"`
-	Signature       string `json:"signature"`
-	Attribute       string `json:"attribute"`
-	ProcHash        string `json:"proc_hash"`
-	ProcDir         string `json:"proc_dir"`
-	CreatedAt       string `json:"created_at"`
+	Id                  string `json:"id" gorm:"primaryKey"`
+	OrgId               int64  `json:"org_id"`
+	AgentId             string `json:"agent_id"`
+	DllHash             string `json:"dll_hash"`
+	Dir                 string `json:"dir"`
+	Status              int    `json:"status"`
+	SyncStatusAt        int64  `json:"sync_status_at"`
+	GlobalStatus        int    `json:"global_status"`
+	SelfStatus          int    `json:"self_status"`
+	ThreatenStatus      int    `json:"threaten_status"`
+	ThreatenLevel       int    `json:"threaten_level"`
+	AutoWhiteSwitch     int    `json:"auto_white_switch"`
+	GrantThreatenSwitch int    `json:"grant_threaten_switch"`
+	Introduce           string `json:"introduce"`
+	Copyright           string `json:"copyright"`
+	Signature           string `json:"signature"`
+	Attribute           string `json:"attribute"`
+	ProcHash            string `json:"proc_hash"`
+	ProcDir             string `json:"proc_dir"`
+	CreatedAt           string `json:"created_at"`
 }
 
 // 表名
@@ -58,8 +60,10 @@ func (m *DllModel) CreateTable() bool {
 			sync_status_at int NOT NULL DEFAULT '0' COMMENT '同步状态时间(黑白名单下发agent用)',
 			global_status tinyint NOT NULL DEFAULT '0' COMMENT '在全局名单中(0未设置 1白名单 2黑名单)',
 			self_status tinyint NOT NULL DEFAULT '0' COMMENT '本身状态(0未设置 1白名单 2黑名单)',
-			threaten_status tinyint NOT NULL DEFAULT '0' COMMENT '在威胁情报中心中(0未设置 1白名单 2黑名单)',
-			auto_white_switch tinyint NOT NULL DEFAULT '0' COMMENT '冗余的agent.auto_white_switch',
+			threaten_status tinyint NOT NULL DEFAULT '0' COMMENT '在威胁情报中状态',
+			threaten_level tinyint NOT NULL DEFAULT '0' COMMENT '威胁情报等级(冗余threaten_cache.level)',
+			auto_white_switch tinyint NOT NULL DEFAULT '0' COMMENT '自动白名单开关(冗余agent.auto_white_switch)',
+			grant_threaten_switch tinyint NOT NULL DEFAULT '0' COMMENT '授权威胁情报开关(冗余agent.grant_config)',
 			introduce varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:描述',
 			copyright varchar(256)  NOT NULL DEFAULT '' COMMENT '模块:版权',
 			signature varchar(512)  NOT NULL DEFAULT '' COMMENT '模块:签名',
