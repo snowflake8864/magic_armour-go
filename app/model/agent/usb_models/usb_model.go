@@ -149,6 +149,24 @@ func (m *UsbModel) GetItemByOrgAndAgentAndHash(orgId int64, agentId, hash string
 	}
 }
 
+// GetItemByConditions 通过id获取一条记录
+func (m *UsbModel) GetItemByConditions(condition SearchConditions) (item *UsbModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
 // GetListByConditions 获取符合条件的全部记录
 func (m *UsbModel) GetListByConditions(condition SearchConditions) (items []*UsbModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
@@ -208,4 +226,37 @@ func (m *UsbModel) Page(condition SearchConditions, offset, limit int, order str
 	} else {
 		return 0, nil
 	}
+}
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *UsbModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*Calc) {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
+func (m *UsbModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]*Calc {
+	var result = make(map[string]*Calc)
+
+	items := m.CalcByConditionsGroupAgent(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.AgentId] = item
+	}
+
+	return result
 }

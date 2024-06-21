@@ -531,8 +531,7 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					public := usb.Group("public/")
 					{
-						public.POST("status", (&organization.TamperController{}).FilePower)
-						public.POST("searchStatus", (&organization.TamperController{}).FolderPower)
+						public.POST("status", (&organization.UsbController{}).EditStatus)
 					}
 					manage := usb.Group("manage/")
 					{

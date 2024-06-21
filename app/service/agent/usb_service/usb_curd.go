@@ -1,9 +1,12 @@
 package usb_service
 
 import (
+	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/enums/enum_usb"
 	"goskeleton/app/model/agent/usb_models"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
@@ -19,6 +22,15 @@ func CreateUsbCurdFactory() *UsbCurd {
 type UsbCurd struct {
 	masterModel *usb_models.UsbModel
 	logModel    *usb_models.LogModel
+}
+
+// 新增任务
+func (crd *UsbCurd) addTask(orgId int64, agentId string, remark string) {
+	tasks := []int{
+		enum_task.TypeUsbWhiteDownload,
+		enum_task.TypeUsbBlackDownload,
+	}
+	task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, tasks, remark)
 }
 
 // 终端下线设备
@@ -208,4 +220,69 @@ func (crd *UsbCurd) DelByOrgAndAgent(orgId int64, agentId string) bool {
 		AgentId: agentId,
 	}
 	return crd.masterModel.DeleteByConditions(search)
+}
+
+// Edit 修改
+func (crd *UsbCurd) Edit(param *usb_models.UsbModel) error {
+	param.UpdatedAt = date_helper.CurDatetime()
+
+	//验证数据
+	hashModel := crd.masterModel.GetItemByConditions(usb_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
+	})
+	if hashModel == nil || hashModel.OrgId == 0 {
+		return errors.New("数据不存在")
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	updates["alias"] = param.Alias
+	updates["remark"] = param.Remark
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
+	updates["updated_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(usb_models.SearchConditions{
+		OrgId:   hashModel.OrgId,
+		AgentId: param.AgentId,
+		Id:      hashModel.Id,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
+
+	return nil
+}
+
+// SetStatus 设置状态
+func (crd *UsbCurd) SetStatus(param *usb_models.UsbModel) error {
+
+	//验证数据
+	hashModel := crd.masterModel.GetItemByConditions(usb_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
+	})
+	if hashModel == nil || hashModel.OrgId == 0 {
+		return errors.New("数据不存在")
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	updates["status"] = param.Status
+	updates["update_id"] = param.UpdateId
+	updates["update_name"] = param.UpdateName
+	updates["updated_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(usb_models.SearchConditions{
+		OrgId:   hashModel.OrgId,
+		AgentId: param.AgentId,
+		Id:      hashModel.Id,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
+
+	//新增任务
+	crd.addTask(hashModel.OrgId, hashModel.AgentId, "全局:修改状态")
+
+	return nil
 }

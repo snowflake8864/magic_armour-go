@@ -20,3 +20,10 @@ var EnumMapInt = map[string]map[int]string{
 		PlugStatusIn:  "插入",
 	},
 }
+
+var WebMapInt = map[string][]int{
+	"edit_status": {
+		StatusWhite,
+		StatusBlack,
+	},
+}

@@ -5,15 +5,15 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
-	"goskeleton/app/global/enums/enum_tamper"
+	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/enums/enum_usb"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/tamper_models"
-	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/agent/tamper_service"
-	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/agent/usb_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -22,17 +22,10 @@ type UsbController struct {
 	ControllerBase
 }
 
-// FilePower 文件权限
-func (u *UsbController) FilePower(ctx *gin.Context) {
-	keys := enums.Get1stIsStrReturnSliceOfInt("power_file", enum_tamper.WebMapInt)
-	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
-}
-
-// FolderPower 文件夹权限
-func (u *UsbController) FolderPower(ctx *gin.Context) {
-	keys := enums.Get1stIsStrReturnSliceOfInt("power_folder", enum_tamper.WebMapInt)
-	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
+// EditStatus 编辑状态
+func (u *UsbController) EditStatus(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("edit_status", enum_usb.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_usb.EnumMapInt)
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
@@ -57,11 +50,11 @@ func (u *UsbController) PageForManage(ctx *gin.Context) {
 	var extendInfo = make(map[string]interface{})
 	if len(agentIds) > 0 {
 		//规则统计数据
-		PolicyFact := tamper_models.CreatePolicyFactory()
-		calcPolicy := PolicyFact.CalcByConditionsGroupAgentReturnMap(tamper_models.SearchConditions{
+		PolicyFact := usb_models.CreateUsbFactory()
+		calcPolicy := PolicyFact.CalcByConditionsGroupAgentReturnMap(usb_models.SearchConditions{
 			OrgId:    u.getLogin(ctx).OrgId,
 			AgentIds: agentIds,
-		}, PolicyFact.ColumnCalc(true))
+		}, PolicyFact.ColumnCalc())
 
 		for _, agentModel := range agentModels {
 			gg := map[string]interface{}{
@@ -70,7 +63,9 @@ func (u *UsbController) PageForManage(ctx *gin.Context) {
 			}
 			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
 				gg["total_number"] = item.TotalNumber
-				gg["on_number"] = item.OnNumber
+				gg["white_number"] = item.WhiteNumber
+				gg["black_number"] = item.BlackNumber
+				gg["unset_number"] = item.UnsetNumber
 
 			}
 			extendInfo[agentModel.AgentId] = gg
@@ -137,33 +132,26 @@ func (u *UsbController) BatchSetConfigForManage(ctx *gin.Context) {
 func (u *UsbController) PageForLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	condition := tamper_models.SearchConditions{
+	condition := usb_models.SearchConditions{
 		OrgId:   loginInfo.OrgId,
 		AgentId: u.getAgentIdFromGin(ctx),
+		UsbHash: ctx.GetString(consts.ValidatorPrefixOrg + "id"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := tamper_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := usb_models.CreateLogFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.Usb{}).TransLogPage(total, models))
 }
 
 // HasUploadForPolicy 终端策略: 是否上传
 func (u *UsbController) HasUploadForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
-	param := tamper_models.PolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
-		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
-
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
-		response.FailSimplify(ctx, err.Error())
+	if !task_service.CreateCacheFactory().ExistUnfinished(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload) {
+		response.FailSimplify(ctx, "请继续等待")
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -172,20 +160,9 @@ func (u *UsbController) HasUploadForPolicy(ctx *gin.Context) {
 // RefreshForPolicy 终端策略: 刷新
 func (u *UsbController) RefreshForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
-	param := tamper_models.PolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
-		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
-
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
-		response.FailSimplify(ctx, err.Error())
-		return
-	}
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload, "刷新")
 	response.SuccessSimplify(ctx)
 }
 
@@ -193,32 +170,33 @@ func (u *UsbController) RefreshForPolicy(ctx *gin.Context) {
 func (u *UsbController) PageForPolicy(ctx *gin.Context, isOnline int) {
 	loginInfo := u.getLogin(ctx)
 
-	condition := tamper_models.SearchConditions{
-		OrgId:   loginInfo.OrgId,
-		AgentId: u.getAgentIdFromGin(ctx),
+	condition := usb_models.SearchConditions{
+		OrgId:    loginInfo.OrgId,
+		AgentId:  u.getAgentIdFromGin(ctx),
+		IsOnline: &isOnline,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := tamper_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
+	total, models := usb_models.CreateUsbFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.Usb{}).TransPolicyPage(total, models))
 }
 
 // SetStatusForPolicy 终端策略: 设置状态
 func (u *UsbController) SetStatusForPolicy(ctx *gin.Context, status int) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.PolicyModel{
+	param := usb_models.UsbModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Status:     status,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := usb_service.CreateUsbCurdFactory().SetStatus(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -229,16 +207,17 @@ func (u *UsbController) SetStatusForPolicy(ctx *gin.Context, status int) {
 func (u *UsbController) SetAliasForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.PolicyModel{
+	param := usb_models.UsbModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Alias:      ctx.GetString(consts.ValidatorPrefixOrg + "alias"),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := usb_service.CreateUsbCurdFactory().Edit(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -249,65 +228,55 @@ func (u *UsbController) SetAliasForPolicy(ctx *gin.Context) {
 func (u *UsbController) PageForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
-	condition := tamper_models.SearchConditions{
+	condition := usb_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := tamper_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := usb_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
 
-	//获取组织架构
-	departmentMaps := map[int64]*department_models.DepartmentModel{}
-	if models != nil && len(models) > 0 {
-		var deptIds []int64
-		for _, model := range models {
-			if model.DeptId > 0 {
-				deptIds = append(deptIds, model.DeptId)
-			}
-		}
-		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
-	}
-
-	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.Usb{}).TransGlobalPage(total, models))
 }
 
 // AddForGlobal 全局策略: 添加
 func (u *UsbController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := tamper_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		CreateId:     loginInfo.UserId,
-		CreateName:   loginInfo.Username,
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := usb_models.GlobalModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Status:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
+		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+		Type:       ctx.GetString(consts.ValidatorPrefixOrg + "type"),
+		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
+		Alias:      ctx.GetString(consts.ValidatorPrefixOrg + "alias"),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreateGlobalCurdFactory().Add(&param); err != nil {
+	if err := usb_service.CreateGlobalCurdFactory().Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// / SetStatusForGlobal 终端策略: 设置状态
+// SetStatusForGlobal 终端策略: 设置状态
 func (u *UsbController) SetStatusForGlobal(ctx *gin.Context, status int) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.PolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
+	param := usb_models.GlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Status:     status,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := usb_service.CreateGlobalCurdFactory().SetStatus(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -318,16 +287,16 @@ func (u *UsbController) SetStatusForGlobal(ctx *gin.Context, status int) {
 func (u *UsbController) SetAliasForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.PolicyModel{
-		AgentId:    u.getAgentIdFromGin(ctx),
+	param := usb_models.GlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Alias:      ctx.GetString(consts.ValidatorPrefixOrg + "alias"),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := usb_service.CreateGlobalCurdFactory().Edit(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -338,15 +307,14 @@ func (u *UsbController) SetAliasForGlobal(ctx *gin.Context) {
 func (u *UsbController) DeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := tamper_models.GlobalModel{
-		OrgId:        loginInfo.OrgId,
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
-		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		UpdateId:     loginInfo.UserId,
-		UpdateName:   loginInfo.Username,
+	param := usb_models.GlobalModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
 	}
 
-	if err := tamper_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := usb_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
