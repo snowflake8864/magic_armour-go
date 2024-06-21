@@ -149,6 +149,46 @@ func (u *UsbController) PageForLog(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
 }
 
+// HasUploadForPolicy 终端策略: 是否上传
+func (u *UsbController) HasUploadForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.PolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// RefreshForPolicy 终端策略: 刷新
+func (u *UsbController) RefreshForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := tamper_models.PolicyModel{
+		AgentId:    u.getAgentIdFromGin(ctx),
+		OrgId:      loginInfo.OrgId,
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := tamper_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // PageForPolicy 终端策略: 分页
 func (u *UsbController) PageForPolicy(ctx *gin.Context, isOnline int) {
 	loginInfo := u.getLogin(ctx)
@@ -233,7 +273,7 @@ func (u *UsbController) PageForGlobal(ctx *gin.Context) {
 }
 
 // AddForGlobal 全局策略: 添加
-func (u *UsbController) AddForGlobal(ctx *gin.Context) error {
+func (u *UsbController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
@@ -248,9 +288,10 @@ func (u *UsbController) AddForGlobal(ctx *gin.Context) error {
 	}
 
 	if err := tamper_service.CreateGlobalCurdFactory().Add(&param); err != nil {
-		return err
+		response.FailSimplify(ctx, err.Error())
+		return
 	}
-	return nil
+	response.SuccessSimplify(ctx)
 }
 
 // / SetStatusForGlobal 终端策略: 设置状态

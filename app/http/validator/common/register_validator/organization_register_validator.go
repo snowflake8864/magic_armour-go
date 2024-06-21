@@ -19,6 +19,7 @@ import (
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 	threaten3 "goskeleton/app/http/validator/organization/threaten"
 	trustDir3 "goskeleton/app/http/validator/organization/trust_dir"
+	usb3 "goskeleton/app/http/validator/organization/usb"
 	user3 "goskeleton/app/http/validator/organization/user"
 )
 
@@ -395,7 +396,6 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.ManageSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "PlugManageBatchSetConfig"
 	containers.Set(key, plug3.ManageBatchSetConfig{})
-
 	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigPortGet"
 	containers.Set(key, plug3.PolicyConfigPortGet{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyConfigPortSet"
@@ -440,7 +440,6 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, plug3.PolicyIpBlackDelete{})
 	key = consts.ValidatorPrefixOrg + "PlugPolicyIpBlackClear"
 	containers.Set(key, plug3.PolicyIpBlackClear{})
-
 	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigPortGet"
 	containers.Set(key, plug3.GlobalConfigPortGet{})
 	key = consts.ValidatorPrefixOrg + "PlugGlobalConfigPortSet"
@@ -486,4 +485,41 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "PlugGlobalIpBlackClear"
 	containers.Set(key, plug3.GlobalIpBlackClear{})
 
+	//外接设备
+	key = consts.ValidatorPrefixOrg + "UsbManagePage"
+	containers.Set(key, usb3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "UsbManageSetSwitch"
+	containers.Set(key, usb3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "UsbManageSetMode"
+	containers.Set(key, usb3.ManageSetMode{})
+	key = consts.ValidatorPrefixOrg + "UsbManageBatchSetConfig"
+	containers.Set(key, usb3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyPageRunning"
+	containers.Set(key, usb3.PolicyPageRunning{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyPageHistory"
+	containers.Set(key, usb3.PolicyPageHistory{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyPageLog"
+	containers.Set(key, usb3.PolicyPageLog{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicySetWhite"
+	containers.Set(key, usb3.PolicySetWhite{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicySetBlack"
+	containers.Set(key, usb3.PolicySetBlack{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicySetAlias"
+	containers.Set(key, usb3.PolicySetAlias{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyRefresh"
+	containers.Set(key, usb3.PolicyRefresh{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyHasUpload"
+	containers.Set(key, usb3.PolicyHasUpload{})
+	key = consts.ValidatorPrefixOrg + "UsbPolicyAddGlobal"
+	containers.Set(key, usb3.GlobalAdd{})
+	key = consts.ValidatorPrefixOrg + "UsbGlobalPage"
+	containers.Set(key, usb3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "UsbGlobalSetWhite"
+	containers.Set(key, usb3.GlobalSetWhite{})
+	key = consts.ValidatorPrefixOrg + "UsbGlobalSetBlack"
+	containers.Set(key, usb3.GlobalSetBlack{})
+	key = consts.ValidatorPrefixOrg + "UsbGlobalSetAlias"
+	containers.Set(key, usb3.GlobalSetAlias{})
+	key = consts.ValidatorPrefixOrg + "UsbGlobalDelete"
+	containers.Set(key, usb3.GlobalDelete{})
 }

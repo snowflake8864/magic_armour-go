@@ -4,16 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/organization"
-	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
-	"goskeleton/app/http/validator/organization/agent_common_data"
 	"goskeleton/app/utils/response"
 )
 
 type GlobalSetAlias struct {
-	data_type.AgentSingle
 	Id
-	agent_common_data.CommonSwitch
+	AliasSet
 }
 
 func (n GlobalSetAlias) CheckParams(context *gin.Context) {
@@ -30,7 +27,7 @@ func (n GlobalSetAlias) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[organization usb  GlobalSetAlias]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&organization.TamperController{}).SetSwitchForPolicy(extraAddBindDataContext)
+		(&organization.UsbController{}).SetAliasForGlobal(extraAddBindDataContext)
 	}
 
 }

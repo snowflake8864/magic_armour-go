@@ -12,3 +12,8 @@ type AliasSet struct {
 	Alias  string `form:"alias" json:"alias" binding:"required,max=128"`
 	Remark string `form:"remark" json:"remark" binding:"omitempty,max=128"`
 }
+
+type AddGlobal struct {
+	Type  string `form:"type" json:"type"`
+	Intro string `form:"intro" json:"intro"`
+}

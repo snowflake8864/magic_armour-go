@@ -549,16 +549,16 @@ func InitOrganizationRouter() *gin.Engine {
 						policy.POST("setWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetWhite"))
 						policy.POST("setBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetBlack"))
 						policy.POST("setAlias", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicySetAlias"))
-						policy.POST("addGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyAddGlobal"))
 						policy.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyRefresh"))
 						policy.POST("hasUpload", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyHasUpload"))
+						policy.POST("addGlobal", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbPolicyAddGlobal"))
 					}
 					global := usb.Group("global/")
 					{
 						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalPage"))
-						policy.POST("setWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetWhite"))
-						policy.POST("setBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetBlack"))
-						policy.POST("setAlias", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetAlias"))
+						global.POST("setWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetWhite"))
+						global.POST("setBlack", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetBlack"))
+						global.POST("setAlias", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalSetAlias"))
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalDelete"))
 					}
 				} //外接设备

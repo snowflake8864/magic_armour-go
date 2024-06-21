@@ -26,13 +26,13 @@ func (crd *UsbPost) Save(orgId int64, agentId, inputJson string) error {
 	if len(params) > 0 {
 		for _, item := range params {
 			model := usb_models.UsbModel{
-				UsbHash: strings.ToLower(item.PeripheralEid),
-				Name:    item.PeripheralName,
-				Intro:   item.PeripheralIntro,
-				Type:    item.PeripheralType,
+				Id:    strings.ToLower(item.PeripheralEid),
+				Name:  item.PeripheralName,
+				Intro: item.PeripheralIntro,
+				Type:  item.PeripheralType,
 			}
 			models = append(models, model)
-			usbHashList = append(usbHashList, model.UsbHash)
+			usbHashList = append(usbHashList, model.Id)
 		}
 	}
 

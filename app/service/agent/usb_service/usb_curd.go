@@ -3,7 +3,6 @@ package usb_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_usb"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -25,17 +24,18 @@ type UsbCurd struct {
 // 终端下线设备
 func (crd *UsbCurd) getOnlineMapByAgent(orgId int64, agentId string) map[string]*usb_models.UsbModel {
 	maps := make(map[string]*usb_models.UsbModel)
+	IsOnline := enums.IsYes
 	condition := usb_models.SearchConditions{
 		OrgId:    orgId,
 		AgentId:  agentId,
-		IsOnline: enums.IsYes,
+		IsOnline: &IsOnline,
 	}
 	models := crd.masterModel.GetListByConditions(condition)
 	if models == nil || len(models) == 0 {
 		return maps
 	}
 	for _, model := range models {
-		maps[model.UsbHash] = model
+		maps[model.Id] = model
 	}
 	return maps
 }
@@ -44,17 +44,16 @@ func (crd *UsbCurd) getOnlineMapByAgent(orgId int64, agentId string) map[string]
 func (crd *UsbCurd) getMapByHashes(orgId int64, agentId string, hashList []string) map[string]*usb_models.UsbModel {
 	maps := make(map[string]*usb_models.UsbModel)
 	condition := usb_models.SearchConditions{
-		OrgId:       orgId,
-		AgentId:     agentId,
-		UsbHashList: hashList,
-		IsOnline:    enums.AllDefaultInt,
+		OrgId:   orgId,
+		AgentId: agentId,
+		IdList:  hashList,
 	}
 	models := crd.masterModel.GetListByConditions(condition)
 	if models == nil || len(models) == 0 {
 		return maps
 	}
 	for _, model := range models {
-		maps[model.UsbHash] = model
+		maps[model.Id] = model
 	}
 	return maps
 }
@@ -62,9 +61,8 @@ func (crd *UsbCurd) getMapByHashes(orgId int64, agentId string, hashList []strin
 // 设置终端全部设备离线
 func (crd *UsbCurd) setOfflineByAgent(orgId int64, agentId string) {
 	condition := usb_models.SearchConditions{
-		OrgId:    orgId,
-		AgentId:  agentId,
-		IsOnline: enums.AllDefaultInt,
+		OrgId:   orgId,
+		AgentId: agentId,
 	}
 	updates := map[string]interface{}{
 		"is_online": enums.IsNot,
@@ -75,7 +73,7 @@ func (crd *UsbCurd) initLog(orgId int64, agentId, at string, plugStatus int, usb
 	return usb_models.LogModel{
 		OrgId:      orgId,
 		AgentId:    agentId,
-		UsbHash:    strings.ToLower(usbModel.UsbHash),
+		UsbHash:    strings.ToLower(usbModel.Id),
 		Name:       usbModel.Name,
 		Status:     usbModel.Status,
 		PlugStatus: plugStatus,
@@ -86,10 +84,9 @@ func (crd *UsbCurd) initLog(orgId int64, agentId, at string, plugStatus int, usb
 // 设置设备名称并上线
 func (crd *UsbCurd) setNameByHash(orgId int64, agentId, hash string, param usb_models.UsbModel) {
 	condition := usb_models.SearchConditions{
-		OrgId:    orgId,
-		AgentId:  agentId,
-		UsbHash:  hash,
-		IsOnline: enums.AllDefaultInt,
+		OrgId:   orgId,
+		AgentId: agentId,
+		UsbHash: hash,
 	}
 	updates := map[string]interface{}{
 		"name":      param.Name,
@@ -103,10 +100,9 @@ func (crd *UsbCurd) setNameByHash(orgId int64, agentId, hash string, param usb_m
 // 设置设备上线
 func (crd *UsbCurd) setOnlineByHashes(orgId int64, agentId string, hashes []string) {
 	condition := usb_models.SearchConditions{
-		OrgId:       orgId,
-		AgentId:     agentId,
-		UsbHashList: hashes,
-		IsOnline:    enums.AllDefaultInt,
+		OrgId:   orgId,
+		AgentId: agentId,
+		IdList:  hashes,
 	}
 	updates := map[string]interface{}{
 		"is_online": enums.IsYes,
@@ -161,7 +157,7 @@ func (crd *UsbCurd) BatchAdd(orgId int64, agentId string, hashList []string, par
 		//获取存在设备
 		existsMap := crd.getMapByHashes(orgId, agentId, hashList)
 		for _, curModel := range params {
-			hash := strings.ToLower(curModel.UsbHash)
+			hash := strings.ToLower(curModel.Id)
 			//本次上传设备存在
 			if hasModel, isOk := existsMap[hash]; isOk {
 				//如果设备名称不为空，则更新设备信息 @todo bug7675
@@ -171,10 +167,9 @@ func (crd *UsbCurd) BatchAdd(orgId int64, agentId string, hashList []string, par
 			} else {
 				//新增设备信息
 				masters = append(masters, usb_models.UsbModel{
-					Id:        variable.SnowFlake.GetId(),
+					Id:        hash,
 					OrgId:     orgId,
 					AgentId:   agentId,
-					UsbHash:   hash,
 					Name:      curModel.Name,
 					Intro:     curModel.Intro,
 					Type:      curModel.Type,
@@ -201,8 +196,7 @@ func (crd *UsbCurd) BatchAdd(orgId int64, agentId string, hashList []string, par
 // DelByOrg 删除：企业
 func (crd *UsbCurd) DelByOrg(orgId int64) bool {
 	search := usb_models.SearchConditions{
-		OrgId:    orgId,
-		IsOnline: enums.AllDefaultInt,
+		OrgId: orgId,
 	}
 	return crd.masterModel.DeleteByConditions(search)
 }
@@ -210,9 +204,8 @@ func (crd *UsbCurd) DelByOrg(orgId int64) bool {
 // DelByOrgAndAgent 删除：企业和终端
 func (crd *UsbCurd) DelByOrgAndAgent(orgId int64, agentId string) bool {
 	search := usb_models.SearchConditions{
-		OrgId:    orgId,
-		AgentId:  agentId,
-		IsOnline: enums.AllDefaultInt,
+		OrgId:   orgId,
+		AgentId: agentId,
 	}
 	return crd.masterModel.DeleteByConditions(search)
 }
