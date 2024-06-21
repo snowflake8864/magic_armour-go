@@ -581,12 +581,18 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 	//查询条件
 	condition := plug_models.SearchConditions{
 		OrgId:      loginInfo.OrgId,
-		AgentId:    u.getAgentIdFromGin(ctx),
 		OpenSwitch: &openSwitch,
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
 	}
-	if !string_helper.IsEmpty(condition.AgentId) && !slice_helper.StringIn(condition.AgentId, agentIds) {
-		response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+	agentId := u.getAgentIdFromGin(ctx)
+	if !string_helper.IsEmpty(agentId) {
+		if slice_helper.StringIn(agentId, agentIds) {
+			condition.AgentId = agentId
+		} else {
+			response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+		}
+	} else {
+		condition.AgentIds = agentIds
 	}
 
 	//分页参数和排序参数
