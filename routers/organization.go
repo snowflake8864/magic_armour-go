@@ -623,6 +623,15 @@ func InitOrganizationRouter() *gin.Engine {
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManagePage"))
 						manage.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManageClear"))
 						manage.POST("batchClear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManageBatchClear"))
+						manage.POST("agentStat", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManageAgentStat"))
+					}
+
+					process1 := alarm.Group("process/")
+					{
+						process1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessPage"))
+						process1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessHandle"))
+						process1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessHandleAll"))
+						process1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessClear"))
 					}
 
 				} //告警
