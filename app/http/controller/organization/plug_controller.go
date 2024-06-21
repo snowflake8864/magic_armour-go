@@ -579,20 +579,21 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 		OpenSwitch: &openSwitch,
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
 	}
-
-	err, agentIds := u.getCurrUserAgentIds(loginInfo)
+	//用户管理的终端
+	err, userAgentIds := u.getCurrUserAgentIds(loginInfo)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
 	}
+	//查询终端比较用户管理的终端
 	agentId := u.getAgentIdFromGin(ctx)
 	if !string_helper.IsEmpty(agentId) {
-		if slice_helper.StringIn(agentId, agentIds) {
+		if slice_helper.StringIn(agentId, userAgentIds) {
 			condition.AgentId = agentId
 		} else {
 			response.FailSimplify(ctx, "数据为空")
 		}
 	} else {
-		condition.AgentIds = agentIds
+		condition.AgentIds = userAgentIds
 	}
 
 	//分页参数和排序参数
@@ -601,6 +602,7 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 	total, models := plug_models.CreateDynamicFactory().Page(condition, offset, pageSize, order)
 
 	var agentMap = make(map[string]*agent_models.AgentModel)
+	var agentIds []string
 	if models != nil || len(models) > 0 {
 		for _, model := range models {
 			agentIds = append(agentIds, model.AgentId)
