@@ -189,3 +189,36 @@ func (m *LoginModel) Page(condition SearchConditions, offset, limit int, order s
 		return 0, nil
 	}
 }
+
+// CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
+func (m *LoginModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*AlarmCalc) {
+
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Group("agent_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按终端分组
+func (m *LoginModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[string]*AlarmCalc {
+	var result = make(map[string]*AlarmCalc)
+
+	items := m.CalcByConditionsGroupAgent(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.AgentId] = item
+	}
+
+	return result
+}
