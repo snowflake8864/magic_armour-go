@@ -12,6 +12,7 @@ import (
 type PolicyPageLog struct {
 	data_type.Page
 	data_type.AgentSingle
+	Id
 }
 
 func (n PolicyPageLog) CheckParams(context *gin.Context) {

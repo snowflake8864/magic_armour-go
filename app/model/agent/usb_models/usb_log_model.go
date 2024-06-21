@@ -133,7 +133,7 @@ func (m *LogModel) GetItemsByConditions(condition SearchConditions, offset, limi
 func (m *LogModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select("id")
+		tmp := tx.Model(m).Select("*")
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}
