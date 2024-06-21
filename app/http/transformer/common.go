@@ -2,6 +2,7 @@ package transformer
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -132,4 +133,38 @@ func (t *Common) GetDeptFullname(id int64, departments map[int64]*department_mod
 		result = append(result, "组织架构已删除")
 		return result
 	}
+}
+
+// AppendAgentInfo 追加终端信息
+func (t *Common) AppendAgentInfo(agentId string, agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
+	var data = make(map[string]interface{})
+	//终端信息
+	data["host_name"] = ""
+	data["mac_id"] = ""
+	data["agent_ip"] = ""
+	data["net_ip"] = ""
+	data["os_name"] = ""
+	data["contact_name"] = ""
+	data["contact_tel"] = ""
+	data["alias"] = ""
+	data["dept_id"] = 0
+	data["dept_fullname"] = []interface{}{}
+	if agentModel, isOK := agentModels[agentId]; isOK {
+		data["host_name"] = agentModel.HostName
+		data["mac_id"] = agentModel.MacId
+		data["agent_ip"] = agentModel.AgentIp
+		data["net_ip"] = agentModel.NetIp
+		data["os_name"] = agentModel.OsName
+		data["contact_name"] = agentModel.ContactName
+		data["contact_tel"] = agentModel.ContactTel
+		data["alias"] = agentModel.Alias
+
+		if departments != nil && len(departments) > 0 {
+			if deptModel, ok := departments[agentModel.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+				data["dept_id"] = deptModel.Id
+				data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
+			}
+		}
+	}
+	return data
 }
