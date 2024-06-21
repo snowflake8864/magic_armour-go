@@ -573,16 +573,16 @@ func (u *PlugController) IpClearForGlobal(ctx *gin.Context, ipType int) {
 // DynamicPageForGlobal 全局策略 - 动态封堵: 分页
 func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
-	err, agentIds := u.getCurrUserAgentIds(loginInfo)
-	if err != nil {
-		response.FailSimplify(ctx, err.Error())
-	}
-
 	//查询条件
 	condition := plug_models.SearchConditions{
 		OrgId:      loginInfo.OrgId,
 		OpenSwitch: &openSwitch,
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
+	}
+
+	err, agentIds := u.getCurrUserAgentIds(loginInfo)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 	}
 	agentId := u.getAgentIdFromGin(ctx)
 	if !string_helper.IsEmpty(agentId) {
