@@ -575,7 +575,7 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 	loginInfo := u.getLogin(ctx)
 	err, agentIds := u.getCurrUserAgentIds(loginInfo)
 	if err != nil {
-		response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+		response.FailSimplify(ctx, err.Error())
 	}
 
 	//查询条件
@@ -589,7 +589,7 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 		if slice_helper.StringIn(agentId, agentIds) {
 			condition.AgentId = agentId
 		} else {
-			response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+			response.FailSimplify(ctx, "数据为空")
 		}
 	} else {
 		condition.AgentIds = agentIds
