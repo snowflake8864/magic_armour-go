@@ -202,3 +202,8 @@ func (u *ControllerBase) isBelongUserDepartment(isRoot int, manageDeptIds *[]int
 	}
 	return nil
 }
+
+func (u *ControllerBase) getAgentMap(orgId int64, agentIds []string) map[string]*agent_models.AgentModel {
+	AgentFact := agent_models.CreateAgentFactory()
+	return AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
+}

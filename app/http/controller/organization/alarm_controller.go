@@ -182,10 +182,6 @@ func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-func (u *AlarmController) getAgentCondition(ctx *gin.Context) {
-
-}
-
 // PageForAlarm 进程告警: 分页
 func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	loginInfo := u.getLogin(ctx)
@@ -213,20 +209,20 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
+	var agentMap = make(map[string]*agent_models.AgentModel)
+	var agentIds []string
 	switch module {
 	case enum_alarm.ModuleProcess:
 		fact := alarm_models.CreateProcessFactory()
 		total, models := fact.Page(condition, offset, pageSize, order)
 
-		var agentMap = make(map[string]*agent_models.AgentModel)
-		var agentIds []string
 		if models != nil || len(models) > 0 {
 			for _, model := range models {
 				agentIds = append(agentIds, model.AgentId)
 			}
-			AgentFact := agent_models.CreateAgentFactory()
-			agentMap = AgentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, agentIds, AgentFact.ColumnBasic(true, false))
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransProcessPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleDll:
 		fact := alarm_models.CreateDllFactory()
