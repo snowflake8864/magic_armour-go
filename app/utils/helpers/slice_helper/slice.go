@@ -162,3 +162,13 @@ func Int64RemoveRepeatByMap(slc []int64) []int64 {
 	}
 	return result
 }
+
+// StringIn 是否存在
+func StringIn(s string, slc []string) bool {
+	for _, e := range slc {
+		if e == s {
+			return true
+		}
+	}
+	return false
+}

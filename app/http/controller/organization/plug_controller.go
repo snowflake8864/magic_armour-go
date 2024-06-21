@@ -13,6 +13,8 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/plug_service"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -571,6 +573,11 @@ func (u *PlugController) IpClearForGlobal(ctx *gin.Context, ipType int) {
 // DynamicPageForGlobal 全局策略 - 动态封堵: 分页
 func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) {
 	loginInfo := u.getLogin(ctx)
+	err, agentIds := u.getCurrUserAgentIds(loginInfo)
+	if err != nil {
+		response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+	}
+
 	//查询条件
 	condition := plug_models.SearchConditions{
 		OrgId:      loginInfo.OrgId,
@@ -578,12 +585,15 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 		OpenSwitch: &openSwitch,
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
 	}
+	if !string_helper.IsEmpty(condition.AgentId) && !slice_helper.StringIn(condition.AgentId, agentIds) {
+		response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(0, nil, nil, nil))
+	}
+
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	total, models := plug_models.CreateDynamicFactory().Page(condition, offset, pageSize, order)
 
-	var agentIds []string
 	var agentMap = make(map[string]*agent_models.AgentModel)
 	if models != nil || len(models) > 0 {
 		for _, model := range models {
