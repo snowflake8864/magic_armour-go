@@ -232,6 +232,8 @@ func (u *UsbController) PageForGlobal(ctx *gin.Context) {
 	//查询条件
 	condition := usb_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
+		Id:    ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		Alias: ctx.GetString(consts.ValidatorPrefixOrg + "alias"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")

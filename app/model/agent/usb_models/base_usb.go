@@ -18,6 +18,7 @@ type SearchConditions struct {
 	UsbHash  string
 	Status   int
 	IsOnline *int
+	Alias    string
 }
 
 // Calc 统计
@@ -82,7 +83,13 @@ func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_c
 			Key: "usb_hash",
 			Val: condition.UsbHash,
 		})
+	}
 
+	if !string_helper.IsEmpty(condition.Alias) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "alias",
+			Val: condition.Alias,
+		})
 	}
 
 	if condition.Status > 0 {

@@ -50,7 +50,7 @@ func (m *UsbModel) CreateTable() bool {
 			name varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:名称',
 			intro varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:简介',
 			type varchar(512)  NOT NULL DEFAULT '' COMMENT '设备:类型',
-			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(0默认 1信任 2禁止)',
+			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1默认 2信任 3禁止)',
 			is_online tinyint NOT NULL DEFAULT '0' COMMENT '是否在线(0离线 1在线)',
 			alias varchar(256)  NOT NULL DEFAULT '' COMMENT '别名',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',

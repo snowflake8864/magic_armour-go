@@ -11,6 +11,8 @@ import (
 
 type GlobalPage struct {
 	data_type.Page
+	Id    string `form:"id" json:"id" binding:"omitempty,min=6,max=32"`
+	Alias string `form:"alias" json:"alias" binding:"omitempty,max=128"`
 }
 
 func (n GlobalPage) CheckParams(context *gin.Context) {
