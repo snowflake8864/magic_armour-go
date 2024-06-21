@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -9,7 +10,10 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -94,6 +98,56 @@ func (u *AlarmController) PageForManage(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, nil))
 }
 
+// AgentStatForManage 管理页: 终端告警统计
+func (u *AlarmController) AgentStatForManage(ctx *gin.Context) {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    u.getLogin(ctx).OrgId,
+		AgentIds: u.getAgentIdsFromGin(ctx),
+	}
+	module := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "module"))
+
+	var calcList []*alarm_models.AlarmCalc
+	switch module {
+	case enum_alarm.ModuleProcess:
+		fact := alarm_models.CreateProcessFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleDll:
+		fact := alarm_models.CreateDllFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleTamper:
+		fact := alarm_models.CreateTamperFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleBlackmail:
+		fact := alarm_models.CreateBlackmailFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModulePort:
+		fact := alarm_models.CreatePortFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModulePlug:
+		fact := alarm_models.CreatePlugFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleOutreach:
+		fact := alarm_models.CreateOutreachFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleLogin:
+		fact := alarm_models.CreateLoginFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	case enum_alarm.ModuleSelf:
+		fact := alarm_models.CreateSelfFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
+	}
+	response.SuccessReturnData(ctx, calcList)
+}
+
 // ClearForManage 管理页: 清空
 func (u *AlarmController) ClearForManage(ctx *gin.Context) {
 	agentIds := []string{
@@ -126,4 +180,79 @@ func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
 		return
 	}
 	response.SuccessSimplify(ctx)
+}
+
+func (u *AlarmController) getAgentCondition(ctx *gin.Context) {
+
+}
+
+// PageForAlarm 进程告警: 分页
+func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
+	loginInfo := u.getLogin(ctx)
+	condition := alarm_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+
+	//用户管理的终端
+	err, userAgentIds := u.getCurrUserAgentIds(loginInfo)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+	}
+	//查询终端比较用户管理的终端
+	agentId := u.getAgentIdFromGin(ctx)
+	if !string_helper.IsEmpty(agentId) {
+		if slice_helper.StringIn(agentId, userAgentIds) {
+			condition.AgentId = agentId
+		} else {
+			response.FailSimplify(ctx, "数据为空")
+		}
+	} else {
+		condition.AgentIds = userAgentIds
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	switch module {
+	case enum_alarm.ModuleProcess:
+		fact := alarm_models.CreateProcessFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		var agentMap = make(map[string]*agent_models.AgentModel)
+		var agentIds []string
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			AgentFact := agent_models.CreateAgentFactory()
+			agentMap = AgentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, agentIds, AgentFact.ColumnBasic(true, false))
+		}
+		break
+	case enum_alarm.ModuleDll:
+		fact := alarm_models.CreateDllFactory()
+		break
+	case enum_alarm.ModuleTamper:
+		fact := alarm_models.CreateTamperFactory()
+		break
+	case enum_alarm.ModuleBlackmail:
+		fact := alarm_models.CreateBlackmailFactory()
+		break
+	case enum_alarm.ModulePort:
+		fact := alarm_models.CreatePortFactory()
+		break
+	case enum_alarm.ModulePlug:
+		fact := alarm_models.CreatePlugFactory()
+		break
+	case enum_alarm.ModuleOutreach:
+		fact := alarm_models.CreateOutreachFactory()
+		break
+	case enum_alarm.ModuleLogin:
+		fact := alarm_models.CreateLoginFactory()
+		break
+	case enum_alarm.ModuleSelf:
+		fact := alarm_models.CreateSelfFactory()
+		break
+	default:
+		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
+	}
 }
