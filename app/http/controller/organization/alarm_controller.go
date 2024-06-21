@@ -182,7 +182,7 @@ func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// PageForAlarm 进程告警: 分页
+// PageForAlarm 告警: 分页
 func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	loginInfo := u.getLogin(ctx)
 	condition := alarm_models.SearchConditions{
@@ -323,4 +323,19 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
 	}
+}
+
+// HandleForAlarm 告警: 处理
+func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
+
+}
+
+// HandleAllForAlarm 告警: 处理全部
+func (u *AlarmController) HandleAllForAlarm(ctx *gin.Context, module int) {
+
+}
+
+// ClearForAlarm 告警: 清空
+func (u *AlarmController) ClearForAlarm(ctx *gin.Context, module int) {
+
 }
