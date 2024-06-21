@@ -10,6 +10,7 @@ import (
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
+	loginSolve3 "goskeleton/app/http/validator/organization/login_solve"
 	outreach3 "goskeleton/app/http/validator/organization/outreach"
 	plug3 "goskeleton/app/http/validator/organization/plug"
 	port3 "goskeleton/app/http/validator/organization/port"
@@ -539,4 +540,19 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, outreach3.GlobalEdit{})
 	key = consts.ValidatorPrefixOrg + "OutreachGlobalDelete"
 	containers.Set(key, outreach3.GlobalDelete{})
+
+	//口令破解
+	key = consts.ValidatorPrefixOrg + "LoginSolveManagePage"
+	containers.Set(key, loginSolve3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "LoginSolveManageSetSwitch"
+	containers.Set(key, loginSolve3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "LoginSolveManageBatchSetConfig"
+	containers.Set(key, loginSolve3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "LoginSolvePolicyConfigGet"
+	containers.Set(key, loginSolve3.PolicyConfigGet{})
+	key = consts.ValidatorPrefixOrg + "LoginSolvePolicyConfigSet"
+	containers.Set(key, loginSolve3.PolicyConfigSet{})
+	key = consts.ValidatorPrefixOrg + "LoginSolveGlobalConfigSet"
+	containers.Set(key, loginSolve3.GlobalConfigSet{})
+
 }

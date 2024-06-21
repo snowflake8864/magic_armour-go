@@ -74,7 +74,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/process/manage/setSwitch":        {ModuleProcess, "管理页：开关"},
 	"/v5/organization/process/manage/setMode":          {ModuleProcess, "管理页：模式"},
-	"/v5/organization/process/manage/batchSetConfig":   {ModuleProcess, "管理页：批量设置配置"},
+	"/v5/organization/process/manage/batchSetConfig":   {ModuleProcess, "管理页：批量配置"},
 	"/v5/organization/process/manage/batchSetWhite":    {ModuleProcess, "管理页：未设置批量白名单"},
 	"/v5/organization/process/manage/batchRefresh":     {ModuleProcess, "管理页：批量获刷新"},
 	"/v5/organization/process/manage/batchCollect":     {ModuleProcess, "管理页：批量获取所有进程"},
@@ -95,7 +95,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/dll/manage/setSwitch":       {ModuleDll, "管理页：开关"},
 	"/v5/organization/dll/manage/setMode":         {ModuleDll, "管理页：模式"},
-	"/v5/organization/dll/manage/batchSetConfig":  {ModuleDll, "管理页：批量设置配置"},
+	"/v5/organization/dll/manage/batchSetConfig":  {ModuleDll, "管理页：批量配置"},
 	"/v5/organization/dll/manage/batchSetWhite":   {ModuleDll, "管理页：未设置批量白名单"},
 	"/v5/organization/dll/manage/batchRefresh":    {ModuleDll, "管理页：批量获刷新"},
 	"/v5/organization/dll/manage/batchCollect":    {ModuleDll, "管理页：批量获取所有"},
@@ -119,7 +119,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/tamper/manage/setSwitch":      {ModuleTamper, "管理页：开关"},
 	"/v5/organization/tamper/manage/setMode":        {ModuleTamper, "管理页：模式"},
-	"/v5/organization/tamper/manage/batchSetConfig": {ModuleTamper, "管理页：批量设置配置"},
+	"/v5/organization/tamper/manage/batchSetConfig": {ModuleTamper, "管理页：批量配置"},
 	"/v5/organization/tamper/policy/addFolder":      {ModuleTamper, "终端策略：添加目录策略"},
 	"/v5/organization/tamper/policy/addFile":        {ModuleTamper, "终端策略：添加文件策略"},
 	"/v5/organization/tamper/policy/editFolder":     {ModuleTamper, "终端策略：编辑目录策略"},
@@ -135,7 +135,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/blackmail/manage/setSwitch":      {ModuleBlackmail, "管理页：开关"},
 	"/v5/organization/blackmail/manage/setMode":        {ModuleBlackmail, "管理页：模式"},
-	"/v5/organization/blackmail/manage/batchSetConfig": {ModuleBlackmail, "管理页：批量设置配置"},
+	"/v5/organization/blackmail/manage/batchSetConfig": {ModuleBlackmail, "管理页：批量配置"},
 	"/v5/organization/blackmail/policy/add":            {ModuleBlackmail, "终端策略：添加"},
 	"/v5/organization/blackmail/policy/edit":           {ModuleBlackmail, "终端策略：编辑"},
 	"/v5/organization/blackmail/policy/setSwitch":      {ModuleBlackmail, "终端策略：开关"},
@@ -149,7 +149,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/blackmail/group/delete":          {ModuleBlackmail, "文件类型组：删除"},
 
 	"/v5/organization/port/manage/setSwitch":      {ModulePort, "管理页：开关"},
-	"/v5/organization/port/manage/batchSetConfig": {ModulePort, "管理页：批量设置配置"},
+	"/v5/organization/port/manage/batchSetConfig": {ModulePort, "管理页：批量配置"},
 	"/v5/organization/port/policy/add":            {ModulePort, "终端策略：添加"},
 	"/v5/organization/port/policy/edit":           {ModulePort, "终端策略：编辑"},
 	"/v5/organization/port/policy/setSwitch":      {ModulePort, "终端策略：开关"},
@@ -161,7 +161,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/port/working/refresh":       {ModulePort, "终端正常业务端口：刷新"},
 
 	"/v5/organization/plug/manage/setSwitch":            {ModulePlug, "管理页：开关"},
-	"/v5/organization/plug/manage/batchSetConfig":       {ModulePlug, "管理页：批量设置配置"},
+	"/v5/organization/plug/manage/batchSetConfig":       {ModulePlug, "管理页：批量配置"},
 	"/v5/organization/plug/policy/configPort/set":       {ModulePlug, "终端-端口虚开封堵策略：保存"},
 	"/v5/organization/plug/policy/configLogin/set":      {ModulePlug, "终端-口令破解封堵策略：保存"},
 	"/v5/organization/plug/policy/ipWhite/add":          {ModulePlug, "终端-IP白名单：添加"},
@@ -197,7 +197,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/usb/manage/setSwitch":      {ModuleUsb, "管理页：开关"},
 	"/v5/organization/usb/manage/setMode":        {ModuleUsb, "管理页：模式"},
-	"/v5/organization/usb/manage/batchSetConfig": {ModuleUsb, "管理页：批量设置配置"},
+	"/v5/organization/usb/manage/batchSetConfig": {ModuleUsb, "管理页：批量配置"},
 	"/v5/organization/usb/policy/setAlias":       {ModuleUsb, "终端策略：设置别名"},
 	"/v5/organization/usb/policy/setWhite":       {ModuleUsb, "终端策略：信任"},
 	"/v5/organization/usb/policy/setBlack":       {ModuleUsb, "终端策略：禁止"},
@@ -209,12 +209,17 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/usb/global/delete":         {ModuleUsb, "全局策略：删除"},
 
 	"/v5/organization/outreach/manage/setSwitch":      {ModuleOutreach, "管理页：开关"},
-	"/v5/organization/outreach/manage/batchSetConfig": {ModuleOutreach, "管理页：批量设置配置"},
+	"/v5/organization/outreach/manage/batchSetConfig": {ModuleOutreach, "管理页：批量配置"},
 	"/v5/organization/outreach/global/add":            {ModuleOutreach, "全局策略：添加"},
 	"/v5/organization/outreach/global/fastAdd":        {ModuleOutreach, "全局策略：快捷添加"},
 	"/v5/organization/outreach/global/edit":           {ModuleOutreach, "全局策略：编辑"},
 	"/v5/organization/outreach/global/setSwitch":      {ModuleOutreach, "全局策略：开关"},
 	"/v5/organization/outreach/global/delete":         {ModuleOutreach, "全局策略：删除"},
+
+	"/v5/organization/loginSolve/manage/setSwitch":      {ModuleLoginSolve, "管理页：开关"},
+	"/v5/organization/loginSolve/manage/batchSetConfig": {ModuleLoginSolve, "管理页：批量配置"},
+	"/v5/organization/loginSolve/policyConfig/set":      {ModuleLoginSolve, "终端策略：保存"},
+	"/v5/organization/loginSolve/globalConfig/set":      {ModuleLoginSolve, "全局策略：保存"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

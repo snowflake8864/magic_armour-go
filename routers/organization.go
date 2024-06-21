@@ -581,6 +581,28 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalDelete"))
 					}
 				} //外接设备
+
+				//口令破解
+				loginSolve := vOrg.Group("loginSolve/")
+				{
+					manage := loginSolve.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolveManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolveManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolveManageBatchSetConfig"))
+					}
+					policyConfig := loginSolve.Group("policyConfig/")
+					{
+						policyConfig.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolvePolicyConfigGet"))
+						policyConfig.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolvePolicyConfigSet"))
+					}
+					globalConfig := loginSolve.Group("globalConfig/")
+					{
+						globalConfig.POST("get", (&organization.LoginSolveController{}).ConfigGetForGlobal)
+						globalConfig.POST("set", validatorFactory.Create(consts.ValidatorPrefixOrg+"LoginSolveGlobalConfigSet"))
+
+					}
+				} //口令破解
 			}
 
 		}

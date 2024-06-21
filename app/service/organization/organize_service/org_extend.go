@@ -74,7 +74,7 @@ func (crd *OrgExtend) FormatPlugLoginConfig(configJson string) (data enum_plug.P
 	return data
 }
 
-// FormatLoginSolveConfig 格式化：封堵-口令破解配置
+// FormatLoginSolveConfig 格式化：口令破解配置
 func (crd *OrgExtend) FormatLoginSolveConfig(configJson string) (data enum_login_solve.LoginSolveConfig) {
 	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
@@ -119,6 +119,19 @@ func (crd *OrgExtend) SetPlugOfLogin(orgId int64, config enum_plug.PlugLoginConf
 	config.Format()
 	updates := make(map[string]interface{})
 	updates["plug_login_config"] = json_helper.Encode(config)
+
+	if crd.masterModel.UpdateById(orgId, updates) {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// SetLoginSolve 设置口令破解配置配置
+func (crd *OrgExtend) SetLoginSolve(orgId int64, config enum_login_solve.LoginSolveConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["login_solve_config"] = json_helper.Encode(config)
 
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil

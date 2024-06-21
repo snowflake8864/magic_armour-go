@@ -49,6 +49,37 @@ func (crd *AgentExtend) GetLoginSolve(orgId int64, agentId string) (config enum_
 	return config
 }
 
+// SetLoginSolve 设置登录破解配置
+func (crd *AgentExtend) SetLoginSolve(orgId int64, agentId string, config enum_login_solve.LoginSolveConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["login_solve_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// BatchSetLoginSolve 批量设置登录破解配置
+func (crd *AgentExtend) BatchSetLoginSolve(orgId int64, agentIds []string, config enum_login_solve.LoginSolveConfig) error {
+	conditions := agent_models.SearchConditions{
+		OrgId:    orgId,
+		AgentIds: agentIds,
+	}
+
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["login_solve_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
 // GetPlugOfPort 获取封堵配置： 端口虚开
 func (crd *AgentExtend) GetPlugOfPort(orgId int64, agentId string) (config enum_plug.PlugPortConfig) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "plug_port_config")
