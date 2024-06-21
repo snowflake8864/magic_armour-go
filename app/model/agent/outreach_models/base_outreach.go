@@ -8,8 +8,8 @@ import (
 
 type SearchConditions struct {
 	OrgId      int64
+	Id         int64
 	Ip         string
-	Type       int
 	OpenSwitch *int
 }
 
@@ -24,18 +24,19 @@ func (m *baseOutreach) conditions2Where(condition SearchConditions) (wheres []mo
 			Val: condition.OrgId,
 		})
 	}
+	if condition.Id > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
+		})
+	}
 	if !string_helper.IsEmpty(condition.Ip) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "ip",
 			Val: condition.Ip,
 		})
 	}
-	if condition.Type > 0 {
-		wheres = append(wheres, model_comm.Conditions{
-			Key: "type",
-			Val: condition.Type,
-		})
-	}
+
 	if condition.OpenSwitch != nil && *condition.OpenSwitch != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "open_switch",

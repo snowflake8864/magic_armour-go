@@ -561,6 +561,26 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"UsbGlobalDelete"))
 					}
 				} //外接设备
+
+				//外联管控
+				outreach := vOrg.Group("outreach/")
+				{
+
+					manage := outreach.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachManageBatchSetConfig"))
+					}
+					global := outreach.Group("global/")
+					{
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalPage"))
+						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalAdd"))
+						global.POST("fastAdd", (&organization.OutreachController{}).FastAddForGlobal)
+						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalEdit"))
+						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalDelete"))
+					}
+				} //外接设备
 			}
 
 		}

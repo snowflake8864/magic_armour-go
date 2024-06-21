@@ -207,6 +207,14 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/usb/global/setWhite":       {ModuleUsb, "全局策略：信任"},
 	"/v5/organization/usb/global/setBlack":       {ModuleUsb, "全局策略：禁止"},
 	"/v5/organization/usb/global/delete":         {ModuleUsb, "全局策略：删除"},
+
+	"/v5/organization/outreach/manage/setSwitch":      {ModuleOutreach, "管理页：开关"},
+	"/v5/organization/outreach/manage/batchSetConfig": {ModuleOutreach, "管理页：批量设置配置"},
+	"/v5/organization/outreach/global/add":            {ModuleOutreach, "全局策略：添加"},
+	"/v5/organization/outreach/global/fastAdd":        {ModuleOutreach, "全局策略：快捷添加"},
+	"/v5/organization/outreach/global/edit":           {ModuleOutreach, "全局策略：编辑"},
+	"/v5/organization/outreach/global/setSwitch":      {ModuleOutreach, "全局策略：开关"},
+	"/v5/organization/outreach/global/delete":         {ModuleOutreach, "全局策略：删除"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

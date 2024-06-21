@@ -10,6 +10,7 @@ import (
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
+	outreach3 "goskeleton/app/http/validator/organization/outreach"
 	plug3 "goskeleton/app/http/validator/organization/plug"
 	port3 "goskeleton/app/http/validator/organization/port"
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
@@ -522,4 +523,20 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, usb3.GlobalSetAlias{})
 	key = consts.ValidatorPrefixOrg + "UsbGlobalDelete"
 	containers.Set(key, usb3.GlobalDelete{})
+
+	//外联管控
+	key = consts.ValidatorPrefixOrg + "OutreachManagePage"
+	containers.Set(key, outreach3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "OutreachManageSetSwitch"
+	containers.Set(key, outreach3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "OutreachManageBatchSetConfig"
+	containers.Set(key, outreach3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "OutreachGlobalPage"
+	containers.Set(key, outreach3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "OutreachGlobalAdd"
+	containers.Set(key, outreach3.GlobalAdd{})
+	key = consts.ValidatorPrefixOrg + "OutreachGlobalEdit"
+	containers.Set(key, outreach3.GlobalEdit{})
+	key = consts.ValidatorPrefixOrg + "OutreachGlobalDelete"
+	containers.Set(key, outreach3.GlobalDelete{})
 }
