@@ -603,6 +603,29 @@ func InitOrganizationRouter() *gin.Engine {
 
 					}
 				} //口令破解
+
+				//告警
+				alarm := vOrg.Group("alarm/")
+				{
+					public := alarm.Group("public/")
+					{
+						public.POST("handleStatus", (&organization.AlarmController{}).HandleStatus)
+						public.POST("levels", (&organization.AlarmController{}).Levels)
+						public.POST("typeProcess", (&organization.AlarmController{}).TypeProcess)
+						public.POST("typeDll", (&organization.AlarmController{}).TypeDll)
+						public.POST("typeBlackmail", (&organization.AlarmController{}).TypeBlackmail)
+						public.POST("typeTamper", (&organization.AlarmController{}).TypeTamper)
+						public.POST("typeUsb", (&organization.AlarmController{}).TypeUsb)
+						public.POST("typeSelf", (&organization.AlarmController{}).TypeSelf)
+					}
+					manage := alarm.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManagePage"))
+						manage.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManageClear"))
+						manage.POST("batchClear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmManageBatchClear"))
+					}
+
+				} //告警
 			}
 
 		}
