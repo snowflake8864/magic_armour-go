@@ -226,27 +226,99 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 		break
 	case enum_alarm.ModuleDll:
 		fact := alarm_models.CreateDllFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransDllPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleTamper:
 		fact := alarm_models.CreateTamperFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransTamperPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleBlackmail:
 		fact := alarm_models.CreateBlackmailFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransBlackmailPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModulePort:
 		fact := alarm_models.CreatePortFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransPortPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModulePlug:
 		fact := alarm_models.CreatePlugFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransPlugPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleOutreach:
 		fact := alarm_models.CreateOutreachFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransOutreachPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleLogin:
 		fact := alarm_models.CreateLoginFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransLoginPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleSelf:
 		fact := alarm_models.CreateSelfFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransSelfPage(total, models, agentMap, nil))
 		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
