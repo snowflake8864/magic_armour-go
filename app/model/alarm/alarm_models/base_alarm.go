@@ -11,6 +11,7 @@ import (
 type SearchConditions struct {
 	OrgId        int64
 	AgentId      string
+	AgentIds     []string
 	AttackIp     string
 	HandleStatus int
 	CreateAtGte  string
@@ -41,6 +42,12 @@ func (m *baseAlarm) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "agent_id",
 			Val: condition.AgentId,
+		})
+	}
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
 		})
 	}
 	if !string_helper.IsEmpty(condition.AttackIp) {
@@ -79,7 +86,7 @@ func (m *baseAlarm) ColumnSumWeight() string {
 }
 
 // ColumnCalc 字段：统计字段
-func (m *baseAlarm) ColumnCalc(org, agent, handled, unhandled bool) string {
+func (m *baseAlarm) ColumnCalc(org, agent, unhandled, handled bool) string {
 	columns := []string{"COUNT(id) AS total_number"}
 	if org {
 		columns = append(columns, "org_id")
@@ -87,12 +94,11 @@ func (m *baseAlarm) ColumnCalc(org, agent, handled, unhandled bool) string {
 	if agent {
 		columns = append(columns, "agent_id")
 	}
-	if handled {
-		columns = append(columns, "SUM(IF(handle_status ="+int_helper.IntToStr(enum_alarm.HandleStatusYes)+", 1, 0)) AS handled_number")
-	}
 	if unhandled {
 		columns = append(columns, "SUM(IF(handle_status ="+int_helper.IntToStr(enum_alarm.HandleStatusNot)+", 1, 0)) AS unhandled_number")
 	}
-
+	if handled {
+		columns = append(columns, "SUM(IF(handle_status ="+int_helper.IntToStr(enum_alarm.HandleStatusYes)+", 1, 0)) AS handled_number")
+	}
 	return strings.Join(columns, ", ")
 }
