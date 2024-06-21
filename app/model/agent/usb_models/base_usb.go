@@ -16,7 +16,7 @@ type SearchConditions struct {
 	Id       string
 	IdList   []string
 	UsbHash  string
-	Status   *int
+	Status   int
 	IsOnline *int
 }
 
@@ -85,10 +85,10 @@ func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_c
 
 	}
 
-	if condition.Status != nil && *condition.Status != enums.AllDefaultInt {
+	if condition.Status > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status",
-			Val: *condition.Status,
+			Val: condition.Status,
 		})
 	}
 	if condition.IsOnline != nil && *condition.IsOnline != enums.AllDefaultInt {

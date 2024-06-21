@@ -7,14 +7,12 @@ import (
 	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
-	"goskeleton/app/http/validator/organization/agent_common_data"
 	"goskeleton/app/utils/response"
 )
 
 type PolicySetWhite struct {
 	data_type.AgentSingle
 	Id
-	agent_common_data.CommonSwitch
 }
 
 func (n PolicySetWhite) CheckParams(context *gin.Context) {

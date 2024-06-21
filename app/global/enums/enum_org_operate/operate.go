@@ -194,6 +194,19 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/plug/global/dynamic/disableBatch": {ModulePlug, "全局-动态封堵：批量解封"},
 	"/v5/organization/plug/global/dynamic/delete":       {ModulePlug, "全局-动态封堵：删除"},
 	"/v5/organization/plug/global/dynamic/deleteBatch":  {ModulePlug, "全局-动态封堵：批量删除"},
+
+	"/v5/organization/usb/manage/setSwitch":      {ModuleUsb, "管理页：开关"},
+	"/v5/organization/usb/manage/setMode":        {ModuleUsb, "管理页：模式"},
+	"/v5/organization/usb/manage/batchSetConfig": {ModuleUsb, "管理页：批量设置配置"},
+	"/v5/organization/usb/policy/setAlias":       {ModuleUsb, "终端策略：设置别名"},
+	"/v5/organization/usb/policy/setWhite":       {ModuleUsb, "终端策略：信任"},
+	"/v5/organization/usb/policy/setBlack":       {ModuleUsb, "终端策略：禁止"},
+	"/v5/organization/usb/policy/refresh":        {ModuleUsb, "终端策略：刷新设备"},
+	"/v5/organization/usb/policy/addGlobal":      {ModuleUsb, "终端策略：加入全局名单"},
+	"/v5/organization/usb/global/setAlias":       {ModuleUsb, "全局策略：设置别名"},
+	"/v5/organization/usb/global/setWhite":       {ModuleUsb, "全局策略：信任"},
+	"/v5/organization/usb/global/setBlack":       {ModuleUsb, "全局策略：禁止"},
+	"/v5/organization/usb/global/delete":         {ModuleUsb, "全局策略：删除"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

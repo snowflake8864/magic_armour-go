@@ -59,7 +59,9 @@ func (u *UsbController) PageForManage(ctx *gin.Context) {
 		for _, agentModel := range agentModels {
 			gg := map[string]interface{}{
 				"total_number": 0,
-				"on_number":    0,
+				"white_number": 0,
+				"black_number": 0,
+				"unset_number": 0,
 			}
 			if item, isOk := calcPolicy[agentModel.AgentId]; isOk {
 				gg["total_number"] = item.TotalNumber

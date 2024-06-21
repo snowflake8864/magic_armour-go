@@ -1,11 +1,11 @@
 package usb
 
 type StatusSet struct {
-	Status int `form:"status" json:"status" binding:"required,oneof=1 2"`
+	Status int `form:"status" json:"status" binding:"required,oneof=2 3"`
 }
 
 type Id struct {
-	Id string `form:"id" json:"id" binding:"required,min=16"`
+	Id string `form:"id" json:"id" binding:"required,min=6,max=32"`
 }
 
 type AliasSet struct {
