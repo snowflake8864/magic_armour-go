@@ -152,7 +152,7 @@ func (u *UsbController) HasUploadForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
-	if !task_service.CreateCacheFactory().ExistUnfinished(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload) {
+	if task_service.CreateCacheFactory().ExistUnfinished(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload) {
 		response.FailSimplify(ctx, "请继续等待")
 		return
 	}
