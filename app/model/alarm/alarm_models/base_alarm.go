@@ -12,7 +12,12 @@ type SearchConditions struct {
 	OrgId        int64
 	AgentId      string
 	AgentIds     []string
+	Id           int64
 	AttackIp     string
+	DllHash      string
+	ProcHash     string
+	SourceIp     string
+	TargetIp     string
 	HandleStatus int
 	CreateAtGte  string
 	CreateAtLte  string
@@ -48,6 +53,12 @@ func (m *baseAlarm) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "agent_id in",
 			Val: condition.AgentIds,
+		})
+	}
+	if condition.Id > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id",
+			Val: condition.Id,
 		})
 	}
 	if !string_helper.IsEmpty(condition.AttackIp) {

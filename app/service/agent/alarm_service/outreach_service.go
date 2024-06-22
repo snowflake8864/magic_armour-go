@@ -1,111 +1,68 @@
-package job_callback_alarm
+package alarm_service
 
 import (
 	"errors"
-	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_alarm"
-	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/enums/enum_outreach"
-	"goskeleton/app/global/variable"
-	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/model/alarm/alarm_models"
-	"goskeleton/app/model/syslog/syslog_models"
-	"goskeleton/app/service/veda_other/huanshi_platform"
-	"goskeleton/app/utils/helpers/ip_helper"
-	"strings"
 )
 
-func CreateOutreachCalcFactory() *AlarmOutreachCalc {
-	return &AlarmOutreachCalc{
+func CreateOutreachCurdFactory() *OutreachCurd {
+	return &OutreachCurd{
 		masterModel: alarm_models.CreateOutreachFactory(),
 	}
 }
 
-type AlarmOutreachCalc struct {
+type OutreachCurd struct {
 	alarmBase
 	masterModel *alarm_models.OutreachModel
 }
 
-func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool {
-	SwitchOn := enums.SwitchOn
-	conditions := outreach_models.SearchConditions{
-		OrgId:      orgId,
-		Type:       enum_outreach.TypeWhite,
-		OpenSwitch: &SwitchOn,
+// Handle 处理
+func (crd *OutreachCurd) Handle(param *alarm_models.OutreachModel) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    param.OrgId,
+		TargetIp: param.TargetIp,
 	}
-	models := outreach_models.CreateGlobalFactory().GetListByConditions(conditions)
-	if models == nil || len(models) == 0 {
-		return true
-	}
-
-	ipArr := strings.Split(targetIp, ";")
-	for _, ip := range ipArr {
-		for _, model := range models {
-			if ip_helper.IsIPInRange(ip, model.Ip) {
-				return true
-			}
-		}
-	}
-
-	return false
-}
-
-// Calc 计算
-func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
-	//终端开关
-	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(dnsModel.OrgId, dnsModel.AgentId, agentFact.ColumnConfig(false, false))
-	if agentModel == nil || agentModel.PlugSwitch == enums.SwitchOff {
-		return nil
-	}
-
-	//在外联白名单中
-	if crd.inOutreachWhile(dnsModel.OrgId, dnsModel.TargetIp) {
-		return nil
-	}
-
-	model := alarm_models.OutreachModel{
-		Id:           dnsModel.Id,
-		OrgId:        dnsModel.OrgId,
-		AgentId:      dnsModel.AgentId,
-		Type:         enum_alarm.TypeOutreachNotInWhite,
-		Level:        enum_alarm.LevelImportant,
-		AgentAt:      dnsModel.AgentAt,
-		HandleStatus: enum_alarm.HandleStatusNot,
-		CreatedAt:    dnsModel.CreatedAt,
-		ProcHash:     dnsModel.ProcHash,
-		ProcDir:      dnsModel.ProcDir,
-		ProcId:       dnsModel.ProcId,
-		DomainName:   dnsModel.DomainName,
-		TargetIp:     dnsModel.TargetIp,
-	}
-
-	//保存
-	if !crd.masterModel.InsertItem(&model) {
+	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
+	if !crd.masterModel.UpdateByConditions(conditions, updates) {
 		return errors.New("保存失败")
 	}
 
-	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchOutreach); hsCli != nil {
-		hsData := huanshi_platform.AlarmOutreach{
-			AlarmBase: huanshi_platform.AlarmBase{
-				OrgId:      model.OrgId,
-				AgentId:    model.AgentId,
-				Level:      model.Level,
-				NoticeType: model.Type,
-				NoticeTime: model.CreatedAt,
-			},
-			Phash:      model.ProcHash,
-			Pid:        model.ProcId,
-			Ppath:      model.ProcDir,
-			Domain:     model.DomainName,
-			AnalysisIp: model.TargetIp,
-		}
-		if err := hsCli.SyncAlarmOutreach(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
-		}
-	}
+	return nil
+}
 
+// HandleAll 处理全部
+func (crd *OutreachCurd) HandleAll(param *alarm_models.OutreachModel, agentIds []string) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    param.OrgId,
+		AgentIds: agentIds,
+	}
+	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
+	if !crd.masterModel.UpdateByConditions(conditions, updates) {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
+// ClearByAgent 清空终端下告警
+func (crd *OutreachCurd) ClearByAgent(param *alarm_models.OutreachModel) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+	}
+	if !crd.masterModel.DeleteByConditions(conditions) {
+		return errors.New("清空失败")
+	}
+	return nil
+}
+
+// ClearByAgents 清空多终端下告警
+func (crd *OutreachCurd) ClearByAgents(param *alarm_models.OutreachModel, agentIds []string) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    param.OrgId,
+		AgentIds: agentIds,
+	}
+	if !crd.masterModel.DeleteByConditions(conditions) {
+		return errors.New("删除失败")
+	}
 	return nil
 }

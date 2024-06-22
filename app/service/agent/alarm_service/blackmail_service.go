@@ -1,61 +1,69 @@
-package job_callback_alarm
+package alarm_service
 
 import (
 	"errors"
-	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
-	"goskeleton/app/service/veda_other/huanshi_platform"
-	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/helpers/path_helper"
-	"goskeleton/app/utils/helpers/string_helper"
-	"strings"
 )
 
-func CreateBlackmailUploadFactory() *BlackmailUpload {
-	return &BlackmailUpload{
+func CreateBlackmailCurdFactory() *BlackmailCurd {
+	return &BlackmailCurd{
 		masterModel: alarm_models.CreateBlackmailFactory(),
 	}
 }
 
-type BlackmailUpload struct {
+type BlackmailCurd struct {
 	alarmBase
 	masterModel *alarm_models.BlackmailModel
 }
 
-// Add 添加
-func (crd *BlackmailUpload) Add(model *alarm_models.BlackmailModel) error {
-	if string_helper.IsEmpty(model.CreatedAt) {
-		model.CreatedAt = date_helper.CurDatetime()
+// Handle 处理
+func (crd *BlackmailCurd) Handle(param *alarm_models.BlackmailModel) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
 	}
-	model.Id = variable.SnowFlake.GetId()
-	model.ProcHash = strings.ToLower(model.ProcHash)
-	model.ProcDir = path_helper.ToStandard(model.ProcDir)
-	model.FileDir = path_helper.ToStandard(model.FileDir)
-
-	//保存
-	if !crd.masterModel.InsertItem(model) {
+	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
+	if !crd.masterModel.UpdateByConditions(conditions, updates) {
 		return errors.New("保存失败")
 	}
 
-	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchBlackmail); hsCli != nil {
-		hsData := huanshi_platform.AlarmComm{
-			AlarmBase: huanshi_platform.AlarmBase{
-				Type:       huanshi_platform.AlarmTypeBlackmail,
-				OrgId:      model.OrgId,
-				AgentId:    model.AgentId,
-				Level:      model.Level,
-				NoticeType: model.Type,
-				NoticeTime: model.CreatedAt,
-			},
-			Dir:              model.FileDir,
-			ExceptionProcess: model.ProcDir,
-		}
-		if err := hsCli.SyncAlarmComm(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
-		}
-	}
+	return nil
+}
 
+// HandleAll 处理全部
+func (crd *BlackmailCurd) HandleAll(param *alarm_models.BlackmailModel, agentIds []string) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    param.OrgId,
+		AgentIds: agentIds,
+	}
+	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
+	if !crd.masterModel.UpdateByConditions(conditions, updates) {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
+// ClearByAgent 清空终端下告警
+func (crd *BlackmailCurd) ClearByAgent(param *alarm_models.BlackmailModel) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+	}
+	if !crd.masterModel.DeleteByConditions(conditions) {
+		return errors.New("清空失败")
+	}
+	return nil
+}
+
+// ClearByAgents 清空终端下告警
+func (crd *BlackmailCurd) ClearByAgents(param *alarm_models.BlackmailModel, agentIds []string) error {
+	conditions := alarm_models.SearchConditions{
+		OrgId:    param.OrgId,
+		AgentIds: agentIds,
+	}
+	if !crd.masterModel.DeleteByConditions(conditions) {
+		return errors.New("清空失败")
+	}
 	return nil
 }
