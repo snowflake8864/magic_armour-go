@@ -58,9 +58,7 @@ func (m *ProcessModel) CreateTable() bool {
 			proc_id INT NOT NULL DEFAULT '0' COMMENT '进程:ID',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			proc_param text NULL COMMENT '进程:参数',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
-			INDEX index_proc_dir (proc_dir) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,proc_hash,type,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

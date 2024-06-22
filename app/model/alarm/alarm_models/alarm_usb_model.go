@@ -56,8 +56,7 @@ func (m *UsbModel) CreateTable() bool {
 			handle_at DATETIME NULL COMMENT '处理时间',
 			usb_name VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '设备:名称',
 			usb_intro VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '设备:描述',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,usb_hash,type,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

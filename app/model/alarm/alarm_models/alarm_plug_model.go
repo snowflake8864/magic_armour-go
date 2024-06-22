@@ -62,8 +62,7 @@ func (m *PlugModel) CreateTable() bool {
 			duration INT NOT NULL DEFAULT '0' COMMENT '封堵时长(分钟),0为永久',
 			start_time DATETIME NULL COMMENT '封堵开始时间',
 			end_time DATETIME DEFAULT NULL COMMENT '封堵结束时间',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,ip,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

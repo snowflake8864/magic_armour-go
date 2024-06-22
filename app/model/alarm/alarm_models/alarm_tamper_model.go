@@ -56,9 +56,7 @@ func (m *TamperModel) CreateTable() bool {
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
-			INDEX index_proc_dir (proc_dir) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,proc_hash,file_dir,type,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

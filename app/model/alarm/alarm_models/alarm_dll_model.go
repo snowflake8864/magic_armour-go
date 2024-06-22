@@ -56,9 +56,7 @@ func (m *DllModel) CreateTable() bool {
 			handle_at DATETIME NULL COMMENT '处理时间',
 			dll_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '模块:路径',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
-			INDEX index_dll_dir (dll_dir) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,dll_hash,type,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

@@ -60,9 +60,7 @@ func (m *SelfModel) CreateTable() bool {
 			proc_param text NULL COMMENT '进程:参数',
             file_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '文件:路径',
             target_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '目标:路径',
-			INDEX index_id (id) USING INVERTED,
-			INDEX index_created_at (created_at) USING INVERTED,
-			INDEX index_proc_dir (proc_dir) USING INVERTED
+			INDEX index_id (id) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id,proc_hash,type,created_at,agent_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
