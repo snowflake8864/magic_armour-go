@@ -32,7 +32,7 @@ func (t *Dll) TransMasterPage(total int64, models []*proc_models.DllModel) inter
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
-			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.ThreatenLevel, enum_threaten.EnumMap)
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -71,7 +71,7 @@ func (t *Dll) TransRunningPage(total int64, models []*proc_models.DllAndRunning)
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
-			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.ThreatenLevel, enum_threaten.EnumMap)
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -105,26 +105,8 @@ func (t *Dll) TransRepeatPage(total int64, models []*proc_models.DllModel, agent
 			data["agent_id"] = model.AgentId
 			data["dll_dir"] = model.Dir
 			data["created_at"] = model.CreatedAt
-			//终端信息
-			data["host_name"] = ""
-			data["mac_id"] = ""
-			data["agent_ip"] = ""
-			data["net_ip"] = ""
-			data["os_name"] = ""
-			data["contact_name"] = ""
-			data["contact_tel"] = ""
-			data["alias"] = ""
-			if agentModel, isOK := agentModels[model.AgentId]; isOK {
-				data["host_name"] = agentModel.HostName
-				data["mac_id"] = agentModel.MacId
-				data["agent_ip"] = agentModel.AgentIp
-				data["net_ip"] = agentModel.NetIp
-				data["os_name"] = agentModel.OsName
-				data["contact_name"] = agentModel.ContactName
-				data["contact_tel"] = agentModel.ContactTel
-				data["alias"] = agentModel.Alias
-			}
 
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, nil)
 			items = append(items, data)
 		}
 	}
