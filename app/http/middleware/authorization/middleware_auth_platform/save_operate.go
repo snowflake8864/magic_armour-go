@@ -52,11 +52,11 @@ func SaveOperate() gin.HandlerFunc {
 
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
-				"/platform/auth/checkUser":     {},
-				"/platform/auth/getSliderCode": {},
-				"/platform/auth/sendSms":       {},
-				"/platform/auth/normalLogin":   {},
-				"/platform/auth/logout":        {},
+				"/v5/platform/auth/checkUser":     {},
+				"/v5/platform/auth/getSliderCode": {},
+				"/v5/platform/auth/sendSms":       {},
+				"/v5/platform/auth/normalLogin":   {},
+				"/v5/platform/auth/logout":        {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
