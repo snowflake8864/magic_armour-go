@@ -18,6 +18,7 @@ type SearchConditions struct {
 	ProcHash     string
 	SourceIp     string
 	TargetIp     string
+	Ip           string
 	HandleStatus int
 	CreateAtGte  string
 	CreateAtLte  string
