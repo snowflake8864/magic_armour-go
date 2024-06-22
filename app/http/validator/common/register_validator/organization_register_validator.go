@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
 	agent3 "goskeleton/app/http/validator/organization/agent"
+	alarm3 "goskeleton/app/http/validator/organization/alarm"
 	auth3 "goskeleton/app/http/validator/organization/auth"
 	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
 	department3 "goskeleton/app/http/validator/organization/department"
@@ -555,4 +556,93 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "LoginSolveGlobalConfigSet"
 	containers.Set(key, loginSolve3.GlobalConfigSet{})
 
+	//告警
+	key = consts.ValidatorPrefixOrg + "AlarmManagePage"
+	containers.Set(key, alarm3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "AlarmManageClear"
+	containers.Set(key, alarm3.ManageClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmManageBatchClear"
+	containers.Set(key, alarm3.ManageBatchClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmManageAgentStat"
+	containers.Set(key, alarm3.ManageAgentStat{})
+	key = consts.ValidatorPrefixOrg + "AlarmProcessPage"
+	containers.Set(key, alarm3.ProcessPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmProcessHandle"
+	containers.Set(key, alarm3.ProcessHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmProcessHandleAll"
+	containers.Set(key, alarm3.ProcessHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmProcessClear"
+	containers.Set(key, alarm3.ProcessClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmDllPage"
+	containers.Set(key, alarm3.DllPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmDllHandle"
+	containers.Set(key, alarm3.DllHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmDllHandleAll"
+	containers.Set(key, alarm3.DllHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmDllClear"
+	containers.Set(key, alarm3.DllClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmTamperPage"
+	containers.Set(key, alarm3.TamperPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmTamperHandle"
+	containers.Set(key, alarm3.TamperHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmTamperHandleAll"
+	containers.Set(key, alarm3.TamperHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmTamperClear"
+	containers.Set(key, alarm3.TamperClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmBlackmailPage"
+	containers.Set(key, alarm3.BlackmailPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmBlackmailHandle"
+	containers.Set(key, alarm3.BlackmailHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmBlackmailHandleAll"
+	containers.Set(key, alarm3.BlackmailHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmBlackmailClear"
+	containers.Set(key, alarm3.BlackmailClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmPortPage"
+	containers.Set(key, alarm3.PortPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmPortHandle"
+	containers.Set(key, alarm3.PortHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmPortHandleAll"
+	containers.Set(key, alarm3.PortHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmPortClear"
+	containers.Set(key, alarm3.PortClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmPlugPage"
+	containers.Set(key, alarm3.PlugPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmPlugHandle"
+	containers.Set(key, alarm3.PlugHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmPlugHandleAll"
+	containers.Set(key, alarm3.PlugHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmPlugClear"
+	containers.Set(key, alarm3.PlugClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmUsbPage"
+	containers.Set(key, alarm3.UsbPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmUsbHandle"
+	containers.Set(key, alarm3.UsbHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmUsbHandleAll"
+	containers.Set(key, alarm3.UsbHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmUsbClear"
+	containers.Set(key, alarm3.UsbClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmOutreachPage"
+	containers.Set(key, alarm3.OutreachPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmOutreachHandle"
+	containers.Set(key, alarm3.OutreachHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmOutreachHandleAll"
+	containers.Set(key, alarm3.OutreachHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmOutreachClear"
+	containers.Set(key, alarm3.OutreachClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmLoginPage"
+	containers.Set(key, alarm3.LoginPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmLoginHandle"
+	containers.Set(key, alarm3.LoginHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmLoginHandleAll"
+	containers.Set(key, alarm3.LoginHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmLoginClear"
+	containers.Set(key, alarm3.LoginClear{})
+	key = consts.ValidatorPrefixOrg + "AlarmSelfPage"
+	containers.Set(key, alarm3.SelfPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmSelfHandle"
+	containers.Set(key, alarm3.SelfHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmSelfHandleAll"
+	containers.Set(key, alarm3.SelfHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmSelfClear"
+	containers.Set(key, alarm3.SelfClear{})
 }

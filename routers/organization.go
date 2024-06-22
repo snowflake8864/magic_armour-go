@@ -633,7 +633,69 @@ func InitOrganizationRouter() *gin.Engine {
 						process1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessHandleAll"))
 						process1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmProcessClear"))
 					}
-
+					dll1 := alarm.Group("dll/")
+					{
+						dll1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmDllPage"))
+						dll1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmDllHandle"))
+						dll1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmDllHandleAll"))
+						dll1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmDllClear"))
+					}
+					tamper1 := alarm.Group("tamper/")
+					{
+						tamper1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmTamperPage"))
+						tamper1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmTamperHandle"))
+						tamper1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmTamperHandleAll"))
+						tamper1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmTamperClear"))
+					}
+					blackmail1 := alarm.Group("blackmail/")
+					{
+						blackmail1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmBlackmailPage"))
+						blackmail1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmBlackmailHandle"))
+						blackmail1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmBlackmailHandleAll"))
+						blackmail1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmBlackmailClear"))
+					}
+					port1 := alarm.Group("port/")
+					{
+						port1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPortPage"))
+						port1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPortHandle"))
+						port1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPortHandleAll"))
+						port1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPortClear"))
+					}
+					plug1 := alarm.Group("plug/")
+					{
+						plug1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPlugPage"))
+						plug1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPlugHandle"))
+						plug1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPlugHandleAll"))
+						plug1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmPlugClear"))
+					}
+					usb1 := alarm.Group("usb/")
+					{
+						usb1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmUsbPage"))
+						usb1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmUsbHandle"))
+						usb1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmUsbHandleAll"))
+						usb1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmUsbClear"))
+					}
+					outreach1 := alarm.Group("outreach/")
+					{
+						outreach1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmOutreachPage"))
+						outreach1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmOutreachHandle"))
+						outreach1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmOutreachHandleAll"))
+						outreach1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmOutreachClear"))
+					}
+					login1 := alarm.Group("login/")
+					{
+						login1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmLoginPage"))
+						login1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmLoginHandle"))
+						login1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmLoginHandleAll"))
+						login1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmLoginClear"))
+					}
+					self1 := alarm.Group("self/")
+					{
+						self1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfPage"))
+						self1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfHandle"))
+						self1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfHandleAll"))
+						self1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfClear"))
+					}
 				} //告警
 			}
 
