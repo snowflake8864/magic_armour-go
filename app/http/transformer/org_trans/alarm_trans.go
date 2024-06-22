@@ -8,7 +8,6 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/utils/helpers/map_helper"
 )
 
 type AlarmTrans struct {
@@ -41,8 +40,8 @@ func (t *AlarmTrans) TransProcessPage(total int64, models []*alarm_models.Proces
 			data["proc_dir"] = model.ProcDir
 			data["proc_param"] = model.ProcParam
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -77,8 +76,8 @@ func (t *AlarmTrans) TransDllPage(total int64, models []*alarm_models.DllModel,
 			data["dll_dir"] = model.DllDir
 			data["proc_dir"] = model.ProcDir
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -113,8 +112,8 @@ func (t *AlarmTrans) TransBlackmailPage(total int64, models []*alarm_models.Blac
 			data["proc_dir"] = model.ProcDir
 			data["file_dir"] = model.FileDir
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -149,8 +148,8 @@ func (t *AlarmTrans) TransTamperPage(total int64, models []*alarm_models.TamperM
 			data["proc_dir"] = model.ProcDir
 			data["file_dir"] = model.FileDir
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -189,8 +188,8 @@ func (t *AlarmTrans) TransPortPage(total int64, models []*alarm_models.PortModel
 			data["redirect_port"] = model.RedirectPort
 			data["attack_total"] = model.AttackTotal
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -228,8 +227,8 @@ func (t *AlarmTrans) TransPlugPage(total int64, models []*alarm_models.PlugModel
 			data["start_time"] = model.StartTime
 			data["end_time"] = model.EndTime
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -264,8 +263,8 @@ func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
 			data["usb_name"] = model.UsbName
 			data["usb_intro"] = model.UsbIntro
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -302,8 +301,8 @@ func (t *AlarmTrans) TransOutreachPage(total int64, models []*alarm_models.Outre
 			data["domain_name"] = model.DomainName
 			data["target_ip"] = model.TargetIp
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -337,8 +336,8 @@ func (t *AlarmTrans) TransLoginPage(total int64, models []*alarm_models.LoginMod
 			data["source_ip"] = model.SourceIp
 			data["solve_total"] = model.SolveTotal
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 
@@ -375,8 +374,8 @@ func (t *AlarmTrans) TransSelfPage(total int64, models []*alarm_models.SelfModel
 			data["file_dir"] = model.FileDir
 			data["target_dir"] = model.TargetDir
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 

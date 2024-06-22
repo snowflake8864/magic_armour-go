@@ -2,6 +2,7 @@ package alarm_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
@@ -19,8 +20,9 @@ type PlugCurd struct {
 // Handle 处理
 func (crd *PlugCurd) Handle(param *alarm_models.PlugModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId: param.OrgId,
-		Ip:    param.Ip,
+		OrgId:        param.OrgId,
+		Ip:           param.Ip,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
@@ -33,8 +35,9 @@ func (crd *PlugCurd) Handle(param *alarm_models.PlugModel) error {
 // HandleAll 处理全部
 func (crd *PlugCurd) HandleAll(param *alarm_models.PlugModel, agentIds []string) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		AgentIds: agentIds,
+		OrgId:        param.OrgId,
+		AgentIds:     agentIds,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {

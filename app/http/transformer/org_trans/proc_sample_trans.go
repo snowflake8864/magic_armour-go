@@ -8,7 +8,6 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/utils/helpers/map_helper"
 )
 
 type ProcSample struct {
@@ -34,8 +33,8 @@ func (t *ProcSample) TransPage(total int64, models []*proc_models.ProcSampleMode
 			data["create_name"] = model.CreateName
 			data["created_at"] = model.CreatedAt
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 

@@ -2,6 +2,7 @@ package alarm_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
@@ -19,8 +20,9 @@ type UsbCurd struct {
 // Handle 处理
 func (crd *UsbCurd) Handle(param *alarm_models.UsbModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:   param.OrgId,
-		UsbHash: param.UsbHash,
+		OrgId:        param.OrgId,
+		UsbHash:      param.UsbHash,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
@@ -33,8 +35,9 @@ func (crd *UsbCurd) Handle(param *alarm_models.UsbModel) error {
 // HandleAll 处理全部
 func (crd *UsbCurd) HandleAll(param *alarm_models.UsbModel, agentIds []string) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		AgentIds: agentIds,
+		OrgId:        param.OrgId,
+		AgentIds:     agentIds,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {

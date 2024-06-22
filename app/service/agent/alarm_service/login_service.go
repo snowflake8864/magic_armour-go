@@ -2,6 +2,7 @@ package alarm_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
@@ -19,8 +20,9 @@ type LoginCurd struct {
 // Handle 处理
 func (crd *LoginCurd) Handle(param *alarm_models.LoginModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		SourceIp: param.SourceIp,
+		OrgId:        param.OrgId,
+		SourceIp:     param.SourceIp,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
@@ -33,8 +35,9 @@ func (crd *LoginCurd) Handle(param *alarm_models.LoginModel) error {
 // HandleAll 处理全部
 func (crd *LoginCurd) HandleAll(param *alarm_models.LoginModel, agentIds []string) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		AgentIds: agentIds,
+		OrgId:        param.OrgId,
+		AgentIds:     agentIds,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
@@ -46,8 +49,9 @@ func (crd *LoginCurd) HandleAll(param *alarm_models.LoginModel, agentIds []strin
 // ClearByAgent 清空终端下告警
 func (crd *LoginCurd) ClearByAgent(param *alarm_models.LoginModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:   param.OrgId,
-		AgentId: param.AgentId,
+		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
 		return errors.New("清空失败")

@@ -8,7 +8,6 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/utils/helpers/map_helper"
 )
 
 type PlugTrans struct {
@@ -95,8 +94,8 @@ func (t *PlugTrans) TranDynamicGlobalPage(total int64, models []*plug_models.Dyn
 			data := t.dynamicGeneral(model)
 			//终端信息
 
-			agentInfo := t.AppendAgentInfo(model.AgentId, agentModels, departments)
-			items = append(items, map_helper.MergeStringAndInterface(data, agentInfo))
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
 		}
 	}
 

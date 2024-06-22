@@ -2,6 +2,7 @@ package alarm_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
@@ -19,8 +20,9 @@ type ProcessCurd struct {
 // Handle 处理
 func (crd *ProcessCurd) Handle(param *alarm_models.ProcessModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		ProcHash: param.ProcHash,
+		OrgId:        param.OrgId,
+		ProcHash:     param.ProcHash,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
@@ -33,8 +35,9 @@ func (crd *ProcessCurd) Handle(param *alarm_models.ProcessModel) error {
 // HandleAll 处理全部
 func (crd *ProcessCurd) HandleAll(param *alarm_models.ProcessModel, agentIds []string) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		AgentIds: agentIds,
+		OrgId:        param.OrgId,
+		AgentIds:     agentIds,
+		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
