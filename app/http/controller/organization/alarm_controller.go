@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -154,18 +155,14 @@ func (u *AlarmController) AgentStatForManage(ctx *gin.Context) {
 
 // ClearForManage 管理页: 清空
 func (u *AlarmController) ClearForManage(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
-	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
-	var param = agent_service.ManualColumn{
-		LoginSolveSwitch: &Switch,
-	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "口令破解管理-开关")
-	if err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
-		return
-	}
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	_ = alarm_service.CreateProcessCurdFactory().ClearByAgent(&alarm_models.ProcessModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
 	response.SuccessSimplify(ctx)
 }
 

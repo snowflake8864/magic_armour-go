@@ -19,6 +19,7 @@ type SearchConditions struct {
 	SourceIp     string
 	TargetIp     string
 	Ip           string
+	UsbHash      string
 	HandleStatus int
 	CreateAtGte  string
 	CreateAtLte  string
