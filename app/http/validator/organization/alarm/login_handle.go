@@ -10,7 +10,7 @@ import (
 )
 
 type LoginHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

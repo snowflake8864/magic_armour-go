@@ -10,7 +10,7 @@ import (
 )
 
 type ProcessHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

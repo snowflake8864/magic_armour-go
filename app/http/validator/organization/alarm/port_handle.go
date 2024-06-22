@@ -10,7 +10,7 @@ import (
 )
 
 type PortHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

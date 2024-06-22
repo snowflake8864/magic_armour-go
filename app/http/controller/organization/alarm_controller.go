@@ -132,6 +132,10 @@ func (u *AlarmController) AgentStatForManage(ctx *gin.Context) {
 		fact := alarm_models.CreatePlugFactory()
 		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
 		break
+	case enum_alarm.ModuleUsb:
+		fact := alarm_models.CreateUsbFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
 	case enum_alarm.ModuleOutreach:
 		fact := alarm_models.CreateOutreachFactory()
 		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
@@ -283,6 +287,18 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
 		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransPlugPage(total, models, agentMap, nil))
+		break
+	case enum_alarm.ModuleUsb:
+		fact := alarm_models.CreateUsbFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransUsbPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleOutreach:
 		fact := alarm_models.CreateOutreachFactory()

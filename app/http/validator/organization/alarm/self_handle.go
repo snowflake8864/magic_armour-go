@@ -10,7 +10,7 @@ import (
 )
 
 type SelfHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

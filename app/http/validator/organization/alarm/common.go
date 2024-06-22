@@ -8,8 +8,12 @@ type Remark struct {
 	Remark string `form:"remark" json:"remark" binding:"required,max=128"`
 }
 
-type Hash struct {
+type HashOmitempty struct {
 	Hash string `form:"hash" json:"hash" binding:"omitempty,max=128"`
+}
+
+type HashRequired struct {
+	Hash string `form:"hash" json:"hash" binding:"required,max=128"`
 }
 
 type FileDir struct {

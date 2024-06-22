@@ -10,7 +10,7 @@ import (
 )
 
 type DllHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

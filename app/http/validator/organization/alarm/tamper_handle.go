@@ -10,7 +10,7 @@ import (
 )
 
 type TamperHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

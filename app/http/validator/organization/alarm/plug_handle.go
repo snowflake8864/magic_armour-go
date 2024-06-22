@@ -10,7 +10,7 @@ import (
 )
 
 type PlugHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

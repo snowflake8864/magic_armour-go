@@ -10,7 +10,7 @@ import (
 )
 
 type OutreachHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 

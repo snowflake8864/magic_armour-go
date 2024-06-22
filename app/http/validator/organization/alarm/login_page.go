@@ -13,7 +13,7 @@ import (
 type LoginPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	Hash
+	HashOmitempty
 	HandleStatus
 	SearchTime
 }

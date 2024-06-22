@@ -10,7 +10,7 @@ import (
 )
 
 type BlackmailHandle struct {
-	Hash
+	HashOmitempty
 	Remark
 }
 
