@@ -12,6 +12,26 @@ type Hash struct {
 	Hash string `form:"hash" json:"hash" binding:"omitempty,max=128"`
 }
 
+type FileDir struct {
+	FileDir string `form:"fileDir" json:"fileDir" binding:"omitempty,max=128"`
+}
+
+type AttackIp struct {
+	AttackIp string `form:"attackIp" json:"attackIp" binding:"omitempty,ip"`
+}
+
+type PlugIp struct {
+	PlugIp string `form:"plugIp" json:"plugIp" binding:"omitempty,ip"`
+}
+
+type SourceIp struct {
+	SourceIp string `form:"sourceIp" json:"sourceIp" binding:"omitempty,ip"`
+}
+
+type TargetIp struct {
+	TargetIp string `form:"targetIp" json:"targetIp" binding:"omitempty,ip"`
+}
+
 type HandleStatus struct {
 	HandleStatus int `form:"handleStatus" json:"handleStatus" binding:"required,oneof=-100 1 2"`
 }
