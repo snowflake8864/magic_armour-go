@@ -179,7 +179,7 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalSetSwitch"))
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalDelete"))
 					}
-				}
+				} //信任目录
 
 				//进程
 				process := vOrg.Group("process/")
