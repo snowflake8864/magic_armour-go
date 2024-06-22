@@ -13,7 +13,7 @@ import (
 type BlackmailPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	FileDir
+	SearchFileDir
 	HandleStatus
 	SearchType
 	SearchTime

@@ -11,7 +11,6 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_models"
-	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -163,23 +162,99 @@ func (u *AlarmController) ClearForManage(ctx *gin.Context) {
 		AgentId: agentId,
 	})
 
+	_ = alarm_service.CreateDllCurdFactory().ClearByAgent(&alarm_models.DllModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateTamperCurdFactory().ClearByAgent(&alarm_models.TamperModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateBlackmailCurdFactory().ClearByAgent(&alarm_models.BlackmailModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreatePortCurdFactory().ClearByAgent(&alarm_models.PortModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreatePlugCurdFactory().ClearByAgent(&alarm_models.PlugModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateUsbCurdFactory().ClearByAgent(&alarm_models.UsbModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateOutreachCurdFactory().ClearByAgent(&alarm_models.OutreachModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateLoginCurdFactory().ClearByAgent(&alarm_models.LoginModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
+	_ = alarm_service.CreateSelfCurdFactory().ClearByAgent(&alarm_models.SelfModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
 	response.SuccessSimplify(ctx)
 }
 
 // BatchClearForManage 管理页: 批量清空
 func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
-	orgId := u.getLogin(ctx).OrgId
+	loginInfo := u.getLogin(ctx)
 	agentIds := u.getAgentIdsFromGin(ctx)
-	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 
-	var param = agent_service.ManualColumn{
-		LoginSolveSwitch: &Switch,
-	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "口令破解管理-批量")
-	if err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
-		return
-	}
+	_ = alarm_service.CreateProcessCurdFactory().ClearByAgents(&alarm_models.ProcessModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateDllCurdFactory().ClearByAgents(&alarm_models.DllModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateTamperCurdFactory().ClearByAgents(&alarm_models.TamperModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateBlackmailCurdFactory().ClearByAgents(&alarm_models.BlackmailModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreatePortCurdFactory().ClearByAgents(&alarm_models.PortModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreatePlugCurdFactory().ClearByAgents(&alarm_models.PlugModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateUsbCurdFactory().ClearByAgents(&alarm_models.UsbModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateOutreachCurdFactory().ClearByAgents(&alarm_models.OutreachModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateLoginCurdFactory().ClearByAgents(&alarm_models.LoginModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateSelfCurdFactory().ClearByAgents(&alarm_models.SelfModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -187,21 +262,26 @@ func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
 func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	loginInfo := u.getLogin(ctx)
 	condition := alarm_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
+		OrgId:        loginInfo.OrgId,
+		CreateAtGte:  ctx.GetString(consts.ValidatorPrefixOrg + "startTime"),
+		CreateAtLte:  ctx.GetString(consts.ValidatorPrefixOrg + "endTime"),
+		HandleStatus: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "handleStatus")),
 	}
 
 	//用户管理的终端
 	err, userAgentIds := u.getCurrUserAgentIds(loginInfo)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
+		return
 	}
 	//查询终端比较用户管理的终端
 	agentId := u.getAgentIdFromGin(ctx)
-	if !string_helper.IsEmpty(agentId) {
+	if !string_helper.IsEmpty(agentId) && len(userAgentIds) > 0 {
 		if slice_helper.StringIn(agentId, userAgentIds) {
 			condition.AgentId = agentId
 		} else {
 			response.FailSimplify(ctx, "数据为空")
+			return
 		}
 	} else {
 		condition.AgentIds = userAgentIds
@@ -214,6 +294,8 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	var agentIds []string
 	switch module {
 	case enum_alarm.ModuleProcess:
+		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+		condition.Type = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmType"))
 		fact := alarm_models.CreateProcessFactory()
 		total, models := fact.Page(condition, offset, pageSize, order)
 
@@ -340,7 +422,77 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 
 // HandleForAlarm 告警: 处理
 func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
+	loginInfo := u.getLogin(ctx)
 
+	var err error
+	switch module {
+	case enum_alarm.ModuleProcess:
+		err = alarm_service.CreateProcessCurdFactory().Handle(&alarm_models.ProcessModel{
+			OrgId:    loginInfo.OrgId,
+			ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		})
+		break
+	case enum_alarm.ModuleDll:
+		err = alarm_service.CreateDllCurdFactory().Handle(&alarm_models.DllModel{
+			OrgId:   loginInfo.OrgId,
+			DllHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		})
+		break
+	case enum_alarm.ModuleTamper:
+		err = alarm_service.CreateTamperCurdFactory().Handle(&alarm_models.TamperModel{
+			OrgId: loginInfo.OrgId,
+			Id:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		})
+		break
+	case enum_alarm.ModuleBlackmail:
+		err = alarm_service.CreateBlackmailCurdFactory().Handle(&alarm_models.BlackmailModel{
+			OrgId: loginInfo.OrgId,
+			Id:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		})
+		break
+	case enum_alarm.ModulePort:
+		err = alarm_service.CreatePortCurdFactory().Handle(&alarm_models.PortModel{
+			OrgId:    loginInfo.OrgId,
+			AttackIp: ctx.GetString(consts.ValidatorPrefixOrg + "attackIp"),
+		})
+		break
+	case enum_alarm.ModulePlug:
+		err = alarm_service.CreatePlugCurdFactory().Handle(&alarm_models.PlugModel{
+			OrgId: loginInfo.OrgId,
+			Ip:    ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
+		})
+		break
+	case enum_alarm.ModuleUsb:
+		err = alarm_service.CreateUsbCurdFactory().Handle(&alarm_models.UsbModel{
+			OrgId:   loginInfo.OrgId,
+			UsbHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
+		})
+		break
+	case enum_alarm.ModuleOutreach:
+		err = alarm_service.CreateOutreachCurdFactory().Handle(&alarm_models.OutreachModel{
+			OrgId:    loginInfo.OrgId,
+			TargetIp: ctx.GetString(consts.ValidatorPrefixOrg + "targetIp"),
+		})
+		break
+	case enum_alarm.ModuleLogin:
+		err = alarm_service.CreateLoginCurdFactory().Handle(&alarm_models.LoginModel{
+			OrgId:    loginInfo.OrgId,
+			SourceIp: ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp"),
+		})
+		break
+	case enum_alarm.ModuleSelf:
+		err = alarm_service.CreateSelfCurdFactory().Handle(&alarm_models.SelfModel{
+			OrgId: loginInfo.OrgId,
+			Id:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		})
+		break
+	}
+
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // HandleAllForAlarm 告警: 处理全部

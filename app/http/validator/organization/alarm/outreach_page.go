@@ -13,7 +13,7 @@ import (
 type OutreachPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	TargetIp
+	SearchTargetIp
 	HandleStatus
 	SearchTime
 }

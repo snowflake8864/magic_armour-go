@@ -13,7 +13,7 @@ import (
 type PortPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	AttackIp
+	SearchAttackIp
 	HandleStatus
 	SearchTime
 }

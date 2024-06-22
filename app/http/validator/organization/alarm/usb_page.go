@@ -13,7 +13,7 @@ import (
 type UsbPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	FileDir
+	SearchHash
 	HandleStatus
 	SearchType
 	SearchTime

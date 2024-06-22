@@ -21,6 +21,7 @@ type SearchConditions struct {
 	Ip           string
 	UsbHash      string
 	HandleStatus int
+	Type         int
 	CreateAtGte  string
 	CreateAtLte  string
 }
@@ -63,10 +64,52 @@ func (m *baseAlarm) conditions2Where(condition SearchConditions) (wheres []model
 			Val: condition.Id,
 		})
 	}
+	if condition.Type > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.Type,
+		})
+	}
 	if !string_helper.IsEmpty(condition.AttackIp) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "attack_ip",
 			Val: condition.AttackIp,
+		})
+	}
+	if !string_helper.IsEmpty(condition.SourceIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "source_ip",
+			Val: condition.SourceIp,
+		})
+	}
+	if !string_helper.IsEmpty(condition.TargetIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "target_ip",
+			Val: condition.TargetIp,
+		})
+	}
+	if !string_helper.IsEmpty(condition.Ip) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "ip",
+			Val: condition.Ip,
+		})
+	}
+	if !string_helper.IsEmpty(condition.UsbHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "usb_hash",
+			Val: condition.UsbHash,
+		})
+	}
+	if !string_helper.IsEmpty(condition.ProcHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_hash",
+			Val: condition.ProcHash,
+		})
+	}
+	if !string_helper.IsEmpty(condition.DllHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "dll_hash",
+			Val: condition.DllHash,
 		})
 	}
 	if condition.HandleStatus > 0 {

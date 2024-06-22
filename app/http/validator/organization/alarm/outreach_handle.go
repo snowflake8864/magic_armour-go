@@ -5,12 +5,14 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/http/controller/organization"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/utils/response"
 )
 
 type OutreachHandle struct {
-	HashOmitempty
+	data_type.AgentSingle
+	TargetIp
 	Remark
 }
 

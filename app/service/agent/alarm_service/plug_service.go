@@ -5,7 +5,7 @@ import (
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
-func CreatPlugCurdFactory() *PlugCurd {
+func CreatePlugCurdFactory() *PlugCurd {
 	return &PlugCurd{
 		masterModel: alarm_models.CreatePlugFactory(),
 	}

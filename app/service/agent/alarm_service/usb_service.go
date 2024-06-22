@@ -19,8 +19,8 @@ type UsbCurd struct {
 // Handle 处理
 func (crd *UsbCurd) Handle(param *alarm_models.UsbModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		ProcHash: param.UsbHash,
+		OrgId:   param.OrgId,
+		UsbHash: param.UsbHash,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {

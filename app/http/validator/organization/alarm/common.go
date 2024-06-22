@@ -8,31 +8,47 @@ type Remark struct {
 	Remark string `form:"remark" json:"remark" binding:"required,max=128"`
 }
 
-type HashOmitempty struct {
-	Hash string `form:"hash" json:"hash" binding:"omitempty,max=128"`
-}
-
-type HashRequired struct {
+type Hash struct {
 	Hash string `form:"hash" json:"hash" binding:"required,max=128"`
 }
 
-type FileDir struct {
+type SearchHash struct {
+	Hash string `form:"hash" json:"hash" binding:"omitempty,max=128"`
+}
+
+type SearchFileDir struct {
 	FileDir string `form:"fileDir" json:"fileDir" binding:"omitempty,max=128"`
 }
 
 type AttackIp struct {
+	AttackIp string `form:"attackIp" json:"attackIp" binding:"required,ip"`
+}
+
+type SearchAttackIp struct {
 	AttackIp string `form:"attackIp" json:"attackIp" binding:"omitempty,ip"`
 }
 
 type PlugIp struct {
+	PlugIp string `form:"plugIp" json:"plugIp" binding:"required,ip"`
+}
+
+type SearchPlugIp struct {
 	PlugIp string `form:"plugIp" json:"plugIp" binding:"omitempty,ip"`
 }
 
 type SourceIp struct {
+	SourceIp string `form:"sourceIp" json:"sourceIp" binding:"required,ip"`
+}
+
+type SearchSourceIp struct {
 	SourceIp string `form:"sourceIp" json:"sourceIp" binding:"omitempty,ip"`
 }
 
 type TargetIp struct {
+	TargetIp string `form:"targetIp" json:"targetIp" binding:"required,ip"`
+}
+
+type SearchTargetIp struct {
 	TargetIp string `form:"targetIp" json:"targetIp" binding:"omitempty,ip"`
 }
 

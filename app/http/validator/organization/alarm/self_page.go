@@ -13,7 +13,7 @@ import (
 type SelfPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	AttackIp
+	SearchHash
 	HandleStatus
 	SearchTime
 }

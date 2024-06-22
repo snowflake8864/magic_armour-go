@@ -13,7 +13,7 @@ import (
 type DllPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	HashOmitempty
+	SearchHash
 	HandleStatus
 	SearchType
 	SearchTime

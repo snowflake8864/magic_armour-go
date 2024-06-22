@@ -583,14 +583,16 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 	err, userAgentIds := u.getCurrUserAgentIds(loginInfo)
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
+		return
 	}
 	//查询终端比较用户管理的终端
 	agentId := u.getAgentIdFromGin(ctx)
-	if !string_helper.IsEmpty(agentId) {
+	if !string_helper.IsEmpty(agentId) && len(userAgentIds) > 0 {
 		if slice_helper.StringIn(agentId, userAgentIds) {
 			condition.AgentId = agentId
 		} else {
 			response.FailSimplify(ctx, "数据为空")
+			return
 		}
 	} else {
 		condition.AgentIds = userAgentIds

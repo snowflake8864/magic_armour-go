@@ -19,9 +19,8 @@ type BlackmailCurd struct {
 // Handle 处理
 func (crd *BlackmailCurd) Handle(param *alarm_models.BlackmailModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:   param.OrgId,
-		AgentId: param.AgentId,
-		Id:      param.Id,
+		OrgId: param.OrgId,
+		Id:    param.Id,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {

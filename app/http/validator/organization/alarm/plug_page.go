@@ -13,7 +13,7 @@ import (
 type PlugPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	AttackIp
+	SearchPlugIp
 	HandleStatus
 	SearchTime
 }

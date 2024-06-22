@@ -19,8 +19,8 @@ type TamperCurd struct {
 // Handle 处理
 func (crd *TamperCurd) Handle(param *alarm_models.TamperModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId:    param.OrgId,
-		ProcHash: param.ProcHash,
+		OrgId: param.OrgId,
+		Id:    param.Id,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
