@@ -98,6 +98,7 @@ func (m *LogModel) GetItemsByConditions(condition SearchConditions, offset, limi
 	if result.Error == nil {
 		return items
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return nil
 	}
 }
@@ -113,6 +114,7 @@ func (m *LogModel) Count(condition SearchConditions) int64 {
 	if result.Error == nil {
 		return total
 	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return 0
 	}
 }
@@ -123,8 +125,8 @@ func (m *LogModel) Page(condition SearchConditions, offset, limit int, order str
 	if total == 0 {
 		return total, nil
 	}
-	items = m.GetItemsByConditions(condition, offset, limit, order)
-	if items == nil {
+
+	if items = m.GetItemsByConditions(condition, offset, limit, order); len(items) > 0 {
 		return total, items
 	} else {
 		return 0, nil

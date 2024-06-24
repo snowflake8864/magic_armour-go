@@ -247,6 +247,5 @@ func (u *OrganizeController) PageForLog(ctx *gin.Context) {
 
 	//用户分页
 	total, models := organization_models.CreateLogFactory().Page(searchConditions, offset, pageSize, order)
-
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogPage(total, models))
 }
