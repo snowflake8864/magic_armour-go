@@ -46,7 +46,6 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	conditions := prodcut_models.SearchConditions{}
 	conditions.Title = ctx.GetString(consts.ValidatorPrefixPlatform + "title")
 	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
-	conditions.IsPublish = enums.AllDefaultInt
 
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
@@ -100,16 +99,13 @@ func (u *ProductController) addParam(ctx *gin.Context) prodcut_models.ProductMod
 	param.Price = ctx.GetFloat64(consts.ValidatorPrefixPlatform + "price")
 	param.Remark = ctx.GetString(consts.ValidatorPrefixPlatform + "remark")
 
+	jsonStr := ctx.GetString(consts.ValidatorPrefixPlatform + "grant_module")
 	productGrantConfig := enum_product.ProductGrantConfig{}
-	productGrantConfig.Process = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_process"))
-	productGrantConfig.Tamper = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_tamper"))
-	productGrantConfig.Blackmail = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_blackmail"))
-	productGrantConfig.Port = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_port"))
-	productGrantConfig.Plug = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_plug"))
-	productGrantConfig.Usb = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_usb"))
-	productGrantConfig.Syslog = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_syslog"))
-	productGrantConfig.Outreach = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_outreach"))
-	productGrantConfig.Login = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "m_login"))
+	if err := json_helper.ToStruct(jsonStr, &productGrantConfig); err != nil {
+		productGrantConfig = enum_product.ProductGrantConfig{}
+	}
+	productGrantConfig.Default()
+
 	param.GrantModule = json_helper.Encode(productGrantConfig)
 
 	loginInfo := u.getLogin(ctx)

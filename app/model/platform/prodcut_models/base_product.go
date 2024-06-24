@@ -1,6 +1,7 @@
 package prodcut_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -9,7 +10,7 @@ type SearchConditions struct {
 	Id        int64
 	GrantType int
 	Title     string
-	IsPublish int
+	IsPublish *int
 }
 type baseProduct struct {
 }
@@ -35,10 +36,10 @@ func (crd *baseProduct) conditions2Where(condition SearchConditions) (wheres []m
 			Val: "%" + condition.Title + "%",
 		})
 	}
-	if condition.IsPublish > 0 {
+	if condition.IsPublish != nil && *condition.IsPublish != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_publish",
-			Val: condition.IsPublish,
+			Val: *condition.IsPublish,
 		})
 	}
 	return wheres

@@ -51,11 +51,12 @@ func (crd *ProductCurd) GetItemById(id int64) (model *prodcut_models.ProductMode
 
 // GetPublished 获取已发布的
 func (crd *ProductCurd) GetPublished() (items []*prodcut_models.ProductModel) {
+	IsPublish := enums.IsYes
 	search := prodcut_models.SearchConditions{
-		IsPublish: enums.IsYes,
+		IsPublish: &IsPublish,
 	}
 	items = crd.masterModel.GetItemsByConditions(search, 0, 0, "")
-	if items != nil || len(items) == 0 {
+	if items == nil || len(items) == 0 {
 		return nil
 	}
 	return items
