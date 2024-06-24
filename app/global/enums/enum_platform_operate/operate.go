@@ -72,6 +72,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/platform/software/manage/publish":           {ModuleSoftware, "发布"},
 	"/v5/platform/software/manage/cancel":            {ModuleSoftware, "取消"},
 	"/v5/platform/software/manage/clear":             {ModuleSoftware, "清空"},
+	"/v5/platform/software/agentConfig/set":          {ModuleSoftware, "终端配置"},
 	"/v5/platform/threaten/cache/delete":             {ModuleThreaten, "缓存-删除"},
 	"/v5/platform/threaten/cache/clear":              {ModuleThreaten, "缓存-清空"},
 	"/v5/platform/threaten/cache/refresh":            {ModuleThreaten, "缓存-刷新"},

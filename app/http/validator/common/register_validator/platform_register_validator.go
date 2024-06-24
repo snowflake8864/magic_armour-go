@@ -142,8 +142,8 @@ func PlatformRegisterValidator() {
 	//软件
 	key = consts.ValidatorPrefixPlatform + "SoftwarePublicOsTypes"
 	containers.Set(key, software4.PublicOsTypes{})
-	key = consts.ValidatorPrefixPlatform + "SoftwarePublicAgentConfigSet"
-	containers.Set(key, software4.PublicAgentConfigSet{})
+	key = consts.ValidatorPrefixPlatform + "SoftwareAgentConfigSet"
+	containers.Set(key, software4.AgentConfigSet{})
 	key = consts.ValidatorPrefixPlatform + "SoftwareManagePage"
 	containers.Set(key, software4.ManagePage{})
 	key = consts.ValidatorPrefixPlatform + "SoftwareManageAdd"

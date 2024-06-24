@@ -53,8 +53,8 @@ func (u *SoftwareController) GetOsTypes(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
-// GetAgentConfig  获取终端配置
-func (u *SoftwareController) GetAgentConfig(ctx *gin.Context) {
+// AgentConfigGet  终端配置:获取
+func (u *SoftwareController) AgentConfigGet(ctx *gin.Context) {
 	dictIds := []string{
 		enum_dictionary.AgentHttpUrl,
 		enum_dictionary.AgentHttpPort,
@@ -71,8 +71,8 @@ func (u *SoftwareController) GetAgentConfig(ctx *gin.Context) {
 	})
 }
 
-// SetAgentConfig  保存终端配置
-func (u *SoftwareController) SetAgentConfig(ctx *gin.Context) {
+// AgentConfigSet  终端配置:保存
+func (u *SoftwareController) AgentConfigSet(ctx *gin.Context) {
 	idAndVal := map[string]interface{}{
 		enum_dictionary.AgentHttpUrl:               ctx.GetString(consts.ValidatorPrefixPlatform + "http_url"),
 		enum_dictionary.AgentHttpPort:              ctx.GetString(consts.ValidatorPrefixPlatform + "http_port"),

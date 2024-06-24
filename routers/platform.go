@@ -231,9 +231,16 @@ func InitPlatformRouter() *gin.Engine {
 					public := software.Group("public/")
 					{
 						public.POST("osTypes", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicOsTypes"))
-						public.POST("agentConfigGet", (&platform.SoftwareController{}).GetAgentConfig)
+						public.POST("agentConfigGet", (&platform.SoftwareController{}).AgentConfigGet)
 						public.POST("agentConfigSet", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwarePublicAgentConfigSet"))
 					}
+
+					agentConfig := software.Group("agentConfig/")
+					{
+						agentConfig.POST("get", (&platform.SoftwareController{}).AgentConfigGet)
+						agentConfig.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareAgentConfigSet"))
+					}
+
 					manage := software.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManagePage"))
