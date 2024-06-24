@@ -58,6 +58,10 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/auth/hsLogin":       {ModuleAuth, "幻势登录"},
 	"/v5/organization/auth/logout":        {ModuleAuth, "幻势登录"},
 
+	"/v5/organization/account/modifyPw":    {ModuleAccount, "修改密码"},
+	"/v5/organization/account/modifyPhone": {ModuleAccount, "修改手机"},
+	"/v5/organization/account/modifyEmail": {ModuleAccount, "修改邮箱"},
+
 	"/v5/organization/agent/manage/delete":         {ModuleAgent, "管理页:删除"},
 	"/v5/organization/agent/manage/uninstall":      {ModuleAgent, "管理页:卸载"},
 	"/v5/organization/agent/manage/upgrade":        {ModuleAgent, "管理页:卸载"},
