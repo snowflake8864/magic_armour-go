@@ -7,6 +7,6 @@ type Common struct {
 	Sort     *int   `form:"sort" json:"sort" binding:"required,min=0,max=9999"`
 	IsShow   *int   `form:"isShow" json:"isShow" binding:"required,min=0,max=1"`
 	IsRoot   *int   `form:"isRoot" json:"isRoot" binding:"required,min=0,max=1"`
-	UsageVer *int   `form:"usageVer" json:"usageVer" binding:"required,min=1,max=3"`
+	UsageVer *int   `form:"usageVer" json:"usageVer" binding:"required,min=0,max=2"`
 	Remark   string `form:"remark" json:"remark" binding:"omitempty,max=100"`
 }

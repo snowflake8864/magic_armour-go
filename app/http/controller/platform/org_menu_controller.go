@@ -17,8 +17,8 @@ type OrgMenuController struct {
 
 // Tree 树形列表
 func (u *OrgMenuController) Tree(ctx *gin.Context) {
-	loginInfo := u.getLogin(ctx)
-	models := org_menu_service.CreateCurdFactory().GetAll(loginInfo.IsRoot)
+	conditions := org_menu_models.SearchConditions{}
+	models := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
 	if models == nil {
 		response.SuccessReturnData(ctx, []interface{}{})
 		return

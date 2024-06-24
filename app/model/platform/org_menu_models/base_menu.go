@@ -1,13 +1,15 @@
 package org_menu_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 )
 
 type SearchConditions struct {
-	Id     int64
-	Ids    []int64
-	IsRoot int
+	Id           int64
+	Ids          []int64
+	IsRoot       *int
+	UsageVerList []int
 }
 
 type baseMenu struct {
@@ -28,10 +30,16 @@ func (m *baseMenu) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.Ids,
 		})
 	}
-	if condition.IsRoot > 0 {
+	if condition.IsRoot != nil && *condition.IsRoot != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_root",
-			Val: condition.IsRoot,
+			Val: *condition.IsRoot,
+		})
+	}
+	if len(condition.UsageVerList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "usage_ver in",
+			Val: condition.UsageVerList,
 		})
 	}
 	return wheres

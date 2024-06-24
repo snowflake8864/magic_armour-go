@@ -2,7 +2,6 @@ package org_menu_service
 
 import (
 	"errors"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/utils/helpers/date_helper"
 )
@@ -35,25 +34,6 @@ func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err 
 		return -1, errors.New("添加失败")
 	}
 	return errCode, err
-}
-
-// GetAll 获取全部
-func (crd *MenuCurd) GetAll(isRoot int) []*org_menu_models.OrgMenuModel {
-	condition := org_menu_models.SearchConditions{}
-	if isRoot == 0 {
-		condition.IsRoot = enums.IsYes
-	}
-	return crd.masterModel.GetListByConditions(condition)
-}
-
-// GetItemsByIds 通过id获取
-func (crd *MenuCurd) GetItemsByIds(ids []int64, isRoot int) []*org_menu_models.OrgMenuModel {
-	condition := org_menu_models.SearchConditions{}
-	condition.Ids = ids
-	if isRoot == 0 {
-		condition.IsRoot = enums.IsYes
-	}
-	return crd.masterModel.GetListByConditions(condition)
 }
 
 // UpdateById 修改

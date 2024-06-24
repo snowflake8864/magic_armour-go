@@ -1,7 +1,6 @@
 package org_menu_models
 
 import (
-	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -52,7 +51,7 @@ func (m *OrgMenuModel) CreateTable() bool {
 			sort int(11) NOT NULL DEFAULT '1' COMMENT '排序',
 			is_show tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否显示(0否,1是),前端判断用',
 			is_root tinyint(1) NOT NULL DEFAULT '0' COMMENT '仅超管可用(0否,1是),后端判断用',
-			usage_ver tinyint(1) NOT NULL DEFAULT '0' COMMENT '使用版本，二进制表示(1离线版本,2在线版本)',
+			usage_ver tinyint(1) NOT NULL DEFAULT '0' COMMENT '使用版本，二进制表示(0不区分版本,1离线版本,2在线版本)',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
 			api text  NOT NULL COMMENT '服务端对应接口(,)隔开',
 			level smallint(4) NOT NULL DEFAULT '1' COMMENT '级别(从1开始)',
@@ -87,7 +86,7 @@ func (m *OrgMenuModel) InitData() bool {
 	sql += ` (id, parent_id, position, type, name, code, sort, is_show, is_root, usage_ver, remark, api, level, created_at)`
 	sql += ` VALUES `
 	sql += `
-			(1, 1, 1, 1, 'name', 'code', 1, 0, 0, 3,  'remark', 'api', 1, '2024-01-30 00:00:00');
+			(1, 0, 1, 1, 'name', 'code', 1, 0, 0, 0,  'remark', 'api', 1, '2024-01-30 00:00:00');
 		`
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
@@ -142,15 +141,6 @@ func (m *OrgMenuModel) GetItemByParent(id int64) (item *OrgMenuModel, err error)
 	}
 }
 
-func (m *OrgMenuModel) GetItemsByIds(ids []int64) (items []*OrgMenuModel, err error) {
-	result := m.Where("id IN ?", ids).Find(&items)
-	if result.Error == nil {
-		return items, nil
-	} else {
-		return nil, result.Error
-	}
-}
-
 // GetListByConditions 获取符合条件的全部记录
 func (m *OrgMenuModel) GetListByConditions(condition SearchConditions) (items []*OrgMenuModel) {
 	return m.GetItemsByConditions(condition, 0, 0, "")
@@ -158,22 +148,19 @@ func (m *OrgMenuModel) GetListByConditions(condition SearchConditions) (items []
 
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrgMenuModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrgMenuModel) {
-	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m)
-		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
-			tmp = tmp.Where(whereSQL, vals...)
-		}
-		if limit > 0 {
-			tmp = tmp.Offset(offset).Limit(limit)
-		}
-		if !string_helper.IsEmpty(order) {
-			tmp = tmp.Order(order)
-		} else {
-			tmp = tmp.Order("created_at ASC")
-		}
-		return tmp.Find(&items)
-	})
-	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !string_helper.IsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("level ASC, created_at ASC")
+	}
+	result := tmp.Find(&items)
 	if result.Error == nil {
 		return items
 	} else {
