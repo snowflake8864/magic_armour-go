@@ -58,7 +58,7 @@ func InitPlatformRouter() *gin.Engine {
 	})
 
 	//  创建一个接口路由组
-	vPlatform := router.Group("/platform/")
+	vPlatform := router.Group("v5/platform/")
 	{
 		vPlatform.GET("customConfig", func(context *gin.Context) {
 			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())

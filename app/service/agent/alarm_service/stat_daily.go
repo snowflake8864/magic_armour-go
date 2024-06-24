@@ -28,8 +28,8 @@ func (crd *AlarmStatDaily) SumByDay(day, column string) (result *alarm_stat_mode
 		StatDay: day,
 	}
 	result = crd.masterModel.CalcByConditions(where, column)
-	if result != nil {
-		return nil
+	if result == nil {
+		return &alarm_stat_models.StatDailyModel{}
 	}
 	return result
 }
