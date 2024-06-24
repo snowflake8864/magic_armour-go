@@ -11,7 +11,6 @@ import (
 	"goskeleton/app/model/organization/org_stat_models"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_log_service"
-	"goskeleton/app/service/organization/org_stat_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/response"
@@ -82,14 +81,17 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	today := date_helper.SpecialDatetime(variable.DayFormat)
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
-	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateDailyFactory().ColumnOfAgent(false, true, false, false,
-		false, false, false, false, false, false)
-	statToday := StatDailyFact.SumByDay(today, column)
-	statYesterday := StatDailyFact.SumByDay(yesterday, column)
+	StatDailyFact := org_stat_models.CreateDailyFactory()
+	column := StatDailyFact.ColumnOfAgent(false, true, false, false, false, false,
+		false, false, false, false)
+	conditions := org_stat_models.SearchConditions{}
+	conditions.StatDay = today
+	statToday := StatDailyFact.CalcByConditions(conditions, column)
+
+	conditions.StatDay = yesterday
+	statYesterday := StatDailyFact.CalcByConditions(conditions, column)
 
 	expect, percent, ratio := u.calcRatio(statToday.AgentOnline, statYesterday.AgentOnline)
-
 	response.SuccessReturnData(ctx, gin.H{
 		"total_today":     statToday.AgentOnline,
 		"total_yesterday": statYesterday.AgentOnline,
@@ -101,11 +103,14 @@ func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 
 // AgentDailyOnline 终端: 每天在线
 func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
-	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
-	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateDailyFactory().ColumnOfAgent(false, false, false, false,
-		true, false, false, true, false, true)
-	models := StatDailyFact.SumByMonthGroupDay(month, column)
+	conditions := org_stat_models.SearchConditions{
+		StatMonth: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month")),
+	}
+
+	StatDailyFact := org_stat_models.CreateDailyFactory()
+	column := StatDailyFact.ColumnOfAgent(false, false, false, false, true, false,
+		false, true, false, true)
+	models := StatDailyFact.CalcByConditionsGroupDay(conditions, column)
 
 	var result []map[string]interface{}
 	if models != nil && len(models) > 0 {
@@ -126,10 +131,14 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	today := date_helper.SpecialDatetime(variable.DayFormat)
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
-	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateDailyFactory().ColumnOfUser(false, true, true, false)
-	statToday := StatDailyFact.SumByDay(today, column)
-	statYesterday := StatDailyFact.SumByDay(yesterday, column)
+	StatDailyFact := org_stat_models.CreateDailyFactory()
+	column := StatDailyFact.ColumnOfUser(false, true, true, false)
+	conditions := org_stat_models.SearchConditions{}
+	conditions.StatDay = today
+	statToday := StatDailyFact.CalcByConditions(conditions, column)
+
+	conditions.StatDay = yesterday
+	statYesterday := StatDailyFact.CalcByConditions(conditions, column)
 
 	//新增
 	expect, percent, ratio := u.calcRatio(statToday.UserAdd, statYesterday.UserAdd)
@@ -159,10 +168,13 @@ func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 
 // UserDailyOnline 用户: 每天在线
 func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
-	month := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month"))
-	StatDailyFact := org_stat_service.CreateStatDailyFactory()
-	column := org_stat_models.CreateDailyFactory().ColumnOfUser(false, true, false, true)
-	models := StatDailyFact.SumByMonthGroupDay(month, column)
+	conditions := org_stat_models.SearchConditions{
+		StatMonth: int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "month")),
+	}
+
+	StatDailyFact := org_stat_models.CreateDailyFactory()
+	column := StatDailyFact.ColumnOfUser(false, true, false, true)
+	models := StatDailyFact.CalcByConditionsGroupDay(conditions, column)
 
 	var result []map[string]interface{}
 	if models != nil && len(models) > 0 {
