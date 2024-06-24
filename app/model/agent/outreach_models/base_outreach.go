@@ -10,6 +10,7 @@ type SearchConditions struct {
 	OrgId      int64
 	Id         int64
 	Ip         string
+	Type       int
 	OpenSwitch *int
 }
 
@@ -22,6 +23,12 @@ func (m *baseOutreach) conditions2Where(condition SearchConditions) (wheres []mo
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "org_id",
 			Val: condition.OrgId,
+		})
+	}
+	if condition.Type > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: condition.Type,
 		})
 	}
 	if condition.Id > 0 {
