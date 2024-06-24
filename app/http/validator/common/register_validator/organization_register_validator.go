@@ -3,6 +3,7 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
+	account3 "goskeleton/app/http/validator/organization/account"
 	agent3 "goskeleton/app/http/validator/organization/agent"
 	alarm3 "goskeleton/app/http/validator/organization/alarm"
 	auth3 "goskeleton/app/http/validator/organization/auth"
@@ -74,6 +75,14 @@ func OrganizationRegisterValidator() {
 	//首页
 	key = consts.ValidatorPrefixOrg + "HomeAlarmDailyStat"
 	containers.Set(key, home3.AlarmDailyStat{})
+
+	//账户管理
+	key = consts.ValidatorPrefixOrg + "AccountModifyPw"
+	containers.Set(key, account3.ModifyPw{})
+	key = consts.ValidatorPrefixOrg + "AccountModifyPhone"
+	containers.Set(key, account3.ModifyPhone{})
+	key = consts.ValidatorPrefixOrg + "AccountModifyEmail"
+	containers.Set(key, account3.ModifyEmail{})
 
 	//组织架构
 	key = consts.ValidatorPrefixOrg + "DepartmentAdd"

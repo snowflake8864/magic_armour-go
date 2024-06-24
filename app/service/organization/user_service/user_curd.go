@@ -213,7 +213,7 @@ func (crd *UserCurd) GetItemByName(name string) (model *user_models.UserModel) {
 
 // HasByUsernameAndPw 用户名和密码一致
 func (crd *UserCurd) HasByUsernameAndPw(name, pw string) bool {
-	if adminModel := crd.masterModel.GetItemByNameAndPw(name, pw); adminModel.Id > 0 {
+	if userModel := crd.masterModel.GetItemByNameAndPw(name, pw); userModel.Id > 0 {
 		return true
 	}
 	return false
@@ -242,4 +242,83 @@ func (crd *UserCurd) loginSuccess(id int64) bool {
 	} else {
 		return false
 	}
+}
+
+// ModifyPwById 修改密码
+func (crd *UserCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, err error) {
+	userModel, _ := crd.masterModel.GetItemById(id)
+	if userModel.Id == 0 {
+		return -1, errors.New("用户不存在")
+	}
+
+	//加密
+	AuthFact := CreateAuthFactory()
+	oldPw = AuthFact.EncryptPw(oldPw)
+	newPw = AuthFact.EncryptPw(newPw)
+
+	//
+	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
+		return -1, errors.New("旧密码不正确")
+	}
+
+	//修改密码
+	updates := map[string]interface{}{
+		"password": newPw,
+	}
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
+		return -1, errors.New("修改密码失败")
+	}
+	return errCode, err
+}
+
+// ModifyPhoneById 修改手机
+func (crd *UserCurd) ModifyPhoneById(id int64, oldPw, phone string) (errCode int, err error) {
+	userModel, _ := crd.masterModel.GetItemById(id)
+	if userModel.Id == 0 {
+		return -1, errors.New("用户不存在")
+	}
+
+	//加密
+	AuthFact := CreateAuthFactory()
+	oldPw = AuthFact.EncryptPw(oldPw)
+
+	//
+	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
+		return -1, errors.New("旧密码不正确")
+	}
+
+	//修改密码
+	updates := map[string]interface{}{
+		"phone": phone,
+	}
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
+		return -1, errors.New("修改手机号码失败")
+	}
+	return errCode, err
+}
+
+// ModifyEmailById 修改邮箱
+func (crd *UserCurd) ModifyEmailById(id int64, oldPw, email string) (errCode int, err error) {
+	userModel, _ := crd.masterModel.GetItemById(id)
+	if userModel.Id == 0 {
+		return -1, errors.New("用户不存在")
+	}
+
+	//加密
+	AuthFact := CreateAuthFactory()
+	oldPw = AuthFact.EncryptPw(oldPw)
+
+	//
+	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
+		return -1, errors.New("旧密码不正确")
+	}
+
+	//修改密码
+	updates := map[string]interface{}{
+		"email": email,
+	}
+	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
+		return -1, errors.New("修改 邮箱失败")
+	}
+	return errCode, err
 }
