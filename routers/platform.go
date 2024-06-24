@@ -247,7 +247,6 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SoftwareManageDelete"))
 						manage.POST("clear", (&platform.SoftwareController{}).ClearForManage)
 					}
-
 				}
 
 				//威胁情报

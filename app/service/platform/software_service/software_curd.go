@@ -41,8 +41,9 @@ func (crd *SoftwareCurd) GetMapsByPublished() (maps map[int]string) {
 
 // GetItemsByPublished 最新发布数据,
 func (crd *SoftwareCurd) GetItemsByPublished() (items []*software_models.SoftwareModel) {
+	IsPublish := enums.IsYes
 	condition := software_models.SearchConditions{
-		IsPublish: enums.IsYes,
+		IsPublish: &IsPublish,
 	}
 	items = crd.masterModel.GetItemsByConditions(condition, 0, 0, "")
 	return items
@@ -87,7 +88,7 @@ func (crd *SoftwareCurd) DeleteById(id int64) (errCode int, err error) {
 	return errCode, err
 }
 
-// PublishById 删除
+// PublishById 发布
 func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
@@ -98,9 +99,10 @@ func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
 	}
 
 	//关闭同系统类型的
+	IsPublish := enums.IsYes
 	conditions := software_models.SearchConditions{
 		OsType:    model.OsType,
-		IsPublish: enums.IsYes,
+		IsPublish: &IsPublish,
 	}
 	updates := map[string]interface{}{
 		"is_publish": enums.IsNot,

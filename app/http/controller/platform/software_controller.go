@@ -93,13 +93,15 @@ func (u *SoftwareController) PageForManage(ctx *gin.Context) {
 
 	//页面上传
 	PlatformType := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
+	IsPublish := enums.IsNot
 	condition := software_models.SearchConditions{
 		PlatformType: PlatformType,
-		IsPublish:    enums.IsYes,
+		IsPublish:    &IsPublish,
 	}
 	if PlatformType == enum_software.PlatformTypeWindows || PlatformType == enum_software.PlatformTypeLinux {
 		condition.PlatformType = PlatformType
-		condition.IsPublish = enums.IsYes
+		IsPublish = enums.IsYes
+		condition.IsPublish = &IsPublish
 	}
 
 	//分页参数和排序参数

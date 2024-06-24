@@ -1,6 +1,7 @@
 package software_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 )
 
@@ -8,7 +9,7 @@ type SearchConditions struct {
 	Id           int64
 	PlatformType int
 	OsType       int
-	IsPublish    int
+	IsPublish    *int
 }
 type baseSoftware struct {
 }
@@ -34,10 +35,10 @@ func (crd *baseSoftware) conditions2Where(condition SearchConditions) (wheres []
 			Val: condition.OsType,
 		})
 	}
-	if condition.IsPublish > 0 {
+	if condition.IsPublish != nil && *condition.IsPublish != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_publish",
-			Val: condition.IsPublish,
+			Val: *condition.IsPublish,
 		})
 	}
 	return wheres
