@@ -99,7 +99,7 @@ func PlatformRegisterValidator() {
 	key = consts.ValidatorPrefixPlatform + "AgentPublicStatByOrg"
 	containers.Set(key, agent4.PublicStatByOrg{})
 	key = consts.ValidatorPrefixPlatform + "AgentOrgPage"
-	containers.Set(key, organize4.ManagePage{})
+	containers.Set(key, agent4.ManagePage{})
 	key = consts.ValidatorPrefixPlatform + "AgentOrgAddGrant"
 	containers.Set(key, order4.OrgAddGrant{})
 	key = consts.ValidatorPrefixPlatform + "AgentOwnPage"

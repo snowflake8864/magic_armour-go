@@ -6,11 +6,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/organization/department_service"
+	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
 	"sort"
@@ -62,6 +65,44 @@ func (u *AgentController) StatByOrg(ctx *gin.Context) {
 	agentFact := agent_models.CreateAgentFactory()
 	stat := agentFact.CalcByConditions(searchConditions, agentFact.ColumnCalcAgents(false, true, false, false, false))
 	response.SuccessReturnData(ctx, stat)
+}
+
+// PageForManage 管理: 分页
+func (u *AgentController) PageForManage(ctx *gin.Context) {
+	//查询条件
+	conditions, err := u.getOrgSearchConditions(ctx)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	//默认状态
+	conditions.StatusList = []int{
+		enum_organization.StatusNormal,
+		enum_organization.StatusLocking,
+	}
+
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//终端分页
+	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
+	orgIds := u.getOrgIdsForDb(orgModels)
+
+	var extendInfo = make(map[int64]interface{})
+	if len(orgIds) > 0 {
+		orderModels := order_service.CreateCurdFactory().GetValidItemsByOrgs(orgIds)
+		if orderModels != nil && len(orderModels) > 0 {
+			var orgOrders = make(map[int64][]map[string]interface{})
+			for _, model := range orderModels {
+				orgOrders[model.OrgId] = append(orgOrders[model.OrgId], (&platform_trans.Order{}).TransDetail(model))
+			}
+			for orgId, list := range orgOrders {
+				extendInfo[orgId] = list
+			}
+		}
+	}
+
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOtherPage(total, orgModels, extendInfo))
 }
 
 // PageForOwn 终端本身: 分页

@@ -10,6 +10,7 @@ import (
 type SearchConditions struct {
 	OrderNo     string
 	OrgId       int64
+	OrgIds      []int64
 	OraName     string
 	UserName    string
 	UserPhone   string
@@ -38,6 +39,12 @@ func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []mod
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "org_id",
 			Val: condition.OrgId,
+		})
+	}
+	if condition.OrgIds != nil && len(condition.OrgIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id in",
+			Val: condition.OrgIds,
 		})
 	}
 	if !string_helper.IsEmpty(condition.UserName) {

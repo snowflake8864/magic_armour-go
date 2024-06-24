@@ -49,25 +49,25 @@ func SuccessReturnData(c *gin.Context, data interface{}) {
 
 // Fail 失败的业务逻辑
 func Fail(c *gin.Context, dataCode int, msg string, data interface{}) {
-	ReturnJson(c, http.StatusBadRequest, dataCode, msg, data)
+	ReturnJson(c, http.StatusOK, dataCode, msg, data)
 	c.Abort()
 }
 
 // FailSimplify 失败的业务逻辑：简化
 func FailSimplify(c *gin.Context, msg string) {
-	ReturnJson(c, http.StatusBadRequest, consts.CurdBaseCode, msg, "")
+	ReturnJson(c, http.StatusOK, consts.CurdBaseCode, msg, "")
 	c.Abort()
 }
 
 // FailRoutine 失败的业务逻辑： 日常使用
 func FailRoutine(c *gin.Context, dataCode interface{}, msg string) {
-	ReturnJson(c, http.StatusBadRequest, dataCode, msg, "")
+	ReturnJson(c, http.StatusOK, dataCode, msg, "")
 	c.Abort()
 }
 
 // FailData 失败的业务逻辑：有错误数据
 func FailData(c *gin.Context, msg string, data interface{}) {
-	ReturnJson(c, http.StatusBadRequest, consts.CurdBaseCode, msg, data)
+	ReturnJson(c, http.StatusOK, consts.CurdBaseCode, msg, data)
 	c.Abort()
 }
 

@@ -159,6 +159,22 @@ func (crd *OrderCurd) GetValidItemsByOrg(orgId int64) (items []*order_models.Ord
 	return items
 }
 
+// GetValidItemsByOrgs 通过企业编号获取有效订单
+func (crd *OrderCurd) GetValidItemsByOrgs(orgIds []int64) (items []*order_models.OrderModel) {
+	IsExpire := enums.IsNot
+	search := order_models.SearchConditions{
+		OrgIds:      orgIds,
+		IsExpire:    &IsExpire,
+		OrderStatus: enum_order.OrderStatusCompleted,
+	}
+
+	items = crd.masterModel.GetItemsByConditions(search, 0, 0, "")
+	if len(items) == 0 {
+		return nil
+	}
+	return items
+}
+
 // PlatformCancel 平台取消
 func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)

@@ -52,6 +52,32 @@ func (t *Org) TransPage(total int64, models []*organization_models.OrganizationM
 	}
 }
 
+// TransOtherPage 转换成管理页需要的数据
+func (t *Org) TransOtherPage(total int64, models []*organization_models.OrganizationModel, extendInfo map[int64]interface{}) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageGeneral(model)
+
+			//扩展信息
+			var einfo interface{}
+			tmp["extend_info"] = einfo
+			if extendInfo != nil && len(extendInfo) > 0 {
+				if extend, ok := extendInfo[model.Id]; ok {
+					tmp["extend_info"] = extend
+				}
+			}
+
+			items = append(items, tmp)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
 // TransDetail 转换成详情页需要的数据
 func (t *Org) TransDetail(model *organization_models.OrganizationModel) map[string]interface{} {
 	return t.pageGeneral(model)

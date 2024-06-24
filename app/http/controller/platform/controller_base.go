@@ -78,3 +78,14 @@ func (u *ControllerBase) getWebSliceOfInt(ctx *gin.Context, field string) []int 
 	}
 	return list
 }
+
+// 获取企业集合
+func (u *ControllerBase) getOrgIdsForDb(models []*organization_models.OrganizationModel) []int64 {
+	var list []int64
+	if models != nil || len(models) > 0 {
+		for _, model := range models {
+			list = append(list, model.Id)
+		}
+	}
+	return list
+}
