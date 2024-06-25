@@ -19,6 +19,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["order_no"] = model.OrderNo
 	data["org_id"] = model.OrgId
 	data["org_name"] = model.OrgName
+	data["user_name"] = model.UserName
 	data["user_email"] = model.UserEmail
 	data["user_phone"] = model.UserPhone
 	data["product_id"] = model.ProductId
@@ -31,6 +32,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["sale_price"] = model.SalePrice
 	data["grant_duration"] = model.GrantDuration
+	data["grant_duration_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("grant_duration", model.GrantDuration, enum_order.EnumMap)
 	data["buy_number"] = model.BuyNumber
 	data["usageNumber"] = model.UsageNumber
 	data["total_amount"] = model.TotalAmount

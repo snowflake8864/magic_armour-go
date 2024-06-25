@@ -6,6 +6,12 @@ import (
 )
 
 const (
+	LogTypeDns     int = 1 //日志类型：dns
+	LogTypeOuter   int = 2 //日志类型：对外通讯
+	LogTypeInner   int = 3 //日志类型：对内通讯
+	LogTypeProcess int = 4 //日志类型：进程启动
+	LogTypeLogin   int = 5 //日志类型：登录
+
 	LoginRdp string = "RDP" //登录类型： 远程桌面协议
 	LoginSmb string = "SMB" //登录类型： 一种局域网文件共享传输协议
 	LoginSsh string = "SSH" //登录类型： 一种网络协议，用于计算机之间的加密登录

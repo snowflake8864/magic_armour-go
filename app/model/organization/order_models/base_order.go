@@ -11,7 +11,7 @@ type SearchConditions struct {
 	OrderNo     string
 	OrgId       int64
 	OrgIds      []int64
-	OraName     string
+	OrgName     string
 	UserName    string
 	UserPhone   string
 	ProductName string
@@ -78,10 +78,10 @@ func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []mod
 			Val: condition.ExpireAtLte,
 		})
 	}
-	if !string_helper.IsEmpty(condition.OraName) {
+	if !string_helper.IsEmpty(condition.OrgName) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "org_name like",
-			Val: "%" + condition.OraName + "%",
+			Val: "%" + condition.OrgName + "%",
 		})
 	}
 

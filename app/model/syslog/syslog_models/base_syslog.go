@@ -9,6 +9,8 @@ import (
 type SearchConditions struct {
 	OrgId       int64
 	AgentId     string
+	AgentIds    []string
+	Ids         []int64
 	CreateAtGte string
 	CreateAtLte string
 	SourceIp    string
@@ -37,6 +39,18 @@ func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "agent_id",
 			Val: condition.AgentId,
+		})
+	}
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
+		})
+	}
+	if len(condition.Ids) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.Ids,
 		})
 	}
 	if !string_helper.IsEmpty(condition.SourceIp) {

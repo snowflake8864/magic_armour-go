@@ -88,7 +88,7 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 
 func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
 	searchConditions := order_models.SearchConditions{}
-	searchConditions.OraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	searchConditions.OrgName = ctx.GetString(consts.ValidatorPrefixPlatform + "orgName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
 	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
@@ -101,6 +101,7 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	//查询条件
 	conditions := u.getOrderSearchConditions(ctx)
 	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
+	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
 	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 
