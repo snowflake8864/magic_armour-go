@@ -56,19 +56,18 @@ func SaveOperate() gin.HandlerFunc {
 				"/v5/platform/auth/getSliderCode": {},
 				"/v5/platform/auth/sendSms":       {},
 				"/v5/platform/auth/normalLogin":   {},
-				"/v5/platform/auth/logout":        {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
 				param.CreateName, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(c.GetString(consts.ValidatorPrefixPlatform + "name"))
 				if string_helper.IsEmpty(param.CreateName) {
-					variable.ZapLog.Error("SaveOperate param name is empty, IP: " + param.NetIp)
+					variable.ZapLog.Error("param name is empty, IP: " + param.NetIp)
 					return
 				}
 				//获取管理员
 				adminModel := admin_service.CreateCurdFactory().GetItemByUsername(param.CreateName)
 				if string_helper.IsEmpty(adminModel.Username) {
-					variable.ZapLog.Error("SaveOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
+					variable.ZapLog.Error("param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
 					return
 				}
 				param.CreateId = adminModel.Id

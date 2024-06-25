@@ -13,6 +13,8 @@ type SearchConditions struct {
 	Ids         []int64
 	CreateAtGte string
 	CreateAtLte string
+	ProcHash    string
+	DomainName  string
 	SourceIp    string
 	LoginStatus *int
 }
