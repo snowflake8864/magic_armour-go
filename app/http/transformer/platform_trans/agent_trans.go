@@ -2,6 +2,7 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
@@ -24,12 +25,28 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["platform_type"] = model.PlatformType
 	data["os_type"] = model.OsType
 	data["is_online"] = model.IsOnline
-	data["online_at"] = model.IsOnline
+	data["online_at"] = model.OnlineAt
 	data["is_safe"] = model.IsSafe
+	data["ver"] = model.Ver
+	data["mem_desc"] = model.MemDesc
+	data["hd_desc"] = model.HdDesc
+	data["cpu_desc"] = model.CpuDesc
+	data["network_card"] = model.CpuDesc
+	data["agent_start_at"] = model.AgentStartAt
+	data["os_start_at"] = model.OsStartAt
+
 	data["contact_name"] = model.ContactName
+	data["contact_tel"] = model.ContactTel
 	data["alias"] = model.Alias
+	data["position"] = model.Position
+	data["remark"] = model.Remark
+
+	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
 	data["grant_order_no"] = model.GrantOrderNo
+	data["grant_expire_at"] = model.GrantExpireAt
+	data["grant_status"] = model.GrantStatus
 	data["grant_product_title"] = model.GrantProductTitle
+
 	data["dept_id"] = model.DeptId
 	data["dept_fullname"] = []string{}
 	if departments != nil && len(departments) > 0 {

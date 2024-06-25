@@ -28,9 +28,16 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["os_name"] = model.OsName
 	data["platform_type"] = model.PlatformType
 	data["os_type"] = model.OsType
+	data["ver"] = model.Ver
+	data["mem_desc"] = model.MemDesc
+	data["hd_desc"] = model.HdDesc
+	data["cpu_desc"] = model.CpuDesc
+	data["network_card"] = model.CpuDesc
+	data["agent_start_at"] = model.AgentStartAt
+	data["os_start_at"] = model.OsStartAt
 
 	data["is_online"] = model.IsOnline
-	data["online_at"] = model.IsOnline
+	data["online_at"] = model.OnlineAt
 	data["is_safe"] = model.IsSafe
 
 	data["dept_id"] = model.DeptId
