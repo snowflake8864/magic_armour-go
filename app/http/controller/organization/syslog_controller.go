@@ -69,16 +69,73 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransDnsPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeInner:
+		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
+		condition.SourceIp = ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp")
+		condition.SourcePort = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "sourcePort"))
+		condition.TargetIp = ctx.GetString(consts.ValidatorPrefixOrg + "targetIp")
+		condition.TargetPort = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "targetPort"))
 
+		fact := syslog_models.CreateInnerFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransInnerPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeOuter:
+		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
+		condition.SourceIp = ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp")
+		condition.SourcePort = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "sourcePort"))
+		condition.TargetIp = ctx.GetString(consts.ValidatorPrefixOrg + "targetIp")
+		condition.TargetPort = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "targetPort"))
 
+		fact := syslog_models.CreateOuterFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransOuterPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeProcess:
+		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
+		condition.ProcDir = ctx.GetString(consts.ValidatorPrefixOrg + "procDir")
+		condition.ProcId = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "procId"))
+		condition.ProcParam = ctx.GetString(consts.ValidatorPrefixOrg + "procParam")
+		condition.ParentHash = ctx.GetString(consts.ValidatorPrefixOrg + "parentHash")
+		condition.ParentDir = ctx.GetString(consts.ValidatorPrefixOrg + "parentDir")
+		condition.ParentId = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "parentId"))
+		condition.ParentParam = ctx.GetString(consts.ValidatorPrefixOrg + "parentParam")
 
+		fact := syslog_models.CreateProcessFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransProcessPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeLogin:
+		condition.SourceIp = ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp")
+		loginStatus := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "loginStatus"))
+		condition.LoginStatus = &loginStatus
 
+		fact := syslog_models.CreateLoginFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransLoginPage(total, models, agentMap, nil))
 		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
@@ -103,16 +160,16 @@ func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 		err = syslog_service.CreateDnsCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
 		break
 	case enum_syslog.LogTypeInner:
-
+		err = syslog_service.CreateInnerCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
 		break
 	case enum_syslog.LogTypeOuter:
-
+		err = syslog_service.CreateOuterCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
 		break
 	case enum_syslog.LogTypeProcess:
-
+		err = syslog_service.CreateProcessCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
 		break
 	case enum_syslog.LogTypeLogin:
-
+		err = syslog_service.CreateLoginCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
 		break
 	}
 
@@ -137,16 +194,16 @@ func (u *SyslogController) ClearForSyslog(ctx *gin.Context, module int) {
 		err = syslog_service.CreateDnsCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	case enum_syslog.LogTypeInner:
-
+		err = syslog_service.CreateInnerCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	case enum_syslog.LogTypeOuter:
-
+		err = syslog_service.CreateOuterCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	case enum_syslog.LogTypeProcess:
-
+		err = syslog_service.CreateProcessCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	case enum_syslog.LogTypeLogin:
-
+		err = syslog_service.CreateLoginCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	}
 

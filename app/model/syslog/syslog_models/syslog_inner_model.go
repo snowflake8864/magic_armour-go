@@ -54,7 +54,7 @@ func (m *InnerModel) CreateTable() bool {
 			proc_id INT NOT NULL DEFAULT '0' COMMENT '进程:ID',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			target_port_status TINYINT NOT NULL DEFAULT '0' COMMENT '目标端口状态',
-			proto TINYINT NOT NULL DEFAULT '0' COMMENT '协议'
+			proto INT NOT NULL DEFAULT '0' COMMENT '协议'
 		)
 		DUPLICATE KEY(org_id,agent_id,created_at,proc_hash,target_ip,target_port,source_ip,source_port,id) 
 		PARTITION BY RANGE(created_at)() 

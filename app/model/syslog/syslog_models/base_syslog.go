@@ -14,8 +14,18 @@ type SearchConditions struct {
 	CreateAtGte string
 	CreateAtLte string
 	ProcHash    string
+	ProcId      int
+	ProcDir     string
+	ProcParam   string
+	ParentHash  string
+	ParentId    int
+	ParentDir   string
+	ParentParam string
 	DomainName  string
 	SourceIp    string
+	SourcePort  int
+	TargetIp    string
+	TargetPort  int
 	LoginStatus *int
 }
 

@@ -26,7 +26,8 @@ var EnumMapInt = map[string]map[int]string{
 		enums.IsYes: "是",
 		enums.IsNot: "否",
 	},
-	"proto": {0: "ANY",
+	"proto": {
+		0:   "ANY",
 		1:   "ICMP",
 		6:   "TCP",
 		17:  "UDP",
