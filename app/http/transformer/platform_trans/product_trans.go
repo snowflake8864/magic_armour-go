@@ -24,6 +24,7 @@ func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]int
 	data["grant_module"] = productGrantConfig
 	data["grant_module_txt"] = productGrantConfig.SelectedTxt()
 	data["price"] = model.Price
+	data["is_publish"] = model.IsPublish
 	data["remark"] = model.Remark
 	data["create_id"] = model.CreateId
 	data["create_name"] = model.CreateName
