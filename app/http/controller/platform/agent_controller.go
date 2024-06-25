@@ -125,7 +125,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 		}
 	}
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOtherPage(total, orgModels, extendInfo))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOtherPage(total, orgModels, agentExtend, orderExtend))
 }
 
 // PageForOwn 终端本身: 分页

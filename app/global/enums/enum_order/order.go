@@ -81,4 +81,7 @@ var WebMapInt = map[string][]int{
 		enums.IsNot,
 		enums.IsYes,
 	},
+	"pay_method": {
+		PayMethodBankcard,
+	},
 }

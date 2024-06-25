@@ -49,6 +49,7 @@ type AdminCacheLogin struct {
 	Username string `json:"username"`
 	IsRoot   int    `json:"is_root"`
 	LoginAt  string `json:"login_at"`
+	LoginIp  string `json:"login_ip"`
 }
 
 func (crd *AdminAuth) keyByToken(val string) string {
@@ -141,7 +142,7 @@ func (crd *AdminAuth) EncryptPw(pw string) string {
 }
 
 // LoginByPw 密码登录
-func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
+func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
@@ -195,18 +196,19 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string) (result map[st
 
 	curdFact.loginSuccess(adminModel.Id)
 
-	result = crd.loginAfter(adminModel)
+	result = crd.loginAfter(adminModel, netIp)
 
 	return result, 0, nil
 }
 
 // loginAfter
-func (crd *AdminAuth) loginAfter(adminModel *admin_models.AdminModel) map[string]interface{} {
+func (crd *AdminAuth) loginAfter(adminModel *admin_models.AdminModel, netIp string) map[string]interface{} {
 	loginInfo := AdminCacheLogin{
 		AdminId:  adminModel.Id,
 		Username: adminModel.Username,
 		IsRoot:   adminModel.IsRoot,
 		LoginAt:  date_helper.CurDatetime(),
+		LoginIp:  netIp,
 	}
 
 	//缓存
@@ -216,6 +218,7 @@ func (crd *AdminAuth) loginAfter(adminModel *admin_models.AdminModel) map[string
 
 	//
 	result := make(map[string]interface{})
+	result["userid"] = adminModel.Id
 	result["username"] = adminModel.Username
 	result["is_root"] = adminModel.IsRoot
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
@@ -243,4 +246,16 @@ func (crd *AdminAuth) DecryptByLogin(token string, isDelay bool) (loginInfo Admi
 		_, _ = crd.redisClient.Expire(crd.keyByToken(token), crd.tokenExpire)
 	}
 	return loginInfo, nil
+}
+
+// Logout 退出
+func (crd *AdminAuth) Logout(token string) bool {
+	token, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(token)
+	if err != nil {
+		return true
+	}
+
+	_, _ = crd.redisClient.Del(crd.keyByToken(token))
+
+	return true
 }

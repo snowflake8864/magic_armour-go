@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/http/middleware/authorization/middleware_auth_platform"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -107,7 +108,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 		return
 	}
 
-	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
+	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP())
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -117,6 +118,13 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 
 // Logout 退出
 func (u *AuthController) Logout(ctx *gin.Context) {
+	headerParams := middleware_auth_platform.Params{}
+	if err := ctx.ShouldBindHeader(&headerParams); err != nil {
+		response.SuccessSimplify(ctx)
+		return
+	}
 
-	response.SuccessReturnData(ctx, "AuthController Logout")
+	admin_service.CreateAuthFactory().Logout(headerParams.Authorization)
+
+	response.SuccessSimplify(ctx)
 }

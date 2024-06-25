@@ -180,6 +180,7 @@ func InitPlatformRouter() *gin.Engine {
 						public.POST("orderStatus", (&platform.OrderController{}).OrderStatus)
 						public.POST("expireStatus", (&platform.OrderController{}).ExpireStatus)
 						public.POST("grantDuration", (&platform.OrderController{}).GrantDuration)
+						public.POST("payMethod", (&platform.OrderController{}).PayMethod)
 						public.POST("validByOrg", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrderPublicValidByOrg"))
 					}
 					grant := order.Group("grant/")

@@ -40,6 +40,13 @@ func (u *OrderController) GrantDuration(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
+// PayMethod 支付方式
+func (u *OrderController) PayMethod(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("pay_method", enum_order.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("pay_method", enum_order.EnumMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+}
+
 // AddForOrg  为企业添加订单授权
 func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
