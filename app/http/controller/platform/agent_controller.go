@@ -82,7 +82,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//终端分页
 	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)

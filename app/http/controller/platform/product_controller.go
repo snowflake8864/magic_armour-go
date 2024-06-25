@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
@@ -48,7 +47,7 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	conditions.GrantType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantType"))
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//产品分页
 	total, models := prodcut_models.CreateProductFactory().Page(conditions, offset, pageSize, order)

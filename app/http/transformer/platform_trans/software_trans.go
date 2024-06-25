@@ -30,6 +30,7 @@ func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]
 	}
 	data["os_type_txt"] = osTypeTxt
 	data["remark"] = model.Remark
+	data["is_publish"] = model.IsPublish
 	data["download_name"] = enum_software.DownloadName(model.PlatformType, model.OsType, model.Ver)
 	data["create_id"] = model.CreateId
 	data["create_name"] = model.CreateName
