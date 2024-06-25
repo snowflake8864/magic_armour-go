@@ -14,8 +14,8 @@ type LoginPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
 	SearchTime
-	ProdHash
 	SourceIp
+	LoginStatus
 }
 
 func (n LoginPage) CheckParams(context *gin.Context) {
