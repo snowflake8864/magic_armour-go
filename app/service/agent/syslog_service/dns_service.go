@@ -1,4 +1,4 @@
-package job_callback_syslog
+package syslog_service
 
 import (
 	"errors"

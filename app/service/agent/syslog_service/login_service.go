@@ -1,22 +1,22 @@
-package job_callback_syslog
+package syslog_service
 
 import (
 	"errors"
 	"goskeleton/app/model/syslog/syslog_models"
 )
 
-func CreateInnerCurdFactory() *InnerCurd {
-	return &InnerCurd{
-		masterModel: syslog_models.CreateInnerFactory(),
+func CreateLoginCurdFactory() *LoginCurd {
+	return &LoginCurd{
+		masterModel: syslog_models.CreateLoginFactory(),
 	}
 }
 
-type InnerCurd struct {
-	masterModel *syslog_models.InnerModel
+type LoginCurd struct {
+	masterModel *syslog_models.LoginModel
 }
 
 // DeleteByIds 通过id集合删除日志
-func (crd *InnerCurd) DeleteByIds(orgId int64, ids []int64) error {
+func (crd *LoginCurd) DeleteByIds(orgId int64, ids []int64) error {
 	conditions := syslog_models.SearchConditions{
 		OrgId: orgId,
 		Ids:   ids,
@@ -28,7 +28,7 @@ func (crd *InnerCurd) DeleteByIds(orgId int64, ids []int64) error {
 }
 
 // ClearByAgents 清空终端下日志
-func (crd *InnerCurd) ClearByAgents(orgId int64, agentIds []string) error {
+func (crd *LoginCurd) ClearByAgents(orgId int64, agentIds []string) error {
 	conditions := syslog_models.SearchConditions{
 		OrgId:    orgId,
 		AgentIds: agentIds,
