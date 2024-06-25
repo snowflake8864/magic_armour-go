@@ -11,6 +11,7 @@ import (
 
 type DnsBatchDelete struct {
 	Ids
+	SearchTime
 }
 
 func (n DnsBatchDelete) CheckParams(context *gin.Context) {

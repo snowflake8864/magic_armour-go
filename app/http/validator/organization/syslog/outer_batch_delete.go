@@ -11,6 +11,7 @@ import (
 
 type OuterBatchDelete struct {
 	Ids
+	SearchTime
 }
 
 func (n OuterBatchDelete) CheckParams(context *gin.Context) {

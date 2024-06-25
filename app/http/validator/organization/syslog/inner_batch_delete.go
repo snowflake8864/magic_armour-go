@@ -11,6 +11,7 @@ import (
 
 type InnerBatchDelete struct {
 	Ids
+	SearchTime
 }
 
 func (n InnerBatchDelete) CheckParams(context *gin.Context) {

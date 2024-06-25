@@ -3,6 +3,7 @@ package syslog_service
 import (
 	"errors"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/utils/helpers/date_helper"
 )
 
 func CreateDnsCurdFactory() *DnsCurd {
@@ -16,10 +17,12 @@ type DnsCurd struct {
 }
 
 // DeleteByIds 通过id集合删除日志
-func (crd *DnsCurd) DeleteByIds(orgId int64, ids []int64) error {
+func (crd *DnsCurd) DeleteByIds(orgId int64, ids []int64, startTime, endTime string) error {
 	conditions := syslog_models.SearchConditions{
-		OrgId: orgId,
-		Ids:   ids,
+		OrgId:       orgId,
+		Ids:         ids,
+		CreateAtGte: startTime,
+		CreateAtLte: endTime,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
 		return errors.New("删除失败")
@@ -30,8 +33,9 @@ func (crd *DnsCurd) DeleteByIds(orgId int64, ids []int64) error {
 // ClearByAgents 清空终端下日志
 func (crd *DnsCurd) ClearByAgents(orgId int64, agentIds []string) error {
 	conditions := syslog_models.SearchConditions{
-		OrgId:    orgId,
-		AgentIds: agentIds,
+		OrgId:       orgId,
+		AgentIds:    agentIds,
+		CreateAtLte: date_helper.CurDatetime(),
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
 		return errors.New("清空失败")

@@ -11,6 +11,7 @@ import (
 
 type LoginBatchDelete struct {
 	Ids
+	SearchTime
 }
 
 func (n LoginBatchDelete) CheckParams(context *gin.Context) {

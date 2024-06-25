@@ -11,6 +11,7 @@ import (
 
 type ProcessBatchDelete struct {
 	Ids
+	SearchTime
 }
 
 func (n ProcessBatchDelete) CheckParams(context *gin.Context) {

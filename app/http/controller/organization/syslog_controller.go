@@ -154,6 +154,8 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 // BatchDeleteForSyslog 日志: 批量删除
 func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 	loginInfo := u.getLogin(ctx)
+	startTime := ctx.GetString(consts.ValidatorPrefixOrg + "startTime")
+	endTime := ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
 
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "ids")
 	ids := json_helper.ToSliceInt64(jsonStr)
@@ -166,19 +168,19 @@ func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 
 	switch module {
 	case enum_syslog.LogTypeDns:
-		err = syslog_service.CreateDnsCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
+		err = syslog_service.CreateDnsCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
 	case enum_syslog.LogTypeInner:
-		err = syslog_service.CreateInnerCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
+		err = syslog_service.CreateInnerCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
 	case enum_syslog.LogTypeOuter:
-		err = syslog_service.CreateOuterCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
+		err = syslog_service.CreateOuterCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
 	case enum_syslog.LogTypeProcess:
-		err = syslog_service.CreateProcessCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
+		err = syslog_service.CreateProcessCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
 	case enum_syslog.LogTypeLogin:
-		err = syslog_service.CreateLoginCurdFactory().DeleteByIds(loginInfo.OrgId, ids)
+		err = syslog_service.CreateLoginCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
 	}
 
