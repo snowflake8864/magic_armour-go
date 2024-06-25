@@ -117,5 +117,6 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 
 // Logout 退出
 func (u *AuthController) Logout(ctx *gin.Context) {
+
 	response.SuccessReturnData(ctx, "AuthController Logout")
 }

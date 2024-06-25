@@ -53,7 +53,7 @@ func (t *Org) TransPage(total int64, models []*organization_models.OrganizationM
 }
 
 // TransOtherPage 转换成管理页需要的数据
-func (t *Org) TransOtherPage(total int64, models []*organization_models.OrganizationModel, extendInfo map[int64]interface{}) interface{} {
+func (t *Org) TransOtherPage(total int64, models []*organization_models.OrganizationModel, agentExtend map[int64]interface{}, orderExtend map[int64]interface{}) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -61,10 +61,16 @@ func (t *Org) TransOtherPage(total int64, models []*organization_models.Organiza
 
 			//扩展信息
 			var einfo interface{}
-			tmp["extend_info"] = einfo
-			if extendInfo != nil && len(extendInfo) > 0 {
-				if extend, ok := extendInfo[model.Id]; ok {
-					tmp["extend_info"] = extend
+			tmp["agent_info"] = einfo
+			tmp["order_info"] = einfo
+			if agentExtend != nil && len(agentExtend) > 0 {
+				if extend, ok := agentExtend[model.Id]; ok {
+					tmp["agent_info"] = extend
+				}
+			}
+			if orderExtend != nil && len(orderExtend) > 0 {
+				if extend, ok := orderExtend[model.Id]; ok {
+					tmp["order_info"] = extend
 				}
 			}
 

@@ -26,6 +26,7 @@ type AgentCalc struct {
 
 type SearchConditions struct {
 	OrgId           int64
+	OrgIds          []int64
 	AgentId         string
 	AgentIds        []string
 	HostName        string
@@ -57,6 +58,12 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "org_id",
 			Val: condition.OrgId,
+		})
+	}
+	if len(condition.OrgIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "org_id in",
+			Val: condition.OrgIds,
 		})
 	}
 	if !string_helper.IsEmpty(condition.AgentId) {

@@ -524,8 +524,10 @@ func (m *AgentModel) Page(condition SearchConditions, offset, limit int, order s
 // CalcByConditions 通过条件获取多条记录
 func (m *AgentModel) CalcByConditions(condition SearchConditions, column string) (item *AgentCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
-		tmp := tx.Model(m).Select(m.GetColumn(column)).Where(whereSQL, vals...)
+		tmp := tx.Model(m).Select(m.GetColumn(column))
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		return tmp.Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
@@ -535,4 +537,37 @@ func (m *AgentModel) CalcByConditions(condition SearchConditions, column string)
 		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return nil
 	}
+}
+
+// CalcByConditionsGroupOrg 通过条件获取多条记录
+func (m *AgentModel) CalcByConditionsGroupOrg(condition SearchConditions, column string) (items []*AgentCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+
+		return tmp.Group("org_id").Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按企业分组
+func (m *AgentModel) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[int64]*AgentCalc {
+	var result = make(map[int64]*AgentCalc)
+
+	items := m.CalcByConditionsGroupOrg(condition, column)
+	if items == nil || len(items) == 0 {
+		return result
+	}
+	for _, item := range items {
+		result[item.OrgId] = item
+	}
+
+	return result
 }

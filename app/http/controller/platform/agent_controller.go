@@ -88,8 +88,31 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
 	orgIds := u.getOrgIdsForDb(orgModels)
 
-	var extendInfo = make(map[int64]interface{})
+	var agentExtend = make(map[int64]interface{})
+	var orderExtend = make(map[int64]interface{})
+
 	if len(orgIds) > 0 {
+
+		//终端
+		agentConditions := agent_models.SearchConditions{
+			OrgIds: orgIds,
+		}
+		agentFact := agent_models.CreateAgentFactory()
+		agentStat := agentFact.CalcByConditionsGroupAgentReturnMap(agentConditions, agentFact.ColumnCalcAgents(true, true, false, false, false))
+		for _, orgId := range orgIds {
+			gg := map[string]interface{}{
+				"total_number":  0,
+				"online_number": 0,
+			}
+			if item, isOk := agentStat[orgId]; isOk {
+				gg["total_number"] = item.TotalNumber
+				gg["online_number"] = item.OnlineNumber
+
+			}
+			agentExtend[orgId] = gg
+		}
+
+		//授权
 		orderModels := order_service.CreateCurdFactory().GetValidItemsByOrgs(orgIds)
 		if orderModels != nil && len(orderModels) > 0 {
 			var orgOrders = make(map[int64][]map[string]interface{})
@@ -97,7 +120,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 				orgOrders[model.OrgId] = append(orgOrders[model.OrgId], (&platform_trans.Order{}).TransDetail(model))
 			}
 			for orgId, list := range orgOrders {
-				extendInfo[orgId] = list
+				orderExtend[orgId] = list
 			}
 		}
 	}
