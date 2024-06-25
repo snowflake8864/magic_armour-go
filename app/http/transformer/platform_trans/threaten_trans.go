@@ -16,7 +16,7 @@ func (t *Threaten) pageCacheGeneral(model *threaten_models.CacheModel) map[strin
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
-	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Level, enum_threaten.EnumMap)
+	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
 	data["source"] = model.Source
 	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_threaten.EnumMap)
 	data["dir"] = model.Dir
@@ -52,7 +52,7 @@ func (t *Threaten) pagePushGeneral(model *threaten_models.PushModel) map[string]
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["level"] = model.Level
-	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Level, enum_threaten.EnumMap)
+	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
 
 	data["dir"] = model.Dir
 	data["parent_dir"] = model.ParentDir
