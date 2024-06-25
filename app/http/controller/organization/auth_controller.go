@@ -3,6 +3,7 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -111,7 +112,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 		return
 	}
 
-	result, errCode, err := user_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode)
+	result, errCode, err := user_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP())
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -126,5 +127,13 @@ func (u *AuthController) HsLogin(ctx *gin.Context) {
 
 // Logout 幻势登录
 func (u *AuthController) Logout(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController Logout")
+	headerParams := middleware_auth_org.Params{}
+	if err := ctx.ShouldBindHeader(&headerParams); err != nil {
+		response.SuccessSimplify(ctx)
+		return
+	}
+
+	user_service.CreateAuthFactory().Logout(headerParams.Authorization)
+
+	response.SuccessSimplify(ctx)
 }

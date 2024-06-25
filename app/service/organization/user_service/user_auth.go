@@ -54,6 +54,7 @@ type UserCacheLogin struct {
 	DeptIds       []int64 `json:"dept_ids"`        //直接管理的组织架构
 	DeptWithChild []int64 `json:"dept_with_child"` //直接管理的组织架构以及子集
 	LoginAt       string  `json:"login_at"`
+	LoginIp       string  `json:"login_ip"`
 }
 
 func (crd *UserAuth) keyByToken(val string) string {
@@ -168,7 +169,7 @@ func (crd *UserAuth) EncryptPw(pw string) string {
 }
 
 // LoginByPw 密码登录
-func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[string]interface{}, errCode int, err error) {
+func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
@@ -224,13 +225,13 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string) (result map[str
 
 	curdFact.loginSuccess(userModel.Id)
 
-	result = crd.loginAfter(userModel)
+	result = crd.loginAfter(userModel, netIp)
 
 	return result, 0, nil
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]interface{} {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, netIp string) map[string]interface{} {
 	var deptIds, deptWithChild []int64
 	//不是管理员
 	if userModel.IsRoot == enums.IsNot {
@@ -246,6 +247,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel) map[string]int
 		DeptIds:       deptIds,
 		DeptWithChild: deptWithChild,
 		LoginAt:       date_helper.CurDatetime(),
+		LoginIp:       netIp,
 	}
 
 	//缓存
@@ -283,4 +285,16 @@ func (crd *UserAuth) DecryptByLogin(token string, isDelay bool) (loginInfo UserC
 		_, _ = crd.redisClient.Expire(crd.keyByToken(token), crd.tokenExpire)
 	}
 	return loginInfo, nil
+}
+
+// Logout 退出
+func (crd *UserAuth) Logout(token string) bool {
+	token, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(token)
+	if err != nil {
+		return true
+	}
+
+	_, _ = crd.redisClient.Del(crd.keyByToken(token))
+
+	return true
 }
