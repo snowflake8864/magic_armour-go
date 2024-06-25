@@ -73,3 +73,13 @@ func ShellNetworkGet() string {
 func ShellNetworkSet() string {
 	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkSet")
 }
+
+// ShellUpgrade 升级脚本：
+func ShellUpgrade() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.Upgrade")
+}
+
+// ShellInit 脚本初始化命令：
+func ShellInit() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.Init")
+}

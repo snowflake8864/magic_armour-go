@@ -99,7 +99,7 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 func (u *SystemController) NetworkGet(ctx *gin.Context) {
 
 	shellPath := cur_app.ShellNetworkGet()
-	cmd := exec.Command("/bin/sh", shellPath)
+	cmd := exec.Command(cur_app.ShellInit(), shellPath)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
 	cmd.Stderr = &stderr // 标准错误
@@ -146,7 +146,7 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 	dns := ctx.GetString(consts.ValidatorPrefixPlatform + "dns")
 
 	shellPath := cur_app.ShellNetworkSet()
-	cmd := exec.Command("/bin/sh", shellPath, name, proto, ip, mask, gateway, dns)
+	cmd := exec.Command(cur_app.ShellInit(), shellPath, name, proto, ip, mask, gateway, dns)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
 	cmd.Stderr = &stderr // 标准错误
@@ -217,8 +217,7 @@ func (u *SystemController) HuanshiGet(ctx *gin.Context) {
 func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	config := huanshi_platform.RequestConfig{
 		HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
-		//HuanshiCallIp:      "192.168.17.250",
-		HuanshiUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
+		HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
 	}
 	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
 	if err := threatenPlatform.Online(); err != nil {
@@ -229,15 +228,7 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 		response.FailData(ctx, "配置不正确", err.Error())
 		return
 	}
-	/*param := map[string]interface{}{
-		"deviceMark":     "f963864bebc14dd2b4fe9a00047314c4",
-		"agentNum":       4,
-		"onlineAgentNum": 2,
-	}
-	if err := threatenPlatform.SyncDeviceByTcp(param); err != nil {
-		response.FailData(ctx, "同步设备", err.Error())
-		return
-	}*/
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -286,12 +277,12 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	}
 
 	//执行命令
-	shellPath := unzipDir + "veda_software_install.sh"
+	shellPath := unzipDir + cur_app.ShellUpgrade()
 	if !files.ExistsFile(shellPath) {
 		response.FailSimplify(ctx, "升级脚本不存在")
 		return
 	}
-	cmd := exec.Command("/bin/sh", shellPath, unzipDir)
+	cmd := exec.Command(cur_app.ShellInit(), shellPath, unzipDir)
 	if err := cmd.Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
 		return
