@@ -16,13 +16,14 @@ func (t *Operation) pageGeneral(model *operate_models.LogModel) map[string]inter
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["path"] = model.Path
+	_, pathLabel := enum_platform_operate.GetModuleAndLabelByPath(model.Path)
+	data["path_label"] = pathLabel
 	data["module"] = model.Module
-	data["grant_type_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module", model.Module, enum_platform_operate.EnumMap)
+	data["module_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module", model.Module, enum_platform_operate.EnumMap)
 	data["net_ip"] = model.NetIp
 	data["input"] = model.Input
 	data["method"] = model.Method
 	data["status"] = model.Status
-	data["http_code"] = model.HttpCode
 	data["http_code"] = model.HttpCode
 	data["delay_time"] = model.DelayTime
 	data["resp"] = model.Resp

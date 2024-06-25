@@ -93,6 +93,7 @@ func (t *Org) pageLogGeneral(model *organization_models.LogModel) map[string]int
 	data["user_name"] = model.UserName
 	data["user_email"] = model.UserEmail
 	data["user_phone"] = model.UserPhone
+	data["net_ip"] = model.NetIp
 	data["content"] = model.Content
 	data["operate_source"] = model.OperateSource
 	data["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.OperateSource, enums.EnumMapInt)

@@ -53,12 +53,9 @@ func (u *SystemController) TimeGet(ctx *gin.Context) {
 func (u *SystemController) TimeSet(ctx *gin.Context) {
 	date := ctx.GetString(consts.ValidatorPrefixPlatform + "date")
 
-	command := " sudo /bin/timedatectl set-timezone Asia/Shanghai"
-	command += " && sudo /sbin/hwclock --set --date '" + date + "'"
-	command += " && sudo /sbin/hwclock --hctosys"
-	command += " && sudo /sbin/clock -w"
+	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformTimeCmd)
 
-	cmd := exec.Command(command)
+	cmd := exec.Command(fmt.Sprintf(val, date))
 	_, err := cmd.CombinedOutput() // 执行命令并获取输出结果
 	if err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
@@ -80,22 +77,14 @@ func (u *SystemController) SshGet(ctx *gin.Context) {
 func (u *SystemController) SshSet(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "switch"))
 
-	//删除以前的规则
-	commandDelDrop := "sudo iptables -D INPUT -p Tcp --dport 22 -j DROP"
-	commandDelACCEPT := "sudo iptables -D INPUT -p Tcp --dport 22 -j ACCEPT"
-	for i := 0; i <= 2; i++ {
-		_ = exec.Command(commandDelDrop).Run()
-		_ = exec.Command(commandDelACCEPT).Run()
-	}
-
 	//按照开关添加规则
-	commandAdd := ""
+	command := ""
 	if Switch == enums.SwitchOn {
-		commandAdd += "sudo iptables -I INPUT -p Tcp --dport 22 -j ACCEPT"
+		command += dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSshCmdStart)
 	} else {
-		commandAdd += "sudo iptables -I INPUT -p Tcp --dport 22 -j DROP"
+		command += dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSshCmdStop)
 	}
-	if err := exec.Command(commandAdd).Run(); err != nil {
+	if err := exec.Command(command).Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
 		return
 	}
