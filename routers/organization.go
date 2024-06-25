@@ -706,6 +706,46 @@ func InitOrganizationRouter() *gin.Engine {
 						self1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfClear"))
 					}
 				} //告警
+
+				//通信日志
+				//通信日志
+				syslog := vOrg.Group("syslog/")
+				{
+					public := syslog.Group("public/")
+					{
+						public.POST("loginStatus", (&organization.SyslogController{}).LoginStatus)
+					}
+					dns1 := syslog.Group("dns/")
+					{
+						dns1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogDnsPage"))
+						dns1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogDnsBatchDelete"))
+						dns1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogDnsClear"))
+					}
+					inner1 := syslog.Group("inner/")
+					{
+						inner1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogInnerPage"))
+						inner1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogInnerBatchDelete"))
+						inner1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogInnerClear"))
+					}
+					outer1 := syslog.Group("outer/")
+					{
+						outer1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogOuterPage"))
+						outer1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogOuterBatchDelete"))
+						outer1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogOuterClear"))
+					}
+					process1 := syslog.Group("process/")
+					{
+						process1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogProcessPage"))
+						process1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogProcessBatchDelete"))
+						process1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogProcessClear"))
+					}
+					login1 := syslog.Group("login/")
+					{
+						login1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginPage"))
+						login1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginBatchDelete"))
+						login1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginClear"))
+					}
+				} //通信日
 			}
 
 		}

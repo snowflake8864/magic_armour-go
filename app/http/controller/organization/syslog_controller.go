@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_syslog"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/syslog/syslog_models"
@@ -18,6 +20,13 @@ import (
 // SyslogController  通讯日志相关
 type SyslogController struct {
 	ControllerBase
+}
+
+// LoginStatus 登录状态
+func (u *SyslogController) LoginStatus(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("login_status", enum_syslog.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("login_status", enum_syslog.EnumMapInt)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // PageForSyslog 日志: 分页

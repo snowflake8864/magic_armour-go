@@ -20,6 +20,7 @@ import (
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
 	registry3 "goskeleton/app/http/validator/organization/registry"
+	syslog3 "goskeleton/app/http/validator/organization/syslog"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 	threaten3 "goskeleton/app/http/validator/organization/threaten"
 	trustDir3 "goskeleton/app/http/validator/organization/trust_dir"
@@ -654,4 +655,36 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, alarm3.SelfHandleAll{})
 	key = consts.ValidatorPrefixOrg + "AlarmSelfClear"
 	containers.Set(key, alarm3.SelfClear{})
+
+	//通讯日志
+	key = consts.ValidatorPrefixOrg + "SyslogDnsPage"
+	containers.Set(key, syslog3.DnsPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogDnsBatchDelete"
+	containers.Set(key, syslog3.DnsBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogDnsClear"
+	containers.Set(key, syslog3.DnsClear{})
+	key = consts.ValidatorPrefixOrg + "SyslogInnerPage"
+	containers.Set(key, syslog3.InnerPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogInnerBatchDelete"
+	containers.Set(key, syslog3.InnerBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogInnerClear"
+	containers.Set(key, syslog3.InnerClear{})
+	key = consts.ValidatorPrefixOrg + "SyslogOuterPage"
+	containers.Set(key, syslog3.OuterPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogOuterBatchDelete"
+	containers.Set(key, syslog3.OuterBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogOuterClear"
+	containers.Set(key, syslog3.OuterClear{})
+	key = consts.ValidatorPrefixOrg + "SyslogProcessPage"
+	containers.Set(key, syslog3.ProcessPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogProcessBatchDelete"
+	containers.Set(key, syslog3.ProcessBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogProcessClear"
+	containers.Set(key, syslog3.ProcessClear{})
+	key = consts.ValidatorPrefixOrg + "SyslogLoginPage"
+	containers.Set(key, syslog3.LoginPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogLoginBatchDelete"
+	containers.Set(key, syslog3.LoginBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogLoginClear"
+	containers.Set(key, syslog3.LoginClear{})
 }

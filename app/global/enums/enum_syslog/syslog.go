@@ -167,7 +167,12 @@ var EnumMapInt = map[string]map[int]string{
 		34:  "3PC"},
 }
 
-var WebMapInt = map[string][]int{}
+var WebMapInt = map[string][]int{
+	"login_status": {
+		enums.IsYes,
+		enums.IsNot,
+	},
+}
 
 // CheckLoginType 校验登录类型
 func CheckLoginType(s string) bool {
