@@ -41,10 +41,10 @@ type OrderModel struct {
 	PayInfo       string  `json:"pay_info"`
 	PayOrderNo    string  `json:"pay_order_no"`
 	CreatedAt     string  `json:"created_at"`
-	DeclineAt     string  `json:"decline_at"`
+	DeclineAt     string  `json:"decline_at" gorm:"default:NULL"`
 	DeclineRemark string  `json:"decline_remark"`
-	PayAt         string  `json:"pay_at"`
-	CompleteAt    string  `json:"complete_at"`
+	PayAt         string  `json:"pay_at" gorm:"default:NULL"`
+	CompleteAt    string  `json:"complete_at"  gorm:"default:NULL"`
 	CancelAt      string  `json:"cancel_at" gorm:"default:NULL"`
 	Source        int     `json:"source"`
 }

@@ -58,7 +58,7 @@ func (crd *ProcPost) parseAttribute(attribute, copyright, introduce string) (str
 	//FileVersion: 10.0.22621.1 (WinBuild.160101.0800);InternalName: winnsi.dll;
 	//LegalCopyright: \\u00A9 Microsoft Corporation. All rights reserved.;
 	//OriginalFilename: winnsi.dll;
-	//ProductName: Microsoft\\u00AE Windows\\u00AE Operating System;
+	//ProductTitle: Microsoft\\u00AE Windows\\u00AE Operating System;
 	//ProductVersion: 10.0.22621.1;
 
 	for _, item := range strings.Split(attribute, ";") {

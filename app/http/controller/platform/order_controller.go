@@ -97,7 +97,7 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	searchConditions := order_models.SearchConditions{}
 	searchConditions.OrgName = ctx.GetString(consts.ValidatorPrefixPlatform + "orgName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
-	searchConditions.ProductName = ctx.GetString(consts.ValidatorPrefixPlatform + "productName")
+	searchConditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixPlatform + "productTitle")
 	searchConditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
 	searchConditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 	return searchConditions

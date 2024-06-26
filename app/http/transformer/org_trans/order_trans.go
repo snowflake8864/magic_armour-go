@@ -17,8 +17,7 @@ type Order struct {
 func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["order_no"] = model.OrderNo
-	data["org_id"] = model.OrgId
-	data["org_name"] = model.OrgName
+	data["user_name"] = model.UserName
 	data["user_email"] = model.UserEmail
 	data["user_phone"] = model.UserPhone
 	data["product_id"] = model.ProductId

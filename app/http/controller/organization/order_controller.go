@@ -2,10 +2,15 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/organization/order_models"
+	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
 )
@@ -74,10 +79,29 @@ func (u *OrderController) ValidList(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
+func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
+	loginInfo := u.getLogin(ctx)
+	conditions := order_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
+	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixPlatform + "productTitle")
+	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	return conditions
+}
+
 // PageForPurchase 购买：分页
 func (u *OrderController) PageForPurchase(ctx *gin.Context) {
+	//查询条件
+	conditions := u.getOrderSearchConditions(ctx)
 
-	response.SuccessSimplify(ctx)
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//终端分页
+	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
 }
 
 // InfoForPurchase 购买：信息
@@ -94,6 +118,19 @@ func (u *OrderController) LogsForPurchase(ctx *gin.Context) {
 
 // AddForPurchase 购买：添加
 func (u *OrderController) AddForPurchase(ctx *gin.Context) {
+
+	loginInfo := u.getLogin(ctx)
+	param := order_models.OrderModel{}
+	param.OrgId = loginInfo.OrgId
+	param.ProductId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "productId"))
+	param.BuyNumber = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "buyNumber"))
+	param.GrantDuration = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantDuration"))
+	param.Source = enums.OperateSourceOrganize
+
+	if errCode, err := order_service.CreateCurdFactory().Add(&param, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 
 	response.SuccessSimplify(ctx)
 }

@@ -269,6 +269,12 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/syslog/process/clear":       {ModuleSyslog, "进程启动日志：清空"},
 	"/v5/organization/syslog/login/batchDelete":   {ModuleSyslog, "登录日志：批量删除"},
 	"/v5/organization/syslog/login/clear":         {ModuleSyslog, "登录日志：清空"},
+
+	"/v5/organization/order/purchase/add":           {ModuleOrg, "购买记录：购买"},
+	"/v5/organization/order/purchase/cancel":        {ModuleOrg, "购买记录：取消"},
+	"/v5/organization/order/purchase/delete":        {ModuleOrg, "购买记录：删除"},
+	"/v5/organization/order/purchase/payByBankcard": {ModuleOrg, "购买记录：使用银行卡支付"},
+	"/v5/organization/order/grant/save":             {ModuleOrg, "终端授权：保存"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

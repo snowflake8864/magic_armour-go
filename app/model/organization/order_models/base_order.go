@@ -8,20 +8,20 @@ import (
 )
 
 type SearchConditions struct {
-	OrderNo     string
-	OrgId       int64
-	OrgIds      []int64
-	OrgName     string
-	UserName    string
-	UserPhone   string
-	ProductName string
-	GrantType   int
-	OrderStatus int
-	IsExpire    *int
-	CreateAtGte string
-	CreateAtLte string
-	ExpireAtLte string
-	StatusList  []int
+	OrderNo      string
+	OrgId        int64
+	OrgIds       []int64
+	OrgName      string
+	UserName     string
+	UserPhone    string
+	ProductTitle string
+	GrantType    int
+	OrderStatus  int
+	IsExpire     *int
+	CreateAtGte  string
+	CreateAtLte  string
+	ExpireAtLte  string
+	StatusList   []int
 }
 
 type baseOrder struct {
@@ -85,10 +85,10 @@ func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []mod
 		})
 	}
 
-	if !string_helper.IsEmpty(condition.ProductName) {
+	if !string_helper.IsEmpty(condition.ProductTitle) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "product_title like",
-			Val: "%" + condition.ProductName + "%",
+			Val: "%" + condition.ProductTitle + "%",
 		})
 	}
 	if condition.GrantType > 0 {
