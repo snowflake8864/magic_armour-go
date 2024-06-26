@@ -273,7 +273,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/order/purchase/add":           {ModuleOrg, "购买记录：购买"},
 	"/v5/organization/order/purchase/cancel":        {ModuleOrg, "购买记录：取消"},
 	"/v5/organization/order/purchase/delete":        {ModuleOrg, "购买记录：删除"},
-	"/v5/organization/order/purchase/payByBankcard": {ModuleOrg, "购买记录：使用银行卡支付"},
+	"/v5/organization/order/purchase/payByBankcard": {ModuleOrg, "购买记录：对公转账方式付款"},
 	"/v5/organization/order/grant/save":             {ModuleOrg, "终端授权：保存"},
 }
 

@@ -110,7 +110,7 @@ func (u *OrderController) InfoForPurchase(ctx *gin.Context) {
 func (u *OrderController) LogsForPurchase(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	conditions := order_models.SearchConditions{
-		OrderNo: ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo"),
+		OrderNo: ctx.GetString(consts.ValidatorPrefixOrg + "orderNo"),
 		OrgId:   loginInfo.OrgId,
 	}
 	//分页参数和排序参数
@@ -144,7 +144,7 @@ func (u *OrderController) AddForPurchase(ctx *gin.Context) {
 // PayByBankcardForPurchase 购买：银卡支付
 func (u *OrderController) PayByBankcardForPurchase(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
+	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
 
 	if errCode, err := order_service.CreateCurdFactory().PayByBankcard(orderNo, loginInfo.OrgId, loginInfo.UserId, loginInfo.Username); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())

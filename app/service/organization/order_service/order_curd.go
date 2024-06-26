@@ -103,7 +103,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 		orderParam.CompleteAt = orderParam.CreatedAt
 	} else {
 		orderParam.DeclineAmount = 0.00
-		orderParam.OrderStatus = enum_order.OrderStatusPaid
+		orderParam.OrderStatus = enum_order.OrderStatusUnpaid
 	}
 	orderParam.IsExpire = enums.IsNot
 	orderParam.ExpireAt = crd.getExpireAt()
