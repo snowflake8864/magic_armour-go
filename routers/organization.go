@@ -101,6 +101,8 @@ func InitOrganizationRouter() *gin.Engine {
 				//账户
 				account := vOrg.Group("account/")
 				{
+					account.POST("getUser", (&organization.AccountController{}).GetMenuTree)
+					account.POST("modifyUser", (&organization.AccountController{}).GetMenuTree)
 					account.POST("getMenuTree", (&organization.AccountController{}).GetMenuTree)
 					account.POST("modifyPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"AccountModifyPw"))
 					account.POST("modifyPhone", validatorFactory.Create(consts.ValidatorPrefixOrg+"AccountModifyPhone"))

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_app"
@@ -23,6 +24,34 @@ type AccountController struct {
 func (u *AccountController) decrypt(data string) (result string) {
 	result, _ = openssl_encrypt.CreateRsaFactory().DecryptByBase64(data)
 	return result
+}
+
+// GetUser 获取用户信息
+func (u *AccountController) GetUser(ctx *gin.Context) {
+
+}
+
+// ModifyUser 修改用户信息
+func (u *AccountController) ModifyUser(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := user_models.UserModel{
+		Id:         loginInfo.UserId,
+		OrgId:      loginInfo.OrgId,
+		Position:   ctx.GetString(consts.ValidatorPrefixOrg + "position"),
+		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+	if string_helper.IsEmpty(param.Password) {
+		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+
+	if err := user_service.CreateCurdFactory().ModifyInfoById(&param, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // GetMenuTree 获取菜单菜单树
@@ -74,16 +103,22 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 
 // ModifyPw 修改密码
 func (u *AccountController) ModifyPw(ctx *gin.Context) {
-	oldPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw"))
+	loginInfo := u.getLogin(ctx)
+	param := user_models.UserModel{
+		Id:         loginInfo.UserId,
+		OrgId:      loginInfo.OrgId,
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw")),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
 	newPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "newPw"))
-	if string_helper.IsEmpty(oldPw) || string_helper.IsEmpty(newPw) {
+	if string_helper.IsEmpty(param.Password) || string_helper.IsEmpty(newPw) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
 
-	loginInfo := u.getLogin(ctx)
-	if errCode, err := user_service.CreateCurdFactory().ModifyPwById(loginInfo.UserId, oldPw, newPw); err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
+	if err := user_service.CreateCurdFactory().ModifyPwById(&param, newPw, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -91,16 +126,22 @@ func (u *AccountController) ModifyPw(ctx *gin.Context) {
 
 // ModifyPhone 修改手机
 func (u *AccountController) ModifyPhone(ctx *gin.Context) {
-	oldPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw"))
-	phone := ctx.GetString(consts.ValidatorPrefixOrg + "phone")
-	if string_helper.IsEmpty(oldPw) {
+	loginInfo := u.getLogin(ctx)
+	param := user_models.UserModel{
+		Id:         loginInfo.UserId,
+		OrgId:      loginInfo.OrgId,
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw")),
+		Phone:      ctx.GetString(consts.ValidatorPrefixOrg + "phone"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+	if string_helper.IsEmpty(param.Password) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
 
-	loginInfo := u.getLogin(ctx)
-	if errCode, err := user_service.CreateCurdFactory().ModifyPhoneById(loginInfo.UserId, oldPw, phone); err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
+	if err := user_service.CreateCurdFactory().ModifyPhoneById(&param, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -108,16 +149,22 @@ func (u *AccountController) ModifyPhone(ctx *gin.Context) {
 
 // ModifyEmail 修改邮箱
 func (u *AccountController) ModifyEmail(ctx *gin.Context) {
-	oldPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw"))
-	email := ctx.GetString(consts.ValidatorPrefixOrg + "email")
-	if string_helper.IsEmpty(oldPw) {
+	loginInfo := u.getLogin(ctx)
+	param := user_models.UserModel{
+		Id:         loginInfo.UserId,
+		OrgId:      loginInfo.OrgId,
+		Password:   u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "oldPw")),
+		Email:      ctx.GetString(consts.ValidatorPrefixOrg + "email"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+	if string_helper.IsEmpty(param.Password) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
 
-	loginInfo := u.getLogin(ctx)
-	if errCode, err := user_service.CreateCurdFactory().ModifyEmailById(loginInfo.UserId, oldPw, email); err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
+	if err := user_service.CreateCurdFactory().ModifyEmailById(&param, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)

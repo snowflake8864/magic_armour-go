@@ -24,6 +24,10 @@ const (
 	LogActionOrgDelSubUser      int = 202 //日志行为: 删除子用户
 	LogActionOrgEditSubUser     int = 203 //日志行为: 编辑子用户
 	LogActionOrgModifyPwSubUser int = 204 //日志行为: 子用户修改密码
+	LogActionOrgSelfModifyPw    int = 210 //日志行为: 修改密码
+	LogActionOrgSelfModifyEmail int = 211 //日志行为: 修改邮箱
+	LogActionOrgSelfModifyPhone int = 212 //日志行为: 修改手机
+	LogActionOrgSelfModifyInfo  int = 213 //日志行为: 修改基础信息
 )
 
 var EnumMap = map[string]map[int]string{
@@ -49,7 +53,11 @@ var EnumMap = map[string]map[int]string{
 		LogActionOrgAddSubUser:          "添加子账户",
 		LogActionOrgDelSubUser:          "删除子账户",
 		LogActionOrgEditSubUser:         "编辑子账户",
-		LogActionOrgModifyPwSubUser:     "子用户修改密码",
+		LogActionOrgModifyPwSubUser:     "修改子用户密码",
+		LogActionOrgSelfModifyPw:        "修改密码",
+		LogActionOrgSelfModifyEmail:     "修改邮箱",
+		LogActionOrgSelfModifyPhone:     "修改手机",
+		LogActionOrgSelfModifyInfo:      "修改基本信息",
 	},
 }
 
@@ -72,5 +80,9 @@ var WebMapInt = map[string][]int{
 		LogActionOrgDelSubUser,
 		LogActionOrgEditSubUser,
 		LogActionOrgModifyPwSubUser,
+		LogActionOrgSelfModifyPw,
+		LogActionOrgSelfModifyEmail,
+		LogActionOrgSelfModifyPhone,
+		LogActionOrgSelfModifyInfo,
 	},
 }

@@ -245,80 +245,160 @@ func (crd *UserCurd) loginSuccess(id int64) bool {
 }
 
 // ModifyPwById 修改密码
-func (crd *UserCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, err error) {
-	userModel, _ := crd.masterModel.GetItemById(id)
-	if userModel.Id == 0 {
-		return -1, errors.New("用户不存在")
+func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
 	}
 
 	//加密
 	AuthFact := CreateAuthFactory()
-	oldPw = AuthFact.EncryptPw(oldPw)
+	oldPw := AuthFact.EncryptPw(userParam.Password)
 	newPw = AuthFact.EncryptPw(newPw)
-
-	//
-	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
-		return -1, errors.New("旧密码不正确")
+	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
+		return errors.New("旧密码不正确")
 	}
 
 	//修改密码
 	updates := map[string]interface{}{
 		"password": newPw,
 	}
-	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
-		return -1, errors.New("修改密码失败")
+	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
+		return errors.New("修改密码失败")
 	}
-	return errCode, err
+
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgSelfModifyPw, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
 }
 
 // ModifyPhoneById 修改手机
-func (crd *UserCurd) ModifyPhoneById(id int64, oldPw, phone string) (errCode int, err error) {
-	userModel, _ := crd.masterModel.GetItemById(id)
-	if userModel.Id == 0 {
-		return -1, errors.New("用户不存在")
+func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
 	}
 
 	//加密
 	AuthFact := CreateAuthFactory()
-	oldPw = AuthFact.EncryptPw(oldPw)
-
-	//
-	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
-		return -1, errors.New("旧密码不正确")
+	oldPw := AuthFact.EncryptPw(userParam.Password)
+	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
+		return errors.New("旧密码不正确")
 	}
 
 	//修改密码
 	updates := map[string]interface{}{
-		"phone": phone,
+		"phone": userParam.Phone,
 	}
-	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
-		return -1, errors.New("修改手机号码失败")
+	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
+		return errors.New("修改手机号码失败")
 	}
-	return errCode, err
+
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgSelfModifyPhone, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+
+	return nil
 }
 
 // ModifyEmailById 修改邮箱
-func (crd *UserCurd) ModifyEmailById(id int64, oldPw, email string) (errCode int, err error) {
-	userModel, _ := crd.masterModel.GetItemById(id)
-	if userModel.Id == 0 {
-		return -1, errors.New("用户不存在")
+func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
 	}
 
 	//加密
 	AuthFact := CreateAuthFactory()
-	oldPw = AuthFact.EncryptPw(oldPw)
-
-	//
-	if !crd.HasByUsernameAndPw(userModel.Username, oldPw) {
-		return -1, errors.New("旧密码不正确")
+	oldPw := AuthFact.EncryptPw(userParam.Password)
+	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
+		return errors.New("旧密码不正确")
 	}
 
 	//修改密码
 	updates := map[string]interface{}{
-		"email": email,
+		"email": userParam.Email,
 	}
-	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
-		return -1, errors.New("修改 邮箱失败")
+	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
+		return errors.New("修改邮箱失败")
 	}
-	return errCode, err
+
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgSelfModifyEmail, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
+}
+
+// ModifyInfoById 修改信息
+func (crd *UserCurd) ModifyInfoById(userParam *user_models.UserModel, netIp string) error {
+	//用户已存在
+	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userParam.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"position": userParam.Position,
+		"intro":    userParam.Intro,
+	}
+	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgSelfModifyInfo, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userParam.CreateId
+	orgLogParam.OperateName = userParam.CreateName
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
 }
