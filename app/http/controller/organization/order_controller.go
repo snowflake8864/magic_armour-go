@@ -80,6 +80,8 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixOrg + "productTitle")
 	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixOrg + "startTime")
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
+	IsExpire := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExpire"))
+	conditions.IsExpire = &IsExpire
 	return conditions
 }
 
@@ -191,6 +193,15 @@ func (u *OrderController) SaveForGrant(ctx *gin.Context) {
 
 // PageForUsed 已使用：分页
 func (u *OrderController) PageForUsed(ctx *gin.Context) {
+	//查询条件
+	conditions := u.getOrderSearchConditions(ctx)
+	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
-	response.SuccessSimplify(ctx)
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+
+	//终端分页
+	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
 }
