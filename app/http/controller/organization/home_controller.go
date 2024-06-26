@@ -3,6 +3,8 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/org_trans"
@@ -10,6 +12,7 @@ import (
 	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/map_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -49,6 +52,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 	alarmConditions := alarm_stat_models.SearchConditions{}
 	alarmConditions.OrgId = loginInfo.OrgId
 	alarmConditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat) //今天
+	alarmConditions.StatDay = "2024-06-22"
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
@@ -101,6 +105,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	conditions := alarm_stat_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
 	conditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat)
+	conditions.StatDay = "2024-06-22"
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
@@ -114,9 +119,35 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	}
 	//统计
 	alarmFact := alarm_stat_models.CreateStatDailyFactory()
-	result := alarmFact.CalcByConditions(conditions, alarmFact.StatColumnOfAllType(true, false, true, false, false))
+	calc := alarmFact.CalcByConditions(conditions, alarmFact.StatColumnOfAllType(true, false, true, false, false))
 
-	response.SuccessReturnData(ctx, result)
+	moduleMap := map[int]int{
+		enum_alarm.ModuleProcess:   calc.ProcessAddTotal,
+		enum_alarm.ModuleDll:       calc.DllAddTotal,
+		enum_alarm.ModuleTamper:    calc.TamperAddTotal,
+		enum_alarm.ModuleBlackmail: calc.BlackmailAddTotal,
+		enum_alarm.ModulePort:      calc.PortAddTotal,
+		enum_alarm.ModulePlug:      calc.PlugAddTotal,
+		enum_alarm.ModuleUsb:       calc.UsbAddTotal,
+		enum_alarm.ModuleOutreach:  calc.OutreachAddTotal,
+		enum_alarm.ModuleLogin:     calc.LoginAddTotal,
+		enum_alarm.ModuleSelf:      calc.SelfAddTotal,
+	}
+	descSort := map_helper.SortDescIntAndInt(moduleMap)
+
+	var moduleList []map[string]interface{}
+	for _, item := range descSort {
+		moduleList = append(moduleList, map[string]interface{}{
+			"key":          item[0],
+			"number_total": item[1],
+			"label":        enums.Get1stIsStrAnd2ndIsIntReturnStr("module", item[0], enum_alarm.EnumMapInt),
+		})
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"number_total": calc.AddTotal,
+		"modules":      moduleList,
+	})
 
 }
 
