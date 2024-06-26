@@ -175,7 +175,6 @@ func (u *OrderController) DeleteForPurchase(ctx *gin.Context) {
 		return
 	}
 	response.SuccessSimplify(ctx)
-	response.SuccessSimplify(ctx)
 }
 
 // PageForGrant 终端授权：分页
