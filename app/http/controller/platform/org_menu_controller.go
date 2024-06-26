@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_menu"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/response"
@@ -13,6 +14,24 @@ import (
 // OrgMenuController 企业相关
 type OrgMenuController struct {
 	ControllerBase
+}
+
+// AppVers 应用版本
+func (u *OrgMenuController) AppVers(ctx *gin.Context) {
+	var list []map[string]interface{}
+
+	list = append(list, map[string]interface{}{
+		"val":   0,
+		"label": "全部",
+	}, map[string]interface{}{
+		"val":   variable.AppUsageVersionCloud,
+		"label": "云版本",
+	}, map[string]interface{}{
+		"val":   variable.AppUsageVersionOffline,
+		"label": "离线版本",
+	})
+
+	response.SuccessReturnData(ctx, list)
 }
 
 // Tree 树形列表

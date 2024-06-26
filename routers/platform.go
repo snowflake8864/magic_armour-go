@@ -111,6 +111,7 @@ func InitPlatformRouter() *gin.Engine {
 				//菜单 - 隐藏页
 				menu := vPlatform.Group("orgMenu/")
 				{
+					menu.POST("appVers", (&platform.OrgMenuController{}).AppVers)
 					menu.POST("tree", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuTree"))
 					menu.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuAdd"))
 					menu.POST("edit", validatorFactory.Create(consts.ValidatorPrefixPlatform+"OrgMenuEdit"))

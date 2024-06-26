@@ -257,6 +257,17 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/alarm/self/handle":         {ModuleAlarm, "自保告警：处理"},
 	"/v5/organization/alarm/self/handleAll":      {ModuleAlarm, "自保告警：处理全部"},
 	"/v5/organization/alarm/self/clear":          {ModuleAlarm, "自保告警：清空"},
+
+	"/v5/organization/syslog/dns/batchDelete":     {ModuleSyslog, "DNS日志：批量删除"},
+	"/v5/organization/syslog/dns/clear":           {ModuleSyslog, "DNS日志：清空"},
+	"/v5/organization/syslog/inner/batchDelete":   {ModuleSyslog, "对内通讯日志：批量删除"},
+	"/v5/organization/syslog/inner/clear":         {ModuleSyslog, "对内通讯日志：清空"},
+	"/v5/organization/syslog/outer/batchDelete":   {ModuleSyslog, "对外通讯日志：批量删除"},
+	"/v5/organization/syslog/outer/clear":         {ModuleSyslog, "对外通讯日志：清空"},
+	"/v5/organization/syslog/process/batchDelete": {ModuleSyslog, "进程启动日志：批量删除"},
+	"/v5/organization/syslog/process/clear":       {ModuleSyslog, "进程启动日志：清空"},
+	"/v5/organization/syslog/login/batchDelete":   {ModuleSyslog, "登录日志：批量删除"},
+	"/v5/organization/syslog/login/clear":         {ModuleSyslog, "登录日志：清空"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
