@@ -158,7 +158,7 @@ func (m *OrgMenuModel) GetItemsByConditions(condition SearchConditions, offset, 
 	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
-		tmp = tmp.Order("level ASC, created_at ASC")
+		tmp = tmp.Order("level ASC, sort ASC")
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
