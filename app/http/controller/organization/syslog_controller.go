@@ -119,7 +119,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 		condition.ParentHash = ctx.GetString(consts.ValidatorPrefixOrg + "parentHash")
 		condition.ParentDir = ctx.GetString(consts.ValidatorPrefixOrg + "parentDir")
 		condition.ParentId = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "parentId"))
-		condition.ParentParam = ctx.GetString(consts.ValidatorPrefixOrg + "parentParam")
+		//condition.ParentParam = ctx.GetString(consts.ValidatorPrefixOrg + "parentParam")
 
 		fact := syslog_models.CreateProcessFactory()
 		total, models := fact.Page(condition, offset, pageSize, order)

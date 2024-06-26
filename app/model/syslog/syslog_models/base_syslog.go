@@ -65,18 +65,6 @@ func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []mode
 			Val: condition.Ids,
 		})
 	}
-	if !string_helper.IsEmpty(condition.SourceIp) {
-		wheres = append(wheres, model_comm.Conditions{
-			Key: "source_ip",
-			Val: condition.SourceIp,
-		})
-	}
-	if condition.LoginStatus != nil {
-		wheres = append(wheres, model_comm.Conditions{
-			Key: "status",
-			Val: *condition.LoginStatus,
-		})
-	}
 	if !string_helper.IsEmpty(condition.CreateAtGte) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at >=",
@@ -87,6 +75,90 @@ func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at <=",
 			Val: condition.CreateAtLte,
+		})
+	}
+	if !string_helper.IsEmpty(condition.ProcHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_hash",
+			Val: condition.ProcHash,
+		})
+	}
+	if condition.ProcId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_id",
+			Val: condition.ProcId,
+		})
+	}
+	if !string_helper.IsEmpty(condition.ProcDir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_dir like",
+			Val: "%" + condition.ProcDir + "%",
+		})
+	}
+	if !string_helper.IsEmpty(condition.ProcParam) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "proc_param like",
+			Val: "%" + condition.ProcParam + "%",
+		})
+	}
+	if !string_helper.IsEmpty(condition.ParentHash) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "parent_hash",
+			Val: condition.ParentHash,
+		})
+	}
+	if condition.ParentId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "parent_id",
+			Val: condition.ParentId,
+		})
+	}
+	if !string_helper.IsEmpty(condition.ParentDir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "parent_dir like",
+			Val: "%" + condition.ParentDir + "%",
+		})
+	}
+	if !string_helper.IsEmpty(condition.ParentParam) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "parent_param like",
+			Val: "%" + condition.ParentParam + "%",
+		})
+	}
+	if !string_helper.IsEmpty(condition.DomainName) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "domain_name",
+			Val: condition.DomainName,
+		})
+	}
+	if !string_helper.IsEmpty(condition.SourceIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "source_ip",
+			Val: condition.SourceIp,
+		})
+	}
+	if condition.SourcePort > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "source_port",
+			Val: condition.SourcePort,
+		})
+	}
+	if !string_helper.IsEmpty(condition.TargetIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "target_ip",
+			Val: condition.TargetIp,
+		})
+	}
+	if condition.TargetPort > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "target_port",
+			Val: condition.TargetPort,
+		})
+	}
+	if condition.LoginStatus != nil {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status",
+			Val: *condition.LoginStatus,
 		})
 	}
 
