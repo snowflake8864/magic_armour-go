@@ -146,6 +146,16 @@ func (m *OrderModel) GetItemById(id string) (item *OrderModel) {
 	}
 }
 
+// GetItemByOrgAndId 通过id获取一条记录
+func (m *OrderModel) GetItemByOrgAndId(orgId int64, id string) (item *OrderModel) {
+	result := m.Model(m).Where("order_no=? AND org_id=?", id, orgId).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return item
+	}
+}
+
 // GetItemsByIds 通过id集合获取多条记录
 func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel) {
 	result := m.Model(m).Where("order_no IN ?", ids).Find(&items)

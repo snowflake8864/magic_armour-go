@@ -83,10 +83,10 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	loginInfo := u.getLogin(ctx)
 	conditions := order_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
-	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orderStatus"))
-	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixPlatform + "productTitle")
-	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
-	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "orderStatus"))
+	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixOrg + "productTitle")
+	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixOrg + "startTime")
+	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
 	return conditions
 }
 
@@ -106,14 +106,27 @@ func (u *OrderController) PageForPurchase(ctx *gin.Context) {
 
 // InfoForPurchase 购买：信息
 func (u *OrderController) InfoForPurchase(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
 
-	response.SuccessSimplify(ctx)
+	model := order_models.CreateOrderFactory().GetItemByOrgAndId(loginInfo.OrgId, orderNo)
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransDetail(model))
 }
 
 // LogsForPurchase 购买：日志
 func (u *OrderController) LogsForPurchase(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	conditions := order_models.SearchConditions{
+		OrderNo: ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo"),
+		OrgId:   loginInfo.OrgId,
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
 
-	response.SuccessSimplify(ctx)
+	//日志分页
+	total, logModels := order_models.CreateLogFactory().Page(conditions, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransLogsPage(total, logModels))
 }
 
 // AddForPurchase 购买：添加
@@ -122,9 +135,9 @@ func (u *OrderController) AddForPurchase(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := order_models.OrderModel{}
 	param.OrgId = loginInfo.OrgId
-	param.ProductId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "productId"))
-	param.BuyNumber = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "buyNumber"))
-	param.GrantDuration = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "grantDuration"))
+	param.ProductId = int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "productId"))
+	param.BuyNumber = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "buyNumber"))
+	param.GrantDuration = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantDuration"))
 	param.Source = enums.OperateSourceOrganize
 
 	if errCode, err := order_service.CreateCurdFactory().Add(&param, loginInfo.UserId, loginInfo.Username); err != nil {
