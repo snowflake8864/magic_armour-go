@@ -17,7 +17,7 @@ type User struct {
 
 func (t *User) pageGeneral(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["IdSingle"] = model.Id
+	data["id"] = model.Id
 	data["username"] = model.Username
 	data["email"] = model.Email
 	data["phone"] = model.Phone
@@ -64,4 +64,9 @@ func (t *User) TransPage(total int64, models []*user_models.UserModel, departmen
 		"total": total,
 		"items": items,
 	}
+}
+
+// TransInfo 转换成管理页需要的数据
+func (t *User) TransInfo(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+	return t.pageGeneral(model, departments)
 }

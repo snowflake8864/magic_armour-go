@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/organization/user_service"
@@ -28,7 +29,11 @@ func (u *AccountController) decrypt(data string) (result string) {
 
 // GetUser 获取用户信息
 func (u *AccountController) GetUser(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	model := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
+
+	response.SuccessReturnData(ctx, (&org_trans.User{}).TransInfo(model, nil))
 }
 
 // ModifyUser 修改用户信息

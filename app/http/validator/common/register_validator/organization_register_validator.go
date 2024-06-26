@@ -78,6 +78,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, home3.AlarmDailyStat{})
 
 	//账户管理
+	key = consts.ValidatorPrefixOrg + "AccountSaveInfo"
+	containers.Set(key, account3.ModifyPw{})
 	key = consts.ValidatorPrefixOrg + "AccountModifyPw"
 	containers.Set(key, account3.ModifyPw{})
 	key = consts.ValidatorPrefixOrg + "AccountModifyPhone"
