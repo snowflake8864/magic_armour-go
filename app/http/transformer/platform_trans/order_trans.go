@@ -34,7 +34,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["grant_duration"] = model.GrantDuration
 	data["grant_duration_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("grant_duration", model.GrantDuration, enum_order.EnumMap)
 	data["buy_number"] = model.BuyNumber
-	data["usageNumber"] = model.UsageNumber
+	data["usage_number"] = model.UsageNumber
 	data["total_amount"] = model.TotalAmount
 	data["decline_amount"] = model.DeclineAmount
 	data["real_amount"] = model.RealAmount

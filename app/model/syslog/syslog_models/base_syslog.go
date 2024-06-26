@@ -73,7 +73,7 @@ func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []mode
 	}
 	if condition.LoginStatus != nil {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "handle_status",
+			Key: "status",
 			Val: *condition.LoginStatus,
 		})
 	}
