@@ -58,6 +58,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/auth/hsLogin":       {ModuleAuth, "幻势登录"},
 	"/v5/organization/auth/logout":        {ModuleAuth, "幻势登录"},
 
+	"/v5/organization/account/saveInfo":    {ModuleAccount, "修改信息"},
 	"/v5/organization/account/modifyPw":    {ModuleAccount, "修改密码"},
 	"/v5/organization/account/modifyPhone": {ModuleAccount, "修改手机"},
 	"/v5/organization/account/modifyEmail": {ModuleAccount, "修改邮箱"},
