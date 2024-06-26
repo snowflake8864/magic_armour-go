@@ -46,11 +46,12 @@ var WebMapString = map[string][]string{
 }
 
 var pathModuleLabel = map[string][]string{
-	"/v5/platform/auth/checkUser":                    {ModuleAuth, "校验管理员"},
-	"/v5/platform/auth/getSliderCode":                {ModuleAuth, "获取滑块码"},
-	"/v5/platform/auth/sendSms":                      {ModuleAuth, "发送短信验证码"},
-	"/v5/platform/auth/normalLogin":                  {ModuleAuth, "管理员登录"},
-	"/v5/platform/auth/platform":                     {ModuleAuth, "管理员登出"},
+	"/v5/platform/auth/checkUser":     {ModuleAuth, "校验管理员"},
+	"/v5/platform/auth/getSliderCode": {ModuleAuth, "获取滑块码"},
+	"/v5/platform/auth/sendSms":       {ModuleAuth, "发送短信验证码"},
+	"/v5/platform/auth/normalLogin":   {ModuleAuth, "管理员登录"},
+	//"/v5/platform/auth/logout":        {ModuleAuth, "管理员登出"},
+
 	"/v5/platform/organize/manage/lock":              {ModuleOrg, "账户管理-锁定"},
 	"/v5/platform/organize/manage/unlock":            {ModuleOrg, "账户管理-解锁"},
 	"/v5/platform/organize/manage/clean":             {ModuleOrg, "账户管理-清理业务数据"},

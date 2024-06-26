@@ -56,7 +56,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/auth/sendSms":       {ModuleAuth, "发送短信验证码"},
 	"/v5/organization/auth/normalLogin":   {ModuleAuth, "密码登录"},
 	"/v5/organization/auth/hsLogin":       {ModuleAuth, "幻势登录"},
-	"/v5/organization/auth/logout":        {ModuleAuth, "幻势登录"},
+	//"/v5/organization/auth/logout":        {ModuleAuth, "登出"},
 
 	"/v5/organization/account/saveInfo":    {ModuleAccount, "修改信息"},
 	"/v5/organization/account/modifyPw":    {ModuleAccount, "修改密码"},
