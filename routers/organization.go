@@ -710,7 +710,6 @@ func InitOrganizationRouter() *gin.Engine {
 				} //告警
 
 				//通信日志
-				//通信日志
 				syslog := vOrg.Group("syslog/")
 				{
 					public := syslog.Group("public/")
@@ -747,7 +746,41 @@ func InitOrganizationRouter() *gin.Engine {
 						login1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginBatchDelete"))
 						login1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginClear"))
 					}
-				} //通信日
+				} //通信日志
+
+				//订单授权
+				order := vOrg.Group("order/")
+				{
+					public := order.Group("public/")
+					{
+						public.POST("orderStatus", (&organization.OrderController{}).OrderStatus)
+						public.POST("expireStatus", (&organization.OrderController{}).ExpireStatus)
+						public.POST("grantDuration", (&organization.OrderController{}).GrantDuration)
+						public.POST("payMethod", (&organization.OrderController{}).PayMethod)
+						public.POST("payBankcard", (&organization.OrderController{}).PayMethod)
+					}
+					purchase := order.Group("purchase/")
+					{
+						purchase.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchasePage"))
+						purchase.POST("info", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchaseInfo"))
+						purchase.POST("logs", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchaseLogs"))
+						purchase.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchaseAdd"))
+						purchase.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchaseCancel"))
+						purchase.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchaseDelete"))
+						purchase.POST("payByBankcard", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderPurchasePayByBankcard"))
+					}
+					grant := order.Group("grant/")
+					{
+						grant.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderGrantPage"))
+						grant.POST("validList", (&organization.OrderController{}).ValidList)
+						grant.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderGrantSave"))
+					}
+
+					used := order.Group("used/")
+					{
+						used.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderUsedPage"))
+					}
+				} //订单授权
 			}
 
 		}

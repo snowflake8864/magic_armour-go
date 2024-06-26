@@ -13,6 +13,7 @@ import (
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
 	loginSolve3 "goskeleton/app/http/validator/organization/login_solve"
+	order3 "goskeleton/app/http/validator/organization/order"
 	outreach3 "goskeleton/app/http/validator/organization/outreach"
 	plug3 "goskeleton/app/http/validator/organization/plug"
 	port3 "goskeleton/app/http/validator/organization/port"
@@ -689,4 +690,26 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, syslog3.LoginBatchDelete{})
 	key = consts.ValidatorPrefixOrg + "SyslogLoginClear"
 	containers.Set(key, syslog3.LoginClear{})
+
+	//订单授权
+	key = consts.ValidatorPrefixOrg + "OrderPurchasePage"
+	containers.Set(key, order3.PurchasePage{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchaseInfo"
+	containers.Set(key, order3.PurchaseInfo{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchaseLogs"
+	containers.Set(key, order3.PurchaseLogs{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchaseAdd"
+	containers.Set(key, order3.PurchaseAdd{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchaseCancel"
+	containers.Set(key, order3.PurchaseCancel{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchaseDelete"
+	containers.Set(key, order3.PurchaseDelete{})
+	key = consts.ValidatorPrefixOrg + "OrderPurchasePayByBankcard"
+	containers.Set(key, order3.PurchasePayByBankcard{})
+	key = consts.ValidatorPrefixOrg + "OrderGrantPage"
+	containers.Set(key, order3.GrantPage{})
+	key = consts.ValidatorPrefixOrg + "OrderGrantSave"
+	containers.Set(key, order3.GrantSave{})
+	key = consts.ValidatorPrefixOrg + "OrderUsedPage"
+	containers.Set(key, order3.UsedPage{})
 }

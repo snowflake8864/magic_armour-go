@@ -37,5 +37,5 @@ type OrderSearch struct {
 
 // OrderSingle 订单单个
 type OrderSingle struct {
-	OrderNo string `form:"orderNo" json:"orderNo" binding:"required"`
+	OrderNo string `form:"orderNo" json:"orderNo" binding:"required,max=20"`
 }

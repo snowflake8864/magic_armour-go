@@ -52,6 +52,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["alias"] = model.Alias
 	data["position"] = model.Position
 	data["remark"] = model.Remark
+	data["agent_type"] = model.AgentType
 
 	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
 	data["grant_order_no"] = model.GrantOrderNo
