@@ -88,7 +88,7 @@ func (u *AlarmController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.OrderFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.AgentFieldDefault)
 
 	//终端分页
 	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)

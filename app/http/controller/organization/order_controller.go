@@ -4,11 +4,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -181,8 +183,22 @@ func (u *OrderController) DeleteForPurchase(ctx *gin.Context) {
 
 // PageForGrant 终端授权：分页
 func (u *OrderController) PageForGrant(ctx *gin.Context) {
+	//查询条件
+	conditions, err := u.getAgentSearchConditions(ctx)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
 
-	response.SuccessSimplify(ctx)
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.AgentFieldDefault)
+
+	//终端分页
+	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)
+	//转化数据
+	_, departmentMaps := u.parseAgentModels(agentModels, true)
+
+	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, nil))
 }
 
 // SaveForGrant 终端授权：保存
