@@ -52,7 +52,6 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 	alarmConditions := alarm_stat_models.SearchConditions{}
 	alarmConditions.OrgId = loginInfo.OrgId
 	alarmConditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat) //今天
-	alarmConditions.StatDay = "2024-06-22"
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
@@ -105,7 +104,6 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	conditions := alarm_stat_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
 	conditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat)
-	conditions.StatDay = "2024-06-22"
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
