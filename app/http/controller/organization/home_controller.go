@@ -171,15 +171,18 @@ func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
 	//统计
 	alarmFact := alarm_stat_models.CreateStatDailyFactory()
 	models := alarmFact.CalcByConditionsGroupDay(conditions, alarmFact.StatColumn(alarm_stat_models.PrefixTotal, true, false, true, false, true))
-	var result []map[string]interface{}
+
+	var date []int
+	var total []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			result = append(result, map[string]interface{}{
-				"date":      date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
-				"total":     model.Total,
-				"add_total": model.AddTotal,
-			})
+			date = append(date, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			total = append(total, model.AddTotal)
 		}
+	}
+	result := map[string]interface{}{
+		"date":  date,
+		"total": total,
 	}
 	response.SuccessReturnData(ctx, result)
 }
