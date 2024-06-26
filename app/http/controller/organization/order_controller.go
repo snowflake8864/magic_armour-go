@@ -155,13 +155,26 @@ func (u *OrderController) PayByBankcardForPurchase(ctx *gin.Context) {
 
 // CancelForPurchase 购买：取消
 func (u *OrderController) CancelForPurchase(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
 
+	if errCode, err := order_service.CreateCurdFactory().OrgCancel(orderNo, loginInfo.OrgId, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 	response.SuccessSimplify(ctx)
 }
 
 // DeleteForPurchase 购买：删除
 func (u *OrderController) DeleteForPurchase(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
 
+	if errCode, err := order_service.CreateCurdFactory().OrgDelete(orderNo, loginInfo.OrgId); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 	response.SuccessSimplify(ctx)
 }
 
