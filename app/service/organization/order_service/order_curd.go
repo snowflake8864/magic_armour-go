@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
 )
@@ -252,6 +253,43 @@ func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateN
 
 // PayByBankcard 通过银行卡支付
 func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64, operateName string) (errCode int, err error) {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
+		return -1, errors.New("订单不存在")
+	}
+	if orderModel.OrgId != orgId {
+		return -1, errors.New("订单错误")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
+		return -1, errors.New("订单状态不正确")
+	}
+
+	payInfo := enum_order.FormatPayBankcard(dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrder))
+
+	now := date_helper.CurDatetime()
+	//修改
+	updates := map[string]interface{}{
+		"order_status": enum_order.OrderStatusPaid,
+		"pay_method":   enum_order.PayMethodBankcard,
+		"pay_info":     json_helper.Encode(payInfo),
+		"pay_at":       now,
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return -1, errors.New("取消订单失败")
+	}
+
+	//订单日志
+	logParam := order_models.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionPayBankcard,
+		OperateSource: enums.OperateSourceOrganize,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		CreatedAt:     now,
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return errCode, err
 }

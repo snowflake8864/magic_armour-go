@@ -1,6 +1,9 @@
 package enum_order
 
-import "goskeleton/app/global/enums"
+import (
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
+)
 
 const (
 	PayMethodBankcard int = 10 //支付方式： 银行卡
@@ -84,4 +87,30 @@ var WebMapInt = map[string][]int{
 	"pay_method": {
 		PayMethodBankcard,
 	},
+}
+
+func FormatPayBankcard(m map[string]string) map[string]string {
+	result := make(map[string]string)
+	if val, isOk := m[enum_dictionary.OrderBankcardName]; isOk {
+		result["card_name"] = val
+	} else {
+		result["card_name"] = ""
+	}
+	if val, isOk := m[enum_dictionary.OrderBankcardNo]; isOk {
+		result["card_no"] = val
+	} else {
+		result["card_no"] = ""
+	}
+	if val, isOk := m[enum_dictionary.OrderBankcardBank]; isOk {
+		result["bank_name"] = val
+	} else {
+		result["bank_name"] = ""
+	}
+	if val, isOk := m[enum_dictionary.OrderPayingTel]; isOk {
+		result["tel"] = val
+	} else {
+		result["tel"] = ""
+	}
+
+	return result
 }

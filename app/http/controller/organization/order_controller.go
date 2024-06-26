@@ -54,14 +54,7 @@ func (u *OrderController) PayBankcard(ctx *gin.Context) {
 
 	maps := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrder)
 
-	result := map[string]string{
-		"card_name": maps[enum_dictionary.OrderBankcardName],
-		"card_no":   maps[enum_dictionary.OrderBankcardNo],
-		"bank_name": maps[enum_dictionary.OrderBankcardBank],
-		"tel":       maps[enum_dictionary.OrderPayingTel],
-	}
-
-	response.SuccessReturnData(ctx, result)
+	response.SuccessReturnData(ctx, enum_order.FormatPayBankcard(maps))
 }
 
 // ValidList 有效订单列表
@@ -150,7 +143,13 @@ func (u *OrderController) AddForPurchase(ctx *gin.Context) {
 
 // PayByBankcardForPurchase 购买：银卡支付
 func (u *OrderController) PayByBankcardForPurchase(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
 
+	if errCode, err := order_service.CreateCurdFactory().PayByBankcard(orderNo, loginInfo.OrgId, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 	response.SuccessSimplify(ctx)
 }
 
