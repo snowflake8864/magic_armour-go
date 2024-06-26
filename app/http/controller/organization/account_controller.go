@@ -33,7 +33,9 @@ func (u *AccountController) GetUser(ctx *gin.Context) {
 
 	model := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
 
-	response.SuccessReturnData(ctx, (&org_trans.User{}).TransInfo(model, nil))
+	info := (&org_trans.User{}).TransInfo(model, nil)
+	info["org_name"] = loginInfo.OrgName
+	response.SuccessReturnData(ctx, info)
 }
 
 // ModifyUser 修改用户信息

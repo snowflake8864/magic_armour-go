@@ -67,6 +67,6 @@ func (t *User) TransPage(total int64, models []*user_models.UserModel, departmen
 }
 
 // TransInfo 转换成管理页需要的数据
-func (t *User) TransInfo(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+func (t *User) TransInfo(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
 	return t.pageGeneral(model, departments)
 }

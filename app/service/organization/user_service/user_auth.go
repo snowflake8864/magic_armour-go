@@ -49,6 +49,7 @@ type UserAuth struct {
 
 type UserCacheLogin struct {
 	OrgId         int64   `json:"org_id"`
+	OrgName       string  `json:"org_name"`
 	UserId        int64   `json:"user_id"`
 	Username      string  `json:"username"`
 	IsRoot        int     `json:"is_root"`
@@ -255,6 +256,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 
 	loginInfo := UserCacheLogin{
 		OrgId:         userModel.OrgId,
+		OrgName:       orgModel.Name,
 		UserId:        userModel.Id,
 		Username:      userModel.Username,
 		IsRoot:        userModel.IsRoot,
