@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/department_service"
@@ -177,6 +178,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		return nil, -1, err
 	}
 
+	//获取用户
 	err, userModel := crd.HasUser(username)
 	if err != nil {
 		return nil, -1, err
@@ -193,6 +195,18 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 			return nil, -99, errors.New("短信验证码不一致")
 		}
 		crd.deleteBySms(userModel.Phone)
+	}
+
+	//企业验证
+	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userModel.OrgId)
+	if err != nil || orgModel.Id == 0 {
+		return nil, -1, errors.New("企业不存在")
+	}
+	if orgModel.Status == enum_organization.StatusVerifying {
+		return nil, -1, errors.New("账户审核中，请联系管理员")
+	}
+	if orgModel.Status == enum_organization.StatusLocking {
+		return nil, -1, errors.New("账户已锁定，请联系管理员")
 	}
 
 	//用户名和密码不一致
@@ -225,13 +239,13 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 
 	curdFact.loginSuccess(userModel.Id)
 
-	result = crd.loginAfter(userModel, netIp)
+	result = crd.loginAfter(userModel, orgModel, netIp)
 
 	return result, 0, nil
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, netIp string) map[string]interface{} {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string) map[string]interface{} {
 	var deptIds, deptWithChild []int64
 	//不是管理员
 	if userModel.IsRoot == enums.IsNot {
@@ -260,6 +274,9 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, netIp string) 
 	result["userid"] = userModel.Id
 	result["username"] = userModel.Username
 	result["is_root"] = userModel.IsRoot
+	result["position"] = userModel.Position
+	result["org_type"] = orgModel.Type
+	result["org_name"] = orgModel.Name
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
 	return result
