@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
 	accessLogService "goskeleton/app/service/agent/access_log_service"
+	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"net/http"
@@ -47,7 +48,14 @@ func SaveAccess() gin.HandlerFunc {
 				"/v1/getuserid": {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
-				param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefixAgent + "uid"))
+				//解密用户信息
+				userId := c.GetString(consts.ValidatorPrefixAgent + "userid")
+				if userInfo, err := software_service.CreateDownloadFactory().DecryptConfig(userId); err == nil {
+					param.OrgId = userInfo.OrgId
+					param.AgentId = strings.ToLower(c.GetString(consts.ValidatorPrefixAgent + "uid"))
+				} else {
+					return
+				}
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAgent(c)
 				param.AgentId = loginInfo.AgentId
