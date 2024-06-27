@@ -11,7 +11,7 @@ import (
 
 type GrantPage struct {
 	data_type.Page
-	SearchOrder
+	data_type.AgentSearch
 }
 
 func (n GrantPage) CheckParams(context *gin.Context) {

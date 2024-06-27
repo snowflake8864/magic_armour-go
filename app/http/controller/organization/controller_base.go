@@ -35,11 +35,18 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
 	conditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
-	IsOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
-	conditions.IsOnline = &IsOnline
-	IsSafe := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
-	conditions.IsSafe = &IsSafe
-
+	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isOnline"); isOk && val != nil {
+		isOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
+		conditions.IsOnline = &isOnline
+	}
+	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isSafe"); isOk && val != nil {
+		isSafe := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
+		conditions.IsSafe = &isSafe
+	}
+	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "grantStatus"); isOk && val != nil {
+		grantStatus := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantStatus"))
+		conditions.GrantStatus = &grantStatus
+	}
 	//请求的组织架构
 	var reqDeptIds []int64
 	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
@@ -69,6 +76,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 		//管理员： 可以看全部终端
 		conditions.DeptIds = reqDeptIds
 	}
+
 	return conditions, nil
 }
 

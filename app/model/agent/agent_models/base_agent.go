@@ -35,6 +35,7 @@ type SearchConditions struct {
 	PlatformType    int
 	IsOnline        *int
 	IsSafe          *int
+	GrantStatus     *int
 	Alias           string
 	ContactName     string
 	DeptIds         []int64
@@ -112,6 +113,12 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_safe",
 			Val: *condition.IsSafe,
+		})
+	}
+	if condition.GrantStatus != nil && *condition.GrantStatus != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_status",
+			Val: *condition.GrantStatus,
 		})
 	}
 
