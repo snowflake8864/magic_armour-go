@@ -71,6 +71,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["proc_id"] = model.ProcId
 			data["procUser"] = model.ProcUser
 			data["status"] = model.Status
+			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
 			data["sync_status_at"] = model.SyncStatusAt
 			data["global_status"] = model.GlobalStatus
 			data["self_status"] = model.SelfStatus
@@ -88,7 +89,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["copyright"] = model.Copyright
 			data["signature"] = model.Signature
 			data["created_at"] = model.CreatedAt
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
+
 			data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
@@ -114,7 +115,8 @@ func (t *Process) TransRepeatPage(total int64, models []*proc_models.ProcessMode
 			data["agent_id"] = model.AgentId
 			data["proc_dir"] = model.Dir
 			data["created_at"] = model.CreatedAt
-
+			data["status"] = model.Status
+			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, nil)
 			items = append(items, data)
 		}

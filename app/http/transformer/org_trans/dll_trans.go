@@ -113,6 +113,8 @@ func (t *Dll) TransRepeatPage(total int64, models []*proc_models.DllModel, agent
 			data["agent_id"] = model.AgentId
 			data["dll_dir"] = model.Dir
 			data["created_at"] = model.CreatedAt
+			data["status"] = model.Status
+			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, nil)
 			items = append(items, data)

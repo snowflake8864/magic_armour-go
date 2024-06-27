@@ -13,6 +13,7 @@ import (
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
 	loginSolve3 "goskeleton/app/http/validator/organization/login_solve"
+	operationLog3 "goskeleton/app/http/validator/organization/operation_log"
 	order3 "goskeleton/app/http/validator/organization/order"
 	outreach3 "goskeleton/app/http/validator/organization/outreach"
 	plug3 "goskeleton/app/http/validator/organization/plug"
@@ -717,4 +718,8 @@ func OrganizationRegisterValidator() {
 	//任务相关
 	key = consts.ValidatorPrefixOrg + "TaskHistoryPage"
 	containers.Set(key, task3.HistoryPage{})
+
+	//操作日志相关
+	key = consts.ValidatorPrefixOrg + "OperationLogPage"
+	containers.Set(key, operationLog3.Page{})
 }
