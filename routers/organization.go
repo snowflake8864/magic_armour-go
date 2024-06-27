@@ -802,6 +802,14 @@ func InitOrganizationRouter() *gin.Engine {
 					operationLog.POST("modules", (&organization.OperationController{}).Modules)
 					operationLog.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OperationLogPage"))
 				} //操作日志
+
+				//终端访问日志
+				agentAccessLog := vOrg.Group("agentAccessLog/")
+				{
+					agentAccessLog.POST("status", (&organization.AgentAccessController{}).Status)
+					agentAccessLog.POST("urls", (&organization.AgentAccessController{}).Urls)
+					agentAccessLog.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentAccessLogPage"))
+				} //操作日志
 			}
 
 		}

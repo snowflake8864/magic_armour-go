@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	account3 "goskeleton/app/http/validator/organization/account"
 	agent3 "goskeleton/app/http/validator/organization/agent"
+	agentAccessLog3 "goskeleton/app/http/validator/organization/agent_access_log"
 	alarm3 "goskeleton/app/http/validator/organization/alarm"
 	auth3 "goskeleton/app/http/validator/organization/auth"
 	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
@@ -722,4 +723,9 @@ func OrganizationRegisterValidator() {
 	//操作日志相关
 	key = consts.ValidatorPrefixOrg + "OperationLogPage"
 	containers.Set(key, operationLog3.Page{})
+
+	//终端访问日志相关
+	key = consts.ValidatorPrefixOrg + "AgentAccessLogPage"
+	containers.Set(key, agentAccessLog3.Page{})
+
 }

@@ -70,6 +70,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["proc_dir"] = model.ProcDir
 			data["proc_id"] = model.ProcId
 			data["procUser"] = model.ProcUser
+			data["dll_number"] = model.DllNumber
 			data["status"] = model.Status
 			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
 			data["sync_status_at"] = model.SyncStatusAt

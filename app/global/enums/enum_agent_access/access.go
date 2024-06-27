@@ -2,7 +2,10 @@ package enum_agent_access
 
 // 终端
 
-const ()
+const (
+	StatusSuccess int = 1
+	StatusFail    int = 2
+)
 
 var EnumStrMap = map[string]map[string]string{
 	"path": {
@@ -52,5 +55,62 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/uninstall":       "卸载",
 		"/v1/error/upload":    "上传错误文件",
 		"/v1/gettrustdir":     "获取信任目录",
+	},
+}
+
+var WebMapStr = map[string][]string{
+	"path": {
+		"/v1/auth",
+		"/v1/getconf",
+		"/v1/gettask",
+		"/v1/closetask",
+		"/v1/upload/suffix/exe",
+		"/v1/uploadproc",
+		"/v1/autouploadprocess",
+		"/v1/getprocwl",
+		"/v1/getprocbl",
+		"/v1/module/process",
+		"/v1/upload/proc/module",
+		"/v1/getdraw",
+		"/v1/uploaddraw",
+		"/v1/upload/suffix/dll",
+		"/v1/pload/allproc/module",
+		"/v1/auto/upload/module",
+		"/v1/module/white/list",
+		"/v1/module/black/list",
+		"/v1/getdirinfo",
+		"/v1/putdir",
+		"/v1/getdirpolicy",
+		"/v1/getprotect",
+		"/v1/upserviceport",
+		"/v1/getvirtualport",
+		"/v1/getplugging",
+		"/v1/getipblacklist",
+		"/v1/addperipherals",
+		"/v1/getwhiteperipherals",
+		"/v1/getblackperipherals",
+		"/v1/alertupload",
+		"/v1/upopenport",
+		"/v1/putsyslog",
+		"/v1/puthardwareinfo",
+		"/v1/download",
+		"/v1/uninstall",
+		"/v1/error/upload",
+		"/v1/gettrustdir",
+	},
+}
+
+var EnumMapInt = map[string]map[int]string{
+
+	"status": {
+		StatusSuccess: "成功",
+		StatusFail:    "异常",
+	},
+}
+
+var WebMapInt = map[string][]int{
+	"status": {
+		StatusSuccess,
+		StatusFail,
 	},
 }

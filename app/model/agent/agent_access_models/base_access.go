@@ -1,6 +1,7 @@
 package agent_access_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -8,6 +9,8 @@ import (
 type SearchConditions struct {
 	OrgId   int64
 	AgentId string
+	Path    string
+	Status  int
 }
 
 type baseAccess struct {
@@ -25,6 +28,18 @@ func (m *baseAccess) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "agent_id",
 			Val: condition.AgentId,
+		})
+	}
+	if !string_helper.IsEmpty(condition.Path) && condition.Path != enums.AllDefaultStr {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "path",
+			Val: condition.Path,
+		})
+	}
+	if condition.Status > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status",
+			Val: condition.Status,
 		})
 	}
 

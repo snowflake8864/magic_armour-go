@@ -45,6 +45,7 @@ type ProcessAndRunning struct {
 	ProcId              int    `json:"proc_id"`
 	ProcDir             string `json:"proc_dir"`
 	ProcUser            string `json:"proc_user"`
+	DllNumber           int    `json:"dll_number"`
 }
 
 // DllAndRunning 进程和运行中标

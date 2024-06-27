@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent_access"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
@@ -36,9 +36,9 @@ func SaveAccess() gin.HandlerFunc {
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
-			param.Status = enums.IsNot
+			param.Status = enum_agent_access.StatusFail
 			if param.HttpCode == http.StatusOK {
-				param.Status = enums.IsYes
+				param.Status = enum_agent_access.StatusSuccess
 			}
 
 			//忽略验证的请求地址
@@ -54,7 +54,7 @@ func SaveAccess() gin.HandlerFunc {
 			}
 
 			if !string_helper.IsEmpty(param.AgentId) {
-				accessLogService.CreateCurdFactory().Add(&param)
+				go accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*
 				variable.ZapLog.Info("=============================================SaveAccess start =============================================")
