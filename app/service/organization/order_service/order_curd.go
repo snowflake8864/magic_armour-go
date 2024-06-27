@@ -466,3 +466,9 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 
 	return true
 }
+
+// GrantToAgents 授权给终端集合
+func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []string, operateId int64, operateName string) error {
+
+	return nil
+}

@@ -204,12 +204,14 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 // SaveForGrant 终端授权：保存
 func (u *OrderController) SaveForGrant(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	conditions := order_models.SearchConditions{}
-	conditions.OrgId = loginInfo.OrgId
-	isExpire := enums.IsNot
-	conditions.IsExpire = &isExpire
-	orderModels := order_models.CreateOrderFactory().GetListByConditions(conditions)
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(orderModels))
+	agentIds := u.getAgentIdsFromGin(ctx)
+	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
+
+	if err := order_service.CreateCurdFactory().GrantToAgents(loginInfo.OrgId, orderNo, agentIds, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // PageForUsed 已使用：分页

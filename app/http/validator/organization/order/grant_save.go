@@ -10,8 +10,8 @@ import (
 )
 
 type GrantSave struct {
-	data_type.Page
-	SearchOrder
+	SingleOrder
+	data_type.AgentBatch
 }
 
 func (n GrantSave) CheckParams(context *gin.Context) {

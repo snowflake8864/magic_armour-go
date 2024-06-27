@@ -18,7 +18,7 @@ const (
 	ModuleOutreach              = "outreach"
 	ModuleLoginSolve            = "loginSolve"
 	ModuleAlarm                 = "alarm"
-	ModuleGrant                 = "grant"
+	ModuleOrder                 = "order"
 	ModuleAccount               = "account"
 	ModuleSyslog                = "syslog"
 	ModuleOrg                   = "org"
@@ -41,7 +41,7 @@ var EnumMap = map[string]map[string]string{
 		ModuleOutreach:       "外联管控",
 		ModuleLoginSolve:     "口令破解",
 		ModuleAlarm:          "告警管理",
-		ModuleGrant:          "授权管理",
+		ModuleOrder:          "订单授权",
 		ModuleAccount:        "账户管理",
 		ModuleOrg:            "企业管理",
 		ModuleSyslog:         "通信日志",
@@ -270,11 +270,11 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/syslog/login/batchDelete":   {ModuleSyslog, "登录日志：批量删除"},
 	"/v5/organization/syslog/login/clear":         {ModuleSyslog, "登录日志：清空"},
 
-	"/v5/organization/order/purchase/add":           {ModuleOrg, "购买记录：购买"},
-	"/v5/organization/order/purchase/cancel":        {ModuleOrg, "购买记录：取消"},
-	"/v5/organization/order/purchase/delete":        {ModuleOrg, "购买记录：删除"},
-	"/v5/organization/order/purchase/payByBankcard": {ModuleOrg, "购买记录：对公转账方式付款"},
-	"/v5/organization/order/grant/save":             {ModuleOrg, "终端授权：保存"},
+	"/v5/organization/order/purchase/add":           {ModuleOrder, "购买记录：购买"},
+	"/v5/organization/order/purchase/cancel":        {ModuleOrder, "购买记录：取消"},
+	"/v5/organization/order/purchase/delete":        {ModuleOrder, "购买记录：删除"},
+	"/v5/organization/order/purchase/payByBankcard": {ModuleOrder, "购买记录：对公转账方式付款"},
+	"/v5/organization/order/grant/save":             {ModuleOrder, "终端授权：保存"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
