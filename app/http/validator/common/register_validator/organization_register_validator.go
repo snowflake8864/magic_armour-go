@@ -23,6 +23,7 @@ import (
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
 	registry3 "goskeleton/app/http/validator/organization/registry"
+	software3 "goskeleton/app/http/validator/organization/software"
 	syslog3 "goskeleton/app/http/validator/organization/syslog"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
 	task3 "goskeleton/app/http/validator/organization/task"
@@ -727,5 +728,11 @@ func OrganizationRegisterValidator() {
 	//终端访问日志相关
 	key = consts.ValidatorPrefixOrg + "AgentAccessLogPage"
 	containers.Set(key, agentAccessLog3.Page{})
+
+	//软件相关
+	key = consts.ValidatorPrefixOrg + "SoftwareOfflineDownload"
+	containers.Set(key, software3.OfflineDownload{})
+	key = consts.ValidatorPrefixOrg + "SoftwareOnlineDownload"
+	containers.Set(key, software3.OnlineDownload{})
 
 }

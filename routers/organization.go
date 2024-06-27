@@ -810,6 +810,15 @@ func InitOrganizationRouter() *gin.Engine {
 					agentAccessLog.POST("urls", (&organization.AgentAccessController{}).Urls)
 					agentAccessLog.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentAccessLogPage"))
 				} //操作日志
+
+				//软件相关
+				software := vOrg.Group("software/")
+				{
+					software.POST("platformTypes", (&organization.SoftwareController{}).PlatformTypes)
+					software.POST("publishedList", (&organization.SoftwareController{}).PublishedList)
+					software.POST("offlineDownload", validatorFactory.Create(consts.ValidatorPrefixOrg+"SoftwareOfflineDownload"))
+					software.POST("onlineDownload", validatorFactory.Create(consts.ValidatorPrefixOrg+"SoftwareOnlineDownload"))
+				} //软件相关
 			}
 
 		}
