@@ -781,6 +781,20 @@ func InitOrganizationRouter() *gin.Engine {
 						used.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderUsedPage"))
 					}
 				} //订单授权
+
+				//任务相关
+				task := vOrg.Group("task/")
+				{
+					public := task.Group("public/")
+					{
+						public.POST("taskTypes", (&organization.TaskController{}).TaskTypes)
+						public.POST("taskStatus", (&organization.TaskController{}).TaskStatus)
+					}
+					history := task.Group("history/")
+					{
+						history.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TaskHistoryPage"))
+					}
+				}
 			}
 
 		}

@@ -23,6 +23,7 @@ import (
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	syslog3 "goskeleton/app/http/validator/organization/syslog"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
+	task3 "goskeleton/app/http/validator/organization/task"
 	threaten3 "goskeleton/app/http/validator/organization/threaten"
 	trustDir3 "goskeleton/app/http/validator/organization/trust_dir"
 	usb3 "goskeleton/app/http/validator/organization/usb"
@@ -712,4 +713,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, order3.GrantSave{})
 	key = consts.ValidatorPrefixOrg + "OrderUsedPage"
 	containers.Set(key, order3.UsedPage{})
+
+	//任务相关
+	key = consts.ValidatorPrefixOrg + "TaskHistoryPage"
+	containers.Set(key, task3.HistoryPage{})
 }

@@ -39,8 +39,8 @@ func (u *ControllerBase) getPageAndSort(ctx *gin.Context, defaultField string) (
 	if page <= 0 {
 		page = 1
 	}
-	if pageSize <= 1 {
-		page = 20
+	if pageSize < 1 {
+		pageSize = 20
 	}
 	offset = (page - 1) * pageSize
 

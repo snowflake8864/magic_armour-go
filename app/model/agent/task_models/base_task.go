@@ -1,6 +1,7 @@
 package task_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -8,8 +9,9 @@ import (
 type SearchConditions struct {
 	OrgId   int64
 	AgentId string
-	Type    int
+	Type    *int
 	Types   []int
+	Status  int
 }
 
 type baseTask struct {
@@ -29,17 +31,23 @@ func (m *baseTask) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.AgentId,
 		})
 	}
-
+	if condition.Type != nil && *condition.Type != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "type",
+			Val: *condition.Type,
+		})
+	}
 	if len(condition.Types) > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "type in",
 			Val: condition.Types,
 		})
 	}
-	if condition.Type > 0 {
+
+	if condition.Status > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "type",
-			Val: condition.Type,
+			Key: "status",
+			Val: condition.Status,
 		})
 	}
 	return wheres

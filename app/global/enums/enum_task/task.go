@@ -3,8 +3,8 @@ package enum_task
 // 任务
 
 const (
-	StatusStart  int = 0
-	StatusFinish int = 1
+	StatusStart  int = 1
+	StatusFinish int = 2
 
 	TypeProcessRefresh            int = 0  //任务类型: 刷新进程
 	TypeAgentUpgrade              int = 1  //任务类型:软件升级
@@ -69,5 +69,38 @@ var EnumMap = map[string]map[int]string{
 		TypeUsbBlackDownload:          "下发外设禁止名单",
 		TypeAgentUpgrade:              "升级终端",
 		TypeAgentUninstall:            "卸载终端",
+	},
+}
+
+var WebMapInt = map[string][]int{
+	"status": {
+		StatusStart,
+		StatusFinish,
+	},
+	"type": {
+		TypeAgentConfigDownload,
+		TypeTrustDir,
+		TypeProcessRefresh,
+		TypeProcessSuffixIsExe,
+		TypeProcessWhiteDownload,
+		TypeProcessBlackDownload,
+		TypeProcessCollectDll,
+		TypeProcessSampleUpload,
+		TypeDllRefresh,
+		TypeDllSuffixIsDll,
+		TypeDllWhiteDownload,
+		TypeDllBlackDownload,
+		TypeDirStructureUpload,
+		TypeTamperPolicyDownload,
+		TypeBlackmailPolicyDownload,
+		TypePortWorkingUpload,
+		TypePortVirtualPolicyDownload,
+		TypePluggingDownload,
+		TypePlugIpBlackDownload,
+		TypeUsbUpload,
+		TypeUsbWhiteDownload,
+		TypeUsbBlackDownload,
+		TypeAgentUpgrade,
+		TypeAgentUninstall,
 	},
 }

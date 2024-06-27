@@ -45,7 +45,7 @@ func (m *TaskModel) CreateTable() bool {
 			created_at datetime NULL,
  			id BIGINT NOT NULL DEFAULT '0',
 			remark varchar(512)  NOT NULL DEFAULT '' COMMENT '备注',
-			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(0进行中, 1已完成)',
+			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1进行中, 2已完成)',
 			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			completed_at datetime NULL COMMENT '任务完成时间'
 		)
