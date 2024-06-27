@@ -62,16 +62,13 @@ func (u *OrderController) PayBankcard(ctx *gin.Context) {
 // ValidList 有效订单列表
 func (u *OrderController) ValidList(ctx *gin.Context) {
 
-	maps := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrder)
-
-	result := map[string]string{
-		"card_name": maps[enum_dictionary.OrderBankcardName],
-		"card_no":   maps[enum_dictionary.OrderBankcardNo],
-		"bank_name": maps[enum_dictionary.OrderBankcardBank],
-		"tel":       maps[enum_dictionary.OrderPayingTel],
-	}
-
-	response.SuccessReturnData(ctx, result)
+	loginInfo := u.getLogin(ctx)
+	conditions := order_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	isExpire := enums.IsNot
+	conditions.IsExpire = &isExpire
+	orderModels := order_models.CreateOrderFactory().GetListByConditions(conditions)
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(orderModels))
 }
 
 func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
@@ -206,8 +203,13 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 
 // SaveForGrant 终端授权：保存
 func (u *OrderController) SaveForGrant(ctx *gin.Context) {
-
-	response.SuccessSimplify(ctx)
+	loginInfo := u.getLogin(ctx)
+	conditions := order_models.SearchConditions{}
+	conditions.OrgId = loginInfo.OrgId
+	isExpire := enums.IsNot
+	conditions.IsExpire = &isExpire
+	orderModels := order_models.CreateOrderFactory().GetListByConditions(conditions)
+	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(orderModels))
 }
 
 // PageForUsed 已使用：分页

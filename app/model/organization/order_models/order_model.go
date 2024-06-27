@@ -166,6 +166,11 @@ func (m *OrderModel) GetItemsByIds(ids []string) (items []*OrderModel) {
 	}
 }
 
+// GetListByConditions 通过条件获取多条记录
+func (m *OrderModel) GetListByConditions(condition SearchConditions) (items []*OrderModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrderModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrderModel) {
 	tmp := m.Model(m)
