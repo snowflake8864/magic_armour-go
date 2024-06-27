@@ -33,6 +33,10 @@ func (t *Dll) TransMasterPage(total int64, models []*proc_models.DllModel) inter
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
 			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
+			data["threaten_is_sync"] = 0
+			if enum_threaten.HasLevel(model.ThreatenLevel) {
+				data["threaten_is_sync"] = 1
+			}
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -72,6 +76,10 @@ func (t *Dll) TransRunningPage(total int64, models []*proc_models.DllAndRunning)
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["threaten_level"] = model.ThreatenLevel
 			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
+			data["threaten_is_sync"] = 0
+			if enum_threaten.HasLevel(model.ThreatenLevel) {
+				data["threaten_is_sync"] = 1
+			}
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
