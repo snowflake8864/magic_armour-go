@@ -104,20 +104,21 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		return -1, errors.New("终端不存在")
 	}
 
-	fmt.Println("================================")
+	fmt.Println("参数================================")
 	fmt.Println(json_helper.Encode(param))
 	for _, model := range models {
 		err, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+		fmt.Println("修改================================")
+		fmt.Println("AgentId:", model.AgentId)
+		fmt.Println(json_helper.Encode(updates))
+		fmt.Println("hasTask:", hasTask)
+		fmt.Println("openAutoWhite:", openAutoWhite)
 		if err != nil {
 			continue
 		}
 		if updates == nil || len(updates) == 0 {
 			continue
 		}
-		fmt.Println(json_helper.Encode(updates))
-		fmt.Println("AgentId:", model.AgentId)
-		fmt.Println("hasTask:", hasTask)
-		fmt.Println("openAutoWhite:", openAutoWhite)
 		//修改
 		if isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, model.AgentId, updates); !isOk {
 			continue

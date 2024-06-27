@@ -87,7 +87,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		hasTask = true
 	}
 	//如果未授权, 下面功能不可用
-	if model.GrantStatus == enums.IsYes {
+	if model.GrantStatus == enums.IsNot {
 		return nil, hasTask, openAutoWhite, updates
 	}
 
@@ -101,7 +101,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		updates["fast_time"] = param.FastTime
 		hasTask = true
 	}
-
+	
 	//可信防护已授权
 	if grantConfig.Process == enums.SwitchOn {
 		//自动白名单
@@ -112,7 +112,6 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			}
 		}
 
-		//进程相关
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {
 			updates["process_switch"] = *param.ProcessSwitch
 			hasTask = true
