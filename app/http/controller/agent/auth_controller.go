@@ -29,7 +29,7 @@ type AuthController struct {
 func (u *AuthController) MakeUserid(ctx *gin.Context) {
 	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "orgId"))
 	userId := int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "userId"))
-	response.SuccessReturnData(ctx, software_service.CreateDownloadFactory().EncryptConfig(orgId, userId))
+	response.SuccessReturnData(ctx, software_service.CreateDownloadFactory().EncryptConfig(orgId, userId, 0))
 }
 
 // Login 登录

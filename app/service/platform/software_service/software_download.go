@@ -22,12 +22,12 @@ type SoftwareDownload struct {
 type AgentConfig struct {
 	OrgId  int64 `json:"o"`
 	UserId int64 `json:"u"`
+	SoftId int64 `json:"s"`
 	Expire int64 `json:"t"`
 }
 
-// EncryptConfig 加密配置
-// 底层限制长度不能超过260
-func (crd *SoftwareDownload) EncryptConfig(OrgId, UserId int64) string {
+// EncryptConfig 加密配置  todo: 底层限制长度不能超过260
+func (crd *SoftwareDownload) EncryptConfig(orgId, userId, softId int64) string {
 
 	//从数据字典中获取过期时间
 	var hour int64 = 366
@@ -38,8 +38,8 @@ func (crd *SoftwareDownload) EncryptConfig(OrgId, UserId int64) string {
 
 	//登录信息
 	loginInfo := AgentConfig{
-		OrgId:  OrgId,
-		UserId: UserId,
+		OrgId:  orgId,
+		UserId: userId,
 		Expire: date_helper.AddTimestampByHour(hour),
 	}
 	jsonStr := json_helper.Encode(loginInfo)

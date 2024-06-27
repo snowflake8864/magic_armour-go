@@ -14,7 +14,7 @@
 currentUser, exist := context.MustGet("userToken").(my_jwt.CustomClaims)
 
 	if exist {
-		fmt.Printf("userId：%d\n",currentUser.UserId)
+		fmt.Printf("userId：%d\n",currentUser.userId)
 	}
 
 ```
