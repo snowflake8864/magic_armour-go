@@ -101,7 +101,7 @@ func (t *Order) TransLogsPage(total int64, models []*order_models.OrderLogModel)
 			tmp := make(map[string]interface{})
 
 			tmp["org_id"] = model.OrgId
-			tmp["OrderStatus"] = model.OrderStatus
+			tmp["order_status"] = model.OrderStatus
 			tmp["order_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("order_status", model.OrderStatus, enum_order.EnumMap)
 			tmp["operate_id"] = model.OperateId
 			tmp["operate_name"] = model.OperateName

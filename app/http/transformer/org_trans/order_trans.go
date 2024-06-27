@@ -31,7 +31,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 	data["sale_price"] = model.SalePrice
 	data["grant_duration"] = model.GrantDuration
 	data["buy_number"] = model.BuyNumber
-	data["usageNumber"] = model.UsageNumber
+	data["usage_number"] = model.UsageNumber
 	data["total_amount"] = model.TotalAmount
 	data["decline_amount"] = model.DeclineAmount
 	data["real_amount"] = model.RealAmount
@@ -98,7 +98,7 @@ func (t *Order) TransLogsPage(total int64, models []*order_models.OrderLogModel)
 			tmp := make(map[string]interface{})
 
 			tmp["org_id"] = model.OrgId
-			tmp["OrderStatus"] = model.OrderStatus
+			tmp["order_status"] = model.OrderStatus
 			tmp["order_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("order_status", model.OrderStatus, enum_order.EnumMap)
 			tmp["operate_id"] = model.OperateId
 			tmp["operate_name"] = model.OperateName

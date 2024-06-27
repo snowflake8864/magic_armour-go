@@ -2,11 +2,15 @@ package order_service
 
 import (
 	"errors"
+	"fmt"
+	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/order_models"
+	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/product_service"
@@ -469,6 +473,73 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 
 // GrantToAgents 授权给终端集合
 func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []string, operateId int64, operateName string) error {
+	orderModel := crd.GetItemByOrderNo(orderNo)
+	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
+		return errors.New("订单不存在")
+	}
+	if orderModel.OrgId != orgId {
+		return errors.New("订单错误")
+	}
+	if orderModel.OrderStatus != enum_order.OrderStatusCompleted {
+		return errors.New("订单状态不正确")
+	}
+	if orderModel.IsExpire == enums.IsYes {
+		return errors.New("订单已过期")
+	}
+	if orderModel.BuyNumber <= orderModel.UsageNumber {
+		return errors.New("订单可使用数目为零")
+	}
+
+	//有效终端集合
+	var validIds []string
+	agentFact := agent_models.CreateAgentFactory()
+	agentModels := agentFact.GetItemsByOrgAndAgents(orgId, agentIds, agentFact.ColumnGrant())
+	if agentModels == nil || len(agentModels) == 0 {
+		return errors.New("终端不存在")
+	}
+	for _, model := range agentModels {
+		// 订单编号一致 & 授权状态是已授权
+		if model.GrantOrderNo == orderNo && model.GrantStatus == enums.IsYes {
+			continue
+		}
+		validIds = append(validIds, model.AgentId)
+	}
+	//终端不需要授权
+	agentCnt := len(validIds)
+	if agentCnt == 0 {
+		return nil
+	}
+	if (orderModel.BuyNumber - orderModel.UsageNumber - agentCnt) < 0 {
+		return errors.New("订单可用数目不足")
+	}
+
+	//修改终端
+	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle) {
+		return errors.New("终端授权失败")
+	}
+
+	//修改订单
+	updates := map[string]interface{}{
+		"usage_number": gorm.Expr(fmt.Sprintf("usage_number+%d", agentCnt)),
+	}
+	if !crd.masterModel.UpdateById(orderNo, updates) {
+		return errors.New("订单授权失败")
+	}
+
+	//订单日志
+	logParam := order_models.OrderLogModel{
+		OrgId:         orderModel.OrgId,
+		OrderNo:       orderModel.OrderNo,
+		OrderStatus:   orderModel.OrderStatus,
+		OperateAction: enum_order.ActionGrant2Agent,
+		OperateSource: enums.OperateSourceOrganize,
+		OperateId:     operateId,
+		OperateName:   operateName,
+		UsageNumber:   agentCnt,
+		UsageAgents:   json_helper.Encode(validIds),
+		CreatedAt:     date_helper.CurDatetime(),
+	}
+	CreateLogFactory().Add(&logParam)
 
 	return nil
 }
