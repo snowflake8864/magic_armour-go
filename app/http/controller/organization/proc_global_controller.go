@@ -69,12 +69,18 @@ func (u *ProcessGlobalController) AddFromDll(ctx *gin.Context) {
 // add
 func (u *ProcessGlobalController) add(ctx *gin.Context, dataFrom int) error {
 	loginInfo := u.getLogin(ctx)
+	Type := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type"))
+	if Type == enum_process.AllStatusGlobalWhite {
+		Type = enum_process.GlobalTypeWhite
+	} else {
+		Type = enum_process.GlobalTypeBlack
+	}
 
 	param := proc_models.ProcGlobalModel{
 		Id:         ctx.GetString(consts.ValidatorPrefixOrg + "id"),
 		OrgId:      loginInfo.OrgId,
 		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
+		Type:       Type,
 		DataFrom:   dataFrom,
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
