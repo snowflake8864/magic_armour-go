@@ -1,7 +1,6 @@
 package proc_models
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -220,7 +219,6 @@ func (m *DllModel) CalcByConditionsGroupHash(condition SearchConditions) (items 
 		}
 		return tmp.Group("dll_hash").Find(&items)
 	})
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items

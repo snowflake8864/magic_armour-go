@@ -386,6 +386,8 @@ func (u *DllController) CollectForAgent(ctx *gin.Context) {
 	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeDllSuffixIsDll, "获取全部模块")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, false)
+
+	response.SuccessSimplify(ctx)
 }
 
 // RepeatStatForAgent 单终端: 重复模块统计

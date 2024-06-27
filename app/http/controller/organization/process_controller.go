@@ -444,6 +444,8 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessSuffixIsExe, "获取全部进程")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, true)
+
+	response.SuccessSimplify(ctx)
 }
 
 // RepeatStatForAgent 单终端: 重复进程统计
