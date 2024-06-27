@@ -49,6 +49,29 @@ var EnumMap = map[string]map[string]string{
 		ModuleOther:          "其他",
 	},
 }
+var WebMapString = map[string][]string{
+	"module": {
+		ModuleAuth,
+		ModuleAgent,
+		ModuleProcess,
+		ModuleDll,
+		ModuleSample,
+		ModuleBlackmail,
+		ModuleTamper,
+		ModulePort,
+		ModulePlug,
+		ModuleUsb,
+		ModuleOutreach,
+		ModuleLoginSolve,
+		ModuleAlarm,
+		ModuleOrder,
+		ModuleAccount,
+		ModuleOrg,
+		ModuleSyslog,
+		ModuleSecurityReport,
+		ModuleOther,
+	},
+}
 
 var pathModuleLabel = map[string][]string{
 	"/v5/organization/auth/checkUser":     {ModuleAuth, "校验用户"},

@@ -9,6 +9,7 @@ type SearchConditions struct {
 	OrgId       int64
 	CreateId    int64
 	Module      string
+	NetIp       string
 	CreateAtGte string
 	CreateAtLte string
 }
@@ -24,18 +25,19 @@ func (m *baseOperate) conditions2Where(condition SearchConditions) (wheres []mod
 			Val: condition.OrgId,
 		})
 	}
-	if condition.CreateId > 0 {
-		wheres = append(wheres, model_comm.Conditions{
-			Key: "create_id",
-			Val: condition.CreateId,
-		})
-	}
 	if !string_helper.IsEmpty(condition.Module) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "module",
 			Val: condition.Module,
 		})
 	}
+	if !string_helper.IsEmpty(condition.NetIp) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "net_ip",
+			Val: condition.NetIp,
+		})
+	}
+
 	if !string_helper.IsEmpty(condition.CreateAtGte) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at >=",
@@ -48,5 +50,12 @@ func (m *baseOperate) conditions2Where(condition SearchConditions) (wheres []mod
 			Val: condition.CreateAtLte,
 		})
 	}
+	if condition.CreateId > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "create_id",
+			Val: condition.CreateId,
+		})
+	}
+
 	return wheres
 }

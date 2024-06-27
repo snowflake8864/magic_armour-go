@@ -101,7 +101,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		updates["fast_time"] = param.FastTime
 		hasTask = true
 	}
-	
+
 	//可信防护已授权
 	if grantConfig.Process == enums.SwitchOn {
 		//自动白名单

@@ -794,7 +794,13 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						history.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TaskHistoryPage"))
 					}
-				}
+				} //任务相关
+
+				//操作日志
+				operationLog := vOrg.Group("operationLog/")
+				{
+					operationLog.POST("modules", (&organization.TaskController{}).TaskTypes)
+				} //操作日志
 			}
 
 		}
