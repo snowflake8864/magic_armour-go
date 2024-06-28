@@ -55,7 +55,7 @@ func InitApiRouter() *gin.Engine {
 	})
 
 	//  创建一个路由组
-	vApi := router.Group("/api/")
+	vApi := router.Group("/v5/api/")
 	{
 		vApi.GET("getVersion", func(ctx *gin.Context) {
 			response.SuccessReturnData(ctx, variable.VersionNumber)
@@ -64,7 +64,6 @@ func InitApiRouter() *gin.Engine {
 		// 软件版本相关
 		software := vApi.Group("software/")
 		{
-			software.POST("published", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwarePublished"))
 			software.POST("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
 		}
 

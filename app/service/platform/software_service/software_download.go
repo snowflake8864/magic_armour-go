@@ -26,7 +26,7 @@ type AgentConfig struct {
 	Expire int64 `json:"t"`
 }
 
-// EncryptConfig 加密配置  todo: 底层限制长度不能超过260
+// EncryptConfig 加密配置  todo: 底层限制长度不能超过256
 func (crd *SoftwareDownload) EncryptConfig(orgId, userId, softId int64) string {
 
 	//从数据字典中获取过期时间

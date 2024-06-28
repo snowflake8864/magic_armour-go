@@ -16,8 +16,6 @@ func ApiRegisterValidator() {
 	var key string
 
 	//软件
-	key = consts.ValidatorPrefixApi + "SoftwarePublished"
-	containers.Set(key, software2.Published{})
 	key = consts.ValidatorPrefixApi + "SoftwareDownload"
 	containers.Set(key, software2.Download{})
 
