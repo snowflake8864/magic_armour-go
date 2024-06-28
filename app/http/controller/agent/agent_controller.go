@@ -25,6 +25,14 @@ type AgentController struct {
 	ControllerBase
 }
 
+func (u *AgentController) getMode(mode int) int {
+	if mode == enum_agent.ModeMonitor {
+		return 0
+	} else {
+		return 1
+	}
+}
+
 // GetConfig 获取配置信息
 func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//关闭任务
@@ -55,23 +63,24 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 	//进程
 	mapConf["proc_switch"] = agentModel.ProcessSwitch
-	mapConf["proc_protect"] = agentModel.ProcessMode
+	mapConf["proc_protect"] = u.getMode(agentModel.ProcessMode)
 	//模块
 	mapConf["module_switch"] = agentModel.DllSwitch
-	mapConf["module_protect"] = agentModel.DllMode
+	mapConf["module_protect"] = u.getMode(agentModel.DllMode)
+
 	//防篡改
 	mapConf["file_switch"] = agentModel.TamperSwitch
-	mapConf["file_protect"] = agentModel.TamperMode
+	mapConf["file_protect"] = u.getMode(agentModel.TamperMode)
 	//勒索
 	mapConf["extortion_switch"] = agentModel.BlackmailSwitch
-	mapConf["extortion_protect"] = agentModel.BlackmailMode
+	mapConf["extortion_protect"] = u.getMode(agentModel.BlackmailMode)
 	//端口虚开
 	mapConf["open_port_switch"] = agentModel.PortSwitch
 	//封堵
 	mapConf["dynamic_switch"] = agentModel.PlugSwitch
 	//外设
 	mapConf["usb_switch"] = agentModel.UsbSwitch
-	mapConf["usb_protect"] = agentModel.UsbMode
+	mapConf["usb_protect"] = u.getMode(agentModel.UsbMode)
 	//自保
 	mapConf["self_protect_switch"] = agentModel.SelfProtectSwitch
 	//内核升级
@@ -87,15 +96,15 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["hardware_switch"] = agentModel.HardwareSwitch
 	mapConf["hardware_time"] = agentModel.HardwareTime
 
-	//linux不支持的功能
+	//linux 不支持的功能
 	if loginInfo.PlatformType == enum_software.PlatformTypeLinux {
 		mapConf["module_switch"] = enums.SwitchOff
-		mapConf["module_protect"] = enum_agent.ModeMonitor
+		mapConf["module_protect"] = u.getMode(agentModel.DllMode)
 	}
 	//win xp 不支持的功能
 	if loginInfo.OsType == enum_software.OsTypeWinXp {
 		mapConf["open_port_switch"] = enums.SwitchOff
-		mapConf["dynamic_switch"] = enum_agent.ModeMonitor
+		mapConf["dynamic_switch"] = enums.SwitchOff
 	}
 
 	//心跳间隔时间(秒)
