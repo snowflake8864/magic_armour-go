@@ -27,6 +27,20 @@ func (crd *DepartmentCurd) getItemById(orgId, id int64) *department_models.Depar
 	return model
 }
 
+// GetIdsSelfWithParentById 获取本身以及否父级的id集合
+func (crd *DepartmentCurd) GetIdsSelfWithParentById(orgId int64, id int64) []int64 {
+	var result []int64
+	model, err := crd.masterModel.GetItemById(orgId, id)
+	if err != nil || model == nil {
+		return result
+	}
+
+	for _, val := range strings.Split(model.FullCode, ",") {
+		result = append(result, string_helper.ToInt64(val))
+	}
+	return result
+}
+
 // GetIdsSelfWithChildById 获取本身以及子集的id集合
 func (crd *DepartmentCurd) GetIdsSelfWithChildById(orgId int64, id int64) []int64 {
 	conditions := department_models.SearchConditions{

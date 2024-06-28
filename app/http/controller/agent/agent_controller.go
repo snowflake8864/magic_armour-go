@@ -10,12 +10,14 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/service/agent/agent_err_service"
 	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -119,8 +121,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 
 // GetInfo 获取终端信息(调试用)
 func (u *AgentController) GetInfo(ctx *gin.Context) {
-	loginInfo := u.getLogin(ctx)
-	response.SuccessReturnData(ctx, loginInfo)
+	response.SuccessReturnData(ctx, u.getLogin(ctx))
 }
 
 // Upgrade 升级
@@ -137,8 +138,37 @@ func (u *AgentController) Uninstall(ctx *gin.Context) {
 
 // GetTrustDir 获取信任目录
 func (u *AgentController) GetTrustDir(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.getLogin(ctx)
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeTrustDir}, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "获取信任目录")
+	OpenSwitch := enums.SwitchOn
+	conditions := trust_dir_models.SearchConditions{
+		OrgId:        loginInfo.OrgId,
+		PlatformType: loginInfo.PlatformType,
+		DeptIds:      u.getDeptIdsByAgent(loginInfo.OrgId, loginInfo.AgentId),
+		OpenSwitch:   &OpenSwitch,
+	}
+
+	var result []map[string]interface{}
+
+	//全局目录
+	globalModels := trust_dir_models.CreateGlobalFactory().GetListByConditions(conditions)
+	if globalModels != nil && len(globalModels) > 0 {
+		for _, model := range globalModels {
+			dir := model.Dir
+			if loginInfo.PlatformType == enum_software.PlatformTypeWindows {
+				dir = path_helper.ToWindows(dir)
+			}
+			result = append(result, map[string]interface{}{
+				"type":      model.Type,
+				"dir":       dir,
+				"is_extend": model.IsExtend,
+			})
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // UploadErrorFile 上传转储(错误) 文件

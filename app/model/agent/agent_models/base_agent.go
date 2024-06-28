@@ -199,7 +199,7 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 
 // ColumnSimplify 字段: 最简单的
 func (m *baseAgent) ColumnSimplify() string {
-	return "org_id, id"
+	return "org_id, id, dept_id"
 }
 
 // ColumnGrant 字段: 授权想
