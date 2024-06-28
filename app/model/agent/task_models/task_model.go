@@ -107,6 +107,19 @@ func (m *TaskModel) DeleteByOrg(orgId int64) bool {
 	}
 }
 
+// DeleteByOrgAndAgent 通过企业i删除
+func (m *TaskModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? ADN agent_id=?", orgId, agentId).Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *TaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

@@ -19,11 +19,6 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 	return crd.masterModel.DeleteByOrg(orgId)
 }
 
-// DeleteByOrgAndAgent 通过企业和终端删除
-func (crd *AgentCurd) DeleteByOrgAndAgent(orgId int64, id string) bool {
-	return crd.masterModel.DeleteByOrgAndAgent(orgId, id)
-}
-
 // BatchGrant 批量授权
 func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string) bool {
 

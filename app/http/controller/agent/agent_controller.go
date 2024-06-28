@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/service/agent/agent_err_service"
@@ -132,8 +133,11 @@ func (u *AgentController) Upgrade(ctx *gin.Context) {
 
 // Uninstall 卸载回调
 func (u *AgentController) Uninstall(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
-	response.SuccessReturnData(ctx, "卸载回调")
+	agent_job.Delete(loginInfo.OrgId, loginInfo.AgentId)
+
+	response.SuccessReturnData(ctx, "Uninstall")
 }
 
 // GetTrustDir 获取信任目录
