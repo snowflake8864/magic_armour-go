@@ -62,8 +62,8 @@ func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int,
 	if !files.ExistsFile(uploadModel.FullPath) {
 		return -1, errors.New("文件不存在")
 	}
-	param.StoragePath = path_helper.ToStandard(param.StoragePath)
-	param.FullPath = path_helper.ToStandard(param.FullPath)
+	param.StoragePath = path_helper.ToStandard(uploadModel.StoragePath)
+	param.FullPath = path_helper.ToStandard(uploadModel.FullPath)
 	param.IsPublish = enums.IsNot
 	param.CreatedAt = date_helper.CurDatetime()
 

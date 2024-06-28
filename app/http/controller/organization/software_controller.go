@@ -65,7 +65,7 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 	verId := software_service.CreateDownloadFactory().EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
 	url := ""
 	if model.PlatformType == enum_software.PlatformTypeLinux {
-		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip %s/v5/api/software/download?verId=%s"
+		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s/v5/api/software/download?verId=%s'"
 	} else {
 		url += "%s/v5/api/software/download?verId=%s"
 	}
