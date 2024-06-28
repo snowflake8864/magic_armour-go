@@ -171,7 +171,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//方便下发相关任务
 			model.BlackmailSwitch = *param.BlackmailSwitch
 			//同步模式
-			if *param.DllSwitch == enums.SwitchOff {
+			if *param.BlackmailSwitch == enums.SwitchOff {
 				updates["blackmail_mode"] = enum_agent.ModeMonitor
 			}
 		}

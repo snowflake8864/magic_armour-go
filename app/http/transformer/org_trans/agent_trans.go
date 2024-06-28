@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_product"
@@ -61,16 +62,21 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 
 	data["process_switch"] = model.ProcessSwitch
 	data["process_mode"] = model.ProcessMode
+	data["process_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.ProcessMode, enum_agent.EnumIntMap)
 	data["dll_switch"] = model.DllSwitch
 	data["dll_mode"] = model.DllMode
+	data["dll_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.DllMode, enum_agent.EnumIntMap)
 	data["tamper_switch"] = model.TamperSwitch
 	data["tamper_mode"] = model.TamperMode
+	data["tamper_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.TamperMode, enum_agent.EnumIntMap)
 	data["blackmail_switch"] = model.BlackmailSwitch
 	data["blackmail_mode"] = model.BlackmailMode
+	data["blackmail_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.BlackmailMode, enum_agent.EnumIntMap)
 	data["port_switch"] = model.PortSwitch
 	data["plug_switch"] = model.PlugSwitch
 	data["usb_switch"] = model.UsbSwitch
 	data["usb_mode"] = model.UsbMode
+	data["usb_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.UsbMode, enum_agent.EnumIntMap)
 	data["outreach_alarm_switch"] = model.OutreachAlarmSwitch
 	data["login_solve_switch"] = model.LoginSolveSwitch
 	data["syslog_dns_switch"] = model.SyslogDnsSwitch

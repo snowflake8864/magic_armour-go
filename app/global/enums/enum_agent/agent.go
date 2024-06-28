@@ -37,6 +37,10 @@ var EnumIntMap = map[string]map[int]string{
 		enums.IsYes: "正常",
 		enums.IsNot: "异常",
 	},
+	"mode": {
+		ModeMonitor: "监控",
+		ModeProject: "保护",
+	},
 }
 
 var WebMapInt = map[string][]int{
