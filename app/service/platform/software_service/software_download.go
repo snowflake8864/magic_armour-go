@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -14,6 +15,7 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
+	"goskeleton/app/utils/zip_factory"
 	"os"
 	"strings"
 )
@@ -76,28 +78,30 @@ func (crd *SoftwareDownload) Clear() bool {
 	return crd.masterModel.TruncateTable()
 }
 
-func (crd *SoftwareDownload) GetServiceAddr() (addr string, err error) {
+func (crd *SoftwareDownload) GetServiceAddr() (err error, addr, url, port string) {
 	dictIds := []string{
 		enum_dictionary.AgentHttpUrl,
 		enum_dictionary.AgentHttpPort,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 	if string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpUrl]) || string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpPort]) {
-		return "", errors.New("没有配置终端访问地址")
+		return errors.New("没有配置终端访问地址"), addr, url, port
 	}
 
-	addr = strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/") + ":" + mapDict[enum_dictionary.AgentHttpPort]
-	return addr, nil
+	url = strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/")
+	port = strings.Trim(mapDict[enum_dictionary.AgentHttpPort], " ")
+	addr = url + ":" + port
+	return nil, addr, url, port
 }
 
 // GetDownloadInfo 获取下载信息
 func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadModel) (error, *software_models.DownloadModel) {
 	//获取服务器地址
-	if addr, err := crd.GetServiceAddr(); err != nil {
+	err, serviceIp, agentHttpUrl, agentHttpPort := crd.GetServiceAddr()
+	if err != nil {
 		return err, nil
-	} else {
-		param.ServiceIp = addr
 	}
+	param.ServiceIp = serviceIp
 
 	//验证是否存在下载记录, 存在直接返回
 	if downloadModel, _ := crd.masterModel.GetItemByUnique(param.OrgId, param.SoftwareId, param.CreateId, param.ServiceIp); downloadModel.Id > 0 {
@@ -119,33 +123,46 @@ func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadMode
 	newStorageDir, newFullDir := crd.generateYearMonthPath()
 	param.StoragePath = newStorageDir + newFileName
 	param.FullPath = newFullDir + newFileName
-	fmt.Println("param.StoragePath :", param.StoragePath)
-	fmt.Println("param.FullPath:", param.FullPath)
-
-	//复制到新路径
-	if err := file_helper.CopyFile(softModel.FullPath, param.FullPath); err != nil {
-		return errors.New("复制ZIP失败"), nil
-	}
 
 	//追加配置文件
-	if !crd.appendConfig(softModel.PlatformType, param) {
+	if !crd.appendConfig(agentHttpUrl, agentHttpPort, softModel, param) {
 		return errors.New("追加INI失败"), nil
 	}
+
+	//新文件属性
+	_, fileHash := file_helper.Md5sum(param.FullPath)
+	param.FileHash = fileHash
+	fileInfo, _ := file_helper.FileInfo(param.FullPath)
+	param.FileSize = fileInfo.Size()
+	param.CreatedAt = date_helper.CurDatetime()
+	param.Alias = enum_software.DownloadName(softModel.PlatformType, softModel.OsType, softModel.Ver)
+
+	//入库
+	crd.masterModel.InsertItem(param)
 
 	return nil, param
 }
 
 // 追加配置文件
-func (crd *SoftwareDownload) appendConfig(platformType int, downloadModel *software_models.DownloadModel) bool {
+func (crd *SoftwareDownload) appendConfig(agentHttpUrl, agentHttpPort string, softModel *software_models.SoftwareModel, downloadModel *software_models.DownloadModel) bool {
 
-	ipAddr := strings.Split(downloadModel.ServiceIp, ":")
 	var params []string
 	params = append(params, "[SERVER]")
-	params = append(params, "URL="+ipAddr[0])
-	params = append(params, "PORT="+ipAddr[1])
+	params = append(params, "URL="+agentHttpUrl)
+	params = append(params, "PORT="+agentHttpPort)
 	params = append(params, "USER_ID="+crd.EncryptConfig(downloadModel.OrgId, downloadModel.CreateId, downloadModel.SoftwareId))
 
-	fmt.Println(json_helper.Encode(params))
+	//Unix系统里，每行结尾只有“<换行>”，即"\n"；Windows系统里面，每行结尾是“<回车><换行>”，即“\r\n”；
+	glue := "\n"
+	if softModel.PlatformType == enum_software.PlatformTypeWindows {
+		glue = "\r\n"
+	}
+	content := strings.Join(params, glue)
+
+	if err := zip_factory.AddFileToZip(softModel.FullPath, downloadModel.FullPath, "config.ini", content); err != nil {
+		variable.ZapLog.Sugar().Error(err.Error())
+		return false
+	}
 
 	return true
 }

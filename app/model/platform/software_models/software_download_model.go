@@ -23,7 +23,7 @@ type DownloadModel struct {
 	FullPath    string `json:"full_path"`
 	StoragePath string `json:"storage_path"`
 	FileHash    string `json:"file_hash"`
-	FileSize    int    `json:"file_size"`
+	FileSize    int64  `json:"file_size"`
 	Remark      string `json:"remark"`
 	CreateId    int64  `json:"create_id"`
 	CreateName  string `json:"create_name"`

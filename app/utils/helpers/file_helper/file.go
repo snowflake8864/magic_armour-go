@@ -70,3 +70,13 @@ func CopyFile(srcFile, destFile string) error {
 
 	return nil
 }
+
+// 文件信息
+func FileInfo(filePath string) (os.FileInfo, error) {
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		return nil, err
+	}
+
+	return fileInfo, nil
+}

@@ -47,7 +47,7 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 	}
 
 	downloadFact := software_service.CreateDownloadFactory()
-	addr, err := downloadFact.GetServiceAddr()
+	err, addr, _, _ := downloadFact.GetServiceAddr()
 	if err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
