@@ -5,10 +5,12 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
+	"strings"
 )
 
 func CreateDownloadFactory() *SoftwareDownload {
@@ -67,4 +69,46 @@ func (crd *SoftwareDownload) DecryptConfig(cryptStr string) (loginInfo AgentConf
 // Clear 清空
 func (crd *SoftwareDownload) Clear() bool {
 	return crd.masterModel.TruncateTable()
+}
+
+func (crd *SoftwareDownload) GetServiceAddr() (addr string, err error) {
+	dictIds := []string{
+		enum_dictionary.AgentHttpUrl,
+		enum_dictionary.AgentHttpPort,
+	}
+	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+	if string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpUrl]) || string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpPort]) {
+		return "", errors.New("没有配置终端访问地址")
+	}
+
+	addr = strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/") + ":" + mapDict[enum_dictionary.AgentHttpPort]
+	return addr, nil
+}
+
+// GetDownloadInfo 获取下载信息
+func (crd *SoftwareDownload) GetDownloadInfo(downloadModel *software_models.DownloadModel) error {
+	addr, err := crd.GetServiceAddr()
+	if err != nil {
+		return err
+	}
+
+	//验证是否存在下载记录, 存在直接返回
+	downloadModel, err = crd.masterModel.GetItemByUnique(downloadModel.OrgId, downloadModel.SoftwareId, downloadModel.CreateId, addr)
+	if err != nil {
+		return errors.New("下载错误")
+	}
+	if downloadModel.Id > 0 {
+		return nil
+	}
+
+	//验证软件
+	softModel := CreateCurdFactory().GetItemById(downloadModel.SoftwareId)
+	if softModel == nil || softModel.Id == 0 {
+		return errors.New("数据不存在")
+	}
+	if !files.ExistsFile(softModel.FullPath) {
+		return errors.New("文件不存在")
+	}
+
+	return nil
 }

@@ -5,16 +5,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/platform/software_models"
-	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
-	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
-	"strings"
 )
 
 // SoftwareController  软甲相关
@@ -50,19 +46,14 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 		return
 	}
 
-	dictIds := []string{
-		enum_dictionary.AgentHttpUrl,
-		enum_dictionary.AgentHttpPort,
-	}
-	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
-	if string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpUrl]) || string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpPort]) {
-		response.FailSimplify(ctx, "没有配置终端访问地址")
+	downloadFact := software_service.CreateDownloadFactory()
+	addr, err := downloadFact.GetServiceAddr()
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
+	verId := downloadFact.EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
 
-	addr := strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/") + ":" + mapDict[enum_dictionary.AgentHttpPort]
-
-	verId := software_service.CreateDownloadFactory().EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
 	url := ""
 	if model.PlatformType == enum_software.PlatformTypeLinux {
 		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s/v5/api/software/download?token=%s'"
@@ -76,5 +67,20 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 }
 
 func (u *SoftwareController) OnlineDownload(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	downloadModel := software_models.DownloadModel{
+		OrgId:      loginInfo.OrgId,
+		SoftwareId: int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "softId")),
+		Remark:     "立即下载",
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	if err := software_service.CreateDownloadFactory().GetDownloadInfo(&downloadModel); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	response.FileDownload(ctx, downloadModel.FullPath)
 }

@@ -38,7 +38,6 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 			upload.StoragePath = strings.ReplaceAll(newReturnPath+saveFileName, variable.BasePath, "")
 			upload.StorageName = saveFileName
 			upload.FullPath = newSavePath + saveFileName
-			upload.FullPath = newSavePath + saveFileName
 			upload.Suffix = path.Ext(saveFileName)
 			_, fileHash := file_helper.Md5sum(upload.FullPath)
 			upload.FileHash = fileHash

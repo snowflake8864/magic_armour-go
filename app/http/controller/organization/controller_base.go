@@ -2,6 +2,7 @@ package organization
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -76,6 +77,9 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 		//管理员： 可以看全部终端
 		conditions.DeptIds = reqDeptIds
 	}
+
+	fmt.Println("================agent conditions")
+	fmt.Println(conditions)
 
 	return conditions, nil
 }
