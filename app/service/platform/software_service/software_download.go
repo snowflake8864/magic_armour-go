@@ -180,10 +180,11 @@ func (crd *SoftwareDownload) generateFileName(orgId, softwareId, userId int64, s
 // @return 项目路径, 完整路径
 func (crd *SoftwareDownload) generateYearMonthPath() (string, string) {
 	basePath := variable.BasePath
+	savePathPre := variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
 	returnPathPre := variable.ConfigYml.GetString("FileUploadSetting.UploadFileReturnPath")
 	curYearMonth := date_helper.SpecialDatetime("2006_01")
 
-	newSavePathPre := returnPathPre + curYearMonth
+	newSavePathPre := savePathPre + curYearMonth
 	newReturnPathPre := basePath + returnPathPre + curYearMonth
 	// 相关路径不存在，创建目录
 	if _, err := os.Stat(newSavePathPre); err != nil {

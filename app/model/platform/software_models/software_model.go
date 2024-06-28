@@ -131,6 +131,22 @@ func (m *SoftwareModel) DeleteById(id int64) bool {
 	}
 }
 
+// GetItemByConditions 通过条件获一条记录
+func (m *SoftwareModel) GetItemByConditions(condition SearchConditions) (item *SoftwareModel) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+
+	result := tmp.Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *SoftwareModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*SoftwareModel) {
 	tmp := m.Model(m)

@@ -25,7 +25,7 @@ func (crd *baseSoftware) conditions2Where(condition SearchConditions) (wheres []
 	}
 	if condition.PlatformType > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "id",
+			Key: "platform_type",
 			Val: condition.PlatformType,
 		})
 	}

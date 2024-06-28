@@ -262,7 +262,7 @@ func (m *baseAgent) ColumnSwitchAndModeForAlarm(needId bool) string {
 		column = "org_id, id,"
 	}
 	column = column +
-		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
+		"platform_type, os_type, ver, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
 		"blackmail_switch, blackmail_mode, port_switch,plug_switch, usb_switch, usb_mode"
 	return column
 }

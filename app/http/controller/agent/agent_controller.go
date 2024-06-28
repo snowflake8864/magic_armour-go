@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -12,10 +13,12 @@ import (
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/trust_dir_models"
+	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/agent/agent_err_service"
 	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/path_helper"
@@ -127,8 +130,44 @@ func (u *AgentController) GetInfo(ctx *gin.Context) {
 
 // Upgrade 升级
 func (u *AgentController) Upgrade(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.getLogin(ctx)
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentUpgrade}, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "升级")
+	//客户端最新版本
+	IsPublish := enums.IsYes
+	Conditions := software_models.SearchConditions{
+		PlatformType: loginInfo.PlatformType,
+		OsType:       loginInfo.OsType,
+		IsPublish:    &IsPublish,
+	}
+	model := software_models.CreateSoftwareFactory().GetItemByConditions(Conditions)
+	if model == nil || model.Id == 0 {
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, "对应版本已下架:"+model.Ver)
+		return
+	}
+	if !enum_software.CanUpgradeDirect(model.Ver, loginInfo.Ver) {
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, "已经是最新版本,无需升级")
+		return
+	}
+
+	param := software_models.DownloadModel{
+		OrgId:      loginInfo.OrgId,
+		SoftwareId: model.Id,
+		Remark:     "升级",
+	}
+	if err, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param); err != nil {
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		return
+	} else {
+		response.SuccessReturnData(ctx, gin.H{
+			"alias":    downloadModel.Alias,
+			"size":     fmt.Sprintf("%d", downloadModel.FileSize),
+			"hash":     downloadModel.FileHash,
+			"download": downloadModel.StoragePath,
+		})
+		return
+	}
 }
 
 // Uninstall 卸载回调

@@ -39,6 +39,7 @@ type AgentCacheLogin struct {
 	NetIp        string `json:"net_ip"`
 	Os           string `json:"os"`
 	LoginAt      string `json:"login_at"`
+	Ver          string `json:"ver"`
 }
 
 func (crd *AgentCache) getKeyByLogin(val string) string {
@@ -56,6 +57,7 @@ func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 	loginInfo.NetIp = param.NetIp
 	loginInfo.Os = param.OsName
 	loginInfo.LoginAt = date_helper.CurDatetime()
+	loginInfo.Ver = param.Ver
 
 	jsonStr := json_helper.Encode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
