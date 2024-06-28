@@ -3,7 +3,7 @@ package data_type
 // AgentSearch 终端查询条件
 type AgentSearch struct {
 	AgentId     string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
-	DeptIds     []int  `form:"deptId" json:"deptId" binding:"omitempty,dive"`
+	DeptId      int    `form:"deptId" json:"deptId"`
 	HostName    string `form:"hostName" json:"hostName" binding:"omitempty,min=1"`
 	AgentIp     string `form:"agentIp" json:"agentIp" binding:"omitempty,ip"`
 	NetIp       string `form:"netIp" json:"netIp" binding:"omitempty,ip"`

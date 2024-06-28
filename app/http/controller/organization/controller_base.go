@@ -48,15 +48,16 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 		grantStatus := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantStatus"))
 		conditions.GrantStatus = &grantStatus
 	}
+
 	//请求的组织架构
 	var reqDeptIds []int64
-	if deptIds, isOk := ctx.Get(consts.ValidatorPrefixOrg + "deptId"); isOk {
-		var tmp []interface{}
-		tmp, _ = deptIds.([]interface{})
-		reqDeptIds = slice_helper.Any2Int64(tmp)
+	if deptId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")); deptId > 0 {
+		reqDeptIds = department_service.CreateCurdFactory().GetIdsSelfWithChildById(loginInfo.OrgId, deptId)
+		//没有查询组织架构
+		if len(reqDeptIds) == 0 {
+			return conditions, errors.New("组织架构不存在")
+		}
 	}
-
-	//用户管理的组织架构
 	if loginInfo.IsRoot == enums.IsNot {
 		if loginInfo.DeptIds == nil || len(loginInfo.DeptIds) == 0 {
 			return conditions, errors.New("没有需要管理的组织架构")
@@ -73,13 +74,12 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 				conditions.DeptIds = intersection
 			}
 		}
-	} else {
-		//管理员： 可以看全部终端
+	} else { //管理员： 可以看全部终端
 		conditions.DeptIds = reqDeptIds
 	}
 
 	fmt.Println("================agent conditions")
-	fmt.Println(conditions)
+	fmt.Println(json_helper.Encode(conditions))
 
 	return conditions, nil
 }
