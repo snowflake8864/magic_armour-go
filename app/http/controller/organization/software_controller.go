@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
 )
@@ -41,6 +42,7 @@ func (u *SoftwareController) PublishedList(ctx *gin.Context) {
 }
 
 func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "softId"))
 	model := software_service.CreateCurdFactory().GetItemById(softId)
 	if model == nil || model.Id == 0 {
@@ -53,10 +55,14 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 		enum_dictionary.AgentHttpPort,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+	if string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpUrl]) || string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpPort]) {
+		response.FailSimplify(ctx, "没有配置终端访问地址")
+		return
+	}
 
 	addr := strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/") + ":" + mapDict[enum_dictionary.AgentHttpPort]
 
-	verId := ""
+	verId := software_service.CreateDownloadFactory().EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
 	url := ""
 	if model.PlatformType == enum_software.PlatformTypeLinux {
 		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip %s/v5/api/software/download?verId=%s"
