@@ -32,3 +32,41 @@ func Md5sum(dir string) (error, string) {
 
 	return nil, md5String
 }
+
+// 文件是否存在
+func ExistsFile(filePath string) bool {
+	_, err := os.Stat(filePath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}
+
+// 复制文件
+func CopyFile(srcFile, destFile string) error {
+	source, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(destFile)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	_, err = io.Copy(destination, source)
+	if err != nil {
+		return err
+	}
+
+	err = destination.Sync()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

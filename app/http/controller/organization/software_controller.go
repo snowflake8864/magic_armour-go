@@ -69,7 +69,7 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 func (u *SoftwareController) OnlineDownload(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	downloadModel := software_models.DownloadModel{
+	param := software_models.DownloadModel{
 		OrgId:      loginInfo.OrgId,
 		SoftwareId: int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "softId")),
 		Remark:     "立即下载",
@@ -77,10 +77,10 @@ func (u *SoftwareController) OnlineDownload(ctx *gin.Context) {
 		CreateName: loginInfo.Username,
 	}
 
-	if err := software_service.CreateDownloadFactory().GetDownloadInfo(&downloadModel); err != nil {
+	if err, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
+	} else {
+		response.FileDownload(ctx, downloadModel.FullPath)
 	}
-
-	response.FileDownload(ctx, downloadModel.FullPath)
 }

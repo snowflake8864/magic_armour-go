@@ -3,6 +3,7 @@ package files
 import (
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -57,4 +58,31 @@ func ExistsFile(filePath string) bool {
 		}
 	}
 	return true
+}
+
+// 复制文件
+func CopyFile(srcFile, destFile string) error {
+	source, err := os.Open(srcFile)
+	if err != nil {
+		return err
+	}
+	defer source.Close()
+
+	destination, err := os.Create(destFile)
+	if err != nil {
+		return err
+	}
+	defer destination.Close()
+
+	_, err = io.Copy(destination, source)
+	if err != nil {
+		return err
+	}
+
+	err = destination.Sync()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
