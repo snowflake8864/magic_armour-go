@@ -28,11 +28,12 @@ func (crd *SoftwareCurd) GetItemById(id int64) (model *software_models.SoftwareM
 }
 
 // GetMapsByPublished 最新发布数据, 有映射关系 os_type:ver
-func (crd *SoftwareCurd) GetMapsByPublished() (maps map[int]string) {
+func (crd *SoftwareCurd) GetMapsByPublished() map[int]string {
 	models := crd.GetItemsByPublished()
 	if models == nil {
 		return nil
 	}
+	var maps = make(map[int]string)
 	for _, model := range models {
 		maps[model.OsType] = model.Ver
 	}
