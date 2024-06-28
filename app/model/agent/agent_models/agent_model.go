@@ -1,7 +1,6 @@
 package agent_models
 
 import (
-	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -483,7 +482,6 @@ func (m *AgentModel) GetItemsByConditions(condition SearchConditions, offset, li
 		}
 		return tmp.Find(&items)
 	})
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
@@ -503,7 +501,6 @@ func (m *AgentModel) Count(condition SearchConditions) int64 {
 		}
 		return tmp.Count(&total)
 	})
-	fmt.Println(sql)
 	result := m.Raw(m.TrimSql(sql)).Count(&total)
 	if result.Error == nil {
 		return total
