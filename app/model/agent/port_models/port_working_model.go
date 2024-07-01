@@ -18,7 +18,7 @@ func CreateWorkingFactory() *WorkingModel {
 type WorkingModel struct {
 	basePort
 	model.BaseModel
-	Id        string `json:"id" gorm:"primaryKey"`
+	Id        int64  `json:"id" gorm:"primaryKey"`
 	OrgId     int64  `json:"org_id"`
 	AgentId   string `json:"agent_id"`
 	Type      string `json:"type"`

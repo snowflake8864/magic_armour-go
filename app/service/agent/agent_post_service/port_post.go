@@ -41,6 +41,7 @@ func (crd *PortPost) SaveWorking(orgId int64, agentId, inputJson string) error {
 	var models []port_models.WorkingModel
 	for _, item := range params {
 		model := port_models.WorkingModel{
+			Id:        variable.SnowFlake.GetId(),
 			OrgId:     orgId,
 			AgentId:   agentId,
 			Type:      item.Type,
@@ -50,7 +51,6 @@ func (crd *PortPost) SaveWorking(orgId int64, agentId, inputJson string) error {
 			ProcDir:   path_helper.ToStandard(item.Process),
 			CreatedAt: now,
 		}
-		model.Id = crd.MakeId(model)
 
 		models = append(models, model)
 	}
