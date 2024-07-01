@@ -27,7 +27,7 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []map[string]interface{}
+	var result []*TamperBlackmail
 
 	//终端策略
 	policyModels := blackmail_models.CreatePolicyFactory().GetListByConditions(blackmail_models.SearchConditions{
@@ -42,9 +42,8 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 				continue
 			}
 			for _, policy := range policies {
-				suffix := policy["file_suffix"].(string)
-				if _, isOK := existsPolicy[suffix]; !isOK {
-					existsPolicy[suffix] = struct{}{}
+				if _, isOK := existsPolicy[policy.FileSuffix]; !isOK {
+					existsPolicy[policy.FileSuffix] = struct{}{}
 					result = append(result, policy)
 				}
 			}
@@ -65,9 +64,8 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 				continue
 			}
 			for _, policy := range policies {
-				suffix := policy["file_suffix"].(string)
-				if _, isOK := existsPolicy[suffix]; !isOK {
-					existsPolicy[suffix] = struct{}{}
+				if _, isOK := existsPolicy[policy.FileSuffix]; !isOK {
+					existsPolicy[policy.FileSuffix] = struct{}{}
 					result = append(result, policy)
 				}
 			}
@@ -77,7 +75,13 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
-func (u *BlackmailController) format(platformType int, pType int, typeVal string, processStr string) []map[string]interface{} {
+type TamperBlackmail struct {
+	Type       int                      `json:"type"`
+	FileSuffix string                   `json:"file_suffix"`
+	Processes  []map[string]interface{} `json:"process"`
+}
+
+func (u *BlackmailController) format(platformType int, pType int, typeVal string, processStr string) (list []*TamperBlackmail) {
 
 	//后缀
 	var suffixes []string
@@ -91,26 +95,25 @@ func (u *BlackmailController) format(platformType int, pType int, typeVal string
 		suffixes = strings.Split(typeVal, ",")
 	}
 
+	//信任进程
 	var processArr []blackmail_models.Process
-	var processMap []map[string]string
+	var processMap []map[string]interface{}
 	if err := json_helper.ToAny(processStr, &processArr); err != nil {
 		return nil
 	} else {
 		for _, item := range processArr {
-			processMap = append(processMap, map[string]string{
+			processMap = append(processMap, map[string]interface{}{
 				"hash": item.Hash,
 				"name": "",
 			})
 		}
 	}
 
-	var list []map[string]interface{}
 	for _, suffix := range suffixes {
-
-		list = append(list, map[string]interface{}{
-			"type":        pType,
-			"file_suffix": suffix,
-			"process":     processMap,
+		list = append(list, &TamperBlackmail{
+			Type:       pType,
+			FileSuffix: suffix,
+			Processes:  processMap,
 		})
 	}
 
