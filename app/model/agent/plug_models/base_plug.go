@@ -17,7 +17,7 @@ type SearchConditions struct {
 	DeptId     int64
 	DeptIds    []int64
 	Ip         string
-	IpType     int
+	IpType     int //黑白名单
 	OpenSwitch *int
 	CreateId   int64
 }

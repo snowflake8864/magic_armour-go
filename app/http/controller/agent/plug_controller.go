@@ -2,6 +2,14 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/model/agent/plug_models"
+	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -12,8 +20,61 @@ type PlugController struct {
 
 // GetDynamic 下载动态封堵
 func (u *PlugController) GetDynamic(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypePluggingDownload}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "下载动态封堵")
+	//win xp 不支持的功能
+	if loginInfo.OsType == enum_software.OsTypeWinXp {
+		response.SuccessSimplify(ctx)
+		return
+	}
+	openSwitch := enums.SwitchOn
+	var existsPolicy = make(map[string]struct{})
+	var result []*PlugDynamicResp
+
+	//终端策略
+	policyModels := plug_models.CreateDynamicFactory().GetListByConditions(plug_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    loginInfo.AgentId,
+		OpenSwitch: &openSwitch,
+	})
+	if policyModels != nil && len(policyModels) > 0 {
+		for _, model := range policyModels {
+			policy := u.formatDynamic(model.Source, model.Ip, model.Direction, model.StartAt, model.EndAt)
+			if _, isOK := existsPolicy[policy.Ip]; !isOK {
+				existsPolicy[policy.Ip] = struct{}{}
+				result = append(result, policy)
+			}
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
+}
+
+type PlugDynamicResp struct {
+	Source    string      `json:"type"` //必须是字符串
+	TypeName  string      `json:"typeName"`
+	Ip        string      `json:"ip"`
+	Direction int         `json:"direction"`
+	StartAt   string      `json:"starttime"`
+	EndAt     interface{} `json:"endtime"`
+}
+
+func (u *PlugController) formatDynamic(source int, ip string, direction int, startAt, endAt string) *PlugDynamicResp {
+	data := &PlugDynamicResp{}
+	data.Source = int_helper.IntToStr(source)
+	data.Ip = ip
+	data.Direction = direction
+	data.StartAt = startAt
+	if string_helper.IsEmpty(endAt) {
+		data.EndAt = 0
+	} else {
+		data.EndAt = endAt
+	}
+
+	return data
 }
 
 // PutDynamic 上传动态封堵(调试用)
@@ -24,12 +85,77 @@ func (u *PlugController) PutDynamic(ctx *gin.Context) {
 
 // GetIpWhite 下载封堵ip白名单(不在使用)
 func (u *PlugController) GetIpWhite(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypePlugIpWhiteDownload}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "下载封堵ip白名单(不在使用)")
 }
 
+type PlugIpResp struct {
+	Ip        string `json:"ip"`
+	Direction int    `json:"direction"`
+}
+
 // GetIpBlack 下载封堵ip黑名单
 func (u *PlugController) GetIpBlack(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypePlugIpBlackDownload}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "下载封堵ip黑名单")
+	//win xp 不支持的功能
+	if loginInfo.OsType == enum_software.OsTypeWinXp {
+		response.SuccessSimplify(ctx)
+		return
+	}
+	openSwitch := enums.SwitchOn
+	var existsPolicy = make(map[string]struct{})
+	var result []*PlugIpResp
+
+	//终端策略
+	policyModels := plug_models.CreateIpPolicyFactory().GetListByConditions(plug_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		AgentId:    loginInfo.AgentId,
+		IpType:     enum_plug.IpTypeBlack,
+		OpenSwitch: &openSwitch,
+	})
+	if policyModels != nil && len(policyModels) > 0 {
+		for _, model := range policyModels {
+			policy := u.formatIp(model.Ip, model.Direction)
+			if _, isOK := existsPolicy[policy.Ip]; !isOK {
+				existsPolicy[policy.Ip] = struct{}{}
+				result = append(result, policy)
+			}
+		}
+	}
+
+	//全局策略
+	globalModels := plug_models.CreateIpGlobalFactory().GetListByConditions(plug_models.SearchConditions{
+		OrgId:      loginInfo.OrgId,
+		DeptIds:    u.getDeptIdsByAgent(loginInfo.OrgId, loginInfo.AgentId),
+		IpType:     enum_plug.IpTypeBlack,
+		OpenSwitch: &openSwitch,
+	})
+	if globalModels != nil && len(globalModels) > 0 {
+		for _, model := range policyModels {
+			policy := u.formatIp(model.Ip, model.Direction)
+			if _, isOK := existsPolicy[policy.Ip]; !isOK {
+				existsPolicy[policy.Ip] = struct{}{}
+				result = append(result, policy)
+			}
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
+}
+
+func (u *PlugController) formatIp(ip string, direction int) *PlugIpResp {
+	data := &PlugIpResp{}
+
+	data.Ip = ip
+	data.Direction = direction
+
+	return data
 }
