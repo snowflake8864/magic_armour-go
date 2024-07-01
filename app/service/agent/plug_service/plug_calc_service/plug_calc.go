@@ -110,7 +110,7 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 	}
 
 	//入库
-	if err := crd.add(orgId, agentId, attackIp, enum_plug.SourcePortVirtual, plugConfig.Type, plugConfig.PlugTime); err != nil {
+	if err := crd.Add(orgId, agentId, attackIp, enum_plug.SourcePortVirtual, plugConfig.Type, plugConfig.PlugTime); err != nil {
 		return err
 	}
 
@@ -127,7 +127,7 @@ func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) e
 }
 
 // 新增
-func (crd *PlugCalc) add(orgId int64, agentId string, ip string, source, plugType, duration int) error {
+func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugType, duration int) error {
 	now := date_helper.CurDatetime()
 	var endAt string
 	if plugType == enum_plug.PlugTypeTemporary {

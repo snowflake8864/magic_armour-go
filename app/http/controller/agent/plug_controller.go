@@ -2,11 +2,13 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/plug_models"
+	"goskeleton/app/service/agent/plug_service/plug_calc_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -79,6 +81,15 @@ func (u *PlugController) formatDynamic(source int, ip string, direction int, sta
 
 // PutDynamic 上传动态封堵(调试用)
 func (u *PlugController) PutDynamic(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	Ip := ctx.GetString(consts.ValidatorPrefixAgent + "ip")
+	Source := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "source"))
+	PlugType := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "plugType"))
+	Duration := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "duration"))
+
+	if err := plug_calc_service.CreatePlugCalcFactory().Add(loginInfo.OrgId, loginInfo.AgentId, Ip, Source, PlugType, Duration); err != nil {
+		response.FailSimplify(ctx, err.Error())
+	}
 
 	response.SuccessReturnData(ctx, "上传动态封堵(调试用)")
 }
