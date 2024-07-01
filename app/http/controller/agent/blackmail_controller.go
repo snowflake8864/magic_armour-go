@@ -27,7 +27,7 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []*TamperBlackmail
+	var result []*BlackmailResp
 
 	//终端策略
 	policyModels := blackmail_models.CreatePolicyFactory().GetListByConditions(blackmail_models.SearchConditions{
@@ -75,13 +75,13 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
-type TamperBlackmail struct {
+type BlackmailResp struct {
 	Type       int                      `json:"type"`
 	FileSuffix string                   `json:"file_suffix"`
 	Processes  []map[string]interface{} `json:"process"`
 }
 
-func (u *BlackmailController) format(platformType int, pType int, typeVal string, processStr string) (list []*TamperBlackmail) {
+func (u *BlackmailController) format(platformType int, pType int, typeVal string, processStr string) (list []*BlackmailResp) {
 
 	//后缀
 	var suffixes []string
@@ -110,7 +110,7 @@ func (u *BlackmailController) format(platformType int, pType int, typeVal string
 	}
 
 	for _, suffix := range suffixes {
-		list = append(list, &TamperBlackmail{
+		list = append(list, &BlackmailResp{
 			Type:       pType,
 			FileSuffix: suffix,
 			Processes:  processMap,
