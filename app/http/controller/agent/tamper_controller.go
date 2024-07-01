@@ -105,7 +105,8 @@ type TamperResp struct {
 }
 
 func (u *TamperController) format(platformType int, pType int, protectRw, isExtend int, dir string,
-	includeSuffix, excludeSuffix, excludeFolder, processStr string) (data *TamperResp) {
+	includeSuffix, excludeSuffix, excludeFolder, processStr string) *TamperResp {
+	data := &TamperResp{}
 	data.Type = pType
 	data.ProtectRw = protectRw
 	data.IsExtend = isExtend
