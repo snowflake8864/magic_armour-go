@@ -152,9 +152,9 @@ func GetOsTypeByName(name string) int {
 	name = strings.ToLower(name)
 	if strings.Contains(name, "windows") {
 		if strings.Contains(name, "xp") || strings.Contains(name, "2003") {
-			return OsTypeWinSeven
-		} else {
 			return OsTypeWinXp
+		} else {
+			return OsTypeWinSeven
 		}
 	} else if strings.Contains(name, "ubuntu") {
 		return OsTypeLinuxUbuntu
