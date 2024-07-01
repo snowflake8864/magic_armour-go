@@ -10,15 +10,16 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId    int64
-	AgentId  string
-	AgentIds []string
-	Id       string
-	IdList   []string
-	UsbHash  string
-	Status   int
-	IsOnline *int
-	Alias    string
+	OrgId      int64
+	AgentId    string
+	AgentIds   []string
+	Id         string
+	IdList     []string
+	UsbHash    string
+	Status     int
+	StatusList []int
+	IsOnline   *int
+	Alias      string
 }
 
 // Calc 统计
@@ -96,6 +97,12 @@ func (m *baseUsb) conditions2Where(condition SearchConditions) (wheres []model_c
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status",
 			Val: condition.Status,
+		})
+	}
+	if len(condition.StatusList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "status in",
+			Val: condition.StatusList,
 		})
 	}
 	if condition.IsOnline != nil && *condition.IsOnline != enums.AllDefaultInt {
