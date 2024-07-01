@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/model/agent/port_models"
 	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
 )
@@ -104,6 +105,9 @@ func (u *PortController) format(pType, protocol, sourceIp, sourcePort, forwardIp
 		sourcePortType := 1
 		if strings.Contains(sPort, "-") {
 			sourcePortType = 2
+		}
+		if string_helper.IsEmpty(forwardIp) {
+			forwardPort = ""
 		}
 		list = append(list, &PortResp{
 			Type:           pType,
