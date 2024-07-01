@@ -5,9 +5,11 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/service/agent/agent_post_service"
+	"goskeleton/app/service/agent/dir_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
@@ -23,8 +25,34 @@ type TamperController struct {
 
 // GetDir 获取查询目录
 func (u *TamperController) GetDir(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
-	response.SuccessReturnData(ctx, "获取查询目录")
+	var result []map[string]interface{}
+
+	searchDir := dir_service.CreateDirCurdFactory().GetBySearch(loginInfo.OrgId, loginInfo.AgentId)
+	if string_helper.IsEmpty(searchDir) || searchDir == enum_tamper.RootDir {
+		pType := enum_tamper.TypeFolder
+		if loginInfo.PlatformType == enum_software.PlatformTypeWindows {
+			pType = enum_tamper.TypeVolume
+		}
+		result = append(result, map[string]interface{}{
+			"dir":  enum_tamper.RootDir,
+			"type": pType,
+			"pid":  0, //字段没有使用，但是需要保留
+		})
+	} else {
+		if loginInfo.PlatformType == enum_software.PlatformTypeWindows {
+			searchDir = path_helper.ToWindows(searchDir)
+		} else {
+			searchDir = path_helper.ToStandard(searchDir)
+		}
+		result = append(result, map[string]interface{}{
+			"dir":  searchDir,
+			"type": enum_tamper.TypeFolder,
+			"pid":  0, //字段没有使用，但是需要保留
+		})
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // PutDir 上传目录信息
@@ -88,7 +116,7 @@ func (u *TamperController) GetPolicy(ctx *gin.Context) {
 		}
 	}
 
-	response.SuccessReturnData(ctx, "下载防篡改策略")
+	response.SuccessReturnData(ctx, result)
 }
 
 type TamperResp struct {

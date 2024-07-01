@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/port_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 type PortTrans struct {
@@ -31,7 +32,11 @@ func (t *PortTrans) TransGlobalPage(total int64, models []*port_models.VirtualGl
 			data["source_ip"] = model.SourceIp
 			data["source_port"] = model.SourcePort
 			data["forward_ip"] = model.ForwardIp
-			data["forward_port"] = model.ForwardPort
+			forwardPort := ""
+			if string_helper.ToInt(model.ForwardPort) > 0 {
+				forwardPort = model.ForwardPort
+			}
+			data["forward_port"] = forwardPort
 			data["alarm_level"] = model.AlarmLevel
 			data["alarm_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("alarm_level", model.AlarmLevel, enum_port.EnumMapInt)
 			data["open_switch"] = model.OpenSwitch
@@ -68,7 +73,11 @@ func (t *PortTrans) TransPolicyPage(total int64, models []*port_models.VirtualPo
 			data["source_ip"] = model.SourceIp
 			data["source_port"] = model.SourcePort
 			data["forward_ip"] = model.ForwardIp
-			data["forward_port"] = model.ForwardPort
+			forwardPort := ""
+			if string_helper.ToInt(model.ForwardPort) > 0 {
+				forwardPort = model.ForwardPort
+			}
+			data["forward_port"] = forwardPort
 			data["alarm_level"] = model.AlarmLevel
 			data["alarm_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("alarm_level", model.AlarmLevel, enum_port.EnumMapInt)
 			data["open_switch"] = model.OpenSwitch
