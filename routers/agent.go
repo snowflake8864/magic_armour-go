@@ -105,6 +105,7 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("getdirpolicy", (&agent.TamperController{}).GetPolicy)                          //下载防篡改策略
 
 			//勒索相关
+			vAgent.Any("getprotect", (&agent.BlackmailController{}).GetPolicy)
 
 			//端口相关
 			vAgent.POST("upserviceport", validatorFactory.Create(consts.ValidatorPrefixAgent+"PortWorkingPut")) //上传业务端口列表
