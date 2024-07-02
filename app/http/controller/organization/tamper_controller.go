@@ -159,7 +159,7 @@ func (u *TamperController) SetSwitchForPolicy(ctx *gin.Context) {
 	param := tamper_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -269,7 +269,7 @@ func (u *TamperController) editForPolicy(ctx *gin.Context, Type int) error {
 	param := tamper_models.PolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:       Type,
 		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
@@ -316,7 +316,7 @@ func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
 	param := tamper_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -444,7 +444,7 @@ func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
 	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:         Type,
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
 		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
@@ -491,7 +491,7 @@ func (u *TamperController) DeleteForGlobal(ctx *gin.Context) {
 
 	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,

@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
@@ -22,7 +23,7 @@ func (t *TamperTrans) TransGlobalPage(total int64, models []*tamper_models.Globa
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["dir"] = model.Dir
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_tamper.EnumMapInt)
@@ -67,7 +68,7 @@ func (t *TamperTrans) TransPolicyPage(total int64, models []*tamper_models.Polic
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["dir"] = model.Dir
 			data["type"] = model.Type
