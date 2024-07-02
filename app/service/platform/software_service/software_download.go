@@ -49,6 +49,7 @@ func (crd *SoftwareDownload) EncryptConfig(orgId, userId, softId int64) string {
 	loginInfo := AgentConfig{
 		OrgId:  orgId,
 		UserId: userId,
+		SoftId: softId,
 		Expire: date_helper.AddTimestampByHour(hour),
 	}
 	jsonStr := json_helper.Encode(loginInfo)
@@ -124,6 +125,11 @@ func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadMode
 	param.StoragePath = newStorageDir + newFileName
 	param.FullPath = newFullDir + newFileName
 
+	//复制到新路径
+	if err = file_helper.CopyFile(softModel.FullPath, param.FullPath); err != nil {
+		return errors.New("复制ZIP失败"), nil
+	}
+
 	//追加配置文件
 	if !crd.appendConfig(agentHttpUrl, agentHttpPort, softModel, param) {
 		return errors.New("追加INI失败"), nil
@@ -187,8 +193,8 @@ func (crd *SoftwareDownload) generateYearMonthPath() (string, string) {
 	newSavePathPre := savePathPre + curYearMonth
 	newReturnPathPre := basePath + returnPathPre + curYearMonth
 	// 相关路径不存在，创建目录
-	if _, err := os.Stat(newSavePathPre); err != nil {
-		if err = os.MkdirAll(newSavePathPre, os.ModePerm); err != nil {
+	if _, err := os.Stat(newReturnPathPre); err != nil {
+		if err = os.MkdirAll(newReturnPathPre, os.ModePerm); err != nil {
 			variable.ZapLog.Error("文件上传创建目录出错" + err.Error())
 			return "", ""
 		}

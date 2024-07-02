@@ -11,7 +11,7 @@ import (
 // 门户类前端接口模拟一个获取新闻的参数验证器
 
 type Download struct {
-	Token string `form:"token" json:"token"  binding:"required,min=16m,max=256"` //  验证规则：必填，最小长度为1
+	Token string `form:"token" json:"token"  binding:"required,min=32,max=256"` //  验证规则：必填，最小长度为1
 }
 
 func (n Download) CheckParams(context *gin.Context) {

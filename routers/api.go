@@ -64,7 +64,7 @@ func InitApiRouter() *gin.Engine {
 		// 软件版本相关
 		software := vApi.Group("software/")
 		{
-			software.POST("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
+			software.GET("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
 		}
 
 		// 软件版本相关
