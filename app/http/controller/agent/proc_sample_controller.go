@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/proc_models"
@@ -12,6 +13,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -34,9 +36,15 @@ func (u *ProcSampleController) Get(ctx *gin.Context) {
 	})
 	if policyModels != nil && len(policyModels) > 0 {
 		for _, model := range policyModels {
+			dir := model.Dir
+			if loginInfo.PlatformType == enum_software.PlatformTypeLinux {
+				dir = path_helper.ToStandard(dir)
+			} else {
+				dir = path_helper.ToWindows(dir)
+			}
 			result = append(result, map[string]interface{}{
 				"aid":    0,
-				"p_dir":  model.Dir,
+				"p_dir":  dir,
 				"p_hash": model.Id,
 			})
 
