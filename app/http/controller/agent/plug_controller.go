@@ -34,7 +34,7 @@ func (u *PlugController) GetDynamic(ctx *gin.Context) {
 	}
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []*PlugDynamicResp
+	result := []*PlugDynamicResp{} //需初始化
 
 	//终端策略
 	policyModels := plug_models.CreateDynamicFactory().GetListByConditions(plug_models.SearchConditions{
@@ -123,7 +123,7 @@ func (u *PlugController) GetIpBlack(ctx *gin.Context) {
 	}
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []*PlugIpResp
+	result := []*PlugIpResp{} //需初始化
 
 	//终端策略
 	policyModels := plug_models.CreateIpPolicyFactory().GetListByConditions(plug_models.SearchConditions{

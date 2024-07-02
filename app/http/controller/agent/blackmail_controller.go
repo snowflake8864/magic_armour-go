@@ -27,7 +27,7 @@ func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []*BlackmailResp
+	result := []*BlackmailResp{} //需初始化
 
 	//终端策略
 	policyModels := blackmail_models.CreatePolicyFactory().GetListByConditions(blackmail_models.SearchConditions{

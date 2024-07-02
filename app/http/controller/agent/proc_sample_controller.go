@@ -26,7 +26,7 @@ type ProcSampleController struct {
 // Get 获取信息
 func (u *ProcSampleController) Get(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	var result []map[string]interface{}
+	result := []map[string]interface{}{} //需初始化
 
 	//终端策略
 	policyModels := proc_models.CreateProcSampleFactory().GetListByConditions(proc_models.SearchConditions{

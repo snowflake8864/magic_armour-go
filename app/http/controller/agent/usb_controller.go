@@ -40,7 +40,7 @@ func (u *UsbController) GetBlack(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	var result []*UsbResp
+	result := []*UsbResp{}
 
 	//终端策略
 	policyModels := usb_models.CreateUsbFactory().GetListByConditions(usb_models.SearchConditions{
@@ -86,7 +86,7 @@ func (u *UsbController) GetWhite(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	var result []*UsbResp
+	result := []*UsbResp{} //需初始化
 
 	//终端策略
 	policyModels := usb_models.CreateUsbFactory().GetListByConditions(usb_models.SearchConditions{

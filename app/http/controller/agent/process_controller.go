@@ -88,7 +88,7 @@ func (u *ProcessController) GetWhite(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	result := []*ProcessWhiteResp{}
+	result := []*ProcessWhiteResp{} //需初始化
 
 	//终端策略
 	policyModels := proc_models.CreateProcessFactory().GetListByConditions(proc_models.SearchConditions{
@@ -143,7 +143,7 @@ func (u *ProcessController) GetBlack(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	result := []*ProcessWhiteResp{}
+	result := []*ProcessWhiteResp{} //需初始化
 
 	//终端策略
 	policyModels := proc_models.CreateProcessFactory().GetListByConditions(proc_models.SearchConditions{
@@ -197,7 +197,7 @@ func (u *ProcessController) GetAssign(ctx *gin.Context) {
 	tasks := []int{enum_task.TypeProcessCollectDll}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	result := []*ProcessAssignResp{}
+	result := []*ProcessAssignResp{} //需初始化
 
 	//终端策略
 	policyModels := proc_models.CreateProcessRunningFactory().GetItemsByOrgAndAgentAnDllStatus(loginInfo.OrgId, loginInfo.AgentId, enum_process.CollectDllStatusDefault)

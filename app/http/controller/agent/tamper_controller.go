@@ -27,7 +27,7 @@ type TamperController struct {
 func (u *TamperController) GetDir(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	var result []map[string]interface{}
+	result := []map[string]interface{}{} //需初始化
 
 	searchDir := dir_service.CreateDirCurdFactory().GetBySearch(loginInfo.OrgId, loginInfo.AgentId)
 	if string_helper.IsEmpty(searchDir) || searchDir == enum_tamper.RootDir {
@@ -79,7 +79,7 @@ func (u *TamperController) GetPolicy(ctx *gin.Context) {
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})
-	var result []*TamperResp
+	result := []*TamperResp{} //需初始化
 
 	//终端策略
 	policyModels := tamper_models.CreatePolicyFactory().GetListByConditions(tamper_models.SearchConditions{

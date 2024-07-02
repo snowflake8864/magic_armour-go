@@ -49,7 +49,7 @@ func (u *PortController) GetVirtual(ctx *gin.Context) {
 		return
 	}
 	openSwitch := enums.SwitchOn
-	var result []*PortResp
+	result := []*PortResp{} //需初始化
 	//终端策略
 	globalModels := port_models.CreateVirtualGlobalFactory().GetListByConditions(port_models.SearchConditions{
 		OrgId:      loginInfo.OrgId,
