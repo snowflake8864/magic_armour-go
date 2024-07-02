@@ -212,7 +212,7 @@ func (u *PlugController) IpSetSwitchForPolicy(ctx *gin.Context, ipType int) {
 	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -252,7 +252,7 @@ func (u *PlugController) IpEditForPolicy(ctx *gin.Context, ipType int) {
 	param := plug_models.IpPolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		Type:       ipType,
 		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
@@ -274,7 +274,7 @@ func (u *PlugController) IpDeleteForPolicy(ctx *gin.Context, ipType int) {
 	param := plug_models.IpPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:       ipType,
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -330,7 +330,7 @@ func (u *PlugController) DynamicDisableForPolicy(ctx *gin.Context) {
 	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -367,7 +367,7 @@ func (u *PlugController) DynamicDeleteForPolicy(ctx *gin.Context) {
 	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -481,7 +481,7 @@ func (u *PlugController) IpSetSwitchForGlobal(ctx *gin.Context, ipType int) {
 
 	param := plug_models.IpGlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -519,7 +519,7 @@ func (u *PlugController) IpEditForGlobal(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 	param := plug_models.IpGlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		Type:       ipType,
 		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
@@ -540,7 +540,7 @@ func (u *PlugController) IpDeleteForGlobal(ctx *gin.Context, ipType int) {
 
 	param := plug_models.IpGlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -623,7 +623,7 @@ func (u *PlugController) DynamicDisableForGlobal(ctx *gin.Context) {
 	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -660,7 +660,7 @@ func (u *PlugController) DynamicDeleteForGlobal(ctx *gin.Context) {
 	param := plug_models.DynamicModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}

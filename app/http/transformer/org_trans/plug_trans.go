@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_plug"
@@ -21,7 +22,7 @@ func (t *PlugTrans) TranIpPolicyPage(total int64, models []*plug_models.IpPolicy
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["ip"] = model.Ip
@@ -48,7 +49,7 @@ func (t *PlugTrans) TranIpPolicyPage(total int64, models []*plug_models.IpPolicy
 
 func (t *PlugTrans) dynamicGeneral(model *plug_models.DynamicModel) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["id"] = model.Id
+	data["id"] = fmt.Sprintf("%d", model.Id)
 	data["agent_id"] = model.AgentId
 	data["plug_type"] = model.PlugType
 	data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
@@ -112,7 +113,7 @@ func (t *PlugTrans) TranIpGlobalPage(total int64, models []*plug_models.IpGlobal
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["type"] = model.Type
 			data["ip"] = model.Ip
 			data["remark"] = model.Remark
