@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_alarm"
@@ -21,7 +22,7 @@ func (t *AlarmTrans) TransProcessPage(total int64, models []*alarm_models.Proces
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -58,7 +59,7 @@ func (t *AlarmTrans) TransDllPage(total int64, models []*alarm_models.DllModel,
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -94,7 +95,7 @@ func (t *AlarmTrans) TransBlackmailPage(total int64, models []*alarm_models.Blac
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -130,7 +131,7 @@ func (t *AlarmTrans) TransTamperPage(total int64, models []*alarm_models.TamperM
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -166,7 +167,7 @@ func (t *AlarmTrans) TransPortPage(total int64, models []*alarm_models.PortModel
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -206,7 +207,7 @@ func (t *AlarmTrans) TransPlugPage(total int64, models []*alarm_models.PlugModel
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -245,7 +246,7 @@ func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -281,7 +282,7 @@ func (t *AlarmTrans) TransOutreachPage(total int64, models []*alarm_models.Outre
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -319,7 +320,7 @@ func (t *AlarmTrans) TransLoginPage(total int64, models []*alarm_models.LoginMod
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
@@ -354,7 +355,7 @@ func (t *AlarmTrans) TransSelfPage(total int64, models []*alarm_models.SelfModel
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)

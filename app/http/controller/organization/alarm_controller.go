@@ -462,7 +462,7 @@ func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
 		err = alarm_service.CreateTamperCurdFactory().Handle(&alarm_models.TamperModel{
 			OrgId:        loginInfo.OrgId,
 			AgentId:      agentId,
-			Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+			Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 			HandleRemark: ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 			HandleUser:   loginInfo.Username,
 		})
@@ -471,7 +471,7 @@ func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
 		err = alarm_service.CreateBlackmailCurdFactory().Handle(&alarm_models.BlackmailModel{
 			OrgId:        loginInfo.OrgId,
 			AgentId:      agentId,
-			Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+			Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 			HandleRemark: ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 			HandleUser:   loginInfo.Username,
 		})
@@ -525,7 +525,7 @@ func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
 		err = alarm_service.CreateSelfCurdFactory().Handle(&alarm_models.SelfModel{
 			OrgId:        loginInfo.OrgId,
 			AgentId:      agentId,
-			Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+			Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 			HandleRemark: ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
 			HandleUser:   loginInfo.Username,
 		})
