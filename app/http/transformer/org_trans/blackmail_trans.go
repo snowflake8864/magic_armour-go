@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_blackmail"
@@ -23,11 +24,11 @@ func (t *BlackmailTrans) TransGlobalPage(total int64, models []*blackmail_models
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
 			data["type_val"] = model.TypeVal
-			data["group_id"] = model.GroupId
+			data["group_id"] = fmt.Sprintf("%d", model.GroupId)
 			data["platform_type"] = model.PlatformType
 			data["platform_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", model.PlatformType, enum_software.EnumMap)
 			var processes []tamper_models.Process
@@ -62,12 +63,12 @@ func (t *BlackmailTrans) TransPolicyPage(total int64, models []*blackmail_models
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["type"] = model.Type
 			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
 			data["type_val"] = model.TypeVal
-			data["group_id"] = model.GroupId
+			data["group_id"] = fmt.Sprintf("%d", model.GroupId)
 			var processes []tamper_models.Process
 			_ = json_helper.ToAny(model.Processes, &processes)
 			data["processes"] = processes
@@ -98,7 +99,7 @@ func (t *BlackmailTrans) TransGroupPage(total int64, models []*blackmail_models.
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["title"] = model.Title
 			data["suffix"] = model.Suffix
 			data["create_id"] = model.CreateId
@@ -123,7 +124,7 @@ func (t *BlackmailTrans) TransGroupList(models []*blackmail_models.GroupModel) (
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["suffix"] = model.Suffix
 			data["title"] = model.Title
 			/*data["create_id"] = model.CreateId
