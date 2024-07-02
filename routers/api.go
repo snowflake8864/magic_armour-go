@@ -67,7 +67,7 @@ func InitApiRouter() *gin.Engine {
 			software.GET("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
 		}
 
-		// 软件版本相关
+		// 幻势相关
 		hs := vApi.Group("hs/")
 		{
 			hs.POST("auth", validatorFactory.Create(consts.ValidatorPrefixApi+"HuanshiAuth"))
