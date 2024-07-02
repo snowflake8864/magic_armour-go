@@ -4,8 +4,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/upload_service"
@@ -21,8 +23,27 @@ type ProcSampleController struct {
 
 // Get 获取信息
 func (u *ProcSampleController) Get(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	var result []map[string]interface{}
 
-	response.SuccessReturnData(ctx, "获取信息")
+	//终端策略
+	policyModels := proc_models.CreateProcSampleFactory().GetListByConditions(proc_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: loginInfo.AgentId,
+		Status:  enum_process.SampleStatusDefault,
+	})
+	if policyModels != nil && len(policyModels) > 0 {
+		for _, model := range policyModels {
+			result = append(result, map[string]interface{}{
+				"aid":    0,
+				"p_dir":  model.Dir,
+				"p_hash": model.Id,
+			})
+
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // Upload 上传样本
