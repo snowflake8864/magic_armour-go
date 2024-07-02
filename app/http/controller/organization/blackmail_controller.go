@@ -17,6 +17,7 @@ import (
 	"goskeleton/app/service/agent/blackmail_service"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -85,7 +86,7 @@ func (u *BlackmailController) EditForGroup(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := blackmail_models.GroupModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
 		Suffix:     ctx.GetString(consts.ValidatorPrefixOrg + "suffix"),
 		UpdateId:   loginInfo.UserId,
@@ -105,7 +106,7 @@ func (u *BlackmailController) DeleteForGroup(ctx *gin.Context) {
 
 	param := blackmail_models.GroupModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -237,7 +238,7 @@ func (u *BlackmailController) SetSwitchForPolicy(ctx *gin.Context) {
 	param := blackmail_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -296,7 +297,7 @@ func (u *BlackmailController) EditForPolicy(ctx *gin.Context) {
 	param := blackmail_models.PolicyModel{
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
 		TypeVal:    ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
 		GroupId:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
@@ -324,7 +325,7 @@ func (u *BlackmailController) DeleteForPolicy(ctx *gin.Context) {
 	param := blackmail_models.PolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -417,7 +418,7 @@ func (u *BlackmailController) EditForGlobal(ctx *gin.Context) {
 	param := blackmail_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:         int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "type")),
 		TypeVal:      ctx.GetString(consts.ValidatorPrefixOrg + "typeVal"),
 		GroupId:      int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "groupId")),
@@ -445,7 +446,7 @@ func (u *BlackmailController) DeleteForGlobal(ctx *gin.Context) {
 
 	param := blackmail_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,
