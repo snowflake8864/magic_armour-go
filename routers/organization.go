@@ -826,10 +826,12 @@ func InitOrganizationRouter() *gin.Engine {
 					alarmNotice := safetyReport.Group("alarmNotice/")
 					{
 						alarmNotice.POST("get", (&organization.SafetyReportController{}).GetForAlarmNotice)
+						alarmNotice.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyReportAlarmNoticeSave"))
 					}
 					hardwareNotice := safetyReport.Group("hardwareNotice/")
 					{
 						hardwareNotice.POST("get", (&organization.SafetyReportController{}).GetForHardwareNotice)
+						hardwareNotice.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyReportHardwareNoticeSave"))
 					}
 				} //安全报告
 			}

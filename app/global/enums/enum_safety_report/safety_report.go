@@ -77,7 +77,7 @@ type HardwareNoticeConfig struct {
 	CpuSwitch    int    `json:"cpu_switch"`
 	CpuThreshold int    `json:"cpu_threshold"`
 	MemSwitch    int    `json:"mem_switch"`
-	MemThreshold int    `json:"timely_mod"`
+	MemThreshold int    `json:"mem_threshold"`
 	HdSwitch     int    `json:"hd_switch"`
 	HdThreshold  int    `json:"hd_threshold"`
 	TimelySwitch int    `json:"timely_switch"`
@@ -90,11 +90,20 @@ func (c *HardwareNoticeConfig) Format() {
 	if c.CpuSwitch == 0 {
 		c.CpuSwitch = enums.SwitchOff
 	}
+	if c.CpuThreshold == 0 {
+		c.CpuThreshold = 50
+	}
 	if c.MemSwitch == 0 {
 		c.MemSwitch = enums.SwitchOff
 	}
+	if c.MemThreshold == 0 {
+		c.MemThreshold = 50
+	}
 	if c.HdSwitch == 0 {
 		c.HdSwitch = enums.SwitchOff
+	}
+	if c.HdThreshold == 0 {
+		c.HdThreshold = 50
 	}
 	if c.TimelySwitch == 0 {
 		c.TimelySwitch = enums.SwitchOff

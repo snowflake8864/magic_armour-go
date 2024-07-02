@@ -298,6 +298,9 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/order/purchase/delete":        {ModuleOrder, "购买记录：删除"},
 	"/v5/organization/order/purchase/payByBankcard": {ModuleOrder, "购买记录：对公转账方式付款"},
 	"/v5/organization/order/grant/save":             {ModuleOrder, "终端授权：保存"},
+
+	"/v5/organization/safetyReport/alarmNotice/save":    {ModuleSecurityReport, "告警通知：保存"},
+	"/v5/organization/safetyReport/hardwareNotice/save": {ModuleSecurityReport, "状态：保存"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

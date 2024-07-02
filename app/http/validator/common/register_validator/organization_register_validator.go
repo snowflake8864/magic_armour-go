@@ -23,6 +23,7 @@ import (
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
 	registry3 "goskeleton/app/http/validator/organization/registry"
+	safetyReport3 "goskeleton/app/http/validator/organization/safety_report"
 	software3 "goskeleton/app/http/validator/organization/software"
 	syslog3 "goskeleton/app/http/validator/organization/syslog"
 	tamper3 "goskeleton/app/http/validator/organization/tamper"
@@ -734,5 +735,11 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, software3.OfflineDownload{})
 	key = consts.ValidatorPrefixOrg + "SoftwareOnlineDownload"
 	containers.Set(key, software3.OnlineDownload{})
+
+	//安全报告
+	key = consts.ValidatorPrefixOrg + "SafetyReportAlarmNoticeSave"
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "SafetyReportHardwareNoticeSave"
+	containers.Set(key, safetyReport3.HardwareNoticeSave{})
 
 }

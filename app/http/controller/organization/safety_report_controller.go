@@ -2,11 +2,13 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_safety_report"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -45,6 +47,23 @@ func (u *SafetyReportController) GetForAlarmNotice(ctx *gin.Context) {
 	})
 }
 
+// SaveForAlarmNotice 告警通知: 保存
+func (u *SafetyReportController) SaveForAlarmNotice(ctx *gin.Context) {
+	config := enum_safety_report.AlarmNoticeConfig{}
+	config.EmailSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "emailSwitch"))
+	config.Email = ctx.GetString(consts.ValidatorPrefixOrg + "email")
+	config.CycleInterval = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycleInterval"))
+	config.CycleMod = json_helper.ToSliceInt(ctx.GetString(consts.ValidatorPrefixOrg + "cycleMod"))
+	config.TimelySwitch = enums.SwitchOn
+	config.TimelyMod = json_helper.ToSliceInt(ctx.GetString(consts.ValidatorPrefixOrg + "timelyMod"))
+
+	if err := organize_service.CreateOrgExtendFactory().SetAlarmNoticeConfig(u.getLogin(ctx).OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // GetForHardwareNotice 硬件状态通知: 获取
 func (u *SafetyReportController) GetForHardwareNotice(ctx *gin.Context) {
 	//配置
@@ -52,4 +71,24 @@ func (u *SafetyReportController) GetForHardwareNotice(ctx *gin.Context) {
 	model := OrgExtendFact.GetItemByOrg(u.getLogin(ctx).OrgId)
 	config := OrgExtendFact.FormatHardwareNoticeConfig(model.HardwareNoticeConfig)
 	response.SuccessReturnData(ctx, config)
+}
+
+// SaveForHardwareNotice  硬件状态通知: 保存
+func (u *SafetyReportController) SaveForHardwareNotice(ctx *gin.Context) {
+	config := enum_safety_report.HardwareNoticeConfig{}
+	config.EmailSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "emailSwitch"))
+	config.Email = ctx.GetString(consts.ValidatorPrefixOrg + "email")
+	config.TimelySwitch = enums.SwitchOn
+	config.CpuSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cpuSwitch"))
+	config.CpuThreshold = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cpuThreshold"))
+	config.MemSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "memSwitch"))
+	config.MemThreshold = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "memThreshold"))
+	config.HdSwitch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "hdSwitch"))
+	config.HdThreshold = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "hdThreshold"))
+
+	if err := organize_service.CreateOrgExtendFactory().SetHardwareNoticeConfig(u.getLogin(ctx).OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

@@ -139,3 +139,29 @@ func (crd *OrgExtend) SetLoginSolve(orgId int64, config enum_login_solve.LoginSo
 		return errors.New("保存失败")
 	}
 }
+
+// SetAlarmNoticeConfig 设置告警通知配置
+func (crd *OrgExtend) SetAlarmNoticeConfig(orgId int64, config enum_safety_report.AlarmNoticeConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["alarm_notice_config"] = json_helper.Encode(config)
+
+	if crd.masterModel.UpdateById(orgId, updates) {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// SetHardwareNoticeConfig 硬件资源通知配置
+func (crd *OrgExtend) SetHardwareNoticeConfig(orgId int64, config enum_safety_report.HardwareNoticeConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["hardware_notice_config"] = json_helper.Encode(config)
+
+	if crd.masterModel.UpdateById(orgId, updates) {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
