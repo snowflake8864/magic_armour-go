@@ -30,8 +30,16 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 	}
 	var inserts []outreach_models.GlobalModel
 	for _, ip := range ipList {
+		//验证数据
+		conditions := outreach_models.SearchConditions{
+			OrgId: orgId,
+			Ip:    ip,
+		}
+		if total := crd.masterModel.Count(conditions); total > 0 {
+			continue
+		}
+
 		inserts = append(inserts, outreach_models.GlobalModel{
-			Id:         variable.SnowFlake.GetId(),
 			OrgId:      orgId,
 			Ip:         ip,
 			Type:       enum_outreach.TypeWhite,
@@ -45,8 +53,8 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 			UpdateName: createName,
 			UpdatedAt:  curTime,
 		})
-	}
 
+	}
 	if !crd.masterModel.InsertBatch(&inserts) {
 		return errors.New("保存失败")
 	}
