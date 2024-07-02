@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/outreach_models"
@@ -17,7 +18,7 @@ func (t *OutreachTrans) TransGlobalPage(total int64, models []*outreach_models.G
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["title"] = model.Title
 			data["ip"] = model.Ip
 			data["is_default"] = model.IsDefault

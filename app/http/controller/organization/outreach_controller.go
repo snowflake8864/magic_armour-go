@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/outreach_service"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -93,6 +94,7 @@ func (u *OutreachController) SetSwitchForGlobal(ctx *gin.Context) {
 
 	param := outreach_models.GlobalModel{
 		OrgId:      loginInfo.OrgId,
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -140,7 +142,7 @@ func (u *OutreachController) EditForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := outreach_models.GlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
 		UpdateId:   loginInfo.UserId,
@@ -160,7 +162,7 @@ func (u *OutreachController) DeleteForGlobal(ctx *gin.Context) {
 
 	param := outreach_models.GlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
