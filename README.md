@@ -10,5 +10,5 @@
 ### 初始化
 
       ./demo_cli.exe migrate init|dictionary|menu|append
-      ./demo_cli.exe topic init
+      ./demo_cli.exe queue init
 
