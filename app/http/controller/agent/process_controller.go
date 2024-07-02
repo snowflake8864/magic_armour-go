@@ -75,6 +75,10 @@ type ProcessWhiteResp struct {
 	Dir  string `json:"dir"`
 	Hash string `json:"hash"`
 }
+type ProcessAssignResp struct {
+	Pid  int    `json:"pid"`
+	Hash string `json:"hash"`
+}
 
 // GetWhite 下载进程白名单
 func (u *ProcessController) GetWhite(ctx *gin.Context) {
@@ -109,7 +113,6 @@ func (u *ProcessController) GetWhite(ctx *gin.Context) {
 		//全局策略
 		globalModels := proc_models.CreateProcGlobalFactory().GetListByConditions(proc_models.SearchConditions{
 			OrgId:      loginInfo.OrgId,
-			AgentId:    loginInfo.AgentId,
 			GlobalType: enum_process.GlobalTypeWhite,
 			DataFrom:   enum_process.DataFromProcess,
 			OpenSwitch: &openSwitch,
@@ -134,14 +137,80 @@ func (u *ProcessController) GetWhite(ctx *gin.Context) {
 
 // GetBlack 下载进程黑名单
 func (u *ProcessController) GetBlack(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypeProcessBlackDownload}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "下载进程黑名单")
+	var existsPolicy = make(map[string]struct{})
+	var result []*ProcessWhiteResp
+
+	//终端策略
+	policyModels := proc_models.CreateProcessFactory().GetListByConditions(proc_models.SearchConditions{
+		OrgId:   loginInfo.OrgId,
+		AgentId: loginInfo.AgentId,
+		Status:  enum_process.ProcStatusBlack,
+	})
+	if policyModels != nil && len(policyModels) > 0 {
+		for _, model := range policyModels {
+			if _, isOK := existsPolicy[model.ProcHash]; !isOK {
+				existsPolicy[model.ProcHash] = struct{}{}
+				result = append(result, &ProcessWhiteResp{
+					Hash: model.ProcHash,
+				})
+			}
+		}
+	}
+
+	//是否开启同步全局名单库
+	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentProcGlobalSwitch); string_helper.ToInt(val) == enums.SwitchOn {
+		openSwitch := enums.SwitchOn
+		//全局策略
+		globalModels := proc_models.CreateProcGlobalFactory().GetListByConditions(proc_models.SearchConditions{
+			OrgId:      loginInfo.OrgId,
+			GlobalType: enum_process.GlobalTypeBlack,
+			DataFrom:   enum_process.DataFromProcess,
+			OpenSwitch: &openSwitch,
+		})
+		if globalModels != nil && len(globalModels) > 0 {
+			for _, model := range globalModels {
+				if _, isOK := existsPolicy[model.Id]; !isOK {
+					existsPolicy[model.Id] = struct{}{}
+					result = append(result, &ProcessWhiteResp{
+						Hash: model.Id,
+					})
+				}
+			}
+		}
+
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"proclist": result,
+	})
 }
 
 // GetAssign 指定进程:下载信息
 func (u *ProcessController) GetAssign(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypeProcessCollectDll}
+	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "定进程:下载信息")
+	result := []*ProcessAssignResp{}
+
+	//终端策略
+	policyModels := proc_models.CreateProcessRunningFactory().GetItemsByOrgAndAgentAnDllStatus(loginInfo.OrgId, loginInfo.AgentId, enum_process.CollectDllStatusDefault)
+	if policyModels != nil && len(policyModels) > 0 {
+		for _, model := range policyModels {
+			result = append(result, &ProcessAssignResp{
+				Pid:  model.ProcId,
+				Hash: model.ProcHash,
+			})
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // PutAssign 指定进程:上传对应模块

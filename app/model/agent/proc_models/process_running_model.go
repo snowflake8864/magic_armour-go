@@ -132,6 +132,20 @@ func (m *ProcessRunningModel) GetItemByOrgAndAgentAndHashAndProcId(orgId int64, 
 	}
 }
 
+// GetItemsByOrgAndAgentAnDllStatus 通过企业id\终端id\模块状态
+func (m *ProcessRunningModel) GetItemsByOrgAndAgentAnDllStatus(orgId int64, agentId string, dllStatus int) (items []*ProcessRunningModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Where("org_id=? AND agent_id=? AND dll_status=?", orgId, agentId, dllStatus).Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return nil
+	}
+}
+
 // DeleteByConditions 通过条件删除
 func (m *ProcessRunningModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
