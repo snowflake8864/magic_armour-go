@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_task"
@@ -14,7 +15,7 @@ type Task struct {
 
 func (t *Task) pageGeneral(model *task_models.TaskModel) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["id"] = model.Id
+	data["id"] = fmt.Sprintf("%d", model.Id)
 	data["agent_id"] = model.AgentId
 	data["type"] = model.Type
 	data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_task.EnumMap)
