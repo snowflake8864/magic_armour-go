@@ -53,16 +53,17 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 		return
 	}
 	verId := downloadFact.EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
+	api := "/v5/api/software/download?token="
 
 	url := ""
 	if model.PlatformType == enum_software.PlatformTypeLinux {
-		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s/v5/api/software/download?token=%s'"
+		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s%s%s'"
 	} else {
-		url += "%s/v5/api/software/download?token=%s"
+		url += "%s%s%s"
 	}
 
 	response.SuccessReturnData(ctx, gin.H{
-		"url": fmt.Sprintf(url, addr, verId),
+		"url": fmt.Sprintf(url, addr, api, verId),
 	})
 }
 
