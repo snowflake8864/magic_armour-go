@@ -67,7 +67,7 @@ var DbMigrate = &cobra.Command{
 
 // 注册命令、初始化参数
 func init() {
-	DbMigrate.Flags().StringVarP(&Action, "Action", "A", "init", "-A 指定参数,例如：-A init")
+	DbMigrate.Flags().StringVarP(&Action, "Action", "A", "", "-A 或者 --Action 选择行为")
 }
 
 func TestStart(action string) {
