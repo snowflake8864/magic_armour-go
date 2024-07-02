@@ -149,6 +149,9 @@ func (u *AlarmController) AgentStatForManage(ctx *gin.Context) {
 		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
 		break
 	}
+
+	//填充数据
+
 	response.SuccessReturnData(ctx, calcList)
 }
 
