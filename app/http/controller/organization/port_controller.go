@@ -17,6 +17,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -178,7 +179,7 @@ func (u *PortController) SetSwitchForPolicy(ctx *gin.Context) {
 	param := port_models.VirtualPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
@@ -222,7 +223,7 @@ func (u *PortController) EditForPolicy(ctx *gin.Context) {
 	param := port_models.VirtualPolicyModel{
 		OrgId:       loginInfo.OrgId,
 		AgentId:     u.getAgentIdFromGin(ctx),
-		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:          string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
 		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
 		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
@@ -247,7 +248,7 @@ func (u *PortController) DeleteForPolicy(ctx *gin.Context) {
 	param := port_models.VirtualPolicyModel{
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}
@@ -333,7 +334,7 @@ func (u *PortController) EditForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := port_models.VirtualGlobalModel{
 		OrgId:       loginInfo.OrgId,
-		Id:          int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:          string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
 		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
 		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
@@ -357,7 +358,7 @@ func (u *PortController) DeleteForGlobal(ctx *gin.Context) {
 
 	param := port_models.VirtualGlobalModel{
 		OrgId:      loginInfo.OrgId,
-		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		UpdateId:   loginInfo.UserId,
 		UpdateName: loginInfo.Username,
 	}

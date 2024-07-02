@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_port"
@@ -21,7 +22,7 @@ func (t *PortTrans) TransGlobalPage(total int64, models []*port_models.VirtualGl
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["protocol"] = model.Protocol
 			data["protocol_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("protocol", model.Protocol, enum_port.EnumMapStr)
 			data["type"] = model.Type
@@ -64,7 +65,7 @@ func (t *PortTrans) TransPolicyPage(total int64, models []*port_models.VirtualPo
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["protocol"] = model.Protocol
 			data["protocol_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("protocol", model.Protocol, enum_port.EnumMapStr)
@@ -106,7 +107,7 @@ func (t *PortTrans) TransWorkingPage(total int64, models []*port_models.WorkingM
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["type"] = model.Type
 			data["ip"] = model.Ip
 			data["port"] = model.Port
