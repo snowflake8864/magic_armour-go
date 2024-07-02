@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
@@ -21,7 +22,7 @@ func (t *TrustDirTrans) TransGlobalPage(total int64, models []*trust_dir_models.
 
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["name"] = model.Name
 			data["dir"] = model.Dir
 			data["platform_type"] = model.PlatformType

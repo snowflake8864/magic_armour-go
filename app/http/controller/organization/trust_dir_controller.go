@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/trust_dir_service"
 	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -77,7 +78,7 @@ func (u *TrustDirController) EditForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := trust_dir_models.GlobalModel{
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
@@ -104,7 +105,7 @@ func (u *TrustDirController) SetSwitchForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := trust_dir_models.GlobalModel{
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
@@ -124,7 +125,7 @@ func (u *TrustDirController) DeleteForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	param := trust_dir_models.GlobalModel{
-		Id:           int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		UpdateId:     loginInfo.UserId,
