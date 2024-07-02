@@ -36,7 +36,7 @@ func (crd *OrgExtend) InitDefault(orgId int64) organization_models.ExtendModel {
 		PlugPortConfig:       json_helper.Encode(plugPortConfig),
 		PlugLoginConfig:      json_helper.Encode(plugLoginConfig),
 		LoginSolveConfig:     json_helper.Encode(loginSolveConfig),
-		AlarmNoticeConfig:    json_helper.Encode(loginSolveConfig),
+		AlarmNoticeConfig:    json_helper.Encode(alarmNoticeConfig),
 		HardwareNoticeConfig: json_helper.Encode(hardwareNoticeConfig),
 		UpdatedAt:            date_helper.CurDatetime(),
 	}

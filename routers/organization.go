@@ -819,6 +819,19 @@ func InitOrganizationRouter() *gin.Engine {
 					software.POST("offlineDownload", validatorFactory.Create(consts.ValidatorPrefixOrg+"SoftwareOfflineDownload"))
 					software.POST("onlineDownload", validatorFactory.Create(consts.ValidatorPrefixOrg+"SoftwareOnlineDownload"))
 				} //软件相关
+
+				//安全报告
+				safetyReport := vOrg.Group("safetyReport/")
+				{
+					alarmNotice := safetyReport.Group("alarmNotice/")
+					{
+						alarmNotice.POST("get", (&organization.SafetyReportController{}).GetForAlarmNotice)
+					}
+					hardwareNotice := safetyReport.Group("hardwareNotice/")
+					{
+						hardwareNotice.POST("get", (&organization.SafetyReportController{}).GetForHardwareNotice)
+					}
+				} //安全报告
 			}
 
 		}
