@@ -23,8 +23,7 @@ var QueueInfo = &cobra.Command{
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 
 			2.执行 go  run  cmd/cli/main.go  queue -h  //可以查看使用指南
-			3.执行 go  run  cmd/cli/main.go  queue init // 通过 Action 动作执行相应的命令
-			4.执行 go  run  cmd/cli/main.go  queue consume common // 指定参数运行queue
+			3.执行 go  run  cmd/cli/main.go  queue -A 行为 -T 主题 // 指定参数运行queue
 		`,
 	// Run 命令是 核心 命令，其余命令都是为该命令服务，可以删除，由您自由选择
 	Run: func(cmd *cobra.Command, args []string) {
@@ -34,8 +33,8 @@ var QueueInfo = &cobra.Command{
 
 // 注册命令、初始化参数
 func init() {
-	QueueInfo.Flags().StringVarP(&Action, "Action", "A", "init", "-A 或者 --Action 选择行为，例如:init consume")
-	QueueInfo.Flags().StringVarP(&Topic, "Topic", "T", "common", "-T 或者 --Topic 指定主题名称 common process")
+	QueueInfo.Flags().StringVarP(&Action, "Action", "A", "", "-A 或者 --Action 选择行为")
+	QueueInfo.Flags().StringVarP(&Topic, "Topic", "T", "", "-T 或者 --Topic 指定主题名称")
 }
 
 // 开始执行业务

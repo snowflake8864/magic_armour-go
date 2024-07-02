@@ -57,7 +57,7 @@ var DbMigrate = &cobra.Command{
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 
 			2.执行 go  run  cmd/cli/main.go  migrate -h  //可以查看使用指南
-			3.执行 go  run  cmd/cli/main.go  migrate  -A init  // 通过 Action 动作执行相应的命令
+			3.执行 go  run  cmd/cli/main.go  migrate -A 行为  // 通过 Action 动作执行相应的命令
 		`,
 	// Run 命令是 核心 命令，其余命令都是为该命令服务，可以删除，由您自由选择
 	Run: func(cmd *cobra.Command, args []string) {

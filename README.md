@@ -8,7 +8,6 @@
       go build -o demo_cli.exe -ldflags "-w -s"  -trimpath ./cmd/cli/main.go
 
 ### 初始化
-
-      ./demo_cli.exe migrate init|dictionary|menu|append
-      ./demo_cli.exe queue init
+      ./demo_cli.exe migrate -A (init|dictionary|menu|append)
+      ./demo_cli.exe queue  queue -A (init|consume) -T (common|process|threaten|alarm"|syslog)
 
