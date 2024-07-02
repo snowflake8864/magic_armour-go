@@ -124,8 +124,8 @@ const (
 	TypeUsbMonitorDisabledAccess int = 9004 //禁止usb设备接入
 	TypeUsbProtectUnknownAccess  int = 9005 //未知usb设备接入阻断
 	TypeUsbProtectDisabledAccess int = 9006 //禁止usb设备接入阻断
-	TypeUsbDisabledExtract       int = 9007 //  //禁止usb设备拔出
-	TypeUsbUnknownExtract        int = 9008 //   //未知usb设备拔出
+	TypeUsbDisabledExtract       int = 9007 //禁止usb设备拔出
+	TypeUsbUnknownExtract        int = 9008 //未知usb设备拔出
 	/**   ---------外设告警 E--------- */
 )
 
