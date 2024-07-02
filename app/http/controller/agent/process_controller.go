@@ -88,7 +88,7 @@ func (u *ProcessController) GetWhite(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	var result []*ProcessWhiteResp
+	result := []*ProcessWhiteResp{}
 
 	//终端策略
 	policyModels := proc_models.CreateProcessFactory().GetListByConditions(proc_models.SearchConditions{
@@ -143,7 +143,7 @@ func (u *ProcessController) GetBlack(ctx *gin.Context) {
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
-	var result []*ProcessWhiteResp
+	result := []*ProcessWhiteResp{}
 
 	//终端策略
 	policyModels := proc_models.CreateProcessFactory().GetListByConditions(proc_models.SearchConditions{
