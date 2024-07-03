@@ -19,7 +19,7 @@ func (crd *AgentCmd) HandleSafe() {
 	variable.ZapLog.Sugar().Debug("HandleSafe")
 }
 
-// GrantExpire  授权过期
-func (crd *AgentCmd) GrantExpire() {
-	variable.ZapLog.Sugar().Debug("GrantExpire")
+// GrantExpired  授权已过期的
+func (crd *AgentCmd) GrantExpired() {
+	variable.ZapLog.Sugar().Debug("GrantExpired")
 }

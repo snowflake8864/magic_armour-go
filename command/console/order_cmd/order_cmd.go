@@ -9,7 +9,7 @@ func CreateCmdFactory() *OrderCmd {
 type OrderCmd struct {
 }
 
-// UnpaidExpire  订单未支付过期
-func (crd *OrderCmd) UnpaidExpire() {
-	variable.ZapLog.Sugar().Debug("UnpaidExpire")
+// UnpaidExpired  订单未支付且已过期的
+func (crd *OrderCmd) UnpaidExpired() {
+	variable.ZapLog.Sugar().Debug("UnpaidExpired")
 }
