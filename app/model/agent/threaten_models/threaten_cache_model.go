@@ -152,6 +152,23 @@ func (m *CacheModel) DeleteById(id string) bool {
 	}
 }
 
+// DeleteByConditions 通过条件删除
+func (m *CacheModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // GetItemById 通过id获取一条记录
 func (m *CacheModel) GetItemById(id string, column string) (item *CacheModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
