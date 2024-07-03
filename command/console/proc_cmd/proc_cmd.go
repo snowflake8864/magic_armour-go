@@ -1,6 +1,9 @@
 package proc_cmd
 
-import "goskeleton/app/global/variable"
+import (
+	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/proc_models"
+)
 
 func CreateCmdFactory() *ProcCmd {
 	return &ProcCmd{}
@@ -21,5 +24,8 @@ func (crd *ProcCmd) AddFromDllForTask() {
 
 // ClearRunning  清空运行中数据
 func (crd *ProcCmd) ClearRunning() {
-	variable.ZapLog.Sugar().Debug("ClearRunning")
+	variable.ZapLog.Sugar().Debug("ClearRunning start")
+	proc_models.CreateProcessRunningFactory().TruncateTable()
+	proc_models.CreateDllRunningFactory().TruncateTable()
+	variable.ZapLog.Sugar().Debug("ClearRunning end")
 }

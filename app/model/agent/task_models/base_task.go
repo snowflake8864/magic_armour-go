@@ -7,11 +7,12 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId   int64
-	AgentId string
-	Type    *int
-	Types   []int
-	Status  int
+	OrgId       int64
+	AgentId     string
+	Type        *int
+	Types       []int
+	Status      int
+	CreateAtLte string
 }
 
 type baseTask struct {
@@ -48,6 +49,13 @@ func (m *baseTask) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status",
 			Val: condition.Status,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
 		})
 	}
 	return wheres

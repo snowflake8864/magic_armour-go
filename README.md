@@ -15,5 +15,5 @@
 
 ### 定时任务
 
-      #每天1:00 执行
-      01 1 * * * app_cli crontab -U day -M once -A five 
+      #每天1:00执行
+      00 1 * * * app_cli crontab -U day -M once -A five 

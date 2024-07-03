@@ -125,10 +125,14 @@ func (m *MonitorModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	}
 }
 
-// DeleteByCreateAtLte 通过(创建时间小于节点)删除
-func (m *MonitorModel) DeleteByCreateAtLte(at string) bool {
+// DeleteByConditions 通过条件删除
+func (m *MonitorModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("created_at <= ?", at).Delete(m)
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {

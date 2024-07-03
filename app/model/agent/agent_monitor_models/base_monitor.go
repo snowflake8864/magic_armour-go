@@ -6,10 +6,11 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId      int64
-	AgentId    string
-	MonitorDay string
-	CreatedAt  string
+	OrgId       int64
+	AgentId     string
+	MonitorDay  string
+	CreatedAt   string
+	CreateAtLte string
 }
 type baseMonitor struct {
 }
@@ -38,6 +39,12 @@ func (crd *baseMonitor) conditions2Where(condition SearchConditions) (wheres []m
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at",
 			Val: condition.CreatedAt,
+		})
+	}
+	if !string_helper.IsEmpty(condition.CreateAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "created_at <=",
+			Val: condition.CreateAtLte,
 		})
 	}
 

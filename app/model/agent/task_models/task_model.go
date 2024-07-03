@@ -120,6 +120,23 @@ func (m *TaskModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	}
 }
 
+// DeleteByConditions 通过条件删除
+func (m *TaskModel) DeleteByConditions(condition SearchConditions) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Delete(m)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *TaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*TaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
