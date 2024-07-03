@@ -18,3 +18,8 @@ func (crd *ProcCmd) AddFromProcessForTask() {
 func (crd *ProcCmd) AddFromDllForTask() {
 	variable.ZapLog.Sugar().Debug("AddFromDllForCache")
 }
+
+// ClearRunning  清空运行中数据
+func (crd *ProcCmd) ClearRunning() {
+	variable.ZapLog.Sugar().Debug("ClearRunning")
+}
