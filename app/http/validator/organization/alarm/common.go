@@ -45,7 +45,7 @@ type SearchSourceIp struct {
 }
 
 type TargetIp struct {
-	TargetIp string `form:"targetIp" json:"targetIp" binding:"required,ip"`
+	TargetIp string `form:"targetIp" json:"targetIp" binding:"required"`
 }
 
 type SearchTargetIp struct {

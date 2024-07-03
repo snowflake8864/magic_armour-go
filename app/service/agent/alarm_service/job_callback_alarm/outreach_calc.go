@@ -27,7 +27,7 @@ type AlarmOutreachCalc struct {
 	masterModel *alarm_models.OutreachModel
 }
 
-func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool {
+func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIpStr string) (bool, string) {
 	SwitchOn := enums.SwitchOn
 	conditions := outreach_models.SearchConditions{
 		OrgId:      orgId,
@@ -36,19 +36,24 @@ func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIp string) bool
 	}
 	models := outreach_models.CreateGlobalFactory().GetListByConditions(conditions)
 	if models == nil || len(models) == 0 {
-		return true
+		return true, ""
 	}
 
-	ipArr := strings.Split(targetIp, ";")
-	for _, ip := range ipArr {
+	targetIpArr := strings.Split(targetIpStr, ";") //192.168.1.1;fe80::1;15.155.11.11
+	for _, targetIp := range targetIpArr {
+		isInWhile := false
 		for _, model := range models {
-			if ip_helper.IsIPInRange(ip, model.Ip) {
-				return true
+			if ip_helper.IsIPInRange(targetIp, model.Ip) {
+				isInWhile = true
+				break
 			}
+		}
+		if !isInWhile {
+			return false, targetIp
 		}
 	}
 
-	return false
+	return true, ""
 }
 
 // Calc 计算
@@ -56,12 +61,12 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(dnsModel.OrgId, dnsModel.AgentId, agentFact.ColumnConfig(false, false))
-	if agentModel == nil || agentModel.PlugSwitch == enums.SwitchOff {
+	if agentModel == nil || agentModel.OutreachAlarmSwitch == enums.SwitchOff {
 		return nil
 	}
-
 	//在外联白名单中
-	if crd.inOutreachWhile(dnsModel.OrgId, dnsModel.TargetIp) {
+	isOk, targetIp := crd.inOutreachWhile(dnsModel.OrgId, dnsModel.TargetIp)
+	if isOk {
 		return nil
 	}
 
@@ -78,7 +83,7 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 		ProcDir:      dnsModel.ProcDir,
 		ProcId:       dnsModel.ProcId,
 		DomainName:   dnsModel.DomainName,
-		TargetIp:     dnsModel.TargetIp,
+		TargetIp:     targetIp,
 	}
 
 	//保存
@@ -100,7 +105,7 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 			Pid:        model.ProcId,
 			Ppath:      model.ProcDir,
 			Domain:     model.DomainName,
-			AnalysisIp: model.TargetIp,
+			AnalysisIp: targetIp,
 		}
 		if err := hsCli.SyncAlarmOutreach(hsData); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())
