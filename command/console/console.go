@@ -1,9 +1,30 @@
-package crontab
+package console
 
 import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
+)
+
+const (
+	UnitMinute string = "minute"
+	UnitHour   string = "hour"
+	UnitDay    string = "day"
+
+	ModeEvery string = "every"
+	ModeOnce  string = "once"
+
+	AtZero    string = "zero"
+	AtOne     string = "one"
+	AtTwo     string = "two"
+	AtThree   string = "three"
+	AtFour    string = "four"
+	AtFive    string = "five"
+	AtSix     string = "six"
+	AtTen     string = "ten"
+	AtFifteen string = "fifteen"
+	AtTwenty  string = "twenty"
+	AtThirty  string = "thirty"
 )
 
 var (
