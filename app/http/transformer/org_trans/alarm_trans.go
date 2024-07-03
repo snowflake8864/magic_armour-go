@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_models"
@@ -223,6 +224,7 @@ func (t *AlarmTrans) TransPlugPage(total int64, models []*alarm_models.PlugModel
 
 			data["ip"] = model.Ip
 			data["plug_type"] = model.PlugType
+			data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
 			data["direction"] = model.Direction
 			data["duration"] = model.Duration
 			data["start_time"] = model.StartTime
