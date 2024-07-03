@@ -2,7 +2,7 @@ package agent_cmd
 
 import "goskeleton/app/global/variable"
 
-func CreateCmdFactory() *AgentCmd {
+func CreateAgentFactory() *AgentCmd {
 	return &AgentCmd{}
 }
 

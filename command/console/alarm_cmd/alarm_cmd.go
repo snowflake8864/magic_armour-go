@@ -23,3 +23,8 @@ func (crd *AlarmCmd) YesterdayStatistics() {
 func (crd *AlarmCmd) Delete() {
 	variable.ZapLog.Sugar().Debug("DailyStatistics")
 }
+
+// EmailNotice  邮件通知
+func (crd *AlarmCmd) EmailNotice() {
+	variable.ZapLog.Sugar().Debug("EmailNotice")
+}
