@@ -27,14 +27,14 @@ type SourceIp struct {
 }
 
 type SourcePort struct {
-	SourcePort int `form:"sourcePort" json:"sourcePort" binding:"omitempty,min=1,max=65535"`
+	SourcePort int `form:"sourcePort" json:"sourcePort" binding:"omitempty,max=65535"`
 }
 
 type TargetIp struct {
 	TargetIp string `form:"targetIp" json:"targetIp" binding:"omitempty,ip"`
 }
 type TargetPort struct {
-	TargetPort int `form:"targetPort" json:"targetPort" binding:"omitempty,min=1,max=65535"`
+	TargetPort int `form:"targetPort" json:"targetPort" binding:"omitempty,max=65535"`
 }
 
 type LoginStatus struct {
