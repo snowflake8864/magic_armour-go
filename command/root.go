@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/spf13/cobra"
+	"goskeleton/command/crontab"
 	"goskeleton/command/database"
 	"goskeleton/command/queue"
 	"os"
@@ -36,5 +37,6 @@ func init() {
 	// 如果和 root.go 同目录，则不需要像下一行一样添加
 	RootCmd.AddCommand(database.DbMigrate)
 	RootCmd.AddCommand(queue.QueueInfo)
+	RootCmd.AddCommand(crontab.CrontabCmd)
 
 }
