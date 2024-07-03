@@ -77,6 +77,16 @@ func (m *OutreachModel) CreateTable() bool {
 	}
 }
 
+func (m *OutreachModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *OutreachModel) InsertItem(s *OutreachModel) bool {
 

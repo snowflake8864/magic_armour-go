@@ -4,6 +4,10 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
+	"goskeleton/command/console/agent_cmd"
+	"goskeleton/command/console/alarm_cmd"
+	"goskeleton/command/console/proc_cmd"
+	"goskeleton/command/console/sysglog_cmd"
 )
 
 const (
@@ -62,5 +66,20 @@ func init() {
 // 开始执行业务
 func start(unit, mode, at string) {
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("unit:%s,mode:%s, at:%s", unit, mode, at))
+
+	if unit == UnitDay && mode == ModeOnce {
+		switch at {
+		case AtOne:
+			break
+		case AtFive:
+			go sysglog_cmd.CreateCmdFactory().Delete()
+			go alarm_cmd.CreateCmdFactory().Delete()
+			go agent_cmd.CreateTaskFactory().Delete()
+			go agent_cmd.CreateMonitorFactory().Delete()
+			go agent_cmd.CreateAccessFactory().Clear()
+			go proc_cmd.CreateCmdFactory().ClearRunning()
+			break
+		}
+	}
 
 }

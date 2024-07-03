@@ -71,6 +71,16 @@ func (m *LoginModel) CreateTable() bool {
 	}
 }
 
+func (m *LoginModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *LoginModel) InsertItem(s *LoginModel) bool {
 

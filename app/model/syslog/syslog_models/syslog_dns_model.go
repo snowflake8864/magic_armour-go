@@ -70,6 +70,16 @@ func (m *DnsModel) CreateTable() bool {
 	}
 }
 
+func (m *DnsModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *DnsModel) InsertItem(s *DnsModel) bool {
 

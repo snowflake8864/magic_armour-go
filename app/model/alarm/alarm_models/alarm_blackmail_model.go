@@ -74,6 +74,16 @@ func (m *BlackmailModel) CreateTable() bool {
 	}
 }
 
+func (m *BlackmailModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *BlackmailModel) InsertItem(s *BlackmailModel) bool {
 

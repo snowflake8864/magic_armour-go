@@ -38,5 +38,4 @@ func init() {
 	RootCmd.AddCommand(database.DbMigrate)
 	RootCmd.AddCommand(queue.QueueInfo)
 	RootCmd.AddCommand(console.CrontabCmd)
-
 }
