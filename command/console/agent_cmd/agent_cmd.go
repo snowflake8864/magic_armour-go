@@ -18,3 +18,8 @@ func (crd *AgentCmd) Offline() {
 func (crd *AgentCmd) HandleSafe() {
 	variable.ZapLog.Sugar().Debug("HandleSafe")
 }
+
+// GrantExpire  授权过期
+func (crd *AgentCmd) GrantExpire() {
+	variable.ZapLog.Sugar().Debug("GrantExpire")
+}
