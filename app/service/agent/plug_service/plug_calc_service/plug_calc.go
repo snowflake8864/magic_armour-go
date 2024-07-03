@@ -17,7 +17,6 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -123,7 +122,6 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 
 // CalcByLogin 计算: 来源登录日志
 func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) error {
-	variable.ZapLog.Sugar().Debug("封堵=============================================")
 	if crd.existSuccess(orgId, agentId, attackIp) {
 		return nil
 	}
@@ -137,25 +135,21 @@ func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) e
 
 	//封堵配置 - 口令破解
 	plugConfig := agent_service.CreateExtendFactory().GetPlugOfLogin(orgId, agentId)
-	variable.ZapLog.Sugar().Debug("封堵配置 - 口令破解=============================================")
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(plugConfig))
+
 	if plugConfig.Switch == enums.SwitchOff {
 		return nil
 	}
 
 	//动态封堵中已存在
 	if crd.hasDynamic(orgId, agentId, attackIp) {
-		variable.ZapLog.Sugar().Debug("动态封堵中已存在=============================================")
 		return nil
 	}
 	//全局IP库中已存在
 	if crd.hasGlobalLib(orgId, attackIp) {
-		variable.ZapLog.Sugar().Debug("全局IP库中已存在=============================================")
 		return nil
 	}
 	//终端IP库中已存在
 	if crd.hasAgentLib(orgId, agentId, attackIp) {
-		variable.ZapLog.Sugar().Debug("终端IP库中已存在=============================================")
 		return nil
 	}
 

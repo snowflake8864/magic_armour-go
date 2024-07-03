@@ -15,7 +15,6 @@ import (
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
-	"goskeleton/app/utils/helpers/json_helper"
 	"strings"
 )
 
@@ -58,16 +57,12 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false, false))
-	variable.ZapLog.Sugar().Debug("口令破解告警=============================================")
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(agentModel))
 	if agentModel == nil || agentModel.LoginSolveSwitch == enums.SwitchOff {
 		return nil
 	}
 
 	//登录口令破解配置
 	loginConfig := agent_service.CreateExtendFactory().GetLoginSolve(orgId, agentId)
-	variable.ZapLog.Sugar().Debug("口令破解配置=============================================")
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(loginConfig))
 	if loginConfig.Switch == enums.SwitchOff {
 		return nil
 	}
@@ -82,9 +77,6 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 	}
 	fact := syslog_models.CreateLoginFactory()
 	calcSyslog := fact.CalcByConditions(search, fact.ColumnCountLogin())
-	variable.ZapLog.Sugar().Debug("登录日志=============================================")
-	variable.ZapLog.Sugar().Debug(" calcSyslog.TotalNumber=", calcSyslog.TotalNumber)
-	variable.ZapLog.Sugar().Debug(" loginConfig.Threshold=", loginConfig.Threshold)
 	//不满足条件
 	if calcSyslog.TotalNumber < loginConfig.Threshold {
 		return nil
