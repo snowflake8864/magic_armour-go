@@ -11,9 +11,11 @@ import (
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/plug_service/plug_calc_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"strings"
 )
 
@@ -56,16 +58,20 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 	//终端开关
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnConfig(false, false))
+	variable.ZapLog.Sugar().Debug("口令破解告警=============================================")
+	variable.ZapLog.Sugar().Debug(json_helper.Encode(agentModel))
 	if agentModel == nil || agentModel.LoginSolveSwitch == enums.SwitchOff {
 		return nil
 	}
 
-	//登录配置
+	//登录口令破解配置
 	loginConfig := agent_service.CreateExtendFactory().GetLoginSolve(orgId, agentId)
+	variable.ZapLog.Sugar().Debug("口令破解配置=============================================")
+	variable.ZapLog.Sugar().Debug(json_helper.Encode(loginConfig))
 	if loginConfig.Switch == enums.SwitchOff {
 		return nil
 	}
-	//从端口虚开告警计算
+	//从登录日志计算
 	loginStatus := enums.IsNot
 	search := syslog_models.SearchConditions{
 		OrgId:       orgId,
@@ -75,9 +81,12 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		CreateAtGte: date_helper.CalcDatetimeByMinute(attackAt, 0-int64(loginConfig.Gap)),
 	}
 	fact := syslog_models.CreateLoginFactory()
-	calc := fact.CalcByConditions(search, fact.ColumnCountLogin())
-	//重不满足条件
-	if calc.TotalNumber < loginConfig.Threshold {
+	calcSyslog := fact.CalcByConditions(search, fact.ColumnCountLogin())
+	variable.ZapLog.Sugar().Debug("登录日志=============================================")
+	variable.ZapLog.Sugar().Debug(" calcSyslog.TotalNumber=", calcSyslog.TotalNumber)
+	variable.ZapLog.Sugar().Debug(" loginConfig.Threshold=", loginConfig.Threshold)
+	//不满足条件
+	if calcSyslog.TotalNumber < loginConfig.Threshold {
 		return nil
 	}
 
@@ -92,7 +101,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		HandleStatus: enum_alarm.HandleStatusNot,
 		CreatedAt:    attackAt,
 		SourceIp:     attackIp,
-		SolveTotal:   calc.TotalNumber,
+		SolveTotal:   calcSyslog.TotalNumber,
 	}
 	if !crd.masterModel.InsertItem(&model) {
 		return errors.New("保存失败")
@@ -114,6 +123,12 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		if err := hsCli.SyncAlarmLogin(hsData); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())
 		}
+	}
+
+	//
+	//动态封堵
+	if err := plug_calc_service.CreatePlugCalcFactory().CalcByLogin(model.OrgId, model.AgentId, attackIp); err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
 	}
 
 	return nil
