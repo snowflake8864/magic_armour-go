@@ -1,4 +1,4 @@
-package sysglog_cmd
+package syslog_cmd
 
 import (
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -22,6 +22,7 @@ func (crd *SyslogCmd) Delete() {
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentSyslogExpire)
 	expire := string_helper.ToInt(val)
+	variable.ZapLog.Sugar().Debug("Delete expire:", expire)
 	if expire == 1 {
 		syslog_models.CreateDnsFactory().TruncateTable()
 		syslog_models.CreateOuterFactory().TruncateTable()
@@ -30,8 +31,8 @@ func (crd *SyslogCmd) Delete() {
 		syslog_models.CreateLoginFactory().TruncateTable()
 	} else {
 		_, _, dayEnd, _ := date_helper.CalcByDay(-expire)
-		variable.ZapLog.Sugar().Debug("Delete dayEnd", dayEnd)
-		/*syslog_models.CreateDnsFactory().DeleteByConditions(syslog_models.SearchConditions{
+		variable.ZapLog.Sugar().Debug("Delete dayEnd:", dayEnd)
+		syslog_models.CreateDnsFactory().DeleteByConditions(syslog_models.SearchConditions{
 			CreateAtLte: dayEnd,
 		})
 		syslog_models.CreateOuterFactory().DeleteByConditions(syslog_models.SearchConditions{
@@ -45,7 +46,7 @@ func (crd *SyslogCmd) Delete() {
 		})
 		syslog_models.CreateLoginFactory().DeleteByConditions(syslog_models.SearchConditions{
 			CreateAtLte: dayEnd,
-		})*/
+		})
 	}
 
 	variable.ZapLog.Sugar().Debug("Delete end")

@@ -7,7 +7,8 @@ import (
 	"goskeleton/command/console/agent_cmd"
 	"goskeleton/command/console/alarm_cmd"
 	"goskeleton/command/console/proc_cmd"
-	"goskeleton/command/console/sysglog_cmd"
+	"goskeleton/command/console/syslog_cmd"
+	"time"
 )
 
 const (
@@ -72,12 +73,14 @@ func start(unit, mode, at string) {
 		case AtOne:
 			break
 		case AtFive:
-			go sysglog_cmd.CreateCmdFactory().Delete()
+			go syslog_cmd.CreateCmdFactory().Delete()
 			go alarm_cmd.CreateCmdFactory().Delete()
 			go agent_cmd.CreateTaskFactory().Delete()
 			go agent_cmd.CreateMonitorFactory().Delete()
 			go agent_cmd.CreateAccessFactory().Clear()
 			go proc_cmd.CreateCmdFactory().ClearRunning()
+
+			time.Sleep(time.Minute * 2)
 			break
 		}
 	}

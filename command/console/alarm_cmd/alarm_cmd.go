@@ -32,6 +32,7 @@ func (crd *AlarmCmd) Delete() {
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentAlarmExpire)
 	expire := string_helper.ToInt(val)
+	variable.ZapLog.Sugar().Debug("Delete expire:", expire)
 	if expire == 1 {
 		alarm_models.CreateProcessFactory().TruncateTable()
 		alarm_models.CreateDllFactory().TruncateTable()
@@ -45,37 +46,37 @@ func (crd *AlarmCmd) Delete() {
 		alarm_models.CreateSelfFactory().TruncateTable()
 	} else {
 		_, _, dayEnd, _ := date_helper.CalcByDay(-expire)
-		variable.ZapLog.Sugar().Debug("Delete dayEnd", dayEnd)
-		/*	alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateDllFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateTamperFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateBlackmailFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreatePortFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreatePlugFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateUsbFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateOutreachFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateLoginFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})
-			alarm_models.CreateSelfFactory().DeleteByConditions(alarm_models.SearchConditions{
-				CreateAtLte: dayEnd,
-			})*/
+		variable.ZapLog.Sugar().Debug("Delete dayEnd:", dayEnd)
+		alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateDllFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateTamperFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateBlackmailFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreatePortFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreatePlugFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateUsbFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateOutreachFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateLoginFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateSelfFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
 
 	}
 	variable.ZapLog.Sugar().Debug("Delete end")
