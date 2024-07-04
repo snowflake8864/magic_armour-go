@@ -89,7 +89,8 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 	conditions := threaten_models.SearchConditions{}
 	conditions.Id = ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 	conditions.Dir = ctx.GetString(consts.ValidatorPrefixPlatform + "dir")
-	conditions.Level = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "level"))
+	level := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "level"))
+	conditions.Level = &level
 
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 

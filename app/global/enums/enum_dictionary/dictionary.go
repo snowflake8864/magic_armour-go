@@ -43,6 +43,7 @@ const (
 	ThreatenUrl         string = "threaten_url"          //威胁情报:服务器地址
 	ThreatenAppId       string = "threaten_app_id"       //威胁情报:应用id
 	ThreatenAppKey      string = "threaten_app_key"      //威胁情报:应用key
+	ThreatenAppExpire   string = "threaten_app_expire"   //威胁情报:应用过期时间
 	ThreatenCacheExpire string = "threaten_cache_expire" //威胁情报:缓存结果保留周期(天)
 
 	HuanshiCallbackUrl          string = "huanshi_callback_url"           //幻势:回调地址(有端口)
@@ -112,6 +113,7 @@ var EnumSlice = map[string][]string{
 		ThreatenUrl,
 		ThreatenAppId,
 		ThreatenAppKey,
+		ThreatenAppExpire,
 		ThreatenCacheExpire,
 	},
 	ModuleHuanshi: {

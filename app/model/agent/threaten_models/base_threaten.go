@@ -12,7 +12,7 @@ type SearchConditions struct {
 	Dir         string
 	CreateAtGte string
 	CreateAtLte string
-	Level       int
+	Level       *int
 	LevelList   []int
 }
 
@@ -46,10 +46,11 @@ func (m *baseThreaten) conditions2Where(condition SearchConditions) (wheres []mo
 			Val: condition.CreateAtLte,
 		})
 	}
-	if condition.Level != enums.AllDefaultInt {
+
+	if condition.Level != nil && *condition.Level != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "level",
-			Val: condition.Level,
+			Val: *condition.Level,
 		})
 	}
 

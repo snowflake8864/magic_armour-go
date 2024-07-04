@@ -33,23 +33,16 @@ func (crd *ThreatenCache) Add(param *threaten_models.CacheModel, checkExist bool
 	return crd.masterModel.InsertItem(param)
 }
 
-// DeleteById 通过订单删除
-func (crd *ThreatenCache) DeleteById(ID string) bool {
-	return crd.masterModel.DeleteById(ID)
+// DeleteById 通过ID删除
+func (crd *ThreatenCache) DeleteById(id string) bool {
+	return crd.masterModel.DeleteById(id)
 }
 
-// BatchUnknown 批量设置成未知
-func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
-	wheres := threaten_models.SearchConditions{
-		Ids:   ids,
-		Level: enum_threaten.LevelDefault,
-	}
-	updates := map[string]interface{}{
-		"level":    enum_threaten.LevelUnknown,
-		"check_at": date_helper.CurDatetime(),
-	}
-	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
-	return isOk
+// BatchDelete 通过集合ID删除
+func (crd *ThreatenCache) BatchDelete(ids []string) bool {
+	return crd.masterModel.DeleteByConditions(threaten_models.SearchConditions{
+		Ids: ids,
+	})
 }
 
 // Rewrite 根据第三方返回重写本地信息
@@ -63,7 +56,7 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 		return false
 	}
 
-	go crd.rewriteAfter(param.Id, param.DataFrom, param.Level)
+	crd.rewriteAfter(param.Id, param.DataFrom, param.Level)
 
 	return true
 }

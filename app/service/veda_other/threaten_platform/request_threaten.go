@@ -10,9 +10,9 @@ import (
 	"strings"
 )
 
-func CreateRequestFactory(c RequestConfig) *requestThreaten {
+func CreateRequestFactory(c RequestConfig) *RequestThreaten {
 	c.Domain = strings.TrimRight(c.Domain, "/")
-	return &requestThreaten{
+	return &RequestThreaten{
 		redisClient: redis_factory.GetOneRedisClient(),
 		cacheKey:    "threaten_token",
 		cacheExpire: 600,
@@ -21,13 +21,12 @@ func CreateRequestFactory(c RequestConfig) *requestThreaten {
 }
 
 type RequestConfig struct {
-	Switch    int
 	Domain    string
 	AppId     string
 	AppSecret string
 }
 
-type requestThreaten struct {
+type RequestThreaten struct {
 	redisClient *redis_factory.RedisClient
 	cacheKey    string
 	cacheExpire int //缓存有效期
@@ -40,7 +39,7 @@ type responseCommon struct {
 }
 
 // checkCode 校验code
-func (aa *requestThreaten) checkCode(bodyContext string, err error) error {
+func (aa *RequestThreaten) checkCode(bodyContext string, err error) error {
 	if err != nil {
 		return errors.New("body_error: " + err.Error())
 	}
@@ -64,12 +63,12 @@ func (aa *requestThreaten) checkCode(bodyContext string, err error) error {
 }
 
 // Online 是否在线
-func (aa *requestThreaten) Online() error {
+func (aa *RequestThreaten) Online() error {
 	uri := aa.Config.Domain + "/center/heartbeat"
 
 	bodyContext, err := http_request.GetNoParams(uri, map[string]interface{}{})
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 
 	return nil
@@ -84,21 +83,20 @@ type ResponseToken struct {
 }
 
 // GenerateToken 生成口令
-func (aa *requestThreaten) GenerateToken() error {
+func (aa *RequestThreaten) GenerateToken() error {
 	uri := aa.Config.Domain + "/center/auth/token"
 	params := map[string]interface{}{
 		"appId":     aa.Config.AppId,
 		"secretKey": aa.Config.AppSecret,
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 
 	data := ResponseToken{}
-	err = json_helper.ToStruct(bodyContext, &data)
-	if err != nil {
-		return errors.New("json_error2: " + err.Error())
+	if err1 := json_helper.ToStruct(bodyContext, &data); err1 != nil {
+		return errors.New("json_error2: " + err1.Error())
 	}
 
 	//新增缓存
@@ -106,13 +104,13 @@ func (aa *requestThreaten) GenerateToken() error {
 	if data.Data.ExpireIn > 0 {
 		cacheExpire = data.Data.ExpireIn - aa.cacheExpire
 	}
-	if isOK, err := aa.redisClient.SetEx(aa.cacheKey, data.Data.AccessToken, cacheExpire); !isOK {
-		return errors.New("cache token fail: " + err.Error())
+	if isOK, err1 := aa.redisClient.SetEx(aa.cacheKey, data.Data.AccessToken, cacheExpire); !isOK {
+		return errors.New("cache token fail: " + err1.Error())
 	}
 	return nil
 }
 
-func (aa *requestThreaten) GetHeaders() (headers map[string]interface{}) {
+func (aa *RequestThreaten) GetHeaders() (headers map[string]interface{}) {
 	if headers == nil {
 		headers = make(map[string]interface{})
 	}
@@ -142,19 +140,18 @@ type CheckHashes struct {
 }
 
 // CheckHashes 验证hash集合,若存在返回
-func (aa *requestThreaten) CheckHashes(list *[]CheckHashes) (error error, result []*ResponseCheckHashes) {
+func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result []*ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err, result
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1, result
 	}
 
-	err = json_helper.ToStruct(bodyContext, &result)
-	if err != nil {
-		return errors.New("json_error2: " + err.Error()), result
+	if err1 := json_helper.ToStruct(bodyContext, &result); err1 != nil {
+		return errors.New("json_error2: " + err1.Error()), result
 	}
 
 	return nil, result
@@ -174,14 +171,14 @@ type PushHashes struct {
 }
 
 // PushHashes 推送hash集合
-func (aa *requestThreaten) PushHashes(list *[]PushHashes) error {
+func (aa *RequestThreaten) PushHashes(list *[]PushHashes) error {
 	uri := aa.Config.Domain + "/center/threaten/platadd"
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 	return nil
 }

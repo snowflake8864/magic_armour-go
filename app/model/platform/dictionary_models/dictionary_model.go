@@ -89,6 +89,7 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenUrl + `', '','威胁情报:服务器地址'),
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenAppId + `', '','威胁情报:应用id'),
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenAppKey + `', '','威胁情报:应用key'),
+			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenAppExpire + `', '','威胁情报:应用过期时间'),
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenCacheExpire + `', '30','威胁情报:缓存结果保留周期(天)'),
 
 			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiCallbackUrl + `', '0','幻势:回调地址(有端口)'),
