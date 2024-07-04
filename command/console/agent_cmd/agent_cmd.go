@@ -4,7 +4,7 @@ import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/organization/organization_models"
-	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/utils/helpers/date_helper"
 )
 
@@ -39,7 +39,7 @@ func (crd *AgentCmd) GrantExpired() {
 	orgModels := crd.getOrgModels()
 	if len(orgModels) > 0 {
 		for _, model := range orgModels {
-			_ = agent_service.CreateCurdFactory().GrantAutoExpire(model.Id, dayEnd)
+			_ = agent_callback_service.CreateCurdFactory().GrantAutoExpire(model.Id, dayEnd)
 		}
 	}
 

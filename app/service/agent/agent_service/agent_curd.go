@@ -143,14 +143,3 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 
 	return errCode, err
 }
-
-// GrantAutoExpire 授权自动到期
-func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
-	/*conditions := agent_models.SearchConditions{
-		OrgId:            orgId,
-		GrantStatus:      enum_agent.GrantStatusYes,
-		GrantExpireAtLte: expireAt,
-	}*/
-
-	return nil
-}

@@ -50,7 +50,7 @@ type AgentModel struct {
 	GrantConfig         string `json:"grant_config"`
 	GrantOrderNo        string `json:"grant_order_no"`
 	GrantProductTitle   string `json:"grant_product_title"`
-	GrantExpireAt       string `json:"grant_expire_at"`
+	GrantExpireAt       string `json:"grant_expire_at" gorm:"default:NULL"`
 	GrantStatus         int    `json:"grant_status"`
 	ProcessSwitch       int    `json:"process_switch"`
 	ProcessMode         int    `json:"process_mode"`
