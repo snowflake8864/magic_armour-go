@@ -12,7 +12,7 @@ import (
 type Page struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
-	Status *int   `form:"status" json:"status" binding:"omitempty,oneof=-100 0 1"`
+	Status *int   `form:"status" json:"status" binding:"omitempty,oneof=-100 1 2"`
 	Path   string `form:"path" json:"path" binding:"omitempty,max=50"`
 }
 

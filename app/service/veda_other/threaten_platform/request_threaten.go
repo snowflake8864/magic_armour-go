@@ -2,6 +2,7 @@ package threaten_platform
 
 import (
 	"errors"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -148,6 +149,8 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
+	variable.ZapLog.Sugar().Debug("bodyContext================================")
+	variable.ZapLog.Sugar().Debug(bodyContext)
 	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1, result
 	}

@@ -147,6 +147,7 @@ func (t *Common) AppendAgentInfo(agentId string, agentModels map[string]*agent_m
 	data["contact_name"] = ""
 	data["contact_tel"] = ""
 	data["alias"] = ""
+	data["is_online"] = 0
 	data["dept_id"] = 0
 	data["dept_fullname"] = []interface{}{}
 	if agentModel, isOK := agentModels[agentId]; isOK {
@@ -158,6 +159,7 @@ func (t *Common) AppendAgentInfo(agentId string, agentModels map[string]*agent_m
 		data["contact_name"] = agentModel.ContactName
 		data["contact_tel"] = agentModel.ContactTel
 		data["alias"] = agentModel.Alias
+		data["is_online"] = agentModel.IsOnline
 
 		if departments != nil && len(departments) > 0 {
 			if deptModel, ok := departments[agentModel.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {

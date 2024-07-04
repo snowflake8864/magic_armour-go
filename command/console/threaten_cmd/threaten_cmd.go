@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
@@ -217,7 +218,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	//有返回数据
 	if checkReps != nil && len(checkReps) > 0 {
 		for _, item := range checkReps {
-
+			variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
 		}
 	}
 

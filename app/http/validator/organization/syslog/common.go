@@ -9,8 +9,8 @@ type ProdHash struct {
 }
 
 type Process struct {
-	ProdId      int    `form:"prodId" json:"prodId" binding:"omitempty,min=1,max=65535"`
-	ProdDir     string `form:"prodDir" json:"prodDir" binding:"omitempty,min=1,max=65535"`
+	ProdId      int    `form:"prodId" json:"prodId" binding:"omitempty,max=65535"`
+	ProdDir     string `form:"prodDir" json:"prodDir" binding:"omitempty,max=65535"`
 	ProcParam   string `form:"procParam" json:"procParam" binding:"omitempty,min=1,max=256"`
 	ParentHash  string `form:"parentHash" json:"parentHash" binding:"omitempty,max=128"`
 	ParentId    int    `form:"parentId" json:"parentId" binding:"omitempty,min=1,max=65535"`

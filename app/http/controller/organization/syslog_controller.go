@@ -158,10 +158,15 @@ func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 	endTime := ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
 
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "ids")
-	ids := json_helper.ToSliceInt64(jsonStr)
-	if len(ids) == 0 {
+	idList := json_helper.ToSliceString(jsonStr)
+	ids := []int64{}
+	if len(idList) == 0 {
 		response.FailSimplify(ctx, "参数错误")
 		return
+	} else {
+		for _, id := range idList {
+			ids = append(ids, string_helper.ToInt64(id))
+		}
 	}
 
 	var err error

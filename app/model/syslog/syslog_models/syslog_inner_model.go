@@ -1,6 +1,7 @@
 package syslog_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
@@ -124,6 +125,7 @@ func (m *InnerModel) DeleteByConditions(condition SearchConditions) bool {
 		}
 		return tmp.Delete(m)
 	})
+	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true
