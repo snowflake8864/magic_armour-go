@@ -158,6 +158,12 @@ func (m *OrganizationModel) GetItemsByIds(ids []int64) (items []*OrganizationMod
 	}
 }
 
+// GetListByConditions 通过条件获取多条记录
+func (m *OrganizationModel) GetListByConditions(condition SearchConditions) (items []*OrganizationModel) {
+	items, _ = m.GetItemsByConditions(condition, 0, 0, "")
+	return items
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *OrganizationModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OrganizationModel, err error) {
 	tmp := m.Model(m)
