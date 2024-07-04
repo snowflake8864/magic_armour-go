@@ -45,6 +45,14 @@
       */15 * * * * app_cli crontab -U minute -M every -I fifteen -A zero
       */15 * * * * app_cli crontab -U minute -M every -I fifteen -A one
 
+       #每隔[30分钟]
+      */30 * * * * app_cli crontab -U minute -M every -I thirty -A zero
+      */30 * * * * app_cli crontab -U minute -M every -I thirty -A one
+
+      #每隔[1小时]
+      0 */1 * * * app_cli crontab -U minute -M every -I one -A zero
+      1 */1 * * * app_cli crontab -U minute -M every -I one -A one
+
       #每天一次
       10 1 * * * app_cli crontab -U day -M once -A zero
       11 1 * * * app_cli crontab -U day -M once -A one

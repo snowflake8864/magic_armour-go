@@ -80,7 +80,7 @@ func start(unit, mode, interval, at string) {
 	if unit == UnitDay {
 		handleDay(mode, interval, at)
 	} else if unit == UnitHour {
-
+		handleHour(mode, interval, at)
 	} else if unit == UnitMinute {
 
 	}
@@ -150,5 +150,9 @@ func handleDay(mode, interval, at string) {
 }
 
 func handleHour(mode, interval, at string) {
+
+}
+
+func handleMinute(mode, interval, at string) {
 
 }
