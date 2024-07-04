@@ -67,7 +67,7 @@ func CheckCasbinAuth() gin.HandlerFunc {
 			users := backend.Group("users/")
 			{
 				// 查询 
-				users.GET("list", validatorFactory.Create(consts.ValidatorPrefix+"UserList"))
+				users.GET("syncList", validatorFactory.Create(consts.ValidatorPrefix+"UserList"))
 				// 新增
 				users.POST("create", validatorFactory.Create(consts.ValidatorPrefix+"UserCreate"))
 				// 更新

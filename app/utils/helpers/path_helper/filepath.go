@@ -12,3 +12,8 @@ func ToStandard(path string) string {
 func ToWindows(path string) string {
 	return filepath.FromSlash(path)
 }
+
+// GetFileName 获取路径中的文件名
+func GetFileName(path string) string {
+	return filepath.Base(path)
+}

@@ -11,14 +11,26 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
+	"goskeleton/app/utils/redis_factory"
 )
 
 func CreateCmdFactory() *ThreatenCmd {
-	return &ThreatenCmd{}
+	return &ThreatenCmd{
+		redisClient: redis_factory.GetOneRedisClient(),
+		cachePrefix: "lock_threaten_check_",
+		cacheExpire: 120,
+		queryClient: producer_kafka.CreateProducerFactory(),
+	}
 }
 
 type ThreatenCmd struct {
+	redisClient *redis_factory.RedisClient
+	cachePrefix string
+	cacheExpire int
+	queryClient *producer_kafka.ProducerClient
 }
 
 // getThreatenCli  获取威胁情报中心客户端
@@ -119,5 +131,95 @@ func (crd *ThreatenCmd) SyncDefaultForCache() {
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
 func (crd *ThreatenCmd) SyncUnknownForCache() {
-	variable.ZapLog.Sugar().Debug("SyncUnknownForCache")
+	variable.ZapLog.Sugar().Debug("SyncUnknownForCache start")
+
+	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end:")
+}
+
+// 给hash加锁
+func (crd *ThreatenCmd) lockHash(hash string) bool {
+	key := crd.cachePrefix + hash
+	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
+		return true
+	} else {
+		return false
+	}
+}
+
+// 同步缓存到威胁情报
+func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
+	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level", level)
+
+	//获取客户端
+	err, threatenCli := crd.getThreatenCli(true, true)
+	if err != nil {
+		variable.ZapLog.Sugar().Debug("SyncCacheToThreaten ", err.Error())
+		return
+	}
+
+	conditions := threaten_models.SearchConditions{
+		Level: &level,
+	}
+	cacheFact := threaten_models.CreateCacheFactory()
+	page := 0
+	limit := enum_threaten.CenterSupportNumber
+	for {
+		//每次获取固定条数
+		page++
+		offset := (page - 1) * limit
+		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")
+		if models == nil || len(models) == 0 {
+			break
+		}
+
+		//同步列表
+		var syncList []threaten_platform.CheckHashes
+		var syncIdMap = make(map[string]struct{})
+		for _, model := range models {
+			//加锁失败
+			if !crd.lockHash(model.Id) {
+				continue
+			}
+			syncIdMap[model.Id] = struct{}{}
+
+			syncList = append(syncList, threaten_platform.CheckHashes{
+				ReqType:    threaten_platform.ReqType,
+				Key:        model.Id,
+				Filename:   path_helper.GetFileName(model.Dir),
+				Dir:        model.Dir,
+				Os:         model.Os,
+				ParentName: model.ParentDir,
+			})
+		}
+
+		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, &syncIdMap); err1 != nil {
+			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
+		}
+	}
+
+	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level:", level, ", page:", page)
+}
+
+// 同步缓存到威胁情报并进行处理
+func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
+	list *[]threaten_platform.CheckHashes, idMap *map[string]struct{}) error {
+
+	//没有需要校验数据
+	if list == nil || len(*list) == 0 {
+		return nil
+	}
+
+	//去校验
+	err, checkReps := cli.CheckHashes(list)
+	if err != nil {
+		return err
+	}
+	//有返回数据
+	if checkReps != nil && len(checkReps) > 0 {
+		for _, item := range checkReps {
+
+		}
+	}
+
+	return nil
 }

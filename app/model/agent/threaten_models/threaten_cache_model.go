@@ -19,20 +19,21 @@ func CreateCacheFactory() *CacheModel {
 type CacheModel struct {
 	baseThreaten
 	model.BaseModel
-	Id        string `json:"id" gorm:"primaryKey"`
-	Level     int    `json:"level"`
-	Source    int    `json:"source"`
-	Dir       string `json:"dir"`
-	ParentDir string `json:"parent_dir"`
-	Os        string `json:"os"`
-	Introduce string `json:"introduce"`
-	Copyright string `json:"copyright"`
-	Signature string `json:"signature"`
-	Attribute string `json:"attribute"`
-	DataFrom  int    `json:"data_from"`
-	CheckAt   string `json:"check_at" gorm:"default:NULL"`
-	CheckInfo string `json:"check_info"`
-	CreatedAt string `json:"created_at"`
+	Id          string `json:"id" gorm:"primaryKey"`
+	Level       int    `json:"level"`
+	Source      int    `json:"source"`
+	Dir         string `json:"dir"`
+	ParentDir   string `json:"parent_dir"`
+	Os          string `json:"os"`
+	Introduce   string `json:"introduce"`
+	Copyright   string `json:"copyright"`
+	Signature   string `json:"signature"`
+	Attribute   string `json:"attribute"`
+	DataFrom    int    `json:"data_from"`
+	CheckAt     string `json:"check_at" gorm:"default:NULL"`
+	CheckInfo   string `json:"check_info"`
+	CheckSource int    `json:"check_source"`
+	CreatedAt   string `json:"created_at"`
 }
 
 // 表名
@@ -58,6 +59,7 @@ func (m *CacheModel) CreateTable() bool {
 			source tinyint NOT NULL DEFAULT '1' COMMENT '来源',
 			check_at datetime DEFAULT NULL COMMENT '验证时间',
 			check_info string NOT NULL DEFAULT '' COMMENT '验证信息',
+			check_source tinyint NOT NULL DEFAULT '1' COMMENT '验证来源',
 			created_at datetime NOT NULL,
 			INDEX index_level (level) USING INVERTED,
 			INDEX index_dir (dir) USING INVERTED,
@@ -79,11 +81,11 @@ func (m *CacheModel) CreateTable() bool {
 }
 
 func (m *CacheModel) ColumnList() string {
-	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,created_at"
+	return "id,level,dir,parent_dir,os,introduce,copyright,signature,attribute,data_from,source,check_at,check_source,created_at"
 }
 
 func (m *CacheModel) ColumnLevel() string {
-	return "id,level"
+	return "id,level,check_source"
 }
 
 func (m *CacheModel) TruncateTable() bool {

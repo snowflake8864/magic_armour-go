@@ -38,7 +38,7 @@ type ProcPost struct {
 
 // 给hash加锁
 func (crd *ProcPost) lockHash(orgId int64, agentId, hash string) bool {
-	key := int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + hash
+	key := crd.cachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + hash
 	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
 		return true
 	} else {

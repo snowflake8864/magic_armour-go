@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const ReqType int = 1 //约定
+
 func CreateRequestFactory(c RequestConfig) *RequestThreaten {
 	c.Domain = strings.TrimRight(c.Domain, "/")
 	return &RequestThreaten{
@@ -136,7 +138,7 @@ type CheckHashes struct {
 	Filename   string `json:"filename"`   //文件名
 	Dir        string `json:"dir"`        //文件路径
 	Os         string `json:"os"`         //终端系统
-	ParentName int    `json:"parentName"` //父文件路径
+	ParentName string `json:"parentName"` //父文件路径
 }
 
 // CheckHashes 验证hash集合,若存在返回
@@ -158,16 +160,16 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result
 }
 
 type PushHashes struct {
-	ThreatenName string `json:"threaten_name"` //hash
-	Type         int    `json:"req_Type"`      ////约定 -1
-	Filename     string `json:"filename"`      //文件名
-	Dir          string `json:"dir"`           //文件路径
-	Os           string `json:"os"`            //终端系统
-	Uname        string `json:"uname"`         //推送用户名
-	ExecDir      string `json:"execdir"`       //父文件路径
-	Attribute    string `json:"attribute"`     //属性
-	Remark       string `json:"remark"`        //描述
-	Copyright    string `json:"copyright"`     //版权
+	Hash      string `json:"hash"`      //hash
+	Type      int    `json:"req_Type"`  ////约定 -1
+	Filename  string `json:"filename"`  //文件名
+	Dir       string `json:"dir"`       //文件路径
+	Os        string `json:"os"`        //终端系统
+	Uname     string `json:"uname"`     //推送用户名
+	ExecDir   string `json:"execdir"`   //父文件路径
+	Attribute string `json:"attribute"` //属性
+	Remark    string `json:"remark"`    //描述
+	Copyright string `json:"copyright"` //版权
 }
 
 // PushHashes 推送hash集合

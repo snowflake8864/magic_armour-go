@@ -45,6 +45,22 @@ func (crd *ThreatenCache) BatchDelete(ids []string) bool {
 	})
 }
 
+// BatchUnknown 批量设置成未知
+func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
+	level := enum_threaten.LevelDefault
+	wheres := threaten_models.SearchConditions{
+		Ids:   ids,
+		Level: &level,
+	}
+	updates := map[string]interface{}{
+		"level":        enum_threaten.LevelUnknown,
+		"check_source": enum_threaten.CheckSourceVeda,
+		"check_at":     date_helper.CurDatetime(),
+	}
+	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
+	return isOk
+}
+
 // Rewrite 根据第三方返回重写本地信息
 func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	updates := map[string]interface{}{

@@ -86,7 +86,7 @@ docker container  run  --name=grafana -d   -p 172.19.130.185:3000:3000   -e TZ=A
 firewall-cmd --zone=public --add-port=9090/tcp --permanent
 firewall-cmd --complete-reload
 #查看、确认已经允许的端口列表
-firewall-cmd --list-ports   
+firewall-cmd --syncList-ports   
 ```
 
 #### 通过chrome浏览器访问 ip:3000  登录，一般都能成功登陆，默认账号密码：admin/admin

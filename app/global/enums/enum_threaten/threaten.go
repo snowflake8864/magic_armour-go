@@ -27,6 +27,10 @@ const (
 	DataFromUnknown int = 1 //数据来源：未知
 	DataFromProcess int = 2 //数据来源：进程
 	DataFromDll     int = 3 //数据来源：模块
+
+	CheckSourceVeda     int = 1 //验证结果数据来源：威胁情报
+	CheckSourceInternet int = 2 //验证结果数据来源：互联网
+
 )
 
 var EnumMap = map[string]map[int]string{
@@ -53,6 +57,10 @@ var EnumMap = map[string]map[int]string{
 	"push_status": {
 		PushStatusNot: "未推送",
 		PushStatusYes: "已推送",
+	},
+	"check_source": {
+		CheckSourceVeda:     "威胁情报",
+		CheckSourceInternet: "云查杀",
 	},
 }
 
