@@ -3,10 +3,12 @@ package agent_callback_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 )
 
 func CreateCurdFactory() *AgentCurd {
@@ -50,12 +52,17 @@ func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
 	if agentIds == nil || len(agentIds) == 0 {
 		return nil
 	}
+	//授权配置
+	grantConfig := enum_product.ProductGrantConfig{}
+	grantConfig.Default()
 	updates := map[string]interface{}{
 		"grant_product_title":   "",
-		"grant_config":          "",
+		"grant_config":          json_helper.Encode(grantConfig),
 		"grant_order_no":        "",
 		"grant_status":          enum_agent.GrantStatusNot,
 		"grant_expire_at":       "",
+		"common_time":           enum_agent.HeartbeatCommonTime,
+		"fast_time":             enum_agent.HeartbeatFastTime,
 		"process_switch":        enums.SwitchOff,
 		"process_mode":          enum_agent.ModeMonitor,
 		"dll_switch":            enums.SwitchOff,
