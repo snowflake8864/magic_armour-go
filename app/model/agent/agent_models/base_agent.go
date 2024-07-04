@@ -25,29 +25,30 @@ type AgentCalc struct {
 }
 
 type SearchConditions struct {
-	OrgId           int64
-	OrgIds          []int64
-	AgentId         string
-	AgentIds        []string
-	HostName        string
-	AgentIp         string
-	NetIp           string
-	PlatformType    int
-	IsOnline        *int
-	IsSafe          *int
-	GrantStatus     *int
-	Alias           string
-	ContactName     string
-	DeptIds         []int64
-	CreateAtGte     string
-	CreateAtLte     string
-	ProcessSwitch   *int
-	DllSwitch       *int
-	TamperSwitch    *int
-	BlackmailSwitch *int
-	PortSwitch      *int
-	PlugSwitch      *int
-	UsbSwitch       *int
+	OrgId            int64
+	OrgIds           []int64
+	AgentId          string
+	AgentIds         []string
+	HostName         string
+	AgentIp          string
+	NetIp            string
+	PlatformType     int
+	IsOnline         *int
+	IsSafe           *int
+	GrantStatus      int
+	GrantExpireAtLte string
+	Alias            string
+	ContactName      string
+	DeptIds          []int64
+	CreateAtGte      string
+	CreateAtLte      string
+	ProcessSwitch    *int
+	DllSwitch        *int
+	TamperSwitch     *int
+	BlackmailSwitch  *int
+	PortSwitch       *int
+	PlugSwitch       *int
+	UsbSwitch        *int
 }
 
 type baseAgent struct {
@@ -115,10 +116,16 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 			Val: *condition.IsSafe,
 		})
 	}
-	if condition.GrantStatus != nil && *condition.GrantStatus != enums.AllDefaultInt {
+	if condition.GrantStatus > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "grant_status",
-			Val: *condition.GrantStatus,
+			Val: condition.GrantStatus,
+		})
+	}
+	if !string_helper.IsEmpty(condition.GrantExpireAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_expire_at <=",
+			Val: condition.GrantExpireAtLte,
 		})
 	}
 

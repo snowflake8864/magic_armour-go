@@ -35,6 +35,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
 	conditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
+	conditions.GrantStatus = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantStatus"))
 	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isOnline"); isOk && val != nil {
 		isOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
 		conditions.IsOnline = &isOnline
@@ -42,10 +43,6 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isSafe"); isOk && val != nil {
 		isSafe := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isSafe"))
 		conditions.IsSafe = &isSafe
-	}
-	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "grantStatus"); isOk && val != nil {
-		grantStatus := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantStatus"))
-		conditions.GrantStatus = &grantStatus
 	}
 
 	//请求的组织架构

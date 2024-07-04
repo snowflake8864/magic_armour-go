@@ -25,6 +25,9 @@ const (
 	LogProtoUdp int = 1 //日志协议:TDP
 	LogProtoTcp int = 2 //日志协议:TCP
 
+	GrantStatusNot int = 1 //授权状态: 未授权
+	GrantStatusYes int = 2 //授权状态: 已授权
+
 	AgentFieldDefault string = "id" //默认排序字段
 )
 

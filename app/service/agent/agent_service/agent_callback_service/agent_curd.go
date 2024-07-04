@@ -1,7 +1,7 @@
 package agent_callback_service
 
 import (
-	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/helpers/date_helper"
 )
@@ -21,13 +21,13 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 
 // BatchGrant 批量授权
 func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string) bool {
-
+	expireAt, _, _, _ := date_helper.CalcByDay(grantDuration)
 	updates := map[string]interface{}{
 		"grant_product_title": productTitle,
 		"grant_config":        grantModule,
 		"grant_order_no":      orderNo,
-		"grant_status":        enums.IsYes,
-		"grant_expire_at":     date_helper.TimestampToDatetime(date_helper.AddTimestampByDays(0, grantDuration, 0)),
+		"grant_status":        enum_agent.GrantStatusYes,
+		"grant_expire_at":     expireAt,
 	}
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
 		return true

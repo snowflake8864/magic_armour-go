@@ -1,19 +1,22 @@
 package organization_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
 type SearchConditions struct {
-	OrgId      int64
-	OrgType    int
-	OraName    string
-	LogOraName string
-	UserId     int64
-	UserName   string
-	UserPhone  string
-	StatusList []int
+	OrgId         int64
+	OrgType       int
+	OraName       string
+	LogOraName    string
+	UserId        int64
+	UserName      string
+	UserPhone     string
+	StatusList    []int
+	IsDel         *int
+	HuanshiSwitch *int
 }
 
 type baseOrg struct {
@@ -69,6 +72,18 @@ func (crd *baseOrg) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status in",
 			Val: condition.StatusList,
+		})
+	}
+	if condition.IsDel != nil && *condition.IsDel != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_del",
+			Val: *condition.IsDel,
+		})
+	}
+	if condition.HuanshiSwitch != nil && *condition.IsDel != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "huanshi_switch",
+			Val: *condition.HuanshiSwitch,
 		})
 	}
 	return wheres

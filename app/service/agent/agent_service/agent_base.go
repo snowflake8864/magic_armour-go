@@ -87,7 +87,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		hasTask = true
 	}
 	//如果未授权, 下面功能不可用
-	if model.GrantStatus == enums.IsNot {
+	if model.GrantStatus == enum_agent.GrantStatusNot {
 		return nil, hasTask, openAutoWhite, updates
 	}
 

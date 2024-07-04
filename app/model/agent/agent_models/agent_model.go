@@ -125,7 +125,7 @@ func (m *AgentModel) CreateTable() bool {
 			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权:配置(json)',
 			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
 			grant_product_title varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:产品名称',
-			grant_expire_at datetime NULL  COMMENT '授权:过期时间',
+			grant_expire_at dateV2 NULL COMMENT '授权:过期时间',
 			grant_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:状态',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式',
@@ -154,11 +154,9 @@ func (m *AgentModel) CreateTable() bool {
 			login_solve_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '口令破解:开关',
 			hardware_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上传硬件资源:开关',
 			hardware_time int(11) NOT NULL DEFAULT '300' COMMENT '上传硬件资源:快速(秒)',
-			created_at datetime NULL,
+			created_at datetime NOT NULL,
 			INDEX index_agent_ip (agent_ip) USING INVERTED,
 			INDEX index_dept_id (dept_id) USING INVERTED ,
-			INDEX index_os_name (os_name) USING INVERTED,
-			INDEX index_platform_type (platform_type) ,
 			INDEX index_created_at (created_at)
 		)
 		UNIQUE KEY(org_id, id)

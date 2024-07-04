@@ -1,6 +1,7 @@
 package order_cmd
 
 import (
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/organization/order_service"
@@ -15,7 +16,9 @@ type OrderCmd struct {
 }
 
 func (crd *OrderCmd) getOrgModels() []*organization_models.OrganizationModel {
-	return organization_models.CreateOrganizationFactory().GetListByConditions(organization_models.SearchConditions{})
+	return organization_models.CreateOrganizationFactory().GetListByConditions(organization_models.SearchConditions{
+		StatusList: []int{enum_organization.StatusNormal, enum_organization.StatusLocking},
+	})
 }
 
 // UnpaidExpired  订单未支付且已过期的

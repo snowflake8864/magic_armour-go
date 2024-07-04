@@ -95,6 +95,16 @@ func TimestampToDatetime(timestamp int64) string {
 	return t.Format(variable.DateFormat)
 }
 
+// TimestampToDatetimeByFormat 时间戳转成日期， 指定格式
+func TimestampToDatetimeByFormat(timestamp int64, format string) string {
+	if timestamp == 0 {
+		timestamp = CurTimestamp()
+	}
+	t := time.Unix(timestamp, 0).Local()
+
+	return t.Format(format)
+}
+
 // DatetimeToTimestamp 日期转成时间戳
 func DatetimeToTimestamp(datetime, layout string) int64 {
 	// 解析日期字符串为time.Time类型

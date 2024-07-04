@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
@@ -499,7 +500,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	}
 	for _, model := range agentModels {
 		// 订单编号一致 & 授权状态是已授权
-		if model.GrantOrderNo == orderNo && model.GrantStatus == enums.IsYes {
+		if model.GrantOrderNo == orderNo && model.GrantStatus == enum_agent.GrantStatusYes {
 			continue
 		}
 		validIds = append(validIds, model.AgentId)
