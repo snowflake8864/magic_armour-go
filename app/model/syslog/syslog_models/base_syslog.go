@@ -1,6 +1,7 @@
 package syslog_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
@@ -155,7 +156,7 @@ func (m *baseSyslog) conditions2Where(condition SearchConditions) (wheres []mode
 			Val: condition.TargetPort,
 		})
 	}
-	if condition.LoginStatus != nil {
+	if condition.LoginStatus != nil && *condition.LoginStatus != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "status",
 			Val: *condition.LoginStatus,
