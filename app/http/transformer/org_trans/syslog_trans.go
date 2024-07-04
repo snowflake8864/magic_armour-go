@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_syslog"
@@ -21,7 +22,7 @@ func (t *SyslogTrans) TransDnsPage(total int64, models []*syslog_models.DnsModel
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["agent_at"] = model.AgentAt
 			data["created_at"] = model.CreatedAt
@@ -50,7 +51,7 @@ func (t *SyslogTrans) TransInnerPage(total int64, models []*syslog_models.InnerM
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["agent_at"] = model.AgentAt
 			data["created_at"] = model.CreatedAt
@@ -85,7 +86,7 @@ func (t *SyslogTrans) TransOuterPage(total int64, models []*syslog_models.OuterM
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["agent_at"] = model.AgentAt
 			data["created_at"] = model.CreatedAt
@@ -120,7 +121,7 @@ func (t *SyslogTrans) TransProcessPage(total int64, models []*syslog_models.Proc
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["agent_at"] = model.AgentAt
 			data["created_at"] = model.CreatedAt
@@ -152,7 +153,7 @@ func (t *SyslogTrans) TransLoginPage(total int64, models []*syslog_models.LoginM
 	if models != nil {
 		for _, model := range models {
 			data := make(map[string]interface{})
-			data["id"] = model.Id
+			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["agent_id"] = model.AgentId
 			data["agent_at"] = model.AgentAt
 			data["created_at"] = model.CreatedAt

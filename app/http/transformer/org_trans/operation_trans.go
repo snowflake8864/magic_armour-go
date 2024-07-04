@@ -1,6 +1,7 @@
 package org_trans
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_org_operate"
@@ -14,7 +15,7 @@ type Operation struct {
 
 func (t *Operation) pageGeneral(model *org_operate_models.LogModel) map[string]interface{} {
 	data := make(map[string]interface{})
-	data["id"] = model.Id
+	data["id"] = fmt.Sprintf("%d", model.Id)
 	data["agent_id"] = model.AgentId
 	data["path"] = model.Path
 	_, pathLabel := enum_org_operate.GetModuleAndLabelByPath(model.Path)
