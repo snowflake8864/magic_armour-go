@@ -57,7 +57,7 @@ var CrontabCmd = &cobra.Command{
 	Long: `调用方法：
 			1.进入项目根目录（Ginkeleton）。 
 			2.执行 go  run  cmd/cli/main.go  crontab -h  //可以查看使用指南
-			3.执行 go  run  cmd/cli/main.go  crontab -U 单位 -M 模式 -I 间隔 -A 具体值  // 指定参数运行
+			3.执行 go  run  cmd/cli/main.go  crontab -U 单位 -M 模式 -I 间隔 -A 具体值  // 指定全部参数
 		`,
 	// Run 命令是 核心 命令，其余命令都是为该命令服务，可以删除，由您自由选择
 	Run: func(cmd *cobra.Command, args []string) {
@@ -68,8 +68,8 @@ var CrontabCmd = &cobra.Command{
 // 注册命令、初始化参数
 func init() {
 	CrontabCmd.Flags().StringVarP(&Unit, "Unit", "U", "", "-U 或者 --Unit 时间单位")
-	CrontabCmd.Flags().StringVarP(&Mode, "Mode", "M", "", "-M 或者 --Mode 模式")
-	CrontabCmd.Flags().StringVarP(&Interval, "Interval", "I", "", "-I 或者 --Interval 间隔")
+	CrontabCmd.Flags().StringVarP(&Mode, "Mode", "M", "every", "-M 或者 --Mode 模式")
+	CrontabCmd.Flags().StringVarP(&Interval, "Interval", "I", "one", "-I 或者 --Interval 间隔")
 	CrontabCmd.Flags().StringVarP(&At, "At", "A", "", "-A 或者 --At 值")
 }
 
@@ -82,7 +82,7 @@ func start(unit, mode, interval, at string) {
 	} else if unit == UnitHour {
 		handleHour(mode, interval, at)
 	} else if unit == UnitMinute {
-
+		handleMinute(mode, interval, at)
 	}
 
 }
@@ -154,5 +154,16 @@ func handleHour(mode, interval, at string) {
 }
 
 func handleMinute(mode, interval, at string) {
+	if interval == AtOne {
 
+	} else if interval == AtFifteen {
+		switch at {
+		case AtZero:
+			//统计企业今天数据
+			org_cmd.CreateCmdFactory().TodayStatistics()
+			break
+		case AtOne:
+			break
+		}
+	}
 }
