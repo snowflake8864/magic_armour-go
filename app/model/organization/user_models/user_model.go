@@ -69,7 +69,8 @@ func (m *UserModel) CreateTable() bool {
 			UNIQUE KEY username (username),
 			KEY org_id (org_id),
 			KEY email (email),
-			KEY phone (phone)
+			KEY last_login_at (last_login_at),
+			KEY created_at (created_at)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:用户';
 		`
 	result := m.Exec(m.TrimSql(sql))

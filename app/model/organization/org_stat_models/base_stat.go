@@ -16,12 +16,6 @@ type SearchConditions struct {
 }
 
 type baseStat struct {
-	OrgId       int64
-	AgentId     string
-	StatMonth   int
-	StatDay     string
-	CreateAtGte string
-	CreateAtLte string
 }
 
 // conditions2Where 查询条件转化
