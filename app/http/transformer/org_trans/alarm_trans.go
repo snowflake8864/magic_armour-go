@@ -265,6 +265,7 @@ func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
 			data["usb_hash"] = model.UsbHash
 			data["usb_name"] = model.UsbName
 			data["usb_intro"] = model.UsbIntro
+			data["usb_alias"] = ""
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
