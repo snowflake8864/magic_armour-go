@@ -34,14 +34,14 @@ func (crd *AgentCmd) HandleSafe() {
 // GrantExpired  授权已过期的
 func (crd *AgentCmd) GrantExpired() {
 	variable.ZapLog.Sugar().Debug("GrantExpired")
-	_, _, dayEnd, _ := date_helper.CalcByDay(-1)
+	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	orgModels := crd.getOrgModels()
 	if len(orgModels) > 0 {
 		for _, model := range orgModels {
-			_ = agent_callback_service.CreateCurdFactory().GrantAutoExpire(model.Id, dayEnd)
+			_ = agent_callback_service.CreateCurdFactory().GrantAutoExpire(model.Id, yesterday)
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("UnpaidExpired end dayEnd:" + dayEnd)
+	variable.ZapLog.Sugar().Debug("UnpaidExpired end dayEnd:" + yesterday)
 }
