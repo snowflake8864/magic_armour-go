@@ -156,6 +156,15 @@ func handleHour(mode, interval, at string) {
 func handleMinute(mode, interval, at string) {
 	if interval == AtOne {
 
+	} else if interval == AtFive {
+		switch at {
+		case AtZero:
+			//威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
+			threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
+			break
+		case AtOne:
+			break
+		}
 	} else if interval == AtFifteen {
 		switch at {
 		case AtZero:
