@@ -6,9 +6,12 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/command/console/agent_cmd"
 	"goskeleton/command/console/alarm_cmd"
+	"goskeleton/command/console/huanshi_cmd"
 	"goskeleton/command/console/order_cmd"
 	"goskeleton/command/console/org_cmd"
+	"goskeleton/command/console/plug_cmd"
 	"goskeleton/command/console/proc_cmd"
+	"goskeleton/command/console/service_cmd"
 	"goskeleton/command/console/syslog_cmd"
 	"goskeleton/command/console/threaten_cmd"
 	"time"
@@ -155,6 +158,48 @@ func handleHour(mode, interval, at string) {
 
 func handleMinute(mode, interval, at string) {
 	if interval == AtOne {
+		switch at {
+		case AtZero:
+			//威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
+			threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
+			break
+		case AtOne:
+			//终端离线
+			agent_cmd.CreateAgentFactory().Offline()
+			break
+		case AtTwo:
+			break
+		}
+
+	} else if interval == AtTwo {
+		switch at {
+		case AtZero:
+			//动态封堵已过期的自动解封
+			plug_cmd.CreateCmdFactory().DynamicExpired()
+			break
+		case AtOne:
+			//终端安全状态
+			agent_cmd.CreateAgentFactory().HandleSafe()
+			break
+		case AtTwo:
+			break
+		}
+
+	} else if interval == AtThree {
+		switch at {
+		case AtZero:
+			//从进程添加任务
+			proc_cmd.CreateCmdFactory().AddFromProcessForTask()
+			break
+		case AtOne:
+			//从模块添加任务
+			proc_cmd.CreateCmdFactory().AddFromDllForTask()
+			break
+		case AtTwo:
+			//服务器状态监控
+			service_cmd.CreateCmdFactory().Monitor()
+			break
+		}
 
 	} else if interval == AtFive {
 		switch at {
@@ -163,8 +208,12 @@ func handleMinute(mode, interval, at string) {
 			threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 			break
 		case AtOne:
+			//同步推送数据到幻势
+			huanshi_cmd.CreateCmdFactory().Push()
 			break
 		}
+	} else if interval == AtTen {
+
 	} else if interval == AtFifteen {
 		switch at {
 		case AtZero:
@@ -172,7 +221,11 @@ func handleMinute(mode, interval, at string) {
 			org_cmd.CreateCmdFactory().TodayStatistics()
 			break
 		case AtOne:
+			//统计告警今天数据
+			alarm_cmd.CreateCmdFactory().TodayStatistics()
 			break
 		}
+	} else if interval == AtThirty {
+
 	}
 }
