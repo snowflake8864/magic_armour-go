@@ -1,7 +1,6 @@
 package alarm_cmd
 
 import (
-	"fmt"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
@@ -97,7 +96,6 @@ func (crd *AlarmCmd) calcAlarm(param *alarm_stat_models.StatDailyModel, startAt,
 
 	//进程告警
 	ProcessFact := alarm_models.CreateProcessFactory()
-	fmt.Println("ProcessFact=================")
 	calc1 := ProcessFact.CalcByConditions(conditions1, column1)
 	calc2 := ProcessFact.CalcByConditions(conditions2, column1)
 	param.ProcessTotal = calc1.TotalNumber
