@@ -39,6 +39,7 @@ type RequestThreaten struct {
 type responseCommon struct {
 	Code interface{} `json:"code"`
 	Msg  string      `json:"msg"`
+	Data interface{} `json:"data"`
 }
 
 // checkCode 校验code
@@ -136,7 +137,7 @@ type ResponseCheckHashes struct {
 }
 
 type CheckHashes struct {
-	ReqType    int    `json:"req_Type"`   //固定：1
+	ReqType    int    `json:"req_type"`   //固定：1
 	Key        string `json:"key"`        //hash
 	Filename   string `json:"filename"`   //文件名
 	Dir        string `json:"dir"`        //文件路径

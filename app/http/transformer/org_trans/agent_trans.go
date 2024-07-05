@@ -55,8 +55,12 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["remark"] = model.Remark
 	data["agent_type"] = model.AgentType
 
-	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
+	productGrantConfig := enum_product.ProductGrantConfig{}
+	_ = json_helper.ToStruct(model.GrantConfig, &productGrantConfig)
+	data["grant_config"] = productGrantConfig
+	data["grant_config_txt"] = productGrantConfig.SelectedTxt()
 	data["grant_order_no"] = model.GrantOrderNo
+	data["grant_product_title"] = model.GrantProductTitle
 	data["grant_expire_at"] = model.GrantExpireAt
 	data["grant_status"] = model.GrantStatus
 
