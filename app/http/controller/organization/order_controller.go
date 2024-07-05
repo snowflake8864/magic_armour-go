@@ -74,6 +74,7 @@ func (u *OrderController) ValidList(ctx *gin.Context) {
 	conditions.OrgId = loginInfo.OrgId
 	isExpire := enums.IsNot
 	conditions.IsExpire = &isExpire
+	conditions.OrderStatus = enum_order.OrderStatusCompleted
 	orderModels := order_models.CreateOrderFactory().GetListByConditions(conditions)
 	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(orderModels))
 }
