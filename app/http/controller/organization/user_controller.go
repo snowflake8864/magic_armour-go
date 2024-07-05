@@ -3,6 +3,7 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/organization/user_models"
@@ -27,8 +28,10 @@ func (u *UserController) decrypt(data string) (result string) {
 func (u *UserController) Page(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//查询条件
+	isRoot := enums.IsNot
 	conditions := user_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
+		OrgId:  loginInfo.OrgId,
+		IsRoot: &isRoot,
 	}
 
 	//分页参数和排序参数

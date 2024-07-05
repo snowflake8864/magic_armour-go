@@ -1,6 +1,7 @@
 package user_models
 
 import (
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -8,6 +9,7 @@ import (
 type SearchConditions struct {
 	OrgId          int64
 	Id             int64
+	IsRoot         *int
 	CreateAtGte    string
 	CreateAtLte    string
 	LastLoginAtGte string
@@ -29,6 +31,13 @@ func (crd *baseUser) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "org_id",
 			Val: condition.OrgId,
+		})
+	}
+
+	if condition.IsRoot != nil && *condition.IsRoot != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_root",
+			Val: *condition.IsRoot,
 		})
 	}
 
