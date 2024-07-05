@@ -3,6 +3,7 @@ package threaten_service
 import (
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -90,24 +91,14 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 }
 
 func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
-	if enum_threaten.IsWhite(level) { //白名单
-		if dataFrom == enum_threaten.DataFromProcess { //来源进程
-			//进程白名单
-		} else if dataFrom == enum_threaten.DataFromDll { //来源模块
-			//模块白名单
-		} else if dataFrom == enum_threaten.DataFromUnknown { //来源未知
-			//进程白名单
-			//模块白名单
-		}
-	} else if enum_threaten.IsBlack(level) { //黑名单
-		if dataFrom == enum_threaten.DataFromProcess { //来源进程
-			//进程白名单
-		} else if dataFrom == enum_threaten.DataFromDll { //来源模块
-			//模块白名单
-		} else if dataFrom == enum_threaten.DataFromUnknown { //来源未知
-			//进程白名单
-			//模块白名单
-		}
+
+	if dataFrom == enum_threaten.DataFromProcess { //来源进程
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
+	} else if dataFrom == enum_threaten.DataFromDll { //来源模块
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(id, level)
+	} else {
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(id, level)
 	}
 }
 

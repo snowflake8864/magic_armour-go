@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/utils/helpers/date_helper"
 )
 
@@ -73,8 +74,8 @@ func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interf
 		updates["status"] = enum_process.ProcStatusWhite
 		break
 	case enum_process.ProcStatusBlack:
-		updates["global_status"] = enum_process.RelyStatusWhite
-		updates["status"] = enum_process.ProcStatusWhite
+		updates["global_status"] = enum_process.RelyStatusBlack
+		updates["status"] = enum_process.ProcStatusBlack
 		break
 	}
 
@@ -105,5 +106,29 @@ func (crd *ProcessBase) getUpdatesForDeleteGlobal() map[string]interface{} {
 		enum_process.ProcStatusUnset)
 	updates["status"] = gorm.Expr(str)
 
+	return updates
+}
+
+func (crd *ProcessBase) getUpdatesForThreatenCallback(level int) map[string]interface{} {
+	updates := map[string]interface{}{}
+
+	statusStr := "IF(auto_white_switch=%d AND status=%d, %d, status)"
+	syncStatusAt := "IF(auto_white_switch=%d AND status=%d, %d, sync_status_at)"
+	switch level {
+	case enum_threaten.LevelWhite:
+		updates["threaten_status"] = enum_process.RelyStatusWhite
+		statusStr = fmt.Sprintf(statusStr, enums.IsYes, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
+		syncStatusAt = fmt.Sprintf(syncStatusAt, enums.IsYes, enum_process.ProcStatusUnset, date_helper.CurTimestamp())
+		break
+	case enum_threaten.LevelBlack:
+		updates["threaten_status"] = enum_process.RelyStatusBlack
+		statusStr = fmt.Sprintf(statusStr, enums.IsNot, enum_process.ProcStatusUnset, enum_process.ProcStatusBlack)
+		syncStatusAt = fmt.Sprintf(syncStatusAt, enums.IsYes, enum_process.ProcStatusUnset, date_helper.CurTimestamp())
+		break
+	default:
+		return nil
+	}
+	updates["status"] = gorm.Expr(statusStr)
+	updates["sync_status_at"] = gorm.Expr(syncStatusAt)
 	return updates
 }

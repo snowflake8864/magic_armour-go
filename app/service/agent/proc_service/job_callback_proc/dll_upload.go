@@ -50,7 +50,7 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
+	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnConfig(true, true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
@@ -63,6 +63,9 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	}
 	//全局名单状态
 	dllModel.GlobalStatus = crd.getGlobalStatus(dllModel.OrgId, dllModel.DllHash)
+
+	//默认威胁情报开关
+	dllModel.GrantThreatenSwitch = enums.SwitchOn
 
 	//最终状态
 	dllModel.Status, dllModel.SyncStatusAt = crd.getProcStatus(dllModel.GlobalStatus, dllModel.SelfStatus,

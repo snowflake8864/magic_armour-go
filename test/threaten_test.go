@@ -1,6 +1,7 @@
 package test
 
 import (
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/console/threaten_cmd"
@@ -9,6 +10,11 @@ import (
 
 func TestThreatenSyncCache(t *testing.T) {
 	threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
+}
+
+func TestThreatenCallbackByHash(t *testing.T) {
+
+	proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash("ffffff", 11)
 }
 
 func TestThreatenCheckData(t *testing.T) {

@@ -2,6 +2,7 @@ package job_callback_proc
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/agent_models"
@@ -47,7 +48,7 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
+	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnConfig(true, true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
@@ -60,6 +61,9 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	}
 	//全局名单状态
 	processModel.GlobalStatus = crd.getGlobalStatus(processModel.OrgId, processModel.ProcHash)
+
+	//默认威胁情报开关
+	processModel.GrantThreatenSwitch = enums.SwitchOn
 
 	//最终状态
 	processModel.Status, processModel.SyncStatusAt = crd.getProcStatus(processModel.GlobalStatus, processModel.SelfStatus,

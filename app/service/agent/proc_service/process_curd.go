@@ -222,3 +222,13 @@ func (crd *ProcessCurd) GlobalCallbackDeleteAll(orgId int64) {
 	updates := crd.getUpdatesForDeleteGlobal()
 	crd.masterModel.UpdateByConditions(condition, updates)
 }
+
+// ThreatenCallbackByHash 威胁情报回调： 一条
+func (crd *ProcessCurd) ThreatenCallbackByHash(hash string, level int) {
+	condition := proc_models.SearchConditions{
+		ProcHash: hash,
+	}
+	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil {
+		crd.masterModel.UpdateByConditions(condition, updates)
+	}
+}
