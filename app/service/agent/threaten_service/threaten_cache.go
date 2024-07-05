@@ -90,23 +90,23 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 }
 
 func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
-	if enum_threaten.IsWhite(level) {
-		if dataFrom == enum_threaten.DataFromProcess {
+	if enum_threaten.IsWhite(level) { //白名单
+		if dataFrom == enum_threaten.DataFromProcess { //来源进程
 			//进程白名单
-		} else if dataFrom == enum_threaten.DataFromDll {
+		} else if dataFrom == enum_threaten.DataFromDll { //来源模块
 			//模块白名单
-		} else if dataFrom == enum_threaten.DataFromUnknown {
+		} else if dataFrom == enum_threaten.DataFromUnknown { //来源未知
 			//进程白名单
 			//模块白名单
 		}
-	} else if enum_threaten.IsBlack(level) {
-		if dataFrom == enum_threaten.DataFromProcess {
-			//进程黑名单
-		} else if dataFrom == enum_threaten.DataFromDll {
-			//模块黑名单
-		} else if dataFrom == enum_threaten.DataFromUnknown {
-			//进程黑名单
-			//模块黑名单
+	} else if enum_threaten.IsBlack(level) { //黑名单
+		if dataFrom == enum_threaten.DataFromProcess { //来源进程
+			//进程白名单
+		} else if dataFrom == enum_threaten.DataFromDll { //来源模块
+			//模块白名单
+		} else if dataFrom == enum_threaten.DataFromUnknown { //来源未知
+			//进程白名单
+			//模块白名单
 		}
 	}
 }

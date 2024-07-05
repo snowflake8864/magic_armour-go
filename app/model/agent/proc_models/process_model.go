@@ -28,7 +28,7 @@ type ProcessModel struct {
 	GlobalStatus        int    `json:"global_status"`
 	SelfStatus          int    `json:"self_status"`
 	ThreatenStatus      int    `json:"threaten_status"`
-	ThreatenLevel       int    `json:"threaten_level"`
+	ThreatenLevel       int    `json:"threaten_level"` //未使用
 	AutoWhiteSwitch     int    `json:"auto_white_switch"`
 	GrantThreatenSwitch int    `json:"grant_threaten_switch"`
 	Introduce           string `json:"introduce"`
