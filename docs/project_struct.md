@@ -17,7 +17,7 @@
 |   |   |-- controller
 |   |   |-- middleware
 |   |   `-- validator
-|   |-- model		// 数据库表模型
+|   |-- orgModel		// 数据库表模型
 |   |   |-- base_model.go
 |   |   `-- users.go
 |   |-- service

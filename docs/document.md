@@ -225,7 +225,7 @@ type UsersCurd struct {
  // 预先处理密码加密，然后存储在数据库
 func (u *UsersCurd) Register(userName, pass, userIp string) bool {
 	pass = md5_encrypt.Base64Md5(pass) // 预先处理密码加密，然后存储在数据库
-	return model.CreateUserFactory("").Register(userName, pass, userIp)
+	return orgModel.CreateUserFactory("").Register(userName, pass, userIp)
 }
 
 ```

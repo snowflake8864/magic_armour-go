@@ -4,9 +4,15 @@ import (
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/console/alarm_cmd"
 	"goskeleton/command/console/threaten_cmd"
 	"testing"
 )
+
+func TestAlarmStatistics(t *testing.T) {
+	alarm_cmd.CreateCmdFactory().YesterdayStatistics()
+	alarm_cmd.CreateCmdFactory().TodayStatistics()
+}
 
 func TestThreatenSyncCache(t *testing.T) {
 	threaten_cmd.CreateCmdFactory().SyncDefaultForCache()

@@ -34,11 +34,11 @@ func (u UserStore) CheckParams(context *gin.Context) {
 // 以下函数为固定写法，复制即可，不需要深度研究  
 
 func CreateUserFactory(sqlType string) *UsersModel {
-	return &UsersModel{BaseModel: model.BaseModel{DB: model.UseDbConn(sqlType)}}
+	return &UsersModel{BaseModel: orgModel.BaseModel{DB: orgModel.UseDbConn(sqlType)}}
 }
 
 type UsersModel struct {
-	model.BaseModel // BaseModel 主要有Id 、 CreatedAt 、UpdatedAt 字段，这里主要是演示UsersModel支持结构体的组合
+	orgModel.BaseModel // BaseModel 主要有Id 、 CreatedAt 、UpdatedAt 字段，这里主要是演示UsersModel支持结构体的组合
 	UserName         string `gorm:"column:user_name" json:"user_name"`
 	Pass             string `json:"pass"`
 	Phone            string `json:"phone"`
@@ -60,7 +60,7 @@ func (u *UsersModel) TableName() string {
     
 ####  1.新增数据  
 > 以下代码引用了 `data_bind.ShouldBindFormDataToModel(c, &tmp)` 函数，这个函数是我们对 gin.ShouldBind 函数的精简,加快数据绑定效率。  
-> 1.1 参数绑定的原则：model 定义的结构体字段和表单参数验证器结构体设置的json标签名称、数据类型一致，才可以绑定, UserModel 支持类似BaseModel等结构体组合.   
+> 1.1 参数绑定的原则：orgModel 定义的结构体字段和表单参数验证器结构体设置的json标签名称、数据类型一致，才可以绑定, UserModel 支持类似BaseModel等结构体组合.   
 > 1.2 gorm 的数据新增函数 Create 支持单条、批量，如果是批量，只需要定义被添加的数据为 切片即可,例如  	var tmp []UsersModel ,    u.Create(&tmp)    
 
 ```code  

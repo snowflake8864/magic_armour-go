@@ -208,11 +208,13 @@ func (m *PortModel) Page(condition SearchConditions, offset, limit int, order st
 	}
 }
 
-// CalcByConditions 通过条件获取多条记录
+// CalcByConditions 通过条件获取多条记录且按终端分组
 func (m *PortModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition))
-		tmp := tx.Model(m).Select(m.GetColumn(column)).Where(whereSQL, vals...)
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
 		return tmp.Take(&item)
 	})
 	result := m.Raw(m.TrimSql(sql)).Take(&item)
@@ -220,7 +222,7 @@ func (m *PortModel) CalcByConditions(condition SearchConditions, column string) 
 		return item
 	} else {
 		variable.ZapLog.Sugar().Error(result.Error.Error())
-		return nil
+		return item
 	}
 }
 

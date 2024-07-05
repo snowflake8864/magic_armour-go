@@ -47,7 +47,7 @@ type ChildrenTable struct {
 #### 接口验证器对应的数据类型  ↓  
 ![form-parms4](https://www.ginskeleton.com/images/formparams4.png)  
 
-#### 在后续的控制器、model 获取子表数据
+#### 在后续的控制器、orgModel 获取子表数据
 ```code  
 # 在接口验证逻辑部分，通过参数验证后，我们将子表数据已经存储在上线文
 

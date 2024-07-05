@@ -7,7 +7,7 @@
 ```code 
 	router.GET("/", func(context *gin.Context) {
         // 默认路由处直接触发数据库调用
-		if model.CreateTestFactory("").SelectDataMultiple() {
+		if orgModel.CreateTestFactory("").SelectDataMultiple() {
 			context.String(200,"批量查询数据OK")
 		} else {
 			context.String(200,"批量查询数据出错")

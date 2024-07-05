@@ -203,6 +203,24 @@ func (m *ProcessModel) Page(condition SearchConditions, offset, limit int, order
 	}
 }
 
+// CalcByConditions 通过条件获取多条记录且按终端分组
+func (m *ProcessModel) CalcByConditions(condition SearchConditions, column string) (item *AlarmCalc) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select(column)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return item
+	}
+}
+
 // CalcByConditionsGroupAgent 通过条件获取多条记录且按终端分组
 func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions, column string) (items []*AlarmCalc) {
 

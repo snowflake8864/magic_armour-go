@@ -50,7 +50,7 @@ app/http/validator/common/register_validator/register_validator.go
 
 ```
 
-#####  6.每个model都要 create 一次，难道每个 model 都是一次数据库连接吗?    
+#####  6.每个model都要 create 一次，难道每个 orgModel 都是一次数据库连接吗?    
 ```code   
 
 关系型数据库驱动库其实是根据 plugConfig.yml中的配置初始化了一次，因此每种数据库全局只有一个连接，以后每一次都是从同一个驱动指针地址，通过ping() 从底层的连接池获取一个连接。用完也是自动释放的.
