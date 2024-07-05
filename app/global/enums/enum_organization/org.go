@@ -8,8 +8,6 @@ const (
 	StatusNormal    int = 2 //状态:正常
 	StatusLocking   int = 3 //状态:锁定中
 
-	OrgFieldDefault string = "order_no" //默认排序字段
-
 	LogActionPlatformAdd            int = 100 //日志行为: 平台添加
 	LogActionPlatformApprove        int = 101 //日志行为: 通过审核
 	LogActionPlatformRefuse         int = 102 //日志行为: 未通过审核

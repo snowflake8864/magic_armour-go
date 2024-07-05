@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
-	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -101,7 +100,7 @@ func (u *OrderController) PageForPurchase(ctx *gin.Context) {
 	conditions := u.getOrderSearchConditions(ctx)
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
@@ -126,7 +125,7 @@ func (u *OrderController) LogsForPurchase(ctx *gin.Context) {
 		OrgId:   loginInfo.OrgId,
 	}
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//日志分页
 	total, logModels := order_models.CreateLogFactory().Page(conditions, offset, pageSize, order)
@@ -229,7 +228,7 @@ func (u *OrderController) PageForUsed(ctx *gin.Context) {
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)

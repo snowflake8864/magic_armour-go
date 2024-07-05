@@ -9,10 +9,10 @@ const (
 	PayMethodBankcard int = 10 //支付方式： 银行卡
 	PayMethodWechat   int = 20 //支付方式： 微信
 
-	OrderStatusCancel    int = 33 //订单状态:已取消
 	OrderStatusUnpaid    int = 1  //订单状态:待支付
 	OrderStatusPaid      int = 5  //订单状态:已支付
 	OrderStatusCompleted int = 8  //订单状态:已完成
+	OrderStatusCancel    int = 33 //订单状态:已取消
 
 	ActionAdd           int = 1 //行为：添加
 	ActionPayBankcard   int = 2 //行为：对公转账方式付款
@@ -27,10 +27,11 @@ const (
 var EnumMap = map[string]map[int]string{
 
 	"order_status": {
-		OrderStatusCancel:    "待支付",
-		OrderStatusUnpaid:    "已支付",
-		OrderStatusPaid:      "已完成",
-		OrderStatusCompleted: "已取消",
+
+		OrderStatusUnpaid:    "待支付",
+		OrderStatusPaid:      "已支付",
+		OrderStatusCompleted: "已完成",
+		OrderStatusCancel:    "已取消",
 	},
 	"pay_method": {
 		PayMethodBankcard: "对公转账",

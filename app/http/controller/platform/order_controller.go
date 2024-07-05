@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_order"
-	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/organization/order_models"
@@ -85,7 +84,7 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
@@ -113,7 +112,7 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
@@ -189,7 +188,7 @@ func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	searchConditions := order_models.SearchConditions{}
 	searchConditions.OrderNo = orderNo
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_organization.OrgFieldDefault)
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//日志分页
 	total, logModels := order_models.CreateLogFactory().Page(searchConditions, offset, pageSize, order)
