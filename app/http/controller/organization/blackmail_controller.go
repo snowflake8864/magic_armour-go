@@ -370,6 +370,7 @@ func (u *BlackmailController) SetSwitchForGlobal(ctx *gin.Context) {
 
 	param := blackmail_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
 		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:     loginInfo.UserId,
