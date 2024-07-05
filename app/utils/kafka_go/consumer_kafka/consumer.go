@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/jobs/syslog_job"
+	"goskeleton/app/jobs/threaten_job"
 	"goskeleton/app/utils/kafka_go"
 	"strings"
 )
@@ -197,7 +198,7 @@ func (k *ConsumerClient) ConsumeSyslog() {
 			syslog_job.UploadLogin(data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
+			variable.ZapLog.Info(fmt.Sprintf("readerSyslog result:%T", data))
 		}
 	}
 }
@@ -211,9 +212,14 @@ func (k *ConsumerClient) ConsumeThreaten() {
 		}
 
 		switch data.Type {
-
+		case kafka_go.TypeThreatenSyncUnknown:
+			threaten_job.HandelUnknown(data.Data)
+			break
+		case kafka_go.TypeThreatenSyncRewrite:
+			threaten_job.HandelRewire(data.Data)
+			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
+			variable.ZapLog.Info(fmt.Sprintf("readerThreaten result:%T", data))
 		}
 	}
 }

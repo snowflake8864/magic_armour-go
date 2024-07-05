@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 func CreateCacheFactory() *ThreatenCache {
@@ -63,10 +64,21 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 
 // Rewrite 根据第三方返回重写本地信息
 func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
+	checkAt := param.CheckAt
+	if string_helper.IsEmpty(checkAt) {
+		checkAt = date_helper.CurDatetime()
+	}
+
+	checkSource := enum_threaten.CheckSourceVeda
+	if strings.Contains(param.Attribute, "malicious") && strings.Contains(param.Attribute, "detections") {
+		checkSource = enum_threaten.CheckSourceInternet
+	}
+
 	updates := map[string]interface{}{
-		"level":     param.Level,
-		"attribute": param.Attribute,
-		"check_at":  date_helper.CurDatetime(),
+		"level":        param.Level,
+		"attribute":    param.Attribute,
+		"check_at":     checkAt,
+		"check_source": checkSource,
 	}
 	if crd.masterModel.UpdateById(param.Id, updates) {
 		return false

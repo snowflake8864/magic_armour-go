@@ -2,6 +2,7 @@ package threaten_platform
 
 import (
 	"errors"
+	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -43,27 +44,27 @@ type responseCommon struct {
 }
 
 // checkCode 校验code
-func (aa *RequestThreaten) checkCode(bodyContext string, err error) error {
+func (aa *RequestThreaten) checkCode(bodyContext string, err error) (error, *responseCommon) {
 	if err != nil {
-		return errors.New("body_error: " + err.Error())
+		return errors.New("body_error: " + err.Error()), nil
 	}
 	resp := responseCommon{}
 	err = json_helper.ToStruct(bodyContext, &resp)
 	if err != nil {
-		return errors.New("json_error: " + err.Error())
+		return errors.New("json_error: " + err.Error()), nil
 	}
 
 	//fmt.Println("Type of x:", reflect.TypeOf(resp.Code))
 	code := float_helper.Float64(resp.Code)
 	//口令过期
 	if code == 3007 {
-		return errors.New("token expired: " + bodyContext)
+		return errors.New("token expired: " + bodyContext), nil
 	}
 	//结果不正确
 	if code != 1 {
-		return errors.New("result fail: " + bodyContext)
+		return errors.New("result fail: " + bodyContext), nil
 	}
-	return nil
+	return nil, &resp
 }
 
 // Online 是否在线
@@ -71,7 +72,7 @@ func (aa *RequestThreaten) Online() error {
 	uri := aa.Config.Domain + "/center/heartbeat"
 
 	bodyContext, err := http_request.GetNoParams(uri, map[string]interface{}{})
-	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}
 
@@ -94,9 +95,7 @@ func (aa *RequestThreaten) GenerateToken() error {
 		"secretKey": aa.Config.AppSecret,
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	variable.ZapLog.Sugar().Debug("GenerateToken bodyContext================================")
-	variable.ZapLog.Sugar().Debug(bodyContext)
-	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}
 
@@ -129,11 +128,9 @@ func (aa *RequestThreaten) GetHeaders() (headers map[string]interface{}) {
 
 // ResponseCheckHashes 验证hash接口返回数据
 type ResponseCheckHashes struct {
-	Data struct {
-		Hash  string `json:"name"`
-		Level int    `json:"type"`
-		Attr  string `json:"attr"`
-	} `json:"data"`
+	Hash  string `json:"name"` //hash, 大写
+	Level int    `json:"type"` //等级
+	Attr  string `json:"attr"` //属性
 }
 
 type CheckHashes struct {
@@ -146,24 +143,67 @@ type CheckHashes struct {
 }
 
 // CheckHashes 验证hash集合,若存在返回
-func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result *[]ResponseCheckHashes) {
+func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
-	variable.ZapLog.Sugar().Debug("CheckHashes bodyContext================================")
+
+	err2, respComm := aa.checkCode(bodyContext, err)
+	if err2 != nil {
+		return err2, nil
+	}
+
+	var result []ResponseCheckHashes
+	switch data := respComm.Data.(type) {
+	case []interface{}: //没有返回数据
+		return nil, nil
+	case map[string]interface{}: //有返回数据
+		for _, mapStr := range data {
+			tmp := ResponseCheckHashes{}
+			jsonStr := json_helper.Encode(mapStr)
+			if err1 := json_helper.ToStruct(jsonStr, &tmp); err1 == nil {
+				result = append(result, tmp)
+			}
+		}
+		break
+	}
+	return nil, &result
+}
+
+func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHashes {
+	variable.ZapLog.Sugar().Debug("====================================")
 	variable.ZapLog.Sugar().Debug(bodyContext)
-	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
-		return err1, result
+	err, respComm := aa.checkCode(bodyContext, nil)
+	if err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
 	}
+	variable.ZapLog.Sugar().Debug(json_helper.Encode(respComm))
+	variable.ZapLog.Sugar().Debug(fmt.Sprintf("data type:%T ", respComm.Data))
 
-	variable.ZapLog.Sugar().Debug("-------------------------------------")
-	if err1 := json_helper.ToStruct(bodyContext, result); err1 != nil {
-		return errors.New("json_error2: " + err1.Error()), result
+	var result []ResponseCheckHashes
+	switch data := respComm.Data.(type) {
+	case []interface{}:
+		return nil
+	case map[string]interface{}:
+		for hash, mapStr := range data {
+			variable.ZapLog.Sugar().Debug("hash======11111111111111: ", hash)
+			variable.ZapLog.Sugar().Debug(mapStr)
+			variable.ZapLog.Sugar().Debug(fmt.Sprintf("mapStr type:%T ", mapStr))
+
+			tmp := ResponseCheckHashes{}
+			jsonStr := json_helper.Encode(mapStr)
+			if err1 := json_helper.ToStruct(jsonStr, &tmp); err1 == nil {
+				result = append(result, tmp)
+			}
+
+		}
+		break
 	}
-
-	return nil, result
+	fmt.Println("result===================")
+	fmt.Println(json_helper.Encode(result))
+	return nil
 }
 
 type PushHashes struct {
@@ -186,7 +226,7 @@ func (aa *RequestThreaten) PushHashes(list *[]PushHashes) error {
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}
 	return nil

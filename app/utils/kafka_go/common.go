@@ -40,4 +40,7 @@ const (
 	TypeSyslogPutOuter   string = "syslog_put_outer"   //类型：通讯日志-外联上传
 	TypeSyslogPutProcess string = "syslog_put_process" //类型：通讯日志-进程启动上传
 	TypeSyslogPutLogin   string = "syslog_put_login"   //类型：通讯日志-登录日志上传
+
+	TypeThreatenSyncRewrite string = "threaten_sync_rewrite" //类型：威胁情报同步后重写
+	TypeThreatenSyncUnknown string = "threaten_sync_unknown" //类型：威胁情报同步后未知
 )

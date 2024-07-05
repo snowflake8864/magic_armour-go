@@ -1,6 +1,7 @@
 package threaten_cmd
 
 import (
+	"context"
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -14,15 +15,17 @@ import (
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/redis_factory"
+	"strings"
 )
 
 func CreateCmdFactory() *ThreatenCmd {
 	return &ThreatenCmd{
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "lock_threaten_check_",
-		cacheExpire: 120,
+		cacheExpire: 180,
 		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
@@ -178,13 +181,13 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 
 		//同步列表
 		var syncList []threaten_platform.CheckHashes
-		var syncIdMap = make(map[string]struct{})
+		var idAndDataFrom = make(map[string]int)
 		for _, model := range models {
 			//加锁失败
 			if !crd.lockHash(model.Id) {
 				continue
 			}
-			syncIdMap[model.Id] = struct{}{}
+			idAndDataFrom[model.Id] = model.DataFrom
 
 			syncList = append(syncList, threaten_platform.CheckHashes{
 				ReqType:    threaten_platform.ReqType,
@@ -196,9 +199,9 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 			})
 		}
 		variable.ZapLog.Sugar().Debug("============================")
-		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncIdMap))
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
-		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, &syncIdMap); err1 != nil {
+		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}
 	}
@@ -208,7 +211,10 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 
 // 同步缓存到威胁情报并进行处理
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
-	list *[]threaten_platform.CheckHashes, idMap *map[string]struct{}) error {
+	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
+
+	variable.ZapLog.Sugar().Debug("idAndDataFrom=============================")
+	variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 
 	//没有需要校验数据
 	if list == nil || len(*list) == 0 {
@@ -218,13 +224,56 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	//去校验
 	err, checkReps := cli.CheckHashes(list)
 	if err != nil {
-		return err
+		return nil
+	}
+	//没有返回数据
+	if checkReps == nil || len(*checkReps) == 0 {
+		return nil
 	}
 	//有返回数据
-	if checkReps != nil && len(*checkReps) > 0 {
-		for _, item := range *checkReps {
-			variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
+	ctx := context.Background()
+	now := date_helper.CurDatetime()
+
+	for _, item := range *checkReps {
+		variable.ZapLog.Sugar().Debug("item=============================")
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
+		hash := strings.ToLower(item.Hash)
+		dataFrom, isOk := idAndDataFrom[hash]
+		if !isOk {
+			variable.ZapLog.Sugar().Debug("checkCacheToThreaten not exists", hash)
+			continue
+		} else {
+			delete(idAndDataFrom, hash)
 		}
+
+		model := threaten_models.CacheModel{
+			Id:        strings.ToLower(item.Hash),
+			Level:     item.Level,
+			DataFrom:  dataFrom,
+			CheckAt:   now,
+			CheckInfo: item.Attr,
+		}
+		variable.ZapLog.Sugar().Debug("model=============================")
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(&model))
+
+		//进入队列
+		crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			Type: kafka_go.TypeThreatenSyncRewrite,
+			Data: json_helper.Encode(&model),
+		})
+	}
+
+	//威胁情报不存在的hash & 原来是未同步
+	if len(idAndDataFrom) > 0 && level == enum_threaten.LevelDefault {
+		var idArr []string
+		for id := range idAndDataFrom {
+			idArr = append(idArr, id)
+		}
+		//进入队列
+		producer_kafka.CreateProducerFactory().ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			Type: kafka_go.TypeThreatenSyncUnknown,
+			Data: json_helper.Encode(idArr),
+		})
 	}
 
 	return nil
