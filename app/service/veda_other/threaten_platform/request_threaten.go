@@ -93,6 +93,8 @@ func (aa *RequestThreaten) GenerateToken() error {
 		"secretKey": aa.Config.AppSecret,
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
+	variable.ZapLog.Sugar().Debug("GenerateToken bodyContext================================")
+	variable.ZapLog.Sugar().Debug(bodyContext)
 	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}
@@ -143,19 +145,20 @@ type CheckHashes struct {
 }
 
 // CheckHashes 验证hash集合,若存在返回
-func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result []*ResponseCheckHashes) {
+func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error error, result *[]ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
-	variable.ZapLog.Sugar().Debug("bodyContext================================")
+	variable.ZapLog.Sugar().Debug("CheckHashes bodyContext================================")
 	variable.ZapLog.Sugar().Debug(bodyContext)
 	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1, result
 	}
 
-	if err1 := json_helper.ToStruct(bodyContext, &result); err1 != nil {
+	variable.ZapLog.Sugar().Debug("-------------------------------------")
+	if err1 := json_helper.ToStruct(bodyContext, result); err1 != nil {
 		return errors.New("json_error2: " + err1.Error()), result
 	}
 

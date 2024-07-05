@@ -127,18 +127,21 @@ func (crd *ThreatenCmd) DeleteForCache() {
 
 // SyncDefaultForCache  本地缓存：同步默认状态(未同步)数据到威胁情报中心
 func (crd *ThreatenCmd) SyncDefaultForCache() {
-	variable.ZapLog.Sugar().Debug("SyncDefaultForCache")
+	variable.ZapLog.Sugar().Debug("SyncDefaultForCache start")
+	crd.syncCacheToThreaten(enum_threaten.LevelDefault)
+	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
 }
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
 func (crd *ThreatenCmd) SyncUnknownForCache() {
 	variable.ZapLog.Sugar().Debug("SyncUnknownForCache start")
-
-	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end:")
+	crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
+	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
 }
 
 // 给hash加锁
 func (crd *ThreatenCmd) lockHash(hash string) bool {
+	return true
 	key := crd.cachePrefix + hash
 	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
 		return true
@@ -192,7 +195,9 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 				ParentName: model.ParentDir,
 			})
 		}
-
+		variable.ZapLog.Sugar().Debug("============================")
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncIdMap))
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, &syncIdMap); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}
@@ -216,8 +221,8 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 		return err
 	}
 	//有返回数据
-	if checkReps != nil && len(checkReps) > 0 {
-		for _, item := range checkReps {
+	if checkReps != nil && len(*checkReps) > 0 {
+		for _, item := range *checkReps {
 			variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
 		}
 	}

@@ -6,6 +6,6 @@ import (
 	"testing"
 )
 
-func TestThreatenSync(t *testing.T) {
-	threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
+func TestThreatenSyncCache(t *testing.T) {
+	threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 }
