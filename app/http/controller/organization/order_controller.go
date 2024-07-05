@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -57,6 +58,13 @@ func (u *OrderController) PayBankcard(ctx *gin.Context) {
 	maps := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrder)
 
 	response.SuccessReturnData(ctx, enum_order.FormatPayBankcard(maps))
+}
+
+// PublishedForProduct 产品:已发布的
+func (u *OrderController) PublishedForProduct(ctx *gin.Context) {
+	models := product_service.CreateCurdFactory().GetPublished()
+
+	response.SuccessReturnData(ctx, (&org_trans.Product{}).TransList(models))
 }
 
 // ValidList 有效订单列表

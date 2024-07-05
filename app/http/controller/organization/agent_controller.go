@@ -38,6 +38,13 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
+// GrantStatus 授权状态
+func (u *AgentController) GrantStatus(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("grant_status", enum_agent.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_status", enum_agent.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+}
+
 // CountOnline 统计在线和离线数量
 func (u *AgentController) CountOnline(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, "CountOnline")

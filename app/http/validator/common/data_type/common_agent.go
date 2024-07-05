@@ -11,7 +11,7 @@ type AgentSearch struct {
 	ContactName string `form:"contactName" json:"contactName" binding:"omitempty,min=1"`
 	IsOnline    *int   `form:"isOnline" json:"isOnline" binding:"omitempty,oneof=-100 0 1"`
 	IsSafe      *int   `form:"isSafe" json:"isSafe" binding:"omitempty,oneof=-100 0 1"`
-	GrantStatus *int   `form:"grantStatus" json:"grantStatus" binding:"omitempty,oneof=-100 0 1"`
+	GrantStatus int    `form:"grantStatus" json:"grantStatus" binding:"omitempty,oneof=-100 1 2"`
 }
 
 // AgentSingle 终端单个

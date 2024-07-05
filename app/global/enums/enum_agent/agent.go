@@ -44,6 +44,10 @@ var EnumIntMap = map[string]map[int]string{
 		ModeMonitor: "监控",
 		ModeProject: "保护",
 	},
+	"grant_status": {
+		GrantStatusNot: "未授权",
+		GrantStatusYes: "已授权",
+	},
 }
 
 var WebMapInt = map[string][]int{
@@ -54,6 +58,10 @@ var WebMapInt = map[string][]int{
 	"is_safe": {
 		enums.IsYes,
 		enums.IsNot,
+	},
+	"grant_status": {
+		GrantStatusNot,
+		GrantStatusYes,
 	},
 }
 

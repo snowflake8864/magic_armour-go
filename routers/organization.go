@@ -146,6 +146,7 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						public.POST("onlineStatus", (&organization.AgentController{}).OnlineStatus)
 						public.POST("safeStatus", (&organization.AgentController{}).SafeStatus)
+						public.POST("grantStatus", (&organization.AgentController{}).GrantStatus)
 						public.POST("types", (&organization.AgentController{}).TypeList)
 					}
 					manage := agent.Group("manage/")
@@ -758,6 +759,10 @@ func InitOrganizationRouter() *gin.Engine {
 						public.POST("grantDuration", (&organization.OrderController{}).GrantDuration)
 						public.POST("payMethod", (&organization.OrderController{}).PayMethod)
 						public.POST("payBankcard", (&organization.OrderController{}).PayBankcard)
+					}
+					product := order.Group("product/")
+					{
+						product.POST("published", (&organization.OrderController{}).PublishedForProduct)
 					}
 					purchase := order.Group("purchase/")
 					{
