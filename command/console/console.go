@@ -93,12 +93,17 @@ func handleDay(mode, interval, at string) {
 	if mode == ModeOnce {
 		switch at {
 		case AtZero:
-			//清理日志
+			//清理通讯日志
 			syslog_cmd.CreateCmdFactory().Delete()
+			//清理告警
 			alarm_cmd.CreateCmdFactory().Delete()
+			//清理任务
 			agent_cmd.CreateTaskFactory().Delete()
+			//清理终端监控
 			agent_cmd.CreateMonitorFactory().Delete()
+			//清理终端访问日志
 			agent_cmd.CreateAccessFactory().Clear()
+			//清理进程和模块的运行中数据
 			proc_cmd.CreateCmdFactory().ClearRunning()
 			break
 		case AtOne:
