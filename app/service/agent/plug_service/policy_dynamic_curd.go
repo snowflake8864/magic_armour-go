@@ -37,7 +37,7 @@ func (crd *PolicyDynamicCurd) AutoDisable(orgId int64, agentId string, at string
 
 	//修改
 	updates := make(map[string]interface{})
-	//updates["end_at"] = at
+	updates["end_at"] = at
 	updates["open_switch"] = enums.SwitchOff
 	updates["updated_at"] = at
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
