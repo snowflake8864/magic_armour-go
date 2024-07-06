@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
@@ -55,15 +56,16 @@ func (m *DictionaryModel) InitData() bool {
 	//
 	sql := `INSERT IGNORE INTO ` + m.TableName() + `(module, id, val, remark) VALUES`
 	sql += `
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginErrorMax + `', '10','管理员:登录错误次数最大值(100)'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginErrorRemind + `', '3','管理员:登录错误次数提醒'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginLockDuration + `', '30','管理员:登录锁定时长(分)'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshSwitch + `', '1','管理员:系统ssh开关'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStart + `', 'systemctl start sshd','管理员:ssh服务开启命令'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStop + `', 'systemctl stop sshd','管理员:ssh服务停止命令'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformServiceCodeList + `', '["s0001"]','管理员:服务器编号列表'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginErrorMax + `', '10','平台:登录错误次数最大值(100)'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginErrorRemind + `', '3','平台:登录错误次数提醒'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformLoginLockDuration + `', '30','平台:登录锁定时长(分)'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshSwitch + `', '1','管平台:系统ssh开关'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStart + `', 'systemctl start sshd','平台:ssh服务开启命令'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSshCmdStop + `', 'systemctl stop sshd','平台:ssh服务停止命令'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformServiceCodeList + `', '["s0001"]','平台:服务器编号列表'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformTimeCmd +
-		`', 'sudo /bin/timedatectl set-timezone Asia/Shanghai && sudo /sbin/hwclock --set --date "%s" && sudo /sbin/hwclock --hctosys && sudo /sbin/clock -w','管理员:时间修改命令'),
+		`', 'sudo /bin/timedatectl set-timezone Asia/Shanghai && sudo /sbin/hwclock --set --date "%s" && sudo /sbin/hwclock --hctosys && sudo /sbin/clock -w','平台:时间修改命令'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformInstallAt + `', '` + date_helper.CurDatetime() + `','平台:安装时间'),
 
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorMax + `', '10','企业:登录错误次数最大值(100)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorRemind + `', '3','企业:登录错误次数提醒'),

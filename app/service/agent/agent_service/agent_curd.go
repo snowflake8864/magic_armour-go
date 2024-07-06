@@ -84,7 +84,7 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (
 	ctx := context.Background()
 	for _, val := range validIds {
 		msg := &kafka_go.MessageStruct{
-			Type:    kafka_go.TypeAgentDelete,
+			Type:    kafka_go.TypeCommonAgentDelete,
 			OrgId:   orgId,
 			AgentId: val,
 		}
@@ -150,7 +150,7 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		if openAutoWhite {
 			//丢入队列
 			msg := &kafka_go.MessageStruct{
-				Type:    kafka_go.TypeAgentOpenAutoWhite,
+				Type:    kafka_go.TypeCommonAgentOpenAutoWhite,
 				OrgId:   orgId,
 				AgentId: model.AgentId,
 			}

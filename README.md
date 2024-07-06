@@ -28,13 +28,12 @@
       */2 * * * * app_cli crontab -U minute -I two -A two
       */2 * * * * app_cli crontab -U minute -I two -A three
       
-      #每隔[3分钟], 已按顺序使用到[three]
+      #每隔[3分钟], 已按顺序使用到[two]
       */3 * * * * app_cli crontab -U minute -I three -A zero
       */3 * * * * app_cli crontab -U minute -I three -A one
       */3 * * * * app_cli crontab -U minute -I three -A two
       */3 * * * * app_cli crontab -U minute -I three -A three
       */3 * * * * app_cli crontab -U minute -I three -A four
-      */3 * * * * app_cli crontab -U minute -I three -A five
 
       #每隔[5分钟], 已按顺序使用到[zero]
       */5 * * * * app_cli crontab -U minute -I five -A zero

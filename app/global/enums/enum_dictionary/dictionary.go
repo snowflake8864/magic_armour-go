@@ -18,6 +18,7 @@ const (
 	PlatformSshCmdStop        string = "platform_ssh_stop"            //平台:ssh服务停止命令
 	PlatformServiceCodeList   string = "platform_service_code_list"   //平台:服务器编号列表
 	PlatformTimeCmd           string = "platform_time_cmd"            //平台:时间修改命令
+	PlatformInstallAt         string = "platform_install_at"          //平台:安装时间
 
 	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
 	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
@@ -84,6 +85,7 @@ var EnumSlice = map[string][]string{
 		PlatformSshCmdStop,
 		PlatformServiceCodeList,
 		PlatformTimeCmd,
+		PlatformInstallAt,
 	},
 	ModuleOrganization: {
 		OrganizationLoginErrorMax,

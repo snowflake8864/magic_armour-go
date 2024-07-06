@@ -188,7 +188,7 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 	}
 
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeProcessPutMaster,
+		Type: kafka_go.TypeProcProcessPutMaster,
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
@@ -206,7 +206,7 @@ func (crd *ProcPost) sendProcessRunning(source int, task string, model *proc_mod
 	}
 
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeProcessPutRunning,
+		Type: kafka_go.TypeProcProcessPutRunning,
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
@@ -224,7 +224,7 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 	}
 
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeDllPutMaster,
+		Type: kafka_go.TypeProcDllPutMaster,
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
@@ -242,7 +242,7 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 	}
 
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeDllPutRunning,
+		Type: kafka_go.TypeProcDllPutRunning,
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)

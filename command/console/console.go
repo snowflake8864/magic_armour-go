@@ -181,18 +181,14 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtThree {
 		switch at {
 		case AtZero:
-			//从进程添加任务
-			proc_cmd.CreateCmdFactory().AddFromProcessForTask()
+			//从进程或模块添加任务
+			proc_cmd.CreateCmdFactory().AddFromProcForTask()
 			break
 		case AtOne:
-			//从模块添加任务
-			proc_cmd.CreateCmdFactory().AddFromDllForTask()
-			break
-		case AtTwo:
 			//服务器状态监控
 			service_cmd.CreateCmdFactory().Monitor()
 			break
-		case AtThree:
+		case AtTwo:
 			//威胁情报同步数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncForPushes()
 			break

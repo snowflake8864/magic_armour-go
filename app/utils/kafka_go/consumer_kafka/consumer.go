@@ -95,16 +95,16 @@ func (k *ConsumerClient) ConsumeCommon() {
 		}
 
 		switch data.Type {
-		case kafka_go.TypeAgentDelete:
+		case kafka_go.TypeCommonAgentDelete:
 			agent_job.Delete(data.OrgId, data.AgentId)
 			break
-		case kafka_go.TypeAgentOpenAutoWhite:
+		case kafka_go.TypeCommonAgentOpenAutoWhite:
 			agent_job.OpenAutoWhite(data.OrgId, data.AgentId)
 			break
-		case kafka_go.TypeOrgClean:
+		case kafka_go.TypeCommonOrgClean:
 			org_job.Clean(data.OrgId)
 			break
-		case kafka_go.TypeAgentPutMonitor:
+		case kafka_go.TypeCommonAgentPutMonitor:
 			agent_job.UploadMonitor(data.Data)
 			break
 		default:
@@ -122,16 +122,16 @@ func (k *ConsumerClient) ConsumeProcess() {
 		}
 
 		switch data.Type {
-		case kafka_go.TypeProcessPutMaster:
+		case kafka_go.TypeProcProcessPutMaster:
 			proc_job.UploadProcess(data.Data)
 			break
-		case kafka_go.TypeProcessPutRunning:
+		case kafka_go.TypeProcProcessPutRunning:
 			proc_job.UploadProcessRunning(data.Data)
 			break
-		case kafka_go.TypeDllPutMaster:
+		case kafka_go.TypeProcDllPutMaster:
 			proc_job.UploadDll(data.Data)
 			break
-		case kafka_go.TypeDllPutRunning:
+		case kafka_go.TypeProcDllPutRunning:
 			proc_job.UploadDllRunning(data.Data)
 			break
 		default:
@@ -241,6 +241,12 @@ func (k *ConsumerClient) ConsumeCrontab() {
 			break
 		case kafka_go.TypeCrontabPlugDisable:
 			plug_job.DynamicDisable(data.OrgId, data.AgentId)
+			break
+		case kafka_go.TypeCrontabTaskFormProcess:
+			proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)
+			break
+		case kafka_go.TypeCrontabTaskFormDll:
+			proc_job.TaskFromDll(data.OrgId, data.AgentId, data.Data)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))

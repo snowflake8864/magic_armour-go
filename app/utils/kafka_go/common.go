@@ -1,8 +1,8 @@
 package kafka_go
 
 type MessageStruct struct {
-	Sign    string `json:"sign"`
 	Type    string `json:"type"`
+	Sign    string `json:"sign"`
 	OrgId   int64  `json:"oId"`
 	AgentId string `json:"aId"`
 	AgentOS string `json:"aOS"`
@@ -17,16 +17,15 @@ const (
 	TopicSyslog   string = "TopicSyslog"
 	TopicCrontab  string = "TopicCrontab"
 
-	TypeAgentDelete        string = "agent_delete"          //类型：终端删除
-	TypeAgentPutMonitor    string = "agent_put_monitor"     //类型：终端上传监控数据
-	TypeAgentOpenAutoWhite string = "agent_open_auto_white" //类型：终端开启自动白名单
+	TypeCommonAgentDelete        string = "agent_delete"          //类型：终端删除
+	TypeCommonAgentPutMonitor    string = "agent_put_monitor"     //类型：终端上传监控数据
+	TypeCommonAgentOpenAutoWhite string = "agent_open_auto_white" //类型：终端开启自动白名单
+	TypeCommonOrgClean           string = "org_clean"             //类型：企业清空业务数据
 
-	TypeOrgClean string = "org_clean" //类型： 企业清空业务数据
-
-	TypeProcessPutMaster  string = "process_put_master"  //类型：上传主进程
-	TypeProcessPutRunning string = "process_put_running" //类型：上传运行中进程
-	TypeDllPutMaster      string = "dll_put_master"      //类型：上传主模块
-	TypeDllPutRunning     string = "dll_put_running"     //类型：上传运行中模块
+	TypeProcProcessPutMaster  string = "process_put_master"  //类型：上传主进程
+	TypeProcProcessPutRunning string = "process_put_running" //类型：上传运行中进程
+	TypeProcDllPutMaster      string = "dll_put_master"      //类型：上传主模块
+	TypeProcDllPutRunning     string = "dll_put_running"     //类型：上传运行中模块
 
 	TypeAlarmPutProcess   string = "alarm_put_process"   //类型：进程告警上传
 	TypeAlarmPutDll       string = "alarm_put_dll"       //类型：模块告警上传
@@ -46,7 +45,9 @@ const (
 	TypeThreatenFormProcess string = "threaten_form_process" //类型：威胁情报从进程新增
 	TypeThreatenFormDll     string = "threaten_form_dll"     //类型：威胁情报从模块新增
 
-	TypeCrontabAlarmStat   string = "crontab_alarm_stat"   //类型：定时任务-告警统计
-	TypeCrontabAgentSafe   string = "crontab_agent_safe"   //类型：定时任务-终端安全状态
-	TypeCrontabPlugDisable string = "crontab_plug_disable" //类型：定时任务-终端封堵解除
+	TypeCrontabAlarmStat       string = "alarm_stat"        //类型：定时任务-告警统计
+	TypeCrontabAgentSafe       string = "agent_safe"        //类型：定时任务-终端安全状态
+	TypeCrontabPlugDisable     string = "plug_disable"      //类型：定时任务-终端封堵解除
+	TypeCrontabTaskFormProcess string = "task_form_process" //类型：定时任务-从进程新增任务
+	TypeCrontabTaskFormDll     string = "task_form_dll"     //类型：定时任务-从模块新增任务
 )

@@ -237,13 +237,13 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 	if !logFact.Add(&orgLogParam) {
 		return -3, errors.New("保存企业日志失败")
 	}
-	
+
 	//企业级卸载终端任务
 	task_service.CreateCacheFactory().AddOrgUninstall(orgId)
 
 	//丢入队列
 	msg := &kafka_go.MessageStruct{
-		Type:  kafka_go.TypeOrgClean,
+		Type:  kafka_go.TypeCommonOrgClean,
 		OrgId: orgId,
 	}
 	producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
