@@ -222,13 +222,11 @@ type PushHashes struct {
 // PushHashes 推送hash集合
 func (aa *RequestThreaten) PushHashes(list *[]PushHashes) error {
 	uri := aa.Config.Domain + "/center/threaten/platadd"
-	fmt.Println(uri)
+
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
-	fmt.Println(json_helper.Encode(params))
-	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	fmt.Println(bodyContext)
+	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
 	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}

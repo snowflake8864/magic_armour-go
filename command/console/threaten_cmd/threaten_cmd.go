@@ -123,11 +123,11 @@ func (crd *ThreatenCmd) SyncForPushes() {
 				Copyright: model.Copyright,
 			})
 		}
-
-		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := threatenCli.PushHashes(&syncList); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncForPushes fail", err1.Error())
-			//threaten_service.CreatePushFactory().BatchPushed(idArr)
+			break
+		} else {
+			threaten_service.CreatePushFactory().BatchPushed(idArr)
 		}
 
 	}
