@@ -14,7 +14,6 @@ import (
 	"goskeleton/command/console/service_cmd"
 	"goskeleton/command/console/syslog_cmd"
 	"goskeleton/command/console/threaten_cmd"
-	"time"
 )
 
 const (
@@ -95,13 +94,12 @@ func handleDay(mode, interval, at string) {
 		switch at {
 		case AtZero:
 			//清理日志
-			go syslog_cmd.CreateCmdFactory().Delete()
-			go alarm_cmd.CreateCmdFactory().Delete()
-			go agent_cmd.CreateTaskFactory().Delete()
-			go agent_cmd.CreateMonitorFactory().Delete()
-			go agent_cmd.CreateAccessFactory().Clear()
-			go proc_cmd.CreateCmdFactory().ClearRunning()
-			time.Sleep(time.Minute * 2)
+			syslog_cmd.CreateCmdFactory().Delete()
+			alarm_cmd.CreateCmdFactory().Delete()
+			agent_cmd.CreateTaskFactory().Delete()
+			agent_cmd.CreateMonitorFactory().Delete()
+			agent_cmd.CreateAccessFactory().Clear()
+			proc_cmd.CreateCmdFactory().ClearRunning()
 			break
 		case AtOne:
 			//未知支付订单自动过期
