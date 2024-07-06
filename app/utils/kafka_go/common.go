@@ -43,6 +43,8 @@ const (
 	TypeSyslogPutLogin   string = "syslog_put_login"   //类型：通讯日志-登录日志上传
 
 	TypeThreatenSyncRewrite string = "threaten_sync_rewrite" //类型：威胁情报同步后重写
+	TypeThreatenFormProcess string = "threaten_form_process" //类型：威胁情报从进程新增
+	TypeThreatenFormDll     string = "threaten_form_dll"     //类型：威胁情报从模块新增
 
 	TypeCrontabStatAlarm string = "crontab_stat_alarm" //类型：定时任务-告警统计
 )

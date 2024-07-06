@@ -5,9 +5,14 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
@@ -135,11 +140,131 @@ func (crd *ThreatenCmd) SyncForPushes() {
 	variable.ZapLog.Sugar().Debug("SyncForPushes end, page:=", page)
 }
 
+func (crd *ThreatenCmd) getOrgModels() []*organization_models.OrganizationModel {
+	return organization_models.CreateOrganizationFactory().GetListByConditions(organization_models.SearchConditions{
+		StatusList: []int{enum_organization.StatusNormal, enum_organization.StatusLocking},
+	})
+}
+
+func (crd *ThreatenCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
+	agentFact := agent_models.CreateAgentFactory()
+	return agentFact.GetListByConditions(agent_models.SearchConditions{
+		OrgId: orgId,
+	}, agentFact.ColumnBasic(true, false))
+}
+
 // AddFromProcForCache  本地缓存：从进程或模块添加
 func (crd *ThreatenCmd) AddFromProcForCache() {
 	variable.ZapLog.Sugar().Debug("AddFromProcForCache start")
+	//获取客户端
+
+	if err, _ := crd.getThreatenCli(true, false); err != nil {
+		variable.ZapLog.Sugar().Debug("AddFromProcForCache ", err.Error())
+		return
+	}
+
+	orgModels := crd.getOrgModels()
+	if orgModels == nil || len(orgModels) == 0 {
+		variable.ZapLog.Sugar().Debug("AddFromProcForCache orgModels empty")
+		return
+	}
+
+	//进程
+	crd.addThreatenFromProcess(orgModels)
+	//模块
+	crd.addThreatenFromDll(orgModels)
 
 	variable.ZapLog.Sugar().Debug("AddFromProcForCache end")
+}
+
+func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.OrganizationModel) {
+	existsMap := make(map[string]struct{})
+	for _, orgModel := range orgModels {
+		//获取全部终端
+		agentModels := crd.getAgentModels(orgModel.Id)
+		if agentModels == nil || len(agentModels) == 0 {
+			continue
+		}
+
+		for _, agentModel := range agentModels {
+			condition := proc_models.SearchConditions{
+				OrgId:   orgModel.Id,
+				AgentId: agentModel.AgentId,
+			}
+			//获取全部进程
+			procModels := proc_models.CreateProcessFactory().GetListByConditions(condition)
+			if procModels == nil || len(procModels) == 0 {
+				continue
+			}
+			for _, procModel := range procModels {
+
+				if _, isOk := existsMap[procModel.ProcHash]; isOk {
+					param := threaten_models.CacheModel{
+						Id:        procModel.ProcHash,
+						Source:    enum_threaten.SourceAgentUpload,
+						Dir:       procModel.Dir,
+						ParentDir: "",
+						Os:        agentModel.OsName,
+						Introduce: procModel.Introduce,
+						Copyright: procModel.Copyright,
+						Signature: procModel.Signature,
+						Attribute: "",
+						DataFrom:  enum_process.DataFromProcess,
+					}
+					threaten_service.CreateCacheFactory().Add(&param, true)
+				} else {
+					existsMap[procModel.ProcHash] = struct{}{}
+				}
+			}
+		}
+
+		existsMap = nil
+	}
+}
+
+func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.OrganizationModel) {
+	existsMap := make(map[string]struct{})
+	for _, orgModel := range orgModels {
+		//获取全部终端
+		agentModels := crd.getAgentModels(orgModel.Id)
+		if agentModels == nil || len(agentModels) == 0 {
+			continue
+		}
+
+		for _, agentModel := range agentModels {
+			condition := proc_models.SearchConditions{
+				OrgId:   orgModel.Id,
+				AgentId: agentModel.AgentId,
+			}
+			//获取全部模块
+			procModels := proc_models.CreateDllFactory().GetListByConditions(condition)
+			if procModels == nil || len(procModels) == 0 {
+				continue
+			}
+			for _, procModel := range procModels {
+
+				if _, isOk := existsMap[procModel.DllHash]; isOk {
+					param := threaten_models.CacheModel{
+						Id:        procModel.DllHash,
+						Source:    enum_threaten.SourceAgentUpload,
+						Dir:       procModel.Dir,
+						ParentDir: procModel.ProcDir,
+						Os:        agentModel.OsName,
+						Introduce: procModel.Introduce,
+						Copyright: procModel.Copyright,
+						Signature: procModel.Signature,
+						Attribute: procModel.Attribute,
+						DataFrom:  enum_process.DataFromDll,
+					}
+					threaten_service.CreateCacheFactory().Add(&param, true)
+				} else {
+					existsMap[procModel.DllHash] = struct{}{}
+				}
+			}
+		}
+
+		existsMap = nil
+	}
 }
 
 // DeleteForCache  本地缓存：删除
