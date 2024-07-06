@@ -71,6 +71,7 @@ func CreateProducerFactory() *ProducerClient {
 		Threaten: newProducer(kafka_go.TopicThreaten, config),
 		Alarm:    newProducer(kafka_go.TopicAlarm, config),
 		Syslog:   newProducer(kafka_go.TopicSyslog, config),
+		Crontab:  newProducer(kafka_go.TopicCrontab, config),
 	}
 }
 
@@ -81,6 +82,7 @@ type ProducerClient struct {
 	Threaten *kafka.Writer
 	Alarm    *kafka.Writer
 	Syslog   *kafka.Writer
+	Crontab  *kafka.Writer
 }
 
 // 生产消息
@@ -131,5 +133,11 @@ func (k *ProducerClient) ProduceAlarm(ctx context.Context, data *kafka_go.Messag
 func (k *ProducerClient) ProduceSyslog(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Syslog, k.makeMessage(data)); err != nil {
 		fmt.Println(fmt.Sprintf("ProduceSyslog data:%v ,err:%v", data, err))
+	}
+}
+
+func (k *ProducerClient) ProduceCrontab(ctx context.Context, data *kafka_go.MessageStruct) {
+	if err := k.writeMessage(ctx, k.Crontab, k.makeMessage(data)); err != nil {
+		fmt.Println(fmt.Sprintf("ProduceCrontab data:%v ,err:%v", data, err))
 	}
 }

@@ -10,7 +10,7 @@
 ### 命令行入口
 
       ./app_cli.exe migrate -A (init|dictionary|menu|append)
-      ./app_cli.exe queue  queue -A (init|consume) -T (common|process|threaten|alarm|syslog)
+      ./app_cli.exe queue  queue -A (init|consume) -T (common|process|threaten|alarm|syslog|crontab)
       ./app_cli.exe queue  crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
 
 ### 定时任务

@@ -15,6 +15,7 @@ const (
 	TopicThreaten string = "TopicThreaten"
 	TopicAlarm    string = "TopicAlarm"
 	TopicSyslog   string = "TopicSyslog"
+	TopicCrontab  string = "TopicCrontab"
 
 	TypeAgentDelete        string = "agent_delete"          //类型：终端删除
 	TypeAgentPutMonitor    string = "agent_put_monitor"     //类型：终端上传监控数据

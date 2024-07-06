@@ -52,6 +52,7 @@ func CreateConsumerFactory() *ConsumerClient {
 		Threaten: newConsumer(kafka_go.TopicThreaten, config),
 		Alarm:    newConsumer(kafka_go.TopicAlarm, config),
 		Syslog:   newConsumer(kafka_go.TopicSyslog, config),
+		Crontab:  newConsumer(kafka_go.TopicCrontab, config),
 	}
 
 }
@@ -63,6 +64,7 @@ type ConsumerClient struct {
 	Threaten *kafka.Reader
 	Alarm    *kafka.Reader
 	Syslog   *kafka.Reader
+	Crontab  *kafka.Reader
 }
 
 func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kafka_go.MessageStruct, error) {
@@ -220,6 +222,21 @@ func (k *ConsumerClient) ConsumeThreaten() {
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerThreaten result:%T", data))
+		}
+	}
+}
+
+// ConsumeCrontab 消费主题： Crontab
+func (k *ConsumerClient) ConsumeCrontab() {
+	for {
+		data, err := k.readMessage(context.Background(), k.Crontab)
+		if err != nil {
+			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
+
+		switch data.Type {
+		default:
+			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))
 		}
 	}
 }

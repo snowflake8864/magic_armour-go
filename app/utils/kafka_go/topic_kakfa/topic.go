@@ -11,8 +11,15 @@ import (
 
 func CreateTopicFactory() *TopicClient {
 	return &TopicClient{
-		Addr:      variable.ConfigYml.GetString("KafkaV2.Addr"),
-		topicList: []string{kafka_go.TopicCommon, kafka_go.TopicProcess, kafka_go.TopicThreaten, kafka_go.TopicAlarm, kafka_go.TopicSyslog},
+		Addr: variable.ConfigYml.GetString("KafkaV2.Addr"),
+		topicList: []string{
+			kafka_go.TopicCommon,
+			kafka_go.TopicProcess,
+			kafka_go.TopicThreaten,
+			kafka_go.TopicAlarm,
+			kafka_go.TopicSyslog,
+			kafka_go.TopicCrontab,
+		},
 	}
 
 }
