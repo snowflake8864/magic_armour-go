@@ -134,10 +134,6 @@ func handleDay(mode, interval, at string) {
 			//告警通知
 			alarm_cmd.CreateCmdFactory().EmailNotice()
 			break
-		case AtNine:
-			break
-		case AtTen:
-			break
 		}
 	} else if mode == ModeEvery {
 		switch at {
@@ -148,8 +144,6 @@ func handleDay(mode, interval, at string) {
 		case AtOne:
 			//从模块添加到威胁情报缓存
 			threaten_cmd.CreateCmdFactory().AddFromDllForCache()
-			break
-		case AtTwo:
 			break
 		}
 	}
@@ -210,9 +204,6 @@ func handleMinute(mode, interval, at string) {
 			//同步推送数据到幻势
 			huanshi_cmd.CreateCmdFactory().Push()
 			break
-		case AtOne:
-
-			break
 		}
 	} else if interval == AtTen {
 		switch at {
@@ -228,7 +219,5 @@ func handleMinute(mode, interval, at string) {
 			org_cmd.CreateCmdFactory().TodayStatistics()
 			break
 		}
-	} else if interval == AtThirty {
-
 	}
 }
