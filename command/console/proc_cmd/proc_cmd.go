@@ -20,6 +20,9 @@ import (
 func CreateCmdFactory() *ProcCmd {
 	return &ProcCmd{
 		queryClient: producer_kafka.CreateProducerFactory(),
+		redisClient: redis_factory.GetOneRedisClient(),
+		cacheKey:    "task_form_proc",
+		cacheExpire: 86400,
 	}
 }
 
