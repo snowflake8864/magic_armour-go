@@ -36,6 +36,15 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 	return isOk
 }
 
+// SetSafeByAgent 设置终端安全状态
+func (crd *AgentCurd) SetSafeByAgent(orgId int64, id string, isSafe int) bool {
+	updates := map[string]interface{}{
+		"is_safe": isSafe,
+	}
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	return isOk
+}
+
 // SetLivingByAgent 设置终端活动中
 func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 	nowDate := date_helper.CurDatetime()

@@ -79,7 +79,7 @@ func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
 
 					//进入队列
 					producer_kafka.CreateProducerFactory().ProduceCrontab(ctx, &kafka_go.MessageStruct{
-						Type:    kafka_go.TypeCrontabStatAlarm,
+						Type:    kafka_go.TypeCrontabAlarmStat,
 						AgentId: startAt,
 						AgentOS: endAt,
 						Data:    json_helper.Encode(&param),

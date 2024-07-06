@@ -1,6 +1,7 @@
 package agent_cmd
 
 import (
+	"context"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -8,6 +9,8 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 )
 
 func CreateAgentFactory() *AgentCmd {
@@ -44,7 +47,35 @@ func (crd *AgentCmd) Offline() {
 
 // HandleSafe 处理安全状态
 func (crd *AgentCmd) HandleSafe() {
-	variable.ZapLog.Sugar().Debug("HandleSafe")
+	variable.ZapLog.Sugar().Debug("HandleSafe start")
+
+	orgModels := crd.getOrgModels()
+	if orgModels == nil || len(orgModels) == 0 {
+		variable.ZapLog.Sugar().Debug("HandleSafe orgModels empty")
+		return
+	}
+
+	ctx := context.Background()
+
+	for _, orgModel := range orgModels {
+		//获取全部终端
+		agentModels := crd.getAgentModels(orgModel.Id)
+		if agentModels == nil || len(agentModels) == 0 {
+			continue
+		}
+
+		for _, agentModel := range agentModels {
+			//进入队列
+			producer_kafka.CreateProducerFactory().ProduceCrontab(ctx, &kafka_go.MessageStruct{
+				Type:    kafka_go.TypeCrontabAgentSafe,
+				OrgId:   orgModel.Id,
+				AgentId: agentModel.AgentId,
+			})
+		}
+
+	} //
+
+	variable.ZapLog.Sugar().Debug("HandleSafe end")
 }
 
 // GrantExpired  授权已过期的

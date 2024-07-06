@@ -203,6 +203,23 @@ func (m *StatDailyModel) DeleteByConditions(condition SearchConditions) bool {
 	}
 }
 
+// GetItemByCondition 通过条件获取1条记录
+func (m *StatDailyModel) GetItemByCondition(condition SearchConditions) (item *StatDailyModel) {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m)
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		return tmp.Take(&item)
+	})
+	result := m.Raw(m.TrimSql(sql)).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *StatDailyModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*StatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
@@ -228,7 +245,7 @@ func (m *StatDailyModel) GetItemsByConditions(condition SearchConditions, offset
 	}
 }
 
-// CalcByConditions 通过条件获取多条记录
+// CalcByConditions 通过条件获取1条记录
 func (m *StatDailyModel) CalcByConditions(condition SearchConditions, column string) (item *StatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(column)
