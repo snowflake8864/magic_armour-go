@@ -1,6 +1,7 @@
 package alarm_cmd
 
 import (
+	"context"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
@@ -8,17 +9,22 @@ import (
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/organization/organization_models"
-	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 )
 
 func CreateCmdFactory() *AlarmCmd {
-	return &AlarmCmd{}
+	return &AlarmCmd{
+		queryClient: producer_kafka.CreateProducerFactory(),
+	}
 }
 
 type AlarmCmd struct {
+	queryClient *producer_kafka.ProducerClient
 }
 
 func (crd *AlarmCmd) getOrgModels() []*organization_models.OrganizationModel {
@@ -58,6 +64,7 @@ func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
 	orgModels := crd.getOrgModels()
 
 	if len(orgModels) > 0 {
+		ctx := context.Background()
 		now := date_helper.CurDatetime()
 		for _, orgModel := range orgModels {
 			if agentModels := crd.getAgentModels(orgModel.Id); len(agentModels) > 0 {
@@ -70,10 +77,16 @@ func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
 						CreatedAt: now,
 					}
 
+					//进入队列
+					producer_kafka.CreateProducerFactory().ProduceCrontab(ctx, &kafka_go.MessageStruct{
+						Type:    kafka_go.TypeCrontabStatAlarm,
+						AgentId: startAt,
+						AgentOS: endAt,
+						Data:    json_helper.Encode(&param),
+					})
 					//计算告警
-					crd.calcAlarm(&param, startAt, endAt)
-
-					alarm_service.CreateStatDailyFactory().Add(&param)
+					//crd.calcAlarm(&param, startAt, endAt)
+					//alarm_service.CreateStatDailyFactory().Add(&param)
 				}
 			}
 		}

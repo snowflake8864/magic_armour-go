@@ -210,16 +210,17 @@ func handleMinute(mode, interval, at string) {
 			break
 		}
 	} else if interval == AtTen {
-
+		switch at {
+		case AtZero:
+			//统计告警今天数据
+			alarm_cmd.CreateCmdFactory().TodayStatistics()
+			break
+		}
 	} else if interval == AtFifteen {
 		switch at {
 		case AtZero:
 			//统计企业今天数据
 			org_cmd.CreateCmdFactory().TodayStatistics()
-			break
-		case AtOne:
-			//统计告警今天数据
-			alarm_cmd.CreateCmdFactory().TodayStatistics()
 			break
 		}
 	} else if interval == AtThirty {

@@ -61,6 +61,9 @@ func start(action, topic string) {
 		case "syslog":
 			consumer_kafka.CreateConsumerFactory().ConsumeSyslog()
 			break
+		case "crontab":
+			consumer_kafka.CreateConsumerFactory().ConsumeCrontab()
+			break
 		}
 		break
 	}

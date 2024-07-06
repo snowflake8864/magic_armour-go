@@ -235,6 +235,9 @@ func (k *ConsumerClient) ConsumeCrontab() {
 		}
 
 		switch data.Type {
+		case kafka_go.TypeCrontabStatAlarm:
+			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))
 		}
