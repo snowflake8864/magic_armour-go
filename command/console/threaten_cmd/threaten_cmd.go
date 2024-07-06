@@ -216,10 +216,10 @@ func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.
 					existsMap[procModel.ProcHash] = struct{}{}
 				}
 			}
-		}
+		} //agentModels
+	} //orgModels
 
-		existsMap = nil
-	}
+	existsMap = nil
 }
 
 func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.OrganizationModel) {
@@ -261,10 +261,10 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 					existsMap[procModel.DllHash] = struct{}{}
 				}
 			}
-		}
+		} //agentModels
+	} //orgModels
 
-		existsMap = nil
-	}
+	existsMap = nil
 }
 
 // DeleteForCache  本地缓存：删除
