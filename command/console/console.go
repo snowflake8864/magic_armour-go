@@ -131,7 +131,7 @@ func handleDay(mode, interval, at string) {
 			threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 			break
 		case AtEight:
-			//告警通知
+			//告警通知 - 暂时不做
 			alarm_cmd.CreateCmdFactory().EmailNotice()
 			break
 		}
@@ -178,8 +178,6 @@ func handleMinute(mode, interval, at string) {
 			//终端安全状态
 			agent_cmd.CreateAgentFactory().HandleSafe()
 			break
-		case AtTwo:
-			break
 		}
 
 	} else if interval == AtThree {
@@ -195,6 +193,10 @@ func handleMinute(mode, interval, at string) {
 		case AtTwo:
 			//服务器状态监控
 			service_cmd.CreateCmdFactory().Monitor()
+			break
+		case AtThree:
+			//威胁情报同步数据到威胁情报中心
+			threaten_cmd.CreateCmdFactory().SyncForPushes()
 			break
 		}
 
