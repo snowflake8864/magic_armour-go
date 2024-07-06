@@ -33,11 +33,10 @@
       */3 * * * * app_cli crontab -U minute -I three -A two
       */3 * * * * app_cli crontab -U minute -I three -A three
 
-      #每隔[5分钟], 使用至1
+      #每隔[5分钟], 使用至0
       */5 * * * * app_cli crontab -U minute -I five -A zero
       */5 * * * * app_cli crontab -U minute -I five -A one
       */5 * * * * app_cli crontab -U minute -I five -A two
-      */5 * * * * app_cli crontab -U minute -I five -A three
 
       #每隔[10分钟], 使用至
       */10 * * * * app_cli crontab -U minute -I ten -A zero

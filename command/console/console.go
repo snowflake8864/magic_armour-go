@@ -202,12 +202,11 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtFive {
 		switch at {
 		case AtZero:
-			//威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
-			threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
-			break
-		case AtOne:
 			//同步推送数据到幻势
 			huanshi_cmd.CreateCmdFactory().Push()
+			break
+		case AtOne:
+
 			break
 		}
 	} else if interval == AtTen {
