@@ -80,7 +80,7 @@ func (crd *baseOrg) conditions2Where(condition SearchConditions) (wheres []model
 			Val: *condition.IsDel,
 		})
 	}
-	if condition.HuanshiSwitch != nil && *condition.IsDel != enums.AllDefaultInt {
+	if condition.HuanshiSwitch != nil && *condition.HuanshiSwitch != enums.AllDefaultInt {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "huanshi_switch",
 			Val: *condition.HuanshiSwitch,

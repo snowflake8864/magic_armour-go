@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/console/huanshi_cmd"
 	"testing"
 	"time"
 )
 
-func TestAccess(t *testing.T) {
+func TestHsAccess(t *testing.T) {
 	//获取备标识码
 	deviceId := ""
 	fmt.Println("deviceId:", deviceId)
@@ -30,4 +31,8 @@ func TestAccess(t *testing.T) {
 		fmt.Println("GenerateToken err:", err.Error())
 	}
 	fmt.Println("token:", accessToken)
+}
+
+func TestHsPush(t *testing.T) {
+	huanshi_cmd.CreateCmdFactory().Push()
 }

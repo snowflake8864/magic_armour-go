@@ -130,8 +130,8 @@ func (aa *RequestHuanshi) GenerateToken() error {
 		"rsa":  md5_encrypt.MD5(aa.Config.HuanshiCallbackUrl + "_" + int_helper.Int64ToStr(Timestamp) + "_" + aa.PrivateRsa),
 	}
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 
 	data := ResponseToken{}
@@ -141,8 +141,8 @@ func (aa *RequestHuanshi) GenerateToken() error {
 	}
 
 	//新增缓存
-	if isOK, err := aa.redisClient.SetEx(aa.cacheKey, data.Data.AccessToken, aa.cacheExpire); !isOK {
-		return errors.New("cache token fail: " + err.Error())
+	if isOK, _ := aa.redisClient.SetEx(aa.cacheKey, data.Data.AccessToken, aa.cacheExpire); !isOK {
+		return errors.New("cache token fail")
 	}
 	return nil
 }
