@@ -138,12 +138,8 @@ func handleDay(mode, interval, at string) {
 	} else if mode == ModeEvery {
 		switch at {
 		case AtZero:
-			//从进程添加到威胁情报缓存
-			threaten_cmd.CreateCmdFactory().AddFromProcessForCache()
-			break
-		case AtOne:
-			//从模块添加到威胁情报缓存
-			threaten_cmd.CreateCmdFactory().AddFromDllForCache()
+			//从进程或模块添加到威胁情报缓存
+			threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 			break
 		}
 	}
@@ -165,6 +161,8 @@ func handleMinute(mode, interval, at string) {
 			agent_cmd.CreateAgentFactory().Offline()
 			break
 		case AtTwo:
+			//本地缓存数据同步威胁情报推送列表 - 暂时不做
+			threaten_cmd.CreateCmdFactory().Cache2Pushes()
 			break
 		}
 

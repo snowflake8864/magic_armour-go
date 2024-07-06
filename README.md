@@ -15,10 +15,11 @@
 
 ### 定时任务
 
-      #每隔[1分钟], 已按顺序使用到[one]
+      #每隔[1分钟], 已按顺序使用到[two]
       */1 * * * * app_cli crontab -U minute -I one -A zero
       */1 * * * * app_cli crontab -U minute -I one  -A one
       */1 * * * * app_cli crontab -U minute -I one -A two
+      */1 * * * * app_cli crontab -U minute -I one -A four
       */1 * * * * app_cli crontab -U minute -I one -A three
 
       #每隔[2分钟], 已按顺序使用到[one]
@@ -69,7 +70,6 @@
       30 3 * * * app_cli crontab -U day -M once -A nine
       40 4 * * * app_cli crontab -U day -M once -A ten
 
-      #每天两次, 已按顺序使用到[one]
+      #每天两次, 已按顺序使用到[zero]
       30 3,13 * * * app_cli crontab -U day -M every -A zero
       31 3,13 * * * app_cli crontab -U day -M every -A one
-      33 3,13 * * * app_cli crontab -U day -M every -A two

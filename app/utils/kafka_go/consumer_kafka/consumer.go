@@ -214,9 +214,6 @@ func (k *ConsumerClient) ConsumeThreaten() {
 		}
 
 		switch data.Type {
-		case kafka_go.TypeThreatenSyncUnknown:
-			threaten_job.HandelUnknown(data.Data)
-			break
 		case kafka_go.TypeThreatenSyncRewrite:
 			threaten_job.HandelRewire(data.Data)
 			break

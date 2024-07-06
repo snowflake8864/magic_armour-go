@@ -74,19 +74,72 @@ func (crd *ThreatenCmd) getThreatenCli(isOnline, isToken bool) (err error, cli *
 	return nil, cli
 }
 
+// Cache2Pushes  推送列表： 本地缓存数据同步威胁情报推送列表
+func (crd *ThreatenCmd) Cache2Pushes() {
+	variable.ZapLog.Sugar().Debug("CacheToPushes start")
+
+	variable.ZapLog.Sugar().Debug("CacheToPushes end")
+}
+
 // SyncForPushes  推送列表： 同步数据到威胁情报中心
 func (crd *ThreatenCmd) SyncForPushes() {
-	variable.ZapLog.Sugar().Debug("SyncForPushes")
+	variable.ZapLog.Sugar().Debug("SyncForPushes start")
+	//获取客户端
+	err, threatenCli := crd.getThreatenCli(true, true)
+	if err != nil {
+		variable.ZapLog.Sugar().Debug("SyncForPushes ", err.Error())
+		return
+	}
+
+	conditions := threaten_models.SearchConditions{
+		PushStatus: enum_threaten.PushStatusNot,
+	}
+	cacheFact := threaten_models.CreatePushFactory()
+	page := 0
+	limit := enum_threaten.CenterSupportNumber
+	for page = 1; page <= 5; page++ {
+		//每次获取固定条数
+		offset := (page - 1) * limit
+		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")
+		if models == nil || len(models) == 0 {
+			break
+		}
+		//同步列表
+		var syncList []threaten_platform.PushHashes
+		var idArr []string
+		for _, model := range models {
+			idArr = append(idArr, model.Id)
+
+			syncList = append(syncList, threaten_platform.PushHashes{
+				Hash:      model.Id,
+				Type:      model.Level - 1,
+				Filename:  path_helper.GetFileName(model.Dir),
+				Dir:       model.Dir,
+				Os:        model.Os,
+				Uname:     model.CreateName,
+				ExecDir:   model.ParentDir,
+				Attribute: model.Attribute,
+				Remark:    model.Introduce,
+				Copyright: model.Copyright,
+			})
+		}
+
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
+		if err1 := threatenCli.PushHashes(&syncList); err1 != nil {
+			variable.ZapLog.Sugar().Debug("SyncForPushes fail", err1.Error())
+			//threaten_service.CreatePushFactory().BatchPushed(idArr)
+		}
+
+	}
+
+	variable.ZapLog.Sugar().Debug("SyncForPushes end, page:=", page)
 }
 
-// AddFromProcessForCache  本地缓存：从进程添加
-func (crd *ThreatenCmd) AddFromProcessForCache() {
-	variable.ZapLog.Sugar().Debug("AddFromProcessForCache")
-}
+// AddFromProcForCache  本地缓存：从进程或模块添加
+func (crd *ThreatenCmd) AddFromProcForCache() {
+	variable.ZapLog.Sugar().Debug("AddFromProcForCache start")
 
-// AddFromDllForCache  本地缓存：从模块添加
-func (crd *ThreatenCmd) AddFromDllForCache() {
-	variable.ZapLog.Sugar().Debug("AddFromDllForCache")
+	variable.ZapLog.Sugar().Debug("AddFromProcForCache end")
 }
 
 // DeleteForCache  本地缓存：删除
@@ -157,7 +210,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	//variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level", level)
 
 	//获取客户端
-	err, threatenCli := crd.getThreatenCli(true, true)
+	err, threatenCli := crd.getThreatenCli(true, false)
 	if err != nil {
 		variable.ZapLog.Sugar().Debug("SyncCacheToThreaten ", err.Error())
 		return
@@ -268,11 +321,8 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 		for id := range idAndDataFrom {
 			idArr = append(idArr, id)
 		}
-		//进入队列
-		producer_kafka.CreateProducerFactory().ProduceThreaten(ctx, &kafka_go.MessageStruct{
-			Type: kafka_go.TypeThreatenSyncUnknown,
-			Data: json_helper.Encode(idArr),
-		})
+		//要直接修改，防止下次验证时获取到重复数据
+		threaten_service.CreateCacheFactory().BatchUnknown(idArr)
 	}
 
 	return nil

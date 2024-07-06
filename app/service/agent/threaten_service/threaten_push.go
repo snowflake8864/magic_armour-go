@@ -31,6 +31,15 @@ func (crd *ThreatenPush) GetMapsByIds(ids []string) map[string]*threaten_models.
 	return result
 }
 
+// BatchPushed 批量设置推送过成功
+func (crd *ThreatenPush) BatchPushed(ids []string) bool {
+	updates := map[string]interface{}{
+		"push_status": enum_threaten.PushStatusYes,
+		"push_at":     date_helper.CurDatetime(),
+	}
+	return crd.masterModel.UpdateByIds(ids, updates)
+}
+
 // Clear 清空
 func (crd *ThreatenPush) Clear() bool {
 	return crd.masterModel.TruncateTable()
@@ -64,7 +73,7 @@ func (crd *ThreatenPush) BatchAdd(list []threaten_models.PushModel, level int, o
 				Signature:  model.Signature,
 				Attribute:  model.Attribute,
 				DataFrom:   model.DataFrom,
-				PushStatus: enum_threaten.PushStatusYes,
+				PushStatus: enum_threaten.PushStatusNot,
 				CreateId:   operateId,
 				CreateName: operateName,
 				CreatedAt:  currTime,

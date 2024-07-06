@@ -207,25 +207,28 @@ func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHas
 }
 
 type PushHashes struct {
-	Hash      string `json:"hash"`      //hash
-	Type      int    `json:"req_Type"`  ////约定 -1
-	Filename  string `json:"filename"`  //文件名
-	Dir       string `json:"dir"`       //文件路径
-	Os        string `json:"os"`        //终端系统
-	Uname     string `json:"uname"`     //推送用户名
-	ExecDir   string `json:"execdir"`   //父文件路径
-	Attribute string `json:"attribute"` //属性
-	Remark    string `json:"remark"`    //描述
-	Copyright string `json:"copyright"` //版权
+	Hash      string `json:"threaten_name"` //hash
+	Type      int    `json:"type"`          ////约定-1
+	Filename  string `json:"filename"`      //文件名
+	Dir       string `json:"dir"`           //文件路径
+	Os        string `json:"os"`            //终端系统
+	Uname     string `json:"uname"`         //推送用户名
+	ExecDir   string `json:"execdir"`       //父文件路径
+	Attribute string `json:"attribute"`     //属性
+	Remark    string `json:"remark"`        //描述
+	Copyright string `json:"copyright"`     //版权
 }
 
 // PushHashes 推送hash集合
 func (aa *RequestThreaten) PushHashes(list *[]PushHashes) error {
 	uri := aa.Config.Domain + "/center/threaten/platadd"
+	fmt.Println(uri)
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
+	fmt.Println(json_helper.Encode(params))
 	bodyContext, err := http_request.PostWithForm(uri, map[string]interface{}{}, params)
+	fmt.Println(bodyContext)
 	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}

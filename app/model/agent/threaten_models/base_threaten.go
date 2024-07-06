@@ -14,6 +14,7 @@ type SearchConditions struct {
 	CreateAtLte string
 	Level       *int
 	LevelList   []int
+	PushStatus  int
 }
 
 type baseThreaten struct {
@@ -65,6 +66,13 @@ func (m *baseThreaten) conditions2Where(condition SearchConditions) (wheres []mo
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dir like",
 			Val: "%" + condition.Dir + "%",
+		})
+	}
+
+	if condition.PushStatus > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "push_status",
+			Val: condition.PushStatus,
 		})
 	}
 

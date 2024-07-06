@@ -14,6 +14,10 @@ func TestAlarmStatistics(t *testing.T) {
 	alarm_cmd.CreateCmdFactory().TodayStatistics()
 }
 
+func TestThreatenSyncPushes(t *testing.T) {
+	threaten_cmd.CreateCmdFactory().SyncForPushes()
+}
+
 func TestThreatenSyncCache(t *testing.T) {
 	threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 }
