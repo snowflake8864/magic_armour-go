@@ -56,6 +56,7 @@ func (crd *AgentCmd) HandleSafe() {
 	}
 
 	ctx := context.Background()
+	producerFact := producer_kafka.CreateProducerFactory()
 
 	for _, orgModel := range orgModels {
 		//获取全部终端
@@ -66,7 +67,7 @@ func (crd *AgentCmd) HandleSafe() {
 
 		for _, agentModel := range agentModels {
 			//进入队列
-			producer_kafka.CreateProducerFactory().ProduceCrontab(ctx, &kafka_go.MessageStruct{
+			producerFact.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 				Type:    kafka_go.TypeCrontabAgentSafe,
 				OrgId:   orgModel.Id,
 				AgentId: agentModel.AgentId,

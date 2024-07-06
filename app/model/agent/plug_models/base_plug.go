@@ -17,7 +17,9 @@ type SearchConditions struct {
 	DeptId     int64
 	DeptIds    []int64
 	Ip         string
-	IpType     int //黑白名单
+	IpType     int    //ip黑白名单
+	PlugType   int    //动态封堵类型
+	EndAtLte   string //封堵结束时间
 	OpenSwitch *int
 	CreateId   int64
 }
@@ -87,6 +89,20 @@ func (m *basePlug) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.IpType,
 		})
 	}
+	if condition.PlugType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "plug_type",
+			Val: condition.PlugType,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.EndAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "end_at <=",
+			Val: condition.EndAtLte,
+		})
+	}
+
 	if condition.DeptId > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dept_id",

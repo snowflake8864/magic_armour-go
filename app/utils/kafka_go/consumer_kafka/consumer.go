@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/jobs/org_job"
+	"goskeleton/app/jobs/plug_job"
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/jobs/syslog_job"
 	"goskeleton/app/jobs/threaten_job"
@@ -237,6 +238,9 @@ func (k *ConsumerClient) ConsumeCrontab() {
 			break
 		case kafka_go.TypeCrontabAgentSafe:
 			agent_job.HandleSafe(data.OrgId, data.AgentId)
+			break
+		case kafka_go.TypeCrontabPlugDisable:
+			plug_job.DynamicDisable(data.OrgId, data.AgentId)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))

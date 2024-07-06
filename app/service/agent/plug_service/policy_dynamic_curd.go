@@ -3,6 +3,7 @@ package plug_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/service/agent/task_service"
@@ -20,6 +21,36 @@ type PolicyDynamicCurd struct {
 // 新增任务
 func (crd *PolicyDynamicCurd) addTask(orgId int64, agentId string, remark string) {
 	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypePluggingDownload, remark)
+}
+
+// AutoDisable 自动解封
+func (crd *PolicyDynamicCurd) AutoDisable(orgId int64, agentId string, at string) error {
+	//条件
+	OpenSwitch := enums.SwitchOn
+	condition := plug_models.SearchConditions{
+		OrgId:      orgId,
+		AgentId:    agentId,
+		PlugType:   enum_plug.PlugTypeTemporary,
+		EndAtLte:   at,
+		OpenSwitch: &OpenSwitch,
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	//updates["end_at"] = at
+	updates["open_switch"] = enums.SwitchOff
+	updates["updated_at"] = at
+	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
+	if !isOk {
+		return errors.New("保存失败")
+	}
+
+	if rows > 0 {
+		//新增任务
+		crd.addTask(orgId, agentId, "到期自动解封")
+	}
+
+	return nil
 }
 
 // DisableById 解封
