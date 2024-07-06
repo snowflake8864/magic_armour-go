@@ -3,6 +3,7 @@ package huanshi_cmd
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
@@ -10,7 +11,9 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"time"
 )
 
 func CreateCmdFactory() *HuanshiCmd {
@@ -100,6 +103,47 @@ func (crd *HuanshiCmd) Push() {
 		if err1 := hsCli.SyncDeviceByTcp(crd.initDevice(orgModel)); err1 != err1 {
 			variable.ZapLog.Sugar().Debug("push SyncDeviceByTcp：", err1.Error())
 			return
+		}
+	}
+	//休眠一下, 等待幻势处理数据
+	time.Sleep(time.Second * 5)
+	//终端类型
+	jsonStr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentTypes)
+	typeMap := enum_agent.GetTypeMap(jsonStr)
+
+	//同步终端数据
+	for _, orgModel := range orgModels {
+		//获取全部终端
+		agentModels := crd.getAgentModels(orgModel.Id)
+		if agentModels == nil || len(agentModels) == 0 {
+			continue
+		}
+
+		for _, agentModel := range agentModels {
+			agentType := ""
+			if val, isOk := typeMap[agentModel.AgentType]; isOk {
+				agentType = val
+			}
+
+			param := huanshi_platform.AgentData{
+				DeviceMark:   orgModel.Code,
+				OrgId:        orgModel.Id,
+				AgentId:      agentModel.AgentId,
+				Os:           agentModel.OsName,
+				Ip:           agentModel.AgentIp,
+				NetIp:        agentModel.NetIp,
+				HostName:     agentModel.HostName,
+				Status:       agentModel.IsOnline,
+				OnlineTime:   agentModel.OnlineAt,
+				Version:      agentModel.Ver,
+				DeptCode:     "",
+				DeptName:     "",
+				AgentType:    agentType,
+				AliasName:    agentModel.Alias,
+				ContactName:  agentModel.ContactName,
+				ContactPhone: agentModel.ContactTel,
+			}
+			variable.ZapLog.Sugar().Debug(json_helper.Encode(param))
 		}
 	}
 

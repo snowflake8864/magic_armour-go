@@ -256,7 +256,7 @@ type AgentData struct {
 }
 
 // SyncAgentBySyslog 通过SYSLOG同步终端
-func (aa *RequestHuanshi) SyncAgentBySyslog(param AgentData) error {
+func (aa *RequestHuanshi) SyncAgentBySyslog(param *AgentData) error {
 	//默认值
 	param.Platform = aa.RequestPlatform
 	param.DataType = DataTypeAgent
