@@ -3,7 +3,9 @@ package agent_cmd
 import (
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/utils/helpers/date_helper"
 )
@@ -21,9 +23,23 @@ func (crd *AgentCmd) getOrgModels() []*organization_models.OrganizationModel {
 	})
 }
 
+func (crd *AgentCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
+	agentFact := agent_models.CreateAgentFactory()
+	return agentFact.GetListByConditions(agent_models.SearchConditions{
+		OrgId: orgId,
+	}, agentFact.ColumnBasic(true, false))
+}
+
 // Offline 离线
 func (crd *AgentCmd) Offline() {
-	variable.ZapLog.Sugar().Debug("Offline")
+	variable.ZapLog.Sugar().Debug("Offline start")
+
+	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByMinute(-5))
+	variable.ZapLog.Sugar().Debug("Offline floorAt=", floorAt)
+
+	agent_service.CreateCurdFactory().SetOffline(floorAt)
+
+	variable.ZapLog.Sugar().Debug("Offline end")
 }
 
 // HandleSafe 处理安全状态

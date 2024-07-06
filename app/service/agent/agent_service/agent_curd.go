@@ -26,6 +26,16 @@ type AgentCurd struct {
 	masterModel *agent_models.AgentModel
 }
 
+// SetOffline 设置离线
+func (crd *AgentCurd) SetOffline(floorAt string) bool {
+	condition := agent_models.SearchConditions{OnlineAtLte: floorAt}
+	updates := map[string]interface{}{
+		"is_online": enums.IsNot,
+	}
+	isOk, _ := crd.masterModel.UpdateByConditions(condition, updates)
+	return isOk
+}
+
 // SetLivingByAgent 设置终端活动中
 func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 	nowDate := date_helper.CurDatetime()

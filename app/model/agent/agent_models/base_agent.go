@@ -40,6 +40,7 @@ type SearchConditions struct {
 	Alias            string
 	ContactName      string
 	DeptIds          []int64
+	OnlineAtLte      string
 	CreateAtGte      string
 	CreateAtLte      string
 	ProcessSwitch    *int
@@ -145,6 +146,12 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dept_id in",
 			Val: condition.DeptIds,
+		})
+	}
+	if !string_helper.IsEmpty(condition.OnlineAtLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "online_at <=",
+			Val: condition.OnlineAtLte,
 		})
 	}
 	if !string_helper.IsEmpty(condition.CreateAtGte) {
