@@ -2,16 +2,22 @@ package middleware_auth_agent
 
 import (
 	"bytes"
+	context1 "context"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent_access"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
-	accessLogService "goskeleton/app/service/agent/access_log_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/cur_userinfo"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"net/http"
 	"strings"
 	"time"
@@ -28,6 +34,10 @@ func SaveAccess() gin.HandlerFunc {
 		context.Next()
 
 		go func(c *gin.Context) {
+			if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentSaveAccessLog); string_helper.ToInt(val) == enums.SwitchOff {
+				return
+			}
+
 			var param = agent_access_models.AccessLogModel{}
 			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
 			param.Path = c.Request.RequestURI
@@ -58,11 +68,18 @@ func SaveAccess() gin.HandlerFunc {
 				}
 			} else {
 				loginInfo := cur_userinfo.GetCurrentAgent(c)
+				param.OrgId = loginInfo.OrgId
 				param.AgentId = loginInfo.AgentId
 			}
 
-			if !string_helper.IsEmpty(param.AgentId) {
-				go accessLogService.CreateCurdFactory().Add(&param)
+			if param.OrgId > 0 && !string_helper.IsEmpty(param.AgentId) {
+				producer_kafka.CreateProducerFactory().ProduceSyslog(context1.Background(), &kafka_go.MessageStruct{
+					Type:    kafka_go.TypeCommonAgentAccess,
+					OrgId:   param.OrgId,
+					AgentId: param.AgentId,
+					Data:    json_helper.Encode(param),
+				})
+				//accessLogService.CreateCurdFactory().Add(&param)
 			}
 			/*
 				variable.ZapLog.Info("=============================================SaveAccess start =============================================")

@@ -107,6 +107,9 @@ func (k *ConsumerClient) ConsumeCommon() {
 		case kafka_go.TypeCommonAgentPutMonitor:
 			agent_job.UploadMonitor(data.Data)
 			break
+		case kafka_go.TypeCommonAgentAccess:
+			agent_job.SaveAccessLog(data.Data)
+			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
 		}
