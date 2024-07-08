@@ -64,6 +64,11 @@ func GetAgentTokenExpire() int {
 	return variable.ConfigYml.GetInt("AppCustomConfig.Agent.TokenExpire")
 }
 
+// GetServiceCode 获取服务器编号：
+func GetServiceCode() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.ServiceMonitor")
+}
+
 // ShellNetworkGet 网络配置脚本： 获取
 func ShellNetworkGet() string {
 	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkGet")
@@ -72,6 +77,11 @@ func ShellNetworkGet() string {
 // ShellNetworkSet 网络配置脚本： 设置
 func ShellNetworkSet() string {
 	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkSet")
+}
+
+// ShellServiceMonitor 服务器监控脚本：
+func ShellServiceMonitor() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.ServiceMonitor")
 }
 
 // ShellUpgrade 升级脚本：

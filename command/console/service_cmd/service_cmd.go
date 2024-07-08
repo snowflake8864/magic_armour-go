@@ -1,6 +1,17 @@
 package service_cmd
 
-import "goskeleton/app/global/variable"
+import (
+	"bytes"
+	"fmt"
+	"goskeleton/app/global/variable"
+	"goskeleton/app/model/platform/server_monitor_models"
+	"goskeleton/app/service/agent/monitor_service"
+	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
+	"os/exec"
+	"strings"
+)
 
 func CreateCmdFactory() *ServiceCmd {
 	return &ServiceCmd{}
@@ -11,5 +22,48 @@ type ServiceCmd struct {
 
 // Monitor  服务器状态监控
 func (crd *ServiceCmd) Monitor() {
-	variable.ZapLog.Sugar().Debug("Monitor")
+
+	serviceCode := cur_app.GetServiceCode()
+	cmdInit := cur_app.ShellInit()
+	cmdServiceMonitor := cur_app.ShellServiceMonitor()
+	variable.ZapLog.Sugar().Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
+
+	cmd := exec.Command(cmdInit, cmdServiceMonitor)
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout // 标准输出
+	cmd.Stderr = &stderr // 标准错误
+	err := cmd.Run()
+	if err != nil {
+		variable.ZapLog.Sugar().Debug("exec command Run failed", err.Error())
+		return
+	}
+
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
+		variable.ZapLog.Sugar().Debug(fmt.Sprintf("exec command output empty out:\n%s\nerr:\n%s\n", outStr, errStr))
+		return
+	}
+
+	//监控日期
+	monitorDay, _, _, _ := date_helper.CalcByDay(0)
+
+	model := server_monitor_models.ServerMonitorModel{}
+	outList := strings.Split(outStr, "\n")
+	for _, line := range outList {
+		arr := strings.Split(line, " ")
+		if n := len(arr); n < 3 {
+			variable.ZapLog.Sugar().Debug(fmt.Sprintf("exec command output fail out:\n%s\nerr:\n%s\n", outStr, errStr))
+			return
+		}
+		model.ServerCode = serviceCode
+		model.MonitorDay = monitorDay
+		model.CreatedAt = date_helper.CurDatetime()
+		model.CpuUsage = arr[0]
+		model.MemUsage = arr[1]
+		model.HdUsage = arr[2]
+
+		_ = monitor_service.CreateMonitorFactory().Add(&model)
+	}
+
+	variable.ZapLog.Sugar().Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
 }
