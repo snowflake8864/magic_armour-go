@@ -47,22 +47,29 @@ func (crd *ServiceCmd) Monitor() {
 	//监控日期
 	monitorDay, _, _, _ := date_helper.CalcByDay(0)
 
-	model := server_monitor_models.ServerMonitorModel{}
+	model := server_monitor_models.ServerMonitorModel{
+		ServerCode: serviceCode,
+		MonitorDay: monitorDay,
+		CreatedAt:  date_helper.CurDatetime(),
+		CpuUsage:   "0.00",
+		MemUsage:   "0.00",
+		HdUsage:    "0.00",
+	}
 	outList := strings.Split(outStr, "\n")
 	for _, line := range outList {
 		arr := strings.Split(line, " ")
-		if n := len(arr); n < 3 {
-			variable.ZapLog.Sugar().Debug(fmt.Sprintf("exec command output fail out:\n%s\nerr:\n%s\n", outStr, errStr))
-			return
+		if n := len(arr); n >= 2 {
+			if strings.ToLower(arr[0]) == "cpu" {
+				model.CpuUsage = arr[1]
+			} else if strings.ToLower(arr[0]) == "mem" {
+				model.MemUsage = arr[1]
+			} else if strings.ToLower(arr[0]) == "disk" {
+				model.HdUsage = arr[1]
+			}
 		}
-		model.ServerCode = serviceCode
-		model.MonitorDay = monitorDay
-		model.CreatedAt = date_helper.CurDatetime()
-		model.CpuUsage = arr[0]
-		model.MemUsage = arr[1]
-		model.HdUsage = arr[2]
-
-		_ = service_monitor_service.CreateCurdFactory().Add(&model)
+	}
+	if !service_monitor_service.CreateCurdFactory().Add(&model) {
+		variable.ZapLog.Sugar().Debug("Add failed")
 	}
 
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
