@@ -73,7 +73,7 @@ func SaveAccess() gin.HandlerFunc {
 			}
 
 			if param.OrgId > 0 && !string_helper.IsEmpty(param.AgentId) {
-				producer_kafka.CreateProducerFactory().ProduceSyslog(context1.Background(), &kafka_go.MessageStruct{
+				producer_kafka.CreateProducerFactory().ProduceCommon(context1.Background(), &kafka_go.MessageStruct{
 					Type:    kafka_go.TypeCommonAgentAccess,
 					OrgId:   param.OrgId,
 					AgentId: param.AgentId,
