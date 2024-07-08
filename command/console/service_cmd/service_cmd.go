@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform/server_monitor_models"
-	"goskeleton/app/service/agent/agent_monitor_service"
+	"goskeleton/app/service/platform/service_monitor_service"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -62,7 +62,7 @@ func (crd *ServiceCmd) Monitor() {
 		model.MemUsage = arr[1]
 		model.HdUsage = arr[2]
 
-		_ = agent_monitor_service.CreateMonitorFactory().Add(&model)
+		_ = service_monitor_service.CreateCurdFactory().Add(&model)
 	}
 
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
