@@ -1,4 +1,4 @@
-package monitor_service
+package service_monitor_service
 
 import (
 	"goskeleton/app/model/platform/server_monitor_models"
