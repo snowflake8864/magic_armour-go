@@ -76,7 +76,7 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentHttpUrl + `', 'https://192.168.4.1','终端:http请求地址(无端口)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentHttpPort + `', '443','终端:http请求端口'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentLogSendProto + `', '2','终端:日志发送协议(1udp 2tcp)'),
-			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentSaveAccessLog + `', '1','终端：是否保存访问记录(0|1)'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentSaveAccessLog + `', '0','终端：是否保存访问记录(0|1)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentConfigExpire + `', '366','终端：配置文件有效期(天)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentAutoDeleteExpire + `', '10','终端：自动删除有效期(天)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentAlarmExpire + `', '10','终端：告警保留时长(天)'),
