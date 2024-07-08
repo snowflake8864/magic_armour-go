@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
@@ -282,7 +283,21 @@ func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
 
 	total, models := proc_models.CreateProcessFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransMasterPage(total, models))
+	//威胁情报数据
+	threatenMaps := make(map[string]*threaten_models.CacheModel)
+	if models != nil {
+		existHash := make(map[string]struct{})
+		var hashArr []string
+		for _, model := range models {
+			if _, isOK := existHash[model.ProcHash]; !isOK {
+				existHash[model.ProcHash] = struct{}{}
+				hashArr = append(hashArr, model.ProcHash)
+			}
+		}
+		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransMasterPage(total, models, threatenMaps))
 }
 
 // PageRunningForAgent 单终端: 运行中进程
@@ -303,8 +318,20 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	total, models := proc_models.CreateProcessRunningFactory().Page(condition, offset, pageSize, order)
-
-	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransRunningPage(total, models))
+	//威胁情报数据
+	threatenMaps := make(map[string]*threaten_models.CacheModel)
+	if models != nil {
+		existHash := make(map[string]struct{})
+		var hashArr []string
+		for _, model := range models {
+			if _, isOK := existHash[model.ProcHash]; !isOK {
+				existHash[model.ProcHash] = struct{}{}
+				hashArr = append(hashArr, model.ProcHash)
+			}
+		}
+		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
+	}
+	response.SuccessReturnData(ctx, (&org_trans.Process{}).TransRunningPage(total, models, threatenMaps))
 }
 
 // SearchWhileForAgent 单终端: 查询白名单

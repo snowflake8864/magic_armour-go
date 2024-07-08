@@ -4,10 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
-	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/utils/helpers/map_helper"
 )
 
 type Process struct {
@@ -15,7 +16,7 @@ type Process struct {
 }
 
 // TransMasterPage 转换成全部进程分页需要的数据
-func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessModel) interface{} {
+func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessModel, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -31,12 +32,6 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
-			data["threaten_level"] = model.ThreatenLevel
-			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
-			data["threaten_is_sync"] = 0
-			if enum_threaten.HasLevel(model.ThreatenLevel) {
-				data["threaten_is_sync"] = 1
-			}
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -47,6 +42,9 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 			data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
+
+			//合并威胁情报数据
+			data = map_helper.MergeStringAndInterface(data, t.AppendThreatenInfo(model.ProcHash, threatenMaps))
 			items = append(items, data)
 		}
 	}
@@ -58,7 +56,7 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 }
 
 // TransRunningPage 转换成运行中进程分页需要的数据
-func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAndRunning) interface{} {
+func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAndRunning, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -78,12 +76,6 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
 			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
-			data["threaten_level"] = model.ThreatenLevel
-			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.ThreatenLevel, enum_threaten.EnumMap)
-			data["threaten_is_sync"] = 0
-			if enum_threaten.HasLevel(model.ThreatenLevel) {
-				data["threaten_is_sync"] = 1
-			}
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
@@ -95,6 +87,8 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
 
+			//合并威胁情报数据
+			data = map_helper.MergeStringAndInterface(data, t.AppendThreatenInfo(model.ProcHash, threatenMaps))
 			items = append(items, data)
 		}
 	}

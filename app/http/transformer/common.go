@@ -2,6 +2,7 @@ package transformer
 
 import (
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/model/organization/department_models"
@@ -166,6 +167,23 @@ func (t *Common) AppendAgentInfo(agentId string, agentModels map[string]*agent_m
 				data["dept_id"] = deptModel.Id
 				data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
 			}
+		}
+	}
+	return data
+}
+
+// AppendThreatenInfo 追加威胁情报信息
+func (t *Common) AppendThreatenInfo(hash string, threatenMaps map[string]*threaten_models.CacheModel) map[string]interface{} {
+	var data = make(map[string]interface{})
+	data["threaten_level"] = enum_threaten.LevelDefault
+	data["threaten_level_label"] = ""
+	data["threaten_is_sync"] = enums.IsNot
+
+	if model, isOK := threatenMaps[hash]; isOK {
+		data["threaten_level"] = model.Level
+		data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
+		if model.CheckSource == enum_threaten.CheckSourceInternet {
+			data["threaten_is_sync"] = enums.IsYes
 		}
 	}
 	return data

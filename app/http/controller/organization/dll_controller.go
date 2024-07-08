@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
@@ -264,8 +265,20 @@ func (u *DllController) PageAllForAgent(ctx *gin.Context) {
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	total, models := proc_models.CreateDllFactory().Page(condition, offset, pageSize, order)
-
-	response.SuccessReturnData(ctx, (&org_trans.Dll{}).TransMasterPage(total, models))
+	//威胁情报数据
+	threatenMaps := make(map[string]*threaten_models.CacheModel)
+	if models != nil {
+		existHash := make(map[string]struct{})
+		var hashArr []string
+		for _, model := range models {
+			if _, isOK := existHash[model.DllHash]; !isOK {
+				existHash[model.DllHash] = struct{}{}
+				hashArr = append(hashArr, model.DllHash)
+			}
+		}
+		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
+	}
+	response.SuccessReturnData(ctx, (&org_trans.Dll{}).TransMasterPage(total, models, threatenMaps))
 }
 
 // PageRunningForAgent 单终端: 运行中进程
@@ -287,7 +300,20 @@ func (u *DllController) PageRunningForAgent(ctx *gin.Context) {
 
 	total, models := proc_models.CreateDllRunningFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Dll{}).TransRunningPage(total, models))
+	//威胁情报数据
+	threatenMaps := make(map[string]*threaten_models.CacheModel)
+	if models != nil {
+		existHash := make(map[string]struct{})
+		var hashArr []string
+		for _, model := range models {
+			if _, isOK := existHash[model.DllHash]; !isOK {
+				existHash[model.DllHash] = struct{}{}
+				hashArr = append(hashArr, model.DllHash)
+			}
+		}
+		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
+	}
+	response.SuccessReturnData(ctx, (&org_trans.Dll{}).TransRunningPage(total, models, threatenMaps))
 }
 
 // SetStatusForAgent 单终端: 设置状态
