@@ -21,6 +21,7 @@ type DepartmentModel struct {
 	OrgId      int64  `json:"org_id"`
 	ParentId   int64  `json:"parent_id"`
 	Name       string `json:"name"`
+	Code       string `json:"code"`
 	FullCode   string `json:"full_code"`
 	FullName   string `json:"full_name"`
 	Ip         string `json:"ip"`
@@ -44,6 +45,7 @@ func (m *DepartmentModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			parent_id int(11) NOT NULL DEFAULT '0' COMMENT '父级id',
 			name varchar(128)  NOT NULL DEFAULT '' COMMENT '名称',
+			code varchar(128)  NOT NULL DEFAULT '' COMMENT '编号',
 			full_code varchar(128)  NOT NULL DEFAULT '' COMMENT '完整编号(根,父,本级)',
 			full_name varchar(2056)  NOT NULL DEFAULT '' COMMENT '完整名称(json)',
 			ip varchar(512)  NOT NULL DEFAULT '' COMMENT 'IP段',

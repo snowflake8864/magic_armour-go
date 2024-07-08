@@ -94,8 +94,8 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenAppExpire + `', '','威胁情报:应用过期时间'),
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenCacheExpire + `', '30','威胁情报:缓存结果保留周期(天)'),
 
-			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiCallbackUrl + `', '0','幻势:回调地址(有端口)'),
-			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiCallIp + `', '0','幻势:回调ip'),
+			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiCallbackUrl + `', '','幻势:回调地址(有端口)'),
+			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiCallIp + `', '','幻势:回调ip'),
 			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiSwitch + `', '0','幻势:开关'),
 			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiUrl + `', '','幻势:服务器地址'),
 			('` + enum_dictionary.ModuleHuanshi + `', '` + enum_dictionary.HuanshiAlarmSwitch + `', '0','幻势:告警开关'),

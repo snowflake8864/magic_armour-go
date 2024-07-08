@@ -185,8 +185,8 @@ func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 	return nil
 }
 
-// 模拟发送SYSLOG
-func (aa *RequestHuanshi) analogSendSyslog(tt string, paramJson string) error {
+// 同步Udp模拟发送SYSLOG
+func (aa *RequestHuanshi) analogSendByUdp(tt string, paramJson string) error {
 	//发送地址
 	var address string
 	var facility, level int
@@ -215,8 +215,7 @@ func (aa *RequestHuanshi) analogSendSyslog(tt string, paramJson string) error {
 		return errors.New("net.Dial err:" + err.Error())
 	}
 	defer func(conn net.Conn) {
-		err := conn.Close()
-		if err != nil {
+		if err1 := conn.Close(); err1 != nil {
 			variable.ZapLog.Sugar().Error("net.Close err:" + err.Error())
 		}
 	}(conn)
@@ -260,7 +259,7 @@ func (aa *RequestHuanshi) SyncAgentBySyslog(param *AgentData) error {
 	//默认值
 	param.Platform = aa.RequestPlatform
 	param.DataType = DataTypeAgent
-	if err := aa.analogSendSyslog("agent", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("agent", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -336,7 +335,7 @@ func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -356,7 +355,7 @@ func (aa *RequestHuanshi) SyncAlarmOutreach(param AlarmOutreach) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -376,7 +375,7 @@ func (aa *RequestHuanshi) SyncAlarmLogin(param AlarmLogin) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -396,7 +395,7 @@ func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendSyslog("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -470,7 +469,7 @@ func (aa *RequestHuanshi) SyncLogDns(param LogDns) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -486,7 +485,7 @@ func (aa *RequestHuanshi) SyncLogNetwork(param LogNetwork) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -503,7 +502,7 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -520,7 +519,7 @@ func (aa *RequestHuanshi) SyncLogLogin(param LogLogin) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendSyslog("log", json_helper.Encode(param)); err != nil {
+	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -541,12 +540,12 @@ func (aa *RequestHuanshi) cacheAgentKey(orgId int64, agentId string) string {
 }
 
 // SaveAgent 保存终端信息
-func (aa *RequestHuanshi) SaveAgent(orgId int64, agentId string, param CacheAgent) error {
+func (aa *RequestHuanshi) SaveAgent(orgId int64, agentId string, param *CacheAgent) error {
 	key := aa.cacheAgentKey(orgId, agentId)
 	data := json_helper.Encode(json_helper.Encode(param))
 	//新增缓存
 	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
-		return errors.New("cache token fail: " + err.Error())
+		return errors.New("cache agent fail: " + err.Error())
 	}
 
 	return nil
