@@ -5,3 +5,4 @@
 /storage/app/uploaded/*
 /public/storage
 *.exe
+*.linux64
