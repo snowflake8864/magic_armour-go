@@ -26,7 +26,7 @@
 
 ### 命令行入口
 
-      ./app_cli.exe migrate -A (init|dictionary|menu|append)
+      ./app_cli.linux64 migrate -A (init|dictionary|menu|append)
       ./app_cli.exe queue  -A (init|consume) -T (common|process|threaten|alarm|syslog|crontab)
       ./app_cli.exe crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
 
