@@ -17,7 +17,7 @@
       // window编译设置Cgo模块关闭，因为windows上做cgo开发太麻烦，如果引用了Cgo库库，那么请在linux环境开发、编译  
       go env -w CGO_ENABLED=0
       // 编译出最终可执行文件，进入根目录（GinSkeleton所在目录，也就是 go.mod 所在的目录）
-      go build -o app_agent.linux64  -ldflags "-w -s"  -trimpath  ./cmd/agent/main.go
+      
       go build -o app_api.linux64  -ldflags "-w -s"  -trimpath  ./cmd/api/main.go
       go build -o app_cli.linux64  -ldflags "-w -s"  -trimpath  ./cmd/cli/main.go
       go build -o app_org.linux64  -ldflags "-w -s"  -trimpath  ./cmd/organization/main.go
