@@ -44,6 +44,9 @@ func start(action, topic string) {
 	case "init":
 		topic_kakfa.CreateTopicFactory().Init()
 		break
+	case "delete":
+		topic_kakfa.CreateTopicFactory().Delete()
+		break
 	case "consume":
 		switch topic {
 		case "common":

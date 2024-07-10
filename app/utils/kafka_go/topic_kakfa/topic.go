@@ -41,13 +41,14 @@ func (k *TopicClient) Init() {
 	controller, err := conn.Controller()
 	variable.ZapLog.Info(json_helper.Encode(controller))
 	if err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Debug(err.Error())
 		return
 	}
+
 	var controllerConn *kafka.Conn
 	controllerConn, err = kafka.Dial("tcp", net.JoinHostPort(controller.Host, strconv.Itoa(controller.Port)))
 	if err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Debug(err.Error())
 		return
 	}
 	defer controllerConn.Close()
@@ -68,7 +69,27 @@ func (k *TopicClient) Init() {
 
 	err = controllerConn.CreateTopics(topicConfigs...)
 	if err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Debug(err.Error())
+		return
+	}
+}
+
+func (k *TopicClient) Delete() {
+	conn, err := kafka.Dial("tcp", k.Addr)
+	if err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
+	}
+	defer conn.Close()
+
+	var topicNames []string
+	for _, val := range k.topicList {
+		name := variable.ConfigYml.GetString("KafkaV2." + val + ".Name")
+		topicNames = append(topicNames, name)
+	}
+	variable.ZapLog.Sugar().Debug(topicNames)
+	err = conn.DeleteTopics(topicNames...)
+	if err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
 		return
 	}
 }
