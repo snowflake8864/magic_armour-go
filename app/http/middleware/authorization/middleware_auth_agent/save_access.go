@@ -2,7 +2,6 @@ package middleware_auth_agent
 
 import (
 	"bytes"
-	context1 "context"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -11,13 +10,11 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/agent/agent_access_models"
+	"goskeleton/app/service/agent/access_log_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/cur_userinfo"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
-	"goskeleton/app/utils/kafka_go"
-	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"net/http"
 	"strings"
 	"time"
@@ -73,13 +70,7 @@ func SaveAccess() gin.HandlerFunc {
 			}
 
 			if param.OrgId > 0 && !string_helper.IsEmpty(param.AgentId) {
-				producer_kafka.CreateProducerFactory().ProduceCommon(context1.Background(), &kafka_go.MessageStruct{
-					Type:    kafka_go.TypeCommonAgentAccess,
-					OrgId:   param.OrgId,
-					AgentId: param.AgentId,
-					Data:    json_helper.Encode(param),
-				})
-				//accessLogService.CreateCurdFactory().Add(&param)
+				access_log_service.CreateCurdFactory().Add(&param)
 			}
 			/*
 				variable.ZapLog.Info("=============================================SaveAccess start =============================================")
