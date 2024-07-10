@@ -19,6 +19,7 @@
       // 编译出最终可执行文件，进入根目录（GinSkeleton所在目录，也就是 go.mod 所在的目录）
       
       go build -o app_api.linux64  -ldflags "-w -s"  -trimpath  ./cmd/api/main.go
+      go build -o app_api.linux64  -ldflags "-w -s"  -trimpath  ./cmd/api/main.go
       go build -o app_cli.linux64  -ldflags "-w -s"  -trimpath  ./cmd/cli/main.go
       go build -o app_org.linux64  -ldflags "-w -s"  -trimpath  ./cmd/organization/main.go
       go build -o app_platform.linux64  -ldflags "-w -s"  -trimpath  ./cmd/platform/main.go
@@ -34,68 +35,66 @@
 ### 守护进程
 - 根据情况任选一种命令，注意<kbd>supervisord.conf</kbd>路径，建议第一种
 
-        1 supervisorctl -c /data/supervisor/etc/supervisord.conf reload
-        2 supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
-        3 systemctl restart supervisord.service
-        4 supervisord -c /data/supervisor/etc/supervisord.conf
-        5 supervisorctl reload
+      1. supervisorctl -c /data/supervisor/etc/supervisord.conf reload
+      2. supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
+      3. systemctl restart supervisord.service
 
 ### 定时任务
 
       #每隔[1分钟], 已按顺序使用到[two]
-      */1 * * * * app_cli.linux64   crontab -U minute -I one -A zero
-      */1 * * * * app_cli.linux64   crontab -U minute -I one  -A one
-      */1 * * * * app_cli.linux64   crontab -U minute -I one -A two
-      */1 * * * * app_cli.linux64   crontab -U minute -I one -A four
-      */1 * * * * app_cli.linux64   crontab -U minute -I one -A three
+      */1 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I one -A zero" >> /var/log/armour_crontab.log 2>&1
+      */1 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I one -A one"  >> /var/log/armour_crontab.log 2>&1
+      */1 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I one -A two" >> /var/log/armour_crontab.log 2>&1
+      */1 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I one -A three"  >> /var/log/armour_crontab.log 2>&1
+      */1 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I one -A four" >> /var/log/armour_crontab.log 2>&1
 
       #每隔[2分钟], 已按顺序使用到[one]
-      */2 * * * * app_cli.linux64   crontab -U minute -I two -A zero
-      */2 * * * * app_cli.linux64   crontab -U minute -I two -A one
-      */2 * * * * app_cli.linux64   crontab -U minute -I two -A two
-      */2 * * * * app_cli.linux64   crontab -U minute -I two -A three
+      */2 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I two -A zero" >> /var/log/armour_crontab.log 2>&1
+      */2 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I two -A one" >> /var/log/armour_crontab.log 2>&1
+      */2 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I two -A two" >> /var/log/armour_crontab.log 2>&1
+      */2 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I two -A three" >> /var/log/armour_crontab.log 2>&1
       
       #每隔[3分钟], 已按顺序使用到[two]
-      */3 * * * * app_cli.linux64   crontab -U minute -I three -A zero
-      */3 * * * * app_cli.linux64   crontab -U minute -I three -A one
-      */3 * * * * app_cli.linux64   crontab -U minute -I three -A two
-      */3 * * * * app_cli.linux64   crontab -U minute -I three -A three
-      */3 * * * * app_cli.linux64   crontab -U minute -I three -A four
+      */3 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I three -A zero"  >> /var/log/armour_crontab.log 2>&1
+      */3 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I three -A one"  >> /var/log/armour_crontab.log 2>&1
+      */3 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I three -A two" >> /var/log/armour_crontab.log 2>&1
+      */3 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I three -A three" >> /var/log/armour_crontab.log 2>&1
+      */3 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I three -A four" >> /var/log/armour_crontab.log 2>&1
 
       #每隔[5分钟], 已按顺序使用到[zero]
-      */5 * * * * app_cli.linux64   crontab -U minute -I five -A zero
-      */5 * * * * app_cli.linux64   crontab -U minute -I five -A one
-      */5 * * * * app_cli.linux64   crontab -U minute -I five -A two
+      */5 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I five -A zero" >> /var/log/armour_crontab.log 2>&1
+      */5 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I five -A one" >> /var/log/armour_crontab.log 2>&1
+      */5 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I five -A two" >> /var/log/armour_crontab.log 2>&1
 
       #每隔[10分钟], 已按顺序使用到[zero]
-      */10 * * * * app_cli.linux64   crontab -U minute -I ten -A zero
-      */10 * * * * app_cli.linux64   crontab -U minute -I ten -A one
+      */10 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I ten -A zero" >> /var/log/armour_crontab.log 2>&1
+      */10 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I ten -A one" >> /var/log/armour_crontab.log 2>&1
 
       #每隔[15分钟], 已按顺序使用到[zero]
-      */15 * * * * app_cli.linux64   crontab -U minute -I fifteen -A zero
-      */15 * * * * app_cli.linux64   crontab -U minute -I fifteen -A one
+      */15 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I fifteen -A zero" >> /var/log/armour_crontab.log 2>&1
+      */15 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I fifteen -A one" >> /var/log/armour_crontab.log 2>&1
 
        #每隔[30分钟], 已按顺序使用到[]
-      */30 * * * * app_cli.linux64   crontab -U minute -I thirty -A zero
-      */30 * * * * app_cli.linux64   crontab -U minute -I thirty -A one
+      */30 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I thirty -A zero" >> /var/log/armour_crontab.log 2>&1
+      */30 * * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U minute -I thirty -A one" >> /var/log/armour_crontab.log 2>&1
 
       #每隔[1小时], 已按顺序使用到[]
-      0 */1 * * * app_cli.linux64   crontab -U hour -I one -A zero
-      1 */1 * * * app_cli.linux64   crontab -U hour -I one -A one
+      0 */1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U hour -I one -A zero" >> /var/log/armour_crontab.log 2>&1
+      1 */1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U hour -I one -A one" >> /var/log/armour_crontab.log 2>&1
 
       #每天一次, 已按顺序使用到[eight]
-      10 1 * * * app_cli.linux64   crontab -U day -M once -A zero
-      11 1 * * * app_cli.linux64   crontab -U day -M once -A one
-      12 1 * * * app_cli.linux64   crontab -U day -M once -A two
-      13 1 * * * app_cli.linux64   crontab -U day -M once -A three
-      14 1 * * * app_cli.linux64   crontab -U day -M once -A four
-      15 1 * * * app_cli.linux64   crontab -U day -M once -A five
-      16 1 * * * app_cli.linux64   crontab -U day -M once -A six
-      17 1 * * * app_cli.linux64   crontab -U day -M once -A seven
-      20 2 * * * app_cli.linux64   crontab -U day -M once -A eight
-      30 3 * * * app_cli.linux64   crontab -U day -M once -A nine
-      40 4 * * * app_cli.linux64   crontab -U day -M once -A ten
+      10 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A zero" >> /var/log/armour_crontab.log 2>&1
+      11 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A one" >> /var/log/armour_crontab.log 2>&1
+      12 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A two" >> /var/log/armour_crontab.log 2>&1
+      13 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A three" >> /var/log/armour_crontab.log 2>&1
+      14 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A four" >> /var/log/armour_crontab.log 2>&1
+      15 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A five >> /var/log/armour_crontab.log 2>&1
+      16 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A six >> /var/log/armour_crontab.log 2>&1
+      17 1 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A seven >> /var/log/armour_crontab.log 2>&1
+      20 2 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A eight >> /var/log/armour_crontab.log 2>&1
+      30 3 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A nine >> /var/log/armour_crontab.log 2>&1
+      40 4 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M once -A ten >> /var/log/armour_crontab.log 2>&1
 
       #每天两次, 已按顺序使用到[zero]
-      30 3,13 * * * app_cli.linux64   crontab -U day -M every -A zero
-      31 3,13 * * * app_cli.linux64   crontab -U day -M every -A one
+      30 3,13 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M every -A zero" >> /var/log/armour_crontab.log 2>&1
+      31 3,13 * * * /bin/bash -c "/home/wwwroot/armour_go/app_cli.linux64 crontab -U day -M every -A one" >> /var/log/armour_crontab.log 2>&1
