@@ -32,12 +32,18 @@
       ./app_cli.exe crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
 
 
-### 守护进程
-- 根据情况任选一种命令，注意<kbd>supervisord.conf</kbd>路径，建议第一种
+### 守护进程，注意<kbd>supervisord.conf</kbd>路径
 
       1. supervisorctl -c /data/supervisor/etc/supervisord.conf reload
       2. supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
       3. systemctl restart supervisord.service
+
+
+### 管理平台隐藏页面
+
+      /#/menuConfiguration
+      /#/dataDictionary
+
 
 ### 定时任务
 
