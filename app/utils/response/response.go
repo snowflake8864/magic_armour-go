@@ -126,14 +126,14 @@ func ErrorSystem(c *gin.Context, msg string, data interface{}) {
 func ValidatorError(c *gin.Context, err error) {
 	if errs, ok := err.(validator.ValidationErrors); ok {
 		wrongParam := validator_translation.RemoveTopStruct(errs.Translate(validator_translation.Trans))
-		ReturnJson(c, http.StatusBadRequest, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, wrongParam)
+		ReturnJson(c, http.StatusOK, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, wrongParam)
 	} else {
 		errStr := err.Error()
 		// multipart:nextpart:eof 错误表示验证器需要一些参数，但是调用者没有提交任何参数
 		if strings.ReplaceAll(strings.ToLower(errStr), " ", "") == "multipart:nextpart:eof" {
-			ReturnJson(c, http.StatusBadRequest, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, gin.H{"tips": my_errors.ErrorNotAllParamsIsBlank})
+			ReturnJson(c, http.StatusOK, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, gin.H{"tips": my_errors.ErrorNotAllParamsIsBlank})
 		} else {
-			ReturnJson(c, http.StatusBadRequest, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, gin.H{"tips": errStr})
+			ReturnJson(c, http.StatusOK, consts.ValidatorParamsCheckFailCode, consts.ValidatorParamsCheckFailMsg, gin.H{"tips": errStr})
 		}
 	}
 	c.Abort()
