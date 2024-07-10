@@ -35,7 +35,7 @@ var EnumMap = map[string]map[int]string{
 	},
 	"status": {
 		StatusVerifying: "审核中",
-		StatusNormal:    "企业",
+		StatusNormal:    "正常",
 		StatusLocking:   "锁定",
 	},
 	"log_action": {
