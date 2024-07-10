@@ -79,7 +79,7 @@ func (m *basePort) conditions2Where(condition SearchConditions) (wheres []model_
 			Val: condition.DeptIds,
 		})
 	}
-	if !string_helper.IsEmpty(condition.Port) {
+	if !string_helper.IsEmpty(condition.Port) && string_helper.ToInt(condition.Port) > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "port",
 			Val: condition.Port,
