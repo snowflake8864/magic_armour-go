@@ -162,7 +162,7 @@ func (u *ThreatenController) AllWhiteForPush(ctx *gin.Context) {
 
 // BatchWhiteForPush 推送: 批量白
 func (u *ThreatenController) BatchWhiteForPush(ctx *gin.Context) {
-	if errCode, err := u.handelBatchForPush(ctx, enum_threaten.LevelBlack); err != nil {
+	if errCode, err := u.handelBatchForPush(ctx, enum_threaten.LevelWhite); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}

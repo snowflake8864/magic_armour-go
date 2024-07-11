@@ -50,7 +50,7 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnConfig(true, true))
+	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}

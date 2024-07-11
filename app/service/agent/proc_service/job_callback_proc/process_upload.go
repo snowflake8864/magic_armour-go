@@ -48,7 +48,7 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	}
 
 	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnConfig(true, true))
+	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
