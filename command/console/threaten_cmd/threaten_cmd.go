@@ -310,7 +310,7 @@ func (crd *ThreatenCmd) DeleteForCache() {
 func (crd *ThreatenCmd) SyncDefaultForCache() {
 	variable.ZapLog.Sugar().Debug("SyncDefaultForCache start")
 	crd.syncCacheToThreaten(enum_threaten.LevelDefault)
-	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
+	variable.ZapLog.Sugar().Debug("SyncDefaultForCache end")
 }
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
