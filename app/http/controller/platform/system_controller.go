@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/zip_factory"
@@ -99,7 +100,9 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 func (u *SystemController) NetworkGet(ctx *gin.Context) {
 
 	shellPath := cur_app.ShellNetworkGet()
-	cmd := exec.Command(cur_app.ShellInit(), shellPath)
+	shellInit := cur_app.ShellInit()
+	cmd := exec.Command(shellInit, shellPath)
+
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
 	cmd.Stderr = &stderr // 标准错误
@@ -108,6 +111,7 @@ func (u *SystemController) NetworkGet(ctx *gin.Context) {
 		response.FailData(ctx, "exec command Run failed", err.Error())
 		return
 	}
+
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
 		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
@@ -116,23 +120,37 @@ func (u *SystemController) NetworkGet(ctx *gin.Context) {
 
 	var result []map[string]interface{}
 	outList := strings.Split(outStr, "\n")
+	fmt.Println(json_helper.Encode(outList))
 	for _, line := range outList {
-		arr1 := strings.Split(line, " ")
-		if n := len(arr1); n > 5 || n < 2 {
+		//docker
+		if strings.Contains(line, "veth") || strings.Contains(line, "br-") || strings.Contains(line, "docker") {
 			continue
 		}
-		arr2 := make([]string, 5)
-		copy(arr2, arr1)
+		arr := strings.Split(line, " ")
+		arrLen := len(arr)
+		if arrLen < 4 || arrLen > 6 {
+			continue
+		}
+
+		gateway := ""
+		if arrLen > 4 {
+			gateway = arr[4]
+		}
+
+		dns := ""
+		if arrLen > 5 {
+			dns = arr[5]
+		}
+
 		result = append(result, map[string]interface{}{
-			"name":    arr2[0],
-			"proto":   arr2[1],
-			"ip":      arr2[2],
-			"mask":    arr2[3],
-			"gateway": arr2[4],
-			"dns":     arr2[5],
+			"name":    arr[0],
+			"proto":   arr[1],
+			"ip":      arr[2],
+			"mask":    arr[3],
+			"gateway": gateway,
+			"dns":     dns,
 		})
 	}
-
 	response.SuccessReturnData(ctx, result)
 }
 
@@ -146,6 +164,7 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 	dns := ctx.GetString(consts.ValidatorPrefixPlatform + "dns")
 
 	shellPath := cur_app.ShellNetworkSet()
+
 	cmd := exec.Command(cur_app.ShellInit(), shellPath, name, proto, ip, mask, gateway, dns)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout // 标准输出
@@ -158,10 +177,6 @@ func (u *SystemController) NetworkSet(ctx *gin.Context) {
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
 		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
-		return
-	}
-	if outStr != "0" {
-		response.FailData(ctx, "exec command output failed", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
 		return
 	}
 
