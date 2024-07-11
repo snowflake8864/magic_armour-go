@@ -105,6 +105,8 @@ func handleDay(mode, interval, at string) {
 			agent_cmd.CreateAccessFactory().Clear()
 			//清理进程和模块的运行中数据
 			proc_cmd.CreateCmdFactory().ClearRunning()
+			//清理服务器监控
+			service_cmd.CreateCmdFactory().Delete()
 			break
 		case AtOne:
 			//未知支付订单自动过期

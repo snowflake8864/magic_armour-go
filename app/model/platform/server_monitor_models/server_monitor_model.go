@@ -63,6 +63,20 @@ func (m *ServerMonitorModel) InsertItem(s *ServerMonitorModel) bool {
 	}
 }
 
+// DeleteByConditions 通过条件删除
+func (m *ServerMonitorModel) DeleteByConditions(condition SearchConditions) bool {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // GetAllByConditions 通过条件获取全部记录
 func (m *ServerMonitorModel) GetAllByConditions(condition SearchConditions, order string) (items []*ServerMonitorModel, err error) {
 	tmp := m.Model(m)

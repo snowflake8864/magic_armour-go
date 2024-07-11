@@ -6,8 +6,9 @@ import (
 )
 
 type SearchConditions struct {
-	MonitorDay string `json:"monitor_day"`
-	ServerCode string `json:"server_code"`
+	MonitorDay    string `json:"monitor_day"`
+	ServerCode    string `json:"server_code"`
+	MonitorDayLte string
 }
 type baseMonitor struct {
 }
@@ -25,6 +26,13 @@ func (crd *baseMonitor) conditions2Where(condition SearchConditions) (wheres []m
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "server_code",
 			Val: condition.ServerCode,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.MonitorDayLte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "monitor_day <=",
+			Val: condition.MonitorDayLte,
 		})
 	}
 	return wheres

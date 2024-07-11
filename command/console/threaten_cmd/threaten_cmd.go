@@ -322,6 +322,7 @@ func (crd *ThreatenCmd) SyncUnknownForCache() {
 
 // 给hash加锁
 func (crd *ThreatenCmd) lockHash(hash string) bool {
+	return true
 	key := crd.cachePrefix + hash
 	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
 		return true

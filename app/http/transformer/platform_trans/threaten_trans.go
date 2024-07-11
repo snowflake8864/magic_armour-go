@@ -60,11 +60,11 @@ func (t *Threaten) pagePushGeneral(model *threaten_models.PushModel) map[string]
 	data["data_from"] = model.DataFrom
 	data["push_at"] = model.PushAt
 	data["push_status"] = model.PushStatus
+	data["push_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
 	data["introduce"] = model.Introduce
 	data["copyright"] = model.Copyright
 	data["signature"] = model.Signature
 	data["attribute"] = model.Attribute
-	data["push_status"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
 	data["create_id"] = model.CreateId
 	data["create_name"] = model.CreateName
 	data["created_at"] = model.CreatedAt

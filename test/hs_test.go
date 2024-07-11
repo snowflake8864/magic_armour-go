@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/console/huanshi_cmd"
+	"goskeleton/command/console/service_cmd"
 	"log"
 	"net"
 	"testing"
@@ -65,6 +66,9 @@ func TestHsAnalog(t *testing.T) {
 }
 
 func TestHsAlarm(t *testing.T) {
+
+	service_cmd.CreateCmdFactory().Delete()
+	return
 	huanshi_cmd.CreateCmdFactory().Push()
 
 	if err := job_callback_alarm.CreateProcessUploadFactory().Add(&alarm_models.ProcessModel{

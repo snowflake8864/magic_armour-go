@@ -20,6 +20,17 @@ func CreateCmdFactory() *ServiceCmd {
 type ServiceCmd struct {
 }
 
+// Delete 删除监控数据
+func (crd *ServiceCmd) Delete() {
+	variable.ZapLog.Sugar().Debug("Delete start")
+	monitorDay, _, _, _ := date_helper.CalcByDay(-90)
+	server_monitor_models.CreateServerMonitorFactory().DeleteByConditions(server_monitor_models.SearchConditions{
+		MonitorDayLte: monitorDay,
+	})
+
+	variable.ZapLog.Sugar().Debug("Delete end")
+}
+
 // Monitor  服务器状态监控
 func (crd *ServiceCmd) Monitor() {
 
