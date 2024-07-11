@@ -15,7 +15,6 @@ import (
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/zip_factory"
@@ -56,7 +55,7 @@ func (u *SystemController) TimeSet(ctx *gin.Context) {
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformTimeCmd)
 
-	cmd := exec.Command(fmt.Sprintf(val, date))
+	cmd := exec.Command("/bin/bash", "-c", fmt.Sprintf(val, date))
 	_, err := cmd.CombinedOutput() // 执行命令并获取输出结果
 	if err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
@@ -85,7 +84,8 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 	} else {
 		command += dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSshCmdStop)
 	}
-	if err := exec.Command(command).Run(); err != nil {
+
+	if err := exec.Command("/bin/bash", "-c", command).Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
 		return
 	}
@@ -120,9 +120,8 @@ func (u *SystemController) NetworkGet(ctx *gin.Context) {
 
 	var result []map[string]interface{}
 	outList := strings.Split(outStr, "\n")
-	fmt.Println(json_helper.Encode(outList))
 	for _, line := range outList {
-		//docker
+		//过滤虚拟
 		if strings.Contains(line, "veth") || strings.Contains(line, "br-") || strings.Contains(line, "docker") {
 			continue
 		}
