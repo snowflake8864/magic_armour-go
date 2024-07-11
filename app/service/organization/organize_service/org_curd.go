@@ -51,15 +51,16 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 
 	//新增企业
 	if orgParam.Source == enums.OperateSourcePlatform {
-		orgParam.TrusteeshipSwitch = enums.IsYes
+		orgParam.TrusteeshipSwitch = enums.SwitchOn
+		orgParam.HuanshiSwitch = enums.SwitchOn
 	} else {
-		orgParam.TrusteeshipSwitch = enums.IsNot
+		orgParam.TrusteeshipSwitch = enums.SwitchOff
+		orgParam.HuanshiSwitch = enums.SwitchOff
 	}
 	orgParam.Status = enum_organization.StatusVerifying
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
-	orgParam.TrusteeshipSwitch = enums.IsYes
 	orgParam.CreatedAt = date_helper.CurDatetime()
 	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
 	if err = tx.Create(orgParam).Error; err != nil {

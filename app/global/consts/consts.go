@@ -37,7 +37,7 @@ const (
 
 	// CURD 常用业务状态码
 	CurdStatusOkCode string = "000000"
-	CurdStatusOkMsg  string = "Success"
+	CurdStatusOkMsg  string = "OK"
 
 	CurdCreatFailCode        int    = -400200
 	CurdCreatFailMsg         string = "新增失败"
