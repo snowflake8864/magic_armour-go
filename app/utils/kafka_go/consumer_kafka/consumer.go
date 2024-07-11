@@ -91,12 +91,6 @@ func (k *ConsumerClient) ConsumeCommon() {
 		case kafka_go.TypeCommonOrgClean:
 			org_job.Clean(data.OrgId)
 			break
-		case kafka_go.TypeCommonAgentPutMonitor:
-			agent_job.UploadMonitor(data.Data)
-			break
-		case kafka_go.TypeCommonAgentAccess:
-			agent_job.SaveAccessLog(data.Data)
-			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
 		}
@@ -195,6 +189,9 @@ func (k *ConsumerClient) ConsumeSyslog() {
 			break
 		case kafka_go.TypeSyslogPutLogin:
 			syslog_job.UploadLogin(data.Data)
+			break
+		case kafka_go.TypeCommonAgentPutMonitor:
+			agent_job.UploadMonitor(data.Data)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerSyslog result:%T", data))
