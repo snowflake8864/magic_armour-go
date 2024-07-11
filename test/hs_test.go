@@ -67,7 +67,7 @@ func TestHsAnalog(t *testing.T) {
 func TestHsAlarm(t *testing.T) {
 	huanshi_cmd.CreateCmdFactory().Push()
 
-	model := alarm_models.ProcessModel{
+	if err := job_callback_alarm.CreateProcessUploadFactory().Add(&alarm_models.ProcessModel{
 		OrgId:     1,
 		AgentId:   "win2010_test_001",
 		Type:      enum_alarm.TypeProcessMonitorBlackRun,
@@ -78,8 +78,18 @@ func TestHsAlarm(t *testing.T) {
 		ProcId:    0,
 		ProcDir:   "c:/test.exe",
 		ProcParam: "pp",
-	}
-	if err := job_callback_alarm.CreateProcessUploadFactory().Add(&model); err != nil {
+	}); err != nil {
 		fmt.Println(err.Error())
 	}
+
+	job_callback_alarm.CreateLoginCalcFactory().TestHs(&alarm_models.LoginModel{
+		OrgId:      1,
+		AgentId:    "win2010_test_001",
+		AgentAt:    date_helper.CurDatetime(),
+		CreatedAt:  date_helper.CurDatetime(),
+		Type:       enum_alarm.TypeLoginSolve,
+		Level:      enum_alarm.LevelSerious,
+		SourceIp:   "98.85.54.55",
+		SolveTotal: 30,
+	})
 }

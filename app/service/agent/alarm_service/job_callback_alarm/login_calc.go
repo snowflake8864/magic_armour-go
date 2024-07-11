@@ -99,6 +99,16 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		return errors.New("保存失败")
 	}
 
+	//
+	//动态封堵
+	if err := plug_calc_service.CreatePlugCalcFactory().CalcByLogin(model.OrgId, model.AgentId, attackIp); err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
+	}
+
+	return nil
+}
+
+func (crd *AlarmLoginCalc) TestHs(model *alarm_models.LoginModel) {
 	//推送到幻势,
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchLogin); hsCli != nil {
 		hsData := huanshi_platform.AlarmLogin{
@@ -116,12 +126,4 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 			variable.ZapLog.Sugar().Debug(err.Error())
 		}
 	}
-
-	//
-	//动态封堵
-	if err := plug_calc_service.CreatePlugCalcFactory().CalcByLogin(model.OrgId, model.AgentId, attackIp); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
-	}
-
-	return nil
 }
