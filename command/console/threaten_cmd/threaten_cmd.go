@@ -379,9 +379,9 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 				ParentName: model.ParentDir,
 			})
 		}
-		//variable.ZapLog.Sugar().Debug("============================")
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
+		variable.ZapLog.Sugar().Debug("============================")
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}
@@ -394,20 +394,24 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
 	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
 
-	//variable.ZapLog.Sugar().Debug("idAndDataFrom=============================")
-	//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
+	variable.ZapLog.Sugar().Debug("idAndDataFrom=============================", level)
+	variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 	//没有需要校验数据
 	if list == nil || len(*list) == 0 {
+		variable.ZapLog.Sugar().Debug("list == nil")
 		return nil
 	}
 
 	//去校验
 	err, checkReps := cli.CheckHashes(list)
 	if err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
 		return nil
 	}
 	//没有返回数据
 	if checkReps == nil || len(*checkReps) == 0 {
+		//
+		crd.handleUnUnknown(level, idAndDataFrom)
 		return nil
 	}
 	//有返回数据
@@ -415,8 +419,8 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	now := date_helper.CurDatetime()
 
 	for _, item := range *checkReps {
-		//variable.ZapLog.Sugar().Debug("item=============================")
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
+		variable.ZapLog.Sugar().Debug("item=============================")
+		variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
 		hash := strings.ToLower(item.Hash)
 		dataFrom, isOk := idAndDataFrom[hash]
 		if !isOk {
@@ -440,7 +444,14 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 		})
 	}
 
-	//威胁情报不存在的hash & 原来是未同步
+	//
+	crd.handleUnUnknown(level, idAndDataFrom)
+
+	return nil
+}
+
+// 威胁情报不存在的hash & 原来是未同步
+func (crd *ThreatenCmd) handleUnUnknown(level int, idAndDataFrom map[string]int) {
 	if len(idAndDataFrom) > 0 && level == enum_threaten.LevelDefault {
 		var idArr []string
 		for id := range idAndDataFrom {
@@ -449,6 +460,4 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 		//要直接修改，防止下次验证时获取到重复数据
 		threaten_service.CreateCacheFactory().BatchUnknown(idArr)
 	}
-
-	return nil
 }
