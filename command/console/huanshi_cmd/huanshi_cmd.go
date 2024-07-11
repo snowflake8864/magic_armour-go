@@ -192,6 +192,7 @@ func (crd *HuanshiCmd) Push() {
 				ContactName:  agentModel.ContactName,
 				ContactPhone: agentModel.ContactTel,
 			}
+			//variable.ZapLog.Sugar().Debug(json_helper.Encode(agentData))
 			if err1 := hsCli.SyncAgentBySyslog(&agentData); err1 != nil {
 				variable.ZapLog.Sugar().Debug("push SyncAgentBySyslog：", err1.Error())
 				return

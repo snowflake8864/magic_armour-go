@@ -308,7 +308,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	orgLogParam.OperateSource = enums.OperateSourcePlatform
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
-	if openSwitch == enums.IsYes {
+	if openSwitch == enums.SwitchOn {
 		orgLogParam.Content = "开启"
 	} else {
 		orgLogParam.Content = "关闭"

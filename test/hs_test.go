@@ -41,7 +41,7 @@ func TestHsPush(t *testing.T) {
 
 func TestHsAnalog(t *testing.T) {
 	serverAddr := "192.168.17.119:514"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Syslog 服务器地址
-	logMsg := "<190>{\"deviceMark\":\"f963864bebc14dd2b4fe9a00047314c4\",\"platform\":\"huanjia\",\"dataType\":\"zhongduan\",\"org_id\":1,\"agentId\":\"neokylin_test_001\",\"os\":\"NeoKylin Desktop 5.0_U4 (Loongson)\",\"ip\":\"192.168.17.154,fe80::392d:7a87:b6d9:fed6\",\"netIp\":\"127.0.0.1\",\"hostName\":\"NeoKylin\",\"status\":0,\"onlineTime\":\"2024-07-04 11:26:41\",\"version\":\"2.0.0.29\",\"deptCode\":\"\",\"deptName\":\"\",\"agentType\":\"\",\"aliasName\":\"\",\"contactName\":\"\",\"contactPhone\":\"\"}\n" // 要发送的日志信息
+	logMsg := "<190>{\"deviceMark\":\"6e2f364c4c6ca7ab00d47c05928a7dbc\",\"platform\":\"huanjia\",\"dataType\":\"zhongduan\",\"org_id\":1,\"agentId\":\"neokylin_test_001\",\"os\":\"NeoKylin Desktop 5.0_U4 (Loongson)\",\"ip\":\"192.168.17.154,fe80::392d:7a87:b6d9:fed6\",\"netIp\":\"127.0.0.1\",\"hostName\":\"NeoKylin\",\"status\":0,\"onlineTime\":\"2024-07-04 11:26:41\",\"version\":\"2.0.0.29\",\"deptCode\":\"\",\"deptName\":\"\",\"agentType\":\"\",\"aliasName\":\"\",\"contactName\":\"\",\"contactPhone\":\"\"}\n" // 要发送的日志信息
 
 	conn, err := net.Dial("udp", serverAddr)
 	if err != nil {
