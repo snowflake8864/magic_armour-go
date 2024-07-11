@@ -2,7 +2,11 @@ package test
 
 import (
 	"fmt"
+	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/console/huanshi_cmd"
 	"log"
@@ -58,4 +62,24 @@ func TestHsAnalog(t *testing.T) {
 	}
 
 	log.Printf("Sent syslog message: %s", logMsg)
+}
+
+func TestHsAlarm(t *testing.T) {
+	huanshi_cmd.CreateCmdFactory().Push()
+
+	model := alarm_models.ProcessModel{
+		OrgId:     1,
+		AgentId:   "win2010_test_001",
+		Type:      enum_alarm.TypeProcessMonitorBlackRun,
+		Level:     3,
+		AgentAt:   date_helper.CurDatetime(),
+		CreatedAt: date_helper.CurDatetime(),
+		ProcHash:  "d0baee1681b7a74e873fe2d272cf5986",
+		ProcId:    0,
+		ProcDir:   "c:/test.exe",
+		ProcParam: "pp",
+	}
+	if err := job_callback_alarm.CreateProcessUploadFactory().Add(&model); err != nil {
+		fmt.Println(err.Error())
+	}
 }

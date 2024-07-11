@@ -39,7 +39,7 @@ func (crd *AlarmProcessUpload) Add(model *alarm_models.ProcessModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchDll); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchProcess); hsCli != nil {
 		hsData := huanshi_platform.AlarmComm{
 			AlarmBase: huanshi_platform.AlarmBase{
 				Type:       huanshi_platform.AlarmTypeProcess,

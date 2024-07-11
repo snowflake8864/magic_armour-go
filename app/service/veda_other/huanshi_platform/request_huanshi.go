@@ -225,7 +225,7 @@ func (aa *RequestHuanshi) analogSendByUdp(tt string, paramJson string) error {
 	msg += int_helper.IntToStr((facility * 8) + level)
 	msg += ">"
 	msg += paramJson
-	//variable.ZapLog.Sugar().Info(msg)
+	variable.ZapLog.Sugar().Info(msg)
 	_, err = conn.Write([]byte(msg))
 	if err != nil {
 		return errors.New("net.Write err:" + err.Error())
@@ -542,7 +542,7 @@ func (aa *RequestHuanshi) cacheAgentKey(orgId int64, agentId string) string {
 // SaveAgent 保存终端信息
 func (aa *RequestHuanshi) SaveAgent(orgId int64, agentId string, param *CacheAgent) error {
 	key := aa.cacheAgentKey(orgId, agentId)
-	data := json_helper.Encode(json_helper.Encode(param))
+	data := json_helper.Encode(param)
 	//新增缓存
 	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
 		return errors.New("cache agent fail: " + err.Error())
@@ -552,7 +552,7 @@ func (aa *RequestHuanshi) SaveAgent(orgId int64, agentId string, param *CacheAge
 }
 
 // GetAgent 获取终端信息
-func (aa *RequestHuanshi) GetAgent(orgId int64, agentId string) (err error, data CacheAgent) {
+func (aa *RequestHuanshi) GetAgent(orgId int64, agentId string) (err error, data *CacheAgent) {
 
 	jsonStr := aa.redisClient.Get(aa.cacheAgentKey(orgId, agentId))
 	if string_helper.IsEmpty(jsonStr) {
