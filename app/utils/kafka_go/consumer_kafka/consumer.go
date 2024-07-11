@@ -17,16 +17,21 @@ import (
 	"strings"
 )
 
-func getReaderConfig() kafka.ReaderConfig {
+func newConsumer(name string) *kafka.Reader {
+	//主题
+	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
+	//地址
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
+	//消费者信息
 	groupId := variable.ConfigYml.GetString("KafkaV2.Consumer.GroupId")
 	commitInterval := variable.ConfigYml.GetDuration("KafkaV2.Consumer.CommitInterval")
 	startOffset := variable.ConfigYml.GetInt64("KafkaV2.Consumer.StartOffset")
 
-	return kafka.ReaderConfig{
+	configReader := kafka.ReaderConfig{
+		Topic:          topic,
 		Brokers:        brokers,
-		GroupID:        groupId,
+		GroupID:        groupId + "_" + topic,
 		CommitInterval: commitInterval,
 		GroupBalancers: []kafka.GroupBalancer{
 			&kafka.RangeGroupBalancer{},
@@ -36,24 +41,17 @@ func getReaderConfig() kafka.ReaderConfig {
 		MaxBytes:    10e6,        // 最大读取字节数
 	}
 
-}
-
-func newConsumer(name string, configReader kafka.ReaderConfig) *kafka.Reader {
-	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
-	// 配置消费者
-	configReader.Topic = topic
 	return kafka.NewReader(configReader)
 }
 
 func CreateConsumerFactory() *ConsumerClient {
-	config := getReaderConfig()
 	return &ConsumerClient{
-		Common:   newConsumer(kafka_go.TopicCommon, config),
-		Process:  newConsumer(kafka_go.TopicProcess, config),
-		Threaten: newConsumer(kafka_go.TopicThreaten, config),
-		Alarm:    newConsumer(kafka_go.TopicAlarm, config),
-		Syslog:   newConsumer(kafka_go.TopicSyslog, config),
-		Crontab:  newConsumer(kafka_go.TopicCrontab, config),
+		Common:   newConsumer(kafka_go.TopicCommon),
+		Process:  newConsumer(kafka_go.TopicProcess),
+		Threaten: newConsumer(kafka_go.TopicThreaten),
+		Alarm:    newConsumer(kafka_go.TopicAlarm),
+		Syslog:   newConsumer(kafka_go.TopicSyslog),
+		Crontab:  newConsumer(kafka_go.TopicCrontab),
 	}
 
 }
