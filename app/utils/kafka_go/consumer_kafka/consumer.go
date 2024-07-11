@@ -17,7 +17,15 @@ import (
 	"strings"
 )
 
-func newConsumer(name string) *kafka.Reader {
+func CreateConsumerFactory() *ConsumerClient {
+	return &ConsumerClient{}
+}
+
+// 结构体
+type ConsumerClient struct {
+}
+
+func (k *ConsumerClient) newConsumer(name string) *kafka.Reader {
 	//主题
 	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
 	//地址
@@ -40,30 +48,8 @@ func newConsumer(name string) *kafka.Reader {
 		MinBytes:    0,           // 最小读取字节数
 		MaxBytes:    10e6,        // 最大读取字节数
 	}
-
+	variable.ZapLog.Info(fmt.Sprintf("GroupID:%s", configReader.GroupID))
 	return kafka.NewReader(configReader)
-}
-
-func CreateConsumerFactory() *ConsumerClient {
-	return &ConsumerClient{
-		Common:   newConsumer(kafka_go.TopicCommon),
-		Process:  newConsumer(kafka_go.TopicProcess),
-		Threaten: newConsumer(kafka_go.TopicThreaten),
-		Alarm:    newConsumer(kafka_go.TopicAlarm),
-		Syslog:   newConsumer(kafka_go.TopicSyslog),
-		Crontab:  newConsumer(kafka_go.TopicCrontab),
-	}
-
-}
-
-// 结构体
-type ConsumerClient struct {
-	Common   *kafka.Reader
-	Process  *kafka.Reader
-	Threaten *kafka.Reader
-	Alarm    *kafka.Reader
-	Syslog   *kafka.Reader
-	Crontab  *kafka.Reader
 }
 
 func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kafka_go.MessageStruct, error) {
@@ -87,7 +73,7 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 // ConsumeCommon 消费主题： Common
 func (k *ConsumerClient) ConsumeCommon() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Common)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicCommon))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -117,7 +103,7 @@ func (k *ConsumerClient) ConsumeCommon() {
 // ConsumeProcess 消费主题： Process
 func (k *ConsumerClient) ConsumeProcess() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Process)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicProcess))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -144,7 +130,7 @@ func (k *ConsumerClient) ConsumeProcess() {
 // ConsumeAlarm 消费主题： Alarm
 func (k *ConsumerClient) ConsumeAlarm() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Alarm)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicAlarm))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -180,7 +166,7 @@ func (k *ConsumerClient) ConsumeAlarm() {
 // ConsumeSyslog 消费主题： Syslog
 func (k *ConsumerClient) ConsumeSyslog() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Syslog)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicSyslog))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -210,7 +196,7 @@ func (k *ConsumerClient) ConsumeSyslog() {
 // ConsumeThreaten 消费主题： Threaten
 func (k *ConsumerClient) ConsumeThreaten() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Threaten)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicSyslog))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
@@ -228,7 +214,7 @@ func (k *ConsumerClient) ConsumeThreaten() {
 // ConsumeCrontab 消费主题： Crontab
 func (k *ConsumerClient) ConsumeCrontab() {
 	for {
-		data, err := k.readMessage(context.Background(), k.Crontab)
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicCrontab))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}

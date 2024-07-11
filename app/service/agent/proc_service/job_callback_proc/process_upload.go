@@ -2,9 +2,11 @@ package job_callback_proc
 
 import (
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
@@ -39,7 +41,9 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 	if string_helper.IsEmpty(processModel.CreatedAt) {
 		processModel.CreatedAt = date_helper.CurDatetime()
 	}
+	variable.ZapLog.Info(fmt.Sprintf("dir:%s", processModel.Dir))
 	processModel.Dir = path_helper.ToStandard(processModel.Dir)
+	variable.ZapLog.Info(fmt.Sprintf("dir:%s", processModel.Dir))
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(processModel.OrgId, processModel.AgentId, processModel.ProcHash)
