@@ -196,7 +196,7 @@ func (k *ConsumerClient) ConsumeSyslog() {
 // ConsumeThreaten 消费主题： Threaten
 func (k *ConsumerClient) ConsumeThreaten() {
 	for {
-		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicSyslog))
+		data, err := k.readMessage(context.Background(), k.newConsumer(kafka_go.TopicThreaten))
 		if err != nil {
 			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
