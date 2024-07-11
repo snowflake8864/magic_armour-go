@@ -40,10 +40,10 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 	}
 
 	phoneCheck := 0
-	if err, smsSwitch := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
-		response.FailSimplify(ctx, err.Error())
+	if err1, isPhone := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err1 != nil {
+		response.FailSimplify(ctx, err1.Error())
 		return
-	} else if smsSwitch {
+	} else if isPhone {
 		phoneCheck = 1
 	}
 
