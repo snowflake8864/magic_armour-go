@@ -30,7 +30,7 @@ func CreateCmdFactory() *ThreatenCmd {
 	return &ThreatenCmd{
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "lock_threaten_check_",
-		cacheExpire: 180,
+		cacheExpire: 30,
 		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
