@@ -30,7 +30,7 @@ func CreateCmdFactory() *ThreatenCmd {
 	return &ThreatenCmd{
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "lock_threaten_check_",
-		cacheExpire: 30,
+		cacheExpire: 50,
 		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
@@ -322,7 +322,6 @@ func (crd *ThreatenCmd) SyncUnknownForCache() {
 
 // 给hash加锁
 func (crd *ThreatenCmd) lockHash(hash string) bool {
-	return true
 	key := crd.cachePrefix + hash
 	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
 		return true
@@ -350,7 +349,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	limit := enum_threaten.CenterSupportNumber
 	for {
 		//未同步一次最多验证3回
-		if level == enum_threaten.LevelDefault && page >= 2 {
+		if level == enum_threaten.LevelDefault && page >= 3 {
 			break
 		}
 		//每次获取固定条数
@@ -380,9 +379,9 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 				ParentName: model.ParentDir,
 			})
 		}
-		variable.ZapLog.Sugar().Debug("============================")
-		variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
-		variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
+		//variable.ZapLog.Sugar().Debug("============================")
+		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
+		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}
@@ -395,8 +394,8 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
 	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
 
-	variable.ZapLog.Sugar().Debug("idAndDataFrom=============================", level)
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
+	//variable.ZapLog.Sugar().Debug("idAndDataFrom=============================", level)
+	//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 	//没有需要校验数据
 	if list == nil || len(*list) == 0 {
 		variable.ZapLog.Sugar().Debug("list == nil")
@@ -420,8 +419,8 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	now := date_helper.CurDatetime()
 
 	for _, item := range *checkReps {
-		variable.ZapLog.Sugar().Debug("item=============================")
-		variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
+		//variable.ZapLog.Sugar().Debug("item=============================")
+		//variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
 		hash := strings.ToLower(item.Hash)
 		dataFrom, isOk := idAndDataFrom[hash]
 		if !isOk {

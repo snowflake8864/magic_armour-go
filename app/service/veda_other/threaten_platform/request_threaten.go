@@ -152,6 +152,8 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 
 	err2, respComm := aa.checkCode(bodyContext, err)
 	if err2 != nil {
+		variable.ZapLog.Sugar().Debug("bodyContext-----------------------------------------------------------")
+		variable.ZapLog.Sugar().Debug(bodyContext)
 		return err2, nil
 	}
 
