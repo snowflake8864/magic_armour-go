@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/utils/helpers/int_helper"
 )
 
 type AlarmTrans struct {
@@ -187,7 +188,11 @@ func (t *AlarmTrans) TransPortPage(total int64, models []*alarm_models.PortModel
 			data["target_ip"] = model.TargetIp
 			data["target_port"] = model.TargetPort
 			data["redirect_ip"] = model.RedirectIp
-			data["redirect_port"] = model.RedirectPort
+			redirectPort := ""
+			if model.RedirectPort > 0 {
+				redirectPort = int_helper.IntToStr(model.RedirectPort)
+			}
+			data["redirect_port"] = redirectPort
 			data["attack_total"] = model.AttackTotal
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
