@@ -7,7 +7,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
     DriveType: "mysql" # 数据库类型, 框架没有, 新增
     PrepareStmt: false  #  doris只支持查询预处理, 新增
     Write:
-      Host: "192.168.16.251"
+      Host: "192.168.17.251"
       DataBase: "magic_armour"
       Port: 3306
       Prefix: ""   #  目前没有用到该配置项
@@ -21,7 +21,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
       PingFailRetryTimes: 3   # 保留项,最大重连次数
     IsOpenReadDb: 0                     # 是否开启读写分离配置（1=开启、0=关闭），IsOpenReadDb=1,Read 部分参数有效，否则Read部分参数直接忽略
     Read:
-      Host: "192.168.16.251"
+      Host: "192.168.17.251"
       DataBase: "magic_armour"
       Port: 9030                        #注意，非3306，请自行调整
       Prefix: "9030"
@@ -37,7 +37,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
     DriveType: "mysql"
     PrepareStmt: false
     Write:
-      Host: "192.168.16.251"
+      Host: "192.168.17.251"
       DataBase: "magic_armour_agent"
       Port: 9030
       Prefix: ""
@@ -56,7 +56,7 @@ Gormv2: # 只针对 gorm  操作数据库有效
     DriveType: "mysql"
     PrepareStmt: false
     Write:
-      Host: "192.168.16.251"
+      Host: "192.168.17.251"
       DataBase: "magic_armour_alarm"
       Port: 9030
       Prefix: ""
