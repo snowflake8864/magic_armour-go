@@ -283,20 +283,23 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	}
 	//解压
 	fileNameArr := strings.Split(uploadModel.StorageName, ".")
-
 	unzipDir := path.Dir(uploadModel.FullPath) + "/" + fileNameArr[0] + "_unzip"
 	if err := zip_factory.UnzipFile(uploadModel.FullPath, unzipDir); err != nil {
 		response.FailData(ctx, "解压失败", err.Error())
 		return
 	}
 
-	//执行命令
-	shellPath := unzipDir + cur_app.ShellUpgrade()
+	//脚本目录
+	shellDir := unzipDir + "/veda_armour_install"
+	//脚本路径
+	shellPath := shellDir + "/" + cur_app.ShellUpgrade()
 	if !files.ExistsFile(shellPath) {
-		response.FailSimplify(ctx, "升级脚本不存在")
+		response.FailData(ctx, "升级脚本不存在", shellPath)
 		return
 	}
-	cmd := exec.Command(cur_app.ShellInit(), shellPath, unzipDir)
+
+	//执行命令
+	cmd := exec.Command(cur_app.ShellInit(), shellPath, shellDir)
 	if err := cmd.Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
 		return

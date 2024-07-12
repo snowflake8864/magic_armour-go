@@ -99,7 +99,9 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 		return errors.New("保存失败")
 	}
 
-	//
+	//推送到幻势
+	crd.PushHs(&model)
+
 	//动态封堵
 	if err := plug_calc_service.CreatePlugCalcFactory().CalcByLogin(model.OrgId, model.AgentId, attackIp); err != nil {
 		variable.ZapLog.Sugar().Debug(err.Error())
@@ -108,7 +110,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 	return nil
 }
 
-func (crd *AlarmLoginCalc) TestHs(model *alarm_models.LoginModel) {
+func (crd *AlarmLoginCalc) PushHs(model *alarm_models.LoginModel) {
 	//推送到幻势,
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchLogin); hsCli != nil {
 		hsData := huanshi_platform.AlarmLogin{

@@ -83,7 +83,7 @@ func TestHsAlarm(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 
-	job_callback_alarm.CreateLoginCalcFactory().TestHs(&alarm_models.LoginModel{
+	job_callback_alarm.CreateLoginCalcFactory().PushHs(&alarm_models.LoginModel{
 		OrgId:      1,
 		AgentId:    "win2010_test_001",
 		AgentAt:    date_helper.CurDatetime(),
