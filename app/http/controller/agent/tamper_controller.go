@@ -172,7 +172,7 @@ func (u *TamperController) format(platformType int, pType int, protectRw, isExte
 
 	//信任进程
 	var processArr []tamper_models.Process
-	var processMap []map[string]interface{}
+	processMap := []map[string]interface{}{}
 	if err := json_helper.ToAny(processStr, &processArr); err == nil {
 		for _, item := range processArr {
 			processMap = append(processMap, map[string]interface{}{

@@ -97,7 +97,7 @@ func (u *BlackmailController) format(platformType int, pType int, typeVal string
 
 	//信任进程
 	var processArr []blackmail_models.Process
-	var processMap []map[string]interface{}
+	processMap := []map[string]interface{}{}
 	if err := json_helper.ToAny(processStr, &processArr); err != nil {
 		return nil
 	} else {
