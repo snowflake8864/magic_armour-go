@@ -239,7 +239,7 @@ func (u *OrganizeController) PageForUser(ctx *gin.Context) {
 // PageForLog 日志: 分页
 func (u *OrganizeController) PageForLog(ctx *gin.Context) {
 	searchConditions := organization_models.SearchConditions{}
-	searchConditions.LogOraName = ctx.GetString(consts.ValidatorPrefixPlatform + "oraName")
+	searchConditions.LogOraName = ctx.GetString(consts.ValidatorPrefixPlatform + "orgName")
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 
 	//分页参数和排序参数

@@ -11,7 +11,7 @@ import (
 
 type LogPage struct {
 	data_type.Page
-	OraName  string `form:"oraName" json:"oraName" binding:"omitempty,min=2,max=128"`
+	OrgName  string `form:"orgName" json:"orgName" binding:"omitempty,min=2,max=128"`
 	UserName string `form:"userName" json:"userName" binding:"omitempty,min=2,max=128"`
 }
 
