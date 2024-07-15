@@ -132,7 +132,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	//页面上传
 	conditions := agent_models.SearchConditions{}
-	conditions.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "OrgId"))
+	conditions.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
 	conditions.AgentId = ctx.GetString(consts.ValidatorPrefixPlatform + "agentId")
 	conditions.HostName = ctx.GetString(consts.ValidatorPrefixPlatform + "hostName")
 	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixPlatform + "agentIp")
