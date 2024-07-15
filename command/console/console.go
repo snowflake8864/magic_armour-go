@@ -89,6 +89,11 @@ func start(unit, mode, interval, at string) {
 
 }
 
+// 开始执行业务
+func TestStart(unit, mode, interval, at string) {
+	start(unit, mode, interval, at)
+}
+
 func handleDay(mode, interval, at string) {
 	if mode == ModeOnce {
 		switch at {
@@ -120,6 +125,10 @@ func handleDay(mode, interval, at string) {
 			//统计企业昨天数据
 			org_cmd.CreateCmdFactory().YesterdayStatistics()
 			break
+		case AtFour:
+			//告警通知 - 暂时不做
+			alarm_cmd.CreateCmdFactory().EmailNotice()
+			break
 		case AtFive:
 			//统计告警昨天数据
 			alarm_cmd.CreateCmdFactory().YesterdayStatistics()
@@ -132,10 +141,7 @@ func handleDay(mode, interval, at string) {
 			//威胁情报缓存同步未知状态数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 			break
-		case AtEight:
-			//告警通知 - 暂时不做
-			alarm_cmd.CreateCmdFactory().EmailNotice()
-			break
+
 		}
 	} else if mode == ModeEvery {
 		switch at {
