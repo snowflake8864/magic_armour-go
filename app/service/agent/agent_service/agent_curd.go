@@ -61,7 +61,7 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (errCode int, err error) {
 	var validIds []string
-	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplify()); len(agentModels) == 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplify()); agentModels != nil && len(agentModels) > 0 {
 		for _, model := range agentModels {
 			validIds = append(validIds, model.AgentId)
 		}
@@ -101,7 +101,7 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 		return errCode, err
 	}
 	var validIds []string
-	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnProc(true)); len(agentModels) == 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnProc(true)); agentModels != nil && len(agentModels) > 0 {
 		for _, model := range agentModels {
 			if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
 				validIds = append(validIds, model.AgentId)
