@@ -60,7 +60,7 @@ func (u *TamperController) PutDir(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeDirStructureUpload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "dir")
 	err := agent_post_service.CreateAgentFactory().SaveDir(loginInfo.OrgId, loginInfo.AgentId, inputJson)
@@ -75,7 +75,7 @@ func (u *TamperController) PutDir(ctx *gin.Context) {
 func (u *TamperController) GetPolicy(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeTamperPolicyDownload}, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeTamperPolicyDownload}, ctx.ClientIP())
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})

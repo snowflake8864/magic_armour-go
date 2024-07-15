@@ -59,7 +59,7 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeProcessSampleUpload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	id, _ := ctx.GetPostForm("p_hash")
 	if string_helper.IsEmpty(id) {

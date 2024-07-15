@@ -24,7 +24,7 @@ func (u *PortController) PutWorking(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypePortWorkingUpload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "service")
 	err := agent_post_service.CreatePortFactory().SaveWorking(loginInfo.OrgId, loginInfo.AgentId, inputJson)
@@ -41,7 +41,7 @@ func (u *PortController) GetVirtual(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypePortVirtualPolicyDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	//win xp 不支持的功能
 	if loginInfo.OsType == enum_software.OsTypeWinXp {

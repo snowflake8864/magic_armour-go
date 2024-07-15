@@ -23,7 +23,7 @@ type BlackmailController struct {
 func (u *BlackmailController) GetPolicy(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeBlackmailPolicyDownload}, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeBlackmailPolicyDownload}, ctx.ClientIP())
 
 	openSwitch := enums.SwitchOn
 	var existsPolicy = make(map[string]struct{})

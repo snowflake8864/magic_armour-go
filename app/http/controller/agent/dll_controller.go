@@ -25,7 +25,7 @@ func (u *DllController) PutAll(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeDllSuffixIsDll}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "list")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromDll, agent_post_service.ProcTaskAll,
@@ -42,7 +42,7 @@ func (u *DllController) PutRunning(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeDllRefresh}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromDll, agent_post_service.ProcTaskRefresh,
@@ -81,7 +81,7 @@ func (u *DllController) GetWhite(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeDllWhiteDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*DllWhiteResp{} //需初始化
@@ -134,7 +134,7 @@ func (u *DllController) GetBlack(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeDllBlackDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*DllWhiteResp{} //需初始化

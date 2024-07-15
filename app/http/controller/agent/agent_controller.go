@@ -43,7 +43,7 @@ func (u *AgentController) getMode(mode int) int {
 func (u *AgentController) GetConfig(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentConfigDownload}, ctx.ClientIP())
 
 	//终端配置
 	agentCurdFact := agent_models.CreateAgentFactory()
@@ -132,7 +132,7 @@ func (u *AgentController) GetInfo(ctx *gin.Context) {
 func (u *AgentController) Upgrade(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentUpgrade}, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeAgentUpgrade}, ctx.ClientIP())
 
 	//客户端最新版本
 	IsPublish := enums.IsYes
@@ -183,7 +183,7 @@ func (u *AgentController) Uninstall(ctx *gin.Context) {
 func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeTrustDir}, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeTrustDir}, ctx.ClientIP())
 
 	OpenSwitch := enums.SwitchOn
 	conditions := trust_dir_models.SearchConditions{

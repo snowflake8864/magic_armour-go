@@ -21,7 +21,7 @@ func (u *UsbController) Put(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeUsbUpload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "data")
 	err := agent_post_service.CreateUsbFactory().Save(loginInfo.OrgId, loginInfo.AgentId, inputJson)
@@ -37,7 +37,7 @@ func (u *UsbController) GetBlack(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeUsbBlackDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*UsbResp{}
@@ -83,7 +83,7 @@ func (u *UsbController) GetWhite(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeUsbWhiteDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*UsbResp{} //需初始化

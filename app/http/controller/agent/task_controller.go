@@ -71,7 +71,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		notSupportTasks = append(notSupportTasks, enum_task.TypeAgentUninstall)
 	} else {
 		//设置存活状态
-		go agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId)
+		agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId)
 
 		//是否有未完成的任务
 		var hasUnfinishedTask bool
@@ -102,7 +102,7 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	//不支持的任务直接关闭
 	if len(notSupportTasks) > 0 {
-		go taskCurdFact.CloseTasks(loginInfo.OrgId, loginInfo.AgentId, notSupportTasks, ctx.ClientIP())
+		taskCurdFact.CloseTasks(loginInfo.OrgId, loginInfo.AgentId, notSupportTasks, ctx.ClientIP())
 	}
 
 	if unfinishedTasks == nil {
@@ -181,7 +181,7 @@ func (u *TaskController) Close(ctx *gin.Context) {
 	types := []int{taskType}
 
 	loginInfo := u.getLogin(ctx)
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, types, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, types, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "关闭任务")
 

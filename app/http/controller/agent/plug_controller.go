@@ -25,7 +25,7 @@ func (u *PlugController) GetDynamic(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypePluggingDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	//win xp 不支持的功能
 	if loginInfo.OsType == enum_software.OsTypeWinXp {
@@ -99,7 +99,7 @@ func (u *PlugController) GetIpWhite(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypePlugIpWhiteDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	response.SuccessReturnData(ctx, "下载封堵ip白名单(不在使用)")
 }
@@ -114,7 +114,7 @@ func (u *PlugController) GetIpBlack(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypePlugIpBlackDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	//win xp 不支持的功能
 	if loginInfo.OsType == enum_software.OsTypeWinXp {

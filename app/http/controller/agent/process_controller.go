@@ -25,7 +25,7 @@ func (u *ProcessController) PutAll(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeProcessSuffixIsExe}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "list")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromProcess, agent_post_service.ProcTaskAll,
@@ -42,7 +42,7 @@ func (u *ProcessController) PutRunning(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeProcessRefresh}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
 	err := agent_post_service.CreateProcFactory().ToQuery(enum_process.DataFromProcess, agent_post_service.ProcTaskRefresh,
@@ -85,7 +85,7 @@ func (u *ProcessController) GetWhite(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeProcessWhiteDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*ProcessWhiteResp{} //需初始化
@@ -140,7 +140,7 @@ func (u *ProcessController) GetBlack(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeProcessBlackDownload}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
 	result := []*ProcessWhiteResp{} //需初始化
@@ -195,7 +195,7 @@ func (u *ProcessController) GetAssign(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
 	tasks := []int{enum_task.TypeProcessCollectDll}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	result := []*ProcessAssignResp{} //需初始化
 
@@ -218,7 +218,7 @@ func (u *ProcessController) PutAssign(ctx *gin.Context) {
 	//关闭任务
 	loginInfo := u.getLogin(ctx)
 	tasks := []int{enum_task.TypeProcessCollectDll}
-	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "proclist")
 	err := agent_post_service.CreateProcFactory().CollectDll(loginInfo.OrgId, loginInfo.AgentId, inputJson)
