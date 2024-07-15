@@ -36,7 +36,7 @@ func (u *UsbController) Put(ctx *gin.Context) {
 func (u *UsbController) GetBlack(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//关闭任务
-	tasks := []int{enum_task.TypeUsbWhiteDownload}
+	tasks := []int{enum_task.TypeUsbBlackDownload}
 	go task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	var existsPolicy = make(map[string]struct{})
