@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_org_operate"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/authorization"
@@ -38,9 +37,9 @@ func SaveOperate() gin.HandlerFunc {
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
-			param.Status = enums.IsNot
+			param.Status = enum_org_operate.StatusFail
 			if param.HttpCode == http.StatusOK {
-				param.Status = enums.IsYes
+				param.Status = enum_org_operate.StatusSuccess
 			}
 
 			//是否需要记录

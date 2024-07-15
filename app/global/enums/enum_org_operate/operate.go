@@ -24,6 +24,9 @@ const (
 	ModuleOrg                   = "org"
 	ModuleSecurityReport        = "securityReport"
 	ModuleOther                 = "other"
+
+	StatusSuccess int = 1
+	StatusFail    int = 2
 )
 
 var EnumMap = map[string]map[string]string{

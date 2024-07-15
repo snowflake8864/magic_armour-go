@@ -13,6 +13,9 @@ const (
 	ModuleAccount    = "account"
 	ModuleDictionary = "dictionary"
 	ModuleSystem     = "system"
+
+	StatusSuccess int = 1
+	StatusFail    int = 2
 )
 
 var EnumMap = map[string]map[string]string{

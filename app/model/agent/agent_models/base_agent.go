@@ -236,7 +236,7 @@ func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +
 		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver," +
 		"is_online, online_at, live_at, is_safe, dept_id,user_id," +
-		"agent_type,alias,contact_name,contact_tel, position, remark"
+		"agent_type,alias,contact_name,contact_tel, position, remark, created_at"
 	return column
 }
 

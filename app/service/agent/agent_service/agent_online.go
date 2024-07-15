@@ -82,7 +82,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		CreateExtendFactory().AddDefault(param.OrgId, param.AgentId)
 
 		//添加任务
-		crd.addTask(param, true, "终端验证不存在")
+		crd.addTask(param, true, "终端第一次上线")
 
 		//自动授权
 		crd.autoGrant(param.OrgId, param.AgentId)
@@ -113,7 +113,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		}
 
 		//添加任务
-		crd.addTask(agentModel, false, "终端验证已存在")
+		crd.addTask(agentModel, false, "终端上线")
 
 		//有组织架构
 		if agentModel.DeptId > 0 {
