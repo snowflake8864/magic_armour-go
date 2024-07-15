@@ -28,7 +28,11 @@ type AgentCurd struct {
 
 // SetOffline 设置离线
 func (crd *AgentCurd) SetOffline(floorAt string) bool {
-	condition := agent_models.SearchConditions{OnlineAtLte: floorAt}
+	isOnline := enums.IsYes
+	condition := agent_models.SearchConditions{
+		IsOnline:  &isOnline,
+		LiveAtLte: floorAt,
+	}
 	updates := map[string]interface{}{
 		"is_online": enums.IsNot,
 	}
