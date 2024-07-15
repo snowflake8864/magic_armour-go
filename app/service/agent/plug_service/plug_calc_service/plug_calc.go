@@ -6,12 +6,14 @@ import (
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/alarm_service/plug_callback_alarm"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -190,6 +192,9 @@ func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugTyp
 	if !crd.masterModel.InsertItem(&modelPlug) {
 		return errors.New("保存动态封堵失败")
 	}
+
+	//新增任务
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypePluggingDownload, "")
 
 	//同步生成告警
 	if err := plug_callback_alarm.CreatePlugSaveFactory().Add(&modelPlug); err != nil {
