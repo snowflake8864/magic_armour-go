@@ -60,11 +60,17 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
 	}
 	updates = make(map[string]interface{})
-	if param.DeptId != nil && *param.DeptId != int64(enums.AllDefaultInt) {
-		updates["dept_id"] = *param.DeptId
+	if param.DeptId != nil {
+		updates["dept_id"] = 0
+		if *param.DeptId != int64(enums.AllDefaultInt) {
+			updates["dept_id"] = *param.DeptId
+		}
 	}
-	if param.AgentType != nil && *param.AgentType != enums.AllDefaultInt {
-		updates["agent_type"] = *param.AgentType
+	if param.AgentType != nil {
+		updates["agent_type"] = 0
+		if *param.AgentType != enums.AllDefaultInt {
+			updates["agent_type"] = *param.AgentType
+		}
 	}
 	if param.Alias != nil && *param.Alias != enums.AllDefaultStr {
 		updates["alias"] = *param.Alias
