@@ -51,10 +51,10 @@ func (u *ProcessController) PageForManage(ctx *gin.Context) {
 	}
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, enum_agent.AgentFieldDefault)
+	offset, pageSize, _ := u.getPageAndSort(ctx, "")
 
 	//终端分页
-	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, order)
+	total, agentModels := agent_models.CreateAgentFactory().Page(conditions, offset, pageSize, enum_agent.AgentFieldDefault)
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 

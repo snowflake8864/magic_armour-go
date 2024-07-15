@@ -2,10 +2,10 @@ package agent_models
 
 import (
 	"gorm.io/gorm"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
-	"strings"
 )
 
 // 终端表
@@ -474,10 +474,10 @@ func (m *AgentModel) GetItemsByConditions(condition SearchConditions, offset, li
 		if limit > 0 {
 			tmp = tmp.Offset(offset).Limit(limit)
 		}
-		if !string_helper.IsEmpty(order) {
+		if order == enum_agent.AgentFieldDefault {
+			tmp = tmp.Order("is_online DESC").Order("is_safe DESC").Order("created_at ASC")
+		} else if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
-		} else if strings.ToLower(order) == "id desc" {
-			tmp = tmp.Order("is_online_at DESC").Order("is_safe DESC").Order("created_at ASC")
 		} else {
 			tmp = tmp.Order("created_at ASC")
 		}
