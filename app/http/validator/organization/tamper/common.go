@@ -37,7 +37,7 @@ type ExcludeFolder struct {
 }
 
 type Processes struct {
-	Processes string `form:"processes" json:"processes" binding:"omitempty,min=32"`
+	Processes string `form:"processes" json:"processes" binding:"omitempty,min=2"`
 }
 
 type ProtectRw struct {
