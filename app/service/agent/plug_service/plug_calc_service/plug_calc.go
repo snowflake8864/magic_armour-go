@@ -135,7 +135,6 @@ func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) e
 
 	//封堵配置 - 口令破解
 	plugConfig := agent_service.CreateExtendFactory().GetPlugOfLogin(orgId, agentId)
-
 	if plugConfig.Switch == enums.SwitchOff {
 		return nil
 	}
@@ -209,10 +208,10 @@ func (crd *PlugCalc) hasDynamic(orgId int64, agentId string, attackIp string) bo
 		Ip:         attackIp,
 		OpenSwitch: &SwitchOn,
 	}
-	if crd.masterModel.Count(search) > 1 {
-		return false
-	} else {
+	if crd.masterModel.Count(search) >= 1 {
 		return true
+	} else {
+		return false
 	}
 }
 
