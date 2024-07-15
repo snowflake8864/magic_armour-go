@@ -333,7 +333,7 @@ func (m *AgentModel) DeleteByOrg(orgId int64) bool {
 // DeleteByOrgAndAgents 通通过企业id和终端id集合删除
 func (m *AgentModel) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		return tx.Model(m).Where("org_id=? AND id IN ?", orgId).Where("id IN ?", agentIds).Delete(m)
+		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Delete(m)
 	})
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
