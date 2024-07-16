@@ -97,15 +97,15 @@ func (t *Common) TransThreatenInfo(model *threaten_models.CacheModel) map[string
 		for _, item := range attrJson.Detections {
 			if strings.ToLower(item.Category) == "malicious" {
 				maliciousList = append(maliciousList, map[string]interface{}{
-					"status":     0,
-					"category":   item.Category,
-					"engineName": item.EngineName,
+					"status":      0,
+					"category":    item.Category,
+					"engine_name": item.EngineName,
 				})
 			} else {
 				undetectedList = append(undetectedList, map[string]interface{}{
-					"status":     1,
-					"category":   item.Category,
-					"engineName": item.EngineName,
+					"status":      1,
+					"category":    item.Category,
+					"engine_name": item.EngineName,
 				})
 			}
 		}

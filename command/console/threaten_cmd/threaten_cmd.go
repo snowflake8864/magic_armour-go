@@ -320,19 +320,9 @@ func (crd *ThreatenCmd) SyncUnknownForCache() {
 	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
 }
 
-// 给hash加锁
-func (crd *ThreatenCmd) lockHash(hash string) bool {
-	key := crd.cachePrefix + hash
-	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
-		return true
-	} else {
-		return false
-	}
-}
-
 // 同步缓存到威胁情报
 func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
-	//variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level", level)
+	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level:", level)
 
 	//获取客户端
 	err, threatenCli := crd.getThreatenCli(true, false)
@@ -349,7 +339,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	limit := enum_threaten.CenterSupportNumber
 	for {
 		//未同步一次最多验证3回
-		if level == enum_threaten.LevelDefault && page >= 3 {
+		if level == enum_threaten.LevelDefault && page >= 10 {
 			break
 		}
 		//每次获取固定条数
@@ -364,10 +354,6 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		var syncList []threaten_platform.CheckHashes
 		var idAndDataFrom = make(map[string]int)
 		for _, model := range models {
-			//加锁失败
-			if !crd.lockHash(model.Id) {
-				continue
-			}
 			idAndDataFrom[model.Id] = model.DataFrom
 
 			syncList = append(syncList, threaten_platform.CheckHashes{
@@ -379,8 +365,9 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 				ParentName: model.ParentDir,
 			})
 		}
-		//variable.ZapLog.Sugar().Debug("============================")
+		//variable.ZapLog.Sugar().Debug("idAndDataFrom============================")
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
+		//variable.ZapLog.Sugar().Debug("syncList============================")
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
@@ -393,9 +380,8 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 // 同步缓存到威胁情报并进行处理
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
 	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
+	variable.ZapLog.Sugar().Debug("checkCacheToThreaten=============================", level)
 
-	//variable.ZapLog.Sugar().Debug("idAndDataFrom=============================", level)
-	//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 	//没有需要校验数据
 	if list == nil || len(*list) == 0 {
 		variable.ZapLog.Sugar().Debug("list == nil")
@@ -419,8 +405,6 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	now := date_helper.CurDatetime()
 
 	for _, item := range *checkReps {
-		//variable.ZapLog.Sugar().Debug("item=============================")
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(item))
 		hash := strings.ToLower(item.Hash)
 		dataFrom, isOk := idAndDataFrom[hash]
 		if !isOk {
@@ -436,7 +420,6 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			CheckAt:   now,
 			CheckInfo: item.Attr,
 		}
-
 		//进入队列
 		crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
 			Type: kafka_go.TypeThreatenSyncRewrite,

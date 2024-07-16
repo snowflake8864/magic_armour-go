@@ -71,13 +71,13 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	}
 
 	checkSource := enum_threaten.CheckSourceVeda
-	if strings.Contains(param.Attribute, "malicious") && strings.Contains(param.Attribute, "detections") {
+	if strings.Contains(param.CheckInfo, "malicious") && strings.Contains(param.CheckInfo, "detections") {
 		checkSource = enum_threaten.CheckSourceInternet
 	}
 
 	updates := map[string]interface{}{
 		"level":        param.Level,
-		"attribute":    param.Attribute,
+		"check_info":   param.CheckInfo,
 		"check_at":     checkAt,
 		"check_source": checkSource,
 	}
