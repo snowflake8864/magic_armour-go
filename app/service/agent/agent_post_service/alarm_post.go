@@ -230,7 +230,7 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 		HandleStatus: enum_alarm.HandleStatusNot,
 		CreatedAt:    now,
 		ProcHash:     param.ProcHash,
-		ProcDir:      param.ProcHash,
+		ProcDir:      param.ProcDir,
 		ProcParam:    param.ProcParam,
 		FileDir:      param.FileDir,
 		TargetDir:    param.TargetDir,
