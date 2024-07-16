@@ -271,7 +271,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 }
 
 // addTask 新增任务
-func (crd *AgentBase) addTask(param *agent_models.AgentModel, isTrustDir bool, remark string) {
+func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColumn, isTrustDir bool, remark string) {
 	tasks := []int{
 		enum_task.TypeAgentConfigDownload,
 	}
@@ -279,48 +279,53 @@ func (crd *AgentBase) addTask(param *agent_models.AgentModel, isTrustDir bool, r
 		tasks = append(tasks, enum_task.TypeTrustDir)
 	}
 
+	if param == nil {
+		param = &ManualColumn{}
+	}
+
 	//进程开启
-	if param.ProcessSwitch == enums.SwitchOn {
+	if param.ProcessSwitch != nil && *param.ProcessSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeProcessWhiteDownload, enum_task.TypeProcessBlackDownload)
 	}
+
 	//模块开启
-	if param.DllSwitch == enums.SwitchOn {
+	if param.DllSwitch != nil && *param.DllSwitch == enums.SwitchOn {
 		//todo linux不支持模块 http://192.168.19.9/zentao/story-view-636.html
-		if param.PlatformType == enum_software.PlatformTypeWindows {
+		if model.PlatformType == enum_software.PlatformTypeWindows {
 			tasks = append(tasks, enum_task.TypeDllWhiteDownload, enum_task.TypeDllBlackDownload)
 		}
 	}
 	//防篡改开启
-	if param.TamperSwitch == enums.SwitchOn {
+	if param.TamperSwitch != nil && *param.TamperSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeTamperPolicyDownload)
 	}
 
 	//勒索开启
-	if param.BlackmailSwitch == enums.SwitchOn {
+	if param.BlackmailSwitch != nil && *param.BlackmailSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeBlackmailPolicyDownload)
 	}
 
 	//端口虚开开启
-	if param.PortSwitch == enums.SwitchOn {
+	if param.PortSwitch != nil && *param.PortSwitch == enums.SwitchOn {
 		//windows XP和2003  不支持
-		if param.OsType != enum_software.OsTypeWinXp {
+		if model.OsType != enum_software.OsTypeWinXp {
 			tasks = append(tasks, enum_task.TypePortWorkingUpload, enum_task.TypePortVirtualPolicyDownload)
 		}
 	}
 
 	//动态封堵开启
-	if param.PlugSwitch == enums.SwitchOn {
+	if param.PlugSwitch != nil && *param.PlugSwitch == enums.SwitchOn {
 		//windows XP和2003  不支持
-		if param.OsType == enum_software.OsTypeWinXp {
+		if model.OsType == enum_software.OsTypeWinXp {
 			tasks = append(tasks, enum_task.TypePluggingDownload, enum_task.TypePlugIpBlackDownload)
 		}
 	}
 
 	//外设开启
-	if param.UsbSwitch == enums.SwitchOn {
+	if param.UsbSwitch != nil && *param.UsbSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
 	}
 
-	task_service.CreateCurdFactory().AddTasksForAgent(param.OrgId, param.AgentId, tasks, remark)
+	task_service.CreateCurdFactory().AddTasksForAgent(model.OrgId, model.AgentId, tasks, remark)
 
 }

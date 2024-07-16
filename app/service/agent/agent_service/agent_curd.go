@@ -132,6 +132,7 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 	for _, model := range models {
 		err, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
 		fmt.Println("修改================================")
+		//fmt.Println(json_helper.Encode(model))
 		fmt.Println("AgentId:", model.AgentId)
 		fmt.Println(json_helper.Encode(updates))
 		fmt.Println("hasTask:", hasTask)
@@ -148,7 +149,7 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		}
 		//需要下发任务
 		if hasTask {
-			crd.addTask(model, false, remark)
+			crd.addTask(model, param, false, remark)
 		}
 		//开启自动白名单
 		if openAutoWhite {

@@ -82,7 +82,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		CreateExtendFactory().AddDefault(param.OrgId, param.AgentId)
 
 		//添加任务
-		crd.addTask(param, true, "终端第一次上线")
+		crd.addTask(param, nil, true, "终端第一次上线")
 
 		//自动授权
 		crd.autoGrant(param.OrgId, param.AgentId)
@@ -112,8 +112,18 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			return false, "更新数据失败"
 		}
 
+		//有任务内容的
+		manual := &ManualColumn{
+			ProcessSwitch:   &agentModel.ProcessSwitch,
+			DllSwitch:       &agentModel.DllSwitch,
+			TamperSwitch:    &agentModel.TamperSwitch,
+			BlackmailSwitch: &agentModel.BlackmailSwitch,
+			PortSwitch:      &agentModel.PortSwitch,
+			PlugSwitch:      &agentModel.PlugSwitch,
+			UsbSwitch:       &agentModel.UsbSwitch,
+		}
 		//添加任务
-		crd.addTask(agentModel, false, "终端上线")
+		crd.addTask(agentModel, manual, false, "终端上线")
 
 		//有组织架构
 		if agentModel.DeptId > 0 {
