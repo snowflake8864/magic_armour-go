@@ -44,6 +44,7 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 		expect = "same" //不变
 		ratio = 0
 	}
+	ratio = float_helper.FloatScale(ratio, 2)
 	percent = float_helper.Float64ToStr(ratio)
 	if percent == "0" {
 		percent = "0.00"
