@@ -14,7 +14,7 @@ type DnsPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
 	SearchTime
-	ProdHash
+	ProcHash
 	DomainName
 }
 

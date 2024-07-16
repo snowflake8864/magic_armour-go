@@ -279,13 +279,16 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 		return
 	}
 	//查询终端比较用户管理的终端
-	agentId := u.getAgentIdFromGin(ctx)
-	if !string_helper.IsEmpty(agentId) && len(userAgentIds) > 0 {
-		if slice_helper.StringIn(agentId, userAgentIds) {
+	if agentId := u.getAgentIdFromGin(ctx); !string_helper.IsEmpty(agentId) { //存在查询终端
+		if len(userAgentIds) > 0 { //不是管理员
+			if slice_helper.StringIn(agentId, userAgentIds) { // 查询终端在管理终端列表下
+				condition.AgentId = agentId
+			} else {
+				response.FailSimplify(ctx, "数据为空")
+				return
+			}
+		} else { //是管理员
 			condition.AgentId = agentId
-		} else {
-			response.FailSimplify(ctx, "数据为空")
-			return
 		}
 	} else {
 		condition.AgentIds = userAgentIds

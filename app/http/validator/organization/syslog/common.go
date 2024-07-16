@@ -4,13 +4,13 @@ type Ids struct {
 	Ids string `form:"ids" json:"ids" binding:"required,min=6"`
 }
 
-type ProdHash struct {
-	ProdHash string `form:"prodHash" json:"prodHash" binding:"omitempty,max=128"`
+type ProcHash struct {
+	ProcHash string `form:"procHash" json:"procHash" binding:"omitempty,max=128"`
 }
 
 type Process struct {
-	ProdId      int    `form:"prodId" json:"prodId" binding:"omitempty,max=65535"`
-	ProdDir     string `form:"prodDir" json:"prodDir" binding:"omitempty,max=65535"`
+	ProcId      int    `form:"procId" json:"procId" binding:"omitempty,max=65535"`
+	ProcDir     string `form:"procDir" json:"procDir" binding:"omitempty,max=65535"`
 	ProcParam   string `form:"procParam" json:"procParam" binding:"omitempty,min=1,max=256"`
 	ParentHash  string `form:"parentHash" json:"parentHash" binding:"omitempty,max=128"`
 	ParentId    int    `form:"parentId" json:"parentId" binding:"omitempty,min=1,max=65535"`

@@ -14,7 +14,7 @@ type OuterPage struct {
 	data_type.Page
 	data_type.AgentSingleOmitempty
 	SearchTime
-	ProdHash
+	ProcHash
 	SourceIp
 	SourcePort
 	TargetIp
