@@ -81,7 +81,7 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 		"check_at":     checkAt,
 		"check_source": checkSource,
 	}
-	if crd.masterModel.UpdateById(param.Id, updates) {
+	if !crd.masterModel.UpdateById(param.Id, updates) {
 		return false
 	}
 
@@ -90,8 +90,11 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	return true
 }
 
-func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
+func (crd *ThreatenCache) TestRewriteAfter(id string, dataFrom, level int) {
+	crd.rewriteAfter(id, dataFrom, level)
+}
 
+func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
 	if dataFrom == enum_threaten.DataFromProcess { //来源进程
 		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
 	} else if dataFrom == enum_threaten.DataFromDll { //来源模块
