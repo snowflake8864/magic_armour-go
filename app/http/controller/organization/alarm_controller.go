@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/utils/helpers/slice_helper"
@@ -381,15 +382,35 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 	case enum_alarm.ModuleUsb:
 		condition.UsbHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
 
+		//终端对应外接设备别名
+		agentUsbAlias := make(map[string]map[string]string)
+
 		fact := alarm_models.CreateUsbFactory()
 		total, models := fact.Page(condition, offset, pageSize, order)
 		if models != nil || len(models) > 0 {
 			for _, model := range models {
 				agentIds = append(agentIds, model.AgentId)
+
+				//终端对应外接设备别名
+				if _, isHash := agentUsbAlias[model.AgentId][model.UsbHash]; !isHash {
+					//先初始化
+					agentUsbAlias[model.AgentId] = map[string]string{
+						model.UsbHash: "",
+					}
+
+					//获取终端设备
+					if usbModel := usb_models.CreateUsbFactory().GetItemByConditions(usb_models.SearchConditions{
+						OrgId:   loginInfo.OrgId,
+						AgentId: model.AgentId,
+						Id:      model.UsbHash,
+					}); usbModel != nil {
+						agentUsbAlias[model.AgentId][model.UsbHash] = usbModel.Alias
+					}
+				}
+				agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 			}
-			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransUsbPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransUsbPage(total, models, agentMap, nil, agentUsbAlias))
 		break
 	case enum_alarm.ModuleOutreach:
 		condition.TargetIp = ctx.GetString(consts.ValidatorPrefixOrg + "targetIp")

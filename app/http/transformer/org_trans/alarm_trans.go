@@ -248,7 +248,8 @@ func (t *AlarmTrans) TransPlugPage(total int64, models []*alarm_models.PlugModel
 
 // TransUsbPage 转换成外设告警分页需要的数据
 func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
-	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel,
+	agentUsbAlias map[string]map[string]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -271,6 +272,9 @@ func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
 			data["usb_name"] = model.UsbName
 			data["usb_intro"] = model.UsbIntro
 			data["usb_alias"] = ""
+			if hashAlias, isHash := agentUsbAlias[model.AgentId][model.UsbHash]; isHash {
+				data["usb_alias"] = hashAlias
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
