@@ -3,6 +3,7 @@ package threaten_cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
@@ -367,8 +368,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		}
 		//variable.ZapLog.Sugar().Debug("idAndDataFrom============================")
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
-		//variable.ZapLog.Sugar().Debug("syncList============================")
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
+		fmt.Println(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}

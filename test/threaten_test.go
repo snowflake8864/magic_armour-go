@@ -1,6 +1,8 @@
 package test
 
 import (
+	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
@@ -28,7 +30,12 @@ func TestThreatenSyncCache(t *testing.T) {
 }
 
 func TestThreatenRewrite(t *testing.T) {
-	threaten_service.CreateCacheFactory().TestRewriteAfter("4c7b5857db3f1c52a07d5feda1370107", 1, 1)
+	param := threaten_models.CacheModel{
+		Id:       "79a78e9e58471e51cd0f7525c6a6a168",
+		Level:    enum_threaten.LevelWhite,
+		DataFrom: enum_threaten.DataFromProcess,
+	}
+	threaten_service.CreateCacheFactory().Rewrite(&param)
 }
 
 func TestThreatenCallbackByHash(t *testing.T) {

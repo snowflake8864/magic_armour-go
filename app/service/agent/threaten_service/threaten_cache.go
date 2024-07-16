@@ -90,10 +90,6 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	return true
 }
 
-func (crd *ThreatenCache) TestRewriteAfter(id string, dataFrom, level int) {
-	crd.rewriteAfter(id, dataFrom, level)
-}
-
 func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
 	if dataFrom == enum_threaten.DataFromProcess { //来源进程
 		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
