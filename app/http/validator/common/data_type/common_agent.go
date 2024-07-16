@@ -16,15 +16,15 @@ type AgentSearch struct {
 
 // AgentSingle 终端单个
 type AgentSingle struct {
-	AgentId string `form:"agentId" json:"agentId" binding:"required,min=8,max=32"`
+	AgentId string `form:"agentId" json:"agentId" binding:"required,min=8,max=64"`
 }
 
 // AgentBatch 终端批量
 type AgentBatch struct {
-	AgentIds []string `form:"agentIds" json:"agentIds" binding:"required,gt=0,dive,min=8,max=32"`
+	AgentIds []string `form:"agentIds" json:"agentIds" binding:"required,gt=0,dive,min=8,max=64"`
 }
 
 // AgentSingleOmitempty 终端单个
 type AgentSingleOmitempty struct {
-	AgentId string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
+	AgentId string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=64"`
 }
