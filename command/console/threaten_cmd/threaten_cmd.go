@@ -103,7 +103,7 @@ func (crd *ThreatenCmd) SyncForPushes() {
 	cacheFact := threaten_models.CreatePushFactory()
 	page := 0
 	limit := enum_threaten.CenterSupportNumber
-	for page = 1; page <= 5; page++ {
+	for page = 1; page <= 10; page++ {
 		//每次获取固定条数
 		offset := (page - 1) * limit
 		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")

@@ -1,7 +1,6 @@
 package threaten_job
 
 import (
-	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
@@ -27,7 +26,7 @@ func HandelRewire(jsonStr string) {
 		variable.ZapLog.Info(jsonStr)
 		return
 	}
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
+	//variable.ZapLog.Sugar().Debug(fmt.Sprintf("hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
 
 	if !threaten_service.CreateCacheFactory().Rewrite(&model) {
 		variable.ZapLog.Info(jsonStr)
