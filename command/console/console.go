@@ -98,6 +98,7 @@ func handleDay(mode, interval, at string) {
 	if mode == ModeOnce {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("每天清理一次数据")
 			//清理通讯日志
 			syslog_cmd.CreateCmdFactory().Delete()
 			//清理告警
@@ -114,30 +115,37 @@ func handleDay(mode, interval, at string) {
 			service_cmd.CreateCmdFactory().Delete()
 			break
 		case AtOne:
+			variable.ZapLog.Sugar().Debug("未知支付订单自动过期")
 			//未知支付订单自动过期
 			order_cmd.CreateCmdFactory().UnpaidExpired()
 			break
 		case AtTwo:
+			variable.ZapLog.Sugar().Debug("终端授权自动过期")
 			//终端授权自动过期
 			agent_cmd.CreateAgentFactory().GrantExpired()
 			break
 		case AtThree:
+			variable.ZapLog.Sugar().Debug("统计企业昨天数据")
 			//统计企业昨天数据
 			org_cmd.CreateCmdFactory().YesterdayStatistics()
 			break
 		case AtFour:
+			variable.ZapLog.Sugar().Debug("告警通知 - 暂时不做")
 			//告警通知 - 暂时不做
 			alarm_cmd.CreateCmdFactory().EmailNotice()
 			break
 		case AtFive:
+			variable.ZapLog.Sugar().Debug("统计告警昨天数据")
 			//统计告警昨天数据
 			alarm_cmd.CreateCmdFactory().YesterdayStatistics()
 			break
 		case AtSix:
+			variable.ZapLog.Sugar().Debug("删除威胁情报缓存")
 			//删除威胁情报缓存
 			threaten_cmd.CreateCmdFactory().DeleteForCache()
 			break
 		case AtSeven:
+			variable.ZapLog.Sugar().Debug("威胁情报缓存同步未知状态数据到威胁情报中心")
 			//威胁情报缓存同步未知状态数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 			break
@@ -146,6 +154,7 @@ func handleDay(mode, interval, at string) {
 	} else if mode == ModeEvery {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("从进程或模块添加到威胁情报缓存")
 			//从进程或模块添加到威胁情报缓存
 			threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 			break
@@ -161,14 +170,17 @@ func handleMinute(mode, interval, at string) {
 	if interval == AtOne {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("威胁情报缓存同步默认状态（未同步）数据到威胁情报中心")
 			//威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 			break
 		case AtOne:
+			variable.ZapLog.Sugar().Debug("终端离线")
 			//终端离线
 			agent_cmd.CreateAgentFactory().Offline()
 			break
 		case AtTwo:
+			variable.ZapLog.Sugar().Debug("本地缓存数据同步威胁情报推送列表")
 			//本地缓存数据同步威胁情报推送列表 - 暂时不做
 			threaten_cmd.CreateCmdFactory().Cache2Pushes()
 			break
@@ -177,10 +189,12 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtTwo {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("动态封堵已过期的自动解封")
 			//动态封堵已过期的自动解封
 			plug_cmd.CreateCmdFactory().DynamicExpired()
 			break
 		case AtOne:
+			variable.ZapLog.Sugar().Debug("终端安全状态")
 			//终端安全状态
 			agent_cmd.CreateAgentFactory().HandleSafe()
 			break
@@ -189,14 +203,17 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtThree {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("从进程或模块添加任务")
 			//从进程或模块添加任务
 			proc_cmd.CreateCmdFactory().AddFromProcForTask()
 			break
 		case AtOne:
+			variable.ZapLog.Sugar().Debug("服务器状态监控")
 			//服务器状态监控
 			service_cmd.CreateCmdFactory().Monitor()
 			break
 		case AtTwo:
+			variable.ZapLog.Sugar().Debug("威胁情报同步数据到威胁情报中心")
 			//威胁情报同步数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncForPushes()
 			break
@@ -205,6 +222,7 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtFive {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("同步推送数据到幻势")
 			//同步推送数据到幻势
 			huanshi_cmd.CreateCmdFactory().Push()
 			break
@@ -212,6 +230,7 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtTen {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("统计告警今天数据")
 			//统计告警今天数据
 			alarm_cmd.CreateCmdFactory().TodayStatistics()
 			break
@@ -219,6 +238,7 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtFifteen {
 		switch at {
 		case AtZero:
+			variable.ZapLog.Sugar().Debug("统计企业今天数据")
 			//统计企业今天数据
 			org_cmd.CreateCmdFactory().TodayStatistics()
 			break
