@@ -335,6 +335,7 @@ func (u *PortController) EditForGlobal(ctx *gin.Context) {
 	param := port_models.VirtualGlobalModel{
 		OrgId:       loginInfo.OrgId,
 		Id:          string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+		Protocol:    ctx.GetString(consts.ValidatorPrefixOrg + "protocol"),
 		Type:        ctx.GetString(consts.ValidatorPrefixOrg + "type"),
 		SourcePort:  ctx.GetString(consts.ValidatorPrefixOrg + "sourcePort"),
 		ForwardIp:   ctx.GetString(consts.ValidatorPrefixOrg + "forwardIp"),
