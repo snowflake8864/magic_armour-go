@@ -54,6 +54,8 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
+	//冗余自动匹配白名单开关
+	dllModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
 
 	//威胁情报状态
 	isExist := false
