@@ -306,6 +306,7 @@ func (m *baseAgent) FillCalcData(data *AgentCalc) *AgentCalc {
 	data.UnsafeNumber = data.TotalNumber - data.SafeNumber
 	data.LinuxNumber = data.TotalNumber - data.WindowsNumber
 	data.LinuxOnlineNumber = data.OnlineNumber - data.WindowsOnlineNumber
+	data.OfflineNumber = data.TotalNumber - data.OnlineNumber
 
 	return data
 }
