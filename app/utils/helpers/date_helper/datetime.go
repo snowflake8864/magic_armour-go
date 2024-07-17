@@ -112,7 +112,7 @@ func DatetimeToTimestamp(datetime, layout string) int64 {
 	if err != nil {
 		return 0
 	}
-	return t.Unix()
+	return t.Local().Add(-8 * time.Hour).Unix()
 }
 
 // DaysInMonthByTimestamp 时间戳现在是月的第几天
