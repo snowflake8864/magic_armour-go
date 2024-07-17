@@ -3,7 +3,6 @@ package agent_post_service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/dir_models"
@@ -48,8 +47,8 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 	}
 	now := date_helper.CurDatetime()
 	monitorDay := date_helper.SpecialDatetime(variable.DayFormat)
-	fmt.Println("params========================================")
-	fmt.Println(json_helper.Encode(param))
+	//fmt.Println("params========================================")
+	//fmt.Println(json_helper.Encode(param))
 	var cpuTops []agent_monitor_models.MonitorTop
 	var memTops []agent_monitor_models.MonitorTop
 	if len(param.CpuTops) > 0 {
@@ -83,8 +82,8 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 		CreatedAt:  now,
 	}
 
-	fmt.Println("sendMonitor ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendMonitor ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeCommonAgentPutMonitor,
 		Data: json_helper.Encode(&model),
