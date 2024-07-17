@@ -122,7 +122,7 @@ func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, 
 
 			canUpgrade := 0
 			if isOk, _ := enum_software.CanUpgradeIndirect(softwareNewest, model.OsType, model.Ver); isOk {
-				return 1
+				canUpgrade = 1
 			}
 			tmp["can_upgrade"] = canUpgrade
 			tmp["agent_type_label"] = enum_agent.GetTypeLabel(agentTypes, model.AgentType)

@@ -198,7 +198,7 @@ func CanUpgradeIndirect(newestMap map[int]string, agentOsType int, agentVer stri
 	}
 	if newestVer, isOk := newestMap[agentOsType]; isOk {
 		if CanUpgradeDirect(newestVer, agentVer) {
-			return false, newestVer
+			return true, newestVer
 		} else {
 			return false, ""
 		}
