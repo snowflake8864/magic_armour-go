@@ -14,8 +14,8 @@ func TestTaskFromProcess(t *testing.T) {
 }
 
 func TestDate(t *testing.T) {
-
 	fmt.Println("现在时间戳：", date_helper.CurTimestamp())
+
 	curDatetime := date_helper.CurDatetime()
 	fmt.Println("现在时间：", curDatetime)
 

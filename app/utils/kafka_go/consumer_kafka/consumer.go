@@ -240,7 +240,6 @@ func (k *ConsumerClient) ConsumeCrontab() {
 			plug_job.DynamicDisable(data.OrgId, data.AgentId)
 			break
 		case kafka_go.TypeCrontabTaskFormProcess:
-			variable.ZapLog.Sugar().Debug(fmt.Sprintf("orgId=%d, agentId=%s, at=%s", data.OrgId, data.AgentId, data.Data))
 			proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)
 			break
 		case kafka_go.TypeCrontabTaskFormDll:
