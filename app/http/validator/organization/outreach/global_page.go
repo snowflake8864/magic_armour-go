@@ -11,6 +11,7 @@ import (
 
 type GlobalPage struct {
 	data_type.Page
+	SIp
 }
 
 func (n GlobalPage) CheckParams(context *gin.Context) {

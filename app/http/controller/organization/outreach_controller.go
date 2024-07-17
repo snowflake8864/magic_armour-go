@@ -79,6 +79,7 @@ func (u *OutreachController) PageForGlobal(ctx *gin.Context) {
 	//查询条件
 	condition := outreach_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
+		Ip:    ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
