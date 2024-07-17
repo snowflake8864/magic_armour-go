@@ -16,7 +16,6 @@ func TaskFromProcess(orgId int64, agentId string, at string) {
 		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormat),
 	}
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
-	fmt.Println(date_helper.TimestampToDatetime(condition.SyncStatusAtGte))
 
 	if total := proc_models.CreateProcessFactory().Count(condition); total > 0 {
 		types := []int{
