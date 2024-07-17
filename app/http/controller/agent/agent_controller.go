@@ -24,6 +24,7 @@ import (
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
+	"strings"
 )
 
 // AgentController 终端相关
@@ -151,20 +152,27 @@ func (u *AgentController) Upgrade(ctx *gin.Context) {
 		return
 	}
 
+	downloadFact := software_service.CreateDownloadFactory()
+	err, addr, _, _ := downloadFact.GetServiceAddr()
+	if err != nil {
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		return
+	}
+
 	param := software_models.DownloadModel{
 		OrgId:      loginInfo.OrgId,
 		SoftwareId: model.Id,
 		Remark:     "升级",
 	}
-	if err, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+	if err1, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param); err != nil {
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err1.Error())
 		return
 	} else {
 		response.SuccessReturnData(ctx, gin.H{
 			"alias":    downloadModel.Alias,
 			"size":     fmt.Sprintf("%d", downloadModel.FileSize),
 			"hash":     downloadModel.FileHash,
-			"download": downloadModel.StoragePath,
+			"download": addr + "/" + strings.TrimLeft(downloadModel.StoragePath, "/"),
 		})
 		return
 	}

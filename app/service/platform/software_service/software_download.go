@@ -79,6 +79,8 @@ func (crd *SoftwareDownload) Clear() bool {
 	return crd.masterModel.TruncateTable()
 }
 
+// GetServiceAddr 获取服务地址
+// @return err 错误信息, addr 完整地址, addr 域名, port 端口号
 func (crd *SoftwareDownload) GetServiceAddr() (err error, addr, url, port string) {
 	dictIds := []string{
 		enum_dictionary.AgentHttpUrl,
