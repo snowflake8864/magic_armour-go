@@ -21,6 +21,7 @@ type PortCurd struct {
 func (crd *PortCurd) Handle(param *alarm_models.PortModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		AttackIp:     param.AttackIp,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

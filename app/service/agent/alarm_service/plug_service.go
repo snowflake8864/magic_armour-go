@@ -21,6 +21,7 @@ type PlugCurd struct {
 func (crd *PlugCurd) Handle(param *alarm_models.PlugModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		Ip:           param.Ip,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

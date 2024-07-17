@@ -21,6 +21,7 @@ type LoginCurd struct {
 func (crd *LoginCurd) Handle(param *alarm_models.LoginModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		SourceIp:     param.SourceIp,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

@@ -21,6 +21,7 @@ type TamperCurd struct {
 func (crd *TamperCurd) Handle(param *alarm_models.TamperModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		Id:           param.Id,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

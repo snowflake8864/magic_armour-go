@@ -20,8 +20,9 @@ type SelfCurd struct {
 // Handle 处理
 func (crd *SelfCurd) Handle(param *alarm_models.SelfModel) error {
 	conditions := alarm_models.SearchConditions{
-		OrgId: param.OrgId,
-		Id:    param.Id,
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {

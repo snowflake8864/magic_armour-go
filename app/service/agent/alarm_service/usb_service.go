@@ -21,6 +21,7 @@ type UsbCurd struct {
 func (crd *UsbCurd) Handle(param *alarm_models.UsbModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		UsbHash:      param.UsbHash,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

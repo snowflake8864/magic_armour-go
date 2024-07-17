@@ -21,6 +21,7 @@ type DllCurd struct {
 func (crd *DllCurd) Handle(param *alarm_models.DllModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		DllHash:      param.DllHash,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

@@ -21,6 +21,7 @@ type OutreachCurd struct {
 func (crd *OutreachCurd) Handle(param *alarm_models.OutreachModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		TargetIp:     param.TargetIp,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}

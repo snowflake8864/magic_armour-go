@@ -21,6 +21,7 @@ type ProcessCurd struct {
 func (crd *ProcessCurd) Handle(param *alarm_models.ProcessModel) error {
 	conditions := alarm_models.SearchConditions{
 		OrgId:        param.OrgId,
+		AgentId:      param.AgentId,
 		ProcHash:     param.ProcHash,
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}
