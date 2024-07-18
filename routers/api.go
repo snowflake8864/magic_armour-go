@@ -7,10 +7,10 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/cors"
+	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
 	"goskeleton/app/utils/response"
-	"net/http"
 )
 
 // 该路由主要设置内部接口路由
@@ -50,13 +50,23 @@ func InitApiRouter() *gin.Engine {
 		router.Use(cors.Next())
 	}
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Api接口: "+variable.VersionNumber)
-	})
+	//限流
+	if isOpen := variable.ConfigYml.GetInt("RateLimiting.IsOpen"); isOpen == 1 {
+		var rate float64 = 1.0
+		var limit int64 = 100
+		if val := variable.ConfigYml.GetFloat64("RateLimiting.Common.Rate"); val > 0 {
+			rate = val
+		}
+		if val := variable.ConfigYml.GetInt64("RateLimiting.Common.Limit"); val > 0 {
+			limit = val
+		}
+		router.Use(rate_limit.LimitHandler(rate, limit))
+	}
 
 	//  创建一个路由组
 	vApi := router.Group("/v5/api/")
 	{
+
 		vApi.GET("getVersion", func(ctx *gin.Context) {
 			response.SuccessReturnData(ctx, variable.VersionNumber)
 		})

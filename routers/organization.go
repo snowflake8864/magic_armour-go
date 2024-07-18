@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/http/middleware/cors"
+	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/gin_release"
@@ -53,9 +54,18 @@ func InitOrganizationRouter() *gin.Engine {
 		router.Use(cors.Next())
 	}
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Organization接口: "+variable.VersionNumber)
-	})
+	//限流
+	if isOpen := variable.ConfigYml.GetInt("RateLimiting.IsOpen"); isOpen == 1 {
+		var rate float64 = 1.0
+		var limit int64 = 100
+		if val := variable.ConfigYml.GetFloat64("RateLimiting.Common.Rate"); val > 0 {
+			rate = val
+		}
+		if val := variable.ConfigYml.GetInt64("RateLimiting.Common.Limit"); val > 0 {
+			limit = val
+		}
+		router.Use(rate_limit.LimitHandler(rate, limit))
+	}
 
 	//  创建一个接口路由组
 	vOrg := router.Group("/v5/organization/")

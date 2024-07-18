@@ -10,9 +10,9 @@ import (
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_agent"
 	"goskeleton/app/http/middleware/cors"
+	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
-	"net/http"
 )
 
 // 该路由主要设置终端路由
@@ -52,11 +52,21 @@ func InitAgentRouter() *gin.Engine {
 		router.Use(cors.Next())
 	}
 
-	router.GET("/", func(context *gin.Context) {
-		context.String(http.StatusOK, "Agent接口: "+variable.VersionNumber)
-	})
+	//限流
+	if isOpen := variable.ConfigYml.GetInt("RateLimiting.IsOpen"); isOpen == 1 {
+		var rate float64 = 1.0
+		var limit int64 = 100
+		if val := variable.ConfigYml.GetFloat64("RateLimiting.Agent.Rate"); val > 0 {
+			rate = val
+		}
+		if val := variable.ConfigYml.GetInt64("RateLimiting.Agent.Limit"); val > 0 {
+			limit = val
+		}
+		router.Use(rate_limit.LimitHandler(rate, limit))
+	}
 
 	//  创建一个接口路由组
+	// 与agent约定： 获取用GET, 上传用POST
 	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(middleware_auth_agent.SaveAccess())
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthLogin"))
@@ -118,9 +128,9 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("getipwhitelist", (&agent.PlugController{}).GetIpWhite)                               // 下载封堵ip白名单(不在使用)
 
 			//外设相关
-			vAgent.Any("addperipherals", validatorFactory.Create(consts.ValidatorPrefixAgent+"UsbPut")) // 外接设备添加
-			vAgent.Any("getwhiteperipherals", (&agent.UsbController{}).GetWhite)                        // 获取外设信任列表
-			vAgent.Any("getblackperipherals", (&agent.UsbController{}).GetBlack)                        // 获取外设禁止列表
+			vAgent.POST("addperipherals", validatorFactory.Create(consts.ValidatorPrefixAgent+"UsbPut")) // 外接设备添加
+			vAgent.Any("getwhiteperipherals", (&agent.UsbController{}).GetWhite)                         // 获取外设信任列表
+			vAgent.Any("getblackperipherals", (&agent.UsbController{}).GetBlack)                         // 获取外设禁止列表
 
 			//告警相关
 			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
