@@ -10,13 +10,17 @@ import (
 
 // GetCurrentAgent 获取当前终端
 // @context 请求上下文
-func GetCurrentAgent(context *gin.Context) agent_service.AgentCacheLogin {
+func GetCurrentAgent(context *gin.Context) *agent_service.AgentCacheLogin {
 	tokenKey := variable.ConfigYml.GetString("Token.BindContextKeyName")
-	current, exist := context.MustGet(tokenKey).(agent_service.AgentCacheLogin)
-	if exist {
-		return current
+	value, exists := context.Get(tokenKey)
+	if !exists {
+		return nil
 	}
-	return current
+	if current, isOk := value.(agent_service.AgentCacheLogin); isOk {
+		return &current
+	} else {
+		return nil
+	}
 }
 
 // GetCurrentAdmin 获取当前管理员

@@ -64,9 +64,10 @@ func SaveAccess() gin.HandlerFunc {
 					return
 				}
 			} else {
-				loginInfo := cur_userinfo.GetCurrentAgent(c)
-				param.OrgId = loginInfo.OrgId
-				param.AgentId = loginInfo.AgentId
+				if loginInfo := cur_userinfo.GetCurrentAgent(c); loginInfo != nil && loginInfo.OrgId > 0 {
+					param.OrgId = loginInfo.OrgId
+					param.AgentId = loginInfo.AgentId
+				}
 			}
 
 			if param.OrgId > 0 && !string_helper.IsEmpty(param.AgentId) {

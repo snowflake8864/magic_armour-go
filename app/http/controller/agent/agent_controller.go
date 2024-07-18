@@ -237,7 +237,7 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 			return
 		}
 
-		if err := agent_err_service.CreateErrorCurdFactory().Add(&loginInfo, remark, &uploadParam); err != nil {
+		if err := agent_err_service.CreateErrorCurdFactory().Add(loginInfo, remark, &uploadParam); err != nil {
 			response.FailSimplify(ctx, err.Error())
 			return
 		}
