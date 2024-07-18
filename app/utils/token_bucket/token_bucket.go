@@ -7,11 +7,11 @@ import (
 
 // TokenBucket 令牌桶
 type TokenBucket struct {
-	Capacity  int64      // 桶的容量
-	Rate      float64    // 令牌放入速率
-	Tokens    float64    // 当前令牌数量
-	LastToken time.Time  // 上一次放令牌的时间
-	Mtx       sync.Mutex // 互斥锁
+	Capacity  int64      // 桶的容量，即最多能存储多少令牌
+	Rate      float64    // 令牌放入速率，单位为每秒
+	Tokens    float64    // 当前桶中令牌的数量
+	LastToken time.Time  // 上一次向桶中放令牌的时间
+	Mtx       sync.Mutex // 互斥锁，确保并发安全
 }
 
 func (tb *TokenBucket) Allow() bool {
