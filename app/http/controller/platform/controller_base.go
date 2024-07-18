@@ -15,7 +15,7 @@ type ControllerBase struct {
 }
 
 // getLogin 获取登录数据
-func (u *ControllerBase) getLogin(ctx *gin.Context) admin_service.AdminCacheLogin {
+func (u *ControllerBase) getLogin(ctx *gin.Context) *admin_service.AdminCacheLogin {
 	return cur_userinfo.GetCurrentAdmin(ctx)
 }
 

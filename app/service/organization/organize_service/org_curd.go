@@ -104,7 +104,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 }
 
 // Approved 审核: 批准
-func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -139,7 +139,7 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo admin_
 }
 
 // Lock 管理: 锁定
-func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -172,7 +172,7 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo admin_serv
 }
 
 // Unlock 管理: 解锁
-func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -206,7 +206,7 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo admin_se
 }
 
 // Clean 管理: 清理业务数据
-func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -253,7 +253,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo admin_ser
 }
 
 // SetHsSwitch 管理: 设置幻势开关
-func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -287,7 +287,7 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 }
 
 // SetLoginSmsSwitch 管理: 设置企业登录短信验证开关
-func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
@@ -321,7 +321,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 }
 
 // Refused 审核: 回绝
-func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo admin_service.AdminCacheLogin) (errCode int, err error) {
+func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo *admin_service.AdminCacheLogin) (errCode int, err error) {
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {

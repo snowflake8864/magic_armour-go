@@ -71,9 +71,10 @@ func SaveOperate() gin.HandlerFunc {
 				}
 				param.CreateId = adminModel.Id
 			} else {
-				loginInfo := cur_userinfo.GetCurrentAdmin(c)
-				param.CreateId = loginInfo.AdminId
-				param.CreateName = loginInfo.Username
+				if loginInfo := cur_userinfo.GetCurrentAdmin(c); loginInfo != nil && loginInfo.AdminId > 0 {
+					param.CreateId = loginInfo.AdminId
+					param.CreateName = loginInfo.Username
+				}
 			}
 
 			if !string_helper.IsEmpty(param.CreateName) {
