@@ -77,7 +77,7 @@ func SaveOperate() gin.HandlerFunc {
 				}
 			}
 
-			if !string_helper.IsEmpty(param.CreateName) {
+			if param.CreateId > 0 && !string_helper.IsEmpty(param.CreateName) {
 				go platform_operate_service.CreateCurdFactory().Add(&param)
 			}
 
