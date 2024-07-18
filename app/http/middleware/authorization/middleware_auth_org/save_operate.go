@@ -73,13 +73,14 @@ func SaveOperate() gin.HandlerFunc {
 				param.CreateId = userModel.Id
 				param.OrgId = userModel.OrgId
 			} else {
-				loginInfo := cur_userinfo.GetCurrentUser(c)
-				param.OrgId = loginInfo.OrgId
-				param.CreateId = loginInfo.UserId
-				param.CreateName = loginInfo.Username
+				if loginInfo := cur_userinfo.GetCurrentUser(c); loginInfo != nil && loginInfo.OrgId > 0 {
+					param.OrgId = loginInfo.OrgId
+					param.CreateId = loginInfo.UserId
+					param.CreateName = loginInfo.Username
+				}
 			}
 
-			if !string_helper.IsEmpty(param.CreateName) {
+			if param.OrgId > 0 && !string_helper.IsEmpty(param.CreateName) {
 				go org_operate_service.CreateCurdFactory().Add(&param)
 			}
 

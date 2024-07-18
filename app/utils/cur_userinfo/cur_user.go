@@ -36,11 +36,16 @@ func GetCurrentAdmin(context *gin.Context) admin_service.AdminCacheLogin {
 
 // GetCurrentUser 获取当前企业用户
 // @context 请求上下文
-func GetCurrentUser(context *gin.Context) user_service.UserCacheLogin {
+func GetCurrentUser(context *gin.Context) *user_service.UserCacheLogin {
 	tokenKey := variable.ConfigYml.GetString("Token.BindContextKeyName")
-	current, exist := context.MustGet(tokenKey).(user_service.UserCacheLogin)
-	if exist {
-		return current
+	value, exists := context.Get(tokenKey)
+	if !exists {
+		return nil
 	}
-	return current
+	if current, isOk := value.(user_service.UserCacheLogin); isOk {
+		return &current
+	} else {
+		return nil
+	}
+
 }

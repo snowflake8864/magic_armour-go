@@ -20,7 +20,7 @@ type ControllerBase struct {
 }
 
 // getLogin 获取登录数据
-func (u *ControllerBase) getLogin(ctx *gin.Context) user_service.UserCacheLogin {
+func (u *ControllerBase) getLogin(ctx *gin.Context) *user_service.UserCacheLogin {
 	return cur_userinfo.GetCurrentUser(ctx)
 }
 
@@ -78,7 +78,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 }
 
 // getCurrUserAgentIds 获取当前用户管理的终端id集合(root管理终端为nil; 非root没有管理终端返回error)
-func (u *ControllerBase) getCurrUserAgentIds(loginInfo user_service.UserCacheLogin) (error, []string) {
+func (u *ControllerBase) getCurrUserAgentIds(loginInfo *user_service.UserCacheLogin) (error, []string) {
 	//管理员： 可以看全部终端
 	if loginInfo.IsRoot == enums.IsYes {
 		return nil, nil
