@@ -10,6 +10,7 @@ type SearchConditions struct {
 	OrgId      int64
 	Id         int64
 	Ip         string
+	IpLike     string
 	Type       int
 	OpenSwitch *int
 }
@@ -41,6 +42,13 @@ func (m *baseOutreach) conditions2Where(condition SearchConditions) (wheres []mo
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "ip",
 			Val: condition.Ip,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.IpLike) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "ip like",
+			Val: condition.IpLike + "%",
 		})
 	}
 
