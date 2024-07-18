@@ -41,9 +41,13 @@
 
 ### 管理平台隐藏页面
 
-      /#/menuConfiguration
-      /#/dataDictionary
+- /#/menuConfiguration
+- /#/dataDictionary
 
+### 注意事项
+
+- 服务器时区应设置为东8区
+- 每个路由都有限流设置
 
 ### 定时任务
 
