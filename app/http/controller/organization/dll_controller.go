@@ -159,6 +159,8 @@ func (u *DllController) BatchSetConfigForManage(ctx *gin.Context) {
 				}
 			}
 		}
+	} else {
+		validIds = agentIds
 	}
 
 	var param = agent_service.ManualColumn{
