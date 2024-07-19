@@ -2,6 +2,7 @@ package cur_app
 
 import (
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // GetAppUsageVersion 获取当前程序使用版本
@@ -14,7 +15,9 @@ func GetPlatformConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
-
+	if ver := variable.ConfigYml.GetString("AppCustomConfig.VersionNumber"); !string_helper.IsEmpty(ver) {
+		data["ver_number"] = ver
+	}
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.IconShow")
 	data["projectName"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.ProjectName")
@@ -34,6 +37,9 @@ func GetOrganizationConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
+	if ver := variable.ConfigYml.GetString("AppCustomConfig.VersionNumber"); !string_helper.IsEmpty(ver) {
+		data["ver_number"] = ver
+	}
 
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.IconShow")
