@@ -40,15 +40,15 @@ func (m *LogModel) TableName() string {
 	return "o_operate_logs"
 }
 
-func (m *LogModel) CreateTable() bool {
+func (m *LogModel) CreateTable1() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			module varchar(32) NOT NULL DEFAULT '' COMMENT '业务模块',
+			created_at datetime NOT NULL,
 			path varchar(128)  NOT NULL DEFAULT '' COMMENT '路径',
 			net_ip varchar(128) NOT NULL DEFAULT '' COMMENT '通讯ip',
-			created_at datetime NOT NULL,
 			id BIGINT NOT NULL DEFAULT '0',
 			input text NULL COMMENT '请求参数',
 			agent_id varchar(128) NOT NULL DEFAULT ''COMMENT '终端id(agent.id)',
@@ -60,7 +60,7 @@ func (m *LogModel) CreateTable() bool {
 			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)'
 		)
-		DUPLICATE  KEY(org_id, module, path,net_ip, created_at)
+		DUPLICATE  KEY(org_id, module, created_at)
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'
