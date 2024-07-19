@@ -57,7 +57,7 @@ func (m *InnerModel) CreateTable() bool {
 			target_port_status TINYINT NOT NULL DEFAULT '0' COMMENT '目标端口状态',
 			proto INT NOT NULL DEFAULT '0' COMMENT '协议'
 		)
-		DUPLICATE KEY(org_id,agent_id,created_at,proc_hash,target_ip,target_port,source_ip,source_port,id) 
+		DUPLICATE KEY(org_id,agent_id,created_at) 
 		PARTITION BY RANGE(created_at)() 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (

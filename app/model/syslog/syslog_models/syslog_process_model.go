@@ -54,7 +54,7 @@ func (m *ProcessModel) CreateTable() bool {
 			parent_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '父进程:路径',
 			parent_param text NULL COMMENT '父进程:参数'
 		)
-		DUPLICATE KEY(org_id,agent_id,created_at,proc_hash,proc_id,parent_hash,parent_id,id) 
+		DUPLICATE KEY(org_id,agent_id,created_at) 
 		PARTITION BY RANGE(created_at)() 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (

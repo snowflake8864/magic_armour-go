@@ -48,7 +48,7 @@ func (m *DnsModel) CreateTable() bool {
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			target_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '解析ip'
 		)
-		DUPLICATE KEY(org_id,agent_id,created_at,domain_name,proc_hash,id) 
+		DUPLICATE KEY(org_id,agent_id,created_at) 
 		PARTITION BY RANGE(created_at)() 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (

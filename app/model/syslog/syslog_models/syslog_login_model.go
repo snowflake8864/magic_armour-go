@@ -46,7 +46,7 @@ func (m *LoginModel) CreateTable() bool {
 			type VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '登录类型',
 			status TINYINT NOT NULL DEFAULT '0' COMMENT '状态'
 		)
-		DUPLICATE KEY(org_id,agent_id,created_at,source_ip,username,id) 
+		DUPLICATE KEY(org_id,agent_id,created_at) 
 		PARTITION BY RANGE(created_at)() 
 		DISTRIBUTED  BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
