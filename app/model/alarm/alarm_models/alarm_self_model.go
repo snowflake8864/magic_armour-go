@@ -59,10 +59,9 @@ func (m *SelfModel) CreateTable() bool {
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
 			proc_param text NULL COMMENT '进程:参数',
             file_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '文件:路径',
-            target_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '目标:路径',
-			INDEX index_id (id) USING INVERTED
+            target_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '目标:路径'
 		)
-		UNIQUE KEY(org_id, agent_id,proc_hash,type,created_at,agent_at)
+		UNIQUE KEY(org_id, agent_id,proc_hash,type,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

@@ -62,8 +62,7 @@ func (m *PortModel) CreateTable() bool {
 			weight SMALLINT NOT NULL DEFAULT '0' COMMENT '权重',
 			redirect_ip VARCHAR(128) NOT NULL DEFAULT '' COMMENT '重定向ip',
 			redirect_port INT NOT NULL DEFAULT '0' COMMENT '重定向端口',
-			attack_total INT NOT NULL DEFAULT '0' COMMENT '攻击次数',
-			INDEX index_id (id) USING INVERTED
+			attack_total INT NOT NULL DEFAULT '0' COMMENT '攻击次数'
 		)
 		UNIQUE KEY(org_id, agent_id,attack_ip,target_ip,target_port,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO

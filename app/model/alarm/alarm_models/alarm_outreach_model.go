@@ -46,11 +46,11 @@ func (m *OutreachModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			proc_hash VARCHAR(64) NOT NULL DEFAULT '' COMMENT '进程:hash',
-			domain_name VARCHAR(512) NOT NULL DEFAULT '' COMMENT '域名',
 			target_ip VARCHAR(512) NOT NULL DEFAULT '' COMMENT '目标ip',
 			created_at DATETIME NULL,
 			agent_at DATETIME NULL COMMENT '终端时间',
+			proc_hash VARCHAR(64) NOT NULL DEFAULT '' COMMENT '进程:hash',
+			domain_name VARCHAR(512) NOT NULL DEFAULT '' COMMENT '域名',
 			id BIGINT NOT NULL DEFAULT '0',
 			type SMALLINT NOT NULL DEFAULT '0' COMMENT '类型',
 			level TINYINT NOT NULL DEFAULT '0' COMMENT '级别',
@@ -59,10 +59,9 @@ func (m *OutreachModel) CreateTable() bool {
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
 			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
-			proc_id int NOT NULL DEFAULT '0' COMMENT '进程:id',
-			INDEX index_id (id) USING INVERTED
+			proc_id int NOT NULL DEFAULT '0' COMMENT '进程:id'
 		)
-		UNIQUE KEY(org_id, agent_id,proc_hash,domain_name,target_ip,created_at,agent_at)
+		UNIQUE KEY(org_id, agent_id,target_ip,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

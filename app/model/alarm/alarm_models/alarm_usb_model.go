@@ -45,9 +45,9 @@ func (m *UsbModel) CreateTable() bool {
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
 			usb_hash VARCHAR(64) NOT NULL DEFAULT '' COMMENT '设备:hash',
-			type SMALLINT NOT NULL DEFAULT '0' COMMENT '类型',
 			created_at DATETIME NULL,
 			agent_at DATETIME NULL COMMENT '终端时间',
+			type SMALLINT NOT NULL DEFAULT '0' COMMENT '类型',
 			id BIGINT NOT NULL DEFAULT '0',
 			level TINYINT NOT NULL DEFAULT '0' COMMENT '级别',
 			handle_status TINYINT NOT NULL DEFAULT '0' COMMENT '处理状态(0未处理，1已处理)',
@@ -55,10 +55,9 @@ func (m *UsbModel) CreateTable() bool {
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
 			usb_name VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '设备:名称',
-			usb_intro VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '设备:描述',
-			INDEX index_id (id) USING INVERTED
+			usb_intro VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '设备:描述'
 		)
-		UNIQUE KEY(org_id, agent_id,usb_hash,type,created_at,agent_at)
+		UNIQUE KEY(org_id, agent_id,usb_hash ,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',

@@ -53,8 +53,7 @@ func (m *LoginModel) CreateTable() bool {
 			handle_remark VARCHAR(512) NOT NULL DEFAULT '' COMMENT '处理备注',
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
-			solve_total INT NOT NULL DEFAULT '0' COMMENT '破解次数',
-			INDEX index_id (id) USING INVERTED
+			solve_total INT NOT NULL DEFAULT '0' COMMENT '破解次数'
 		)
 		UNIQUE KEY(org_id, agent_id,source_ip,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
