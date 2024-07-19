@@ -129,15 +129,14 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 
 	fmt.Println("参数================================")
 	fmt.Println(json_helper.Encode(param))
+	ctx := context.Background()
 	for _, model := range models {
-		err, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
-		fmt.Println("修改================================")
-		//fmt.Println(json_helper.Encode(model))
-		fmt.Println("AgentId:", model.AgentId)
+		err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+		fmt.Println("修改=====AgentId:", model.AgentId)
 		fmt.Println(json_helper.Encode(updates))
 		fmt.Println("hasTask:", hasTask)
 		fmt.Println("openAutoWhite:", openAutoWhite)
-		if err != nil {
+		if err1 != nil {
 			continue
 		}
 		if updates == nil || len(updates) == 0 {
@@ -159,11 +158,9 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 				OrgId:   orgId,
 				AgentId: model.AgentId,
 			}
-			producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
-
-			return errCode, err
+			producer_kafka.CreateProducerFactory().ProduceCommon(ctx, msg)
 		}
 	}
 
-	return errCode, err
+	return errCode, nil
 }

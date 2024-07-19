@@ -113,9 +113,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		//自动白名单
 		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
 			updates["auto_white_switch"] = *param.AutoWhiteSwitch
-			if *param.AutoWhiteSwitch == enums.SwitchOn {
-				openAutoWhite = true
-			}
+			openAutoWhite = true
 		}
 
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {

@@ -232,3 +232,14 @@ func (crd *DllCurd) ThreatenCallbackByHash(hash string, level int) {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }
+
+// AutoWhiteSwitchOnAgent 终端自动白名单
+func (crd *DllCurd) AutoWhiteSwitchOnAgent(orgId int64, agentId string, openSwitch int) {
+	condition := proc_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+	}
+	if updates := crd.getUpdatesForAutoWhiteSwitch(openSwitch); updates != nil {
+		crd.masterModel.UpdateByConditions(condition, updates)
+	}
+}

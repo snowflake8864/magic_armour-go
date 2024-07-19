@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -23,4 +24,8 @@ func TestDate(t *testing.T) {
 	fmt.Println("时间戳：", timestamp)
 	date := date_helper.TimestampToDatetime(timestamp)
 	fmt.Println("时间戳还原时间：", date)
+}
+
+func TestOpenAutoWhite(t *testing.T) {
+	agent_job.OpenAutoWhite(1, "881d508cabab2b8448c6d7ff8c941bf8")
 }

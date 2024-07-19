@@ -132,3 +132,25 @@ func (crd *ProcessBase) getUpdatesForThreatenCallback(level int) map[string]inte
 	updates["sync_status_at"] = gorm.Expr(syncStatusAt)
 	return updates
 }
+
+func (crd *ProcessBase) getUpdatesForAutoWhiteSwitch(openSwitch int) map[string]interface{} {
+	updates := map[string]interface{}{
+		"auto_white_switch": openSwitch,
+	}
+
+	if openSwitch == enums.SwitchOn {
+		statusStr := "(CASE " +
+			"WHEN status=%d AND threaten_status=%d THEN %d " +
+			"WHEN status=%d AND threaten_status=%d THEN %d " +
+			"ELSE status " +
+			"END)"
+		statusStr = fmt.Sprintf(statusStr,
+			enum_process.ProcStatusUnset, enum_process.RelyStatusWhite, enum_process.ProcStatusWhite,
+			enum_process.ProcStatusUnset, enum_process.RelyStatusBlack, enum_process.ProcStatusBlack,
+		)
+
+		updates["status"] = gorm.Expr(statusStr)
+		updates["sync_status_at"] = date_helper.CurTimestamp()
+	}
+	return updates
+}
