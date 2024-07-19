@@ -68,37 +68,6 @@ func (m *AccessLogModel) CreateTable() bool {
 	}
 }
 
-func (m *AccessLogModel) CreateTable1() bool {
-	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
-	sql += `
-		(
-			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			path varchar(128)  NOT NULL DEFAULT '' COMMENT '请求地址',
-			created_at datetime NULL,
-			id BIGINT NOT NULL DEFAULT '0',
-			net_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '通讯ip',
-			input text NULL COMMENT '请求参数',
-			method varchar(8) NULL COMMENT '请求方法',
-			status tinyint NOT NULL DEFAULT '0' COMMENT '状态(1成功 0失败)',
-			http_code smallint NOT NULL DEFAULT '0' COMMENT 'http状态码',
-			delay_time int NOT NULL DEFAULT '0' COMMENT '延迟时间(ms)',
-			resp string NOT NULL DEFAULT '' COMMENT '返回结果'
-		)
-		DUPLICATE  KEY(org_id, agent_id, path, created_at)
-		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
-		PROPERTIES (
-			'replication_allocation' = 'tag.location.default: 1'
-		);
-		`
-	result := m.Exec(m.TrimSql(sql))
-	if result.RowsAffected > 0 {
-		return true
-	} else {
-		return false
-	}
-}
-
 func (m *AccessLogModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
