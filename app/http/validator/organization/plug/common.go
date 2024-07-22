@@ -32,3 +32,7 @@ type DeptId struct {
 type IpPlug struct {
 	PlugIp string `form:"plugIp" json:"plugIp" binding:"omitempty,ip"`
 }
+
+type IpPlug1 struct {
+	Ip string `form:"ip" json:"ip" binding:"omitempty,ip"`
+}

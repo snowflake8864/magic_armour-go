@@ -13,7 +13,7 @@ import (
 type PolicyDynamicEnabledPage struct {
 	data_type.Page
 	data_type.AgentSingle
-	IpPlug
+	IpPlug1
 }
 
 func (n PolicyDynamicEnabledPage) CheckParams(context *gin.Context) {
