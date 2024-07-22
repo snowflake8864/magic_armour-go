@@ -314,6 +314,7 @@ func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, openSwitch int) 
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
 		OpenSwitch: &openSwitch,
+		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "plugIp"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
