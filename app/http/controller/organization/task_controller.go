@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/task_models"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -48,4 +49,16 @@ func (u *TaskController) PageForHistory(ctx *gin.Context) {
 	total, models := task_models.CreateTaskFactory().Page(condition, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&org_trans.Task{}).TransPage(total, models))
+}
+
+// ClearForHistory 历史：清空
+func (u *TaskController) ClearForHistory(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	if !task_service.CreateCurdFactory().DeleteForAgent(loginInfo.OrgId, agentId) {
+		response.FailSimplify(ctx, "清空任务失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

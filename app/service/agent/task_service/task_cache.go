@@ -98,6 +98,15 @@ func (crd *TaskCache) ExistUnfinished(orgId int64, agentId string, task int) boo
 	return exist
 }
 
+// DeleteUnfinished 终端未完成任务： 删除
+func (crd *TaskCache) DeleteUnfinished(orgId int64, agentId string) bool {
+	_, err := crd.redisClient.Del(crd.keyByUnfinished(orgId, agentId))
+	if err != nil {
+		return false
+	}
+	return true
+}
+
 // SetHeartbeat 设置心跳,并判断是否需要追加修改配置的任务
 // 【新需求 6705】1分钟没有任务下发，主动调整回连频率为2分钟一次
 func (crd *TaskCache) SetHeartbeat(orgId int64, agentId string, hasUnfinishedTask bool) (appendConf bool) {

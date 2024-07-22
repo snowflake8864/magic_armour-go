@@ -91,3 +91,10 @@ func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp 
 	//入库
 	crd.masterModel.UpdateByConditions(conditions, updates)
 }
+
+// DeleteForAgent 单个终端删除任务
+func (crd *TaskCurd) DeleteForAgent(orgId int64, agentId string) bool {
+	CreateCacheFactory().DeleteUnfinished(orgId, agentId)
+
+	return crd.masterModel.DeleteByOrgAndAgent(orgId, agentId)
+}

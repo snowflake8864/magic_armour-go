@@ -304,6 +304,8 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/safetyReport/alarmNotice/save":    {ModuleSecurityReport, "告警通知：保存"},
 	"/v5/organization/safetyReport/hardwareNotice/save": {ModuleSecurityReport, "状态：保存"},
+
+	"/v5/organization/task/history/clear": {ModuleOther, "终端任务：清空"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

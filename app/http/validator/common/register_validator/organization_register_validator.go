@@ -721,6 +721,8 @@ func OrganizationRegisterValidator() {
 	//任务相关
 	key = consts.ValidatorPrefixOrg + "TaskHistoryPage"
 	containers.Set(key, task3.HistoryPage{})
+	key = consts.ValidatorPrefixOrg + "TaskHistoryClear"
+	containers.Set(key, task3.HistoryClear{})
 
 	//操作日志相关
 	key = consts.ValidatorPrefixOrg + "OperationLogPage"

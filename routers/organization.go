@@ -808,6 +808,7 @@ func InitOrganizationRouter() *gin.Engine {
 					history := task.Group("history/")
 					{
 						history.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TaskHistoryPage"))
+						history.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"TaskHistoryClear"))
 					}
 				} //任务相关
 
