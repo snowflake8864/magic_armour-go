@@ -39,7 +39,7 @@ func (m *BlackmailModel) TableName() string {
 	return "a_alarm_blackmail"
 }
 
-func (m *BlackmailModel) CreateTable1() bool {
+func (m *BlackmailModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(

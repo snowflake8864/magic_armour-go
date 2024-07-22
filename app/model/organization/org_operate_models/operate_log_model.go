@@ -40,7 +40,7 @@ func (m *LogModel) TableName() string {
 	return "o_operate_logs"
 }
 
-func (m *LogModel) CreateTable1() bool {
+func (m *LogModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(	

@@ -49,7 +49,6 @@ func (m *DllRunningModel) CreateTable() bool {
             proc_hash varchar(64)  NOT NULL DEFAULT '' COMMENT '进程:hash',
             proc_dir varchar(512)  NOT NULL DEFAULT '' COMMENT '进程:路径',
 			created_at datetime NULL,
-			INDEX index_dll_hash (dll_hash) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(org_id, agent_id, dll_hash, proc_id) 

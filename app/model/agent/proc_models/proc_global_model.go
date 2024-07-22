@@ -56,10 +56,9 @@ func (m *ProcGlobalModel) CreateTable() bool {
 			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
 			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
 			updated_at datetime NULL,
-			INDEX index_dir (dir) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
-		UNIQUE KEY(org_id,id,data_from,type,create_id) 
+		UNIQUE KEY(org_id,id) 
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
