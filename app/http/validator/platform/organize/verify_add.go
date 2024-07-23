@@ -10,7 +10,7 @@ import (
 
 type VerifyAdd struct {
 	OrgType   int    `form:"orgType" json:"orgType" binding:"required,oneof=1 2"`
-	OraName   string `form:"oraName" json:"oraName" binding:"required,min=4,max=128"`
+	OraName   string `form:"oraName" json:"oraName" binding:"required_if=OrgType 1,max=128"`
 	UserName  string `form:"userName" json:"userName" binding:"required,alphanum,min=4,max=128"`
 	UserPw    string `form:"userPw"   json:"userPw" binding:"required"`
 	UserPhone string `form:"userPhone" json:"userPhone" binding:"required,number,len=11"`
