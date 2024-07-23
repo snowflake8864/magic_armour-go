@@ -92,8 +92,8 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 		ProcId:       param.Pid,
 		ProcParam:    param.PParam,
 	}
-	fmt.Println("sendProcess ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendProcess ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutProcess,
 		Data: json_helper.Encode(&model),
@@ -121,8 +121,8 @@ func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now
 		DllDir:       param.Dir,
 		ProcDir:      param.ExceptionProcess,
 	}
-	fmt.Println("sendDll ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendDll ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutDll,
 		Data: json_helper.Encode(&model),
@@ -149,8 +149,8 @@ func (crd *AlarmPost) sendTamper(param *alarmComm, orgId int64, agentId string, 
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	fmt.Println("sendTamper ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendTamper ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutTamper,
 		Data: json_helper.Encode(&model),
@@ -177,8 +177,8 @@ func (crd *AlarmPost) sendBlackmail(param *alarmComm, orgId int64, agentId strin
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	fmt.Println("sendBlackmail ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendBlackmail ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutBlackmail,
 		Data: json_helper.Encode(&model),
@@ -235,8 +235,8 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 		FileDir:      param.FileDir,
 		TargetDir:    param.TargetDir,
 	}
-	fmt.Println("sendSelf ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendSelf ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeAlarmPutSelf,
 		Data: json_helper.Encode(&model),
@@ -252,8 +252,8 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 		return err
 	}
 	now := date_helper.CurDatetime()
-	fmt.Println("params========================================")
-	fmt.Println(json_helper.Encode(params))
+	//fmt.Println("params========================================")
+	//fmt.Println(json_helper.Encode(params))
 	//统计攻击次数
 	var attackTotal = make(map[string]int)
 	var list []*alarm_models.PortModel

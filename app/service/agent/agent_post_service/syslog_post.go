@@ -2,7 +2,6 @@ package agent_post_service
 
 import (
 	"context"
-	"fmt"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -27,8 +26,8 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 		return err
 	}
 	now := date_helper.CurDatetime()
-	fmt.Println("params========================================")
-	fmt.Println(json_helper.Encode(params))
+	//fmt.Println("params========================================")
+	//fmt.Println(json_helper.Encode(params))
 	for _, item := range params {
 		logType := json_helper.Number2Int64(item.LogType)
 		//对应的模块
@@ -76,8 +75,8 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 		DomainName: param.DomainName,
 		TargetIp:   param.ResIp,
 	}
-	fmt.Println("sendDns ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendDns ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutDns,
 		Data: json_helper.Encode(&model),
@@ -104,8 +103,8 @@ func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string,
 		SourcePort:       json_helper.Number2Int(param.SourcePort),
 		Proto:            json_helper.Number2Int(param.Proto),
 	}
-	fmt.Println("sendInner ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendInner ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutInner,
 		Data: json_helper.Encode(&model),
@@ -132,8 +131,8 @@ func (crd *SyslogPost) sendOuter(param *syslogComm, orgId int64, agentId string,
 		SourcePort:       json_helper.Number2Int(param.SourcePort),
 		Proto:            json_helper.Number2Int(param.Proto),
 	}
-	fmt.Println("sendOuter ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendOuter ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutOuter,
 		Data: json_helper.Encode(&model),
@@ -159,8 +158,8 @@ func (crd *SyslogPost) sendProcess(param *syslogComm, orgId int64, agentId strin
 		ParentDir:   param.PpDir,
 		ParentParam: param.PpParam,
 	}
-	fmt.Println("sendProcess ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendProcess ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutProcess,
 		Data: json_helper.Encode(&model),
@@ -182,8 +181,8 @@ func (crd *SyslogPost) sendLogin(param *syslogComm, orgId int64, agentId string,
 		Type:      param.Type,
 		Status:    json_helper.Number2Int(param.Status),
 	}
-	fmt.Println("sendLogin ============================")
-	fmt.Println(json_helper.Encode(&model))
+	//fmt.Println("sendLogin ============================")
+	//fmt.Println(json_helper.Encode(&model))
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutLogin,
 		Data: json_helper.Encode(&model),
