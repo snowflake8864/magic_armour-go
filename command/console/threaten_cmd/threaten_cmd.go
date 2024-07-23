@@ -3,7 +3,6 @@ package threaten_cmd
 import (
 	"context"
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
@@ -356,7 +355,7 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 
 		//进入队列
 		if len(processWhites) > 0 {
-			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 				Type:    kafka_go.TypeCrontabThreatenRepairProc,
 				AgentId: int_helper.IntToStr(enum_threaten.DataFromProcess),
 				AgentOS: int_helper.IntToStr(enum_threaten.LevelWhite),
@@ -364,7 +363,7 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 			})
 		}
 		if len(processBlacks) > 0 {
-			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 				Type:    kafka_go.TypeCrontabThreatenRepairProc,
 				AgentId: int_helper.IntToStr(enum_threaten.DataFromProcess),
 				AgentOS: int_helper.IntToStr(enum_threaten.LevelBlack),
@@ -372,7 +371,7 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 			})
 		}
 		if len(dllWhites) > 0 {
-			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 				Type:    kafka_go.TypeCrontabThreatenRepairProc,
 				AgentId: int_helper.IntToStr(enum_threaten.DataFromDll),
 				AgentOS: int_helper.IntToStr(enum_threaten.LevelWhite),
@@ -380,7 +379,7 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 			})
 		}
 		if len(dllBlacks) > 0 {
-			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+			crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 				Type:    kafka_go.TypeCrontabThreatenRepairProc,
 				AgentId: int_helper.IntToStr(enum_threaten.DataFromDll),
 				AgentOS: int_helper.IntToStr(enum_threaten.LevelBlack),
@@ -453,7 +452,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		}
 		//variable.ZapLog.Sugar().Debug("idAndDataFrom============================")
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
-		fmt.Println(json_helper.Encode(syncList))
+		//fmt.Println(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
 			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
 		}
