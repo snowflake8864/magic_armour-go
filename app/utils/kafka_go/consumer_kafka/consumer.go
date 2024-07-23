@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/jobs/syslog_job"
 	"goskeleton/app/jobs/threaten_job"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"strings"
 )
@@ -244,6 +245,9 @@ func (k *ConsumerClient) ConsumeCrontab() {
 			break
 		case kafka_go.TypeCrontabTaskFormDll:
 			proc_job.TaskFromDll(data.OrgId, data.AgentId, data.Data)
+			break
+		case kafka_go.TypeCrontabThreatenRepairProc:
+			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
 			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))

@@ -46,9 +46,10 @@ const (
 	TypeThreatenFormProcess string = "threaten_form_process" //类型：威胁情报从进程新增
 	TypeThreatenFormDll     string = "threaten_form_dll"     //类型：威胁情报从模块新增
 
-	TypeCrontabAlarmStat       string = "crontab_alarm_stat"        //类型：定时任务-告警统计
-	TypeCrontabAgentSafe       string = "crontab_agent_safe"        //类型：定时任务-终端安全状态
-	TypeCrontabPlugDisable     string = "crontab_plug_disable"      //类型：定时任务-终端封堵解除
-	TypeCrontabTaskFormProcess string = "crontab_task_form_process" //类型：定时任务-从进程新增任务
-	TypeCrontabTaskFormDll     string = "crontab_task_form_dll"     //类型：定时任务-从模块新增任务
+	TypeCrontabAlarmStat          string = "crontab_alarm_stat"            //类型：定时任务-告警统计
+	TypeCrontabAgentSafe          string = "crontab_agent_safe"            //类型：定时任务-终端安全状态
+	TypeCrontabPlugDisable        string = "crontab_plug_disable"          //类型：定时任务-终端封堵解除
+	TypeCrontabTaskFormProcess    string = "crontab_task_form_process"     //类型：定时任务-从进程新增任务
+	TypeCrontabTaskFormDll        string = "crontab_task_form_dll"         //类型：定时任务-从模块新增任务
+	TypeCrontabThreatenRepairProc string = "crontab_threaten_repair_proc " //类型：定时任务-威胁情报修复进程或模块
 )

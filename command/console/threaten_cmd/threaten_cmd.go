@@ -18,6 +18,7 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -305,6 +306,90 @@ func (crd *ThreatenCmd) DeleteForCache() {
 	}
 
 	variable.ZapLog.Sugar().Debug("DeleteForCache end page:", page)
+}
+
+// RepairProcForCache  本地缓存：修复进程模块（进程和模块上传时入队列, 威胁情报验证回写入队列, 有时间差）
+func (crd *ThreatenCmd) RepairProcForCache() {
+	variable.ZapLog.Sugar().Debug("RepairProcForCache start")
+	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-2))
+	variable.ZapLog.Sugar().Debug("RepairProcForCache floorAt: ", floorAt)
+
+	cacheFact := threaten_models.CreateCacheFactory()
+	page := 0
+	limit := enum_threaten.CenterSupportNumber
+	conditions := threaten_models.SearchConditions{
+		LevelList:  []int{enum_threaten.LevelWhite, enum_threaten.LevelBlack},
+		CheckAtGte: floorAt,
+	}
+	ctx := context.Background()
+	for {
+		page++
+		offset := (page - 1) * limit
+		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")
+		if models == nil || len(models) == 0 {
+			break
+		}
+		var processWhites, processBlacks, dllWhites, dllBlacks []string
+		for _, model := range models {
+			if model.DataFrom == enum_threaten.DataFromProcess {
+				if model.Level == enum_threaten.LevelWhite {
+					processWhites = append(processWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					processBlacks = append(processBlacks, model.Id)
+				}
+			} else if model.DataFrom == enum_threaten.DataFromDll {
+				if model.Level == enum_threaten.LevelWhite {
+					dllWhites = append(dllWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					dllBlacks = append(dllBlacks, model.Id)
+				}
+			} else {
+				if model.Level == enum_threaten.LevelWhite {
+					processWhites = append(processWhites, model.Id)
+					dllWhites = append(dllWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					processBlacks = append(processBlacks, model.Id)
+					dllBlacks = append(dllBlacks, model.Id)
+				}
+			}
+		}
+
+		//进入队列
+		if len(processWhites) > 0 {
+			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+				Type:    kafka_go.TypeCrontabThreatenRepairProc,
+				AgentId: int_helper.IntToStr(enum_threaten.DataFromProcess),
+				AgentOS: int_helper.IntToStr(enum_threaten.LevelWhite),
+				Data:    json_helper.Encode(processWhites),
+			})
+		}
+		if len(processBlacks) > 0 {
+			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+				Type:    kafka_go.TypeCrontabThreatenRepairProc,
+				AgentId: int_helper.IntToStr(enum_threaten.DataFromProcess),
+				AgentOS: int_helper.IntToStr(enum_threaten.LevelBlack),
+				Data:    json_helper.Encode(processBlacks),
+			})
+		}
+		if len(dllWhites) > 0 {
+			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+				Type:    kafka_go.TypeCrontabThreatenRepairProc,
+				AgentId: int_helper.IntToStr(enum_threaten.DataFromDll),
+				AgentOS: int_helper.IntToStr(enum_threaten.LevelWhite),
+				Data:    json_helper.Encode(dllWhites),
+			})
+		}
+		if len(dllBlacks) > 0 {
+			crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+				Type:    kafka_go.TypeCrontabThreatenRepairProc,
+				AgentId: int_helper.IntToStr(enum_threaten.DataFromDll),
+				AgentOS: int_helper.IntToStr(enum_threaten.LevelBlack),
+				Data:    json_helper.Encode(dllBlacks),
+			})
+		}
+
+	}
+	variable.ZapLog.Sugar().Debug("RepairProcForCache page:", page)
 }
 
 // SyncDefaultForCache  本地缓存：同步默认状态(未同步)数据到威胁情报中心

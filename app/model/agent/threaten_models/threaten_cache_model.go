@@ -63,6 +63,7 @@ func (m *CacheModel) CreateTable() bool {
 			created_at datetime NOT NULL,
 			INDEX index_level (level) USING INVERTED,
 			INDEX index_dir (dir) USING INVERTED,
+			INDEX index_check_at (check_at) USING INVERTED,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
 		UNIQUE KEY(id) 

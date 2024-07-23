@@ -163,7 +163,15 @@ func handleDay(mode, interval, at string) {
 }
 
 func handleHour(mode, interval, at string) {
-
+	if interval == AtOne {
+		switch at {
+		case AtZero:
+			variable.ZapLog.Sugar().Debug("威胁情报缓存修复进程模块")
+			//威胁情报缓存修复进程模块
+			threaten_cmd.CreateCmdFactory().RepairProcForCache()
+			break
+		}
+	}
 }
 
 func handleMinute(mode, interval, at string) {

@@ -29,6 +29,10 @@ func TestThreatenSyncCache(t *testing.T) {
 	threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 }
 
+func TestThreatenRepairProcForCache(t *testing.T) {
+	threaten_cmd.CreateCmdFactory().RepairProcForCache()
+}
+
 func TestThreatenRewrite(t *testing.T) {
 	param := threaten_models.CacheModel{
 		Id:       "79a78e9e58471e51cd0f7525c6a6a168",

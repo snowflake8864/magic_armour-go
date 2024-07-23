@@ -233,6 +233,16 @@ func (crd *DllCurd) ThreatenCallbackByHash(hash string, level int) {
 	}
 }
 
+// ThreatenCallbackByHashes 威胁情报回调： 多条
+func (crd *DllCurd) ThreatenCallbackByHashes(hashes []string, level int) {
+	condition := proc_models.SearchConditions{
+		DllHashes: hashes,
+	}
+	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil {
+		crd.masterModel.UpdateByConditions(condition, updates)
+	}
+}
+
 // AutoWhiteSwitchOnAgent 终端自动白名单
 func (crd *DllCurd) AutoWhiteSwitchOnAgent(orgId int64, agentId string, openSwitch int) {
 	condition := proc_models.SearchConditions{

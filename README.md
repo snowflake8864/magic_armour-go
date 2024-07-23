@@ -88,7 +88,7 @@
       */30 * * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U minute -I thirty -A zero >> /var/log/armour_crontab.log 2>&1
       */30 * * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U minute -I thirty -A one >> /var/log/armour_crontab.log 2>&1
       
-      #每隔[1小时], 已按顺序使用到[]
+      #每隔[1小时], 已按顺序使用到[zero]
       0 */1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U hour -I one -A zero >> /var/log/armour_crontab.log 2>&1
       1 */1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U hour -I one -A one >> /var/log/armour_crontab.log 2>&1
       

@@ -15,6 +15,7 @@ type SearchConditions struct {
 	Level       *int
 	LevelList   []int
 	PushStatus  int
+	CheckAtGte  string
 }
 
 type baseThreaten struct {
@@ -73,6 +74,13 @@ func (m *baseThreaten) conditions2Where(condition SearchConditions) (wheres []mo
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "push_status",
 			Val: condition.PushStatus,
+		})
+	}
+
+	if !string_helper.IsEmpty(condition.CheckAtGte) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "check_at >=",
+			Val: condition.CheckAtGte,
 		})
 	}
 
