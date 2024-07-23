@@ -31,8 +31,8 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 		return err
 	}
 	now := date_helper.CurDatetime()
-	fmt.Println("params========================================")
-	fmt.Println(json_helper.Encode(params))
+	//fmt.Println("params========================================")
+	//fmt.Println(json_helper.Encode(params))
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
