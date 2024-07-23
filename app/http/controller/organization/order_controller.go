@@ -85,7 +85,7 @@ func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_model
 	conditions.OrgId = loginInfo.OrgId
 
 	conditions.OrderStatus = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "orderStatus"))
-	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixOrg + "productTitle")
+	conditions.ProductTitle = ctx.GetString(consts.ValidatorPrefixOrg + "productName")
 	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixOrg + "startTime")
 	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
 	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isExpire"); isOk && val != nil {
