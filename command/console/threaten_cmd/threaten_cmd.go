@@ -310,7 +310,8 @@ func (crd *ThreatenCmd) DeleteForCache() {
 // RepairProcForCache  本地缓存：修复进程模块（进程和模块上传时入队列, 威胁情报验证回写入队列, 有时间差）
 func (crd *ThreatenCmd) RepairProcForCache() {
 	variable.ZapLog.Sugar().Debug("RepairProcForCache start")
-	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-2))
+	//66f00330d9014b59cd3d100a886ddd2d
+	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
 	variable.ZapLog.Sugar().Debug("RepairProcForCache floorAt: ", floorAt)
 
 	cacheFact := threaten_models.CreateCacheFactory()
