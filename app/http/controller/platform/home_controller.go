@@ -113,17 +113,21 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 		false, true, false, true)
 	models := StatDailyFact.CalcByConditionsGroupDay(conditions, column)
 
-	var result []map[string]interface{}
+	var dateArr []int
+	var winArr []int
+	var linuxArr []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			result = append(result, map[string]interface{}{
-				"date":         date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
-				"win_online":   model.AgentWinOnline,
-				"linux_online": model.AgentLinuxOnline,
-			})
+			dateArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			winArr = append(winArr, model.AgentWinOnline)
+			linuxArr = append(winArr, model.AgentLinuxOnline)
 		}
 	}
-	response.SuccessReturnData(ctx, result)
+	response.SuccessReturnData(ctx, gin.H{
+		"date":         dateArr,
+		"win_online":   winArr,
+		"linux_online": linuxArr,
+	})
 }
 
 // UserTodayStat 用户: 今天统计
@@ -177,16 +181,18 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	column := StatDailyFact.ColumnOfUser(false, true, false, true)
 	models := StatDailyFact.CalcByConditionsGroupDay(conditions, column)
 
-	var result []map[string]interface{}
+	var dateArr []int
+	var onlineArr []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			result = append(result, map[string]interface{}{
-				"date":   date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)),
-				"online": model.UserOnline,
-			})
+			onlineArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			onlineArr = append(onlineArr, model.UserOnline)
 		}
 	}
-	response.SuccessReturnData(ctx, result)
+	response.SuccessReturnData(ctx, gin.H{
+		"date":   dateArr,
+		"online": onlineArr,
+	})
 }
 
 // UserNewestLogs 用户: 最新日志
