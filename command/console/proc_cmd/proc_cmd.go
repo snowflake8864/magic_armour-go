@@ -116,3 +116,10 @@ func (crd *ProcCmd) ClearRunning() {
 	proc_models.CreateDllRunningFactory().TruncateTable()
 	variable.ZapLog.Sugar().Debug("ClearRunning end")
 }
+
+// RepairStatusByThreaten  通过威胁情报修复状态
+func (crd *ProcCmd) RepairStatusByThreaten() {
+	variable.ZapLog.Sugar().Debug("RepairStatusByThreaten start")
+
+	variable.ZapLog.Sugar().Debug("RepairStatusByThreaten end")
+}
