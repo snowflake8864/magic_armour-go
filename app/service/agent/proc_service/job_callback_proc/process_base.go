@@ -16,15 +16,15 @@ type ProcessBase struct {
 func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenStatus int, threatenLevel int) {
 	isExist, threatenLevel = threaten_models.CreateCacheFactory().GetLevelById(hash)
 	if !isExist {
-		return false, enum_process.RelyStatusUnset, threatenLevel
+		return isExist, enum_process.RelyStatusUnset, threatenLevel
 	}
 
 	if enum_threaten.IsWhite(threatenLevel) {
-		return true, enum_process.RelyStatusWhite, threatenLevel
+		return isExist, enum_process.RelyStatusWhite, threatenLevel
 	} else if enum_threaten.IsBlack(threatenLevel) {
-		return true, enum_process.RelyStatusBlack, threatenLevel
+		return isExist, enum_process.RelyStatusBlack, threatenLevel
 	}
-	return true, enum_process.RelyStatusUnset, threatenLevel
+	return isExist, enum_process.RelyStatusUnset, threatenLevel
 }
 
 // getGlobalStatus 获取全局名单状态z
