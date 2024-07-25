@@ -384,6 +384,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 		break
 	case enum_alarm.ModuleUsb:
 		condition.UsbHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+		condition.Type = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmType"))
 
 		//终端对应外接设备别名
 		agentUsbAlias := make(map[string]map[string]string)
