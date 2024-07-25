@@ -12,9 +12,9 @@ import (
 func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	model := alarm_stat_models.StatDailyModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(fmt.Sprintf("startAt=%s,  endAt=%s", startAt, endAt))
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(fmt.Sprintf("startAt=%s,  endAt=%s", startAt, endAt))
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
@@ -162,7 +162,7 @@ func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	model.AddHandled += calc2.HandledNumber
 
 	if !alarm_service.CreateStatDailyFactory().Add(&model) {
-		variable.ZapLog.Info("fail")
+		variable.ZapLog.Sugar().Info("fail")
 		return
 	}
 }

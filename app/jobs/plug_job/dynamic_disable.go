@@ -10,9 +10,9 @@ import (
 func DynamicDisable(orgId int64, agentId string) {
 	now := date_helper.CurDatetime()
 
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s, now=%s", orgId, agentId, now))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d, agentId=%s, now=%s", orgId, agentId, now))
 
 	if err := plug_service.CreatePolicyDynamicCurdFactory().AutoDisable(orgId, agentId, now); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 	}
 }

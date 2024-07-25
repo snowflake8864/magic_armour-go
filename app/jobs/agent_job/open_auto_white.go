@@ -8,7 +8,7 @@ import (
 )
 
 func OpenAutoWhite(orgId int64, agentId string) {
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s", orgId, agentId))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d, agentId=%s", orgId, agentId))
 
 	AgentFact := agent_models.CreateAgentFactory()
 	if agentModel := AgentFact.GetItemByOrgAndAgent(orgId, agentId, AgentFact.ColumnProc(true)); agentModel != nil && agentModel.OrgId > 0 {

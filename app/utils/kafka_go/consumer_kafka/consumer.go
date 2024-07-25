@@ -49,7 +49,7 @@ func (k *ConsumerClient) newConsumer(name string) *kafka.Reader {
 		MinBytes:    0,           // 最小读取字节数
 		MaxBytes:    10e6,        // 最大读取字节数
 	}
-	variable.ZapLog.Info(fmt.Sprintf("GroupID:%s", configReader.GroupID))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("GroupID:%s", configReader.GroupID))
 	return kafka.NewReader(configReader)
 }
 
@@ -58,14 +58,14 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 
 	msg, err := r.ReadMessage(ctx)
 	if err != nil {
-		variable.ZapLog.Error(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
+		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
 		return result, err
 	} else {
 		err = json.Unmarshal(msg.Value, result)
 		if err != nil {
-			variable.ZapLog.Error(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
+			variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		fmt.Println(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
@@ -93,7 +93,7 @@ func (k *ConsumerClient) ConsumeCommon() {
 			org_job.Clean(data.OrgId)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("ReadCommon result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("ReadCommon result:%T", data))
 		}
 	}
 }
@@ -122,7 +122,7 @@ func (k *ConsumerClient) ConsumeProcess() {
 			proc_job.UploadDllRunning(data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerProcess result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerProcess result:%T", data))
 		}
 	}
 }
@@ -160,7 +160,7 @@ func (k *ConsumerClient) ConsumeAlarm() {
 			alarm_job.UploadPort(data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerAlarm result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerAlarm result:%T", data))
 		}
 	}
 }
@@ -195,7 +195,7 @@ func (k *ConsumerClient) ConsumeSyslog() {
 			agent_job.UploadMonitor(data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerSyslog result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerSyslog result:%T", data))
 		}
 	}
 }
@@ -215,7 +215,7 @@ func (k *ConsumerClient) ConsumeThreaten() {
 			threaten_job.HandelRewire(data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerThreaten result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerThreaten result:%T", data))
 		}
 	}
 }
@@ -250,7 +250,7 @@ func (k *ConsumerClient) ConsumeCrontab() {
 			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
-			variable.ZapLog.Info(fmt.Sprintf("readerCrontab result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerCrontab result:%T", data))
 		}
 	}
 }

@@ -17,7 +17,7 @@ import (
 )
 
 func Delete(orgId int64, agentId string) {
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s", orgId, agentId))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d, agentId=%s", orgId, agentId))
 	agent_models.CreateAgentFactory().DeleteByOrgAndAgent(orgId, agentId)
 	agent_models.CreateExtendFactory().DeleteByOrgAndAgent(orgId, agentId)
 	agent_monitor_models.CreateMonitorFactory().DeleteByOrgAndAgent(orgId, agentId)

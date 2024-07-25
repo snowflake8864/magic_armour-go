@@ -8,7 +8,7 @@ import (
 )
 
 func Clean(orgId int64) {
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d", orgId))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d", orgId))
 
 	agent_callback_service.CreateCurdFactory().DeleteByOrg(orgId)
 	task_models.CreateTaskFactory().DeleteByOrg(orgId)

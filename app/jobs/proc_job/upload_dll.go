@@ -10,13 +10,13 @@ import (
 func UploadDll(jsonStr string) {
 	dllModel := proc_models.DllModel{}
 	if err := json_helper.ToStruct(jsonStr, &dllModel); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_proc.CreateDllUploadFactory().Add(&dllModel); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -24,13 +24,13 @@ func UploadDll(jsonStr string) {
 func UploadDllRunning(jsonStr string) {
 	dllRunningModel := proc_models.DllRunningModel{}
 	if err := json_helper.ToStruct(jsonStr, &dllRunningModel); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_proc.CreateDllRunningUploadFactory().Add(&dllRunningModel); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }

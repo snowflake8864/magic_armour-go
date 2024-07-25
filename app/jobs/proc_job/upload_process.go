@@ -10,13 +10,13 @@ import (
 func UploadProcess(jsonStr string) {
 	processModel := proc_models.ProcessModel{}
 	if err := json_helper.ToStruct(jsonStr, &processModel); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_proc.CreateProcessUploadFactory().Add(&processModel); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -24,13 +24,13 @@ func UploadProcess(jsonStr string) {
 func UploadProcessRunning(jsonStr string) {
 	processRunningModel := proc_models.ProcessRunningModel{}
 	if err := json_helper.ToStruct(jsonStr, &processRunningModel); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_proc.CreateProcessRunningUploadFactory().Add(&processRunningModel); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }

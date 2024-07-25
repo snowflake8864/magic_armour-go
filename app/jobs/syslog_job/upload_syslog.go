@@ -10,13 +10,13 @@ import (
 func UploadDns(jsonStr string) {
 	model := syslog_models.DnsModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateDnsUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -24,13 +24,13 @@ func UploadDns(jsonStr string) {
 func UploadOuter(jsonStr string) {
 	model := syslog_models.OuterModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateOuterUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -38,13 +38,13 @@ func UploadOuter(jsonStr string) {
 func UploadInner(jsonStr string) {
 	model := syslog_models.InnerModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateInnerUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -52,13 +52,13 @@ func UploadInner(jsonStr string) {
 func UploadProcess(jsonStr string) {
 	model := syslog_models.ProcessModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateProcessUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
@@ -66,13 +66,13 @@ func UploadProcess(jsonStr string) {
 func UploadLogin(jsonStr string) {
 	model := syslog_models.LoginModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Info(err.Error())
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Info(err.Error())
+		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
