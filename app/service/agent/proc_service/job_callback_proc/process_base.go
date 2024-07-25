@@ -16,15 +16,15 @@ type ProcessBase struct {
 func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenStatus int, threatenLevel int) {
 	isExist, threatenLevel = threaten_models.CreateCacheFactory().GetLevelById(hash)
 	if !isExist {
-		return isExist, enum_process.RelyStatusUnset, threatenLevel
+		return false, enum_process.RelyStatusUnset, threatenLevel
 	}
+
 	if enum_threaten.IsWhite(threatenLevel) {
-		return isExist, enum_process.RelyStatusWhite, threatenLevel
+		return true, enum_process.RelyStatusWhite, threatenLevel
 	} else if enum_threaten.IsBlack(threatenLevel) {
-		return isExist, enum_process.RelyStatusBlack, threatenLevel
-	} else {
-		return isExist, enum_process.RelyStatusUnset, threatenLevel
+		return true, enum_process.RelyStatusBlack, threatenLevel
 	}
+	return true, enum_process.RelyStatusUnset, threatenLevel
 }
 
 // getGlobalStatus 获取全局名单状态z
@@ -47,8 +47,8 @@ func (crd *ProcessBase) getProcStatus(globalStatus, selfStatus, threatenStatus, 
 		status = enum_process.ProcStatusWhite
 	} else if selfStatus == enum_process.RelyStatusBlack {
 		status = enum_process.ProcStatusBlack
-	} else if selfStatus == enum_process.RelyStatusUnset {
-		status = enum_process.ProcStatusUnset
+	} else if selfStatus == enum_process.RelyStatusUnknown {
+		status = enum_process.ProcStatusUnknown
 	} else if autoWhiteSwitch == enums.SwitchOn {
 		if threatenStatus == enum_process.RelyStatusWhite {
 			status = enum_process.ProcStatusWhite

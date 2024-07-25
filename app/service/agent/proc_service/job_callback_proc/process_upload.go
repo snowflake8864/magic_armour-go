@@ -47,29 +47,32 @@ func (crd *ProcessUpload) Add(processModel *proc_models.ProcessModel) error {
 		return nil
 	}
 
+	//终端信息
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(processModel.OrgId, processModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
+
+	//全局名单状态
+	processModel.GlobalStatus = crd.getGlobalStatus(processModel.OrgId, processModel.ProcHash)
+	//默认自身状态
+	processModel.SelfStatus = enum_process.RelyStatusUnset
+
+	//默认威胁情报开关
+	processModel.GrantThreatenSwitch = enums.SwitchOn
 	//冗余自动匹配白名单开关
 	processModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
-
 	//威胁情报状态
 	isExist := false
 	if isExist, processModel.ThreatenStatus, processModel.ThreatenLevel = crd.getThreatenStatus(processModel.ProcHash); !isExist {
 		//加入威胁情报缓存
 		crd.pushThreaten(processModel, agentModel.OsName)
 	}
-	//全局名单状态
-	processModel.GlobalStatus = crd.getGlobalStatus(processModel.OrgId, processModel.ProcHash)
 
-	//默认威胁情报开关
-	processModel.GrantThreatenSwitch = enums.SwitchOn
-
-	//最终状态
+	//最终呈现状态
 	processModel.Status, processModel.SyncStatusAt = crd.getProcStatus(processModel.GlobalStatus, processModel.SelfStatus,
-		processModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
+		processModel.ThreatenStatus, processModel.AutoWhiteSwitch)
 
 	//保存
 	if !crd.masterModel.InsertItem(processModel) {

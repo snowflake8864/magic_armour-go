@@ -41,7 +41,6 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 	}
 	dllModel.Dir = path_helper.ToStandard(dllModel.Dir)
 	dllModel.ProcDir = path_helper.ToStandard(dllModel.ProcDir)
-	dllModel.GrantThreatenSwitch = enums.SwitchOn
 
 	//如果存在， 忽略
 	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)
@@ -49,29 +48,32 @@ func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
 		return nil
 	}
 
+	//终端信息
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
 		return errors.New("终端不存在")
 	}
+
+	//全局名单状态
+	dllModel.GlobalStatus = crd.getGlobalStatus(dllModel.OrgId, dllModel.DllHash)
+	//默认自身状态
+	dllModel.SelfStatus = enum_process.RelyStatusUnset
+
+	//默认威胁情报开关
+	dllModel.GrantThreatenSwitch = enums.SwitchOn
 	//冗余自动匹配白名单开关
 	dllModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
-
 	//威胁情报状态
 	isExist := false
 	if isExist, dllModel.ThreatenStatus, dllModel.ThreatenLevel = crd.getThreatenStatus(dllModel.DllHash); !isExist {
 		//加入威胁情报缓存
 		crd.pushThreaten(dllModel, agentModel.OsName)
 	}
-	//全局名单状态
-	dllModel.GlobalStatus = crd.getGlobalStatus(dllModel.OrgId, dllModel.DllHash)
 
-	//默认威胁情报开关
-	dllModel.GrantThreatenSwitch = enums.SwitchOn
-
-	//最终状态
+	//最终呈现状态
 	dllModel.Status, dllModel.SyncStatusAt = crd.getProcStatus(dllModel.GlobalStatus, dllModel.SelfStatus,
-		dllModel.ThreatenStatus, agentModel.AutoWhiteSwitch)
+		dllModel.ThreatenStatus, dllModel.AutoWhiteSwitch)
 
 	//保存
 	if !crd.masterModel.InsertItem(dllModel) {
