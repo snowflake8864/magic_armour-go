@@ -70,22 +70,25 @@ type DllAndRunning struct {
 }
 
 type SearchConditions struct {
-	OrgId           int64
-	AgentId         string
-	AgentIds        []string
-	ProcHash        string
-	ProcHashes      []string
-	DllHash         string
-	DllHashes       []string
-	Id              string
-	Status          int
-	StatusList      []int
-	Dir             string
-	Dirs            []string
-	GlobalType      int
-	DataFrom        int
-	OpenSwitch      *int
-	SyncStatusAtGte int64
+	OrgId               int64
+	AgentId             string
+	AgentIds            []string
+	ProcHash            string
+	ProcHashes          []string
+	DllHash             string
+	DllHashes           []string
+	Id                  string
+	Status              int
+	StatusList          []int
+	Dir                 string
+	Dirs                []string
+	GlobalType          int
+	DataFrom            int
+	OpenSwitch          *int
+	GrantThreatenSwitch *int
+	AutoWhiteSwitch     *int
+	ThreatenStatus      *int
+	SyncStatusAtGte     int64
 }
 
 type baseProc struct {
@@ -188,6 +191,24 @@ func (m *baseProc) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "open_switch",
 			Val: *condition.OpenSwitch,
+		})
+	}
+	if condition.AutoWhiteSwitch != nil && *condition.AutoWhiteSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "auto_white_switch",
+			Val: *condition.AutoWhiteSwitch,
+		})
+	}
+	if condition.GrantThreatenSwitch != nil && *condition.GrantThreatenSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_threaten_switch",
+			Val: *condition.GrantThreatenSwitch,
+		})
+	}
+	if condition.ThreatenStatus != nil && *condition.ThreatenStatus != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "threaten_status",
+			Val: *condition.ThreatenStatus,
 		})
 	}
 	return wheres

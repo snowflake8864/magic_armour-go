@@ -154,3 +154,20 @@ func (crd *ProcessBase) getUpdatesForAutoWhiteSwitch(openSwitch int) map[string]
 	}
 	return updates
 }
+
+func (crd *ProcessBase) getUpdatesForThreatenRepair(threatenStatus int) map[string]interface{} {
+	updates := map[string]interface{}{}
+
+	switch threatenStatus {
+	case enum_process.RelyStatusWhite:
+		updates["status"] = enum_process.ProcStatusWhite
+		updates["sync_status_at"] = date_helper.CurTimestamp()
+		break
+	case enum_process.ProcStatusBlack:
+		updates["status"] = enum_process.ProcStatusBlack
+		updates["sync_status_at"] = date_helper.CurTimestamp()
+		break
+	}
+
+	return updates
+}

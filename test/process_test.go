@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/console/proc_cmd"
 	"testing"
 )
 
@@ -28,4 +29,8 @@ func TestDate(t *testing.T) {
 
 func TestOpenAutoWhite(t *testing.T) {
 	agent_job.OpenAutoWhite(1, "881d508cabab2b8448c6d7ff8c941bf8")
+}
+
+func TestThreatenRepairStatus(t *testing.T) {
+	proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 }

@@ -5,10 +5,12 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -120,6 +122,19 @@ func (crd *ProcCmd) ClearRunning() {
 // RepairStatusByThreaten  通过威胁情报修复状态
 func (crd *ProcCmd) RepairStatusByThreaten() {
 	variable.ZapLog.Sugar().Debug("RepairStatusByThreaten start")
+	orgModels := crd.getOrgModels()
+	if orgModels == nil || len(orgModels) == 0 {
+		variable.ZapLog.Sugar().Debug("RepairStatusByThreaten orgModels empty")
+		return
+	}
 
+	processCurdFact := proc_service.CreateProcessCurdFactory()
+	dllCurdFact := proc_service.CreateDllCurdFactory()
+	for _, orgModel := range orgModels {
+		processCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusWhite)
+		processCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
+		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusWhite)
+		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
+	}
 	variable.ZapLog.Sugar().Debug("RepairStatusByThreaten end")
 }

@@ -2,6 +2,7 @@ package proc_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/proc_models"
@@ -239,6 +240,21 @@ func (crd *DllCurd) ThreatenCallbackByHashes(hashes []string, level int) {
 		DllHashes: hashes,
 	}
 	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil {
+		crd.masterModel.UpdateByConditions(condition, updates)
+	}
+}
+
+// ThreatenRepairStatus 威胁情报修复状态
+func (crd *DllCurd) ThreatenRepairStatus(orgId int64, threatenStatus int) {
+	switchOn := enums.SwitchOn
+	condition := proc_models.SearchConditions{
+		OrgId:               orgId,
+		Status:              enum_process.ProcStatusUnset,
+		AutoWhiteSwitch:     &switchOn,
+		GrantThreatenSwitch: &switchOn,
+		ThreatenStatus:      &threatenStatus,
+	}
+	if updates := crd.getUpdatesForThreatenRepair(threatenStatus); updates != nil {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }
