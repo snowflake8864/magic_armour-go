@@ -423,8 +423,8 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	page := 0
 	limit := enum_threaten.CenterSupportNumber
 	for {
-		//未同步一次最多验证3回
-		if level == enum_threaten.LevelDefault && page >= 10 {
+		//未同步一次最多验证n回
+		if level == enum_threaten.LevelDefault && page >= 20 {
 			break
 		}
 		//每次获取固定条数
