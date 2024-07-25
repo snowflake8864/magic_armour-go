@@ -29,8 +29,8 @@ import (
 func CreateCmdFactory() *ThreatenCmd {
 	return &ThreatenCmd{
 		redisClient: redis_factory.GetOneRedisClient(),
-		cachePrefix: "lock_threaten_check_",
-		cacheExpire: 50,
+		cachePrefix: "threaten_check_",
+		cacheExpire: 120,
 		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
@@ -439,6 +439,11 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		var syncList []threaten_platform.CheckHashes
 		var idAndDataFrom = make(map[string]int)
 		for _, model := range models {
+			//不允许校验
+			if !crd.allowForCheck(model.Id) {
+				continue
+			}
+
 			idAndDataFrom[model.Id] = model.DataFrom
 
 			syncList = append(syncList, threaten_platform.CheckHashes{
@@ -461,6 +466,23 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level:", level, ", page:", page)
 }
 
+func (crd *ThreatenCmd) keyForCheck(id string) string {
+	return crd.cachePrefix + id
+}
+
+// 允许校验
+func (crd *ThreatenCmd) allowForCheck(id string) bool {
+	if isExist, _ := crd.redisClient.Exists(crd.keyForCheck(id)); isExist {
+		return false
+	}
+	return true
+}
+
+// 添加最新校验校验
+func (crd *ThreatenCmd) addForCheck(id string, level int) {
+	_, _ = crd.redisClient.SetEx(crd.keyForCheck(id), int_helper.IntToStr(level), crd.cacheExpire)
+}
+
 // 同步缓存到威胁情报并进行处理
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
 	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
@@ -481,12 +503,16 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	//没有返回数据
 	if checkReps == nil || len(*checkReps) == 0 {
 		//
-		crd.handleUnUnknown(level, idAndDataFrom)
+		crd.handleUnknown(level, idAndDataFrom)
 		return nil
 	}
 	//有返回数据
 	ctx := context.Background()
 	now := date_helper.CurDatetime()
+
+	//需要快速处理的数据, 减少时间差
+	whiteIds := []string{}
+	blackIds := []string{}
 
 	for _, item := range *checkReps {
 		hash := strings.ToLower(item.Hash)
@@ -509,16 +535,41 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			Type: kafka_go.TypeThreatenSyncRewrite,
 			Data: json_helper.Encode(&model),
 		})
+
+		//白名单
+		if model.Level == enum_threaten.LevelWhite {
+			whiteIds = append(whiteIds, model.Id)
+		}
+		//黑名单
+		if model.Level == enum_threaten.LevelBlack {
+			blackIds = append(blackIds, model.Id)
+		}
 	}
 
 	//
-	crd.handleUnUnknown(level, idAndDataFrom)
+	crd.fastHandleWhite(whiteIds)
+	crd.fastHandleBlack(blackIds)
+	crd.handleUnknown(level, idAndDataFrom)
 
 	return nil
 }
 
-// 威胁情报不存在的hash & 原来是未同步
-func (crd *ThreatenCmd) handleUnUnknown(level int, idAndDataFrom map[string]int) {
+// 快速处理白名单
+func (crd *ThreatenCmd) fastHandleWhite(idArr []string) {
+	if len(idArr) > 0 {
+		threaten_service.CreateCacheFactory().BatchFastHandleHasLevel(idArr, enum_threaten.LevelWhite)
+	}
+}
+
+// 快速处理白名单
+func (crd *ThreatenCmd) fastHandleBlack(idArr []string) {
+	if len(idArr) > 0 {
+		threaten_service.CreateCacheFactory().BatchFastHandleHasLevel(idArr, enum_threaten.LevelBlack)
+	}
+}
+
+// 处理未知
+func (crd *ThreatenCmd) handleUnknown(level int, idAndDataFrom map[string]int) {
 	if len(idAndDataFrom) > 0 && level == enum_threaten.LevelDefault {
 		var idArr []string
 		for id := range idAndDataFrom {

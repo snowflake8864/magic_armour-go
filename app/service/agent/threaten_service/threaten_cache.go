@@ -63,6 +63,20 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 	return isOk
 }
 
+// BatchFastHandleHasLevel 批量快速处理有等级的
+func (crd *ThreatenCache) BatchFastHandleHasLevel(ids []string, level int) bool {
+	wheres := threaten_models.SearchConditions{
+		Ids: ids,
+	}
+	updates := map[string]interface{}{
+		"level":        level,
+		"check_source": enum_threaten.CheckSourceInternet,
+		"check_at":     date_helper.CurDatetime(),
+	}
+	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
+	return isOk
+}
+
 // Rewrite 根据第三方返回重写本地信息
 func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 	checkAt := param.CheckAt
