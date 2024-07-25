@@ -6,7 +6,6 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
-	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -210,7 +209,7 @@ func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.
 						Copyright: procModel.Copyright,
 						Signature: procModel.Signature,
 						Attribute: "",
-						DataFrom:  enum_process.DataFromProcess,
+						DataFrom:  enum_threaten.DataFromProcess,
 					}
 					threaten_service.CreateCacheFactory().Add(&param, true)
 				} else {
@@ -255,7 +254,7 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 						Copyright: procModel.Copyright,
 						Signature: procModel.Signature,
 						Attribute: procModel.Attribute,
-						DataFrom:  enum_process.DataFromDll,
+						DataFrom:  enum_threaten.DataFromDll,
 					}
 					threaten_service.CreateCacheFactory().Add(&param, true)
 				} else {
