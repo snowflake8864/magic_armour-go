@@ -93,7 +93,7 @@ func (crd *ProcessUpload) pushThreaten(processModel *proc_models.ProcessModel, a
 		Copyright: processModel.Copyright,
 		Signature: processModel.Signature,
 		Attribute: "",
-		DataFrom:  enum_process.DataFromProcess,
+		DataFrom:  enum_threaten.DataFromProcess,
 	}
 	threaten_service.CreateCacheFactory().Add(&param, false)
 }

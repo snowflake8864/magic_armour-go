@@ -94,7 +94,7 @@ func (crd *DllUpload) pushThreaten(dllModel *proc_models.DllModel, agentOs strin
 		Copyright: dllModel.Copyright,
 		Signature: dllModel.Signature,
 		Attribute: dllModel.Attribute,
-		DataFrom:  enum_process.DataFromDll,
+		DataFrom:  enum_threaten.DataFromDll,
 	}
 	threaten_service.CreateCacheFactory().Add(&param, false)
 }
