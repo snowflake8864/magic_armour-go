@@ -24,6 +24,7 @@ import (
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/redis_factory"
 	"strings"
+	"time"
 )
 
 func CreateCmdFactory() *ThreatenCmd {
@@ -401,7 +402,11 @@ func (crd *ThreatenCmd) SyncDefaultForCache() {
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
 func (crd *ThreatenCmd) SyncUnknownForCache() {
 	variable.ZapLog.Sugar().Debug("SyncUnknownForCache start")
-	crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
+	for n := 1; n <= 3; n++ {
+		variable.ZapLog.Sugar().Debug("SyncUnknownForCache n:", n)
+		crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
+		time.Sleep(2 * time.Minute)
+	}
 	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
 }
 
