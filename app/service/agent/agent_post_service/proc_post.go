@@ -99,7 +99,7 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 	for _, item := range params {
 		//hash全部小写
 		hash := strings.ToLower(item.Hash)
-		if source != enum_process.DataFromProcess {
+		if source == enum_process.DataFromProcess {
 			processModel := proc_models.ProcessModel{
 				OrgId:     orgId,
 				AgentId:   agentId,
@@ -124,7 +124,7 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 				CreatedAt: now,
 			}
 			dllModel.Id = crd.makeMasterId(orgId, agentId, hash)
-			dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(item.Attribute, "", "")
+			dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(item.Attribute, item.Copyright, item.Introduce)
 			//推送给队列
 			if err := crd.sendDll(source, task, &dllModel); err != nil {
 				variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
