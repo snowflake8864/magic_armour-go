@@ -11,11 +11,11 @@ import (
 func HandelUnknown(jsonStr string) {
 	idArr := json_helper.ToSliceString(jsonStr)
 	if len(idArr) == 0 {
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Sugar().Debug(jsonStr)
 		return
 	}
 	if !threaten_service.CreateCacheFactory().BatchUnknown(idArr) {
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Sugar().Debug(jsonStr)
 	}
 	return
 }
@@ -23,14 +23,14 @@ func HandelUnknown(jsonStr string) {
 func HandelRewire(jsonStr string) {
 	model := threaten_models.CacheModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Sugar().Debug(jsonStr)
 		return
 	}
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("HandelRewire hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
+	variable.ZapLog.Sugar().Info(fmt.Sprintf("HandelRewire hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
 
 	if !threaten_service.CreateCacheFactory().Rewrite(&model) {
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Sugar().Debug(jsonStr)
 	}
 	return
 }
