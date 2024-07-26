@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/jobs/threaten_job"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/proc_service"
-	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/helpers/json_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -58,11 +57,12 @@ func TestThreatenRepairProcForCache(t *testing.T) {
 
 func TestThreatenRewrite(t *testing.T) {
 	param := threaten_models.CacheModel{
-		Id:       "79a78e9e58471e51cd0f7525c6a6a168",
+		Id:       "ffffff",
 		Level:    enum_threaten.LevelWhite,
-		DataFrom: enum_threaten.DataFromProcess,
+		DataFrom: enum_threaten.DataFromDll,
 	}
-	threaten_service.CreateCacheFactory().Rewrite(&param)
+
+	threaten_job.HandelRewire(json_helper.Encode(param))
 }
 
 func TestThreatenCallbackByHash(t *testing.T) {

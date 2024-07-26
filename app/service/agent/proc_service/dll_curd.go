@@ -227,7 +227,7 @@ func (crd *DllCurd) GlobalCallbackDeleteAll(orgId int64) {
 // ThreatenCallbackByHash 威胁情报回调： 一条
 func (crd *DllCurd) ThreatenCallbackByHash(hash string, level int) {
 	condition := proc_models.SearchConditions{
-		ProcHash: hash,
+		DllHash: hash,
 	}
 	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil && len(updates) > 0 {
 		crd.masterModel.UpdateByConditions(condition, updates)
