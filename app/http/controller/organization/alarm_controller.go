@@ -444,6 +444,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 		break
 	case enum_alarm.ModuleSelf:
 		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
+		condition.Type = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "alarmType"))
 
 		fact := alarm_models.CreateSelfFactory()
 		total, models := fact.Page(condition, offset, pageSize, order)
