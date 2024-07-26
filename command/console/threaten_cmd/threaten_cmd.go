@@ -567,10 +567,10 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	}
 
 	//
-	crd.fastHandleHasLevel(processWhites, enum_threaten.DataFromProcess, enum_threaten.LevelWhite)
-	crd.fastHandleHasLevel(processBlacks, enum_threaten.DataFromProcess, enum_threaten.LevelBlack)
-	crd.fastHandleHasLevel(dllBlacks, enum_threaten.DataFromDll, enum_threaten.LevelWhite)
-	crd.fastHandleHasLevel(dllBlacks, enum_threaten.DataFromDll, enum_threaten.LevelBlack)
+	crd.fastHandleHasLevel(processWhites, enum_threaten.LevelWhite, enum_threaten.DataFromProcess)
+	crd.fastHandleHasLevel(processBlacks, enum_threaten.LevelBlack, enum_threaten.DataFromProcess)
+	crd.fastHandleHasLevel(dllBlacks, enum_threaten.LevelWhite, enum_threaten.DataFromDll)
+	crd.fastHandleHasLevel(dllBlacks, enum_threaten.LevelBlack, enum_threaten.DataFromDll)
 	crd.handleUnknown(level, idAndDataFrom)
 
 	return nil
