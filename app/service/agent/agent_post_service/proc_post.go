@@ -85,12 +85,66 @@ func (crd *ProcPost) makeRunningId(orgId int64, agentId, hash string, procId int
 	return md5_encrypt.MD5(int_helper.Int64ToStr(orgId) + agentId + hash + int_helper.IntToStr(procId))
 }
 
-// ToQuery 格式化参数后推送给队列
-func (crd *ProcPost) ToQuery(source int, task string, orgId int64, agentId, inputJson string) error {
+// ToQueryByAll 格式化参数后推送给队列: 上传全部进程模块
+func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId, inputJson string) error {
 	var params []procData
 	if err := json_helper.ToAny(inputJson, &params); err != nil {
 		return err
 	}
+	if len(params) == 0 {
+		return nil
+	}
+
+	now := date_helper.CurDatetime()
+	for _, item := range params {
+		//hash全部小写
+		hash := strings.ToLower(item.Hash)
+		if source != enum_process.DataFromProcess {
+			processModel := proc_models.ProcessModel{
+				OrgId:     orgId,
+				AgentId:   agentId,
+				ProcHash:  hash,
+				Dir:       item.Dir,
+				CreatedAt: now,
+			}
+			processModel.Id = crd.makeMasterId(orgId, agentId, hash)
+			processModel.Copyright, processModel.Introduce = crd.parseAttribute(item.Attribute, item.Copyright, item.Introduce)
+			//推送给队列
+			if err := crd.sendProcess(source, task, &processModel); err != nil {
+				variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+			}
+		} else {
+			//模块表数据
+			dllModel := proc_models.DllModel{
+				OrgId:     orgId,
+				AgentId:   agentId,
+				DllHash:   hash,
+				Dir:       item.Dir,
+				Attribute: item.Attribute,
+				CreatedAt: now,
+			}
+			dllModel.Id = crd.makeMasterId(orgId, agentId, hash)
+			dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(item.Attribute, "", "")
+			//推送给队列
+			if err := crd.sendDll(source, task, &dllModel); err != nil {
+				variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
+			}
+		}
+	}
+
+	return nil
+}
+
+// ToQueryByCommon 格式化参数后推送给队列: 主动上传进程模块 | 刷新进程模块
+func (crd *ProcPost) ToQueryByCommon(source int, task string, orgId int64, agentId, inputJson string) error {
+	var params []procData
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
+		return err
+	}
+	if len(params) == 0 {
+		return nil
+	}
+
 	now := date_helper.CurDatetime()
 	for _, itemProcess := range params {
 		//进程hash全部小写
