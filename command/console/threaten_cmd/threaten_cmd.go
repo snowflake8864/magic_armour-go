@@ -424,7 +424,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	limit := enum_threaten.CenterSupportNumber
 	for {
 		//未同步一次最多验证n回
-		if level == enum_threaten.LevelDefault && page >= 20 {
+		if level == enum_threaten.LevelDefault && page >= 10 {
 			break
 		}
 		//每次获取固定条数
@@ -439,7 +439,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		var syncList []threaten_platform.CheckHashes
 		var idAndDataFrom = make(map[string]int)
 		for _, model := range models {
-			//不允许校验
+			//短时间不允许校验
 			if !crd.allowForCheck(model.Id) {
 				continue
 			}
@@ -523,6 +523,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			delete(idAndDataFrom, hash)
 		}
 
+		//数据
 		model := threaten_models.CacheModel{
 			Id:        strings.ToLower(item.Hash),
 			Level:     item.Level,
@@ -530,6 +531,10 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			CheckAt:   now,
 			CheckInfo: item.Attr,
 		}
+
+		//添加最新校验校验
+		crd.addForCheck(model.Id, model.Level)
+
 		//进入队列
 		crd.queryClient.ProduceThreaten(ctx, &kafka_go.MessageStruct{
 			Type: kafka_go.TypeThreatenSyncRewrite,
