@@ -27,7 +27,7 @@ func HandelRewire(jsonStr string) {
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
+	variable.ZapLog.Sugar().Debug(fmt.Sprintf("HandelRewire hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
 
 	if !threaten_service.CreateCacheFactory().Rewrite(&model) {
 		variable.ZapLog.Sugar().Info(jsonStr)
