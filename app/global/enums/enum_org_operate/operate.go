@@ -305,6 +305,14 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/safetyReport/alarmNotice/save":    {ModuleSecurityReport, "告警通知：保存"},
 	"/v5/organization/safetyReport/hardwareNotice/save": {ModuleSecurityReport, "状态：保存"},
 
+	"/v5/organization/department/add":    {ModuleOrg, "组织架构：添加"},
+	"/v5/organization/department/edit":   {ModuleOrg, "组织架构：编辑"},
+	"/v5/organization/department/delete": {ModuleOrg, "组织架构：删除"},
+	"/v5/organization/user/add":          {ModuleOrg, "子用户：添加"},
+	"/v5/organization/user/edit":         {ModuleOrg, "子用户：编辑"},
+	"/v5/organization/user/delete":       {ModuleOrg, "子用户：删除"},
+	"/v5/organization/user/modifyPw":     {ModuleOrg, "子用户：修改密码"},
+
 	"/v5/organization/task/history/clear": {ModuleOther, "终端任务：清空"},
 }
 

@@ -28,9 +28,9 @@ func RequestParams(ctx *gin.Context) {
 		}()
 		// 绑定参数
 		if contextType == "application/json" {
-			err := ctx.ShouldBind(&bindParams)
-			if err != nil { // 报错
-				variable.ZapLog.Error("RequestParams 获取参数异常: " + err.Error())
+			err1 := ctx.ShouldBind(&bindParams)
+			if err1 != nil { // 报错
+				variable.ZapLog.Error("RequestParams 获取参数异常: " + err1.Error())
 				return
 			}
 		} else {
