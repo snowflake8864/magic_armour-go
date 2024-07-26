@@ -229,7 +229,7 @@ func (crd *ProcessCurd) ThreatenCallbackByHash(hash string, level int) {
 	condition := proc_models.SearchConditions{
 		ProcHash: hash,
 	}
-	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil {
+	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil && len(updates) > 0 {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }
@@ -239,7 +239,7 @@ func (crd *ProcessCurd) ThreatenCallbackByHashes(hashes []string, level int) {
 	condition := proc_models.SearchConditions{
 		ProcHashes: hashes,
 	}
-	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil {
+	if updates := crd.getUpdatesForThreatenCallback(level); updates != nil && len(updates) > 0 {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }
@@ -254,7 +254,7 @@ func (crd *ProcessCurd) ThreatenRepairStatus(orgId int64, threatenStatus int) {
 		GrantThreatenSwitch: &switchOn,
 		ThreatenStatus:      &threatenStatus,
 	}
-	if updates := crd.getUpdatesForThreatenRepair(threatenStatus); updates != nil {
+	if updates := crd.getUpdatesForThreatenRepair(threatenStatus); updates != nil && len(updates) > 0 {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }
@@ -265,7 +265,7 @@ func (crd *ProcessCurd) AutoWhiteSwitchOnAgent(orgId int64, agentId string, open
 		OrgId:   orgId,
 		AgentId: agentId,
 	}
-	if updates := crd.getUpdatesForAutoWhiteSwitch(openSwitch); updates != nil {
+	if updates := crd.getUpdatesForAutoWhiteSwitch(openSwitch); updates != nil && len(updates) > 0 {
 		crd.masterModel.UpdateByConditions(condition, updates)
 	}
 }

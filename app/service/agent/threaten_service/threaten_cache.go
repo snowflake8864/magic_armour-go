@@ -55,26 +55,36 @@ func (crd *ThreatenCache) BatchUnknown(ids []string) bool {
 		Level: &level,
 	}
 	updates := map[string]interface{}{
-		"level":        enum_threaten.LevelUnknown,
-		"check_source": enum_threaten.CheckSourceVeda,
-		"check_at":     date_helper.CurDatetime(),
+		"level":    enum_threaten.LevelUnknown,
+		"check_at": date_helper.CurDatetime(),
 	}
 	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
 	return isOk
 }
 
-// BatchFastHandleHasLevel 批量快速处理有等级的
-func (crd *ThreatenCache) BatchFastHandleHasLevel(ids []string, level int) bool {
+// BatchFastRewriteHasLevel 批量快速重写有等级的
+func (crd *ThreatenCache) BatchFastRewriteHasLevel(ids []string, level, dataForm int) bool {
 	wheres := threaten_models.SearchConditions{
 		Ids: ids,
 	}
 	updates := map[string]interface{}{
-		"level":        level,
-		"check_source": enum_threaten.CheckSourceInternet,
-		"check_at":     date_helper.CurDatetime(),
+		"level":    level,
+		"check_at": date_helper.CurDatetime(),
 	}
-	isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates)
-	return isOk
+	if isOk, _ := crd.masterModel.UpdateByConditions(wheres, updates); !isOk {
+		return false
+	}
+
+	if dataForm == enum_threaten.DataFromProcess { //来源进程
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHashes(ids, level)
+	} else if dataForm == enum_threaten.DataFromDll { //来源模块
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHashes(ids, level)
+	} else {
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHashes(ids, level)
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHashes(ids, level)
+	}
+
+	return true
 }
 
 // Rewrite 根据第三方返回重写本地信息
@@ -99,20 +109,16 @@ func (crd *ThreatenCache) Rewrite(param *threaten_models.CacheModel) bool {
 		return false
 	}
 
-	crd.rewriteAfter(param.Id, param.DataFrom, param.Level)
+	if param.DataFrom == enum_threaten.DataFromProcess { //来源进程
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(param.Id, param.Level)
+	} else if param.DataFrom == enum_threaten.DataFromDll { //来源模块
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(param.Id, param.Level)
+	} else {
+		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(param.Id, param.Level)
+		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(param.Id, param.Level)
+	}
 
 	return true
-}
-
-func (crd *ThreatenCache) rewriteAfter(id string, dataFrom, level int) {
-	if dataFrom == enum_threaten.DataFromProcess { //来源进程
-		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
-	} else if dataFrom == enum_threaten.DataFromDll { //来源模块
-		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(id, level)
-	} else {
-		proc_service.CreateProcessCurdFactory().ThreatenCallbackByHash(id, level)
-		proc_service.CreateDllCurdFactory().ThreatenCallbackByHash(id, level)
-	}
 }
 
 // Clear 清空

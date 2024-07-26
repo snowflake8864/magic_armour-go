@@ -511,8 +511,10 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	now := date_helper.CurDatetime()
 
 	//需要快速处理的数据, 减少时间差
-	whiteIds := []string{}
-	blackIds := []string{}
+	processWhites := []string{}
+	processBlacks := []string{}
+	dllWhites := []string{}
+	dllBlacks := []string{}
 
 	for _, item := range *checkReps {
 		hash := strings.ToLower(item.Hash)
@@ -532,7 +534,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			CheckInfo: item.Attr,
 		}
 
-		//添加最新校验校验
+		//添加最新校验校验, 防止重复校验
 		crd.addForCheck(model.Id, model.Level)
 
 		//进入队列
@@ -541,35 +543,43 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 			Data: json_helper.Encode(&model),
 		})
 
-		//白名单
-		if model.Level == enum_threaten.LevelWhite {
-			whiteIds = append(whiteIds, model.Id)
-		}
-		//黑名单
-		if model.Level == enum_threaten.LevelBlack {
-			blackIds = append(blackIds, model.Id)
+		//黑白名单需要快速处理
+		if model.Level == enum_threaten.LevelWhite { //白名单
+			if dataFrom == enum_threaten.DataFromProcess {
+				processWhites = append(processWhites, model.Id)
+			} else if dataFrom == enum_threaten.DataFromDll {
+				dllWhites = append(dllWhites, model.Id)
+			} else {
+				processWhites = append(processWhites, model.Id)
+				dllWhites = append(dllWhites, model.Id)
+			}
+
+		} else if model.Level == enum_threaten.LevelBlack { //黑名单
+			if dataFrom == enum_threaten.DataFromProcess {
+				processBlacks = append(processBlacks, model.Id)
+			} else if dataFrom == enum_threaten.DataFromDll {
+				dllBlacks = append(dllBlacks, model.Id)
+			} else {
+				processBlacks = append(processBlacks, model.Id)
+				dllBlacks = append(dllBlacks, model.Id)
+			}
 		}
 	}
 
 	//
-	crd.fastHandleWhite(whiteIds)
-	crd.fastHandleBlack(blackIds)
+	crd.fastHandleHasLevel(processWhites, enum_threaten.DataFromProcess, enum_threaten.LevelWhite)
+	crd.fastHandleHasLevel(processBlacks, enum_threaten.DataFromProcess, enum_threaten.LevelBlack)
+	crd.fastHandleHasLevel(dllBlacks, enum_threaten.DataFromDll, enum_threaten.LevelWhite)
+	crd.fastHandleHasLevel(dllBlacks, enum_threaten.DataFromDll, enum_threaten.LevelBlack)
 	crd.handleUnknown(level, idAndDataFrom)
 
 	return nil
 }
 
-// 快速处理白名单
-func (crd *ThreatenCmd) fastHandleWhite(idArr []string) {
+// 快速处理有等级的
+func (crd *ThreatenCmd) fastHandleHasLevel(idArr []string, level, dataFrom int) {
 	if len(idArr) > 0 {
-		threaten_service.CreateCacheFactory().BatchFastHandleHasLevel(idArr, enum_threaten.LevelWhite)
-	}
-}
-
-// 快速处理白名单
-func (crd *ThreatenCmd) fastHandleBlack(idArr []string) {
-	if len(idArr) > 0 {
-		threaten_service.CreateCacheFactory().BatchFastHandleHasLevel(idArr, enum_threaten.LevelBlack)
+		threaten_service.CreateCacheFactory().BatchFastRewriteHasLevel(idArr, level, dataFrom)
 	}
 }
 
