@@ -28,6 +28,7 @@ func (t *Threaten) pageCacheGeneral(model *threaten_models.CacheModel) map[strin
 	data["attribute"] = model.Attribute
 	data["data_from"] = model.DataFrom
 	data["check_at"] = model.CheckAt
+	data["check_source"] = model.CheckSource
 	data["created_at"] = model.CreatedAt
 	return data
 }
