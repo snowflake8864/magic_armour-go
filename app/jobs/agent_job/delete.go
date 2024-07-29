@@ -12,23 +12,27 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/model/agent/task_models"
+	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/syslog/syslog_models"
 )
 
 func Delete(orgId int64, agentId string) {
 	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d, agentId=%s", orgId, agentId))
+	//终端
 	agent_models.CreateAgentFactory().DeleteByOrgAndAgent(orgId, agentId)
 	agent_models.CreateExtendFactory().DeleteByOrgAndAgent(orgId, agentId)
+	//终端资源
 	agent_monitor_models.CreateMonitorFactory().DeleteByOrgAndAgent(orgId, agentId)
-
+	//任务
 	task_models.CreateTaskFactory().DeleteByOrgAndAgent(orgId, agentId)
-
+	//错误文件
 	agent_error_models.CreateErrorFactory().DeleteByConditions(agent_error_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 	})
 
+	//进程或模块
 	proc_models.CreateProcessFactory().DeleteByConditions(proc_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -42,16 +46,19 @@ func Delete(orgId int64, agentId string) {
 		AgentId: agentId,
 	})
 
+	//勒索
 	blackmail_models.CreatePolicyFactory().DeleteByConditions(blackmail_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 	})
 
+	//防篡改
 	tamper_models.CreatePolicyFactory().DeleteByConditions(tamper_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
 	})
 
+	//端口
 	port_models.CreateVirtualPolicyFactory().DeleteByConditions(port_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -61,6 +68,7 @@ func Delete(orgId int64, agentId string) {
 		AgentId: agentId,
 	})
 
+	//封堵
 	plug_models.CreateDynamicFactory().DeleteByConditions(plug_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -70,6 +78,13 @@ func Delete(orgId int64, agentId string) {
 		AgentId: agentId,
 	})
 
+	//外设
+	usb_models.CreateUsbFactory().DeleteByConditions(usb_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+	})
+
+	//告警
 	alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -111,6 +126,7 @@ func Delete(orgId int64, agentId string) {
 		AgentId: agentId,
 	})
 
+	//通讯日志
 	syslog_models.CreateDnsFactory().DeleteByConditions(syslog_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
