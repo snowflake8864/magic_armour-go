@@ -3,6 +3,7 @@ package threaten_cmd
 import (
 	"context"
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
@@ -584,6 +585,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 // 快速处理有等级的
 func (crd *ThreatenCmd) fastHandleHasLevel(idArr []string, level, dataFrom int) {
 	if len(idArr) > 0 {
+		variable.ZapLog.Sugar().Info(fmt.Sprintf("level:%d, dataFrom:%d, idArr:%s", level, dataFrom, json_helper.Encode(idArr)))
 		threaten_service.CreateCacheFactory().BatchFastRewriteHasLevel(idArr, level, dataFrom)
 	}
 }
