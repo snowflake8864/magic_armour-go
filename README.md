@@ -36,7 +36,7 @@
 
       1. supervisorctl -c /data/supervisor/etc/supervisord.conf reload
       2. supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
-      3. systemctl restart supervisord.service
+      3. systemctl status supervisord.service
 
 
 ### 管理平台隐藏页面
