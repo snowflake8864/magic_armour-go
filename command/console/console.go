@@ -254,9 +254,9 @@ func handleMinute(mode, interval, at string) {
 	} else if interval == AtThirty {
 		switch at {
 		case AtZero:
-			variable.ZapLog.Sugar().Debug("通过威胁情报修复进程状态")
-			//通过威胁情报修复进程状态"
-			proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
+			//variable.ZapLog.Sugar().Debug("通过威胁情报修复进程状态")
+			//通过威胁情报修复进程状态
+			//proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 			break
 		}
 	}
