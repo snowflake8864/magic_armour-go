@@ -127,6 +127,35 @@ func (k *ConsumerClient) ConsumeProcess() {
 	}
 }
 
+// ConsumeDll 消费主题： Dll
+func (k *ConsumerClient) ConsumeDll() {
+	ctx := context.Background()
+	consumer := k.newConsumer(kafka_go.TopicDll)
+	for {
+		data, err := k.readMessage(ctx, consumer)
+		if err != nil {
+			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
+
+		switch data.Type {
+		case kafka_go.TypeProcProcessPutMaster:
+			proc_job.UploadProcess(data.Data)
+			break
+		case kafka_go.TypeProcProcessPutRunning:
+			proc_job.UploadProcessRunning(data.Data)
+			break
+		case kafka_go.TypeProcDllPutMaster:
+			proc_job.UploadDll(data.Data)
+			break
+		case kafka_go.TypeProcDllPutRunning:
+			proc_job.UploadDllRunning(data.Data)
+			break
+		default:
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerDll result:%T", data))
+		}
+	}
+}
+
 // ConsumeAlarm 消费主题： Alarm
 func (k *ConsumerClient) ConsumeAlarm() {
 	ctx := context.Background()

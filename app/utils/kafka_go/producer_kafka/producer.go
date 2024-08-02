@@ -68,6 +68,7 @@ func CreateProducerFactory() *ProducerClient {
 	return &ProducerClient{
 		Common:   newProducer(kafka_go.TopicCommon, config),
 		Process:  newProducer(kafka_go.TopicProcess, config),
+		Dll:      newProducer(kafka_go.TopicDll, config),
 		Threaten: newProducer(kafka_go.TopicThreaten, config),
 		Alarm:    newProducer(kafka_go.TopicAlarm, config),
 		Syslog:   newProducer(kafka_go.TopicSyslog, config),
@@ -79,6 +80,7 @@ func CreateProducerFactory() *ProducerClient {
 type ProducerClient struct {
 	Common   *kafka.Writer
 	Process  *kafka.Writer
+	Dll      *kafka.Writer
 	Threaten *kafka.Writer
 	Alarm    *kafka.Writer
 	Syslog   *kafka.Writer
@@ -115,6 +117,12 @@ func (k *ProducerClient) ProduceCommon(ctx context.Context, data *kafka_go.Messa
 func (k *ProducerClient) ProduceProcess(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Process, k.makeMessage(data)); err != nil {
 		variable.ZapLog.Sugar().Debug(fmt.Sprintf("ProduceProcess data:%v ,err:%v", data, err))
+	}
+}
+
+func (k *ProducerClient) ProduceDll(ctx context.Context, data *kafka_go.MessageStruct) {
+	if err := k.writeMessage(ctx, k.Dll, k.makeMessage(data)); err != nil {
+		variable.ZapLog.Sugar().Debug(fmt.Sprintf("ProduceDll data:%v ,err:%v", data, err))
 	}
 }
 

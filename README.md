@@ -28,7 +28,7 @@
 ### 命令行入口
 
       ./app_cli.linux64 migrate -A (init|dictionary|menu|append)
-      ./app_cli.exe queue  -A (init|consume) -T (common|process|threaten|alarm|syslog|crontab)
+      ./app_cli.exe queue  -A (init|consume) -T (common|process|dll|threaten|alarm|syslog|crontab)
       ./app_cli.exe crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
 
 
@@ -50,6 +50,9 @@
 - 每个路由都有限流设置
 
 ### 定时任务
+      
+      #清理磁盘日志
+      20 1 * * * /home/veda/clear_disk.sh >> /var/log/armour_disk_clear.log 2>&1
 
       #每隔[1分钟], 已按顺序使用到[two]
       */1 * * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U minute -I one -A zero >> /var/log/armour_crontab.log 2>&1

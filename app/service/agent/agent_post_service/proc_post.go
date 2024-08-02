@@ -281,7 +281,7 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 		Type: kafka_go.TypeProcDllPutMaster,
 		Data: json_helper.Encode(&model),
 	}
-	crd.queryClient.ProduceProcess(context.Background(), msg)
+	crd.queryClient.ProduceDll(context.Background(), msg)
 
 	return nil
 }
@@ -299,7 +299,7 @@ func (crd *ProcPost) sendDllRunning(source int, task string, model *proc_models.
 		Type: kafka_go.TypeProcDllPutRunning,
 		Data: json_helper.Encode(&model),
 	}
-	crd.queryClient.ProduceProcess(context.Background(), msg)
+	crd.queryClient.ProduceDll(context.Background(), msg)
 
 	return nil
 }

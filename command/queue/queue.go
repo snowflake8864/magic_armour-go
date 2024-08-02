@@ -55,6 +55,9 @@ func start(action, topic string) {
 		case "process":
 			consumer_kafka.CreateConsumerFactory().ConsumeProcess()
 			break
+		case "dll":
+			consumer_kafka.CreateConsumerFactory().ConsumeDll()
+			break
 		case "threaten":
 			consumer_kafka.CreateConsumerFactory().ConsumeThreaten()
 			break

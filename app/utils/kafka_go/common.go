@@ -12,6 +12,7 @@ type MessageStruct struct {
 const (
 	TopicCommon   string = "TopicCommon"
 	TopicProcess  string = "TopicProcess"
+	TopicDll      string = "TopicDll"
 	TopicThreaten string = "TopicThreaten"
 	TopicAlarm    string = "TopicAlarm"
 	TopicSyslog   string = "TopicSyslog"

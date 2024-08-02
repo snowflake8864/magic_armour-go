@@ -15,6 +15,7 @@ func CreateTopicFactory() *TopicClient {
 		topicList: []string{
 			kafka_go.TopicCommon,
 			kafka_go.TopicProcess,
+			kafka_go.TopicDll,
 			kafka_go.TopicThreaten,
 			kafka_go.TopicAlarm,
 			kafka_go.TopicSyslog,

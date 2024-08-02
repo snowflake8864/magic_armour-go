@@ -70,16 +70,15 @@ func TestWriteCommon(t *testing.T) {
 }
 
 func TestReadCommon(t *testing.T) {
-
-	go consumer_kafka.CreateConsumerFactory().ConsumeCommon()
-	go consumer_kafka.CreateConsumerFactory().ConsumeProcess()
-	go consumer_kafka.CreateConsumerFactory().ConsumeAlarm()
-	go consumer_kafka.CreateConsumerFactory().ConsumeSyslog()
-	go consumer_kafka.CreateConsumerFactory().ConsumeThreaten()
+	consumer_kafka.CreateConsumerFactory().ConsumeCommon()
 }
 
 func TestReadProcess(t *testing.T) {
 	consumer_kafka.CreateConsumerFactory().ConsumeProcess()
+}
+
+func TestReadDll(t *testing.T) {
+	consumer_kafka.CreateConsumerFactory().ConsumeDll()
 }
 
 func TestReadAlarm(t *testing.T) {
