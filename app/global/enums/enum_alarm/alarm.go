@@ -100,7 +100,7 @@ const (
 
 	TypeSelfProtectFileCreate     int = 4700 //新建文件告警
 	TypeSelfProtectFileDelete     int = 4701 //删除文件告警
-	TypeSelfProtectFileUpdate     int = 4702 //修改文件止告警
+	TypeSelfProtectFileUpdate     int = 4702 //修改文件告警
 	TypeSelfProtectFileRename     int = 4703 //重命名文件告警
 	TypeSelfProtectFileMove       int = 4704 //移动文件告警
 	TypeSelfProtectProcessKill    int = 4710 //杀死进程
@@ -202,7 +202,7 @@ var EnumMapInt = map[string]map[int]string{
 
 		TypeSelfProtectFileCreate:     "新建文件告警",
 		TypeSelfProtectFileDelete:     "删除文件告警",
-		TypeSelfProtectFileUpdate:     "修改文件止告警",
+		TypeSelfProtectFileUpdate:     "修改文件告警",
 		TypeSelfProtectFileRename:     "重命名文件告警",
 		TypeSelfProtectFileMove:       "移动文件告警",
 		TypeSelfProtectProcessKill:    "杀死进程",
