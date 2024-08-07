@@ -67,7 +67,7 @@ func (crd *OrderCurd) getExpireAt() string {
 
 // Add 平台新增
 func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, operateName string) (errCode int, err error) {
-	//订单信息
+	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
 	if orgModel == nil || orgModel.Id == 0 {
 		return -1, errors.New("企业不存在")
@@ -79,6 +79,15 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	}
 	if productModel.GrantType == enum_product.TypeTest && orderParam.GrantDuration > 1 {
 		return -1, errors.New("购买测试授权类型的产品不能超过一个月")
+	}
+
+	// 有未完成的订单
+	search := order_models.SearchConditions{
+		OrgId:      orderParam.OrgId,
+		StatusList: []int{enum_order.OrderStatusUnpaid, enum_order.OrderStatusPaid},
+	}
+	if total := crd.masterModel.Count(search); total > 0 {
+		return -1, errors.New("存在未完成的订单")
 	}
 
 	tx := crd.masterModel.Begin()

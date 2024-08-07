@@ -115,9 +115,9 @@ func handleDay(mode, interval, at string) {
 			service_cmd.CreateCmdFactory().Delete()
 			break
 		case AtOne:
-			variable.ZapLog.Sugar().Debug("未知支付订单自动过期")
+			variable.ZapLog.Sugar().Debug("订单自动过期")
 			//未知支付订单自动过期
-			order_cmd.CreateCmdFactory().UnpaidExpired()
+			order_cmd.CreateCmdFactory().OrderExpired()
 			break
 		case AtTwo:
 			variable.ZapLog.Sugar().Debug("终端授权自动过期")

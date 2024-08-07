@@ -91,5 +91,5 @@ func (crd *AgentCmd) GrantExpired() {
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("UnpaidExpired end dayEnd:" + yesterday)
+	variable.ZapLog.Sugar().Debug("OrderExpired end dayEnd:" + yesterday)
 }

@@ -21,9 +21,9 @@ func (crd *OrderCmd) getOrgModels() []*organization_models.OrganizationModel {
 	})
 }
 
-// UnpaidExpired  订单未支付且已过期的
-func (crd *OrderCmd) UnpaidExpired() {
-	variable.ZapLog.Sugar().Debug("UnpaidExpired start")
+// OrderExpired  订单已过期的
+func (crd *OrderCmd) OrderExpired() {
+	variable.ZapLog.Sugar().Debug("OrderExpired start")
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	orgModels := crd.getOrgModels()
@@ -33,5 +33,5 @@ func (crd *OrderCmd) UnpaidExpired() {
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("UnpaidExpired end yesterday:" + yesterday)
+	variable.ZapLog.Sugar().Debug("OrderExpired end yesterday:" + yesterday)
 }

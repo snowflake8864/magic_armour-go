@@ -119,7 +119,7 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleOrder + `', '` + enum_dictionary.OrderBankcardName + `', '北京卫达信息技术有限公司','订单： 银行卡-卡名'),
 			('` + enum_dictionary.ModuleOrder + `', '` + enum_dictionary.OrderBankcardBank + `', '兴业银行北京月坛支行','订单： 银行卡-开户行'),
 			('` + enum_dictionary.ModuleOrder + `', '` + enum_dictionary.OrderPayingTel + `', '010-53516777','订单： 支付时联系电话'),
-			('` + enum_dictionary.ModuleOrder + `', '` + enum_dictionary.OrderExpireDays + `', '7','订单： 过期天数');
+			('` + enum_dictionary.ModuleOrder + `', '` + enum_dictionary.OrderExpireDays + `', '365','订单： 过期天数');
 
 		`
 	result := m.Exec(m.TrimSql(sql))
