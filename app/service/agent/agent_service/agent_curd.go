@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
@@ -45,8 +44,8 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 	nowDate := date_helper.CurDatetime()
 
 	updates := map[string]interface{}{
-		"live_at":   nowDate,
-		"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
+		"live_at": nowDate,
+		//"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
 		"is_online": enums.IsYes,
 	}
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
