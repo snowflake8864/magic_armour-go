@@ -70,8 +70,10 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		//任务加入不支持列表，等待关闭
 		notSupportTasks = append(notSupportTasks, enum_task.TypeAgentUninstall)
 	} else {
-		//设置存活状态
-		agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId)
+		if taskCacheFact.LockAgentLive(loginInfo.OrgId, loginInfo.AgentId) {
+			//设置存活状态
+			agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId)
+		}
 
 		//是否有未完成的任务
 		var hasUnfinishedTask bool

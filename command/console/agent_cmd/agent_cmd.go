@@ -37,7 +37,7 @@ func (crd *AgentCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 func (crd *AgentCmd) Offline() {
 	variable.ZapLog.Sugar().Debug("Offline start")
 
-	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByMinute(-5))
+	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByMinute(-6))
 	variable.ZapLog.Sugar().Debug("Offline floorAt=", floorAt)
 
 	agent_service.CreateCurdFactory().SetOffline(floorAt)

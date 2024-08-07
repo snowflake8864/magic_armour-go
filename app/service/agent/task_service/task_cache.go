@@ -21,6 +21,8 @@ func CreateCacheFactory() *TaskCache {
 		unfinishedExpire:     86400,
 		emptyNumberPrefix:    "task_empty_number_",
 		emptyNumberThreshold: 3,
+		agentLiveLock:        "lock_agent_live_",
+		agentLiveExpire:      180,
 	}
 }
 
@@ -32,6 +34,8 @@ type TaskCache struct {
 	unfinishedExpire     int
 	emptyNumberPrefix    string
 	emptyNumberThreshold int
+	agentLiveLock        string
+	agentLiveExpire      int
 }
 
 func (crd *TaskCache) keyByEmptyTask(orgId int64, agentId string) string {
@@ -44,6 +48,13 @@ func (crd *TaskCache) keyByUnfinished(orgId int64, agentId string) string {
 
 func (crd *TaskCache) keyByOrgUninstall(orgId int64) string {
 	return crd.orgUninstallPrefix + int_helper.Int64ToStr(orgId)
+}
+
+// LockAgentLive 锁：终端存活， 成功可以设置
+func (crd *TaskCache) LockAgentLive(orgId int64, agentId string) bool {
+	key := crd.agentLiveLock + int_helper.Int64ToStr(orgId) + "_" + agentId
+	isOk, _ := crd.redisClient.Lock(key, "1", crd.agentLiveExpire)
+	return isOk
 }
 
 // AddOrgUninstall 企业级卸载任务: 新增
