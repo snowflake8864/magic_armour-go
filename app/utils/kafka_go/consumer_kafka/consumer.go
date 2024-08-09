@@ -98,6 +98,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeCommonOrgClean:
 			org_job.Clean(data.OrgId)
 			break
+
 		case kafka_go.TypeProcProcessPutMaster:
 			proc_job.UploadProcess(data.Data)
 			break
@@ -116,6 +117,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeAlarmPutDll:
 			alarm_job.UploadDll(data.Data)
 			break
+
 		case kafka_go.TypeAlarmPutTamper:
 			alarm_job.UploadTamper(data.Data)
 			break
@@ -130,6 +132,48 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			break
 		case kafka_go.TypeAlarmPutPort:
 			alarm_job.UploadPort(data.Data)
+			break
+
+		case kafka_go.TypeSyslogPutDns:
+			syslog_job.UploadDns(data.Data)
+			break
+		case kafka_go.TypeSyslogPutOuter:
+			syslog_job.UploadOuter(data.Data)
+			break
+		case kafka_go.TypeSyslogPutInner:
+			syslog_job.UploadInner(data.Data)
+			break
+		case kafka_go.TypeSyslogPutProcess:
+			syslog_job.UploadProcess(data.Data)
+			break
+		case kafka_go.TypeSyslogPutLogin:
+			syslog_job.UploadLogin(data.Data)
+			break
+		case kafka_go.TypeCommonAgentPutMonitor:
+			agent_job.UploadMonitor(data.Data)
+			break
+
+		case kafka_go.TypeThreatenSyncRewrite:
+			threaten_job.HandelRewire(data.Data)
+			break
+
+		case kafka_go.TypeCrontabAlarmStat:
+			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
+			break
+		case kafka_go.TypeCrontabAgentSafe:
+			agent_job.HandleSafe(data.OrgId, data.AgentId)
+			break
+		case kafka_go.TypeCrontabPlugDisable:
+			plug_job.DynamicDisable(data.OrgId, data.AgentId)
+			break
+		case kafka_go.TypeCrontabTaskFormProcess:
+			proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)
+			break
+		case kafka_go.TypeCrontabTaskFormDll:
+			proc_job.TaskFromDll(data.OrgId, data.AgentId, data.Data)
+			break
+		case kafka_go.TypeCrontabThreatenRepairProc:
+			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
 			variable.ZapLog.Sugar().Info(fmt.Sprintf("consumeMessage result:%T", data))
