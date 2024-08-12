@@ -75,7 +75,7 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 		if err != nil {
 			variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+		//variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
@@ -176,7 +176,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("consumeMessage result:%T", data))
+			variable.ZapLog.Sugar().Info(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
 		}
 	}
 }
@@ -199,210 +199,53 @@ func (k *ConsumerClient) ConsumeCommon() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicCommon)
 
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
-
-		switch data.Type {
-		case kafka_go.TypeCommonAgentDelete:
-			agent_job.Delete(data.OrgId, data.AgentId)
-			break
-		case kafka_go.TypeCommonAgentOpenAutoWhite:
-			agent_job.OpenAutoWhite(data.OrgId, data.AgentId)
-			break
-		case kafka_go.TypeCommonOrgClean:
-			org_job.Clean(data.OrgId)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("ReadCommon result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeProcess 消费主题： Process
 func (k *ConsumerClient) ConsumeProcess() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicProcess)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeProcProcessPutMaster:
-			proc_job.UploadProcess(data.Data)
-			break
-		case kafka_go.TypeProcProcessPutRunning:
-			proc_job.UploadProcessRunning(data.Data)
-			break
-		case kafka_go.TypeProcDllPutMaster:
-			proc_job.UploadDll(data.Data)
-			break
-		case kafka_go.TypeProcDllPutRunning:
-			proc_job.UploadDllRunning(data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerProcess result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeDll 消费主题： Dll
 func (k *ConsumerClient) ConsumeDll() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicDll)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeProcProcessPutMaster:
-			proc_job.UploadProcess(data.Data)
-			break
-		case kafka_go.TypeProcProcessPutRunning:
-			proc_job.UploadProcessRunning(data.Data)
-			break
-		case kafka_go.TypeProcDllPutMaster:
-			proc_job.UploadDll(data.Data)
-			break
-		case kafka_go.TypeProcDllPutRunning:
-			proc_job.UploadDllRunning(data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerDll result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeAlarm 消费主题： Alarm
 func (k *ConsumerClient) ConsumeAlarm() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicAlarm)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeAlarmPutProcess:
-			alarm_job.UploadProcess(data.Data)
-			break
-		case kafka_go.TypeAlarmPutDll:
-			alarm_job.UploadDll(data.Data)
-			break
-		case kafka_go.TypeAlarmPutTamper:
-			alarm_job.UploadTamper(data.Data)
-			break
-		case kafka_go.TypeAlarmPutBlackmail:
-			alarm_job.UploadBlackmail(data.Data)
-			break
-		case kafka_go.TypeAlarmPutUsb:
-			alarm_job.UploadUsb(data.Data)
-			break
-		case kafka_go.TypeAlarmPutSelf:
-			alarm_job.UploadSelf(data.Data)
-			break
-		case kafka_go.TypeAlarmPutPort:
-			alarm_job.UploadPort(data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerAlarm result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeSyslog 消费主题： Syslog
 func (k *ConsumerClient) ConsumeSyslog() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicSyslog)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeSyslogPutDns:
-			syslog_job.UploadDns(data.Data)
-			break
-		case kafka_go.TypeSyslogPutOuter:
-			syslog_job.UploadOuter(data.Data)
-			break
-		case kafka_go.TypeSyslogPutInner:
-			syslog_job.UploadInner(data.Data)
-			break
-		case kafka_go.TypeSyslogPutProcess:
-			syslog_job.UploadProcess(data.Data)
-			break
-		case kafka_go.TypeSyslogPutLogin:
-			syslog_job.UploadLogin(data.Data)
-			break
-		case kafka_go.TypeCommonAgentPutMonitor:
-			agent_job.UploadMonitor(data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerSyslog result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeThreaten 消费主题： Threaten
 func (k *ConsumerClient) ConsumeThreaten() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicThreaten)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeThreatenSyncRewrite:
-			threaten_job.HandelRewire(data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerThreaten result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
 
 // ConsumeCrontab 消费主题： Crontab
 func (k *ConsumerClient) ConsumeCrontab() {
 	ctx := context.Background()
 	consumer := k.newConsumer(kafka_go.TopicCrontab)
-	for {
-		data, err := k.readMessage(ctx, consumer)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
-		switch data.Type {
-		case kafka_go.TypeCrontabAlarmStat:
-			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
-			break
-		case kafka_go.TypeCrontabAgentSafe:
-			agent_job.HandleSafe(data.OrgId, data.AgentId)
-			break
-		case kafka_go.TypeCrontabPlugDisable:
-			plug_job.DynamicDisable(data.OrgId, data.AgentId)
-			break
-		case kafka_go.TypeCrontabTaskFormProcess:
-			proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)
-			break
-		case kafka_go.TypeCrontabTaskFormDll:
-			proc_job.TaskFromDll(data.OrgId, data.AgentId, data.Data)
-			break
-		case kafka_go.TypeCrontabThreatenRepairProc:
-			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
-			break
-		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("readerCrontab result:%T", data))
-		}
-	}
+	k.consumeMessage(ctx, consumer)
 }
