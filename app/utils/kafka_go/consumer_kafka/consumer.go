@@ -53,7 +53,7 @@ func (k *ConsumerClient) newConsumer(name string) *kafka.Reader {
 	return kafka.NewReader(configReader)
 }
 
-// @todo 无法启用： 公司每次发货硬件（硬盘写入速度）都不一致， 并发多了影响其他业务
+// 公司每次发货硬件（硬盘写入速度）都不一致, 是否全量并发需要看情况
 func (k *ConsumerClient) newConsumers(name string) []*kafka.Reader {
 	var readers []*kafka.Reader
 	fullDose := variable.ConfigYml.GetInt("KafkaV2.Consumer.FullDose")
@@ -61,9 +61,9 @@ func (k *ConsumerClient) newConsumers(name string) []*kafka.Reader {
 	if fullDose == 1 {
 		partition = variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
 	}
-	fmt.Println("newConsumers=====================================")
-	fmt.Println("fullDose:", fullDose)
-	fmt.Println("partition:", partition)
+	//fmt.Println("newConsumers=====================================")
+	//fmt.Println("fullDose:", fullDose)
+	//fmt.Println("partition:", partition)
 
 	for i := 0; i < partition; i++ { // 这里指定消费者的数量
 		readers = append(readers, k.newConsumer(name))
