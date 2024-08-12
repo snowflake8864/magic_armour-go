@@ -204,55 +204,90 @@ func (k *ConsumerClient) TestConsumeGroup() {
 // ConsumeCommon 消费主题： Common
 func (k *ConsumerClient) ConsumeCommon() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicCommon)
+	consumers := k.newConsumers(kafka_go.TopicCommon)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeProcess 消费主题： Process
 func (k *ConsumerClient) ConsumeProcess() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicProcess)
+	consumers := k.newConsumers(kafka_go.TopicProcess)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeDll 消费主题： Dll
 func (k *ConsumerClient) ConsumeDll() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicDll)
+	consumers := k.newConsumers(kafka_go.TopicDll)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeAlarm 消费主题： Alarm
 func (k *ConsumerClient) ConsumeAlarm() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicAlarm)
+	consumers := k.newConsumers(kafka_go.TopicAlarm)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeSyslog 消费主题： Syslog
 func (k *ConsumerClient) ConsumeSyslog() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicSyslog)
+	consumers := k.newConsumers(kafka_go.TopicSyslog)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeThreaten 消费主题： Threaten
 func (k *ConsumerClient) ConsumeThreaten() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicThreaten)
+	consumers := k.newConsumers(kafka_go.TopicThreaten)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
 
 // ConsumeCrontab 消费主题： Crontab
 func (k *ConsumerClient) ConsumeCrontab() {
 	ctx := context.Background()
-	consumer := k.newConsumer(kafka_go.TopicCrontab)
+	consumers := k.newConsumers(kafka_go.TopicCrontab)
 
-	k.consumeMessage(ctx, consumer)
+	for _, consumer := range consumers {
+		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 主 goroutine 可以选择等待或者处理其他逻辑
+	select {}
 }
