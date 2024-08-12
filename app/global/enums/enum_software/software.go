@@ -171,9 +171,9 @@ func GetOsTypeByName(name string) int {
 	} else if strings.Contains(name, "rocky") {
 		return OsTypeLinuxRocky
 	} else if strings.Contains(name, "anolis") {
-		return OsTypeLinuxNeokylin
+		return OsTypeLinuxAnolis
 	} else if strings.Contains(name, "opencloudos") {
-		return OsTypeLinuxNeokylin
+		return OsTypeLinuxOpencloudos
 	} else {
 		return 0
 	}
