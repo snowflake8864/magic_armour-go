@@ -83,7 +83,7 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 		if err != nil {
 			variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+		//variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
@@ -92,8 +92,6 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 	for {
 		data, err := k.readMessage(ctx, r)
-
-		continue
 		if err != nil {
 			continue // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		}
