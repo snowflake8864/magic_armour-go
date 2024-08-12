@@ -56,8 +56,16 @@ func (k *ConsumerClient) newConsumer(name string) *kafka.Reader {
 // @todo 无法启用： 公司每次发货硬件（硬盘写入速度）都不一致， 并发多了影响其他业务
 func (k *ConsumerClient) newConsumers(name string) []*kafka.Reader {
 	var readers []*kafka.Reader
-	Partition := variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
-	for i := 0; i < Partition; i++ { // 这里指定消费者的数量
+	fullDose := variable.ConfigYml.GetInt("KafkaV2.Consumer.FullDose")
+	partition := 1
+	if fullDose == 1 {
+		partition = variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
+	}
+	fmt.Println("newConsumers=====================================")
+	fmt.Println("fullDose:", fullDose)
+	fmt.Println("partition:", partition)
+
+	for i := 0; i < partition; i++ { // 这里指定消费者的数量
 		readers = append(readers, k.newConsumer(name))
 	}
 	return readers
@@ -75,7 +83,7 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 		if err != nil {
 			variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		//variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
+		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
@@ -84,10 +92,11 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 	for {
 		data, err := k.readMessage(ctx, r)
-		if err != nil {
-			break // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
-		}
 
+		continue
+		if err != nil {
+			continue // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		}
 		switch data.Type {
 		case kafka_go.TypeCommonAgentDelete:
 			agent_job.Delete(data.OrgId, data.AgentId)
@@ -181,10 +190,10 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 	}
 }
 
-// TestConsumeCommon 消费主题： 多消费者
-func (k *ConsumerClient) TestConsumeCommon() {
+// TestConsumeGroup 消费主题： 多消费者
+func (k *ConsumerClient) TestConsumeGroup() {
 	ctx := context.Background()
-	consumers := k.newConsumers(kafka_go.TopicCommon)
+	consumers := k.newConsumers(kafka_go.TopicSyslog)
 
 	for _, consumer := range consumers {
 		go k.consumeMessage(ctx, consumer)
