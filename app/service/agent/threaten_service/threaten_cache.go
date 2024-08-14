@@ -35,6 +35,39 @@ func (crd *ThreatenCache) Add(param *threaten_models.CacheModel, checkExist bool
 	return crd.masterModel.InsertItem(param)
 }
 
+// BatchAdd 新增
+func (crd *ThreatenCache) BatchAdd(list *[]threaten_models.CacheModel, checkExist bool) bool {
+	if len(*list) == 0 {
+		return true
+	}
+	hasMap := make(map[string]int)
+
+	//校验存在的
+	if checkExist {
+		var ids []string
+		for _, model := range *list {
+			ids = append(ids, model.Id)
+		}
+		hasMap = crd.masterModel.GetLevelsByIds(ids)
+	}
+	createdAt := date_helper.CurDatetime()
+	var inserts []threaten_models.CacheModel
+	for _, model := range *list {
+		if _, isOK := hasMap[model.Id]; !isOK {
+			model.Dir = path_helper.ToStandard(model.Dir)
+			model.ParentDir = path_helper.ToStandard(model.ParentDir)
+			if string_helper.IsEmpty(model.CreatedAt) {
+				model.CreatedAt = createdAt
+			}
+			model.Level = enum_threaten.LevelDefault
+
+			inserts = append(inserts, model)
+		}
+	}
+
+	return crd.masterModel.InsertBatch(&inserts)
+}
+
 // DeleteById 通过ID删除
 func (crd *ThreatenCache) DeleteById(id string) bool {
 	return crd.masterModel.DeleteById(id)

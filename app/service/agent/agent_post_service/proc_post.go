@@ -26,7 +26,7 @@ func CreateProcFactory() *ProcPost {
 		cachePrefix:   "lock_proc_upload_",
 		cacheExpire:   300,
 		queryClient:   producer_kafka.CreateProducerFactory(),
-		supportNumber: 50,
+		supportNumber: 20,
 	}
 }
 
@@ -98,9 +98,16 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 	}
 
 	now := date_helper.CurDatetime()
+	var processModels []*proc_models.ProcessModel
+	var dllModels []*proc_models.DllModel
+
 	for _, item := range params {
 		//hash全部小写
 		hash := strings.ToLower(item.Hash)
+		if !crd.lockHash(orgId, agentId, hash) {
+			continue
+		}
+
 		if source == enum_process.DataFromProcess {
 			processModel := proc_models.ProcessModel{
 				OrgId:     orgId,
@@ -111,10 +118,12 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 			}
 			processModel.Id = crd.makeMasterId(orgId, agentId, hash)
 			processModel.Copyright, processModel.Introduce = crd.parseAttribute(item.Attribute, item.Copyright, item.Introduce)
-			//推送给队列
+			processModels = append(processModels, &processModel)
+			/*//推送给队列
 			if err := crd.sendProcess(source, task, &processModel); err != nil {
 				variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
-			}
+			}*/
+
 		} else {
 			//模块表数据
 			dllModel := proc_models.DllModel{
@@ -127,11 +136,16 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 			}
 			dllModel.Id = crd.makeMasterId(orgId, agentId, hash)
 			dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(item.Attribute, item.Copyright, item.Introduce)
+			dllModels = append(dllModels, &dllModel)
 			//推送给队列
-			if err := crd.sendDll(source, task, &dllModel); err != nil {
+			/*if err := crd.sendDll(source, task, &dllModel); err != nil {
 				variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
-			}
+			}*/
 		}
+	}
+
+	if err := crd.batchSendProcess(orgId, agentId, source, processModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
 	}
 
 	return nil
@@ -248,6 +262,36 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceProcess(context.Background(), msg)
+
+	return nil
+}
+
+// 发送进程数据
+func (crd *ProcPost) batchSendProcess(orgId int64, agentId string, source int, models []*proc_models.ProcessModel) error {
+	if source != enum_process.DataFromProcess {
+		return errors.New("数据不是进程")
+	}
+	modelLength := len(models)
+	if modelLength == 0 {
+		return errors.New("数据不能为空")
+	}
+
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		//proc_job.BatchUploadProcess(orgId, agentId, json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type:    kafka_go.TypeProcProcessPutMaster,
+			OrgId:   orgId,
+			AgentId: agentId,
+			Data:    json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceProcess(cxt, msg)
+	}
 
 	return nil
 }

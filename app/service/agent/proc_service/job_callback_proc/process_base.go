@@ -27,13 +27,57 @@ func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenSt
 	return isExist, enum_process.RelyStatusUnset, threatenLevel
 }
 
-// getGlobalStatus 获取全局名单状态z
+// getGlobalStatus 获取全局名单状态
 func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 	model := proc_models.CreateProcGlobalFactory().GetItemByOrgAndId(orgId, hash)
 	if model == nil || model.Type == enum_process.RelyStatusUnset {
 		return enum_process.RelyStatusUnset
 	}
 	return model.Type
+}
+
+// getThreatenStatusByHashes 获取威胁情报状态
+func (crd *ProcessBase) getThreatenStatusByHashes(hashes []string) map[string]int {
+	result := make(map[string]int)
+
+	threatenLevels := threaten_models.CreateCacheFactory().GetLevelsByIds(hashes)
+	if len(threatenLevels) == 0 {
+		return result
+	}
+
+	for hash, level := range threatenLevels {
+		if enum_threaten.IsWhite(level) {
+			result[hash] = enum_process.RelyStatusWhite
+		} else if enum_threaten.IsBlack(level) {
+			result[hash] = enum_process.RelyStatusBlack
+		} else {
+			result[hash] = enum_process.RelyStatusUnset
+		}
+	}
+	return result
+
+}
+
+// getGlobalStatus 获取全局名单状态
+func (crd *ProcessBase) getGlobalStatusByHashes(orgId int64, hashes []string) map[string]int {
+	result := make(map[string]int)
+
+	models := proc_models.CreateProcGlobalFactory().GetItemsByOrgAndIds(orgId, hashes)
+	if models == nil {
+		return result
+	}
+	for _, model := range models {
+		if model.OpenSwitch == enums.SwitchOn {
+			if model.Type == enum_process.GlobalTypeWhite {
+				result[model.Id] = enum_process.RelyStatusWhite
+			} else if model.Type == enum_process.GlobalTypeBlack {
+				result[model.Id] = enum_process.RelyStatusBlack
+			} else {
+				result[model.Id] = enum_process.RelyStatusUnset
+			}
+		}
+	}
+	return result
 }
 
 // getProcStatus 获取最终状态
