@@ -22,18 +22,20 @@ import (
 
 func CreateProcFactory() *ProcPost {
 	return &ProcPost{
-		redisClient: redis_factory.GetOneRedisClient(),
-		cachePrefix: "lock_proc_upload_",
-		cacheExpire: 120,
-		queryClient: producer_kafka.CreateProducerFactory(),
+		redisClient:   redis_factory.GetOneRedisClient(),
+		cachePrefix:   "lock_proc_upload_",
+		cacheExpire:   300,
+		queryClient:   producer_kafka.CreateProducerFactory(),
+		supportNumber: 50,
 	}
 }
 
 type ProcPost struct {
-	redisClient *redis_factory.RedisClient
-	cachePrefix string
-	cacheExpire int
-	queryClient *producer_kafka.ProducerClient
+	redisClient   *redis_factory.RedisClient
+	cachePrefix   string
+	cacheExpire   int
+	queryClient   *producer_kafka.ProducerClient
+	supportNumber int
 }
 
 // 给hash加锁

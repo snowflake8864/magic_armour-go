@@ -112,6 +112,19 @@ func (m *CacheModel) InsertItem(s *CacheModel) bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *CacheModel) InsertBatch(list *[]CacheModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // UpdateById 通过id修改
 func (m *CacheModel) UpdateById(id string, updates map[string]interface{}) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

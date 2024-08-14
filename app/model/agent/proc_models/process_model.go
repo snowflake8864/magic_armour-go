@@ -95,6 +95,19 @@ func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *ProcessModel) InsertBatch(list *[]ProcessModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // UpdateByConditions 通过条件修改
 func (m *ProcessModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

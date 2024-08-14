@@ -103,6 +103,19 @@ func (m *ProcessRunningModel) InsertItem(s *ProcessRunningModel) bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *ProcessRunningModel) InsertBatch(list *[]ProcessRunningModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // UpdateByOrgAndAgentAndHashAndProcId 通过通过企业id\终端id\hash\ProcId修改
 func (m *ProcessRunningModel) UpdateByOrgAndAgentAndHashAndProcId(orgId int64, agentId, hash string, procId int, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {

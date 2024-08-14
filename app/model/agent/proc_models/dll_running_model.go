@@ -90,6 +90,19 @@ func (m *DllRunningModel) InsertItem(s *DllRunningModel) bool {
 	}
 }
 
+// InsertBatch 插入多条
+func (m *DllRunningModel) InsertBatch(list *[]DllRunningModel) bool {
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		return tx.Model(m).Create(list)
+	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 // DeleteByOrgAndAgent 通过企业id\终端id删除
 func (m *DllRunningModel) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
