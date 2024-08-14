@@ -2,7 +2,6 @@ package job_callback_proc
 
 import (
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
@@ -11,7 +10,6 @@ import (
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -130,19 +128,11 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 	if len(insertMap) == 0 {
 		return nil
 	}
-	fmt.Println("json_helper.Encode(hashes)")
-	fmt.Println(json_helper.Encode(hashes))
-	fmt.Println(json_helper.Encode(insertMap))
 
 	//全局名单
 	globalMap := crd.getGlobalStatusByHashes(orgId, hashes)
-	fmt.Println("json_helper.Encode(globalMap)")
-	fmt.Println(json_helper.Encode(globalMap))
-
 	//威胁情报
 	threatenMap := crd.getThreatenStatusByHashes(hashes)
-	fmt.Println("json_helper.Encode(threatenMap)")
-	fmt.Println(json_helper.Encode(threatenMap))
 
 	//进程插入数据
 	var insertProc []proc_models.ProcessModel
@@ -179,9 +169,6 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 
 		insertProc = append(insertProc, procModel)
 	}
-	fmt.Println("json_helper.Encode(insertProc)")
-	fmt.Println(json_helper.Encode(insertProc))
-	fmt.Println(json_helper.Encode(insertThreaten))
 
 	//保存
 	if !crd.masterModel.InsertBatch(&insertProc) {

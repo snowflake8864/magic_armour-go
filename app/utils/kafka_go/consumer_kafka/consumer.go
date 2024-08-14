@@ -106,6 +106,9 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			org_job.Clean(data.OrgId)
 			break
 
+		case kafka_go.TypeProcessBatchPutMaster:
+			proc_job.BatchUploadProcess(data.OrgId, data.AgentId, data.Data)
+			break
 		case kafka_go.TypeProcProcessPutMaster:
 			proc_job.UploadProcess(data.Data)
 			break
@@ -118,13 +121,13 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeProcDllPutRunning:
 			proc_job.UploadDllRunning(data.Data)
 			break
+
 		case kafka_go.TypeAlarmPutProcess:
 			alarm_job.UploadProcess(data.Data)
 			break
 		case kafka_go.TypeAlarmPutDll:
 			alarm_job.UploadDll(data.Data)
 			break
-
 		case kafka_go.TypeAlarmPutTamper:
 			alarm_job.UploadTamper(data.Data)
 			break
@@ -186,19 +189,6 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			variable.ZapLog.Sugar().Info(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
 		}
 	}
-}
-
-// TestConsumeGroup 消费主题： 多消费者
-func (k *ConsumerClient) TestConsumeGroup() {
-	ctx := context.Background()
-	consumers := k.newConsumers(kafka_go.TopicSyslog)
-
-	for _, consumer := range consumers {
-		go k.consumeMessage(ctx, consumer)
-	}
-
-	// 主 goroutine 可以选择等待或者处理其他逻辑
-	select {}
 }
 
 // ConsumeCommon 消费主题： Common

@@ -29,6 +29,11 @@ const (
 	TypeProcDllPutMaster      string = "proc_dll_put_master"      //类型：上传主模块
 	TypeProcDllPutRunning     string = "proc_dll_put_running"     //类型：上传运行中模块
 
+	TypeProcessBatchPutMaster  string = "process_batch_put_master"  //类型：上传主进程
+	TypeProcessBatchPutRunning string = "process_batch_put_running" //类型：上传运行中进程
+	TypeDllBatchPutMaster      string = "dll_batch_put_master"      //类型：上传主模块
+	TypeDllBatchPutRunning     string = "dll_batch_put_running"     //类型：上传运行中模块
+
 	TypeAlarmPutProcess   string = "alarm_put_process"   //类型：进程告警上传
 	TypeAlarmPutDll       string = "alarm_put_dll"       //类型：模块告警上传
 	TypeAlarmPutTamper    string = "alarm_put_tamper"    //类型：防篡改告警上传

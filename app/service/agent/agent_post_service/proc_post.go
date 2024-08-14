@@ -285,7 +285,7 @@ func (crd *ProcPost) batchSendProcess(orgId int64, agentId string, source int, m
 		//proc_job.BatchUploadProcess(orgId, agentId, json_helper.Encode(models[i:end]))
 
 		msg := &kafka_go.MessageStruct{
-			Type:    kafka_go.TypeProcProcessPutMaster,
+			Type:    kafka_go.TypeProcessBatchPutMaster,
 			OrgId:   orgId,
 			AgentId: agentId,
 			Data:    json_helper.Encode(models[i:end]),
