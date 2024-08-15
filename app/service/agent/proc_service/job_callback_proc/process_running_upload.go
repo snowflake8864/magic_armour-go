@@ -36,6 +36,25 @@ func (crd *ProcessRunningUpload) Add(processRunningModel *proc_models.ProcessRun
 	return nil
 }
 
+// BatchAdd 新增
+func (crd *ProcessRunningUpload) BatchAdd(list *[]proc_models.ProcessRunningModel) bool {
+	if len(*list) == 0 {
+		return true
+	}
+
+	createdAt := date_helper.CurDatetime()
+	var inserts []proc_models.ProcessRunningModel
+	for _, model := range *list {
+		if string_helper.IsEmpty(model.CreatedAt) {
+			model.CreatedAt = createdAt
+		}
+		model.ProcDir = path_helper.ToStandard(model.ProcDir)
+
+		inserts = append(inserts, model)
+	}
+	return crd.masterModel.InsertBatch(&inserts)
+}
+
 // UploadDlls 上传模块信息
 func (crd *ProcessRunningUpload) UploadDlls(orgId int64, agentId, procHash string, procId, number int, list *[]proc_models.ProcessRunningDll) error {
 	updates := map[string]interface{}{

@@ -34,3 +34,23 @@ func (crd *DllRunningUpload) Add(dllRunningModel *proc_models.DllRunningModel) e
 
 	return nil
 }
+
+// BatchAdd 新增
+func (crd *DllRunningUpload) BatchAdd(list *[]proc_models.DllRunningModel) bool {
+	if len(*list) == 0 {
+		return true
+	}
+
+	createdAt := date_helper.CurDatetime()
+	var inserts []proc_models.DllRunningModel
+	for _, model := range *list {
+		if string_helper.IsEmpty(model.CreatedAt) {
+			model.CreatedAt = createdAt
+		}
+		model.DllDir = path_helper.ToStandard(model.DllDir)
+		model.ProcDir = path_helper.ToStandard(model.ProcDir)
+
+		inserts = append(inserts, model)
+	}
+	return crd.masterModel.InsertBatch(&inserts)
+}

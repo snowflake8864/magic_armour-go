@@ -24,7 +24,7 @@ func CreateProcFactory() *ProcPost {
 	return &ProcPost{
 		redisClient:   redis_factory.GetOneRedisClient(),
 		cachePrefix:   "lock_proc_upload_",
-		cacheExpire:   300,
+		cacheExpire:   180,
 		queryClient:   producer_kafka.CreateProducerFactory(),
 		supportNumber: 20,
 	}
@@ -165,43 +165,56 @@ func (crd *ProcPost) ToQueryByCommon(source int, task string, orgId int64, agent
 		return nil
 	}
 
+	var processModels []*proc_models.ProcessModel
+	var processRunningModels []proc_models.ProcessRunningModel
+	var dllModels []*proc_models.DllModel
+	var dllRunningModels []proc_models.DllRunningModel
+
 	now := date_helper.CurDatetime()
 	for _, itemProcess := range params {
 		//进程hash全部小写
 		procHash := strings.ToLower(itemProcess.Hash)
 
-		//进程表数据
-		processModel := proc_models.ProcessModel{
-			OrgId:     orgId,
-			AgentId:   agentId,
-			ProcHash:  procHash,
-			Dir:       itemProcess.Dir,
-			CreatedAt: now,
-		}
-		processModel.Id = crd.makeMasterId(orgId, agentId, procHash)
-		processModel.Copyright, processModel.Introduce = crd.parseAttribute(itemProcess.Attribute, itemProcess.Copyright, itemProcess.Introduce)
-		//推送给队列
-		if err := crd.sendProcess(source, task, &processModel); err != nil {
-			variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+		//进程短时间内没有上传过
+		if source == enum_process.DataFromProcess && crd.lockHash(orgId, agentId, procHash) {
+			//进程表数据
+			processModel := proc_models.ProcessModel{
+				OrgId:     orgId,
+				AgentId:   agentId,
+				ProcHash:  procHash,
+				Dir:       itemProcess.Dir,
+				CreatedAt: now,
+			}
+			processModel.Id = crd.makeMasterId(orgId, agentId, procHash)
+			processModel.Copyright, processModel.Introduce = crd.parseAttribute(itemProcess.Attribute, itemProcess.Copyright, itemProcess.Introduce)
+			//推送给队列
+			/*if err := crd.sendProcess(source, task, &processModel); err != nil {
+				variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+			}*/
+			processModels = append(processModels, &processModel)
 		}
 
-		//运行中进程表
-		processRunningModel := proc_models.ProcessRunningModel{
-			BaseModel: model.BaseModel{},
-			OrgId:     orgId,
-			AgentId:   agentId,
-			ProcHash:  procHash,
-			ProcId:    itemProcess.ProcId,
-			ProcDir:   processModel.Dir,
-			ProcUser:  itemProcess.User,
-			DllNumber: itemProcess.ModuleNumber,
-			DllStatus: enum_process.CollectDllStatusDefault,
-			CreatedAt: now,
-		}
-		processRunningModel.Id = crd.makeRunningId(orgId, agentId, procHash, itemProcess.ProcId)
-		//推送给队列
-		if err := crd.sendProcessRunning(source, task, &processRunningModel); err != nil {
-			variable.ZapLog.Sugar().Debug("sendProcessRunning: " + err.Error())
+		//进程刷新
+		if source == enum_process.DataFromProcess && task == ProcTaskRefresh {
+			//运行中进程表
+			processRunningModel := proc_models.ProcessRunningModel{
+				BaseModel: model.BaseModel{},
+				OrgId:     orgId,
+				AgentId:   agentId,
+				ProcHash:  procHash,
+				ProcId:    itemProcess.ProcId,
+				ProcDir:   itemProcess.Dir,
+				ProcUser:  itemProcess.User,
+				DllNumber: itemProcess.ModuleNumber,
+				DllStatus: enum_process.CollectDllStatusDefault,
+				CreatedAt: now,
+			}
+			processRunningModel.Id = crd.makeRunningId(orgId, agentId, procHash, itemProcess.ProcId)
+			//推送给队列
+			/*if err := crd.sendProcessRunning(source, task, &processRunningModel); err != nil {
+				variable.ZapLog.Sugar().Debug("sendProcessRunning: " + err.Error())
+			}*/
+			processRunningModels = append(processRunningModels, processRunningModel)
 		}
 
 		//有模块数据
@@ -209,64 +222,69 @@ func (crd *ProcPost) ToQueryByCommon(source int, task string, orgId int64, agent
 			for _, itemDll := range itemProcess.ModuleList {
 				//小写
 				dllHash := strings.ToLower(itemDll.Hash)
-				//模块表数据
-				dllModel := proc_models.DllModel{
-					OrgId:     orgId,
-					AgentId:   agentId,
-					DllHash:   dllHash,
-					Dir:       itemDll.Dir,
-					Attribute: itemDll.Attribute,
-					ProcHash:  procHash,
-					ProcDir:   processModel.Dir,
-					CreatedAt: now,
-				}
-				dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
-				dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(itemDll.Attribute, "", "")
-				//推送给队列
-				if err := crd.sendDll(source, task, &dllModel); err != nil {
-					variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
+				//模块短时间内没有上传过
+				if source == enum_process.DataFromDll && crd.lockHash(orgId, agentId, dllHash) {
+					//模块表数据
+					dllModel := proc_models.DllModel{
+						OrgId:     orgId,
+						AgentId:   agentId,
+						DllHash:   dllHash,
+						Dir:       itemDll.Dir,
+						Attribute: itemDll.Attribute,
+						ProcHash:  procHash,
+						ProcDir:   itemProcess.Dir,
+						CreatedAt: now,
+					}
+					dllModel.Id = crd.makeMasterId(orgId, agentId, dllHash)
+					dllModel.Copyright, dllModel.Introduce = crd.parseAttribute(itemDll.Attribute, "", "")
+					//推送给队列
+					/*if err := crd.sendDll(source, task, &dllModel); err != nil {
+						variable.ZapLog.Sugar().Debug("sendDll: " + err.Error())
+					}*/
+					dllModels = append(dllModels, &dllModel)
 				}
 
-				//运行中模块表
-				dllRunningModel := proc_models.DllRunningModel{
-					BaseModel: model.BaseModel{},
-					OrgId:     orgId,
-					AgentId:   agentId,
-					DllHash:   dllHash,
-					DllDir:    itemDll.Dir,
-					ProcHash:  procHash,
-					ProcId:    itemProcess.ProcId,
-					ProcDir:   processModel.Dir,
-					CreatedAt: now,
-				}
-				dllRunningModel.Id = crd.makeRunningId(orgId, agentId, dllHash, dllRunningModel.ProcId)
-				//推送给队列
-				if err := crd.sendDllRunning(source, task, &dllRunningModel); err != nil {
-					variable.ZapLog.Sugar().Debug("sendDllRunning: " + err.Error())
+				//模块刷新
+				if source == enum_process.DataFromDll && task == ProcTaskRefresh {
+					//运行中模块表
+					dllRunningModel := proc_models.DllRunningModel{
+						BaseModel: model.BaseModel{},
+						OrgId:     orgId,
+						AgentId:   agentId,
+						DllHash:   dllHash,
+						DllDir:    itemDll.Dir,
+						ProcHash:  procHash,
+						ProcId:    itemProcess.ProcId,
+						ProcDir:   itemProcess.Dir,
+						CreatedAt: now,
+					}
+					dllRunningModel.Id = crd.makeRunningId(orgId, agentId, dllHash, dllRunningModel.ProcId)
+					//推送给队列
+					/*if err := crd.sendDllRunning(source, task, &dllRunningModel); err != nil {
+						variable.ZapLog.Sugar().Debug("sendDllRunning: " + err.Error())
+					}*/
+					dllRunningModels = append(dllRunningModels, dllRunningModel)
 				}
 			}
 
 		}
 	}
 
-	return nil
-}
-
-// 发送进程数据
-func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.ProcessModel) error {
-	if source != enum_process.DataFromProcess {
-		return errors.New("数据主体不是进程")
-	}
-	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
-		return errors.New("agent不能连续主动上传进程数据")
+	if err := crd.batchSendProcess(orgId, agentId, source, processModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
 	}
 
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeProcProcessPutMaster,
-		Data: json_helper.Encode(&model),
+	if err := crd.batchSendDll(orgId, agentId, source, dllModels); err != nil {
+		variable.ZapLog.Sugar().Debug("batchSendDll: " + err.Error())
 	}
-	crd.queryClient.ProduceProcess(context.Background(), msg)
 
+	if err := crd.batchSendProcessRunning(source, task, &processRunningModels); err != nil {
+		variable.ZapLog.Sugar().Debug("batchSendProcessRunning: " + err.Error())
+	}
+
+	if err := crd.batchSendDllRunning(source, task, &dllRunningModels); err != nil {
+		variable.ZapLog.Sugar().Debug("batchSendDllRunning: " + err.Error())
+	}
 	return nil
 }
 
@@ -296,6 +314,91 @@ func (crd *ProcPost) batchSendProcess(orgId int64, agentId string, source int, m
 		}
 		crd.queryClient.ProduceProcess(cxt, msg)
 	}
+
+	return nil
+}
+
+// 发送模块数据
+func (crd *ProcPost) batchSendDll(orgId int64, agentId string, source int, models []*proc_models.DllModel) error {
+	if source != enum_process.DataFromDll {
+		return nil
+	}
+	modelLength := len(models)
+	if modelLength == 0 {
+		return nil
+	}
+
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		//proc_job.BatchUploadDll(orgId, agentId, json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type:    kafka_go.TypeDllBatchPutMaster,
+			OrgId:   orgId,
+			AgentId: agentId,
+			Data:    json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceDll(cxt, msg)
+	}
+
+	return nil
+}
+
+// 发送进程运行中数据
+func (crd *ProcPost) batchSendProcessRunning(source int, task string, models *[]proc_models.ProcessRunningModel) error {
+	if source != enum_process.DataFromProcess {
+		return nil
+	}
+	if task != ProcTaskRefresh {
+		return nil
+	}
+	if len(*models) == 0 {
+		return nil
+	}
+
+	if !job_callback_proc.CreateProcessRunningUploadFactory().BatchAdd(models) {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
+// 发送模块运行中数据
+func (crd *ProcPost) batchSendDllRunning(source int, task string, models *[]proc_models.DllRunningModel) error {
+	if source != enum_process.DataFromDll {
+		return nil
+	}
+	if task != ProcTaskRefresh {
+		return nil
+	}
+
+	if len(*models) == 0 {
+		return nil
+	}
+
+	if !job_callback_proc.CreateDllRunningUploadFactory().BatchAdd(models) {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
+// 发送进程数据
+func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.ProcessModel) error {
+	if source != enum_process.DataFromProcess {
+		return errors.New("数据主体不是进程")
+	}
+	if task == ProcTaskAuto && !crd.lockHash(model.OrgId, model.AgentId, model.ProcHash) {
+		return errors.New("agent不能连续主动上传进程数据")
+	}
+
+	msg := &kafka_go.MessageStruct{
+		Type: kafka_go.TypeProcProcessPutMaster,
+		Data: json_helper.Encode(&model),
+	}
+	crd.queryClient.ProduceProcess(context.Background(), msg)
 
 	return nil
 }
@@ -332,36 +435,6 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceDll(context.Background(), msg)
-
-	return nil
-}
-
-// 发送模块数据
-func (crd *ProcPost) batchSendDll(orgId int64, agentId string, source int, models []*proc_models.DllModel) error {
-	if source != enum_process.DataFromDll {
-		return nil
-	}
-	modelLength := len(models)
-	if modelLength == 0 {
-		return nil
-	}
-
-	cxt := context.Background()
-	for i := 0; i < modelLength; i += crd.supportNumber {
-		end := i + crd.supportNumber
-		if end > modelLength {
-			end = modelLength
-		}
-		//proc_job.BatchUploadDll(orgId, agentId, json_helper.Encode(models[i:end]))
-
-		msg := &kafka_go.MessageStruct{
-			Type:    kafka_go.TypeDllBatchPutMaster,
-			OrgId:   orgId,
-			AgentId: agentId,
-			Data:    json_helper.Encode(models[i:end]),
-		}
-		crd.queryClient.ProduceDll(cxt, msg)
-	}
 
 	return nil
 }
