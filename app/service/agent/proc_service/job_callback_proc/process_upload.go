@@ -200,17 +200,6 @@ func (crd *ProcessUpload) initThreaten(processModel *proc_models.ProcessModel, a
 }
 
 func (crd *ProcessUpload) pushThreaten(processModel *proc_models.ProcessModel, agentOs string) {
-	param := threaten_models.CacheModel{
-		Id:        processModel.ProcHash,
-		Source:    enum_threaten.SourceAgentUpload,
-		Dir:       processModel.Dir,
-		ParentDir: "",
-		Os:        agentOs,
-		Introduce: processModel.Introduce,
-		Copyright: processModel.Copyright,
-		Signature: processModel.Signature,
-		Attribute: "",
-		DataFrom:  enum_threaten.DataFromProcess,
-	}
+	param := crd.initThreaten(processModel, agentOs)
 	threaten_service.CreateCacheFactory().Add(&param, false)
 }

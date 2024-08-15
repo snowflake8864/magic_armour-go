@@ -148,6 +148,10 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
 	}
 
+	if err := crd.batchSendDll(orgId, agentId, source, dllModels); err != nil {
+		variable.ZapLog.Sugar().Debug("batchSendDll: " + err.Error())
+	}
+
 	return nil
 }
 
@@ -269,11 +273,11 @@ func (crd *ProcPost) sendProcess(source int, task string, model *proc_models.Pro
 // 发送进程数据
 func (crd *ProcPost) batchSendProcess(orgId int64, agentId string, source int, models []*proc_models.ProcessModel) error {
 	if source != enum_process.DataFromProcess {
-		return errors.New("数据不是进程")
+		return nil
 	}
 	modelLength := len(models)
 	if modelLength == 0 {
-		return errors.New("数据不能为空")
+		return nil
 	}
 
 	cxt := context.Background()
@@ -328,6 +332,36 @@ func (crd *ProcPost) sendDll(source int, task string, model *proc_models.DllMode
 		Data: json_helper.Encode(&model),
 	}
 	crd.queryClient.ProduceDll(context.Background(), msg)
+
+	return nil
+}
+
+// 发送模块数据
+func (crd *ProcPost) batchSendDll(orgId int64, agentId string, source int, models []*proc_models.DllModel) error {
+	if source != enum_process.DataFromDll {
+		return nil
+	}
+	modelLength := len(models)
+	if modelLength == 0 {
+		return nil
+	}
+
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		//proc_job.BatchUploadDll(orgId, agentId, json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type:    kafka_go.TypeDllBatchPutMaster,
+			OrgId:   orgId,
+			AgentId: agentId,
+			Data:    json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceDll(cxt, msg)
+	}
 
 	return nil
 }
