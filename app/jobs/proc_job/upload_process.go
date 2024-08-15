@@ -24,7 +24,7 @@ func UploadProcess(jsonStr string) {
 }
 
 func BatchUploadProcess(orgId int64, agentId string, jsonStr string) {
-	fmt.Println("BatchUploadProcess: ", date_helper.CurTimestamp())
+	fmt.Println("BatchUploadProcess start: ", date_helper.CurTimestamp())
 	var models []proc_models.ProcessModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
@@ -36,7 +36,7 @@ func BatchUploadProcess(orgId int64, agentId string, jsonStr string) {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
-	fmt.Println("BatchUploadProcess: ", date_helper.CurTimestamp())
+	fmt.Println("BatchUploadProcess end: ", date_helper.CurTimestamp())
 }
 
 func UploadProcessRunning(jsonStr string) {

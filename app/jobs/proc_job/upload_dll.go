@@ -24,7 +24,7 @@ func UploadDll(jsonStr string) {
 }
 
 func BatchUploadDll(orgId int64, agentId string, jsonStr string) {
-	fmt.Println("BatchUploadDll: ", date_helper.CurTimestamp())
+	fmt.Println("BatchUploadDll start: ", date_helper.CurTimestamp())
 	var models []proc_models.DllModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
@@ -36,7 +36,7 @@ func BatchUploadDll(orgId int64, agentId string, jsonStr string) {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
-	fmt.Println("BatchUploadDll: ", date_helper.CurTimestamp())
+	fmt.Println("BatchUploadDll end: ", date_helper.CurTimestamp())
 }
 
 func UploadDllRunning(jsonStr string) {
