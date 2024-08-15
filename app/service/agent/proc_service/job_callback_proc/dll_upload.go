@@ -25,15 +25,6 @@ type DllUpload struct {
 	masterModel *proc_models.DllModel
 }
 
-// GetOne 获取一条
-func (crd *DllUpload) GetOne(orgId int64, agentId, hash string) (model *proc_models.DllModel) {
-	model = crd.masterModel.GetItemByOrgAndAgentAndHash(orgId, agentId, hash)
-	if model == nil || string_helper.IsEmpty(model.DllHash) {
-		return nil
-	}
-	return model
-}
-
 // GetMaps 获取多条
 func (crd *DllUpload) GetMaps(orgId int64, agentId string, hashes []string) map[string]int {
 	result := make(map[string]int)
@@ -50,55 +41,6 @@ func (crd *DllUpload) GetMaps(orgId int64, agentId string, hashes []string) map[
 		result[model.DllHash] = model.Status
 	}
 	return result
-}
-
-// Add 添加
-func (crd *DllUpload) Add(dllModel *proc_models.DllModel) error {
-	if string_helper.IsEmpty(dllModel.CreatedAt) {
-		dllModel.CreatedAt = date_helper.CurDatetime()
-	}
-	dllModel.Dir = path_helper.ToStandard(dllModel.Dir)
-	dllModel.ProcDir = path_helper.ToStandard(dllModel.ProcDir)
-
-	//如果存在， 忽略
-	hasModel := crd.GetOne(dllModel.OrgId, dllModel.AgentId, dllModel.DllHash)
-	if hasModel != nil && !string_helper.IsEmpty(hasModel.DllHash) {
-		return nil
-	}
-
-	//终端信息
-	agentFact := agent_models.CreateAgentFactory()
-	agentModel := agentFact.GetItemByOrgAndAgent(dllModel.OrgId, dllModel.AgentId, agentFact.ColumnProc(true))
-	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
-		return errors.New("终端不存在")
-	}
-
-	//全局名单状态
-	dllModel.GlobalStatus = crd.getGlobalStatus(dllModel.OrgId, dllModel.DllHash)
-	//默认自身状态
-	dllModel.SelfStatus = enum_process.RelyStatusUnset
-
-	//默认威胁情报开关
-	dllModel.GrantThreatenSwitch = enums.SwitchOn
-	//冗余自动匹配白名单开关
-	dllModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
-	//威胁情报状态
-	isExist := false
-	if isExist, dllModel.ThreatenStatus, dllModel.ThreatenLevel = crd.getThreatenStatus(dllModel.DllHash); !isExist {
-		//加入威胁情报缓存
-		crd.pushThreaten(dllModel, agentModel.OsName)
-	}
-
-	//最终呈现状态
-	dllModel.Status, dllModel.SyncStatusAt = crd.getProcStatus(dllModel.GlobalStatus, dllModel.SelfStatus,
-		dllModel.ThreatenStatus, dllModel.AutoWhiteSwitch)
-
-	//保存
-	if !crd.masterModel.InsertItem(dllModel) {
-		return errors.New("保存失败")
-	}
-
-	return nil
 }
 
 // BatchAdd 添加
@@ -199,9 +141,4 @@ func (crd *DllUpload) initThreaten(dllModel *proc_models.DllModel, agentOs strin
 	}
 
 	return data
-}
-
-func (crd *DllUpload) pushThreaten(dllModel *proc_models.DllModel, agentOs string) {
-	param := crd.initThreaten(dllModel, agentOs)
-	threaten_service.CreateCacheFactory().Add(&param, false)
 }

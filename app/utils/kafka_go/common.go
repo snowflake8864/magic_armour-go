@@ -22,12 +22,6 @@ const (
 	TypeCommonAgentPutMonitor    string = "common_agent_put_monitor"     //类型：终端上传监控数据
 	TypeCommonAgentOpenAutoWhite string = "common_agent_open_auto_white" //类型：终端开启自动白名单
 	TypeCommonOrgClean           string = "common_org_clean"             //类型：企业清空业务数据
-	TypeCommonAgentAccess        string = "common_agent_access"          //类型：终端访问日志
-
-	TypeProcProcessPutMaster  string = "proc_process_put_master"  //类型：上传主进程
-	TypeProcProcessPutRunning string = "proc_process_put_running" //类型：上传运行中进程
-	TypeProcDllPutMaster      string = "proc_dll_put_master"      //类型：上传主模块
-	TypeProcDllPutRunning     string = "proc_dll_put_running"     //类型：上传运行中模块
 
 	TypeProcessBatchPutMaster  string = "process_batch_put_master"  //类型：上传主进程
 	TypeProcessBatchPutRunning string = "process_batch_put_running" //类型：上传运行中进程
@@ -49,8 +43,6 @@ const (
 	TypeSyslogPutLogin   string = "syslog_put_login"   //类型：通讯日志-登录日志上传
 
 	TypeThreatenSyncRewrite string = "threaten_sync_rewrite" //类型：威胁情报同步后重写
-	TypeThreatenFormProcess string = "threaten_form_process" //类型：威胁情报从进程新增
-	TypeThreatenFormDll     string = "threaten_form_dll"     //类型：威胁情报从模块新增
 
 	TypeCrontabAlarmStat          string = "crontab_alarm_stat"            //类型：定时任务-告警统计
 	TypeCrontabAgentSafe          string = "crontab_agent_safe"            //类型：定时任务-终端安全状态

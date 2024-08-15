@@ -12,41 +12,6 @@ import (
 type ProcessBase struct {
 }
 
-// getThreatenStatus 获取威胁情报状态
-func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenStatus int, threatenLevel int) {
-	isExist, threatenLevel = threaten_models.CreateCacheFactory().GetLevelById(hash)
-	if !isExist {
-		return isExist, enum_process.RelyStatusUnset, threatenLevel
-	}
-
-	if enum_threaten.IsWhite(threatenLevel) {
-		return isExist, enum_process.RelyStatusWhite, threatenLevel
-	} else if enum_threaten.IsBlack(threatenLevel) {
-		return isExist, enum_process.RelyStatusBlack, threatenLevel
-	}
-	return isExist, enum_process.RelyStatusUnset, threatenLevel
-}
-
-// getGlobalStatus 获取全局名单状态
-func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
-	model := proc_models.CreateProcGlobalFactory().GetItemByOrgAndId(orgId, hash)
-	if model == nil {
-		return enum_process.RelyStatusUnset
-	}
-	if model.OpenSwitch == enums.SwitchOff {
-		return enum_process.RelyStatusUnset
-	}
-
-	if model.Type == enum_process.GlobalTypeWhite {
-		return enum_process.RelyStatusWhite
-	} else if model.Type == enum_process.GlobalTypeBlack {
-		return enum_process.RelyStatusBlack
-	} else {
-		return enum_process.RelyStatusUnset
-	}
-
-}
-
 // getThreatenStatusByHashes 获取威胁情报状态
 func (crd *ProcessBase) getThreatenStatusByHashes(hashes []string) map[string]int {
 	result := make(map[string]int)
@@ -69,7 +34,7 @@ func (crd *ProcessBase) getThreatenStatusByHashes(hashes []string) map[string]in
 
 }
 
-// getGlobalStatus 获取全局名单状态
+// getGlobalStatusByHashes 获取全局名单状态
 func (crd *ProcessBase) getGlobalStatusByHashes(orgId int64, hashes []string) map[string]int {
 	result := make(map[string]int)
 

@@ -112,18 +112,6 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeDllBatchPutMaster:
 			proc_job.BatchUploadDll(data.OrgId, data.AgentId, data.Data)
 			break
-		case kafka_go.TypeProcProcessPutMaster:
-			proc_job.UploadProcess(data.Data)
-			break
-		case kafka_go.TypeProcProcessPutRunning:
-			proc_job.UploadProcessRunning(data.Data)
-			break
-		case kafka_go.TypeProcDllPutMaster:
-			proc_job.UploadDll(data.Data)
-			break
-		case kafka_go.TypeProcDllPutRunning:
-			proc_job.UploadDllRunning(data.Data)
-			break
 
 		case kafka_go.TypeAlarmPutProcess:
 			alarm_job.UploadProcess(data.Data)

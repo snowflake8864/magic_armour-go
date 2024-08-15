@@ -1,7 +1,6 @@
 package job_callback_proc
 
 import (
-	"errors"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -19,21 +18,6 @@ func CreateProcessRunningUploadFactory() *ProcessRunningUpload {
 type ProcessRunningUpload struct {
 	ProcessBase
 	masterModel *proc_models.ProcessRunningModel
-}
-
-// Add 添加
-func (crd *ProcessRunningUpload) Add(processRunningModel *proc_models.ProcessRunningModel) error {
-	if string_helper.IsEmpty(processRunningModel.CreatedAt) {
-		processRunningModel.CreatedAt = date_helper.CurDatetime()
-	}
-	processRunningModel.ProcDir = path_helper.ToStandard(processRunningModel.ProcDir)
-
-	//保存
-	if !crd.masterModel.InsertItem(processRunningModel) {
-		return errors.New("保存失败")
-	}
-
-	return nil
 }
 
 // BatchAdd 新增
