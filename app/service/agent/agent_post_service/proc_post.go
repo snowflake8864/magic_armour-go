@@ -26,7 +26,7 @@ func CreateProcFactory() *ProcPost {
 		cachePrefix:   "lock_proc_upload_",
 		cacheExpire:   200,
 		queryClient:   producer_kafka.CreateProducerFactory(),
-		supportNumber: 20,
+		supportNumber: 30,
 	}
 }
 
