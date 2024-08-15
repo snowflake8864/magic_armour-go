@@ -30,10 +30,21 @@ func (crd *ProcessBase) getThreatenStatus(hash string) (isExist bool, threatenSt
 // getGlobalStatus 获取全局名单状态
 func (crd *ProcessBase) getGlobalStatus(orgId int64, hash string) (status int) {
 	model := proc_models.CreateProcGlobalFactory().GetItemByOrgAndId(orgId, hash)
-	if model == nil || model.Type == enum_process.RelyStatusUnset {
+	if model == nil {
 		return enum_process.RelyStatusUnset
 	}
-	return model.Type
+	if model.OpenSwitch == enums.SwitchOff {
+		return enum_process.RelyStatusUnset
+	}
+
+	if model.Type == enum_process.GlobalTypeWhite {
+		return enum_process.RelyStatusWhite
+	} else if model.Type == enum_process.GlobalTypeBlack {
+		return enum_process.RelyStatusBlack
+	} else {
+		return enum_process.RelyStatusUnset
+	}
+
 }
 
 // getThreatenStatusByHashes 获取威胁情报状态
