@@ -37,6 +37,7 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	//fmt.Println(json_helper.Encode(params))
 
 	var processModels []*alarm_models.ProcessModel
+	var dllModels []*alarm_models.DllModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -51,7 +52,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			}
 			break
 		case enum_alarm.ModuleDll:
-			crd.sendDll(&item, orgId, agentId, now)
+			if model := crd.formatDll(&item, orgId, agentId, now); model != nil {
+				dllModels = append(dllModels, model)
+			}
 			break
 		case enum_alarm.ModuleTamper:
 			crd.sendTamper(&item, orgId, agentId, now)
@@ -71,6 +74,10 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 
 	if len(processModels) > 0 {
 		crd.sendProcess(processModels)
+	}
+
+	if len(dllModels) > 0 {
+		crd.sendDll(dllModels)
 	}
 
 	return nil
@@ -125,13 +132,12 @@ func (crd *AlarmPost) sendProcess(models []*alarm_models.ProcessModel) {
 	}
 }
 
-// 发送模块告警
-func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now string) {
+func (crd *AlarmPost) formatDll(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.DllModel {
 	if param.Level == 0 || string_helper.IsEmpty(param.Hash) {
-		return
+		return nil
 	}
 
-	model := alarm_models.DllModel{
+	return &alarm_models.DllModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -143,14 +149,28 @@ func (crd *AlarmPost) sendDll(param *alarmComm, orgId int64, agentId string, now
 		DllDir:       param.Dir,
 		ProcDir:      param.ExceptionProcess,
 	}
-	//fmt.Println("sendDll ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutDll,
-		Data: json_helper.Encode(&model),
-	}
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
+}
 
+// 发送模块告警
+func (crd *AlarmPost) sendDll(models []*alarm_models.DllModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
+	}
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		//alarm_job.UploadDll(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutDll,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 }
 
 // 发送防篡改告警

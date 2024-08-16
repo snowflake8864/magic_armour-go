@@ -22,14 +22,13 @@ func UploadProcess(jsonStr string) {
 }
 
 func UploadDll(jsonStr string) {
-	model := alarm_models.DllModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []alarm_models.DllModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
-
-	if err := job_callback_alarm.CreateDllUploadFactory().Add(&model); err != nil {
+	if err := job_callback_alarm.CreateDllUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
