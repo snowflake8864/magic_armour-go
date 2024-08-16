@@ -49,14 +49,14 @@ func UploadTamper(jsonStr string) {
 }
 
 func UploadBlackmail(jsonStr string) {
-	model := alarm_models.BlackmailModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []alarm_models.BlackmailModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_alarm.CreateBlackmailUploadFactory().Add(&model); err != nil {
+	if err := job_callback_alarm.CreateBlackmailUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}

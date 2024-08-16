@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -39,6 +40,7 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	var processModels []*alarm_models.ProcessModel
 	var dllModels []*alarm_models.DllModel
 	var tamperModels []*alarm_models.TamperModel
+	var blackmailModels []*alarm_models.BlackmailModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -63,7 +65,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			}
 			break
 		case enum_alarm.ModuleBlackmail:
-			crd.sendBlackmail(&item, orgId, agentId, now)
+			if model := crd.formatBlackmail(&item, orgId, agentId, now); model != nil {
+				blackmailModels = append(blackmailModels, model)
+			}
 			break
 		case enum_alarm.ModuleUsb:
 			crd.sendUsb(&item, orgId, agentId, now)
@@ -85,6 +89,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 
 	if len(tamperModels) > 0 {
 		crd.sendTamper(tamperModels)
+	}
+	if len(blackmailModels) > 0 {
+		crd.sendBlackmail(blackmailModels)
 	}
 
 	return nil
@@ -223,13 +230,12 @@ func (crd *AlarmPost) sendTamper(models []*alarm_models.TamperModel) {
 
 }
 
-// 发送勒索告警
-func (crd *AlarmPost) sendBlackmail(param *alarmComm, orgId int64, agentId string, now string) {
-	if param.Level == 0 {
-		return
+func (crd *AlarmPost) formatBlackmail(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.BlackmailModel {
+	if param.Level == 0 || string_helper.IsEmpty(param.Dir) {
+		return nil
 	}
 
-	model := alarm_models.BlackmailModel{
+	return &alarm_models.BlackmailModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -241,14 +247,29 @@ func (crd *AlarmPost) sendBlackmail(param *alarmComm, orgId int64, agentId strin
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	//fmt.Println("sendBlackmail ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutBlackmail,
-		Data: json_helper.Encode(&model),
-	}
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
+}
 
+// 发送勒索告警
+func (crd *AlarmPost) sendBlackmail(models []*alarm_models.BlackmailModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
+	}
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+
+		alarm_job.UploadBlackmail(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutBlackmail,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 }
 
 // 发送外设告警
