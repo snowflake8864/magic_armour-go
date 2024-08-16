@@ -16,12 +16,14 @@ import (
 
 func CreateAlarmFactory() *AlarmPost {
 	return &AlarmPost{
-		queryClient: producer_kafka.CreateProducerFactory(),
+		queryClient:   producer_kafka.CreateProducerFactory(),
+		supportNumber: 100,
 	}
 }
 
 type AlarmPost struct {
-	queryClient *producer_kafka.ProducerClient
+	queryClient   *producer_kafka.ProducerClient
+	supportNumber int
 }
 
 // ToQueryBYComm 格式化参数后推送给队列
@@ -33,6 +35,8 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	now := date_helper.CurDatetime()
 	//fmt.Println("params========================================")
 	//fmt.Println(json_helper.Encode(params))
+
+	var processModels []*alarm_models.ProcessModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -42,7 +46,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 		module := enum_alarm.GetModuleByType(item.Type)
 		switch module {
 		case enum_alarm.ModuleProcess:
-			crd.sendProcess(&item, orgId, agentId, now)
+			if model := crd.formatProcess(&item, orgId, agentId, now); model != nil {
+				processModels = append(processModels, model)
+			}
 			break
 		case enum_alarm.ModuleDll:
 			crd.sendDll(&item, orgId, agentId, now)
@@ -63,6 +69,10 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 
 	}
 
+	if len(processModels) > 0 {
+		crd.sendProcess(processModels)
+	}
+
 	return nil
 }
 
@@ -73,13 +83,12 @@ func (crd *AlarmPost) getAgentAt(t int64, now string) string {
 	return date_helper.TimestampToDatetime(t)
 }
 
-// 发送进程告警
-func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string, now string) {
+func (crd *AlarmPost) formatProcess(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.ProcessModel {
 	if param.Level == 0 || string_helper.IsEmpty(param.Hash) {
-		return
+		return nil
 	}
 
-	model := alarm_models.ProcessModel{
+	return &alarm_models.ProcessModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -92,15 +101,28 @@ func (crd *AlarmPost) sendProcess(param *alarmComm, orgId int64, agentId string,
 		ProcId:       param.Pid,
 		ProcParam:    param.PParam,
 	}
-	//fmt.Println("sendProcess ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutProcess,
-		Data: json_helper.Encode(&model),
+}
+
+// 发送进程告警
+func (crd *AlarmPost) sendProcess(models []*alarm_models.ProcessModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
 	}
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		//alarm_job.UploadProcess(json_helper.Encode(models[i:end]))
 
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
-
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutProcess,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 }
 
 // 发送模块告警
