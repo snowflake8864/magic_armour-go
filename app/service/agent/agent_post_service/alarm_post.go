@@ -38,6 +38,7 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 
 	var processModels []*alarm_models.ProcessModel
 	var dllModels []*alarm_models.DllModel
+	var tamperModels []*alarm_models.TamperModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -57,7 +58,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			}
 			break
 		case enum_alarm.ModuleTamper:
-			crd.sendTamper(&item, orgId, agentId, now)
+			if model := crd.formatTamper(&item, orgId, agentId, now); model != nil {
+				tamperModels = append(tamperModels, model)
+			}
 			break
 		case enum_alarm.ModuleBlackmail:
 			crd.sendBlackmail(&item, orgId, agentId, now)
@@ -78,6 +81,10 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 
 	if len(dllModels) > 0 {
 		crd.sendDll(dllModels)
+	}
+
+	if len(tamperModels) > 0 {
+		crd.sendTamper(tamperModels)
 	}
 
 	return nil
@@ -173,13 +180,12 @@ func (crd *AlarmPost) sendDll(models []*alarm_models.DllModel) {
 	}
 }
 
-// 发送防篡改告警
-func (crd *AlarmPost) sendTamper(param *alarmComm, orgId int64, agentId string, now string) {
-	if param.Level == 0 {
-		return
+func (crd *AlarmPost) formatTamper(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.TamperModel {
+	if param.Level == 0 || string_helper.IsEmpty(param.Dir) {
+		return nil
 	}
 
-	model := alarm_models.TamperModel{
+	return &alarm_models.TamperModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -191,13 +197,29 @@ func (crd *AlarmPost) sendTamper(param *alarmComm, orgId int64, agentId string, 
 		ProcDir:      param.ExceptionProcess,
 		FileDir:      param.Dir,
 	}
-	//fmt.Println("sendTamper ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutTamper,
-		Data: json_helper.Encode(&model),
+}
+
+// 发送防篡改告警
+func (crd *AlarmPost) sendTamper(models []*alarm_models.TamperModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
 	}
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+
+		//alarm_job.UploadTamper(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutTamper,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 
 }
 

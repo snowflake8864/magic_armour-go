@@ -35,14 +35,14 @@ func UploadDll(jsonStr string) {
 }
 
 func UploadTamper(jsonStr string) {
-	model := alarm_models.TamperModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []alarm_models.TamperModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_alarm.CreateTamperUploadFactory().Add(&model); err != nil {
+	if err := job_callback_alarm.CreateTamperUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
