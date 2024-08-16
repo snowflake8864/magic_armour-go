@@ -22,28 +22,28 @@ func UploadDns(jsonStr string) {
 }
 
 func UploadOuter(jsonStr string) {
-	model := syslog_models.OuterModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []syslog_models.OuterModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_syslog.CreateOuterUploadFactory().Add(&model); err != nil {
+	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
 }
 
 func UploadInner(jsonStr string) {
-	model := syslog_models.InnerModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []syslog_models.InnerModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_syslog.CreateInnerUploadFactory().Add(&model); err != nil {
+	if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}

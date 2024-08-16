@@ -2,7 +2,9 @@ package agent_post_service
 
 import (
 	"context"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/service/agent/syslog_service/job_callback_syslog"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/kafka_go"
@@ -11,12 +13,14 @@ import (
 
 func CreateSyslogFactory() *SyslogPost {
 	return &SyslogPost{
-		queryClient: producer_kafka.CreateProducerFactory(),
+		queryClient:   producer_kafka.CreateProducerFactory(),
+		supportNumber: 100,
 	}
 }
 
 type SyslogPost struct {
-	queryClient *producer_kafka.ProducerClient
+	queryClient   *producer_kafka.ProducerClient
+	supportNumber int
 }
 
 // ToQuery 格式化参数后推送给队列
@@ -28,6 +32,11 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 	now := date_helper.CurDatetime()
 	//fmt.Println("params========================================")
 	//fmt.Println(json_helper.Encode(params))
+
+	//没有其他业务的
+	var innerModels []syslog_models.InnerModel
+	var outerModels []syslog_models.OuterModel
+	var processModels []syslog_models.ProcessModel
 	for _, item := range params {
 		logType := json_helper.Number2Int64(item.LogType)
 		//对应的模块
@@ -36,19 +45,27 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 			crd.sendDns(&item, orgId, agentId, now)
 			break
 		case 2:
-			crd.sendOuter(&item, orgId, agentId, now)
+			outerModels = append(outerModels, crd.formatOuter(&item, orgId, agentId, now))
 			break
 		case 3:
-			crd.sendInner(&item, orgId, agentId, now)
+			innerModels = append(innerModels, crd.formatInner(&item, orgId, agentId, now))
 			break
 		case 4:
-			crd.sendProcess(&item, orgId, agentId, now)
+			processModels = append(processModels, crd.formatProcess(&item, orgId, agentId, now))
 			break
 		case 5:
 			crd.sendLogin(&item, orgId, agentId, now)
 			break
 		}
 
+	}
+
+	if err := crd.sendInner(&innerModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendInner: " + err.Error())
+	}
+
+	if err := crd.sendOuter(&outerModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendOuter: " + err.Error())
 	}
 
 	return nil
@@ -85,10 +102,8 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 	crd.queryClient.ProduceSyslog(context.Background(), msg)
 }
 
-// 发送对内通讯日志
-func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string, now string) {
-
-	model := syslog_models.InnerModel{
+func (crd *SyslogPost) formatInner(param *syslogComm, orgId int64, agentId string, now string) syslog_models.InnerModel {
+	return syslog_models.InnerModel{
 		OrgId:            orgId,
 		AgentId:          agentId,
 		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -103,42 +118,104 @@ func (crd *SyslogPost) sendInner(param *syslogComm, orgId int64, agentId string,
 		SourcePort:       json_helper.Number2Int(param.SourcePort),
 		Proto:            json_helper.Number2Int(param.Proto),
 	}
-	//fmt.Println("sendInner ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeSyslogPutInner,
-		Data: json_helper.Encode(&model),
+}
+
+// 发送对内通讯日志
+func (crd *SyslogPost) sendInner(models *[]syslog_models.InnerModel) error {
+	modelLength := len(*models)
+	if modelLength == 0 {
+		return nil
+	}
+	/*
+		data := *models
+		cxt := context.Background()
+		for i := 0; i < modelLength; i += crd.supportNumber {
+			end := i + crd.supportNumber
+			if end > modelLength {
+				end = modelLength
+			}
+			//syslog_job.UploadInner(json_helper.Encode(data[i:end]))
+
+			msg := &kafka_go.MessageStruct{
+				Type: kafka_go.TypeSyslogPutInner,
+				Data: json_helper.Encode(data[i:end]),
+			}
+			crd.queryClient.ProduceDll(cxt, msg)
+		}
+	*/
+
+	if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(models); err != nil {
+		return err
 	}
 
-	crd.queryClient.ProduceSyslog(context.Background(), msg)
+	return nil
+}
+
+func (crd *SyslogPost) formatOuter(param *syslogComm, orgId int64, agentId string, now string) syslog_models.OuterModel {
+
+	return syslog_models.OuterModel{
+		OrgId:            orgId,
+		AgentId:          agentId,
+		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
+		CreatedAt:        now,
+		ProcHash:         param.Hash,
+		ProcId:           json_helper.Number2Int(param.PId),
+		ProcDir:          param.PDir,
+		TargetIp:         param.ResIp,
+		TargetPort:       json_helper.Number2Int(param.RsPort),
+		TargetPortStatus: json_helper.Number2Int(param.ResPortStatus),
+		SourceIp:         param.SourceIp,
+		SourcePort:       json_helper.Number2Int(param.SourcePort),
+		Proto:            json_helper.Number2Int(param.Proto),
+	}
 }
 
 // 发送对外通讯日志
-func (crd *SyslogPost) sendOuter(param *syslogComm, orgId int64, agentId string, now string) {
+func (crd *SyslogPost) sendOuter(models *[]syslog_models.OuterModel) error {
 
-	model := syslog_models.OuterModel{
-		OrgId:            orgId,
-		AgentId:          agentId,
-		AgentAt:          crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
-		CreatedAt:        now,
-		ProcHash:         param.Hash,
-		ProcId:           json_helper.Number2Int(param.PId),
-		ProcDir:          param.PDir,
-		TargetIp:         param.ResIp,
-		TargetPort:       json_helper.Number2Int(param.RsPort),
-		TargetPortStatus: json_helper.Number2Int(param.ResPortStatus),
-		SourceIp:         param.SourceIp,
-		SourcePort:       json_helper.Number2Int(param.SourcePort),
-		Proto:            json_helper.Number2Int(param.Proto),
+	modelLength := len(*models)
+	if modelLength == 0 {
+		return nil
 	}
-	//fmt.Println("sendOuter ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeSyslogPutOuter,
-		Data: json_helper.Encode(&model),
+	/*
+		data := *models
+		cxt := context.Background()
+		for i := 0; i < modelLength; i += crd.supportNumber {
+			end := i + crd.supportNumber
+			if end > modelLength {
+				end = modelLength
+			}
+			syslog_job.UploadOuter(json_helper.Encode(data[i:end]))
+			msg := &kafka_go.MessageStruct{
+				Type: kafka_go.TypeSyslogPutOuter,
+				Data: json_helper.Encode(data[i:end]),
+			}
+			crd.queryClient.ProduceDll(cxt, msg)
+		}*/
+
+	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(models); err != nil {
+		return err
 	}
 
-	crd.queryClient.ProduceSyslog(context.Background(), msg)
+	return nil
+}
+
+func (crd *SyslogPost) formatProcess(param *syslogComm, orgId int64, agentId string, now string) syslog_models.ProcessModel {
+
+	return syslog_models.ProcessModel{
+		OrgId:       orgId,
+		AgentId:     agentId,
+		AgentAt:     crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
+		CreatedAt:   now,
+		ProcHash:    param.Hash,
+		ProcId:      json_helper.Number2Int(param.PId),
+		ProcDir:     param.PDir,
+		ProcParam:   param.PParam,
+		ParentHash:  param.PpHash,
+		ParentId:    json_helper.Number2Int(param.PpId),
+		ParentDir:   param.PpDir,
+		ParentParam: param.PpParam,
+	}
 }
 
 // 发送进程启动日志
