@@ -23,43 +23,6 @@ type DllUpload struct {
 	masterModel *alarm_models.DllModel
 }
 
-// Add 添加
-func (crd *DllUpload) Add(model *alarm_models.DllModel) error {
-	if string_helper.IsEmpty(model.CreatedAt) {
-		model.CreatedAt = date_helper.CurDatetime()
-	}
-	model.Id = variable.SnowFlake.GetId()
-	model.DllHash = strings.ToLower(model.DllHash)
-	model.DllDir = path_helper.ToStandard(model.DllDir)
-	model.ProcDir = path_helper.ToStandard(model.ProcDir)
-
-	//保存
-	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
-	}
-
-	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchDll); hsCli != nil {
-		hsData := huanshi_platform.AlarmComm{
-			AlarmBase: huanshi_platform.AlarmBase{
-				Type:       huanshi_platform.AlarmTypeDll,
-				OrgId:      model.OrgId,
-				AgentId:    model.AgentId,
-				Level:      model.Level,
-				NoticeType: model.Type,
-				NoticeTime: model.CreatedAt,
-			},
-			Dir:              model.DllDir,
-			ExceptionProcess: model.ProcDir,
-		}
-		if err := hsCli.SyncAlarmComm(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
-		}
-	}
-
-	return nil
-}
-
 // BatchAdd 新增
 func (crd *DllUpload) BatchAdd(list *[]alarm_models.DllModel) error {
 	if len(*list) == 0 {
