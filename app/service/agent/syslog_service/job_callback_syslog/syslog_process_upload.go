@@ -64,3 +64,57 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.ProcessModel) error {
 
 	return nil
 }
+
+// BatchAdd 新增
+func (crd *SyslogProcessUpload) BatchAdd(list *[]syslog_models.ProcessModel) error {
+	if len(*list) == 0 {
+		return nil
+	}
+
+	createdAt := date_helper.CurDatetime()
+	var inserts []syslog_models.ProcessModel
+	for _, model := range *list {
+		model.Id = variable.SnowFlake.GetId()
+		model.ProcHash = strings.ToLower(model.ProcHash)
+		model.ProcDir = path_helper.ToStandard(model.ProcDir)
+		model.ProcParam = path_helper.ToStandard(model.ProcParam)
+		model.ParentHash = strings.ToLower(model.ParentHash)
+		model.ParentDir = path_helper.ToStandard(model.ParentDir)
+		model.ParentParam = path_helper.ToStandard(model.ParentParam)
+
+		if string_helper.IsEmpty(model.CreatedAt) {
+			model.CreatedAt = createdAt
+		}
+		inserts = append(inserts, model)
+	}
+
+	if !crd.masterModel.InsertBatch(&inserts) {
+		return errors.New("保存失败")
+	}
+
+	//推送到幻势,
+	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+		for _, model := range inserts {
+			hsData := huanshi_platform.LogProcess{
+				LogBase: huanshi_platform.LogBase{
+					OrgId:     model.OrgId,
+					AgentId:   model.AgentId,
+					CreatedAt: model.CreatedAt,
+				},
+				ProcHash:    model.ProcHash,
+				ProcId:      model.ProcId,
+				ProcDir:     model.ProcDir,
+				ProcParam:   model.ProcParam,
+				ParentHash:  model.ParentHash,
+				ParentId:    model.ParentId,
+				ParentDir:   model.ParentDir,
+				ParentParam: model.ParentParam,
+			}
+			if err := hsCli.SyncLogProcess(hsData); err != nil {
+				variable.ZapLog.Sugar().Debug(err.Error())
+			}
+		}
+	}
+
+	return nil
+}

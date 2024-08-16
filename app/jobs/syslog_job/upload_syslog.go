@@ -50,14 +50,14 @@ func UploadInner(jsonStr string) {
 }
 
 func UploadProcess(jsonStr string) {
-	model := syslog_models.ProcessModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []syslog_models.ProcessModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_syslog.CreateProcessUploadFactory().Add(&model); err != nil {
+	if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}

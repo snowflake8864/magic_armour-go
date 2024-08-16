@@ -219,30 +219,35 @@ func (crd *SyslogPost) formatProcess(param *syslogComm, orgId int64, agentId str
 }
 
 // 发送进程启动日志
-func (crd *SyslogPost) sendProcess(param *syslogComm, orgId int64, agentId string, now string) {
+func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 
-	model := syslog_models.ProcessModel{
-		OrgId:       orgId,
-		AgentId:     agentId,
-		AgentAt:     crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
-		CreatedAt:   now,
-		ProcHash:    param.Hash,
-		ProcId:      json_helper.Number2Int(param.PId),
-		ProcDir:     param.PDir,
-		ProcParam:   param.PParam,
-		ParentHash:  param.PpHash,
-		ParentId:    json_helper.Number2Int(param.PpId),
-		ParentDir:   param.PpDir,
-		ParentParam: param.PpParam,
-	}
-	//fmt.Println("sendProcess ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeSyslogPutProcess,
-		Data: json_helper.Encode(&model),
+	modelLength := len(*models)
+	if modelLength == 0 {
+		return nil
 	}
 
-	crd.queryClient.ProduceSyslog(context.Background(), msg)
+	/*
+		data := *models
+		cxt := context.Background()
+		for i := 0; i < modelLength; i += crd.supportNumber {
+			end := i + crd.supportNumber
+			if end > modelLength {
+				end = modelLength
+			}
+			syslog_job.UploadProcess(json_helper.Encode(data[i:end]))
+			msg := &kafka_go.MessageStruct{
+				Type: kafka_go.TypeSyslogPutProcess,
+				Data: json_helper.Encode(data[i:end]),
+			}
+			crd.queryClient.ProduceDll(cxt, msg)
+		}
+	*/
+
+	if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(models); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // 发送登录志
