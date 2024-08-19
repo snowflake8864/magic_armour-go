@@ -77,14 +77,14 @@ func UploadUsb(jsonStr string) {
 }
 
 func UploadSelf(jsonStr string) {
-	model := alarm_models.SelfModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []alarm_models.SelfModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_alarm.CreateSelfUploadFactory().Add(&model); err != nil {
+	if err := job_callback_alarm.CreateSelfUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}

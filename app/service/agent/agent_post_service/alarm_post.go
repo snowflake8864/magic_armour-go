@@ -39,7 +39,8 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	var dllModels []*alarm_models.DllModel
 	var tamperModels []*alarm_models.TamperModel
 	var blackmailModels []*alarm_models.BlackmailModel
-	var UsbModels []*alarm_models.UsbModel
+	var usbModels []*alarm_models.UsbModel
+	var selfodels []*alarm_models.SelfModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -70,11 +71,13 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			break
 		case enum_alarm.ModuleUsb:
 			if model := crd.formatUsb(&item, orgId, agentId, now); model != nil {
-				UsbModels = append(UsbModels, model)
+				usbModels = append(usbModels, model)
 			}
 			break
 		case enum_alarm.ModuleSelf:
-			crd.sendSelf(&item, orgId, agentId, now)
+			if model := crd.formatSelf(&item, orgId, agentId, now); model != nil {
+				selfodels = append(selfodels, model)
+			}
 			break
 		}
 
@@ -83,19 +86,20 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	if len(processModels) > 0 {
 		crd.sendProcess(processModels)
 	}
-
 	if len(dllModels) > 0 {
 		crd.sendDll(dllModels)
 	}
-
 	if len(tamperModels) > 0 {
 		crd.sendTamper(tamperModels)
 	}
 	if len(blackmailModels) > 0 {
 		crd.sendBlackmail(blackmailModels)
 	}
-	if len(UsbModels) > 0 {
-		crd.sendUsb(UsbModels)
+	if len(usbModels) > 0 {
+		crd.sendUsb(usbModels)
+	}
+	if len(selfodels) > 0 {
+		crd.sendSelf(selfodels)
 	}
 
 	return nil
@@ -318,13 +322,12 @@ func (crd *AlarmPost) sendUsb(models []*alarm_models.UsbModel) {
 	}
 }
 
-// 发送自保告警
-func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, now string) {
+func (crd *AlarmPost) formatSelf(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.SelfModel {
 	if param.Level == 0 {
-		return
+		return nil
 	}
 
-	model := alarm_models.SelfModel{
+	return &alarm_models.SelfModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -338,13 +341,29 @@ func (crd *AlarmPost) sendSelf(param *alarmComm, orgId int64, agentId string, no
 		FileDir:      param.FileDir,
 		TargetDir:    param.TargetDir,
 	}
-	//fmt.Println("sendSelf ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutSelf,
-		Data: json_helper.Encode(&model),
+}
+
+// 发送自保告警
+func (crd *AlarmPost) sendSelf(models []*alarm_models.SelfModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
 	}
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+
+		//alarm_job.UploadSelf(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutSelf,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 
 }
 
