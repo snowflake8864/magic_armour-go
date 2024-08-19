@@ -66,3 +66,59 @@ func (crd *AlarmUsbUpload) Add(model *alarm_models.UsbModel) error {
 
 	return nil
 }
+
+// BatchAdd 新增
+func (crd *AlarmUsbUpload) BatchAdd(list *[]alarm_models.UsbModel) error {
+	if len(*list) == 0 {
+		return nil
+	}
+
+	createdAt := date_helper.CurDatetime()
+	var inserts []alarm_models.UsbModel
+	for _, model := range *list {
+		model.Id = variable.SnowFlake.GetId()
+		model.UsbHash = strings.ToLower(model.UsbHash)
+		if string_helper.IsEmpty(model.CreatedAt) {
+			model.CreatedAt = createdAt
+		}
+		inserts = append(inserts, model)
+	}
+
+	if !crd.masterModel.InsertBatch(&inserts) {
+		return errors.New("保存失败")
+	}
+
+	//推送到幻势
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchUsb); hsCli != nil {
+
+		var aliasMap = make(map[string]string)
+		for _, model := range inserts {
+			//外接设备别名
+			if _, isOk := aliasMap[model.UsbHash]; !isOk {
+				if usbModel := usb_models.CreateUsbFactory().GetItemByOrgAndAgentAndHash(model.OrgId, model.AgentId, model.UsbHash); usbModel != nil {
+					aliasMap[model.UsbHash] = usbModel.Alias
+				}
+			}
+
+			hsData := huanshi_platform.AlarmComm{
+				AlarmBase: huanshi_platform.AlarmBase{
+					Type:       huanshi_platform.AlarmTypeUsb,
+					OrgId:      model.OrgId,
+					AgentId:    model.AgentId,
+					Level:      model.Level,
+					NoticeType: model.Type,
+					NoticeTime: model.CreatedAt,
+				},
+				PeripheralEid:     model.UsbHash,
+				PeripheralName:    model.UsbName,
+				PeripheralRemark:  model.UsbIntro,
+				PeripheralContact: aliasMap[model.UsbHash],
+			}
+			if err := hsCli.SyncAlarmComm(hsData); err != nil {
+				variable.ZapLog.Sugar().Debug(err.Error())
+			}
+		}
+	}
+
+	return nil
+}

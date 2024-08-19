@@ -2,9 +2,7 @@ package agent_post_service
 
 import (
 	"context"
-	"fmt"
 	"goskeleton/app/global/enums/enum_alarm"
-	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -41,6 +39,7 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	var dllModels []*alarm_models.DllModel
 	var tamperModels []*alarm_models.TamperModel
 	var blackmailModels []*alarm_models.BlackmailModel
+	var UsbModels []*alarm_models.UsbModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -70,7 +69,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			}
 			break
 		case enum_alarm.ModuleUsb:
-			crd.sendUsb(&item, orgId, agentId, now)
+			if model := crd.formatUsb(&item, orgId, agentId, now); model != nil {
+				UsbModels = append(UsbModels, model)
+			}
 			break
 		case enum_alarm.ModuleSelf:
 			crd.sendSelf(&item, orgId, agentId, now)
@@ -92,6 +93,9 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	}
 	if len(blackmailModels) > 0 {
 		crd.sendBlackmail(blackmailModels)
+	}
+	if len(UsbModels) > 0 {
+		crd.sendUsb(UsbModels)
 	}
 
 	return nil
@@ -262,7 +266,7 @@ func (crd *AlarmPost) sendBlackmail(models []*alarm_models.BlackmailModel) {
 			end = modelLength
 		}
 
-		alarm_job.UploadBlackmail(json_helper.Encode(models[i:end]))
+		//alarm_job.UploadBlackmail(json_helper.Encode(models[i:end]))
 
 		msg := &kafka_go.MessageStruct{
 			Type: kafka_go.TypeAlarmPutBlackmail,
@@ -272,13 +276,12 @@ func (crd *AlarmPost) sendBlackmail(models []*alarm_models.BlackmailModel) {
 	}
 }
 
-// 发送外设告警
-func (crd *AlarmPost) sendUsb(param *alarmComm, orgId int64, agentId string, now string) {
+func (crd *AlarmPost) formatUsb(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.UsbModel {
 	if param.Level == 0 || string_helper.IsEmpty(param.PeripheralEid) {
-		return
+		return nil
 	}
 
-	model := alarm_models.UsbModel{
+	return &alarm_models.UsbModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
@@ -290,14 +293,29 @@ func (crd *AlarmPost) sendUsb(param *alarmComm, orgId int64, agentId string, now
 		UsbName:      param.PeripheralName,
 		UsbIntro:     param.PeripheralRemark,
 	}
-	fmt.Println("sendUsb ============================")
-	fmt.Println(json_helper.Encode(&model))
-	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeAlarmPutUsb,
-		Data: json_helper.Encode(&model),
-	}
-	crd.queryClient.ProduceAlarm(context.Background(), msg)
+}
 
+// 发送外设告警
+func (crd *AlarmPost) sendUsb(models []*alarm_models.UsbModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
+	}
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+
+		//alarm_job.UploadUsb(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutUsb,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
 }
 
 // 发送自保告警

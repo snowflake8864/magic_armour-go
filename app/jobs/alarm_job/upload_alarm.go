@@ -63,14 +63,14 @@ func UploadBlackmail(jsonStr string) {
 }
 
 func UploadUsb(jsonStr string) {
-	model := alarm_models.UsbModel{}
-	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
+	var models []alarm_models.UsbModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		variable.ZapLog.Sugar().Info(jsonStr)
 		return
 	}
 
-	if err := job_callback_alarm.CreateUsbUploadFactory().Add(&model); err != nil {
+	if err := job_callback_alarm.CreateUsbUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Sugar().Info(err.Error())
 		return
 	}
