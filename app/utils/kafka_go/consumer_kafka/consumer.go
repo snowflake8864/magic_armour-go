@@ -147,8 +147,11 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeSyslogPutProcess:
 			syslog_job.UploadProcess(data.Data)
 			break
-		case kafka_go.TypeSyslogPutLogin:
-			syslog_job.UploadLogin(data.Data)
+		case kafka_go.TypeSyslogPutLoginSuccess:
+			syslog_job.UploadLoginSuccess(data.Data)
+			break
+		case kafka_go.TypeSyslogPutLoginFail:
+			syslog_job.UploadLoginFail(data.Data)
 			break
 		case kafka_go.TypeCommonAgentPutMonitor:
 			agent_job.UploadMonitor(data.Data)

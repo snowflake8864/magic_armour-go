@@ -2,6 +2,7 @@ package agent_post_service
 
 import (
 	"context"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/syslog_service/job_callback_syslog"
@@ -37,6 +38,7 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 	var innerModels []syslog_models.InnerModel
 	var outerModels []syslog_models.OuterModel
 	var processModels []syslog_models.ProcessModel
+	var loginSuccessModels []syslog_models.LoginModel
 	for _, item := range params {
 		logType := json_helper.Number2Int64(item.LogType)
 		//对应的模块
@@ -54,7 +56,11 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 			processModels = append(processModels, crd.formatProcess(&item, orgId, agentId, now))
 			break
 		case 5:
-			crd.sendLogin(&item, orgId, agentId, now)
+			if loginModel := crd.formatLogin(&item, orgId, agentId, now); loginModel.Status == enums.IsYes {
+				loginSuccessModels = append(loginSuccessModels, loginModel)
+			} else {
+				crd.sendLoginFail(&loginModel)
+			}
 			break
 		}
 
@@ -63,9 +69,14 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 	if err := crd.sendInner(&innerModels); err != nil {
 		variable.ZapLog.Sugar().Debug("sendInner: " + err.Error())
 	}
-
 	if err := crd.sendOuter(&outerModels); err != nil {
 		variable.ZapLog.Sugar().Debug("sendOuter: " + err.Error())
+	}
+	if err := crd.sendProcess(&processModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+	}
+	if err := crd.sendLoginSuccess(&loginSuccessModels); err != nil {
+		variable.ZapLog.Sugar().Debug("sendLoginSuccess: " + err.Error())
 	}
 
 	return nil
@@ -250,10 +261,9 @@ func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 	return nil
 }
 
-// 发送登录志
-func (crd *SyslogPost) sendLogin(param *syslogComm, orgId int64, agentId string, now string) {
+func (crd *SyslogPost) formatLogin(param *syslogComm, orgId int64, agentId string, now string) syslog_models.LoginModel {
 
-	model := syslog_models.LoginModel{
+	return syslog_models.LoginModel{
 		OrgId:     orgId,
 		AgentId:   agentId,
 		AgentAt:   crd.getAgentAt(json_helper.Number2Int64(param.Time), now),
@@ -263,11 +273,45 @@ func (crd *SyslogPost) sendLogin(param *syslogComm, orgId int64, agentId string,
 		Type:      param.Type,
 		Status:    json_helper.Number2Int(param.Status),
 	}
-	//fmt.Println("sendLogin ============================")
-	//fmt.Println(json_helper.Encode(&model))
+}
+
+// 发送登录志
+func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) error {
+
+	modelLength := len(*models)
+	if modelLength == 0 {
+		return nil
+	}
+
+	/*data := *models
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		syslog_job.UploadLoginSuccess(json_helper.Encode(data[i:end]))
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeSyslogPutLoginSuccess,
+			Data: json_helper.Encode(data[i:end]),
+		}
+		crd.queryClient.ProduceSyslog(cxt, msg)
+	}*/
+
+	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// 发送登录志
+func (crd *SyslogPost) sendLoginFail(model *syslog_models.LoginModel) {
+	//fmt.Println("sendLoginFail ============================")
+	//fmt.Println(json_helper.Encode(model))
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeSyslogPutLogin,
-		Data: json_helper.Encode(&model),
+		Type: kafka_go.TypeSyslogPutLoginFail,
+		Data: json_helper.Encode(model),
 	}
 
 	crd.queryClient.ProduceSyslog(context.Background(), msg)

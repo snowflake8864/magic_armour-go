@@ -36,11 +36,12 @@ const (
 	TypeAlarmPutSelf      string = "alarm_put_self"      //类型：自保告警上传
 	TypeAlarmPutPort      string = "alarm_put_port"      //类型：端口虚开告警上传
 
-	TypeSyslogPutDns     string = "syslog_put_dns"     //类型：通讯日志-DNS上传
-	TypeSyslogPutInner   string = "syslog_put_inner"   //类型：通讯日志-内联上传
-	TypeSyslogPutOuter   string = "syslog_put_outer"   //类型：通讯日志-外联上传
-	TypeSyslogPutProcess string = "syslog_put_process" //类型：通讯日志-进程启动上传
-	TypeSyslogPutLogin   string = "syslog_put_login"   //类型：通讯日志-登录日志上传
+	TypeSyslogPutDns          string = "syslog_put_dns"           //类型：通讯日志-DNS上传
+	TypeSyslogPutInner        string = "syslog_put_inner"         //类型：通讯日志-内联上传
+	TypeSyslogPutOuter        string = "syslog_put_outer"         //类型：通讯日志-外联上传
+	TypeSyslogPutProcess      string = "syslog_put_process"       //类型：通讯日志-进程启动上传
+	TypeSyslogPutLoginSuccess string = "syslog_put_login_success" //类型：通讯日志-登录日志上传(成功)
+	TypeSyslogPutLoginFail    string = "syslog_put_login_fail"    //类型：通讯日志-登录日志上传(失败)
 
 	TypeThreatenSyncRewrite string = "threaten_sync_rewrite" //类型：威胁情报同步后重写
 
