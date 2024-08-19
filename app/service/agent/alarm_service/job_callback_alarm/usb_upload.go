@@ -24,7 +24,7 @@ type AlarmUsbUpload struct {
 }
 
 // BatchAdd 新增
-// @TODO 只保存告警和推送到幻势，不在对外设表做相关处理(原bug7675); linux版本2.0.2.20，在插拔时重新上传外接设备列表
+// @TODO 只保存告警和推送到幻势，不在对外设表做相关处理(原bug7675); linux 2.0.2.20版本在插拔时重新上传外接设备列表
 func (crd *AlarmUsbUpload) BatchAdd(list *[]alarm_models.UsbModel) error {
 	if len(*list) == 0 {
 		return nil
