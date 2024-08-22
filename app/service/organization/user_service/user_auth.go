@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/department_service"
@@ -183,6 +184,12 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 	err, userModel := crd.HasUser(username)
 	if err != nil {
 		return nil, -1, err
+	}
+	if userModel.Status == enum_user.StatusLocking {
+		return nil, -99, errors.New("用户已锁定，请联系管理员")
+	}
+	if userModel.Status == enum_user.StatusVerifying {
+		return nil, -99, errors.New("用户审核中，请联系管理员")
 	}
 
 	//短信验证
