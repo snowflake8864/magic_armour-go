@@ -186,8 +186,8 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 	}
 
 	//短信验证
-	if err, smsSwitch := crd.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
-		return nil, -99, err
+	if err1, smsSwitch := crd.IsPhoneCheck(userModel.Phone, userModel.OrgId); err1 != nil {
+		return nil, -99, err1
 	} else if smsSwitch {
 		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
