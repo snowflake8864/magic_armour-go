@@ -135,12 +135,14 @@ func (crd *UserAuth) setLocking(username string, second int) (isOk bool) {
 
 // HasUser 存在用户
 func (crd *UserAuth) HasUser(username string) (err error, model *user_models.UserModel) {
-	model = CreateCurdFactory().GetItemByName(username)
-	if model == nil || model.Id == 0 {
-		return errors.New("用户名或密码错误"), nil
-	} else {
+	if model = CreateCurdFactory().GetItemByName(username); model != nil && model.Id > 0 {
 		return nil, model
+	} else if model = CreateCurdFactory().GetItemByPhone(username); model != nil && model.Id > 0 {
+		return nil, model
+	} else {
+		return errors.New("用户名或密码错误"), nil
 	}
+
 }
 
 // IsPhoneCheck 是否需要手机校验
