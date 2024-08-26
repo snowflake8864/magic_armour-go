@@ -85,8 +85,8 @@ func (crd *UserAuth) GenerateBySlider(username string) (code string) {
 	return
 }
 
-// checkBySlider  验证滑块码
-func (crd *UserAuth) checkBySlider(username, code string) bool {
+// CheckBySlider  验证滑块码
+func (crd *UserAuth) CheckBySlider(username, code string) bool {
 	cacheCode := crd.redisClient.Get(crd.keyBySlider(username))
 	if cacheCode == code {
 		return true
@@ -173,7 +173,7 @@ func (crd *UserAuth) EncryptPw(pw string) string {
 
 // LoginByPw 密码登录
 func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
-	if !crd.checkBySlider(username, slider) {
+	if !crd.CheckBySlider(username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
 	if err = crd.IsLocking(username); err != nil {

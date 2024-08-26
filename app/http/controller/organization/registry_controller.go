@@ -86,7 +86,18 @@ func (u *RegistryController) GetSliderCode(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessSimplify(ctx)
+	if model := user_service.CreateCurdFactory().GetItemByName(userName); model != nil && model.Id > 0 {
+		response.FailSimplify(ctx, "用户名已存在")
+		return
+	}
+
+	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model != nil && model.Id > 0 {
+		response.FailSimplify(ctx, "手机号码已存在")
+		return
+	}
+
+	code := user_service.CreateAuthFactory().GenerateBySlider(userName + "_" + userPhone)
+	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
 // SendSms 发送短信
@@ -98,6 +109,15 @@ func (u *RegistryController) SendSms(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+
+	authFact := user_service.CreateAuthFactory()
+	if !authFact.CheckBySlider(userName+"_"+userPhone, sliderCode) {
+		response.FailRoutine(ctx, -88, "滑块不正确")
+		return
+	}
+
+	authFact.GenerateBySms(userPhone)
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -115,6 +135,11 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 		string_helper.IsEmpty(userEmail) || string_helper.IsEmpty(userPw) ||
 		string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
 		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+
+	if !user_service.CreateAuthFactory().CheckBySlider(userName+"_"+userPhone, sliderCode) {
+		response.FailRoutine(ctx, -88, "滑块不正确")
 		return
 	}
 	response.SuccessSimplify(ctx)
