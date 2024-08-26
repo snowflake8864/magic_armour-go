@@ -17,4 +17,8 @@ func TestGomail(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 
+	if err := fact.SendHtmlMsg("sub@veda.com", "幻甲终端动态防御系统-安全告警通知", body); err != nil {
+		fmt.Println(err.Error())
+	}
+
 }
