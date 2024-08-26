@@ -67,6 +67,7 @@ func (m *UserModel) CreateTable() bool {
 			updated_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 			PRIMARY KEY (id),
 			UNIQUE KEY username (username),
+			UNIQUE KEY phone (phone),
 			KEY org_id (org_id),
 			KEY email (email),
 			KEY last_login_at (last_login_at),
@@ -137,6 +138,16 @@ func (m *UserModel) GetItemByOrgAndUser(orgId, userId int64) (item *UserModel, e
 // GetItemByName 通过名称获取一条记录
 func (m *UserModel) GetItemByName(name string) (item *UserModel, err error) {
 	result := m.Model(m).Select(m.Columns()).Where("username=?", name).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
+// GetItemByPhone 通过手机获取一条记录
+func (m *UserModel) GetItemByPhone(phone string) (item *UserModel, err error) {
+	result := m.Model(m).Select(m.Columns()).Where("phone=?", phone).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {

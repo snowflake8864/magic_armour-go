@@ -6,6 +6,8 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -35,6 +37,11 @@ func (u *RegistryController) CheckOrgName(ctx *gin.Context) {
 		return
 	}
 
+	if model := organize_service.CreateOrgCurdFactory().GetItemByName(orgName); model != nil && model.Id > 0 {
+		response.FailSimplify(ctx, "企业名称已存在")
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -46,6 +53,11 @@ func (u *RegistryController) CheckUserName(ctx *gin.Context) {
 		return
 	}
 
+	if model := user_service.CreateCurdFactory().GetItemByName(userName); model != nil && model.Id > 0 {
+		response.FailSimplify(ctx, "用户名已存在")
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -54,6 +66,11 @@ func (u *RegistryController) CheckUserPhone(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	if string_helper.IsEmpty(userPhone) {
 		response.FailSimplify(ctx, "参数不正确")
+		return
+	}
+
+	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model != nil && model.Id > 0 {
+		response.FailSimplify(ctx, "手机号码已存在")
 		return
 	}
 

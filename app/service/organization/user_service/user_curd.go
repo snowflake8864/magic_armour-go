@@ -211,6 +211,12 @@ func (crd *UserCurd) GetItemByName(name string) (model *user_models.UserModel) {
 	return model
 }
 
+// GetItemByPhone 通过手机获取
+func (crd *UserCurd) GetItemByPhone(phone string) (model *user_models.UserModel) {
+	model, _ = crd.masterModel.GetItemByPhone(phone)
+	return model
+}
+
 // HasByUsernameAndPw 用户名和密码一致
 func (crd *UserCurd) HasByUsernameAndPw(name, pw string) bool {
 	if userModel := crd.masterModel.GetItemByNameAndPw(name, pw); userModel.Id > 0 {
