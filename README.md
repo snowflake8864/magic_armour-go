@@ -18,18 +18,18 @@
       go env -w CGO_ENABLED=0
       // 编译出最终可执行文件，进入根目录（GinSkeleton所在目录，也就是 go.mod 所在的目录）
       
-      go build -o app_agent.linux64  -ldflags "-w -s"  -trimpath  ./cmd/agent/main.go
-      go build -o app_api.linux64  -ldflags "-w -s"  -trimpath  ./cmd/api/main.go
-      go build -o app_cli.linux64  -ldflags "-w -s"  -trimpath  ./cmd/cli/main.go
-      go build -o app_org.linux64  -ldflags "-w -s"  -trimpath  ./cmd/organization/main.go
+      go build -o app_agent.linux64     -ldflags "-w -s"  -trimpath  ./cmd/agent/main.go
+      go build -o app_api.linux64       -ldflags "-w -s"  -trimpath  ./cmd/api/main.go
+      go build -o app_cli.linux64       -ldflags "-w -s"  -trimpath  ./cmd/cli/main.go
+      go build -o app_org.linux64       -ldflags "-w -s"  -trimpath  ./cmd/organization/main.go
       go build -o app_platform.linux64  -ldflags "-w -s"  -trimpath  ./cmd/platform/main.go
 
 
 ### 命令行入口
 
       ./app_cli.linux64 migrate -A (init|dictionary|menu|append)
-      ./app_cli.exe queue  -A (init|consume) -T (common|process|dll|threaten|alarm|syslog|crontab)
-      ./app_cli.exe crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
+      ./app_cli.linux64 queue  -A (init|consume) -T (common|process|dll|threaten|alarm|syslog|crontab)
+      ./app_cli.linux64 crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
 
 
 ### 守护进程，注意<kbd>supervisord.conf</kbd>路径
