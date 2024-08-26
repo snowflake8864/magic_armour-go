@@ -3,6 +3,9 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -19,8 +22,9 @@ func (u *RegistryController) decrypt(data string) (result string) {
 
 // Types 企业类型
 func (u *RegistryController) Types(ctx *gin.Context) {
-
-	response.SuccessSimplify(ctx)
+	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_organization.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_organization.EnumMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
 // CheckOrgName 验证企业名称
