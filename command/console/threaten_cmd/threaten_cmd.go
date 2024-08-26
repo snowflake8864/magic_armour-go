@@ -312,7 +312,7 @@ func (crd *ThreatenCmd) DeleteForCache() {
 func (crd *ThreatenCmd) RepairProcForCache() {
 	variable.ZapLog.Sugar().Debug("RepairProcForCache start")
 	//66f00330d9014b59cd3d100a886ddd2d
-	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-3))
+	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-1))
 	variable.ZapLog.Sugar().Debug("RepairProcForCache floorAt: ", floorAt)
 
 	cacheFact := threaten_models.CreateCacheFactory()

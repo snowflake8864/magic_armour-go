@@ -130,26 +130,25 @@ func handleDay(mode, interval, at string) {
 			org_cmd.CreateCmdFactory().YesterdayStatistics()
 			break
 		case AtFour:
-			variable.ZapLog.Sugar().Debug("告警通知 - 暂时不做")
-			//告警通知 - 暂时不做
-			alarm_cmd.CreateCmdFactory().EmailNotice()
-			break
-		case AtFive:
 			variable.ZapLog.Sugar().Debug("统计告警昨天数据")
 			//统计告警昨天数据
 			alarm_cmd.CreateCmdFactory().YesterdayStatistics()
 			break
-		case AtSix:
+		case AtFive:
 			variable.ZapLog.Sugar().Debug("删除威胁情报缓存")
 			//删除威胁情报缓存
 			threaten_cmd.CreateCmdFactory().DeleteForCache()
 			break
-		case AtSeven:
+		case AtSix:
 			variable.ZapLog.Sugar().Debug("威胁情报缓存同步未知状态数据到威胁情报中心")
 			//威胁情报缓存同步未知状态数据到威胁情报中心
 			threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 			break
-
+		case AtSeven:
+			variable.ZapLog.Sugar().Debug("告警通知 - 暂时不做")
+			//告警通知 - 暂时不做
+			alarm_cmd.CreateCmdFactory().EmailNotice()
+			break
 		}
 	} else if mode == ModeEvery {
 		switch at {
@@ -157,6 +156,8 @@ func handleDay(mode, interval, at string) {
 			variable.ZapLog.Sugar().Debug("从进程或模块添加到威胁情报缓存")
 			//从进程或模块添加到威胁情报缓存
 			threaten_cmd.CreateCmdFactory().AddFromProcForCache()
+			break
+		case AtOne:
 			break
 		}
 	}
