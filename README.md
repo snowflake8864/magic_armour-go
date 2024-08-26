@@ -52,7 +52,7 @@
 ### 定时任务
       
       ## 清理磁盘日志
-      20 1 * * * /home/veda/clear_disk.sh >> /var/log/armour_disk_clear.log 2>&1
+      10 1 * * * /home/veda/clear_disk.sh >> /var/log/armour_disk_clear.log 2>&1
 
       ## 每隔[1分钟], 已按顺序使用
       # 威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
