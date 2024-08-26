@@ -299,6 +299,10 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 	if userExist == nil || userExist.Id == 0 {
 		return errors.New("用户不存在")
 	}
+	if userModel := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 && userModel.Id != userExist.Id {
+		return errors.New("手机号码已存在")
+	}
+
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {

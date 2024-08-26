@@ -30,17 +30,20 @@ type OrgCurd struct {
 // Add 新增企业
 func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
 	//用户已存在
-	userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username)
-	if userExist.Id > 0 {
+	if userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
 		return -1, errors.New("用户名已存在")
 	}
+	if userExist := user_service.CreateCurdFactory().GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 {
+		return -1, errors.New("手机号码已存在")
+	}
+
 	//企业已存在
 	if orgParam.Type == enum_organization.TypePerson {
 		orgParam.Name = ""
 	} else {
 		orgExist := crd.GetItemByName(orgParam.Name)
 		if orgExist.Id > 0 {
-			return -1, errors.New("企业已存在")
+			return -1, errors.New("企业名称已存在")
 		}
 	}
 
