@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/agent/task_service"
@@ -29,6 +30,24 @@ type OrgCurd struct {
 
 // Add 新增企业
 func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
+	if orgParam.Type == enum_organization.TypeOrg {
+		if err = common_regexp.CheckOrgName(orgParam.Name); err != nil {
+			return -1, err
+		}
+	}
+	if err = common_regexp.CheckUserName(userParam.Username); err != nil {
+		return -1, err
+	}
+	if err = common_regexp.CheckPhone(userParam.Phone); err != nil {
+		return -1, err
+	}
+	if err = common_regexp.CheckEmail(userParam.Email); err != nil {
+		return -1, err
+	}
+	if err = common_regexp.CheckPw(userParam.Password); err != nil {
+		return -1, err
+	}
+
 	//用户已存在
 	if userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
 		return -1, errors.New("用户名已存在")

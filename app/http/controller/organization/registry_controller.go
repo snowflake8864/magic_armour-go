@@ -6,6 +6,8 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
+	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -130,6 +132,7 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 	userPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPw"))
 	smsCode := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "smsCode"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
+	orgType := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "orgType"))
 
 	if string_helper.IsEmpty(orgName) || string_helper.IsEmpty(userName) || string_helper.IsEmpty(userPhone) ||
 		string_helper.IsEmpty(userEmail) || string_helper.IsEmpty(userPw) ||
@@ -138,8 +141,32 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 		return
 	}
 
-	if !user_service.CreateAuthFactory().CheckBySlider(userName+"_"+userPhone, sliderCode) {
-		response.FailRoutine(ctx, -88, "滑块不正确")
+	if !user_service.CreateAuthFactory().CheckBySms(userPhone, smsCode) {
+		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		return
+	} else {
+		user_service.CreateAuthFactory().DeleteBySms(userPhone)
+	}
+
+	//企业信息
+	orgParam := organization_models.OrganizationModel{}
+	orgParam.Name = orgName
+	orgParam.UserName = userName
+	orgParam.UserPhone = userPhone
+	orgParam.UserEmail = userEmail
+	orgParam.Type = orgType
+	orgParam.Source = enums.OperateSourceOrganize
+
+	//用户信息
+	userParam := user_models.UserModel{}
+	userParam.Username = orgParam.UserName
+	userParam.Phone = orgParam.UserPhone
+	userParam.Email = orgParam.UserEmail
+	userParam.Password = userPw
+	userParam.IsRoot = enums.IsYes
+	errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, ctx.ClientIP())
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)

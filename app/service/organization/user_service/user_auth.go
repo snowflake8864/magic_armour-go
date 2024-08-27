@@ -103,8 +103,8 @@ func (crd *UserAuth) GenerateBySms(phone string) (code string) {
 	return code
 }
 
-// checkBySms  验证短信码
-func (crd *UserAuth) checkBySms(phone, code string) bool {
+// CheckBySms  验证短信码
+func (crd *UserAuth) CheckBySms(phone, code string) bool {
 	cacheCode := crd.redisClient.Get(crd.keyBySms(phone))
 	if cacheCode == code {
 		return true
@@ -112,8 +112,8 @@ func (crd *UserAuth) checkBySms(phone, code string) bool {
 	return false
 }
 
-// deleteBySms  删除短信码
-func (crd *UserAuth) deleteBySms(phone string) {
+// DeleteBySms  删除短信码
+func (crd *UserAuth) DeleteBySms(phone string) {
 	crd.redisClient.Del(crd.keyBySms(phone))
 }
 
@@ -201,10 +201,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
-		if !crd.checkBySms(userModel.Phone, sms) {
+		if !crd.CheckBySms(userModel.Phone, sms) {
 			return nil, -99, errors.New("短信验证码不一致")
 		}
-		crd.deleteBySms(userModel.Phone)
+		crd.DeleteBySms(userModel.Phone)
 	}
 
 	//企业验证
