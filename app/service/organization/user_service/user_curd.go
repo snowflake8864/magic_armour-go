@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/org_log_service"
@@ -34,10 +35,24 @@ func (crd *UserCurd) getOrg(OrgId int64) *organization_models.OrganizationModel 
 
 // AddForSub 添加子用户
 func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) error {
+	if err := common_regexp.CheckUserName(userParam.Username); err != nil {
+		return err
+	}
+	if err := common_regexp.CheckPhone(userParam.Phone); err != nil {
+		return err
+	}
+	if err := common_regexp.CheckEmail(userParam.Email); err != nil {
+		return err
+	}
+	if err := common_regexp.CheckPw(userParam.Password); err != nil {
+		return err
+	}
 	//用户已存在
-	userExist := crd.GetItemByName(userParam.Username)
-	if userExist.Id > 0 {
+	if userExist := crd.GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
 		return errors.New("用户名已存在")
+	}
+	if userExist := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 {
+		return errors.New("手机号码已存在")
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
