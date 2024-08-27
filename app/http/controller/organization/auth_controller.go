@@ -79,7 +79,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		response.FailRoutine(ctx, -98, "没有开启双因子验证")
 		return
 	}
-	authFact.GenerateBySms(userModel.Phone)
+	authFact.GenerateBySms(user_service.ActonLogin, userModel.Phone)
 
 	response.SuccessSimplify(ctx)
 }
@@ -97,7 +97,7 @@ func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 		return
 	}
 
-	code := authFact.GenerateBySlider(name)
+	code := authFact.GenerateBySlider(user_service.ActonLogin, name)
 	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 

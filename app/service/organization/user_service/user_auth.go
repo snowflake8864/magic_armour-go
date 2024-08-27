@@ -24,6 +24,12 @@ import (
 	"strings"
 )
 
+const (
+	ActonLogin  = "1"
+	ActonReg    = "2"
+	ActonFindPw = "3"
+)
+
 func CreateAuthFactory() *UserAuth {
 	return &UserAuth{
 		redisClient:   redis_factory.GetOneRedisClient(),
@@ -68,26 +74,26 @@ func (crd *UserAuth) keyByLocking(val string) string {
 	return crd.lockingPrefix + val
 }
 
-func (crd *UserAuth) keyBySlider(val string) string {
-	return crd.sliderPrefix + val
+func (crd *UserAuth) keyBySlider(action, val string) string {
+	return crd.sliderPrefix + action + "_" + val
 }
 
-func (crd *UserAuth) keyBySms(val string) string {
-	return crd.smsPrefix + val
+func (crd *UserAuth) keyBySms(action, val string) string {
+	return crd.smsPrefix + action + "_" + val
 }
 
 // GenerateBySlider  生成滑块码
-func (crd *UserAuth) GenerateBySlider(username string) (code string) {
+func (crd *UserAuth) GenerateBySlider(action, username string) (code string) {
 	code = uuid.New().String()
 	code = strings.Replace(code, "-", "", -1)
-	crd.redisClient.SetEx(crd.keyBySlider(username), code, crd.sliderExpire)
+	crd.redisClient.SetEx(crd.keyBySlider(action, username), code, crd.sliderExpire)
 
 	return
 }
 
 // CheckBySlider  验证滑块码
-func (crd *UserAuth) CheckBySlider(username, code string) bool {
-	cacheCode := crd.redisClient.Get(crd.keyBySlider(username))
+func (crd *UserAuth) CheckBySlider(action, username, code string) bool {
+	cacheCode := crd.redisClient.Get(crd.keyBySlider(action, username))
 	if cacheCode == code {
 		return true
 	}
@@ -95,17 +101,17 @@ func (crd *UserAuth) CheckBySlider(username, code string) bool {
 }
 
 // GenerateBySms  生成短信码
-func (crd *UserAuth) GenerateBySms(phone string) (code string) {
+func (crd *UserAuth) GenerateBySms(action, phone string) (code string) {
 	code = int_helper.IntRandom2Str(100000, 999999)
-	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
+	crd.redisClient.SetEx(crd.keyBySms(action, phone), code, crd.sliderExpire)
 
 	go ali_sms.SendAuthCode(phone, code)
 	return code
 }
 
 // CheckBySms  验证短信码
-func (crd *UserAuth) CheckBySms(phone, code string) bool {
-	cacheCode := crd.redisClient.Get(crd.keyBySms(phone))
+func (crd *UserAuth) CheckBySms(action, phone, code string) bool {
+	cacheCode := crd.redisClient.Get(crd.keyBySms(action, phone))
 	if cacheCode == code {
 		return true
 	}
@@ -113,8 +119,8 @@ func (crd *UserAuth) CheckBySms(phone, code string) bool {
 }
 
 // DeleteBySms  删除短信码
-func (crd *UserAuth) DeleteBySms(phone string) {
-	crd.redisClient.Del(crd.keyBySms(phone))
+func (crd *UserAuth) DeleteBySms(action, phone string) {
+	crd.redisClient.Del(crd.keyBySms(action, phone))
 }
 
 // IsLocking  是否锁定中
@@ -175,7 +181,7 @@ func (crd *UserAuth) EncryptPw(pw string) string {
 
 // LoginByPw 密码登录
 func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
-	if !crd.CheckBySlider(username, slider) {
+	if !crd.CheckBySlider(ActonLogin, username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
 	if err = crd.IsLocking(username); err != nil {
@@ -201,10 +207,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		if string_helper.IsEmpty(sms) {
 			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
 		}
-		if !crd.CheckBySms(userModel.Phone, sms) {
+		if !crd.CheckBySms(ActonLogin, userModel.Phone, sms) {
 			return nil, -99, errors.New("短信验证码不一致")
 		}
-		crd.DeleteBySms(userModel.Phone)
+		crd.DeleteBySms(ActonLogin, userModel.Phone)
 	}
 
 	//企业验证

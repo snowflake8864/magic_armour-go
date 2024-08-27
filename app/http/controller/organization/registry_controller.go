@@ -98,7 +98,7 @@ func (u *RegistryController) GetSliderCode(ctx *gin.Context) {
 		return
 	}
 
-	code := user_service.CreateAuthFactory().GenerateBySlider(userName + "_" + userPhone)
+	code := user_service.CreateAuthFactory().GenerateBySlider(user_service.ActonReg, userName)
 	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
@@ -113,12 +113,12 @@ func (u *RegistryController) SendSms(ctx *gin.Context) {
 	}
 
 	authFact := user_service.CreateAuthFactory()
-	if !authFact.CheckBySlider(userName+"_"+userPhone, sliderCode) {
+	if !authFact.CheckBySlider(user_service.ActonReg, userName, sliderCode) {
 		response.FailRoutine(ctx, -88, "滑块不正确")
 		return
 	}
 
-	authFact.GenerateBySms(userPhone)
+	authFact.GenerateBySms(user_service.ActonReg, userPhone)
 
 	response.SuccessSimplify(ctx)
 }
@@ -141,11 +141,11 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 		return
 	}
 
-	if !user_service.CreateAuthFactory().CheckBySms(userPhone, smsCode) {
+	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
 		response.FailRoutine(ctx, -99, "短信验证码不一致")
 		return
 	} else {
-		user_service.CreateAuthFactory().DeleteBySms(userPhone)
+		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonReg, userPhone)
 	}
 
 	//企业信息
