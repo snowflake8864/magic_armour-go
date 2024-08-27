@@ -839,7 +839,7 @@ cloud.google.com/go/recaptchaenterprise/v2 v2.7.0/go.mod h1:19wVj/fs5RtYtynAPJdD
 cloud.google.com/go/recaptchaenterprise/v2 v2.7.2/go.mod h1:kR0KjsJS7Jt1YSyWFkseQ756D45kaYNTlDPPaRAvDBU=
 cloud.google.com/go/recaptchaenterprise/v2 v2.8.0/go.mod h1:QuE8EdU9dEnesG8/kG3XuJyNsjEqMlMzg3v3scCJ46c=
 cloud.google.com/go/recaptchaenterprise/v2 v2.8.1/go.mod h1:JZYZJOeZjgSSTGP4uz7NlQ4/d1w5hGmksVgM0lbEij0=
-cloud.google.com/go/recaptchaenterprise/v2 v2.8.2/go.mod h1:kpaDBOpkwD4G0GVMzG1W6Doy1tFFC97XAV3xy+Rd/str=
+cloud.google.com/go/recaptchaenterprise/v2 v2.8.2/go.mod h1:kpaDBOpkwD4G0GVMzG1W6Doy1tFFC97XAV3xy+Rd/pw=
 cloud.google.com/go/recaptchaenterprise/v2 v2.8.3/go.mod h1:Dak54rw6lC2gBY8FBznpOCAR58wKf+R+ZSJRoeJok4w=
 cloud.google.com/go/recommendationengine v0.5.0/go.mod h1:E5756pJcVFeVgaQv3WNpImkFP8a+RptV6dDLGPILjvg=
 cloud.google.com/go/recommendationengine v0.6.0/go.mod h1:08mq2umu9oIqc7tDy8sx+MNJdLG0fUi3vaSVbztHgJ4=
