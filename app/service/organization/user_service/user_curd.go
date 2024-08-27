@@ -95,14 +95,24 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 
 // UpdateForSub 修改子用户
 func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string) error {
-	//用户已存在
-	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
-	if userExist == nil || userExist.Id == 0 {
+	if err := common_regexp.CheckPhone(userParam.Phone); err != nil {
+		return err
+	}
+	if err := common_regexp.CheckEmail(userParam.Email); err != nil {
+		return err
+	}
+
+	//验证用户
+	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
 		return errors.New("用户不存在")
-	}
-	if userExist.IsRoot == enums.IsYes {
+	} else if userExist.IsRoot == enums.IsYes {
 		return errors.New("管理员用户不能修改")
+	} else if userExist.Phone != userParam.Phone {
+		if userPhone := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 && userPhone.Id != userParam.Id {
+			return errors.New("手机号码已存在")
+		}
 	}
+
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
@@ -136,12 +146,13 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 
 // ModifyPwForSub 子用户修改密码
 func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp string) error {
-	//用户已存在
-	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
-	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+	if err := common_regexp.CheckPw(userParam.Password); err != nil {
+		return err
 	}
-	if userExist.IsRoot == enums.IsYes {
+	//验证用户
+	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	} else if userExist.IsRoot == enums.IsYes {
 		return errors.New("管理员用户不能修改")
 	}
 	//
@@ -172,12 +183,10 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 
 // DeleteForSub 删除子用户
 func (crd *UserCurd) DeleteForSub(userParam *user_models.UserModel, netIp string) error {
-	//用户已存在
-	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
-	if userExist == nil || userExist.Id == 0 {
+	//验证用户
+	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
 		return errors.New("用户不存在")
-	}
-	if userExist.IsRoot == enums.IsYes {
+	} else if userExist.IsRoot == enums.IsYes {
 		return errors.New("管理员用户不能删除")
 	}
 	//
@@ -267,6 +276,9 @@ func (crd *UserCurd) loginSuccess(id int64) bool {
 
 // ModifyPwById 修改密码
 func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string, netIp string) error {
+	if err := common_regexp.CheckPw(newPw); err != nil {
+		return err
+	}
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
@@ -309,6 +321,9 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 
 // ModifyPhoneById 修改手机
 func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp string) error {
+	if err := common_regexp.CheckPhone(userParam.Phone); err != nil {
+		return err
+	}
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
@@ -355,6 +370,9 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 
 // ModifyEmailById 修改邮箱
 func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp string) error {
+	if err := common_regexp.CheckEmail(userParam.Email); err != nil {
+		return err
+	}
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
