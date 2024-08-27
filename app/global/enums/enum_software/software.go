@@ -9,15 +9,19 @@ const (
 	PlatformTypeLinux   = 1 //平台类型: linux
 	PlatformTypeWindows = 2 //平台类型: windows
 
-	OsTypeLinuxUbuntu      = 101 //系统类型: linux Ubuntu
-	OsTypeLinuxCentos      = 102 //系统类型: linux Centos
-	OsTypeLinuxNeokylin    = 103 //系统类型: linux 麒麟
-	OsTypeLinuxUos         = 104 //系统类型: linux 通信
-	OsTypeLinuxRedhat      = 105 //系统类型: linux 红帽
-	OsTypeLinuxDebian      = 106 //系统类型: linux Debian
-	OsTypeLinuxRocky       = 107 //系统类型: linux Rocky
-	OsTypeLinuxAnolis      = 108 //系统类型: linux 阿里龙蜥
-	OsTypeLinuxOpencloudos = 109 //系统类型: linux 腾讯
+	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
+	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
+	OsTypeLinuxNeokylin     = 103 //系统类型: linux 麒麟
+	OsTypeLinuxUos          = 104 //系统类型: linux 通信
+	OsTypeLinuxRedhat       = 105 //系统类型: linux 红帽
+	OsTypeLinuxDebian       = 106 //系统类型: linux Debian
+	OsTypeLinuxRocky        = 107 //系统类型: linux Rocky
+	OsTypeLinuxAnolis       = 108 //系统类型: linux 阿里龙蜥
+	OsTypeLinuxOpenCloudOs  = 109 //系统类型: linux 腾讯云
+	OsTypeLinuxAlibabaCloud = 110 //系统类型: linux 阿里云
+	OsTypeLinuxAlmaLinux    = 111 //系统类型: linux AlmaLinux
+	OsTypeLinuxCentosStream = 112 //系统类型: linux Centos Stream
+	OsTypeLinuxFedora       = 113 //系统类型: linux Fedora
 
 	OsTypeWinSeven = 201 //系统类型: win7以上
 	OsTypeWinXp    = 202 //系统类型: win xp 和 win 1003
@@ -34,30 +38,38 @@ var EnumMap = map[string]map[int]string{
 		PlatformTypeLinux:   "LINUX",
 	},
 	"os_type": {
-		OsTypeWinSeven:         "Windows",
-		OsTypeWinXp:            "Windows早期",
-		OsTypeLinuxUbuntu:      "Ubuntu",
-		OsTypeLinuxCentos:      "CentOS",
-		OsTypeLinuxNeokylin:    "Neokylin",
-		OsTypeLinuxUos:         "Uos",
-		OsTypeLinuxRedhat:      "RedHat",
-		OsTypeLinuxDebian:      "Debian",
-		OsTypeLinuxRocky:       "Rocky",
-		OsTypeLinuxAnolis:      "Anolis",
-		OsTypeLinuxOpencloudos: "OpenCloudOs",
+		OsTypeWinSeven:          "Windows",
+		OsTypeWinXp:             "Windows早期",
+		OsTypeLinuxUbuntu:       "Ubuntu",
+		OsTypeLinuxCentos:       "CentOS",
+		OsTypeLinuxNeokylin:     "Neokylin",
+		OsTypeLinuxUos:          "Uos",
+		OsTypeLinuxRedhat:       "RedHat",
+		OsTypeLinuxDebian:       "Debian",
+		OsTypeLinuxRocky:        "Rocky",
+		OsTypeLinuxAnolis:       "Anolis",
+		OsTypeLinuxOpenCloudOs:  "OpenCloudOs",
+		OsTypeLinuxAlibabaCloud: "AlibabaCloud",
+		OsTypeLinuxAlmaLinux:    "AlmaLinux",
+		OsTypeLinuxCentosStream: "CentosStream",
+		OsTypeLinuxFedora:       "Fedora",
 	},
 	"os_type_alias": {
-		OsTypeWinSeven:         "windows7-至今",
-		OsTypeWinXp:            "windows xp-windows 2003",
-		OsTypeLinuxUbuntu:      "Ubuntu64位",
-		OsTypeLinuxCentos:      "CentOS64位",
-		OsTypeLinuxNeokylin:    "Neokylin64位",
-		OsTypeLinuxUos:         "Uos64位",
-		OsTypeLinuxRedhat:      "RedHat64位",
-		OsTypeLinuxDebian:      "Debian64位",
-		OsTypeLinuxRocky:       "Rocky64位",
-		OsTypeLinuxAnolis:      "Anolis64位",
-		OsTypeLinuxOpencloudos: "OpenCloudOs64位",
+		OsTypeWinSeven:          "windows7-至今",
+		OsTypeWinXp:             "windows xp-windows 2003",
+		OsTypeLinuxUbuntu:       "Ubuntu64位",
+		OsTypeLinuxCentos:       "CentOS64位",
+		OsTypeLinuxNeokylin:     "Neokylin64位",
+		OsTypeLinuxUos:          "Uos64位",
+		OsTypeLinuxRedhat:       "RedHat64位",
+		OsTypeLinuxDebian:       "Debian64位",
+		OsTypeLinuxRocky:        "Rocky64位",
+		OsTypeLinuxAnolis:       "Anolis64位",
+		OsTypeLinuxOpenCloudOs:  "OpenCloudOs64位",
+		OsTypeLinuxAlibabaCloud: "AlibabaCloud64位",
+		OsTypeLinuxAlmaLinux:    "AlmaLinux64位",
+		OsTypeLinuxCentosStream: "CentosStream64位",
+		OsTypeLinuxFedora:       "Fedora64位",
 	},
 	"os_ver": {
 		//Ubuntu
@@ -76,8 +88,16 @@ var EnumMap = map[string]map[int]string{
 		1070: "64位(8.4 - 9.1)",
 		//ANOLIS
 		1080: "64位(7.7 - 8.8)",
-		//OPENCLOUDOS
+		//OpenCloudos
 		1090: "64位(8.6-9.0)",
+		//AlibabaCloud
+		1100: "64位",
+		//AlmaLinux
+		1110: "64位",
+		//CentosStream
+		1120: "64位(8-9)",
+		//Fedora
+		1130: "64位",
 
 		//windows
 		2010: "windows7-至今",
@@ -100,7 +120,11 @@ var EnumSlice = map[string]map[int][]int{
 			OsTypeLinuxDebian,
 			OsTypeLinuxRocky,
 			OsTypeLinuxAnolis,
-			OsTypeLinuxOpencloudos,
+			OsTypeLinuxOpenCloudOs,
+			OsTypeLinuxAlibabaCloud,
+			OsTypeLinuxAlmaLinux,
+			OsTypeLinuxCentosStream,
+			OsTypeLinuxFedora,
 		},
 	},
 	"map_os_ver": {
@@ -134,8 +158,20 @@ var EnumSlice = map[string]map[int][]int{
 		OsTypeLinuxAnolis: {
 			1080,
 		},
-		OsTypeLinuxOpencloudos: {
+		OsTypeLinuxOpenCloudOs: {
 			1090,
+		},
+		OsTypeLinuxAlibabaCloud: {
+			1100,
+		},
+		OsTypeLinuxAlmaLinux: {
+			1110,
+		},
+		OsTypeLinuxCentosStream: {
+			1120,
+		},
+		OsTypeLinuxFedora: {
+			1130,
 		},
 	},
 }
@@ -159,6 +195,11 @@ func GetOsTypeByName(name string) int {
 	} else if strings.Contains(name, "ubuntu") {
 		return OsTypeLinuxUbuntu
 	} else if strings.Contains(name, "centos") {
+		if strings.Contains(name, "stream") {
+			return OsTypeLinuxCentosStream
+		} else {
+			return OsTypeLinuxCentos
+		}
 		return OsTypeLinuxCentos
 	} else if strings.Contains(name, "neokylin") || strings.Contains(name, "麒麟") {
 		return OsTypeLinuxNeokylin
@@ -173,7 +214,13 @@ func GetOsTypeByName(name string) int {
 	} else if strings.Contains(name, "anolis") {
 		return OsTypeLinuxAnolis
 	} else if strings.Contains(name, "opencloudos") {
-		return OsTypeLinuxOpencloudos
+		return OsTypeLinuxOpenCloudOs
+	} else if strings.Contains(name, "alibaba cloud") || strings.Contains(name, "aliyun") {
+		return OsTypeLinuxRedhat
+	} else if strings.Contains(name, "almalinux") || strings.Contains(name, "alma") {
+		return OsTypeLinuxAlmaLinux
+	} else if strings.Contains(name, "fedora") {
+		return OsTypeLinuxFedora
 	} else {
 		return 0
 	}
