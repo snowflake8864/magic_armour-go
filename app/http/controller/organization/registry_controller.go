@@ -145,7 +145,7 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 		response.FailRoutine(ctx, -99, "短信验证码不一致")
 		return
 	} else {
-		//user_service.CreateAuthFactory().DeleteBySms(userPhone)
+		user_service.CreateAuthFactory().DeleteBySms(userPhone)
 	}
 
 	//企业信息
