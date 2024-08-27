@@ -110,12 +110,21 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()
-	orgLogParam := logFact.InitByOrg(orgParam, enum_organization.LogActionPlatformAdd, netIp)
+	logModule := enum_organization.LogActionPlatformAdd
+	if orgParam.Source == enums.OperateSourceOrganize {
+		logModule = enum_organization.LogActionOrgRegister
+	}
+	orgLogParam := logFact.InitByOrg(orgParam, logModule, netIp)
 	orgLogParam.CreatedAt = orgParam.CreatedAt
-	orgLogParam.OperateSource = orgParam.Source
-	orgLogParam.OperateId = orgParam.CreateId
-	orgLogParam.OperateName = orgParam.CreateName
 	orgLogParam.Content = orgParam.Remark
+	orgLogParam.OperateSource = orgParam.Source
+	if orgParam.Source == enums.OperateSourcePlatform {
+		orgLogParam.OperateId = orgParam.CreateId
+		orgLogParam.OperateName = orgParam.CreateName
+	} else {
+		orgLogParam.OperateId = userParam.Id
+		orgLogParam.OperateName = orgParam.UserName
+	}
 	if err = tx.Create(&orgLogParam).Error; err != nil {
 		tx.Rollback()
 		return -3, errors.New("保存企业日志失败")

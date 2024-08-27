@@ -25,7 +25,7 @@ func CheckOrgName(str string) error {
 
 func CheckUserName(str string) error {
 
-	re := regexp.MustCompile(` /^[a-zA-Z][0-9a-zA-Z_]{3,24}$`)
+	re := regexp.MustCompile(`^[a-zA-Z][0-9a-zA-Z_]{3,24}$`)
 	if !re.MatchString(str) {
 		return errors.New("用户名格式不正确")
 	}
