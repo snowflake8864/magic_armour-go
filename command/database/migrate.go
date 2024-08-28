@@ -87,7 +87,6 @@ func start(action string) {
 		_ = dictionary_service.CreateCacheFactory().Rebuild()
 	case "append":
 		appendTableAndData()
-		variable.ZapLog.Sugar().Debug("action:" + action)
 	}
 
 }
