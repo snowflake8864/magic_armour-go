@@ -86,6 +86,7 @@ func start(action string) {
 		_ = dictionary_models.CreateDictionaryFactory().InitData()
 		_ = dictionary_service.CreateCacheFactory().Rebuild()
 	case "append":
+		appendTableAndData()
 		variable.ZapLog.Sugar().Debug("action:" + action)
 	}
 
@@ -229,6 +230,14 @@ func initTableAndData() {
 		_ = syslog_models.CreateOuterFactory().CreateTable()
 		_ = syslog_models.CreateProcessFactory().CreateTable()
 	}
+
+	//保存迁移数据
+	saveMigrations()
+}
+
+func appendTableAndData() {
+	//获取迁移表数据
+	getMigrationMap()
 
 	//保存迁移数据
 	saveMigrations()
