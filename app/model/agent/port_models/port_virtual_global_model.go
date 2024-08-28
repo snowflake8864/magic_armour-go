@@ -57,6 +57,7 @@ func (m *VirtualGlobalModel) CreateTable() bool {
 			source_port varchar(512)  NOT NULL DEFAULT '' COMMENT '源端口:单端口(80);多端口(80,90);范围(80-90)',
 			forward_ip varchar(128)  NOT NULL DEFAULT '' COMMENT '转发ip',
 			forward_port varchar(64)  NOT NULL DEFAULT '' COMMENT '转发端口',
+			forward_type tinyint NOT NULL DEFAULT '0' COMMENT '转发类型',
 			alarm_level tinyint NOT NULL DEFAULT '0' COMMENT '告警级别',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
