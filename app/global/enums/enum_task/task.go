@@ -36,6 +36,7 @@ const (
 	TypeProcessSuffixIsExe        int = 31 //任务类型:获取所有程序
 	TypeDllSuffixIsDll            int = 32 //任务类型:获取所有模块
 	TypeTrustDir                  int = 33 //任务类型:信任目录
+	TypeResetUUid                 int = 34 //任务类型: 重置终端ID
 
 )
 
@@ -69,6 +70,7 @@ var EnumMap = map[string]map[int]string{
 		TypeUsbBlackDownload:          "下发外设禁止名单",
 		TypeAgentUpgrade:              "升级终端",
 		TypeAgentUninstall:            "卸载终端",
+		TypeResetUUid:                 "重置设备ID",
 	},
 }
 
@@ -102,5 +104,6 @@ var WebMapInt = map[string][]int{
 		TypeUsbBlackDownload,
 		TypeAgentUpgrade,
 		TypeAgentUninstall,
+		TypeResetUUid,
 	},
 }
