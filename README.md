@@ -1,10 +1,10 @@
 ### 编译
 - 目标平台为 windows
      
-      go build -o app_agent.exe -ldflags "-w -s"  -trimpath ./cmd/agent/main.go
-      go build -o app_api.exe -ldflags "-w -s"  -trimpath ./cmd/api/main.go
-      go build -o app_cli.exe -ldflags "-w -s"  -trimpath ./cmd/cli/main.go
-      go build -o app_org.exe -ldflags "-w -s"  -trimpath ./cmd/organization/main.go
+      go build -o app_agent.exe    -ldflags "-w -s"  -trimpath ./cmd/agent/main.go
+      go build -o app_api.exe      -ldflags "-w -s"  -trimpath ./cmd/api/main.go
+      go build -o app_cli.exe      -ldflags "-w -s"  -trimpath ./cmd/cli/main.go
+      go build -o app_org.exe      -ldflags "-w -s"  -trimpath ./cmd/organization/main.go
       go build -o app_platform.exe -ldflags "-w -s"  -trimpath ./cmd/platform/main.go
 
   
