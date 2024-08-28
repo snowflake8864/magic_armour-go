@@ -3,6 +3,8 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/http/validator/common/common_regexp"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -25,40 +27,13 @@ func (u *FindPwController) GetSliderCode(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessSimplify(ctx)
-}
-
-// CheckOrgName 验证企业名称
-func (u *FindPwController) CheckOrgName(ctx *gin.Context) {
-	orgName := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "orgName"))
-	if string_helper.IsEmpty(orgName) {
-		response.FailSimplify(ctx, "参数不正确")
+	if err := common_regexp.CheckPhone(userPhone); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 
-	response.SuccessSimplify(ctx)
-}
-
-// CheckUserName 验证用户名称
-func (u *FindPwController) CheckUserName(ctx *gin.Context) {
-	userName := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userName"))
-	if string_helper.IsEmpty(userName) {
-		response.FailSimplify(ctx, "参数不正确")
-		return
-	}
-
-	response.SuccessSimplify(ctx)
-}
-
-// CheckUserPhone 验证用户手机
-func (u *FindPwController) CheckUserPhone(ctx *gin.Context) {
-	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
-	if string_helper.IsEmpty(userPhone) {
-		response.FailSimplify(ctx, "参数不正确")
-		return
-	}
-
-	response.SuccessSimplify(ctx)
+	code := user_service.CreateAuthFactory().GenerateBySlider(user_service.ActonFindPw, userPhone)
+	response.SuccessReturnData(ctx, gin.H{"code": code})
 }
 
 // SendSms 发送短信
@@ -69,6 +44,20 @@ func (u *FindPwController) SendSms(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+
+	authFact := user_service.CreateAuthFactory()
+	if !authFact.CheckBySlider(user_service.ActonFindPw, userPhone, sliderCode) {
+		response.FailRoutine(ctx, -88, "滑块不正确")
+		return
+	}
+
+	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model == nil || model.Id == 0 {
+		response.FailSimplify(ctx, "用户不存在")
+		return
+	}
+
+	authFact.GenerateBySms(user_service.ActonFindPw, userPhone)
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -83,6 +72,12 @@ func (u *FindPwController) CheckSms(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+
+	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
+		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -98,5 +93,13 @@ func (u *FindPwController) ModifyPw(ctx *gin.Context) {
 		response.FailSimplify(ctx, "参数不正确")
 		return
 	}
+
+	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
+		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		return
+	} else {
+		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonReg, userPhone)
+	}
+
 	response.SuccessSimplify(ctx)
 }
