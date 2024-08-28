@@ -445,3 +445,40 @@ func (crd *UserCurd) ModifyInfoById(userParam *user_models.UserModel, netIp stri
 	}
 	return nil
 }
+
+// FindPwByPhone 找回密码
+func (crd *UserCurd) FindPwByPhone(userPhone, newPw string, netIp string) error {
+	if err := common_regexp.CheckPw(newPw); err != nil {
+		return err
+	}
+	//用户已存在
+	userExist := crd.GetItemByPhone(userPhone)
+	if userExist == nil || userExist.Id == 0 {
+		return errors.New("用户不存在")
+	}
+	//
+	orgModel := crd.getOrg(userExist.OrgId)
+	if orgModel == nil {
+		return errors.New("企业数据错误")
+	}
+
+	//修改密码
+	updates := map[string]interface{}{
+		"password": CreateAuthFactory().EncryptPw(newPw),
+	}
+	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
+		return errors.New("修改密码失败")
+	}
+
+	//新增企业日志
+	logFact := org_log_service.CreateOrgLogFactory()
+	orgLogParam := logFact.InitByOrg(orgModel, enum_organization.LogActionOrgSelfFindPw, netIp)
+	orgLogParam.CreatedAt = date_helper.CurDatetime()
+	orgLogParam.OperateSource = enums.OperateSourceOrganize
+	orgLogParam.OperateId = userExist.Id
+	orgLogParam.OperateName = userExist.Username
+	if !logFact.Add(&orgLogParam) {
+		return errors.New("保存企业日志失败")
+	}
+	return nil
+}

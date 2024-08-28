@@ -73,7 +73,7 @@ func (u *FindPwController) CheckSms(ctx *gin.Context) {
 		return
 	}
 
-	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
+	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonFindPw, userPhone, smsCode) {
 		response.FailRoutine(ctx, -99, "短信验证码不一致")
 		return
 	}
@@ -94,11 +94,16 @@ func (u *FindPwController) ModifyPw(ctx *gin.Context) {
 		return
 	}
 
-	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
+	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonFindPw, userPhone, smsCode) {
 		response.FailRoutine(ctx, -99, "短信验证码不一致")
 		return
 	} else {
-		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonReg, userPhone)
+		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonFindPw, userPhone)
+	}
+
+	if err := user_service.CreateCurdFactory().FindPwByPhone(userPhone, userPw, ctx.ClientIP()); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
 	}
 
 	response.SuccessSimplify(ctx)

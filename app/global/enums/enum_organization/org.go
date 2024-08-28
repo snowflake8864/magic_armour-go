@@ -12,7 +12,7 @@ const (
 	LogActionPlatformApprove        int = 101 //日志行为: 通过审核
 	LogActionPlatformRefuse         int = 102 //日志行为: 未通过审核
 	LogActionPlatformLock           int = 103 //日志行为: 锁定
-	LogActionPlatformUnlock         int = 104 //日志行为: 锁定
+	LogActionPlatformUnlock         int = 104 //日志行为: 解锁
 	LogActionPlatformClean          int = 105 //日志行为: 清理业务数据
 	LogActionPlatformHuanshiSwitch  int = 106 //日志行为: 设置幻势开关
 	LogActionPlatformLoginSmsSwitch int = 107 //日志行为: 设置企业登录短信验证开关
@@ -26,6 +26,7 @@ const (
 	LogActionOrgSelfModifyEmail int = 211 //日志行为: 修改邮箱
 	LogActionOrgSelfModifyPhone int = 212 //日志行为: 修改手机
 	LogActionOrgSelfModifyInfo  int = 213 //日志行为: 修改基础信息
+	LogActionOrgSelfFindPw      int = 214 //日志行为: 修改基础信息
 )
 
 var EnumMap = map[string]map[int]string{
@@ -56,6 +57,7 @@ var EnumMap = map[string]map[int]string{
 		LogActionOrgSelfModifyEmail:     "修改邮箱",
 		LogActionOrgSelfModifyPhone:     "修改手机",
 		LogActionOrgSelfModifyInfo:      "修改基本信息",
+		LogActionOrgSelfFindPw:          "找回密码",
 	},
 }
 
@@ -82,5 +84,6 @@ var WebMapInt = map[string][]int{
 		LogActionOrgSelfModifyEmail,
 		LogActionOrgSelfModifyPhone,
 		LogActionOrgSelfModifyInfo,
+		LogActionOrgSelfFindPw,
 	},
 }
