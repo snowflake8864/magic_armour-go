@@ -163,14 +163,13 @@ func (u *BlackmailController) PageForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *BlackmailController) SetSwitchForManage(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	var param = agent_service.ManualColumn{
 		BlackmailSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "勒索防护管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "勒索防护管理-开关")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -180,15 +179,14 @@ func (u *BlackmailController) SetSwitchForManage(ctx *gin.Context) {
 
 // SetModeForManage 管理页: 设置模式
 func (u *BlackmailController) SetModeForManage(ctx *gin.Context) {
-	orgId := u.getLogin(ctx).OrgId
+	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
-	agentIds := []string{agentId}
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 	var param = agent_service.ManualColumn{
 		BlackmailMode: Mode,
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "勒索防护管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "勒索防护管理-模式")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

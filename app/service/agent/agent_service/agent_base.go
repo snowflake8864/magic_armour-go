@@ -53,6 +53,15 @@ type ManualColumn struct {
 type AgentBase struct {
 }
 
+func (crd *AgentBase) getManualColumnByAgent(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
+	openAutoWhite bool, updates *ManualColumn) {
+	if model == nil {
+		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
+	}
+
+	return nil, hasTask, openAutoWhite, updates
+}
+
 // 获取修改数据
 func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
 	openAutoWhite bool, updates map[string]interface{}) {
@@ -119,20 +128,40 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			}
 		}
 
-		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {
+		//进程相关
+		/*
+		 1 同时设置开关和模式： 开&监控 | 开&保护 | 关&监控 | 关&保护
+		 2 设置开关： 开 | 关
+		 3 设置模式： 监控 | 保护
+		*/
+		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt {
 			updates["process_switch"] = *param.ProcessSwitch
-			hasTask = true
+			//有任务
+			if model.ProcessSwitch != *param.ProcessSwitch {
+				hasTask = true
+			}
 			//方便下发相关任务
 			model.ProcessSwitch = *param.ProcessSwitch
-			//同步模式
+			//开关关闭模式默认成监控
 			if *param.ProcessSwitch == enums.SwitchOff {
 				updates["process_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode && model.ProcessSwitch == enums.SwitchOn {
+		if param.ProcessMode > 0 {
+			if model.ProcessSwitch == enums.SwitchOn {
+				updates["process_mode"] = param.ProcessMode
+				if model.ProcessMode != param.ProcessMode {
+					hasTask = true
+				}
+			} else {
+				updates["process_mode"] = enum_agent.ModeMonitor
+			}
+		}
+
+		/*if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode && model.ProcessSwitch == enums.SwitchOn {
 			updates["process_mode"] = param.ProcessMode
 			hasTask = true
-		}
+		}*/
 
 		//模块相关
 		if model.PlatformType == enum_software.PlatformTypeWindows {

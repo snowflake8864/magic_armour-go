@@ -102,14 +102,14 @@ func (u *ProcessController) AgentProcStatForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	var param = agent_service.ManualColumn{
 		ProcessSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "进程管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "进程管理-开关")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -121,7 +121,6 @@ func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
 func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
-	agentIds := []string{agentId}
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 	var param = agent_service.ManualColumn{
 		ProcessMode: Mode,
@@ -140,7 +139,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 		}
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "进程管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "进程管理-模式")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
