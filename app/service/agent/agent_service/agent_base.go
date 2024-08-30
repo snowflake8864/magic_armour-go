@@ -150,6 +150,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		}
 
 	}
+
 	//防篡改已授权
 	if grantConfig.Tamper == enums.SwitchOn {
 		if param.TamperSwitch != nil && *param.TamperSwitch != enums.AllDefaultInt && model.TamperSwitch != *param.TamperSwitch {
@@ -167,6 +168,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			hasTask = true
 		}
 	}
+
 	//勒索防护已授权
 	if grantConfig.Blackmail == enums.SwitchOn {
 		if param.BlackmailSwitch != nil && *param.BlackmailSwitch != enums.AllDefaultInt && model.BlackmailSwitch != *param.BlackmailSwitch {
@@ -184,6 +186,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			hasTask = true
 		}
 	}
+
 	//端口虚开已授权
 	if model.OsType != enum_software.OsTypeWinXp {
 		if grantConfig.Port == enums.SwitchOn {

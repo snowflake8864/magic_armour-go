@@ -206,9 +206,9 @@ func (u *AgentController) GetForBasic(ctx *gin.Context) {
 
 // SaveForBasic 基本信息：保存
 func (u *AgentController) SaveForBasic(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
 	deptId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId"))
 	agentType := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "agentType"))
 	alias := ctx.GetString(consts.ValidatorPrefixOrg + "alias")
@@ -226,7 +226,7 @@ func (u *AgentController) SaveForBasic(ctx *gin.Context) {
 		Position:    &position,
 		Remark:      &remark,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "保存基本信息")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "保存基本信息")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -248,7 +248,6 @@ func (u *AgentController) GetForConfig(ctx *gin.Context) {
 func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
-	agentIds := []string{agentId}
 
 	processSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processSwitch"))
 	processMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "processMode"))
@@ -312,7 +311,7 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		CommonTime:          commonTime,
 		FastTime:            fastTime,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "保存配置信息")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "保存配置信息")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

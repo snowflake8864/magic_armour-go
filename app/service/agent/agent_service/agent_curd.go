@@ -119,6 +119,38 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 	return errCode, err
 }
 
+// UpdateByAgent 单个修改
+func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualColumn, remark string) (errCode int, err error) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, crd.masterModel.ColumnConfig(true, true))
+	if model == nil || model.OrgId == 0 {
+		return -1, errors.New("终端不存在")
+	}
+
+	err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+	if err1 != nil {
+		return -1, err1
+	}
+	if updates == nil || len(updates) == 0 {
+		return 0, nil
+	}
+
+	//修改
+	if isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, model.AgentId, updates); !isOk {
+		return -1, errors.New("修改失败")
+	}
+
+	//需要下发任务
+	if hasTask {
+		crd.addTask(model, param, false, remark)
+	}
+	//开启自动白名单
+	if openAutoWhite {
+		crd.openAutoWhite(orgId, agentId)
+	}
+
+	return 0, nil
+}
+
 // BatchUpdate 批量修改
 func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn, remark string) (errCode int, err error) {
 	models := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnConfig(true, true))
@@ -128,7 +160,6 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 
 	fmt.Println("参数================================")
 	fmt.Println(json_helper.Encode(param))
-	ctx := context.Background()
 	for _, model := range models {
 		err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
 		fmt.Println("修改=====AgentId:", model.AgentId)
@@ -151,15 +182,19 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		}
 		//开启自动白名单
 		if openAutoWhite {
-			//丢入队列
-			msg := &kafka_go.MessageStruct{
-				Type:    kafka_go.TypeCommonAgentOpenAutoWhite,
-				OrgId:   orgId,
-				AgentId: model.AgentId,
-			}
-			producer_kafka.CreateProducerFactory().ProduceCommon(ctx, msg)
+			crd.openAutoWhite(orgId, model.AgentId)
 		}
 	}
 
 	return errCode, nil
+}
+
+func (crd *AgentCurd) openAutoWhite(orgId int64, agentId string) {
+	//丢入队列
+	msg := &kafka_go.MessageStruct{
+		Type:    kafka_go.TypeCommonAgentOpenAutoWhite,
+		OrgId:   orgId,
+		AgentId: agentId,
+	}
+	producer_kafka.CreateProducerFactory().ProduceCommon(context.Background(), msg)
 }
