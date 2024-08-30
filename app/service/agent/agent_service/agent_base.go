@@ -88,7 +88,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		updates["remark"] = *param.Remark
 	}
 
-	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt && model.SelfProtectSwitch != *param.SelfProtectSwitch {
+	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt {
 		updates["self_protect_switch"] = *param.SelfProtectSwitch
 		hasTask = true
 	}
@@ -111,9 +111,12 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	//可信防护已授权
 	if grantConfig.Process == enums.SwitchOn {
 		//自动白名单
-		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt && model.AutoWhiteSwitch != *param.AutoWhiteSwitch {
+		if param.AutoWhiteSwitch != nil && *param.AutoWhiteSwitch != enums.AllDefaultInt {
 			updates["auto_white_switch"] = *param.AutoWhiteSwitch
-			openAutoWhite = true
+			//开启自动匹配白名单
+			if model.AutoWhiteSwitch != *param.AutoWhiteSwitch && *param.AutoWhiteSwitch == enums.SwitchOn {
+				openAutoWhite = true
+			}
 		}
 
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt && model.ProcessSwitch != *param.ProcessSwitch {

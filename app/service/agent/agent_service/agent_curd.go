@@ -3,10 +3,10 @@ package agent_service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -125,8 +125,12 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 	if model == nil || model.OrgId == 0 {
 		return -1, errors.New("终端不存在")
 	}
-
+	variable.ZapLog.Sugar().Info("参数================================")
+	variable.ZapLog.Sugar().Info(json_helper.Encode(param))
 	err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+	variable.ZapLog.Sugar().Info("hasTask=================", hasTask)
+	variable.ZapLog.Sugar().Info("openAutoWhite===========", openAutoWhite)
+	variable.ZapLog.Sugar().Info(json_helper.Encode(updates))
 	if err1 != nil {
 		return -1, err1
 	}
@@ -158,14 +162,8 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		return -1, errors.New("终端不存在")
 	}
 
-	fmt.Println("参数================================")
-	fmt.Println(json_helper.Encode(param))
 	for _, model := range models {
 		err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
-		fmt.Println("修改=====AgentId:", model.AgentId)
-		fmt.Println(json_helper.Encode(updates))
-		fmt.Println("hasTask:", hasTask)
-		fmt.Println("openAutoWhite:", openAutoWhite)
 		if err1 != nil {
 			continue
 		}
