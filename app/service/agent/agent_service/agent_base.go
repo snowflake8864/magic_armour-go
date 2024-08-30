@@ -53,15 +53,6 @@ type ManualColumn struct {
 type AgentBase struct {
 }
 
-func (crd *AgentBase) getManualColumnByAgent(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
-	openAutoWhite bool, updates *ManualColumn) {
-	if model == nil {
-		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
-	}
-
-	return nil, hasTask, openAutoWhite, updates
-}
-
 // 获取修改数据
 func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
 	openAutoWhite bool, updates map[string]interface{}) {
@@ -129,11 +120,6 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		}
 
 		//进程相关
-		/*
-		 1 同时设置开关和模式： 开&监控 | 开&保护 | 关&监控 | 关&保护
-		 2 设置开关： 开 | 关
-		 3 设置模式： 监控 | 保护
-		*/
 		if param.ProcessSwitch != nil && *param.ProcessSwitch != enums.AllDefaultInt {
 			updates["process_switch"] = *param.ProcessSwitch
 			//有任务
@@ -158,26 +144,30 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			}
 		}
 
-		/*if param.ProcessMode > 0 && model.ProcessMode != param.ProcessMode && model.ProcessSwitch == enums.SwitchOn {
-			updates["process_mode"] = param.ProcessMode
-			hasTask = true
-		}*/
-
 		//模块相关
 		if model.PlatformType == enum_software.PlatformTypeWindows {
-			if param.DllSwitch != nil && *param.DllSwitch != enums.AllDefaultInt && model.DllSwitch != *param.DllSwitch {
+			if param.DllSwitch != nil && *param.DllSwitch != enums.AllDefaultInt {
 				updates["dll_switch"] = *param.DllSwitch
-				hasTask = true
+				//有任务
+				if model.DllSwitch != *param.DllSwitch {
+					hasTask = true
+				}
 				//方便下发相关任务
 				model.DllSwitch = *param.DllSwitch
-				//同步模式
+				//开关关闭模式默认成监控
 				if *param.DllSwitch == enums.SwitchOff {
 					updates["dll_mode"] = enum_agent.ModeMonitor
 				}
 			}
-			if param.DllMode > 0 && model.DllMode != param.DllMode && model.DllSwitch == enums.SwitchOn {
-				updates["dll_mode"] = param.DllMode
-				hasTask = true
+			if param.DllMode > 0 {
+				if model.DllSwitch == enums.SwitchOn {
+					updates["dll_mode"] = param.DllMode
+					if model.DllMode != param.DllMode {
+						hasTask = true
+					}
+				} else {
+					updates["dll_mode"] = enum_agent.ModeMonitor
+				}
 			}
 		}
 
@@ -185,50 +175,69 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 
 	//防篡改已授权
 	if grantConfig.Tamper == enums.SwitchOn {
-		if param.TamperSwitch != nil && *param.TamperSwitch != enums.AllDefaultInt && model.TamperSwitch != *param.TamperSwitch {
+		if param.TamperSwitch != nil && *param.TamperSwitch != enums.AllDefaultInt {
 			updates["tamper_switch"] = *param.TamperSwitch
-			hasTask = true
+			//有任务
+			if model.TamperSwitch != *param.TamperSwitch {
+				hasTask = true
+			}
 			//方便下发相关任务
 			model.TamperSwitch = *param.TamperSwitch
-			//同步模式
+			//开关关闭模式默认成监控
 			if *param.TamperSwitch == enums.SwitchOff {
 				updates["tamper_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.TamperMode > 0 && model.TamperMode != param.TamperMode && model.TamperSwitch == enums.SwitchOn {
-			updates["tamper_mode"] = param.TamperMode
-			hasTask = true
+		if param.TamperMode > 0 {
+			if model.TamperSwitch == enums.SwitchOn {
+				updates["tamper_mode"] = param.TamperMode
+				if model.TamperMode != param.TamperMode {
+					hasTask = true
+				}
+			} else {
+				updates["tamper_mode"] = enum_agent.ModeMonitor
+			}
 		}
 	}
 
 	//勒索防护已授权
 	if grantConfig.Blackmail == enums.SwitchOn {
-		if param.BlackmailSwitch != nil && *param.BlackmailSwitch != enums.AllDefaultInt && model.BlackmailSwitch != *param.BlackmailSwitch {
+		if param.BlackmailSwitch != nil && *param.BlackmailSwitch != enums.AllDefaultInt {
 			updates["blackmail_switch"] = *param.BlackmailSwitch
-			hasTask = true
+			//有任务
+			if model.BlackmailSwitch != *param.BlackmailSwitch {
+				hasTask = true
+			}
 			//方便下发相关任务
 			model.BlackmailSwitch = *param.BlackmailSwitch
-			//同步模式
+			//开关关闭模式默认成监控
 			if *param.BlackmailSwitch == enums.SwitchOff {
 				updates["blackmail_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.BlackmailMode > 0 && model.BlackmailMode != param.BlackmailMode && model.BlackmailSwitch == enums.SwitchOn {
-			updates["blackmail_mode"] = param.BlackmailMode
-			hasTask = true
+		if param.BlackmailMode > 0 {
+			if model.BlackmailSwitch == enums.SwitchOn {
+				updates["blackmail_mode"] = param.BlackmailMode
+				if model.BlackmailMode != param.BlackmailMode {
+					hasTask = true
+				}
+			} else {
+				updates["blackmail_mode"] = enum_agent.ModeMonitor
+			}
 		}
 	}
 
 	//端口虚开已授权
 	if model.OsType != enum_software.OsTypeWinXp {
 		if grantConfig.Port == enums.SwitchOn {
-			if param.PortSwitch != nil && *param.PortSwitch != enums.AllDefaultInt && model.PortSwitch != *param.PortSwitch {
+			if param.PortSwitch != nil && *param.PortSwitch != enums.AllDefaultInt {
 				updates["port_switch"] = *param.PortSwitch
-				hasTask = true
-				//方便下发相关任务
-				if *param.PortSwitch == enums.SwitchOn {
-					model.PortSwitch = enums.SwitchOn
+				//有任务
+				if model.PortSwitch != *param.PortSwitch {
+					hasTask = true
 				}
+				//方便下发相关任务
+				model.PortSwitch = *param.PortSwitch
 			}
 		}
 	}
@@ -238,64 +247,92 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		if grantConfig.Plug == enums.SwitchOn {
 			if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt && model.PlugSwitch != *param.PlugSwitch {
 				updates["plug_switch"] = *param.PlugSwitch
-				hasTask = true
-				//方便下发相关任务
-				if *param.PlugSwitch == enums.SwitchOn {
-					model.PlugSwitch = enums.SwitchOn
+				//有任务
+				if model.PlugSwitch != *param.PlugSwitch {
+					hasTask = true
 				}
+				//方便下发相关任务
+				model.PlugSwitch = *param.PlugSwitch
 			}
 		}
 	}
 
 	//外设已授权
 	if grantConfig.Usb == enums.SwitchOn {
-		if param.UsbSwitch != nil && *param.UsbSwitch != enums.AllDefaultInt && model.UsbSwitch != *param.UsbSwitch {
+		if param.UsbSwitch != nil && *param.UsbSwitch != enums.AllDefaultInt {
 			updates["usb_switch"] = *param.UsbSwitch
-			hasTask = true
+			//有任务
+			if model.UsbSwitch != *param.UsbSwitch {
+				hasTask = true
+			}
 			//方便下发相关任务
 			model.UsbSwitch = *param.UsbSwitch
-			//同步模式
+			//开关关闭模式默认成监控
 			if *param.UsbSwitch == enums.SwitchOff {
 				updates["usb_mode"] = enum_agent.ModeMonitor
 			}
 		}
-		if param.UsbMode > 0 && model.UsbMode != param.UsbMode && model.UsbSwitch == enums.SwitchOn {
-			updates["usb_mode"] = param.UsbMode
-			hasTask = true
+		if param.UsbMode > 0 {
+			if model.UsbSwitch == enums.SwitchOn {
+				updates["usb_mode"] = param.UsbMode
+				if model.UsbMode != param.UsbMode {
+					hasTask = true
+				}
+			} else {
+				updates["usb_mode"] = enum_agent.ModeMonitor
+			}
 		}
 	}
+
 	//通讯日志已授权
 	if grantConfig.Syslog == enums.SwitchOn {
-		if param.SyslogDnsSwitch != nil && *param.SyslogDnsSwitch != enums.AllDefaultInt && model.SyslogDnsSwitch != *param.SyslogDnsSwitch {
+		if param.SyslogDnsSwitch != nil && *param.SyslogDnsSwitch != enums.AllDefaultInt {
 			updates["syslog_dns_switch"] = *param.SyslogDnsSwitch
-			hasTask = true
+			//有任务
+			if model.SyslogDnsSwitch != *param.SyslogDnsSwitch {
+				hasTask = true
+			}
 		}
-		if param.SyslogOuterSwitch != nil && *param.SyslogOuterSwitch != enums.AllDefaultInt && model.SyslogOuterSwitch != *param.SyslogOuterSwitch {
+		if param.SyslogOuterSwitch != nil && *param.SyslogOuterSwitch != enums.AllDefaultInt {
 			updates["syslog_outer_switch"] = *param.SyslogOuterSwitch
-			hasTask = true
+			//有任务
+			if model.SyslogOuterSwitch != *param.SyslogOuterSwitch {
+				hasTask = true
+			}
 		}
-		if param.SyslogInnerSwitch != nil && *param.SyslogInnerSwitch != enums.AllDefaultInt && model.SyslogInnerSwitch != *param.SyslogInnerSwitch {
+		if param.SyslogInnerSwitch != nil && *param.SyslogInnerSwitch != enums.AllDefaultInt {
 			updates["syslog_inner_switch"] = *param.SyslogInnerSwitch
-			hasTask = true
+			//有任务
+			if model.SyslogInnerSwitch != *param.SyslogInnerSwitch {
+				hasTask = true
+			}
 		}
-		if param.SyslogProcessSwitch != nil && *param.SyslogProcessSwitch != enums.AllDefaultInt && model.SyslogProcessSwitch != *param.SyslogProcessSwitch {
+		if param.SyslogProcessSwitch != nil && *param.SyslogProcessSwitch != enums.AllDefaultInt {
 			updates["syslog_process_switch"] = *param.SyslogProcessSwitch
-			hasTask = true
+			//有任务
+			if model.SyslogProcessSwitch != *param.SyslogProcessSwitch {
+				hasTask = true
+			}
 		}
-		if param.SyslogLoginSwitch != nil && *param.SyslogLoginSwitch != enums.AllDefaultInt && model.SyslogLoginSwitch != *param.SyslogLoginSwitch {
+		if param.SyslogLoginSwitch != nil && *param.SyslogLoginSwitch != enums.AllDefaultInt {
 			updates["syslog_login_switch"] = *param.SyslogLoginSwitch
-			hasTask = true
+			//有任务
+			if model.SyslogLoginSwitch != *param.SyslogLoginSwitch {
+				hasTask = true
+			}
 		}
 	}
+
 	//外联已授权
 	if grantConfig.Outreach == enums.SwitchOn {
-		if param.OutreachAlarmSwitch != nil && *param.OutreachAlarmSwitch != enums.AllDefaultInt && model.OutreachAlarmSwitch != *param.OutreachAlarmSwitch {
+		if param.OutreachAlarmSwitch != nil && *param.OutreachAlarmSwitch != enums.AllDefaultInt {
 			updates["outreach_alarm_switch"] = *param.OutreachAlarmSwitch
 		}
 	}
+
 	//口令破解已授权
 	if grantConfig.Login == enums.SwitchOn {
-		if param.LoginSolveSwitch != nil && *param.LoginSolveSwitch != enums.AllDefaultInt && model.LoginSolveSwitch != *param.LoginSolveSwitch {
+		if param.LoginSolveSwitch != nil && *param.LoginSolveSwitch != enums.AllDefaultInt {
 			updates["login_solve_switch"] = *param.LoginSolveSwitch
 		}
 	}

@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
+	"goskeleton/app/utils/md5_encrypt"
 )
 
 func CreateCurdFactory() *AgentCurd {
@@ -162,25 +163,62 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		return -1, errors.New("终端不存在")
 	}
 
+	//修改的数据
+	updateResult := make(map[string]map[string]interface{}) // 修改结果
+	agentUpdate := make(map[string][]string)                //终端修改数据
+	var hasTaskList []*agent_models.AgentModel              //有任务的终端列表
+	var openAutoWhiteList []string                          //开启自动白名单终端
 	for _, model := range models {
 		err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
-		if err1 != nil {
+		if err1 != nil || updates == nil || len(updates) == 0 {
 			continue
 		}
-		if updates == nil || len(updates) == 0 {
-			continue
+
+		// 修改结果
+		hash := md5_encrypt.MD5(json_helper.Encode(updates))
+		if _, isOk := updateResult[hash]; !isOk {
+			updateResult[hash] = updates
 		}
-		//修改
-		if isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, model.AgentId, updates); !isOk {
-			continue
+
+		//终端修改数据
+		if _, isOk := agentUpdate[hash]; isOk {
+			agentUpdate[hash] = append(agentUpdate[hash], model.AgentId)
+		} else {
+			agentUpdate[hash] = []string{model.AgentId}
 		}
+
 		//需要下发任务
 		if hasTask {
-			crd.addTask(model, param, false, remark)
+			hasTaskList = append(hasTaskList, model)
 		}
+
 		//开启自动白名单
 		if openAutoWhite {
-			crd.openAutoWhite(orgId, model.AgentId)
+			openAutoWhiteList = append(openAutoWhiteList, model.AgentId)
+		}
+	}
+
+	//批量修改终端数据
+	if len(agentUpdate) > 0 {
+		//按修改数据批量处理
+		for hash, agentIds := range agentUpdate {
+			if updates, isOk := updateResult[hash]; isOk && len(updates) > 0 {
+				crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates)
+			}
+		}
+	}
+
+	//开启自动白名单
+	if len(openAutoWhiteList) > 0 {
+		for _, agentId := range openAutoWhiteList {
+			crd.openAutoWhite(orgId, agentId)
+		}
+	}
+
+	//任务
+	if len(hasTaskList) > 0 {
+		for _, model := range hasTaskList {
+			crd.addTask(model, param, false, remark)
 		}
 	}
 
