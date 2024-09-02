@@ -84,9 +84,6 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		//添加任务
 		crd.addTask(param, nil, true, "终端第一次上线")
 
-		//自动授权
-		crd.autoGrant(param.OrgId, param.AgentId)
-
 	} else {
 		updates := map[string]interface{}{
 			"host_name":      param.HostName,
@@ -114,13 +111,14 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 
 		//有任务内容的
 		manual := &ManualColumn{
-			ProcessSwitch:   &agentModel.ProcessSwitch,
-			DllSwitch:       &agentModel.DllSwitch,
-			TamperSwitch:    &agentModel.TamperSwitch,
-			BlackmailSwitch: &agentModel.BlackmailSwitch,
-			PortSwitch:      &agentModel.PortSwitch,
-			PlugSwitch:      &agentModel.PlugSwitch,
-			UsbSwitch:       &agentModel.UsbSwitch,
+			ProcessSwitch:       &agentModel.ProcessSwitch,
+			DllSwitch:           &agentModel.DllSwitch,
+			TamperSwitch:        &agentModel.TamperSwitch,
+			BlackmailSwitch:     &agentModel.BlackmailSwitch,
+			PortSwitch:          &agentModel.PortSwitch,
+			PlugSwitch:          &agentModel.PlugSwitch,
+			UsbSwitch:           &agentModel.UsbSwitch,
+			OutreachAlarmSwitch: &agentModel.OutreachAlarmSwitch,
 		}
 		//添加任务
 		crd.addTask(agentModel, manual, false, "终端上线")
@@ -140,11 +138,6 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 	token := CreateCacheFactory().EncryptByLogin(param)
 
 	return true, token
-}
-
-// autoGrant 自动授权
-func (crd *AgentOnline) autoGrant(orgId int64, agentId string) {
-
 }
 
 // autoAllocateDept 自动分配组织架构

@@ -327,6 +327,10 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	if grantConfig.Outreach == enums.SwitchOn {
 		if param.OutreachAlarmSwitch != nil && *param.OutreachAlarmSwitch != enums.AllDefaultInt {
 			updates["outreach_alarm_switch"] = *param.OutreachAlarmSwitch
+			//有任务
+			if model.OutreachAlarmSwitch != *param.OutreachAlarmSwitch {
+				hasTask = true
+			}
 		}
 	}
 
@@ -394,6 +398,11 @@ func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColum
 	//外设开启
 	if param.UsbSwitch != nil && *param.UsbSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)
+	}
+
+	//外联管控开启
+	if param.OutreachAlarmSwitch != nil && *param.OutreachAlarmSwitch == enums.SwitchOn {
+		tasks = append(tasks, enum_task.TypeOutreachDetectDownload)
 	}
 
 	task_service.CreateCurdFactory().AddTasksForAgent(model.OrgId, model.AgentId, tasks, remark)
