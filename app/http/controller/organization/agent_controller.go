@@ -7,12 +7,14 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
@@ -231,6 +233,15 @@ func (u *AgentController) SaveForBasic(ctx *gin.Context) {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
+	response.SuccessSimplify(ctx)
+}
+
+// ResetUidForBasic 基本信息： 重置终端ID
+func (u *AgentController) ResetUidForBasic(ctx *gin.Context) {
+	agentId := u.getAgentIdFromGin(ctx)
+
+	task_service.CreateCurdFactory().AddTaskForAgent(u.getLogin(ctx).OrgId, agentId, enum_task.TypeResetUUid, "")
+
 	response.SuccessSimplify(ctx)
 }
 

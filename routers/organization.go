@@ -176,6 +176,7 @@ func InitOrganizationRouter() *gin.Engine {
 					{
 						basic.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentBasicGet"))
 						basic.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentBasicSave"))
+						basic.POST("resetUid", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentBasicResetUid"))
 					}
 					config := agent.Group("config/")
 					{

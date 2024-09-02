@@ -134,6 +134,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, agent3.BasicGet{})
 	key = consts.ValidatorPrefixOrg + "AgentBasicSave"
 	containers.Set(key, agent3.BasicSave{})
+	key = consts.ValidatorPrefixOrg + "AgentBasicResetUid"
+	containers.Set(key, agent3.BasicResetUid{})
 	key = consts.ValidatorPrefixOrg + "AgentConfigGet"
 	containers.Set(key, agent3.ConfigGet{})
 	key = consts.ValidatorPrefixOrg + "AgentConfigSave"
