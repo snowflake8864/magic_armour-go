@@ -37,6 +37,7 @@ const (
 	TypeDllSuffixIsDll            int = 32 //任务类型:获取所有模块
 	TypeTrustDir                  int = 33 //任务类型:信任目录
 	TypeResetUUid                 int = 34 //任务类型: 重置终端ID
+	TypeOutreachDetectDownload    int = 35 //任务类型: 下载外联主动探测策略
 
 )
 
