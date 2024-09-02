@@ -34,6 +34,7 @@ const (
 	TypeAlarmPutBlackmail string = "alarm_put_blackmail" //类型：勒索告警上传
 	TypeAlarmPutUsb       string = "alarm_put_usb"       //类型：外设告警上传
 	TypeAlarmPutSelf      string = "alarm_put_self"      //类型：自保告警上传
+	TypeAlarmPutOutreach  string = "alarm_put_outreach"  //类型：外联告警上传
 	TypeAlarmPutPort      string = "alarm_put_port"      //类型：端口虚开告警上传
 
 	TypeSyslogPutDns          string = "syslog_put_dns"           //类型：通讯日志-DNS上传

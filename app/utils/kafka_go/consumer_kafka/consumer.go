@@ -131,6 +131,9 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeAlarmPutSelf:
 			alarm_job.UploadSelf(data.Data)
 			break
+		case kafka_go.TypeAlarmPutOutreach:
+			alarm_job.UploadOutreach(data.Data)
+			break
 		case kafka_go.TypeAlarmPutPort:
 			alarm_job.UploadPort(data.Data)
 			break

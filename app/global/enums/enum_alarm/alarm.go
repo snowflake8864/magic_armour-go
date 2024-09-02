@@ -77,7 +77,8 @@ const (
 
 	/**   ---------外联告警 S--------- */
 
-	TypeOutreachNotInWhite int = 4001 //Ip不在白名单中
+	TypeOutreachNotInWhite   int = 4001 //Ip不在白名单中
+	TypeOutreachActiveDetect int = 4002 //主动探测
 	/**   ---------外设告警 E--------- */
 
 	/**   ---------动态封堵告警 S--------- */
@@ -191,7 +192,8 @@ var EnumMapInt = map[string]map[int]string{
 		TypeBlackmailProtect: "异常进程访问阻止",
 		TypeBlackmailMonitor: "异常进程访问",
 
-		TypeOutreachNotInWhite: "外联告警",
+		TypeOutreachNotInWhite:   "Ip不在白名单中",
+		TypeOutreachActiveDetect: "主动探测",
 
 		TypePlugDynamicFromPort:  "端口虚开",
 		TypePlugDynamicFromLogin: "口令破解",
@@ -350,7 +352,8 @@ var MapTypeModule = map[int]int{
 	TypeUsbDisabledExtract:       ModuleUsb,
 	TypeUsbUnknownExtract:        ModuleUsb,
 
-	TypeOutreachNotInWhite: ModuleOutreach,
+	TypeOutreachNotInWhite:   ModuleOutreach,
+	TypeOutreachActiveDetect: ModuleOutreach,
 
 	TypeSelfProtectFileCreate:     ModuleSelf,
 	TypeSelfProtectFileDelete:     ModuleSelf,

@@ -40,7 +40,8 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	var tamperModels []*alarm_models.TamperModel
 	var blackmailModels []*alarm_models.BlackmailModel
 	var usbModels []*alarm_models.UsbModel
-	var selfodels []*alarm_models.SelfModel
+	var selfModels []*alarm_models.SelfModel
+	var outreachModels []*alarm_models.OutreachModel
 	for _, item := range params {
 		if item.Type == 0 {
 			continue
@@ -76,7 +77,12 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 			break
 		case enum_alarm.ModuleSelf:
 			if model := crd.formatSelf(&item, orgId, agentId, now); model != nil {
-				selfodels = append(selfodels, model)
+				selfModels = append(selfModels, model)
+			}
+			break
+		case enum_alarm.ModuleOutreach:
+			if model := crd.formatOutreach(&item, orgId, agentId, now); model != nil {
+				outreachModels = append(outreachModels, model)
 			}
 			break
 		}
@@ -98,8 +104,11 @@ func (crd *AlarmPost) ToQueryBYComm(orgId int64, agentId, inputJson string) erro
 	if len(usbModels) > 0 {
 		crd.sendUsb(usbModels)
 	}
-	if len(selfodels) > 0 {
-		crd.sendSelf(selfodels)
+	if len(selfModels) > 0 {
+		crd.sendSelf(selfModels)
+	}
+	if len(outreachModels) > 0 {
+		crd.sendOutreach(outreachModels)
 	}
 
 	return nil
@@ -360,6 +369,48 @@ func (crd *AlarmPost) sendSelf(models []*alarm_models.SelfModel) {
 
 		msg := &kafka_go.MessageStruct{
 			Type: kafka_go.TypeAlarmPutSelf,
+			Data: json_helper.Encode(models[i:end]),
+		}
+		crd.queryClient.ProduceAlarm(cxt, msg)
+	}
+
+}
+
+func (crd *AlarmPost) formatOutreach(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.OutreachModel {
+	if param.Level == 0 || string_helper.IsEmpty(param.DomainName) || string_helper.IsEmpty(param.ResIp) {
+		return nil
+	}
+
+	return &alarm_models.OutreachModel{
+		OrgId:        orgId,
+		AgentId:      agentId,
+		Type:         param.Type,
+		Level:        param.Level,
+		AgentAt:      crd.getAgentAt(param.AgentTime, now),
+		HandleStatus: enum_alarm.HandleStatusNot,
+		CreatedAt:    now,
+		DomainName:   param.DomainName,
+		TargetIp:     param.ResIp,
+	}
+}
+
+// 发送外联告警
+func (crd *AlarmPost) sendOutreach(models []*alarm_models.OutreachModel) {
+	modelLength := len(models)
+	if modelLength == 0 {
+		return
+	}
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+
+		//alarm_job.UploadOutreach(json_helper.Encode(models[i:end]))
+
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeAlarmPutOutreach,
 			Data: json_helper.Encode(models[i:end]),
 		}
 		crd.queryClient.ProduceAlarm(cxt, msg)

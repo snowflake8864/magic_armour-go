@@ -90,6 +90,20 @@ func UploadSelf(jsonStr string) {
 	}
 }
 
+func UploadOutreach(jsonStr string) {
+	var models []alarm_models.OutreachModel
+	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
+		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Sugar().Info(jsonStr)
+		return
+	}
+
+	if err := job_callback_alarm.CreateOutreachCalcFactory().BatchAdd(&models); err != nil {
+		variable.ZapLog.Sugar().Info(err.Error())
+		return
+	}
+}
+
 func UploadPort(jsonStr string) {
 	model := alarm_models.PortModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {

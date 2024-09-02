@@ -49,6 +49,9 @@ type alarmComm struct {
 	PeripheralEid    string `json:"peripheral_eid"`
 	PeripheralName   string `json:"peripheral_name"`
 	PeripheralRemark string `json:"peripheral_remark"`
+
+	DomainName string `json:"domain_name"`
+	ResIp      string `json:"res_ip"`
 }
 
 // 告警：端口虚开

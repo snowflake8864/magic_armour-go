@@ -12,7 +12,9 @@ import (
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -93,6 +95,46 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 
 	//推送到幻势,
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchOutreach); hsCli != nil {
+		crd.PushHs(hsCli, &model)
+	}
+
+	return nil
+}
+
+// BatchAdd 新增
+func (crd *AlarmOutreachCalc) BatchAdd(list *[]alarm_models.OutreachModel) error {
+	if len(*list) == 0 {
+		return nil
+	}
+
+	createdAt := date_helper.CurDatetime()
+	var inserts []alarm_models.OutreachModel
+	for _, model := range *list {
+		model.Id = variable.SnowFlake.GetId()
+
+		if string_helper.IsEmpty(model.CreatedAt) {
+			model.CreatedAt = createdAt
+		}
+		inserts = append(inserts, model)
+	}
+
+	if !crd.masterModel.InsertBatch(&inserts) {
+		return errors.New("保存失败")
+	}
+
+	//推送到幻势
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiAlarmSwitchOutreach); hsCli != nil {
+		for _, model := range inserts {
+			crd.PushHs(hsCli, &model)
+		}
+	}
+
+	return nil
+}
+
+func (crd *AlarmOutreachCalc) PushHs(hsCli *huanshi_platform.RequestHuanshi, model *alarm_models.OutreachModel) {
+	//推送到幻势,
+	if hsCli != nil {
 		hsData := huanshi_platform.AlarmOutreach{
 			AlarmBase: huanshi_platform.AlarmBase{
 				OrgId:      model.OrgId,
@@ -105,12 +147,10 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 			Pid:        model.ProcId,
 			Ppath:      model.ProcDir,
 			Domain:     model.DomainName,
-			AnalysisIp: targetIp,
+			AnalysisIp: model.TargetIp,
 		}
 		if err := hsCli.SyncAlarmOutreach(hsData); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())
 		}
 	}
-
-	return nil
 }
