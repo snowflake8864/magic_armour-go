@@ -309,7 +309,11 @@ func (t *AlarmTrans) TransOutreachPage(total int64, models []*alarm_models.Outre
 			data["created_at"] = model.CreatedAt
 
 			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
+			if model.ProcId > 0 {
+				data["proc_id"] = model.ProcId
+			} else {
+				data["proc_id"] = ""
+			}
 			data["proc_dir"] = model.ProcDir
 			data["domain_name"] = model.DomainName
 			data["target_ip"] = model.TargetIp
