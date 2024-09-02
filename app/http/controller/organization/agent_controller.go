@@ -171,8 +171,8 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 	SyslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
 	SyslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
 	SyslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
-	OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
-	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	//OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
+	//SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
 	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 
 	var param = agent_service.ManualColumn{
@@ -182,9 +182,9 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 		SyslogInnerSwitch:   &SyslogInnerSwitch,
 		SyslogProcessSwitch: &SyslogProcessSwitch,
 		SyslogLoginSwitch:   &SyslogLoginSwitch,
-		OutreachAlarmSwitch: &OutreachAlarmSwitch,
-		SelfProtectSwitch:   &SelfProtectSwitch,
-		AutoWhiteSwitch:     &AutoWhiteSwitch,
+		//OutreachAlarmSwitch: &OutreachAlarmSwitch,
+		//SelfProtectSwitch:   &SelfProtectSwitch,
+		AutoWhiteSwitch: &AutoWhiteSwitch,
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "批量修改")
 	if err != nil {
