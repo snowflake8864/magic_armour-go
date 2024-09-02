@@ -245,7 +245,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	//封堵已授权
 	if model.OsType != enum_software.OsTypeWinXp {
 		if grantConfig.Plug == enums.SwitchOn {
-			if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt && model.PlugSwitch != *param.PlugSwitch {
+			if param.PlugSwitch != nil && *param.PlugSwitch != enums.AllDefaultInt {
 				updates["plug_switch"] = *param.PlugSwitch
 				//有任务
 				if model.PlugSwitch != *param.PlugSwitch {
