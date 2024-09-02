@@ -98,6 +98,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/agent/manage/batchModify":    {ModuleAgent, "管理页:批量修改"},
 	"/v5/organization/agent/agent/basic/save":      {ModuleAgent, "单页：保存基本信息"},
 	"/v5/organization/agent/agent/config/save":     {ModuleAgent, "单页：保存配置信息"},
+	"/v5/organization/agent/agent/config/resetUid": {ModuleAgent, "单页：重置终端标识"},
 	"/v5/organization/trustDir/global/add":         {ModuleAgent, "全局信任目录：添加"},
 	"/v5/organization/trustDir/global/edit":        {ModuleAgent, "全局信任目录：编辑"},
 	"/v5/organization/trustDir/global/setSwitch":   {ModuleAgent, "全局信任目录：开关"},

@@ -41,6 +41,8 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/getplugging":    "下载动态封堵策略",
 		"/v1/getipblacklist": "下载封堵ip黑名单",
 
+		"/v1/getOutreachDetect": "下载外联主动探测列表",
+
 		"/v1/addperipherals":      "上传外设列表",
 		"/v1/getwhiteperipherals": "获取外设信任（白名单）列表",
 		"/v1/getblackperipherals": "获取外设禁止（黑名单）列表",
@@ -89,6 +91,7 @@ var WebMapStr = map[string][]string{
 		"/v1/addperipherals",
 		"/v1/getwhiteperipherals",
 		"/v1/getblackperipherals",
+		"/v1/getOutreachDetect",
 		"/v1/alertupload",
 		"/v1/upopenport",
 		"/v1/putsyslog",
