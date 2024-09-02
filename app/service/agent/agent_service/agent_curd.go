@@ -6,7 +6,6 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -126,12 +125,8 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 	if model == nil || model.OrgId == 0 {
 		return -1, errors.New("终端不存在")
 	}
-	variable.ZapLog.Sugar().Info("参数================================")
-	variable.ZapLog.Sugar().Info(json_helper.Encode(param))
+
 	err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
-	variable.ZapLog.Sugar().Info("hasTask=================", hasTask)
-	variable.ZapLog.Sugar().Info("openAutoWhite===========", openAutoWhite)
-	variable.ZapLog.Sugar().Info(json_helper.Encode(updates))
 	if err1 != nil {
 		return -1, err1
 	}
