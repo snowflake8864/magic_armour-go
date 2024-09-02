@@ -42,7 +42,7 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 			Id:         variable.SnowFlake.GetId(),
 			OrgId:      orgId,
 			Ip:         ip,
-			Type:       enum_outreach.TypeWhite,
+			Type:       enum_outreach.IpTypeWhite,
 			Title:      "快速添加",
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
@@ -67,7 +67,7 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 // Add 新增
 func (crd *GlobalCurd) Add(param *outreach_models.GlobalModel) error {
 	param.Id = variable.SnowFlake.GetId()
-	param.Type = enum_outreach.TypeWhite
+	param.Type = enum_outreach.IpTypeWhite
 	param.IsDefault = enums.IsNot
 	param.OpenSwitch = enums.SwitchOn
 	param.CreatedAt = date_helper.CurDatetime()

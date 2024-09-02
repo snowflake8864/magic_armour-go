@@ -132,6 +132,9 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("getwhiteperipherals", (&agent.UsbController{}).GetWhite)                         // 获取外设信任列表
 			vAgent.Any("getblackperipherals", (&agent.UsbController{}).GetBlack)                         // 获取外设禁止列表
 
+			//外联管控
+			vAgent.Any("getOutreachDetect", (&agent.OutreachController{}).GetDetect) // 获取外联主动探测列表
+
 			//告警相关
 			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
 			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmPortPut"))    //上传端口虚开告警

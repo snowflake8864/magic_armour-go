@@ -1,6 +1,8 @@
 package enum_outreach
 
 const (
-	TypeWhite int = 1 //类型： 白名单
-	TypeBlack int = 2 //类型： 黑名单
+	IpTypeWhite int = 1 //IP类型： 白名单
+	IpTypeBlack int = 2 //IP类型： 黑名单
+
+	DetectTypeDomain int = 1 //探测类型：域名
 )

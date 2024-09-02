@@ -92,6 +92,8 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["self_protect_switch"] = agentModel.SelfProtectSwitch
 	//内核升级
 	mapConf["kernel_upgrade_switch"] = agentModel.KernelUpgradeSwitch
+	//外联管控
+	mapConf["outreach_switch"] = agentModel.OutreachAlarmSwitch
 	//agent通讯日志
 	mapConf["syslog_switch"] = enums.SwitchOff
 	mapConf["syslog_dns_switch"] = agentModel.SyslogDnsSwitch

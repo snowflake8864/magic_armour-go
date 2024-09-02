@@ -31,7 +31,7 @@ func (crd *AlarmOutreachCalc) inOutreachWhile(orgId int64, targetIpStr string) (
 	SwitchOn := enums.SwitchOn
 	conditions := outreach_models.SearchConditions{
 		OrgId:      orgId,
-		Type:       enum_outreach.TypeWhite,
+		Type:       enum_outreach.IpTypeWhite,
 		OpenSwitch: &SwitchOn,
 	}
 	models := outreach_models.CreateGlobalFactory().GetListByConditions(conditions)
