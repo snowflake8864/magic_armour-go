@@ -247,6 +247,10 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/outreach/global/edit":           {ModuleOutreach, "全局策略：编辑"},
 	"/v5/organization/outreach/global/setSwitch":      {ModuleOutreach, "全局策略：开关"},
 	"/v5/organization/outreach/global/delete":         {ModuleOutreach, "全局策略：删除"},
+	"/v5/organization/outreach/detect/add":            {ModuleOutreach, "主动探测：添加"},
+	"/v5/organization/outreach/detect/edit":           {ModuleOutreach, "主动探测：编辑"},
+	"/v5/organization/outreach/detect/setSwitch":      {ModuleOutreach, "主动探测：开关"},
+	"/v5/organization/outreach/detect/delete":         {ModuleOutreach, "主动探测：删除"},
 
 	"/v5/organization/loginSolve/manage/setSwitch":      {ModuleLoginSolve, "管理页：开关"},
 	"/v5/organization/loginSolve/manage/batchSetConfig": {ModuleLoginSolve, "管理页：批量配置"},

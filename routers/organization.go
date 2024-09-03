@@ -603,6 +603,12 @@ func InitOrganizationRouter() *gin.Engine {
 						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalEdit"))
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalDelete"))
 					}
+					detect := outreach.Group("detect/")
+					{
+						detect.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectAdd"))
+						detect.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectEdit"))
+						detect.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectDelete"))
+					}
 				} //外接设备
 
 				//口令破解

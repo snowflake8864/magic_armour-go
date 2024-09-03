@@ -561,6 +561,12 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, outreach3.GlobalEdit{})
 	key = consts.ValidatorPrefixOrg + "OutreachGlobalDelete"
 	containers.Set(key, outreach3.GlobalDelete{})
+	key = consts.ValidatorPrefixOrg + "OutreachDetectAdd"
+	containers.Set(key, outreach3.DetectAdd{})
+	key = consts.ValidatorPrefixOrg + "OutreachDetectEdit"
+	containers.Set(key, outreach3.DetectEdit{})
+	key = consts.ValidatorPrefixOrg + "OutreachDetectDelete"
+	containers.Set(key, outreach3.DetectDelete{})
 
 	//口令破解
 	key = consts.ValidatorPrefixOrg + "LoginSolveManagePage"

@@ -12,3 +12,8 @@ type Id struct {
 type SIp struct {
 	Ip string `form:"ip" json:"ip" binding:"omitempty,max=128"`
 }
+
+type AddAddr struct {
+	Title string `form:"title" json:"title" binding:"required,max=64"`
+	Addr  string `form:"addr" json:"addr" binding:"required,max=128"`
+}
