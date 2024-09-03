@@ -3,7 +3,6 @@ package agent
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
-	"goskeleton/app/global/enums/enum_outreach"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/task_service"
@@ -23,11 +22,6 @@ func (u *OutreachController) GetDetect(ctx *gin.Context) {
 
 	openSwitch := enums.SwitchOn
 	result := OutreachResp{} //需初始化
-
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://www.baidu.com"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://hj.veda.com:10110"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://192.168.15.6:443"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "http://192.168.16.80:8030"))
 
 	//全局策略
 	globalModels := outreach_models.CreateDetectFactory().GetListByConditions(outreach_models.SearchConditions{
