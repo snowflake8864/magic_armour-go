@@ -25,31 +25,32 @@ type AgentCalc struct {
 }
 
 type SearchConditions struct {
-	OrgId            int64
-	OrgIds           []int64
-	AgentId          string
-	AgentIds         []string
-	HostName         string
-	AgentIp          string
-	NetIp            string
-	PlatformType     int
-	IsOnline         *int
-	IsSafe           *int
-	GrantStatus      int
-	GrantExpireAtLte string
-	Alias            string
-	ContactName      string
-	DeptIds          []int64
-	LiveAtLte        string
-	CreateAtGte      string
-	CreateAtLte      string
-	ProcessSwitch    *int
-	DllSwitch        *int
-	TamperSwitch     *int
-	BlackmailSwitch  *int
-	PortSwitch       *int
-	PlugSwitch       *int
-	UsbSwitch        *int
+	OrgId               int64
+	OrgIds              []int64
+	AgentId             string
+	AgentIds            []string
+	HostName            string
+	AgentIp             string
+	NetIp               string
+	PlatformType        int
+	IsOnline            *int
+	IsSafe              *int
+	GrantStatus         int
+	GrantExpireAtLte    string
+	Alias               string
+	ContactName         string
+	DeptIds             []int64
+	LiveAtLte           string
+	CreateAtGte         string
+	CreateAtLte         string
+	ProcessSwitch       *int
+	DllSwitch           *int
+	TamperSwitch        *int
+	BlackmailSwitch     *int
+	PortSwitch          *int
+	PlugSwitch          *int
+	UsbSwitch           *int
+	OutreachAlarmSwitch *int
 }
 
 type baseAgent struct {
@@ -206,6 +207,12 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "usb_switch",
 			Val: *condition.UsbSwitch,
+		})
+	}
+	if condition.OutreachAlarmSwitch != nil && *condition.OutreachAlarmSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "outreach_alarm_switch",
+			Val: *condition.OutreachAlarmSwitch,
 		})
 	}
 	return wheres

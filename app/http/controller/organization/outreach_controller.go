@@ -174,3 +174,35 @@ func (u *OutreachController) DeleteForGlobal(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// ListForDetect 主动探测: 列表
+func (u *OutreachController) ListForDetect(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//查询条件
+	condition := outreach_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+	}
+
+	models := outreach_models.CreateDetectFactory().GetListByConditions(condition)
+
+	response.SuccessReturnData(ctx, (&org_trans.OutreachTrans{}).TransDetectList(models))
+}
+
+// SetSwitchForDetect 主动探测: 设置开关
+func (u *OutreachController) SetSwitchForDetect(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := outreach_models.GlobalModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := outreach_service.CreateGlobalFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
