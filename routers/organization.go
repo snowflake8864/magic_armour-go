@@ -588,7 +588,6 @@ func InitOrganizationRouter() *gin.Engine {
 				//外联管控
 				outreach := vOrg.Group("outreach/")
 				{
-
 					manage := outreach.Group("manage/")
 					{
 						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachManagePage"))
@@ -606,12 +605,13 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					detect := outreach.Group("detect/")
 					{
+						detect.POST("list", (&organization.OutreachController{}).ListForDetect)
 						detect.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectAdd"))
 						detect.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectSetSwitch"))
 						detect.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectEdit"))
 						detect.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectDelete"))
 					}
-				} //外接设备
+				} //外联管控
 
 				//口令破解
 				loginSolve := vOrg.Group("loginSolve/")

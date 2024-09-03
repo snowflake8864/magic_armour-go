@@ -48,6 +48,7 @@ func (t *OutreachTrans) TransDetectList(models []*outreach_models.DetectModel) i
 		for _, model := range models {
 			data := make(map[string]interface{})
 			data["id"] = fmt.Sprintf("%d", model.Id)
+			data["type"] = model.Type
 			data["title"] = model.Title
 			data["addr"] = model.Addr
 			data["method"] = model.Method
