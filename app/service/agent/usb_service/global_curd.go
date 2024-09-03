@@ -26,7 +26,7 @@ func (crd *GlobalCurd) addTask(orgId int64, remark string) {
 		OrgId:    orgId,
 		IsOnline: &isOnline,
 	}
-	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil || len(ids) > 0 {
+	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil && len(ids) > 0 {
 		tasks := []int{
 			enum_task.TypeUsbWhiteDownload,
 			enum_task.TypeUsbBlackDownload,

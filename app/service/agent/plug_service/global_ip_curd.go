@@ -29,7 +29,7 @@ func (crd *GlobalIpCurd) addTask(orgId int64, remark string) {
 		IsOnline:   &isOnline,
 		PlugSwitch: &switchOn,
 	}
-	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil || len(ids) > 0 {
+	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil && len(ids) > 0 {
 		task_service.CreateCurdFactory().AddTaskForAgents(orgId, ids, enum_task.TypePlugIpBlackDownload, remark)
 	}
 }
