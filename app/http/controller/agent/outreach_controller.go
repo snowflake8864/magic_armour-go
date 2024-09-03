@@ -24,10 +24,10 @@ func (u *OutreachController) GetDetect(ctx *gin.Context) {
 	openSwitch := enums.SwitchOn
 	result := OutreachResp{} //需初始化
 
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "https://www.baidu.com"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "https://hj.veda.com:10110"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "https://192.168.15.6:443"))
-	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "http://192.168.16.80:8030"))
+	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://www.baidu.com"))
+	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://hj.veda.com:10110"))
+	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "https://192.168.15.6:443"))
+	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, enum_outreach.MethodGet, "http://192.168.16.80:8030"))
 
 	//全局策略
 	globalModels := outreach_models.CreateDetectFactory().GetListByConditions(outreach_models.SearchConditions{
@@ -36,7 +36,7 @@ func (u *OutreachController) GetDetect(ctx *gin.Context) {
 	})
 	if globalModels != nil && len(globalModels) > 0 {
 		for _, model := range globalModels {
-			result.List = append(result.List, u.formatDetect(model.Type, model.Addr))
+			result.List = append(result.List, u.formatDetect(model.Type, model.Method, model.Addr))
 		}
 	}
 
@@ -47,10 +47,10 @@ type OutreachResp struct {
 	List []map[string]interface{} `json:"list"`
 }
 
-func (u *OutreachController) formatDetect(Type int, addr string) map[string]interface{} {
+func (u *OutreachController) formatDetect(Type int, method, addr string) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["type"] = Type
-	data["method"] = "get"
+	data["method"] = method
 	data["addr"] = addr
 	return data
 }
