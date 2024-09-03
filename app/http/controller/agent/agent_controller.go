@@ -55,6 +55,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 		enum_dictionary.AgentHttpUrl,
 		enum_dictionary.AgentHttpPort,
 		enum_dictionary.AgentLogSendProto,
+		enum_dictionary.AgentOutreachDetectTime,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
@@ -92,9 +93,15 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["self_protect_switch"] = agentModel.SelfProtectSwitch
 	//内核升级
 	mapConf["kernel_upgrade_switch"] = agentModel.KernelUpgradeSwitch
+
 	//外联管控间隔时间(秒)
 	mapConf["outreach_switch"] = agentModel.OutreachAlarmSwitch
-	mapConf["outreach_time"] = 180
+	outreachTime := 300
+	if val, isOK := mapDict[enum_dictionary.AgentOutreachDetectTime]; isOK {
+		outreachTime = string_helper.ToInt(val)
+	}
+	mapConf["outreach_time"] = outreachTime
+
 	//agent通讯日志
 	mapConf["syslog_switch"] = enums.SwitchOff
 	mapConf["syslog_dns_switch"] = agentModel.SyslogDnsSwitch

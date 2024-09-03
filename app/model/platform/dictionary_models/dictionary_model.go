@@ -85,7 +85,10 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentProcGlobalLimit + `', '2000','终端：进程全局名单限制数目'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentCompatibleDefaultOrg + `', '1','终端：兼容以前离线版本默认企业编号'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentCompatibleDefaultUser + `', '1','终端：兼容以前离线版本默认用户编号'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentOutreachDetectMax + `', '10','终端：外联探测最大数(不超过20)'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentOutreachDetectTime + `', '180','终端：外联探测间隔时间(秒)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentTypes + `', '` + json_helper.Encode(enum_agent.AgentTypeDefault()) + `','终端：终端类型'),
+
 
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenSwitch + `', '0','威胁情报:开关'),
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenUrl + `', '','威胁情报:服务器地址'),
