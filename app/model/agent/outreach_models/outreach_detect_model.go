@@ -21,6 +21,7 @@ type DetectModel struct {
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
 	Type       int    `json:"type"`
+	Method     string `json:"method"`
 	Addr       string `json:"addr"`
 	Title      string `json:"title"`
 	OpenSwitch int    `json:"open_switch"`
@@ -46,6 +47,7 @@ func (m *DetectModel) CreateTable() bool {
 			id BIGINT NOT NULL DEFAULT '0',
 			create_id int NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			type tinyint(1) NOT NULL DEFAULT '0' COMMENT '类型',
+			method varchar(8) NOT NULL DEFAULT '' COMMENT '方法',
 			addr varchar(256) NOT NULL DEFAULT '' COMMENT '地址',
 			title varchar(128) NOT NULL DEFAULT '' COMMENT '标题',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
