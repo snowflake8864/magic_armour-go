@@ -598,6 +598,7 @@ func InitOrganizationRouter() *gin.Engine {
 					global := outreach.Group("global/")
 					{
 						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalPage"))
+						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalSetSwitch"))
 						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalAdd"))
 						global.POST("fastAdd", (&organization.OutreachController{}).FastAddForGlobal)
 						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachGlobalEdit"))
@@ -606,6 +607,7 @@ func InitOrganizationRouter() *gin.Engine {
 					detect := outreach.Group("detect/")
 					{
 						detect.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectAdd"))
+						detect.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectSetSwitch"))
 						detect.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectEdit"))
 						detect.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"OutreachDetectDelete"))
 					}

@@ -555,6 +555,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, outreach3.ManageBatchSetConfig{})
 	key = consts.ValidatorPrefixOrg + "OutreachGlobalPage"
 	containers.Set(key, outreach3.GlobalPage{})
+	key = consts.ValidatorPrefixOrg + "OutreachGlobalSetSwitch"
+	containers.Set(key, outreach3.GlobalSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "OutreachGlobalAdd"
 	containers.Set(key, outreach3.GlobalAdd{})
 	key = consts.ValidatorPrefixOrg + "OutreachGlobalEdit"
@@ -563,6 +565,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, outreach3.GlobalDelete{})
 	key = consts.ValidatorPrefixOrg + "OutreachDetectAdd"
 	containers.Set(key, outreach3.DetectAdd{})
+	key = consts.ValidatorPrefixOrg + "OutreachDetectSetSwitch"
+	containers.Set(key, outreach3.DetectSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "OutreachDetectEdit"
 	containers.Set(key, outreach3.DetectEdit{})
 	key = consts.ValidatorPrefixOrg + "OutreachDetectDelete"
