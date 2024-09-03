@@ -127,6 +127,7 @@
       40 4 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U day -M once -A ten >> /var/log/armour_crontab.log 2>&1
       
       ## 每天两次, 已按顺序使用
+      # 从进程或模块添加到威胁情报缓存
       30 3,13 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U day -M every -A zero >> /var/log/armour_crontab.log 2>&1
       31 3,13 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -U day -M every -A one >> /var/log/armour_crontab.log 2>&1
     
