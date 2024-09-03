@@ -22,9 +22,7 @@ func (u *OutreachController) GetDetect(ctx *gin.Context) {
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeOutreachDetectDownload}, ctx.ClientIP())
 
 	openSwitch := enums.SwitchOn
-	result := OutreachResp{
-		Time: 180,
-	} //需初始化
+	result := OutreachResp{} //需初始化
 
 	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "https://www.baidu.com"))
 	result.List = append(result.List, u.formatDetect(enum_outreach.DetectTypeDomain, "https://hj.veda.com:10110"))
@@ -46,7 +44,6 @@ func (u *OutreachController) GetDetect(ctx *gin.Context) {
 }
 
 type OutreachResp struct {
-	Time int                      `json:"time"`
 	List []map[string]interface{} `json:"list"`
 }
 
