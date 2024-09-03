@@ -5,4 +5,6 @@ const (
 	IpTypeBlack int = 2 //IP类型： 黑名单
 
 	DetectTypeDomain int = 1 //探测类型：域名
+
+	MethodGet string = "get" //探测方法
 )
