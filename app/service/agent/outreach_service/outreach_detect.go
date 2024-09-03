@@ -3,13 +3,16 @@ package outreach_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_outreach"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateDetectFactory() *DetectCurd {
@@ -36,8 +39,13 @@ func (crd *DetectCurd) addTask(orgId int64, remark string) {
 
 // Add 新增
 func (crd *DetectCurd) Add(param *outreach_models.DetectModel) error {
-	if total := crd.masterModel.Count(outreach_models.SearchConditions{OrgId: param.OrgId}); total > 0 {
-		return errors.New("已存在相同策略，不能重复添加")
+
+	//是否超过限制
+	limit := string_helper.ToInt64(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentOutreachDetectMax))
+	if limit > 0 {
+		if crd.masterModel.Count(outreach_models.SearchConditions{OrgId: param.OrgId}) > limit {
+			return errors.New("探测名单已达到最大限制")
+		}
 	}
 
 	param.Id = variable.SnowFlake.GetId()
