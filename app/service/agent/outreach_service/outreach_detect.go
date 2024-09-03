@@ -136,6 +136,8 @@ func (crd *DetectCurd) SetSwitch(param *outreach_models.DetectModel, isRoot int)
 		return errors.New("保存失败")
 	}
 
+	crd.addTask(hashModel.OrgId, "开关")
+
 	return nil
 }
 
@@ -160,6 +162,8 @@ func (crd *DetectCurd) DeleteById(param *outreach_models.DetectModel, isRoot int
 	}) {
 		return errors.New("删除失败")
 	}
+
+	crd.addTask(hashModel.OrgId, "开关")
 
 	return nil
 }

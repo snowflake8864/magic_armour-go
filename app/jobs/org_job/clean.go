@@ -99,6 +99,9 @@ func Clean(orgId int64) {
 	outreach_models.CreateGlobalFactory().DeleteByConditions(outreach_models.SearchConditions{
 		OrgId: orgId,
 	})
+	outreach_models.CreateDetectFactory().DeleteByConditions(outreach_models.SearchConditions{
+		OrgId: orgId,
+	})
 
 	//告警
 	alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
