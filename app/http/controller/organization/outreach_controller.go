@@ -192,7 +192,7 @@ func (u *OutreachController) ListForDetect(ctx *gin.Context) {
 func (u *OutreachController) SetSwitchForDetect(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	param := outreach_models.GlobalModel{
+	param := outreach_models.DetectModel{
 		OrgId:      loginInfo.OrgId,
 		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
@@ -200,7 +200,63 @@ func (u *OutreachController) SetSwitchForDetect(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := outreach_service.CreateGlobalFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := outreach_service.CreateDetectFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// AddForDetect 主动探测: 添加
+func (u *OutreachController) AddForDetect(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := outreach_models.DetectModel{
+		OrgId:      loginInfo.OrgId,
+		Addr:       ctx.GetString(consts.ValidatorPrefixOrg + "addr"),
+		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+	if err := outreach_service.CreateDetectFactory().Add(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// EditForDetect 主动探测: 编辑
+func (u *OutreachController) EditForDetect(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := outreach_models.DetectModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+		Addr:       ctx.GetString(consts.ValidatorPrefixOrg + "addr"),
+		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := outreach_service.CreateDetectFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// DeleteForDetect 主动探测: 删除
+func (u *OutreachController) DeleteForDetect(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := outreach_models.DetectModel{
+		OrgId:      loginInfo.OrgId,
+		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+		UpdateId:   loginInfo.UserId,
+		UpdateName: loginInfo.Username,
+	}
+
+	if err := outreach_service.CreateDetectFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
