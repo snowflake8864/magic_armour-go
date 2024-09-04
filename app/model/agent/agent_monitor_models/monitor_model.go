@@ -69,8 +69,10 @@ func (m *MonitorModel) CreateTable() bool {
 			mem_usage FLOAT NOT NULL  DEFAULT '0.00' COMMENT '内存:用量%',
 			mem_tops string NOT NULL  DEFAULT '' COMMENT '内存:占用资源最多进程(json)',
 			hd_size varchar(64)  NOT NULL  DEFAULT '' COMMENT '硬盘:大小',
-			hd_usage FLOAT  NOT NULL  DEFAULT '0.00' COMMENT '硬盘:用量%',
-			self_stat string  DEFAULT '' COMMENT '本身统计(json)'
+			hd_usage FLOAT  NOT NULL  DEFAULT '0.00' COMMENT '硬盘:用量%',	
+			self_stat string  DEFAULT '' COMMENT '本身统计(json)',
+			net_rx FLOAT  NOT NULL  DEFAULT '0.00' COMMENT '网口:接收(kb)',
+			net_tx FLOAT  NOT NULL  DEFAULT '0.00' COMMENT '网口:发送(kb)'
 		)
 		DUPLICATE  KEY(org_id, agent_id, monitor_day, created_at)
 		DISTRIBUTED BY HASH(agent_id) BUCKETS AUTO 
