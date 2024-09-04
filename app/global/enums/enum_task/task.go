@@ -72,6 +72,7 @@ var EnumMap = map[string]map[int]string{
 		TypeAgentUpgrade:              "升级终端",
 		TypeAgentUninstall:            "卸载终端",
 		TypeResetUUid:                 "重置设备ID",
+		TypeOutreachDetectDownload:    "下载外联主动探测名单",
 	},
 }
 
@@ -106,5 +107,6 @@ var WebMapInt = map[string][]int{
 		TypeAgentUpgrade,
 		TypeAgentUninstall,
 		TypeResetUUid,
+		TypeOutreachDetectDownload,
 	},
 }
