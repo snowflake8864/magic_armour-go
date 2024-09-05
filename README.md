@@ -1,15 +1,15 @@
 ### 编译
-- 目标平台为 windows
-     
+## 目标平台为 windows
+
       go build -o app_agent.exe    -ldflags "-w -s"  -trimpath ./cmd/agent/main.go
       go build -o app_api.exe      -ldflags "-w -s"  -trimpath ./cmd/api/main.go
       go build -o app_cli.exe      -ldflags "-w -s"  -trimpath ./cmd/cli/main.go
       go build -o app_org.exe      -ldflags "-w -s"  -trimpath ./cmd/organization/main.go
       go build -o app_platform.exe -ldflags "-w -s"  -trimpath ./cmd/platform/main.go
 
-  
-- 目标平台为 linux(通过 windows 系统直接编译出 linux 可执行文件)
-  
+
+## 目标平台为 linux(通过 windows 系统直接编译出 linux 可执行文件)
+
       // cpu架构
       go env -w GOARCH=amd64
       // 程序运行的最终系统，linux、windows、darwin(苹果macos系统)
