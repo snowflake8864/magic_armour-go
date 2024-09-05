@@ -22,6 +22,7 @@ const (
 	TypeCommonAgentPutMonitor    string = "common_agent_put_monitor"     //类型：终端上传监控数据
 	TypeCommonAgentOpenAutoWhite string = "common_agent_open_auto_white" //类型：终端开启自动白名单
 	TypeCommonOrgClean           string = "common_org_clean"             //类型：企业清空业务数据
+	TypeCommonEmailAlarmCycle    string = "common_email_alarm_cycle"     //类型：邮件安全告警通知(周期)
 
 	TypeProcessBatchPutMaster  string = "process_batch_put_master"  //类型：上传主进程
 	TypeProcessBatchPutRunning string = "process_batch_put_running" //类型：上传运行中进程

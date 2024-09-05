@@ -78,165 +78,16 @@ func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
 					}
 
 					//进入队列
-					producer_kafka.CreateProducerFactory().ProduceCrontab(ctx, &kafka_go.MessageStruct{
+					crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
 						Type:    kafka_go.TypeCrontabAlarmStat,
 						AgentId: startAt,
 						AgentOS: endAt,
 						Data:    json_helper.Encode(&param),
 					})
-					//计算告警
-					//crd.calcAlarm(&param, startAt, endAt)
-					//alarm_service.CreateStatDailyFactory().Add(&param)
 				}
 			}
 		}
 	}
-}
-
-func (crd *AlarmCmd) calcAlarm(param *alarm_stat_models.StatDailyModel, startAt, endAt string) {
-	conditions1 := alarm_models.SearchConditions{
-		OrgId:   param.OrgId,
-		AgentId: param.AgentId,
-	}
-	conditions2 := alarm_models.SearchConditions{
-		OrgId:       param.OrgId,
-		AgentId:     param.AgentId,
-		CreateAtGte: startAt,
-		CreateAtLte: endAt,
-	}
-
-	column1 := alarm_models.CreateProcessFactory().ColumnCalc(false, false, false, true)
-
-	//进程告警
-	ProcessFact := alarm_models.CreateProcessFactory()
-	calc1 := ProcessFact.CalcByConditions(conditions1, column1)
-	calc2 := ProcessFact.CalcByConditions(conditions2, column1)
-	param.ProcessTotal = calc1.TotalNumber
-	param.ProcessHandled = calc1.HandledNumber
-	param.ProcessAddTotal = calc2.TotalNumber
-	param.ProcessAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//模块告警
-	DllFact := alarm_models.CreateDllFactory()
-	calc1 = DllFact.CalcByConditions(conditions1, column1)
-	calc2 = DllFact.CalcByConditions(conditions2, column1)
-	param.DllTotal = calc1.TotalNumber
-	param.DllHandled = calc1.HandledNumber
-	param.DllAddTotal = calc2.TotalNumber
-	param.DllAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//防篡改告警
-	TamperFact := alarm_models.CreateTamperFactory()
-	calc1 = TamperFact.CalcByConditions(conditions1, column1)
-	calc2 = TamperFact.CalcByConditions(conditions2, column1)
-	param.TamperTotal = calc1.TotalNumber
-	param.TamperHandled = calc1.HandledNumber
-	param.TamperAddTotal = calc2.TotalNumber
-	param.TamperAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//勒索告警
-	BlackmailFact := alarm_models.CreateBlackmailFactory()
-	calc1 = BlackmailFact.CalcByConditions(conditions1, column1)
-	calc2 = BlackmailFact.CalcByConditions(conditions2, column1)
-	param.BlackmailTotal = calc1.TotalNumber
-	param.BlackmailHandled = calc1.HandledNumber
-	param.BlackmailAddTotal = calc2.TotalNumber
-	param.BlackmailAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//端口虚开告警
-	PortFact := alarm_models.CreatePortFactory()
-	calc1 = PortFact.CalcByConditions(conditions1, column1)
-	calc2 = PortFact.CalcByConditions(conditions2, column1)
-	param.PortTotal = calc1.TotalNumber
-	param.PortHandled = calc1.HandledNumber
-	param.PortAddTotal = calc2.TotalNumber
-	param.PortAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//封堵告警
-	PlugFact := alarm_models.CreatePlugFactory()
-	calc1 = PlugFact.CalcByConditions(conditions1, column1)
-	calc2 = PlugFact.CalcByConditions(conditions2, column1)
-	param.PlugTotal = calc1.TotalNumber
-	param.PlugHandled = calc1.HandledNumber
-	param.PlugAddTotal = calc2.TotalNumber
-	param.PlugAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//外设告警
-	UsbFact := alarm_models.CreateUsbFactory()
-	calc1 = UsbFact.CalcByConditions(conditions1, column1)
-	calc2 = UsbFact.CalcByConditions(conditions2, column1)
-	param.UsbTotal = calc1.TotalNumber
-	param.UsbHandled = calc1.HandledNumber
-	param.UsbAddTotal = calc2.TotalNumber
-	param.UsbAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//外联告警
-	OutreachFact := alarm_models.CreateOutreachFactory()
-	calc1 = OutreachFact.CalcByConditions(conditions1, column1)
-	calc2 = OutreachFact.CalcByConditions(conditions2, column1)
-	param.OutreachTotal = calc1.TotalNumber
-	param.OutreachHandled = calc1.HandledNumber
-	param.OutreachAddTotal = calc2.TotalNumber
-	param.OutreachAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//口令破解告警
-	LoginFact := alarm_models.CreateLoginFactory()
-	calc1 = LoginFact.CalcByConditions(conditions1, column1)
-	calc2 = LoginFact.CalcByConditions(conditions2, column1)
-	param.LoginTotal = calc1.TotalNumber
-	param.LoginHandled = calc1.HandledNumber
-	param.LoginAddTotal = calc2.TotalNumber
-	param.LoginAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
-	//自保告警
-	SelfFact := alarm_models.CreateSelfFactory()
-	calc1 = SelfFact.CalcByConditions(conditions1, column1)
-	calc2 = SelfFact.CalcByConditions(conditions2, column1)
-	param.SelfTotal = calc1.TotalNumber
-	param.SelfHandled = calc1.HandledNumber
-	param.SelfAddTotal = calc2.TotalNumber
-	param.SelfAddHandled = calc2.HandledNumber
-	param.Total += calc1.TotalNumber
-	param.Handled += calc1.HandledNumber
-	param.AddTotal += calc2.TotalNumber
-	param.AddHandled += calc2.HandledNumber
-
 }
 
 // Delete  删除
@@ -297,5 +148,21 @@ func (crd *AlarmCmd) Delete() {
 
 // EmailNotice  邮件通知
 func (crd *AlarmCmd) EmailNotice() {
-	variable.ZapLog.Sugar().Debug("EmailNotice")
+	variable.ZapLog.Sugar().Debug("EmailNotice start")
+
+	orgModels := crd.getOrgModels()
+
+	if len(orgModels) == 0 {
+		return
+	}
+	ctx := context.Background()
+	for _, orgModel := range orgModels {
+		//进入队列
+		crd.queryClient.ProduceCommon(ctx, &kafka_go.MessageStruct{
+			Type: kafka_go.TypeCommonEmailAlarmCycle,
+			Data: json_helper.Encode(orgModel),
+		})
+	}
+
+	variable.ZapLog.Sugar().Debug("EmailNotice end")
 }

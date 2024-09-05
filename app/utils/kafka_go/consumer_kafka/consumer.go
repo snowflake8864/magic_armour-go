@@ -105,6 +105,9 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeCommonOrgClean:
 			org_job.Clean(data.OrgId)
 			break
+		case kafka_go.TypeCommonEmailAlarmCycle:
+			org_job.Clean(data.OrgId)
+			break
 
 		case kafka_go.TypeProcessBatchPutMaster:
 			proc_job.BatchUploadProcess(data.OrgId, data.AgentId, data.Data)

@@ -1,7 +1,6 @@
 package gomail_factory
 
 import (
-	"fmt"
 	"gopkg.in/gomail.v2"
 	"goskeleton/app/global/variable"
 	"strings"
@@ -14,11 +13,6 @@ func CreateMailerFactory() *Mailer {
 	password := variable.ConfigYml.GetString("EmailConfig.Password")
 	sendName := variable.ConfigYml.GetString("EmailConfig.SendName")
 	encryption := variable.ConfigYml.GetString("EmailConfig.Encryption")
-	fmt.Println("host:", host)
-	fmt.Println("port:", port)
-	fmt.Println("password:", password)
-	fmt.Println("sendName:", sendName)
-	fmt.Println("encryption:", encryption)
 
 	d := gomail.NewDialer(host, port, username, password)
 	if strings.ToLower(encryption) == "ssl" {
