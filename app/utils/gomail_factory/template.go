@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"math"
 )
 
 func CreateTemplateFactory() *Template {
@@ -34,10 +35,10 @@ type AlarmCycle struct {
 	DateStart  string
 	DateEnd    string
 	AlarmTotal int
-	AlarmList  []*AlarmCycleAlarm
+	AlarmList  []*AlarmCycleInfo
 }
 
-type AlarmCycleAlarm struct {
+type AlarmCycleInfo struct {
 	Name string
 	Add  int
 }
@@ -425,7 +426,8 @@ func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) 
 					<div class="pl"><span>主机名：</span>` + param.AgentHostname + `</div>
 					<div class="pl"><span>设备ID：</span>` + param.AgentId + `</div>
 					<div class="pl">
-					  <span>攻击IP：</span>`
+					  <span>攻击IP：</span>
+`
 		for ip, total := range param.AlarmLogin {
 			context += `
 					  <p>` + ip + `【攻击 ` + int_helper.IntToStr(total) + `次】</p>
@@ -437,6 +439,267 @@ func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) 
 				  </div>
         	</li>
 `
+	}
+	context += `
+		</ul>
+		<div class="danger"><span></span>请您及时处理安全风险。</div>
+ 	 </div>
+`
+	/********* 内容 E *********/
+
+	if !string_helper.IsEmpty(k.ImgFoot) {
+		context += `
+  	<img src="` + k.ImgFoot + `" alt="" width="720px">
+`
+	}
+
+	if !string_helper.IsEmpty(k.FootAbout) {
+		context += `
+	 <div class="txt-c">
+      <p class="about">` + k.FootAbout + `</p>
+      <p class="info">` + k.FootInfo + `</p>
+      <div class="link">
+        <a href="` + k.FootLinkHref + `" target="_blank" style="color:#fff;text-decoration: none;">` + k.FootLinkTxt + `</a>
+      </div>
+`
+		if !string_helper.IsEmpty(k.ImgWechat) {
+			context += `
+      <div style='text-align: center'>
+        <img src="` + k.ImgWechat + `" alt="" width="160px">
+      </div>
+      <p style="text-align: center; margin-top: 10px;">扫一扫</p>
+      <p style="text-align: center; padding-bottom: 50px;">关注微信公众号</p>
+`
+		}
+		context += `
+    </div>
+`
+	}
+
+	//head + <body><div class="center"> 的呼应
+	context += `
+  </div>
+</body>
+</html>
+`
+	return subject, context
+}
+
+type HardwareTimely struct {
+	Date          string
+	AgentId       string
+	AgentIp       string
+	AgentHostname string
+	UsageList     []*HardwareTimelyInfo
+}
+
+type HardwareTimelyInfo struct {
+	Name      string
+	Threshold int
+	Usage     float64
+}
+
+func (k *Template) GetHardwareTimely(param *HardwareTimely) (subject, context string) {
+	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Subject")
+	title := variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Title")
+
+	//head + <body><div class="center">
+	context = `
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<style type="text/css">
+    *{
+      margin: 0;
+      padding: 0;
+    }
+		html,body {
+      color: #343434;
+      font-size: 14px;
+    }
+    .center{
+      width: 720px;
+      margin: 0 auto;
+      background: #fff;
+    }
+    .txt-c{
+      margin: 0 24px;
+    }
+    .tit{
+      font-size: 16px;
+      font-weight: bold;
+      padding: 30px 0;
+      margin-bottom: 24px;
+      border-bottom: 1px solid #EBEBEB;
+    }
+    /* 中间表盘样式开始 */
+    .gauge-ul{
+      margin-bottom: 30px;
+    }
+    .gauge-ul li{
+      list-style: none;
+      width: 632px;
+      height: 162px;
+      background: #FFFFFF;
+      box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.11);
+      border-radius: 13px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .gauge-ul li .card-tit{
+      font-size: 14px;
+      font-family: MicrosoftYaHei;
+      color: #343434;
+      line-height: 14px;
+    }
+    .gauge-ul li .card-tit img{
+      float: left;
+      margin: -6px 10px 0 0;
+    }
+    .gauge-div{
+      margin-top: 20px;
+      padding: 0 16px;
+    }
+    .gauge-img{
+      width: 146px;
+      height: 121px;
+      background: url('https://hj.veda.com/static/img/email_gauge.png') no-repeat;
+      position: relative;
+      float: left;
+    }
+    .gauge-img img{
+      position: absolute;
+      left: 50%;
+      top: 32px;
+      margin: 0 0 0 -4.5px;
+      transform-origin: bottom;
+      -ms-transform-origin: bottom;
+      -webkit-transform-origin: bottom;
+    }
+    .gauge-top {
+      font-size: 12px;
+      color: #FF3B30;
+      text-align: center;
+      padding-top: 88px;
+    }
+    .gauge-bot{
+      font-size: 12px;
+      color: #999999;
+      text-align: center;
+      padding-top: 3px;
+    }
+    .gauge-txt{
+      padding: 19px 0 0 172px;
+    }
+    .gauge-txt .title{
+      font-size: 12px;
+      font-weight: bold;
+      color: #49505A;
+      margin-bottom: 10px;
+    }
+    .gauge-txt p{
+      font-size: 12px;
+      color: #343434;
+      margin-bottom: 7px;
+    }
+    .gauge-txt p span{
+      color: #A6A6A8;
+    }
+    /* 中间表盘样式结束 */
+    .danger{
+      width: 100%;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background: #fee8ea;
+      font-weight: bold;
+      color: #F5222D;
+      margin-bottom: 38px;
+    }
+    .danger span{
+      display: inline-block;
+      width: 16px;
+      height: 15px;
+      background: url('https://hj.veda.com/static/img/email_de.png') no-repeat;
+      margin-right: 12px;
+    }
+    .about{
+      font-size: 16px;
+      font-weight: bold;
+      margin: 44px 0 18px;
+      text-align: center;
+    }
+    .info{
+      text-indent: 24px;
+      line-height: 20px;
+    }
+    .link{
+      text-align: center;
+      margin: 32px 0 44px;
+    }
+    .link a{
+      display: inline-block;
+      width: 160px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      background: #267EFF;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #FFFFFF;
+      text-decoration: none;
+    }
+    .nodata{
+      display: block;
+      text-align: center;
+      margin: 39px 0;
+    }
+	</style>
+</head>
+<body>
+  <div class="center">
+`
+
+	if !string_helper.IsEmpty(k.ImgHead) {
+		context += `
+  	<img src="` + k.ImgHead + `" alt="" width="720px">
+`
+	}
+
+	/********* 内容 S *********/
+	context += `
+  	<div class="txt-c">
+	   <p class="tit">` + title + `</p>
+       <ul class="gauge-ul">
+`
+	if len(param.UsageList) > 0 {
+		for _, item := range param.UsageList {
+			rate := float_helper.Add(float_helper.Mul(item.Usage, 2.59, 2), 233, 2)
+			rotate := float_helper.Float64ToStr(math.Round(rate))
+
+			context += `
+		 	<li>
+			  <p class="card-tit"><img src="https://hj.veda.com/static/img/email_gauge2.png" width="23px" />
+` + param.Date + `终端触发了 ` + item.Name + ` ` + int_helper.IntToStr(item.Threshold) + `%</p>
+			  <div class="gauge-div">
+				<div class="gauge-img">
+				  <img src="https://hj.veda.com/static/img/email_gauge1.png" alt="" width="9px"
+style="transform: rotate(` + rotate + `deg); -ms-transform: rotate` + rotate + `deg); -webkit-transform: rotate(` + rotate + `deg);">
+				  <p class="gauge-top">` + int_helper.IntToStr(item.Threshold) + `%</p>
+				  <p class="gauge-bot">` + item.Name + `</p>
+				</div>
+				<div class="gauge-txt">
+				  <div class="title">终端信息</div>
+				  <p><span>IP地址：</span>` + param.AgentIp + `</p>
+				  <p><span>主机名：</span>` + param.AgentHostname + `</p>
+				  <p><span>设备ID：</span>` + param.AgentId + `</p>
+				</div>
+			  </div>
+			</li>
+`
+		}
 	}
 	context += `
 		</ul>

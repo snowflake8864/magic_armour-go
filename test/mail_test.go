@@ -32,7 +32,7 @@ func TestEmailNotice(t *testing.T) {
 	alarmList = append(alarmList, &gomail_factory.AlarmCycleAlarm{
 		Name: "进程告警",
 		Add:  10,
-	}, &gomail_factory.AlarmCycleAlarm{
+	}, &gomail_factory.AlarmCycleInfo{
 		Name: "模块告警",
 		Add:  53,
 	})
@@ -49,7 +49,7 @@ func TestEmailNotice(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 	fmt.Println("=============")
-	param1 := gomail_factory.AlarmCycle{
+	param1 := gomail_factory.AlarmCycleInfo{
 		DateStart:  "2024-08-30 00:00:00",
 		DateEnd:    "2024-09-06 00:00:00",
 		AlarmTotal: 0,
@@ -60,7 +60,7 @@ func TestEmailNotice(t *testing.T) {
 		fmt.Println(err.Error())
 	}*/
 
-	param2 := gomail_factory.AlarmTimely{
+	/*param2 := gomail_factory.AlarmTimely{
 		Date:          date_helper.CurDatetime(),
 		AgentId:       "8ac94fd732cfe3628922262747607f67",
 		AgentIp:       "192.168.4.6",
@@ -69,6 +69,32 @@ func TestEmailNotice(t *testing.T) {
 	}
 	subject2, context2 := gomail_factory.CreateTemplateFactory().GetAlarmTimely(&param2)
 	if err := fact.SendHtmlMsg(addr, subject2, context2); err != nil {
+		fmt.Println(err.Error())
+	}*/
+
+	var usageList []*gomail_factory.HardwareTimelyInfo
+	usageList = append(usageList, &gomail_factory.HardwareTimelyInfo{
+		Name:      "CPU阈值",
+		Threshold: 80,
+		Usage:     90.55,
+	}, &gomail_factory.HardwareTimelyInfo{
+		Name:      "内存阈值",
+		Threshold: 70,
+		Usage:     85.34,
+	}, &gomail_factory.HardwareTimelyInfo{
+		Name:      "硬盘阈值",
+		Threshold: 60,
+		Usage:     65.99,
+	})
+	param3 := gomail_factory.HardwareTimely{
+		Date:          date_helper.CurDatetime(),
+		AgentId:       "8ac94fd732cfe3628922262747607f67",
+		AgentIp:       "192.168.4.6",
+		AgentHostname: "local.name",
+		UsageList:     usageList,
+	}
+	subject3, context3 := gomail_factory.CreateTemplateFactory().GetHardwareTimely(&param3)
+	if err := fact.SendHtmlMsg(addr, subject3, context3); err != nil {
 		fmt.Println(err.Error())
 	}
 }
