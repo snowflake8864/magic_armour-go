@@ -73,7 +73,7 @@ func Send(orgId int64) {
 	} else if noticeConfig.CycleInterval == enum_safety_report.AlarmNoticeCycleMonth {
 		if d := date_helper.DayInCurrMonth(); d != 1 {
 			variable.ZapLog.Sugar().Debug("今天不是1号, orgId=", orgId)
-			//return
+			return
 		}
 		//上个月
 		month, monthFirstDay, monthLastDay := date_helper.CalcByMonth(-1)
