@@ -27,3 +27,25 @@ func TestGomail(t *testing.T) {
 func TestEmailNotice(t *testing.T) {
 	alarm_cmd.CreateCmdFactory().EmailNotice()
 }
+
+func TestGetAlarmCycle(t *testing.T) {
+	var alarmList []*gomail_factory.AlarmCycleAlarm
+	alarmList = append(alarmList, &gomail_factory.AlarmCycleAlarm{
+		Name: "进程告警",
+		Add:  10,
+	}, &gomail_factory.AlarmCycleAlarm{
+		Name: "模块告警",
+		Add:  53,
+	})
+
+	param := gomail_factory.AlarmCycle{
+		DateStart:  "2024-08-30 00:00:00",
+		DateEnd:    "2024-09-06 00:00:00",
+		AlarmTotal: 63,
+		AlarmList:  alarmList,
+	}
+	subject, context := gomail_factory.CreateTemplateFactory().GetAlarmCycle(&param)
+	fmt.Println(subject)
+	fmt.Println("=============================")
+	fmt.Println(context)
+}

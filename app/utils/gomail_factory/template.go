@@ -43,23 +43,23 @@ type AlarmCycleAlarm struct {
 }
 
 func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
-	subject = variable.ConfigYml.GetString("AppCustomConfig.AlarmCycle.Subject")
-	titleNoData := variable.ConfigYml.GetString("AppCustomConfig.AlarmCycle.TitleNoData")
-	titleHaveData := variable.ConfigYml.GetString("AppCustomConfig.AlarmCycle.TitleHaveData")
+	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.Subject")
+	titleNoData := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.TitleNoData")
+	titleHaveData := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.TitleHaveData")
 
-	//head + <context><div class="center">
+	//head + <body><div class="center">
 	context = `
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset=\"utf-8\">
+	<meta charset="utf-8">
 	<title></title>
-	<style type=\"text/css\">
+	<style type="text/css">
     *{
       margin: 0;
       padding: 0;
     }
-		html,context {
+		html,body {
       color: #343434;
       font-size: 14px;
     }
@@ -78,80 +78,52 @@ func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
       margin-bottom: 24px;
       border-bottom: 1px solid #EBEBEB;
     }
-    /* 中间表盘样式开始 */
-    .gauge-ul{
-      margin-bottom: 30px;
+    .blue{
+      color: #267EFF;
     }
-    .gauge-ul li{
+    .ul{
+      width: 100%;
+      overflow: hidden;
+    }
+    .ul .li{
+      width: 100%;
       list-style: none;
-      width: 632px;
-      height: 162px;
-      background: #FFFFFF;
-      box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.11);
-      border-radius: 13px;
-      padding: 20px;
-      margin-bottom: 20px;
+      line-height: 24px;
+      margin: 24px 0;
+      overflow: hidden;
     }
-    .gauge-ul li .card-tit{
-      font-size: 14px;
-      font-family: MicrosoftYaHei;
-      color: #343434;
-      line-height: 14px;
-    }
-    .gauge-ul li .card-tit img{
+    .line-bg{
       float: left;
-      margin: -6px 10px 0 0;
+      width: 66%;
+      height: 12px;
+      background: #EFF3F6;
+      border-radius: 8px;
+      margin-top: 7px;
     }
-    .gauge-div{
-      margin-top: 20px;
-      padding: 0 16px;
+    .total{
+      float: right;
+      font-size: 12px;
     }
-    .gauge-img{
-      width: 146px;
-      height: 121px;
-      background: url('https://hj.veda.com/static/img/email_gauge.png') no-repeat;
-      position: relative;
+    .num{
       float: left;
-    }
-    .gauge-img img{
-      position: absolute;
-      left: 50%;
-      top: 32px;
-      margin: 0 0 0 -4.5px;
-      transform-origin: bottom;
-      -ms-transform-origin: bottom;
-      -webkit-transform-origin: bottom;
-    }
-    .gauge-top {
-      font-size: 12px;
-      color: #FF3B30;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
       text-align: center;
-      padding-top: 88px;
+      background: url('https://hj.veda.com/static/img/email_li-bg.png') no-repeat center;
+      margin-right: 16px;
     }
-    .gauge-bot{
-      font-size: 12px;
-      color: #999999;
-      text-align: center;
-      padding-top: 3px;
+    .line{
+      height: 12px;
+      background: #267EFF;
+      border-radius: 8px;
     }
-    .gauge-txt{
-      padding: 19px 0 0 172px;
+    .txt{
+      float: left;
+      width: 100px;
+      border: none;
+      background: none;
     }
-    .gauge-txt .title{
-      font-size: 12px;
-      font-weight: bold;
-      color: #49505A;
-      margin-bottom: 10px;
-    }
-    .gauge-txt p{
-      font-size: 12px;
-      color: #343434;
-      margin-bottom: 7px;
-    }
-    .gauge-txt p span{
-      color: #A6A6A8;
-    }
-    /* 中间表盘样式结束 */
     .danger{
       width: 100%;
       height: 40px;
@@ -202,7 +174,7 @@ func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
     }
 	</style>
 </head>
-<context>
+<body>
   <div class="center">
 `
 
@@ -278,10 +250,10 @@ func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
 `
 	}
 
-	//head + <context><div class="center"> 的呼应
+	//head + <body><div class="center"> 的呼应
 	context += `
   </div>
-</context>
+</body>
 </html>
 `
 	return subject, context
