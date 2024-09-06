@@ -22,3 +22,7 @@ func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 
 	return errors.New("保存失败")
 }
+
+func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
+
+}
