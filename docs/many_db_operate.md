@@ -7,7 +7,7 @@
 >   1.这里直接提取了相关的单元测试示例代码,更多其他操作仍然建议参考单元测试示例代码.  
 ```code   
 
-func TestCustomeParamsConnMysql(t *testing.T) {
+func TestCustomeParamsConnMysql(context *testing.T) {
 	// 定义一个查询结果接受结构体
 	type DataList struct {
 		Id            int
@@ -51,7 +51,7 @@ func TestCustomeParamsConnMysql(t *testing.T) {
 		if res.Error==nil{
 			fmt.Println("write 数据库更新成功")
 		}else{
-			t.Errorf("单元测试失败，相关错误：%s\n",res.Error.Error())
+			context.Errorf("单元测试失败，相关错误：%s\n",res.Error.Error())
 		}
 	}
 }

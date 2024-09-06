@@ -19,7 +19,7 @@
 
 #### 3.预处理类：如果场景需要批量插入很多条数据，那么就需要独立调用预编译
 >   1.如果你的sql语句需要循环插入1万、5万、10万+数据。  
->   2.那么可能会报错:  Error 1461: Can't create more than max_prepared_stmt_count statements (current value: 16382)  
+>   2.那么可能会报错:  Error 1461: Can'context create more than max_prepared_stmt_count statements (current value: 16382)  
 >   3.此时需要以下解决方案  
 ```sql
     #1.预编译，预处理类之后，执行批量语句

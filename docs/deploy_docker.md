@@ -76,7 +76,7 @@ ENTRYPOINT  $work/pm05-api
 
 - 3.执行镜像构建命令  
 ```code    
-docker  build  --build-arg   pm05_api_version=pm05-api-v1.0.0  -f  Dockerfile_v1.0   -t pm05/api:v1.0.0  .
+docker  build  --build-arg   pm05_api_version=pm05-api-v1.0.0  -f  Dockerfile_v1.0   -context pm05/api:v1.0.0  .
 ```
 相关的过程输出：
 ```code  

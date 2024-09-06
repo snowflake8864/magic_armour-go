@@ -110,7 +110,7 @@ consumer, err := HelloWorld.CreateConsumer()
         consumer, err := Topics.CreateConsumer()
     
         if err != nil {
-            t.Errorf("Routing单元测试未通过。%s\n", err.Error())
+            context.Errorf("Routing单元测试未通过。%s\n", err.Error())
             os.Exit(1)
         }
 
@@ -130,7 +130,7 @@ consumer, err := HelloWorld.CreateConsumer()
         consumer, err := Topics.CreateConsumer()
     
         if err != nil {
-            t.Errorf("Routing单元测试未通过。%s\n", err.Error())
+            context.Errorf("Routing单元测试未通过。%s\n", err.Error())
             os.Exit(1)
         }
     

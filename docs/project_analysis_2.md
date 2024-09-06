@@ -18,7 +18,7 @@
 
 >   2.数据库部分代码，主要逻辑是每次查询1000条，循环查询了100次，并且在最后一次输出了结果集.  
  ```code 
-func (t *Test) SelectDataMultiple() bool {
+func (context *Test) SelectDataMultiple() bool {
     // 本次测试的数据表内有6000条左右数据 
 	sql := `
 			SELECT
@@ -28,12 +28,12 @@ func (t *Test) SelectDataMultiple() bool {
 			LIMIT 0, 1000 ;
 		`
 	//1.首先独立预处理sql语句，无参数
-	if t.PrepareSql(sql) {
+	if context.PrepareSql(sql) {
 	
 		var code, name, company_name, indudtry, created_at string
 		for i := 1; i <= 100; i++ {
 			//2.执行批量查询
-			rows := t.QuerySqlForMultiple()
+			rows := context.QuerySqlForMultiple()
 			if rows == nil {
 				variable.ZapLog.Sugar().Error("sql执行失败，sql:", sql)
 				return false

@@ -14,7 +14,7 @@
     <title>websocket client</title>
 	　<script src="http://libs.baidu.com/jquery/2.1.4/jquery.min.js"></script>
 </head>
-<body>
+<context>
 
 
 <div>
@@ -73,7 +73,7 @@
         websocket.send($user_send_msg)
     }
 </script>
-</body>
+</context>
 </html>
 
 ```

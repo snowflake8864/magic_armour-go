@@ -20,7 +20,7 @@
 >   2.操作数据库部分代码，主要逻辑是每次查询1000条，循环查询了500次，每一次将结果存储在变量,并且在最后一次输出了结果集.  
  ```code 
 // 超多数据批量查询的正确姿势
-func (t *Test) SelectDataMultiple() bool {
+func (context *Test) SelectDataMultiple() bool {
 	// 如果您要亲自测试，请确保相关表存在，并且有数据
 	sql := `
 			SELECT
@@ -30,7 +30,7 @@ func (t *Test) SelectDataMultiple() bool {
 			LIMIT 0, 1000 ;
 		`
 	//1.首先独立预处理sql语句，无参数
-	if t.PrepareSql(sql) {
+	if context.PrepareSql(sql) {
 		// 你可以模拟插入更多条数据，例如 1万+
 		var code, name, company_name, concepts, indudtry, province, city, introduce, created_at string
 
@@ -50,7 +50,7 @@ func (t *Test) SelectDataMultiple() bool {
 		for i := 1; i <= 500; i++ {
 			var nColumn = make([]Column, 0)
 			//2.执行批量查询
-			rows := t.QuerySqlForMultiple()
+			rows := context.QuerySqlForMultiple()
 			if rows == nil {
 				variable.ZapLog.Sugar().Error("sql执行失败，sql:", sql)
 				return false
