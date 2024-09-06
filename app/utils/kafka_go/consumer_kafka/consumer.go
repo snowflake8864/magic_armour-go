@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/alarm_job"
+	"goskeleton/app/jobs/email_job/send_alarm_cycle"
 	"goskeleton/app/jobs/org_job"
 	"goskeleton/app/jobs/plug_job"
 	"goskeleton/app/jobs/proc_job"
@@ -106,7 +107,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			org_job.Clean(data.OrgId)
 			break
 		case kafka_go.TypeCommonEmailAlarmCycle:
-			org_job.Clean(data.OrgId)
+			send_alarm_cycle.Send(data.OrgId)
 			break
 
 		case kafka_go.TypeProcessBatchPutMaster:

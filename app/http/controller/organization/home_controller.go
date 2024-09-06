@@ -119,6 +119,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	alarmFact := alarm_stat_models.CreateStatDailyFactory()
 	calc := alarmFact.CalcByConditions(conditions, alarmFact.StatColumnOfAllType(true, false, true, false, false))
 
+	//模块和字段映射
 	moduleMap := map[int]int{
 		enum_alarm.ModuleProcess:   calc.ProcessAddTotal,
 		enum_alarm.ModuleDll:       calc.DllAddTotal,

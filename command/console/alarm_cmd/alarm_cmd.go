@@ -159,8 +159,8 @@ func (crd *AlarmCmd) EmailNotice() {
 	for _, orgModel := range orgModels {
 		//进入队列
 		crd.queryClient.ProduceCommon(ctx, &kafka_go.MessageStruct{
-			Type: kafka_go.TypeCommonEmailAlarmCycle,
-			Data: json_helper.Encode(orgModel),
+			Type:  kafka_go.TypeCommonEmailAlarmCycle,
+			OrgId: orgModel.Id,
 		})
 	}
 

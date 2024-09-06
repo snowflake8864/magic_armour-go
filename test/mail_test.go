@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"goskeleton/app/jobs/email_job/send_alarm_cycle"
 	"goskeleton/app/utils/gomail_factory"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -28,11 +29,11 @@ func TestEmailNotice(t *testing.T) {
 	addr := "sub@veda.com"
 	fact := gomail_factory.CreateMailerFactory()
 
-	/*var alarmList []*gomail_factory.AlarmCycleAlarm
-	alarmList = append(alarmList, &gomail_factory.AlarmCycleAlarm{
+	var alarmList []gomail_factory.AlarmCycleInfo
+	alarmList = append(alarmList, gomail_factory.AlarmCycleInfo{
 		Name: "进程告警",
 		Add:  10,
-	}, &gomail_factory.AlarmCycleInfo{
+	}, gomail_factory.AlarmCycleInfo{
 		Name: "模块告警",
 		Add:  53,
 	})
@@ -49,7 +50,7 @@ func TestEmailNotice(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 	fmt.Println("=============")
-	param1 := gomail_factory.AlarmCycleInfo{
+	param1 := gomail_factory.AlarmCycle{
 		DateStart:  "2024-08-30 00:00:00",
 		DateEnd:    "2024-09-06 00:00:00",
 		AlarmTotal: 0,
@@ -58,9 +59,9 @@ func TestEmailNotice(t *testing.T) {
 	subject1, context1 := gomail_factory.CreateTemplateFactory().GetAlarmCycle(&param1)
 	if err := fact.SendHtmlMsg(addr, subject1, context1); err != nil {
 		fmt.Println(err.Error())
-	}*/
+	}
 
-	/*param2 := gomail_factory.AlarmTimely{
+	param2 := gomail_factory.AlarmTimely{
 		Date:          date_helper.CurDatetime(),
 		AgentId:       "8ac94fd732cfe3628922262747607f67",
 		AgentIp:       "192.168.4.6",
@@ -70,7 +71,7 @@ func TestEmailNotice(t *testing.T) {
 	subject2, context2 := gomail_factory.CreateTemplateFactory().GetAlarmTimely(&param2)
 	if err := fact.SendHtmlMsg(addr, subject2, context2); err != nil {
 		fmt.Println(err.Error())
-	}*/
+	}
 
 	var usageList []*gomail_factory.HardwareTimelyInfo
 	usageList = append(usageList, &gomail_factory.HardwareTimelyInfo{
@@ -97,4 +98,8 @@ func TestEmailNotice(t *testing.T) {
 	if err := fact.SendHtmlMsg(addr, subject3, context3); err != nil {
 		fmt.Println(err.Error())
 	}
+}
+
+func TestSendAlarmCycleJob(t *testing.T) {
+	send_alarm_cycle.Send(1)
 }

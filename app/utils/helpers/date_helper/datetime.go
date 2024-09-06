@@ -23,8 +23,8 @@ func DayInCurrMonth() int {
 }
 
 // WeekdayCurr 现在是周几
-func WeekdayCurr() string {
-	return time.Now().Weekday().String()
+func WeekdayCurr() time.Weekday {
+	return time.Now().Weekday()
 }
 
 // CalcByDay 按天计算日期

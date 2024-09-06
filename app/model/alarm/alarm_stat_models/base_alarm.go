@@ -7,13 +7,13 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId       int64
-	AgentId     string
-	AgentIds    []string
-	StatMonth   int
-	StatDay     string
-	CreateAtGte string
-	CreateAtLte string
+	OrgId      int64
+	AgentId    string
+	AgentIds   []string
+	StatMonth  int
+	StatDay    string
+	StatDayGte string
+	StatDayLte string
 }
 
 const (
@@ -65,16 +65,16 @@ func (crd *baseAlarm) conditions2Where(condition SearchConditions) (wheres []mod
 			Val: condition.AgentIds,
 		})
 	}
-	if !string_helper.IsEmpty(condition.CreateAtGte) {
+	if !string_helper.IsEmpty(condition.StatDayGte) {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "created_at >=",
-			Val: condition.CreateAtGte,
+			Key: "stat_day >=",
+			Val: condition.StatDayGte,
 		})
 	}
-	if !string_helper.IsEmpty(condition.CreateAtLte) {
+	if !string_helper.IsEmpty(condition.StatDayLte) {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "created_at <=",
-			Val: condition.CreateAtLte,
+			Key: "stat_day <=",
+			Val: condition.StatDayLte,
 		})
 	}
 	return wheres
