@@ -2,7 +2,7 @@ package test
 
 import (
 	"fmt"
-	"goskeleton/app/jobs/email_job/send_alarm_cycle"
+	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
 	"goskeleton/app/utils/gomail_factory"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -105,5 +105,9 @@ func TestSendEmailNotice(t *testing.T) {
 	alarm_cmd.CreateCmdFactory().EmailNotice()
 }
 func TestSendAlarmCycleJob(t *testing.T) {
-	send_alarm_cycle.Send(1)
+	//send_alarm_cycle.Send(1)
+
+	if err := job_callback_alarm.CreateLoginCalcFactory().Calc(1, "win2010_test_001", "85.23.21.121", "2024-09-06 17:10:37"); err != nil {
+		fmt.Println(err.Error())
+	}
 }
