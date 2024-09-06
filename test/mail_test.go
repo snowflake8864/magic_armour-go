@@ -29,6 +29,7 @@ func TestEmailNotice(t *testing.T) {
 }
 
 func TestGetAlarmCycle(t *testing.T) {
+	addr := "sub@veda.com"
 	var alarmList []*gomail_factory.AlarmCycleAlarm
 	alarmList = append(alarmList, &gomail_factory.AlarmCycleAlarm{
 		Name: "进程告警",
@@ -45,7 +46,20 @@ func TestGetAlarmCycle(t *testing.T) {
 		AlarmList:  alarmList,
 	}
 	subject, context := gomail_factory.CreateTemplateFactory().GetAlarmCycle(&param)
-	fmt.Println(subject)
-	fmt.Println("=============================")
-	fmt.Println(context)
+
+	fact := gomail_factory.CreateMailerFactory()
+	if err := fact.SendHtmlMsg(addr, subject, context); err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("=============")
+	param = gomail_factory.AlarmCycle{
+		DateStart:  "2024-08-30 00:00:00",
+		DateEnd:    "2024-09-06 00:00:00",
+		AlarmTotal: 0,
+		AlarmList:  nil,
+	}
+	subject, context = gomail_factory.CreateTemplateFactory().GetAlarmCycle(&param)
+	if err := fact.SendHtmlMsg(addr, subject, context); err != nil {
+		fmt.Println(err.Error())
+	}
 }
