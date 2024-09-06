@@ -251,7 +251,7 @@ func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 func (m *baseAgent) ColumnConfig(needId, grant bool) string {
 	column := ""
 	if needId {
-		column = "org_id, id,"
+		column = "org_id, id, host_name, agent_ip,"
 	}
 	if grant {
 		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,"
