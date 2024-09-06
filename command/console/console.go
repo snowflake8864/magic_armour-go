@@ -146,7 +146,7 @@ func handleDay(mode, interval, at string) {
 			break
 		case AtSeven:
 			variable.ZapLog.Sugar().Debug("告警通知 - 暂时不做")
-			//告警通知 - 暂时不做
+			//告警通知
 			alarm_cmd.CreateCmdFactory().EmailNotice()
 			break
 		}

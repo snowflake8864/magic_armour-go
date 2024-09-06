@@ -105,7 +105,6 @@ func Send(orgId int64) {
 	}
 
 	for _, module := range noticeConfig.CycleMod {
-		fmt.Println("module: ", module)
 		if val, isOk := moduleMap[module]; isOk {
 			mailParam.AlarmTotal += val
 			mailParam.AlarmList = append(mailParam.AlarmList, gomail_factory.AlarmCycleInfo{

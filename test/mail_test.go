@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/utils/gomail_factory"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/console/alarm_cmd"
 	"testing"
 )
 
@@ -100,6 +101,9 @@ func TestEmailNotice(t *testing.T) {
 	}
 }
 
+func TestSendEmailNotice(t *testing.T) {
+	alarm_cmd.CreateCmdFactory().EmailNotice()
+}
 func TestSendAlarmCycleJob(t *testing.T) {
 	send_alarm_cycle.Send(1)
 }
