@@ -541,7 +541,7 @@ func (k *Template) GetHardwareTimely(param *HardwareTimely) (subject, context st
     .gauge-ul li{
       list-style: none;
       width: 632px;
-      height: 162px;
+      height: auto;
       background: #FFFFFF;
       box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.11);
       border-radius: 13px;
