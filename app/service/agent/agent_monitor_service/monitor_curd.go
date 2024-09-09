@@ -24,14 +24,14 @@ type MonitorCurd struct {
 func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 
 	//入库
-	if crd.masterModel.InsertItem(param) {
-		return nil
+	if !crd.masterModel.InsertItem(param) {
+		return errors.New("保存失败")
 	}
 
 	//发送告警邮件
 	crd.sendEmail(param)
 
-	return errors.New("保存失败")
+	return nil
 }
 
 func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
