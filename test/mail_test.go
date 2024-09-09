@@ -30,11 +30,11 @@ func TestEmailNotice(t *testing.T) {
 	addr := "sub@veda.com"
 	fact := gomail_factory.CreateMailerFactory()
 
-	var alarmList []gomail_factory.AlarmCycleInfo
-	alarmList = append(alarmList, gomail_factory.AlarmCycleInfo{
+	var alarmList []*gomail_factory.AlarmCycleInfo
+	alarmList = append(alarmList, &gomail_factory.AlarmCycleInfo{
 		Name: "进程告警",
 		Add:  10,
-	}, gomail_factory.AlarmCycleInfo{
+	}, &gomail_factory.AlarmCycleInfo{
 		Name: "模块告警",
 		Add:  53,
 	})

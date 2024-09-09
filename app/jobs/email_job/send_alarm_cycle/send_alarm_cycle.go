@@ -107,7 +107,7 @@ func Send(orgId int64) {
 	for _, module := range noticeConfig.CycleMod {
 		if val, isOk := moduleMap[module]; isOk {
 			mailParam.AlarmTotal += val
-			mailParam.AlarmList = append(mailParam.AlarmList, gomail_factory.AlarmCycleInfo{
+			mailParam.AlarmList = append(mailParam.AlarmList, &gomail_factory.AlarmCycleInfo{
 				Name: enums.Get1stIsStrAnd2ndIsIntReturnStr("module", module, enum_alarm.EnumMapInt),
 				Add:  val,
 			})

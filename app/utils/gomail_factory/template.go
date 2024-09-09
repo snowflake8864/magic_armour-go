@@ -35,7 +35,7 @@ type AlarmCycle struct {
 	DateStart  string
 	DateEnd    string
 	AlarmTotal int
-	AlarmList  []AlarmCycleInfo
+	AlarmList  []*AlarmCycleInfo
 }
 
 type AlarmCycleInfo struct {
