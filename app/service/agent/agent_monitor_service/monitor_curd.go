@@ -85,7 +85,7 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 
 	//终端信息
 	agentFact := agent_models.CreateAgentFactory()
-	if agentModel := agentFact.GetItemByOrgAndAgent(model.OrgId, model.AgentId, agentFact.ColumnBasic(false, false)); agentModel == nil {
+	if agentModel := agentFact.GetItemByOrgAndAgent(model.OrgId, model.AgentId, agentFact.ColumnBasic(true, false)); agentModel == nil || agentModel.OrgId == 0 {
 		variable.ZapLog.Sugar().Debug("终端不存在, orgId=", model.OrgId, ", agentId=", model.AgentId)
 		return
 	} else {
