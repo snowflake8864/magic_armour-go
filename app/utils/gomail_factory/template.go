@@ -31,18 +31,19 @@ type Template struct {
 	FootLinkTxt  string
 }
 
+// AlarmCycle 告警: 周期性
 type AlarmCycle struct {
 	DateStart  string
 	DateEnd    string
 	AlarmTotal int
 	AlarmList  []*AlarmCycleInfo
 }
-
 type AlarmCycleInfo struct {
 	Name string
 	Add  int
 }
 
+// GetAlarmCycle 告警: 周期性
 func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
 	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.Subject")
 	titleNoData := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.TitleNoData")
@@ -260,6 +261,7 @@ func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
 	return subject, context
 }
 
+// AlarmTimely 告警: 立即发送
 type AlarmTimely struct {
 	Date          string
 	AgentId       string
@@ -268,6 +270,7 @@ type AlarmTimely struct {
 	AlarmLogin    map[string]int //口令破解告警
 }
 
+// GetAlarmTimely 告警: 立即发送
 func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) {
 	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmTimely.Subject")
 	title := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmTimely.Title")
@@ -414,11 +417,15 @@ func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) 
        <ul class="alarm-ul">
 `
 	if len(param.AlarmLogin) > 0 {
+		end := 16
+		if end > len(param.Date) {
+			end = len(param.Date) // 确保索引不会超过字符串长度
+		}
 		context += `
 		 	<li>
           		<div class="card-tit">
 					<img src="https://hj.veda.com/static/img/email_gauge2.png" width="23px" />
-					您的终端在` + param.Date + `连续触发了口令破解告警！
+					您的终端在` + param.Date[:end] + `连续触发了口令破解告警！
 				  </div>
 				  <div class="agent-div">
 					<div class="agent-tit">终端信息</div>
@@ -485,6 +492,7 @@ func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) 
 	return subject, context
 }
 
+// HardwareTimely 资源: 立即发送
 type HardwareTimely struct {
 	Date          string
 	AgentId       string
@@ -499,6 +507,7 @@ type HardwareTimelyInfo struct {
 	Usage     float64
 }
 
+// GetHardwareTimely 资源: 立即发送
 func (k *Template) GetHardwareTimely(param *HardwareTimely) (subject, context string) {
 	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Subject")
 	title := variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Title")
@@ -678,11 +687,14 @@ func (k *Template) GetHardwareTimely(param *HardwareTimely) (subject, context st
 		for _, item := range param.UsageList {
 			rate := float_helper.Add(float_helper.Mul(item.Usage, 2.59, 2), 233, 2)
 			rotate := float_helper.Float64ToStr(math.Round(rate))
-
+			end := 16
+			if end > len(param.Date) {
+				end = len(param.Date) // 确保索引不会超过字符串长度
+			}
 			context += `
 		 	<li>
 			  <p class="card-tit"><img src="https://hj.veda.com/static/img/email_gauge2.png" width="23px" />
-` + param.Date + `终端触发了 ` + item.Name + ` ` + int_helper.IntToStr(item.Threshold) + `%</p>
+` + param.Date[:16] + `终端触发了 ` + item.Name + ` ` + int_helper.IntToStr(item.Threshold) + `%</p>
 			  <div class="gauge-div">
 				<div class="gauge-img">
 				  <img src="https://hj.veda.com/static/img/email_gauge1.png" alt="" width="9px"
