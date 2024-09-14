@@ -82,8 +82,20 @@ func (u *AuthController) Login(ctx *gin.Context) {
 				enum_dictionary.AgentCompatibleDefaultUser,
 			}
 			mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
+			if val, isOk := mapDict[enum_dictionary.AgentCompatibleDefaultOrg]; !isOk || string_helper.IsEmpty(val) {
+				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				return
+			}
+			if val, isOk := mapDict[enum_dictionary.AgentCompatibleDefaultUser]; !isOk || string_helper.IsEmpty(val) {
+				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				return
+			}
 			userInfo.OrgId = string_helper.ToInt64(mapDict[enum_dictionary.AgentCompatibleDefaultOrg])
 			userInfo.UserId = string_helper.ToInt64(mapDict[enum_dictionary.AgentCompatibleDefaultUser])
+			if userInfo.OrgId == 0 || userInfo.UserId == 0 {
+				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				return
+			}
 		} else {
 			response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
 			return
