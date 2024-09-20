@@ -4,6 +4,7 @@ import (
 	"gorm.io/gorm"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -108,6 +109,26 @@ func (m *PushModel) UpdateByIds(ids []string, updates map[string]interface{}) bo
 		return tx.Model(m).Where("id IN ?", ids).Updates(updates)
 	})
 	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *PushModel) InsertFormCache(model *PushModel) bool {
+	insertSql := "INSERT INTO  " + m.TableName() +
+		" (`id`,`level`,`dir`,`parent_dir`,`os`,`introduce`,`copyright`,`signature`,`attribute`,`data_from`," +
+		" `push_at`,`create_id`,`create_name`,`created_at`) "
+
+	selectSql := " SELECT `id`,`level`,`dir`,`parent_dir`,`os`,`introduce`,`copyright`,`signature`,`attribute`,`data_from`," +
+		int_helper.IntToStr(model.PushStatus) + " AS `push_at`, " +
+		int_helper.Int64ToStr(model.CreateId) + " AS `create_id`," +
+		model.CreateName + " AS `create_name`, " +
+		model.CreatedAt + " AS `created_at`" +
+		"FROM " + CreateCacheFactory().TableName()
+
+	result := m.Exec(m.TrimSql(insertSql + selectSql))
 	if result.Error == nil {
 		return true
 	} else {
