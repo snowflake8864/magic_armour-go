@@ -29,10 +29,14 @@ func getWriterConfig() writerConfig {
 
 	b := variable.ConfigYml.GetString("KafkaV2.Producer.Balancer")
 	var balancer kafka.Balancer
-	if b == "hash" {
+	if b == "roundRobin" {
+		balancer = &kafka.RoundRobin{}
+	} else if b == "hash" {
 		balancer = &kafka.Hash{}
-	} else {
+	} else if b == "leastBytes" {
 		balancer = &kafka.LeastBytes{}
+	} else {
+		balancer = &kafka.RoundRobin{}
 	}
 	return writerConfig{
 		Addr:         brokers,
