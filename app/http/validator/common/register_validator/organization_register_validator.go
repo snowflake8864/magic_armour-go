@@ -194,6 +194,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, process3.AgentCollect{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchWhite"
 	containers.Set(key, process3.AgentBatchWhite{})
+	key = consts.ValidatorPrefixOrg + "ProcessAgentBatchDelete"
+	containers.Set(key, process3.AgentBatchDelete{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentRunningDllExtract"
 	containers.Set(key, process3.AgentRunningDllExtract{})
 	key = consts.ValidatorPrefixOrg + "ProcessAgentRunningDllShow"

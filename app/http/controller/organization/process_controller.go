@@ -424,6 +424,25 @@ func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// BatchDeleteForAgent 单终端: 批量删除
+func (u *ProcessController) BatchDeleteForAgent(ctx *gin.Context) {
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
+	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
+	hashes := json_helper.ToSliceString(jsonStr)
+	if len(hashes) == 0 {
+		response.FailSimplify(ctx, "数据不能为空")
+		return
+	}
+
+	err := proc_service.CreateProcessCurdFactory().BatchDeleteByHashes(orgId, agentId, hashes)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // ClearAllForAgent 单终端: 清空全部
 func (u *ProcessController) ClearAllForAgent(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId

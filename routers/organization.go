@@ -237,6 +237,7 @@ func InitOrganizationRouter() *gin.Engine {
 						agentV2.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchWhite"))
 						agentV2.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRefresh"))
 						agentV2.POST("collect", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentCollect"))
+						agentV2.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentBatchDelete"))
 
 						agentV2.POST("runningDllExtract", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRunningDllExtract"))
 						agentV2.POST("runningDllShow", validatorFactory.Create(consts.ValidatorPrefixOrg+"ProcessAgentRunningDllShow"))
