@@ -103,7 +103,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["outreach_time"] = outreachTime
 
 	//agent通讯日志
-	mapConf["syslog_switch"] = enums.SwitchOff
+	mapConf["syslog_switch"] = enums.SwitchOn
 	mapConf["syslog_dns_switch"] = agentModel.SyslogDnsSwitch
 	mapConf["syslog_outer_switch"] = agentModel.SyslogOuterSwitch
 	mapConf["syslog_inner_switch"] = agentModel.SyslogInnerSwitch

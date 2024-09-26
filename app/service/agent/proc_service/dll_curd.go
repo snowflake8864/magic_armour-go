@@ -149,6 +149,27 @@ func (crd *DllCurd) BatchWhiteByHashes(orgId int64, agentId string, hashes []str
 	return nil
 }
 
+// BatchDeleteByHashes 批量删除
+func (crd *DllCurd) BatchDeleteByHashes(orgId int64, agentId string, hashes []string) error {
+
+	condition := proc_models.SearchConditions{
+		OrgId:     orgId,
+		AgentId:   agentId,
+		DllHashes: hashes,
+	}
+	if !crd.masterModel.DeleteByConditions(condition) {
+		return errors.New("删除失败")
+	}
+
+	types := []int{
+		enum_task.TypeDllWhiteDownload,
+		enum_task.TypeDllBlackDownload,
+	}
+	task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "批量删除")
+
+	return nil
+}
+
 // DeleteByAgent 通过终端删除
 func (crd *DllCurd) DeleteByAgent(orgId int64, agentId string, task bool) error {
 

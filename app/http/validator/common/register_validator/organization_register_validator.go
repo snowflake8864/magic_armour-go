@@ -262,7 +262,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, dll3.AgentCollect{})
 	key = consts.ValidatorPrefixOrg + "DllAgentBatchWhite"
 	containers.Set(key, dll3.AgentBatchWhite{})
-	key = consts.ValidatorPrefixOrg + "DllAgentRunningDllExtract"
+	key = consts.ValidatorPrefixOrg + "DllAgentBatchDelete"
+	containers.Set(key, dll3.AgentBatchDelete{})
 	key = consts.ValidatorPrefixOrg + "DllAgentRepeatStat"
 	containers.Set(key, dll3.AgentRepeatStat{})
 	key = consts.ValidatorPrefixOrg + "DllAgentRepeatPage"
