@@ -21,7 +21,7 @@ var (
 	DateFormat                = "2006-01-02 15:04:05" //  设置全局日期时间格式
 	DayFormat                 = "2006-01-02"          //  设置全局日期时间格式
 	HuanshiPrivateRsa         = "LWX919787"           //幻势:私钥
-	VersionNumber             = "MA_3.1.0_T3"         //产品版本号
+	VersionNumber             = "MA_3.1.0_T2_B1"      //产品版本号
 
 	AppUsageVersionOffline int = 1 //程序使用版本:离线
 	AppUsageVersionCloud   int = 2 //程序使用版本:云
