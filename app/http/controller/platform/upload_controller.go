@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/response"
@@ -41,10 +42,21 @@ func (u *Upload) StartUpload(context *gin.Context) {
 			return
 		}
 
-		response.SuccessReturnData(context, gin.H{
+		data := gin.H{
 			"id":   uploadParam.Id,
 			"path": uploadParam.StoragePath,
-		})
+		}
+		//返回授权
+		if fileType == "license" {
+			if err, resp := order_service.CreateLicenseFactory().Parse(uploadParam.FullPath); err != nil {
+				response.FailSimplify(context, err.Error())
+				return
+			} else {
+				data["data"] = resp
+			}
+		}
+
+		response.SuccessReturnData(context, data)
 	} else {
 		response.Fail(context, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
 	}
