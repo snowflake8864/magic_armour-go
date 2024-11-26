@@ -33,8 +33,8 @@
 
 ### 守护进程，注意<kbd>supervisord.conf</kbd>路径
 
-      1. supervisorctl -c /data/supervisor/etc/supervisord.conf reload
-      2. supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
+      1. supervisorctl -c /licenseResp/supervisor/etc/supervisord.conf reload
+      2. supervisorctl -c /licenseResp/supervisor/etc/supervisord.conf restart all
       3. systemctl status supervisord.service
 
 

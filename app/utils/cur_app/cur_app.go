@@ -99,3 +99,8 @@ func ShellUpgrade() string {
 func ShellInit() string {
 	return variable.ConfigYml.GetString("AppCustomConfig.Shell.Init")
 }
+
+// ShellVedaLicence 卫达授权证书解析：
+func ShellVedaLicence() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.Shell.VedaLicence")
+}

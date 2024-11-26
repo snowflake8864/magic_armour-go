@@ -38,7 +38,7 @@ type Register struct {
 // 因为在 ginskeleton 里面表单参数验证器是注册在容器的代码段，
 // 如果是指针，带参数的接口请求，就会把容器的原始代码污染。
 func (r Register) CheckParams(context *gin.Context) {
-    // context.ShouldBind(&r) 则自动绑定 form-data 提交的表单参数
+    // context.ShouldBind(&r) 则自动绑定 form-licenseResp 提交的表单参数
 	if err := context.ShouldBind(&r); err != nil {
 
         //  省略非验证器逻辑代码....

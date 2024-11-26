@@ -234,7 +234,7 @@ func (u *UsersCurd) Register(userName, pass, userIp string) bool {
 >这里我们只封装了json格式数据返回，如果需要 xml 、html、text等，请按照gin语法自行追加函数即可。
 ```go  
 
-func ReturnJson(Context *gin.Context, http_code int, data_code int, msg string, data interface{}) {
+func ReturnJson(Context *gin.Context, http_code int, data_code int, msg string, licenseResp interface{}) {
 
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 
@@ -242,7 +242,7 @@ func ReturnJson(Context *gin.Context, http_code int, data_code int, msg string, 
 	Context.JSON(http_code, gin.H{
 		"code": data_code,
 		"msg":  msg,
-		"data": data,
+		"licenseResp": licenseResp,
 	})
 }
 
@@ -257,13 +257,13 @@ func ReturnJsonFromString(Context *gin.Context, http_code int, json_str string) 
 // 语法糖函数封装
 
 // 直接返回成功
-func Success(c *gin.Context, msg string, data interface{}) {
-	ReturnJson(c, http.StatusOK, consts.CurdStatusOkCode, msg, data)
+func Success(c *gin.Context, msg string, licenseResp interface{}) {
+	ReturnJson(c, http.StatusOK, consts.CurdStatusOkCode, msg, licenseResp)
 }
 
 // 失败的业务逻辑
-func Fail(c *gin.Context, dataCode int, msg string, data interface{}) {
-	ReturnJson(c, http.StatusBadRequest, dataCode, msg, data)
+func Fail(c *gin.Context, dataCode int, msg string, licenseResp interface{}) {
+	ReturnJson(c, http.StatusBadRequest, dataCode, msg, licenseResp)
 	c.Abort()
 }
 
@@ -281,8 +281,8 @@ func ErrorParam(c *gin.Context, wrongParam interface{}) {
 }
 
 // 系统执行代码错误
-func ErrorSystem(c *gin.Context, msg string, data interface{}) {
-	ReturnJson(c, http.StatusInternalServerError, consts.ServerOccurredErrorCode, consts.ServerOccurredErrorMsg+msg, data)
+func ErrorSystem(c *gin.Context, msg string, licenseResp interface{}) {
+	ReturnJson(c, http.StatusInternalServerError, consts.ServerOccurredErrorCode, consts.ServerOccurredErrorMsg+msg, licenseResp)
 	c.Abort()
 }
 

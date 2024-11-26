@@ -136,7 +136,7 @@ docker pull logstash:7.9.1
 # goskeleton 请确保版本 >= v1.3.00 版本，默认配置项开启了日志 json 格式，如果老日志不是json，请自行重命名备份原始文件，新日志确保 100% json格式。    
 # 以下涉及到的参数需要您根据您的实际情况修改
 # 启动 logstash 容器，注意这里有两个映射目录，第一个是配置文件目录，第二个是 nginx 日志目录（包括 access、error 日志），第三个是 goskeleton.log 映射    
-docker    container    run  --name    logstash7  -d    -v  /home/mysoft/logstash/conf/:/usr/share/logstash/pipeline/    -v   /home/wwwlogs/project_log/:/usr/share/data/project_log/nginx/   -v /home/wwwroot/project2020/goskeleton/storage/logs/:/usr/share/data/project_log/goskeleton/  logstash:7.9.1
+docker    container    run  --name    logstash7  -d    -v  /home/mysoft/logstash/conf/:/usr/share/logstash/pipeline/    -v   /home/wwwlogs/project_log/:/usr/share/licenseResp/project_log/nginx/   -v /home/wwwroot/project2020/goskeleton/storage/logs/:/usr/share/licenseResp/project_log/goskeleton/  logstash:7.9.1
 
 #修改容器时间为北京时间，ffe8df018624 为刚启动的容器ID, 请自行替换  
 docker   cp  /usr/share/zoneinfo/Asia/Shanghai   ffe8df018624:/etc/localtime
@@ -166,7 +166,7 @@ input {
     # nginx 日志采集配置
    file {
         type => "nginx001"  #可以自行定义，方便后面判断，但是不要使用大写，否则报错
-        path => "/usr/share/data/project_log/nginx/nginx001_access.log"
+        path => "/usr/share/licenseResp/project_log/nginx/nginx001_access.log"
         start_position => "beginning"  # 从日志其实位置采集
         stat_interval => "3"    # 采集频率为 3 秒
         #  下一行不要提前将原始数据转换为 json ，否则后面坑死你，不要相信 elk 之前版本的文档资料 
@@ -176,7 +176,7 @@ input {
     # goskeleton 日志采集配置
     file {
     type => "goskeleton" 
-    path => "/usr/share/data/project_log/goskeleton/goskeleton.log"
+    path => "/usr/share/licenseResp/project_log/goskeleton/goskeleton.log"
     start_position => "beginning"
     stat_interval => "3"
     # codec => json
@@ -186,7 +186,7 @@ input {
    # nginx 错误日志采集配置
    file {
         type => "nginxerr"  
-        path => "/usr/share/data/project_log/nginx/nginx001_error.log"
+        path => "/usr/share/licenseResp/project_log/nginx/nginx001_error.log"
         start_position => "beginning"
         stat_interval => "3"
         # plain 表示采集的数据是 文本格式，非 json 
@@ -218,7 +218,7 @@ filter {
                 target => "geoip"
                 # ip 与经纬度转换城市数据库下载地址：https://dev.maxmind.com/geoip/geoip2/downloadable/  （需要注册账号才能有下载地址）
                 # 数据库文件放置在logstash容器映射的日志目录，不要放在配置文件目录，会报错。  
-                database => "/usr/share/data/testlog/GeoLite2-City.mmdb"
+                database => "/usr/share/licenseResp/testlog/GeoLite2-City.mmdb"
             }
 
 	}else if [type] == "goskeleton" {

@@ -49,8 +49,8 @@
 
     websocket.onmessage = function (evt) {
         console.log(evt)
-        console.log('收到 data from server: ' + evt.data);
-		$("#receivedmsg").text(evt.data)
+        console.log('收到 licenseResp from server: ' + evt.licenseResp);
+		$("#receivedmsg").text(evt.licenseResp)
 		
     };
 
@@ -62,7 +62,7 @@
 
     websocket.onerror = function (evt, e) {
         console.log(e);
-        console.log('Error occured: ' + evt.data);
+        console.log('Error occured: ' + evt.licenseResp);
 		alert("error事件发生")
     };
 

@@ -22,12 +22,12 @@ const (
 	ActionConfirmUnpaid int = 6 //行为：确认未付款
 	ActionAutoExpire    int = 7 //行为：自动过期
 	ActionGrant2Agent   int = 8 //行为：授权给终端
+
 )
 
 var EnumMap = map[string]map[int]string{
 
 	"order_status": {
-
 		OrderStatusUnpaid:    "待支付",
 		OrderStatusPaid:      "已支付",
 		OrderStatusCompleted: "已完成",
@@ -37,15 +37,16 @@ var EnumMap = map[string]map[int]string{
 		PayMethodBankcard: "对公转账",
 	},
 	"grant_duration": {
-		1:  "1个月",
-		2:  "2个月",
-		3:  "3个月",
-		4:  "4个月",
-		5:  "5个月",
-		6:  "6个月",
-		12: "1年",
-		24: "2年",
-		36: "3年",
+		1:   "1个月",
+		2:   "2个月",
+		3:   "3个月",
+		4:   "4个月",
+		5:   "5个月",
+		6:   "6个月",
+		12:  "1年",
+		24:  "2年",
+		36:  "3年",
+		120: "10年",
 	},
 	"action": {
 		ActionAdd:           "购买授权",
@@ -80,6 +81,7 @@ var WebMapInt = map[string][]int{
 		12,
 		24,
 		36,
+		120,
 	},
 	"expire_status": {
 		enums.IsNot,

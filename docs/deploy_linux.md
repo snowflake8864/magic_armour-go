@@ -25,7 +25,7 @@ yum remove docker \
                   docker-engine
 
 #安装一些依赖工具
-yum install -y yum-utils device-mapper-persistent-data lvm2
+yum install -y yum-utils device-mapper-persistent-licenseResp lvm2
 
 #设置镜像源为阿里云
 yum-plugConfig-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo

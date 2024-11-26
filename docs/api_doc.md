@@ -33,7 +33,7 @@
 ```json
 {
     "code": 200,
-    "data": {
+    "licenseResp": {
         "content": "门户新闻内容001",
         "limit": 20,
         "newstype": "potal",
@@ -57,13 +57,13 @@
 
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
-user_name|form-data|string|必填|goskeleton1.4  
-pass|form-data|string|必填|goskeleton1.4  
+user_name|form-licenseResp|string|必填|goskeleton1.4  
+pass|form-licenseResp|string|必填|goskeleton1.4  
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": "",
+    "licenseResp": "",
     "msg": "Success"
 }
 ```  
@@ -74,16 +74,16 @@ pass|form-data|string|必填|goskeleton1.4
 
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
-user_name|form-data|string|必填|goskeleton1.4
-pass|form-data|string|必填|goskeleton1.4
-captcha_id|form-data|string|如果登录接口使用了验证码中间件，则必填|uY26gnHcHNnhot0lYkG8
-captcha_value|form-data|string|如果登录接口使用了验证码中间件，则必填|1234
+user_name|form-licenseResp|string|必填|goskeleton1.4
+pass|form-licenseResp|string|必填|goskeleton1.4
+captcha_id|form-licenseResp|string|如果登录接口使用了验证码中间件，则必填|uY26gnHcHNnhot0lYkG8
+captcha_value|form-licenseResp|string|如果登录接口使用了验证码中间件，则必填|1234
 
 > 返回示例，关于登陆时是否提交验证码取决于登陆路由(接口)是否加载了验证码中间件.  
 ```json
 {
     "code": 200,
-    "data": {
+    "licenseResp": {
         "phone": "",
         "realName": "",
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjQ3LCJ1c2VyX25hbWUiOiJnb3NrZWxldG9uMS40IiwicGhvbmUiOiIiLCJleHAiOjE2MDQwNTIxNzMsIm5iZiI6MTYwNDA0ODU2M30.YNhN9_QasHc5XILQiilZvhxpPDnmC_j82y4JfYPnI7A",
@@ -103,15 +103,15 @@ captcha_value|form-data|string|如果登录接口使用了验证码中间件，�
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
 Authorization|Headers|string|必填|Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjQ3LCJ1c2VyX25hbWUiOiJnb3NrZWxldG9uMS40IiwicGhvbmUiOiIiLCJleHAiOjE2MDQwNTIxNzMsIm5iZiI6MTYwNDA0ODU2M30.YNhN9_QasHc5XILQiilZvhxpPDnmC_j82y4JfYPnI7A
-user_name|form-data|string|必填|g
-page|form-data|int|必填|1
-limit|form-data|int|必填|20
+user_name|form-licenseResp|string|必填|g
+page|form-licenseResp|int|必填|1
+limit|form-licenseResp|int|必填|20
 
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": [
+    "licenseResp": [
         {
             "user_name": "zhang001",
             "phone": "1660177xxxx",
@@ -140,16 +140,16 @@ limit|form-data|int|必填|20
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
 Authorization|Headers|string|必填|Bearer 登陆后获取的token  
-user_name|form-data|string|必填|goskeleto002
-pass|form-data|string|必填|goskeleto002
-real_name|form-data|string|必填|goskeleto002
-phone|form-data|string|必填|1580403xxxx
-remark|form-data|string|非必填|备注信息
+user_name|form-licenseResp|string|必填|goskeleto002
+pass|form-licenseResp|string|必填|goskeleto002
+real_name|form-licenseResp|string|必填|goskeleto002
+phone|form-licenseResp|string|必填|1580403xxxx
+remark|form-licenseResp|string|非必填|备注信息
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": "",
+    "licenseResp": "",
     "msg": "Success"
 }
 ```  
@@ -161,17 +161,17 @@ remark|form-data|string|非必填|备注信息
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
 Authorization|Headers|string|必填|Bearer 登陆后获取的token  
-id|form-data|int|必填|51
-user_name|form-data|string|必填|goskeleto002
-pass|form-data|string|必填|goskeleto002
-real_name|form-data|string|必填|goskeleto002
-phone|form-data|string|必填|1580403xxxx
-remark|form-data|string|非必填|备注信息
+id|form-licenseResp|int|必填|51
+user_name|form-licenseResp|string|必填|goskeleto002
+pass|form-licenseResp|string|必填|goskeleto002
+real_name|form-licenseResp|string|必填|goskeleto002
+phone|form-licenseResp|string|必填|1580403xxxx
+remark|form-licenseResp|string|非必填|备注信息
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": "",
+    "licenseResp": "",
     "msg": "Success"
 }
 ```  
@@ -182,12 +182,12 @@ remark|form-data|string|非必填|备注信息
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
 Authorization|Headers|string|必填|Bearer 登陆后获取的token  
-id|form-data|int|必填|51  
+id|form-licenseResp|int|必填|51  
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": "",
+    "licenseResp": "",
     "msg": "Success"
 }
 ```  
@@ -204,7 +204,7 @@ Authorization|Headers|string|必填|Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
 ```json
 {
     "code": 200,
-    "data": {
+    "licenseResp": {
         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjQ3LCJ1c2VyX25hbWUiOiJnb3NrZWxldG9uMS40IiwicGhvbmUiOiIiLCJleHAiOjE2MDQwNTYxMDcsIm5iZiI6MTYwNDA0ODU2M30.JPE6G-9YE9UTdxHiWuvdVlD-akiIkvp6Ezf9y4_ud9M"
     },
     "msg": "Success"
@@ -218,12 +218,12 @@ Authorization|Headers|string|必填|Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
 参数字段|参数属性|类型|选项|默认值
 ---|---|---|---|---
 Authorization|Headers|string|必填|Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOjQ3LCJ1c2VyX25hbWUiOiJnb3NrZWxldG9uMS40IiwicGhvbmUiOiIiLCJleHAiOjE2MDQwNTIxNzMsIm5iZiI6MTYwNDA0ODU2M30.YNhN9_QasHc5XILQiilZvhxpPDnmC_j82y4JfYPnI7A
-file|form-data|string|必填|(注意表单键名为files，如果需要修改成别的键名，参见：App\Global\Variable\Variable.go ，UploadFileField=files)
+file|form-licenseResp|string|必填|(注意表单键名为files，如果需要修改成别的键名，参见：App\Global\Variable\Variable.go ，UploadFileField=files)
 > 返回示例：
 ```json
 {
     "code": 200,
-    "data": {
+    "licenseResp": {
         "path": "/storage/app/uploaded/3c5d5f59484cad593e46d7fe0c6b078e.sql"
     },
     "msg": "Success"

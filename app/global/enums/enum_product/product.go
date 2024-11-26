@@ -31,8 +31,9 @@ var EnumIntMap = map[string]map[int]string{
 		StatusYes: "有效",
 	},
 	"type": {
-		TypeGold: "正式",
-		TypeTest: "测试",
+		TypeGold:   "正式",
+		TypeTest:   "测试",
+		TypeSample: "样本",
 	},
 }
 
