@@ -33,7 +33,6 @@ func (u UploadBase) CommCheck(context *gin.Context) (errCode int, errMsg string,
 	//不允许的文件mime类型
 	if fp, err := tmpFile.Open(); err == nil {
 		mimeType := files.GetFilesMimeByFp(fp)
-
 		for _, value := range variable.ConfigYml.GetStringSlice("FileUploadSetting.AllowMimeType") {
 			if strings.ReplaceAll(value, " ", "") == strings.ReplaceAll(mimeType, " ", "") {
 				isPass = true

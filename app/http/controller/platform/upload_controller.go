@@ -22,6 +22,7 @@ func (u *Upload) StartUpload(context *gin.Context) {
 	allowFileTypes := map[string]struct{}{
 		"software": {},
 		"upgrade":  {},
+		"license":  {},
 	}
 	if _, isOK := allowFileTypes[fileType]; !isOK {
 		response.FailSimplify(context, "type fail:"+fileType)
