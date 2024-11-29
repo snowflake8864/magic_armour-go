@@ -6,8 +6,10 @@ import (
 )
 
 const (
-	PayMethodBankcard int = 10 //支付方式： 银行卡
+	PayMethodDefault  int = 1  //支付方式： 后台人工
+	PayMethodBankcard int = 10 //支付方式： 对公转账
 	PayMethodWechat   int = 20 //支付方式： 微信
+	PayMethodLicense  int = 60 //支付方式：导入证书
 
 	OrderStatusUnpaid    int = 1  //订单状态:待支付
 	OrderStatusPaid      int = 5  //订单状态:已支付
@@ -22,6 +24,7 @@ const (
 	ActionConfirmUnpaid int = 6 //行为：确认未付款
 	ActionAutoExpire    int = 7 //行为：自动过期
 	ActionGrant2Agent   int = 8 //行为：授权给终端
+	ActionImportLicense int = 9 //行为：导入证书
 
 )
 
@@ -35,6 +38,7 @@ var EnumMap = map[string]map[int]string{
 	},
 	"pay_method": {
 		PayMethodBankcard: "对公转账",
+		PayMethodLicense:  "授权许可",
 	},
 	"grant_duration": {
 		1:   "1个月",
@@ -57,6 +61,7 @@ var EnumMap = map[string]map[int]string{
 		ActionConfirmUnpaid: "确认未付款",
 		ActionAutoExpire:    "自动过期",
 		ActionGrant2Agent:   "授权给终端",
+		ActionImportLicense: "导入授权证书",
 	},
 	"expire_status": {
 		enums.IsNot: "有效",

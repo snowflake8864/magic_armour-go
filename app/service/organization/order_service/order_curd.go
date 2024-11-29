@@ -65,7 +65,7 @@ func (crd *OrderCurd) getExpireAt() string {
 	return day
 }
 
-// Add 平台新增
+// Add 新增订单
 func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, operateName string) (errCode int, err error) {
 	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
@@ -110,6 +110,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	orderParam.TotalAmount = float_helper.Mul(orderParam.SalePrice, orderParam.BuyNumber, 2, orderParam.GrantDuration)
 	orderParam.CreatedAt = date_helper.CurDatetime()
 	if orderParam.Source == enums.OperateSourcePlatform {
+		orderParam.PayMethod = enum_order.PayMethodDefault
 		orderParam.DeclineAmount = crd.calcDeclineAmount(orderParam.TotalAmount, orderParam.RealAmount)
 		orderParam.OrderStatus = enum_order.OrderStatusCompleted
 		orderParam.DeclineAt = orderParam.CreatedAt
@@ -143,6 +144,34 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 		return -1, errors.New("保存日志失败")
 	}
 	tx.Commit()
+	return errCode, err
+}
+
+// ImportLicense 导入证书
+func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, licensePath string, operateId int64, operateName string) (errCode int, err error) {
+	//解析证书
+	err1, licenseResp := CreateLicenseFactory().Parse(licensePath)
+	if err1 != nil {
+		return -2, err1
+	}
+
+	//企业信息
+	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
+	if orgModel == nil || orgModel.Id == 0 {
+		return -1, errors.New("企业不存在")
+	}
+	if licenseResp.Serial != orgModel.Code {
+		return -1, errors.New("授权证书不属于这个企业")
+	}
+	// 已经导入过
+	search := order_models.SearchConditions{
+		OrgId:      orderParam.OrgId,
+		PayOrderNo: licenseResp.Serial,
+	}
+	if total := crd.masterModel.Count(search); total > 0 {
+		return -1, errors.New("请勿重复导入相同的授权证书")
+	}
+
 	return errCode, err
 }
 

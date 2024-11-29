@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
+	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/utils/response"
@@ -46,7 +47,7 @@ func (u *OrderController) PayMethod(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
-// AddForOrg  为企业添加订单授权
+// AddForOrg  为企业添加订单
 func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	param := order_models.OrderModel{}
@@ -59,6 +60,29 @@ func (u *OrderController) AddForOrg(ctx *gin.Context) {
 	param.Source = enums.OperateSourcePlatform
 
 	if errCode, err := order_service.CreateCurdFactory().Add(&param, loginInfo.AdminId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+// ImportLicenseForOrg  为企业订单导入授权
+func (u *OrderController) ImportLicenseForOrg(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := order_models.OrderModel{}
+	param.OrgId = int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
+	param.Source = enums.OperateSourcePlatform
+
+	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
+	uploadModel := upload_models.CreateUploadFactory().GetItemById(uploadId)
+	if uploadModel == nil || uploadModel.Id == 0 {
+		response.FailSimplify(ctx, "上传证书不存在")
+		return
+	}
+	param.PayOrderNo = uploadModel.FileHash
+
+	if errCode, err := order_service.CreateCurdFactory().ImportLicense(&param, uploadModel.FullPath, loginInfo.AdminId, loginInfo.Username); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}

@@ -22,6 +22,7 @@ type SearchConditions struct {
 	CreateAtLte  string
 	ExpireAtLte  string
 	StatusList   []int
+	PayOrderNo   string
 }
 
 type baseOrder struct {
@@ -113,6 +114,12 @@ func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []mod
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_expire",
 			Val: *condition.IsExpire,
+		})
+	}
+	if !string_helper.IsEmpty(condition.PayOrderNo) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "pay_order_no",
+			Val: condition.PayOrderNo,
 		})
 	}
 
