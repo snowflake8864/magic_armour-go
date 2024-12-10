@@ -251,6 +251,7 @@ func (u *OrderController) ImportForLicense(ctx *gin.Context) {
 	}
 	uploadParam.Type = enum_upload.TypeLicense
 	uploadParam.OperateSource = enums.OperateSourceOrganize
+	uploadParam.OrgId = loginInfo.OrgId
 	uploadParam.OperateId = loginInfo.UserId
 	uploadParam.OperateName = loginInfo.Username
 	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
