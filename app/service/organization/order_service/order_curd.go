@@ -172,10 +172,10 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		Number:    12,
 		Modules: enum_product.ProductGrantConfig{
 			Process:   100,
-			Tamper:    80,
-			Blackmail: 80,
-			Port:      60,
-			Plug:      60,
+			Tamper:    100,
+			Blackmail: 100,
+			Port:      100,
+			Plug:      100,
 			Usb:       100,
 			Syslog:    100,
 			Outreach:  100,
@@ -197,7 +197,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 	// 已经导入过
 	search := order_models.SearchConditions{
 		OrgId:      orderParam.OrgId,
-		PayOrderNo: licenseResp.Serial,
+		PayOrderNo: orderParam.PayOrderNo,
 	}
 	if total := crd.masterModel.Count(search); total > 0 {
 		return -1, errors.New("请勿重复导入相同的授权证书")
