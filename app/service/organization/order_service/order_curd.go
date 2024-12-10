@@ -65,6 +65,14 @@ func (crd *OrderCurd) getExpireAt() string {
 	return day
 }
 
+func (crd *OrderCurd) getLicenseDefaultName() string {
+	str := "导入授权"
+	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrderLicenseName); !string_helper.IsEmpty(val) {
+		str = val
+	}
+	return str
+}
+
 // Add 新增订单
 func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, operateName string) (errCode int, err error) {
 	//企业信息
@@ -154,6 +162,28 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 	if err1 != nil {
 		return -2, err1
 	}
+	/*licenseResp := LicenseResp{
+		Serial:    "8d3080e2eff8fa3026a7cdef0c30d8d3",
+		Type:      enum_product.TypeGold,
+		TypeLabel: "",
+		StartAt:   "2023-11-01",
+		ExpireAt:  "2026-11-01",
+		Duration:  36,
+		Number:    12,
+		Modules: enum_product.ProductGrantConfig{
+			Process:   100,
+			Tamper:    80,
+			Blackmail: 80,
+			Port:      60,
+			Plug:      60,
+			Usb:       100,
+			Syslog:    100,
+			Outreach:  100,
+			Login:     100,
+			Threaten:  100,
+		},
+		ModuleLabel: nil,
+	}*/
 
 	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
@@ -163,6 +193,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 	if licenseResp.Serial != orgModel.Code {
 		return -1, errors.New("授权证书不属于这个企业")
 	}
+
 	// 已经导入过
 	search := order_models.SearchConditions{
 		OrgId:      orderParam.OrgId,
@@ -171,6 +202,78 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 	if total := crd.masterModel.Count(search); total > 0 {
 		return -1, errors.New("请勿重复导入相同的授权证书")
 	}
+
+	//补充订单信息
+	orderParam.OrgName = orgModel.Name
+	orderParam.UserName = orgModel.UserName
+	orderParam.UserEmail = orgModel.UserEmail
+	orderParam.UserPhone = orgModel.UserPhone
+	orderParam.ProductTitle = crd.getLicenseDefaultName()
+	orderParam.GrantType = licenseResp.Type
+	//orderParam.GrantModule = productModel.GrantModule
+	orderParam.GrantDuration = licenseResp.Duration
+	//orderParam.BuyNumber = 0
+	orderParam.SalePrice = 0.00
+	orderParam.DeclineAmount = 0.00
+	orderParam.TotalAmount = 0.00
+	orderParam.RealAmount = 0.00
+	orderParam.PayMethod = enum_order.PayMethodLicense
+	orderParam.OrderStatus = enum_order.OrderStatusCompleted
+	orderParam.CreatedAt = date_helper.CurDatetime()
+	orderParam.DeclineAt = orderParam.CreatedAt
+	orderParam.PayAt = orderParam.CreatedAt
+	orderParam.CompleteAt = orderParam.CreatedAt
+	orderParam.IsExpire = enums.IsNot
+	orderParam.ExpireAt = licenseResp.ExpireAt
+
+	//要插入的订单
+	var insertOrders []order_models.OrderModel
+	var insertLogs []order_models.OrderLogModel
+	//因为每个授权模块可能不一致, 生成多个订单
+	for true {
+		//最小值
+		minimum := licenseResp.Modules.MinGreaterThanZero()
+		if minimum == 0 {
+			break
+		}
+		orderParam.OrderNo = crd.makerOrderNo()
+		//最小值为购买数目
+		orderParam.BuyNumber = minimum
+		//授权配置
+		orderParam.GrantModule = json_helper.Encode(licenseResp.Modules.Num2Config())
+		//每次减去最小值
+		licenseResp.Modules.Sub(minimum)
+		insertOrders = append(insertOrders, *orderParam)
+
+		insertLogs = append(insertLogs, order_models.OrderLogModel{
+			OrgId:         orderParam.OrgId,
+			OrderNo:       orderParam.OrderNo,
+			OrderStatus:   orderParam.OrderStatus,
+			OperateAction: enum_order.ActionImportLicense,
+			OperateSource: orderParam.Source,
+			OperateId:     operateId,
+			OperateName:   operateName,
+			Remark:        orderParam.DeclineRemark,
+			CreatedAt:     orderParam.CreatedAt,
+		})
+	}
+	if len(insertOrders) == 0 {
+		return -10, errors.New("授权模块数据错误")
+	}
+
+	tx := crd.masterModel.Begin()
+	if tx.Error != nil {
+		return -10, errors.New("保存订单失败")
+	}
+	if err = tx.Create(&insertOrders).Error; err != nil {
+		tx.Rollback()
+		return -1, errors.New("保存订单失败")
+	}
+	if err = tx.Create(&insertLogs).Error; err != nil {
+		tx.Rollback()
+		return -1, errors.New("保存日志失败")
+	}
+	tx.Commit()
 
 	return errCode, err
 }

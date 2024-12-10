@@ -24,6 +24,7 @@ type License struct {
 type LicenseResp struct {
 	Serial      string                          `json:"serial"`
 	Type        int                             `json:"type"`
+	TypeLabel   string                          `json:"typeLabel"`
 	StartAt     string                          `json:"startAt"`
 	ExpireAt    string                          `json:"expireAt"`
 	Duration    int                             `json:"duration"`
@@ -98,7 +99,7 @@ func (crd *License) Parse(path string) (error, *LicenseResp) {
 	if val, isOK := parseRes["auth_type"]; isOK && !string_helper.IsEmpty(val) {
 		//0:正式, 1:测试, 2样本
 		licenseResp.Type = string_helper.ToInt(val) + 1
-		if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("type", licenseResp.Type, enum_product.EnumIntMap); string_helper.IsEmpty(label) {
+		if licenseResp.TypeLabel = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", licenseResp.Type, enum_product.EnumIntMap); string_helper.IsEmpty(licenseResp.TypeLabel) {
 			return errors.New("未知的授权类型: " + val), nil
 		}
 	} else {

@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -235,4 +236,27 @@ func (u *OrderController) PageForUsed(ctx *gin.Context) {
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
 	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
+}
+
+// ImportLicense  导入授权
+func (u *OrderController) ImportLicense(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := order_models.OrderModel{}
+	param.OrgId = loginInfo.OrgId
+	param.Source = enums.OperateSourceOrganize
+
+	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "uploadId"))
+	uploadModel := upload_models.CreateUploadFactory().GetItemById(uploadId)
+	if uploadModel == nil || uploadModel.Id == 0 {
+		response.FailSimplify(ctx, "上传证书不存在")
+		return
+	}
+	param.PayOrderNo = uploadModel.FileHash
+
+	if errCode, err := order_service.CreateCurdFactory().ImportLicense(&param, uploadModel.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }

@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/global/variable"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
@@ -66,9 +66,8 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		response.SuccessSimplify(ctx)
 	}
 
-	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
-	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
-		uploadParam.Type = "proc_sample"
+	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath()); r == true {
+		uploadParam.Type = enum_upload.TypeProcSample
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId

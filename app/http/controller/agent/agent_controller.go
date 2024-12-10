@@ -9,7 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
-	"goskeleton/app/global/variable"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/trust_dir_models"
@@ -235,9 +235,8 @@ func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 // UploadErrorFile 上传转储(错误) 文件
 func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 	remark, _ := ctx.GetPostForm("remark")
-	savePath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
-	if r, uploadParam := upload_file.Upload(ctx, savePath); r == true {
-		uploadParam.Type = "agent_error"
+	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath()); r == true {
+		uploadParam.Type = enum_upload.TypeAgentError
 		loginInfo := u.getLogin(ctx)
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId

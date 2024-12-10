@@ -15,6 +15,12 @@ import (
 	"time"
 )
 
+// GetDefaultPath 获取默认存储路径
+func GetDefaultPath() string {
+	return variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileSavePath")
+}
+
+// Upload 上传指定路径
 func Upload(context *gin.Context, savePath string) (r bool, upload upload_models.UploadModel) {
 
 	newSavePath, newReturnPath := generateYearMonthPath(savePath)

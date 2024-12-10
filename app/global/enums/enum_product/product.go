@@ -87,6 +87,7 @@ type ProductGrantConfig struct {
 	Threaten  int `json:"threaten"`
 }
 
+// Default 默认配置
 func (c *ProductGrantConfig) Default() {
 	if c.Process == 0 {
 		c.Process = enums.IsNot
@@ -140,6 +141,185 @@ func (c *ProductGrantConfig) Default() {
 	}
 }
 
+// SelectedTxt 选中模块文案
+func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
+	if c.Process != enums.IsNot {
+		txtList = append(txtList, "可信防护")
+	}
+	if c.Tamper != enums.IsNot {
+		txtList = append(txtList, "防篡改")
+	}
+	if c.Blackmail != enums.IsNot {
+		txtList = append(txtList, "勒索防护")
+	}
+	if c.Port != enums.IsNot {
+		txtList = append(txtList, "端口虚开")
+	}
+	if c.Plug != enums.IsNot {
+		txtList = append(txtList, "动态封堵")
+	}
+	if c.Usb != enums.IsNot {
+		txtList = append(txtList, "外设管理")
+	}
+	if c.Syslog != enums.IsNot {
+		txtList = append(txtList, "通信日志")
+	}
+	if c.Outreach != enums.IsNot {
+		txtList = append(txtList, "外联管控")
+	}
+	if c.Login != enums.IsNot {
+		txtList = append(txtList, "口令破解")
+	}
+	if c.Threaten != enums.IsNot {
+		//txtList = append(txtList, "威胁情报")
+	}
+	return txtList
+}
+
+// Num2Config 数字转成标准配置
+func (c *ProductGrantConfig) Num2Config() (r ProductGrantConfig) {
+	if c.Process == 0 {
+		r.Process = enums.IsNot
+	} else {
+		r.Process = enums.IsYes
+	}
+	if c.Tamper == 0 {
+		r.Tamper = enums.IsNot
+	} else {
+		r.Tamper = enums.IsYes
+	}
+	if c.Blackmail == 0 {
+		r.Blackmail = enums.IsNot
+	} else {
+		r.Blackmail = enums.IsYes
+	}
+	if c.Port == 0 {
+		r.Port = enums.IsNot
+	} else {
+		r.Port = enums.IsYes
+	}
+	if c.Plug == 0 {
+		r.Plug = enums.IsNot
+	} else {
+		r.Plug = enums.IsYes
+	}
+	if c.Usb == 0 {
+		r.Usb = enums.IsNot
+	} else {
+		r.Usb = enums.IsYes
+	}
+	if c.Syslog == 0 {
+		r.Syslog = enums.IsNot
+	} else {
+		r.Syslog = enums.IsYes
+	}
+	if c.Outreach == 0 {
+		r.Outreach = enums.IsNot
+	} else {
+		r.Outreach = enums.IsYes
+	}
+	if c.Login == 0 {
+		r.Login = enums.IsNot
+	} else {
+		r.Login = enums.IsYes
+	}
+	if c.Threaten == 0 {
+		r.Threaten = enums.IsYes
+	} else {
+		r.Threaten = enums.IsYes
+	}
+	return r
+}
+
+// MinGreaterThanZero 如果是数字， 返回最小且大于0的数
+func (c *ProductGrantConfig) MinGreaterThanZero() int {
+	numbers := []int{
+		c.Process,
+		c.Tamper,
+		c.Blackmail,
+		c.Port,
+		c.Plug,
+		c.Usb,
+		c.Syslog,
+		c.Outreach,
+		c.Login,
+		c.Threaten,
+	}
+
+	minimum := 0
+	for _, num := range numbers {
+		if num > 0 && (minimum == 0 || num < minimum) {
+			minimum = num
+		}
+	}
+
+	return minimum
+}
+
+// Sub 如果是数字，大于0时减去值
+func (c *ProductGrantConfig) Sub(x int) {
+	if c.Process > 0 {
+		c.Process -= x
+		if c.Process < 0 {
+			c.Process = 0
+		}
+	}
+	if c.Tamper > 0 {
+		c.Tamper -= x
+		if c.Tamper < 0 {
+			c.Tamper = 0
+		}
+	}
+	if c.Blackmail > 0 {
+		c.Blackmail -= x
+		if c.Blackmail < 0 {
+			c.Blackmail = 0
+		}
+	}
+	if c.Port > 0 {
+		c.Port -= x
+		if c.Port < 0 {
+			c.Port = 0
+		}
+	}
+	if c.Plug > 0 {
+		c.Plug -= x
+		if c.Plug < 0 {
+			c.Plug = 0
+		}
+	}
+	if c.Usb > 0 {
+		c.Usb -= x
+		if c.Usb < 0 {
+			c.Usb = 0
+		}
+	}
+	if c.Syslog > 0 {
+		c.Syslog -= x
+		if c.Syslog < 0 {
+			c.Syslog = 0
+		}
+	}
+	if c.Outreach > 0 {
+		c.Outreach -= x
+		if c.Outreach < 0 {
+			c.Outreach = 0
+		}
+	}
+	if c.Login > 0 {
+		c.Login -= x
+		if c.Login < 0 {
+			c.Login = 0
+		}
+	}
+	if c.Threaten > 0 {
+		c.Threaten -= x
+		if c.Threaten < 0 {
+			c.Threaten = 0
+		}
+	}
+}
+
 // Json2Config json转配置
 func Json2Config(jsonStr string) (data ProductGrantConfig) {
 	err := json_helper.ToStruct(jsonStr, &data)
@@ -148,38 +328,4 @@ func Json2Config(jsonStr string) (data ProductGrantConfig) {
 	}
 	data.Default()
 	return data
-}
-
-func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
-	if c.Process == enums.IsYes {
-		txtList = append(txtList, "可信防护")
-	}
-	if c.Tamper == enums.IsYes {
-		txtList = append(txtList, "防篡改")
-	}
-	if c.Blackmail == enums.IsYes {
-		txtList = append(txtList, "勒索防护")
-	}
-	if c.Port == enums.IsYes {
-		txtList = append(txtList, "端口虚开")
-	}
-	if c.Plug == enums.IsYes {
-		txtList = append(txtList, "动态封堵")
-	}
-	if c.Usb == enums.IsYes {
-		txtList = append(txtList, "外设管理")
-	}
-	if c.Syslog == enums.IsYes {
-		txtList = append(txtList, "通信日志")
-	}
-	if c.Outreach == enums.IsYes {
-		txtList = append(txtList, "外联管控")
-	}
-	if c.Login == enums.IsYes {
-		txtList = append(txtList, "口令破解")
-	}
-	if c.Threaten == enums.IsYes {
-		//txtList = append(txtList, "威胁情报")
-	}
-	return txtList
 }

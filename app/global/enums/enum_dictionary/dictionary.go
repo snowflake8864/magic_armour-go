@@ -70,11 +70,12 @@ const (
 	HuanshiAlarmSwitchOutreach  string = "huanshi_alarm_switch_outreach"  //幻势:告警开关-外联
 	HuanshiAlarmSwitchSelf      string = "huanshi_alarm_switch_self"      //幻势:告警开关-自保
 
-	OrderBankcardNo   string = "order_bankcard_no"   //订单： 银行卡-卡号
-	OrderBankcardName string = "order_bankcard_name" //订单： 银行卡-卡名
-	OrderBankcardBank string = "order_bankcard_bank" // 订单：银行卡-开户行
-	OrderPayingTel    string = "order_paying_tel"    //订单： 支付时联系电话
-	OrderExpireDays   string = "order_expire_days"   //订单： 过期天数
+	OrderBankcardNo   string = "order_bankcard_no"   //订单：银行卡-卡号
+	OrderBankcardName string = "order_bankcard_name" //订单：银行卡-卡名
+	OrderBankcardBank string = "order_bankcard_bank" //订单：银行卡-开户行
+	OrderPayingTel    string = "order_paying_tel"    //订单：支付时联系电话
+	OrderExpireDays   string = "order_expire_days"   //订单：过期天数
+	OrderLicenseName  string = "order_license_name"  //订单：导入证书默认名称
 )
 
 var EnumSlice = map[string][]string{
@@ -150,5 +151,6 @@ var EnumSlice = map[string][]string{
 		OrderBankcardBank,
 		OrderPayingTel,
 		OrderExpireDays,
+		OrderLicenseName,
 	},
 }
