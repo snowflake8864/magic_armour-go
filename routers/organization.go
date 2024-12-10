@@ -801,10 +801,13 @@ func InitOrganizationRouter() *gin.Engine {
 						grant.POST("validList", (&organization.OrderController{}).ValidList)
 						grant.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderGrantSave"))
 					}
-
 					used := order.Group("used/")
 					{
 						used.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderUsedPage"))
+					}
+					license := order.Group("license/")
+					{
+						license.POST("import", validatorFactory.Create(consts.ValidatorPrefixOrg+"OrderLicenseImport"))
 					}
 				} //订单授权
 

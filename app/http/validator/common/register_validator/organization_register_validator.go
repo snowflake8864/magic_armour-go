@@ -732,6 +732,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, order3.GrantSave{})
 	key = consts.ValidatorPrefixOrg + "OrderUsedPage"
 	containers.Set(key, order3.UsedPage{})
+	key = consts.ValidatorPrefixOrg + "OrderLicenseImport"
+	containers.Set(key, order3.LicenseImport{})
 
 	//任务相关
 	key = consts.ValidatorPrefixOrg + "TaskHistoryPage"

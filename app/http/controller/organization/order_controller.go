@@ -7,14 +7,16 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/product_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/response"
 )
 
@@ -238,22 +240,30 @@ func (u *OrderController) PageForUsed(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
 }
 
-// ImportLicense  导入授权
-func (u *OrderController) ImportLicense(ctx *gin.Context) {
+// ImportForLicense  授权许可:导入
+func (u *OrderController) ImportForLicense(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := order_models.OrderModel{}
-	param.OrgId = loginInfo.OrgId
-	param.Source = enums.OperateSourceOrganize
 
-	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "uploadId"))
-	uploadModel := upload_models.CreateUploadFactory().GetItemById(uploadId)
-	if uploadModel == nil || uploadModel.Id == 0 {
-		response.FailSimplify(ctx, "上传证书不存在")
+	//上传文件
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	if !isOk {
+		response.FailSimplify(ctx, "上传证书失败")
+	}
+	uploadParam.Type = enum_upload.TypeLicense
+	uploadParam.OperateSource = enums.OperateSourceOrganize
+	uploadParam.OperateId = loginInfo.UserId
+	uploadParam.OperateName = loginInfo.Username
+	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+		response.FailSimplify(ctx, "保存证书记录失败")
 		return
 	}
-	param.PayOrderNo = uploadModel.FileHash
 
-	if errCode, err := order_service.CreateCurdFactory().ImportLicense(&param, uploadModel.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
+	//根据授权证书生成订单
+	orderParam := order_models.OrderModel{}
+	orderParam.OrgId = loginInfo.OrgId
+	orderParam.Source = enums.OperateSourceOrganize
+	orderParam.PayOrderNo = uploadParam.FileHash
+	if errCode, err := order_service.CreateCurdFactory().ImportLicense(&orderParam, uploadParam.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
