@@ -40,7 +40,7 @@ func SaveAccess() gin.HandlerFunc {
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
-			param.Input = GetRequestParams(c)
+			param.Input = authorization.GetRequestParams(c)
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
