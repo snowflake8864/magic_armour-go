@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
@@ -26,6 +27,15 @@ func CreateOrgCurdFactory() *OrgCurd {
 
 type OrgCurd struct {
 	masterModel *organization_models.OrganizationModel
+}
+
+// makeCode 生成企业编号, 导入授权要求长度是24位
+func (crd *OrgCurd) makeCode() string {
+	en1 := md5_encrypt.MD5(uuid.New().String())
+	en2 := md5_encrypt.MD5(int_helper.IntRandom2Str(10000, 99999))
+	en3 := md5_encrypt.MD5(date_helper.CurDatetime())
+
+	return en1[0:8] + en2[1:9] + en3[2:10]
 }
 
 // Add 新增企业
@@ -84,7 +94,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.IsNot
 	orgParam.CreatedAt = date_helper.CurDatetime()
-	orgParam.Code = md5_encrypt.MD5(uuid.New().String() + orgParam.CreatedAt)
+	orgParam.Code = crd.makeCode()
 	if err = tx.Create(orgParam).Error; err != nil {
 		tx.Rollback()
 		return -1, errors.New("保存企业失败")
