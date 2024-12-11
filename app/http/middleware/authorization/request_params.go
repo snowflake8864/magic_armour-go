@@ -15,7 +15,7 @@ import (
 func RequestParams(ctx *gin.Context) {
 	bindParams := make(map[string]interface{})
 	if ctx.Request.Method == "POST" {
-		contextType := ctx.Request.Header.Get("Content-Type")
+		contextType := strings.ToLower(ctx.Request.Header.Get("Content-Type"))
 		requestBody, err := ctx.GetRawData()
 		if err != nil {
 			variable.ZapLog.Error("RequestParams GetRawData,err: " + err.Error())
@@ -27,7 +27,7 @@ func RequestParams(ctx *gin.Context) {
 			ctx.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 		}()
 		// 绑定参数
-		if contextType == "application/json" {
+		if strings.Contains(contextType, "application/json") {
 			err1 := ctx.ShouldBind(&bindParams)
 			if err1 != nil { // 报错
 				variable.ZapLog.Error("RequestParams 获取参数异常: " + err1.Error())

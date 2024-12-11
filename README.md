@@ -43,6 +43,7 @@
 
 - /#/menuConfiguration
 - /#/dataDictionary
+- DROP TABLE IF EXISTS my_table FORCE;
 
 ### 注意事项
 
