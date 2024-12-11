@@ -43,7 +43,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		param.Position = ""
 		param.Remark = ""
 		param.GrantConfig = json_helper.Encode(grantConfig)
-		param.GrantStatus = enum_agent.GrantStatusNot
+		param.GrantStatus = enum_agent.GrantStatusUnauthorized
 		param.ProcessSwitch = enums.SwitchOff
 		param.ProcessMode = enum_agent.ModeMonitor
 		param.DllSwitch = enums.SwitchOff

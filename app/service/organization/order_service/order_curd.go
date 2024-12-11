@@ -39,13 +39,13 @@ type OrderCurd struct {
 	redisExpire int
 }
 
-func (crd *OrderCurd) makerOrderNo() string {
+func (crd *OrderCurd) makerOrderNo(prefix string) string {
 	today := date_helper.SpecialDatetime("20060102")
 	key := crd.redisPrefix + today
 	if val, err := crd.redisClient.Incr(key); err == nil {
 		_, _ = crd.redisClient.Expire(key, crd.redisExpire)
 		num := int_helper.IntToStr(val)
-		return "Yhj" + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
+		return prefix + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
 	} else {
 		return ""
 	}
@@ -104,7 +104,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	}
 
 	//新增订单
-	orderParam.OrderNo = crd.makerOrderNo()
+	orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixCloud)
 	//企业相关
 	orderParam.OrgName = orgModel.Name
 	orderParam.UserName = orgModel.UserName
@@ -236,7 +236,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		if minimum == 0 {
 			break
 		}
-		orderParam.OrderNo = crd.makerOrderNo()
+		orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixOffline)
 		//最小值为购买数目
 		orderParam.BuyNumber = minimum
 		//授权配置
@@ -641,7 +641,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	}
 	for _, model := range agentModels {
 		// 订单编号一致 & 授权状态是已授权
-		if model.GrantOrderNo == orderNo && model.GrantStatus == enum_agent.GrantStatusYes {
+		if model.GrantOrderNo == orderNo && model.GrantStatus == enum_agent.GrantStatusAuthorized {
 			continue
 		}
 		validIds = append(validIds, model.AgentId)
@@ -656,7 +656,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	}
 
 	//修改终端
-	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle) {
+	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt) {
 		return errors.New("终端授权失败")
 	}
 

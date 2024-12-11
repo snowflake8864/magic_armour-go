@@ -3,6 +3,7 @@ package enum_order
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"strings"
 )
 
 const (
@@ -26,6 +27,8 @@ const (
 	ActionGrant2Agent   int = 8 //行为：授权给终端
 	ActionImportLicense int = 9 //行为：导入证书
 
+	OrderNoPrefixCloud   string = "Yhj" //订单编号前缀: 云幻甲
+	OrderNoPrefixOffline string = "Lhj" //订单编号前缀: 离线幻甲
 )
 
 var EnumMap = map[string]map[int]string{
@@ -121,4 +124,13 @@ func FormatPayBankcard(m map[string]string) map[string]string {
 	}
 
 	return result
+}
+
+// GetTypeByNum  通过订单编号获取订单类型
+func GetTypeByNum(orderNo string) string {
+	if strings.Contains(orderNo, OrderNoPrefixCloud) {
+		return OrderNoPrefixCloud
+	} else {
+		return OrderNoPrefixOffline
+	}
 }

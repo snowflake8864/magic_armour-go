@@ -3,6 +3,7 @@ package agent_callback_service
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
@@ -25,13 +26,17 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 }
 
 // BatchGrant 批量授权
-func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string) bool {
-	expireAt, _, _, _ := date_helper.CalcByDay(grantDuration)
+func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string, expireAt string) bool {
+	if enum_order.GetTypeByNum(orderNo) == enum_order.OrderNoPrefixCloud {
+		//导入授权终端过期时间与证书过期时间相同
+		//购买授权终端过期时间为当前时间加上授权时长
+		expireAt, _, _, _ = date_helper.CalcByDay(grantDuration)
+	}
 	updates := map[string]interface{}{
 		"grant_product_title": productTitle,
 		"grant_config":        grantModule,
 		"grant_order_no":      orderNo,
-		"grant_status":        enum_agent.GrantStatusYes,
+		"grant_status":        enum_agent.GrantStatusAuthorized,
 		"grant_expire_at":     expireAt,
 	}
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
@@ -45,7 +50,7 @@ func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string,
 func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
 	conditions := agent_models.SearchConditions{
 		OrgId:            orgId,
-		GrantStatus:      enum_agent.GrantStatusYes,
+		GrantStatus:      enum_agent.GrantStatusAuthorized,
 		GrantExpireAtLte: expireAt,
 	}
 	agentIds := crd.masterModel.GetIdsByByConditions(conditions)
@@ -59,7 +64,7 @@ func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
 		"grant_product_title":   "",
 		"grant_config":          json_helper.Encode(grantConfig),
 		"grant_order_no":        "",
-		"grant_status":          enum_agent.GrantStatusNot,
+		"grant_status":          enum_agent.GrantStatusUnauthorized,
 		"grant_expire_at":       "",
 		"common_time":           enum_agent.HeartbeatCommonTime,
 		"fast_time":             enum_agent.HeartbeatFastTime,

@@ -25,8 +25,9 @@ const (
 	LogProtoUdp int = 1 //日志协议:TDP
 	LogProtoTcp int = 2 //日志协议:TCP
 
-	GrantStatusNot int = 1 //授权状态: 未授权
-	GrantStatusYes int = 2 //授权状态: 已授权
+	GrantStatusUnauthorized int = 1 //授权状态: 未授权
+	GrantStatusAuthorized   int = 2 //授权状态: 已授权
+	GrantStatusExpired      int = 3 //授权状态: 已过期
 
 	AgentFieldDefault string = "id" //默认排序字段
 )
@@ -45,8 +46,9 @@ var EnumIntMap = map[string]map[int]string{
 		ModeProject: "保护",
 	},
 	"grant_status": {
-		GrantStatusNot: "未授权",
-		GrantStatusYes: "已授权",
+		GrantStatusUnauthorized: "未授权",
+		GrantStatusAuthorized:   "已授权",
+		GrantStatusExpired:      "已过期",
 	},
 }
 
@@ -60,8 +62,8 @@ var WebMapInt = map[string][]int{
 		enums.IsNot,
 	},
 	"grant_status": {
-		GrantStatusNot,
-		GrantStatusYes,
+		GrantStatusUnauthorized,
+		GrantStatusAuthorized,
 	},
 }
 
