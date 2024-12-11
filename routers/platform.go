@@ -7,7 +7,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/platform"
-	"goskeleton/app/http/middleware/authorization"
+	"goskeleton/app/http/middleware/authorization/middleware_auth_agent"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_platform"
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
@@ -75,7 +75,7 @@ func InitPlatformRouter() *gin.Engine {
 			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())
 		})
 
-		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SaveOperate())
+		vPlatform.Use(middleware_auth_agent.RequestParams).Use(middleware_auth_platform.SaveOperate())
 		{
 			//登录认证
 			auth := vPlatform.Group("auth/")

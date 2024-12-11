@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/organization"
-	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
@@ -74,7 +73,7 @@ func InitOrganizationRouter() *gin.Engine {
 			context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
 		})
 
-		vOrg.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOperate())
+		vOrg.Use(middleware_auth_org.RequestParams).Use(middleware_auth_org.SaveOperate())
 		{
 			//登录认证
 			auth := vOrg.Group("auth/")

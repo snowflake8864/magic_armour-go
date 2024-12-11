@@ -7,7 +7,6 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/agent"
-	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_agent"
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
@@ -67,7 +66,7 @@ func InitAgentRouter() *gin.Engine {
 
 	//  创建一个接口路由组
 	// 与agent约定： 获取用GET, 上传用POST
-	vAgent := router.Group("/v1/").Use(authorization.RequestParams).Use(middleware_auth_agent.SaveAccess())
+	vAgent := router.Group("/v1/").Use(middleware_auth_agent.RequestParams).Use(middleware_auth_agent.SaveAccess())
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthLogin"))
 		vAgent.POST("getuserid", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthMakeUserid"))
