@@ -35,6 +35,7 @@ func (u *AccountController) GetUser(ctx *gin.Context) {
 
 	info := (&org_trans.User{}).TransInfo(model, nil)
 	info["org_name"] = loginInfo.OrgName
+	info["org_code"] = loginInfo.OrgCode
 	response.SuccessReturnData(ctx, info)
 }
 

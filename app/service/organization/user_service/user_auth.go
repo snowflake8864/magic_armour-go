@@ -57,6 +57,7 @@ type UserAuth struct {
 type UserCacheLogin struct {
 	OrgId         int64   `json:"org_id"`
 	OrgName       string  `json:"org_name"`
+	OrgCode       string  `json:"org_code"`
 	UserId        int64   `json:"user_id"`
 	Username      string  `json:"username"`
 	IsRoot        int     `json:"is_root"`
@@ -272,6 +273,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 	loginInfo := UserCacheLogin{
 		OrgId:         userModel.OrgId,
 		OrgName:       orgModel.Name,
+		OrgCode:       orgModel.Code,
 		UserId:        userModel.Id,
 		Username:      userModel.Username,
 		IsRoot:        userModel.IsRoot,
@@ -294,6 +296,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 	result["position"] = userModel.Position
 	result["org_type"] = orgModel.Type
 	result["org_name"] = orgModel.Name
+	result["org_code"] = orgModel.Code
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
 	result["token"] = encryptToken
 	return result
