@@ -8,10 +8,11 @@
       go build -o app_platform.exe -ldflags "-w -s"  -trimpath ./cmd/platform/main.go
 
 
-#### 目标平台为 linux(通过windows系统直接编译出linux可执行文件)
+#### 目标平台为 linux(通过windows系统直接编译出linux可执行程序)
 
       // cpu架构
       go env -w GOARCH=amd64
+      go env -w GOARCH=arm64
       // 程序运行的最终系统，linux、windows、darwin(苹果macos系统)
       go env -w GOOS=linux
       // window编译设置Cgo模块关闭，因为windows上做cgo开发太麻烦，如果引用了Cgo库库，那么请在linux环境开发、编译  
