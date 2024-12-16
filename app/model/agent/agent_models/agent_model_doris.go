@@ -52,6 +52,7 @@ type AgentModel1 struct {
 	GrantOrderNo        string `json:"grant_order_no"`
 	GrantProductTitle   string `json:"grant_product_title"`
 	GrantExpireAt       string `json:"grant_expire_at"  gorm:"default:NULL"`
+	GrantType           int    `json:"grant_type"`
 	GrantStatus         int    `json:"grant_status"`
 	ProcessSwitch       int    `json:"process_switch"`
 	ProcessMode         int    `json:"process_mode"`
@@ -127,6 +128,7 @@ func (m *AgentModel1) CreateTable() bool {
 			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
 			grant_product_title varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:产品名称',
 			grant_expire_at dateV2 NULL COMMENT '授权:过期时间',
+			grant_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:类型',
 			grant_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:状态',
 			process_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:开关',
 			process_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '进程:模式',
