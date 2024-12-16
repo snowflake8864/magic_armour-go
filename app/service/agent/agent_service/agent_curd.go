@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
@@ -104,10 +105,12 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 		return errCode, err
 	}
 	var validIds []string
-	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnProc(true)); agentModels != nil && len(agentModels) > 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnBasic(true, true)); agentModels != nil && len(agentModels) > 0 {
 		for _, model := range agentModels {
-			if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
-				validIds = append(validIds, model.AgentId)
+			if enum_agent.CanUpgrade(model.GrantStatus) {
+				if isOk, _ := enum_software.CanUpgradeIndirect(softwareMaps, model.OsType, model.Ver); isOk {
+					validIds = append(validIds, model.AgentId)
+				}
 			}
 		}
 	}

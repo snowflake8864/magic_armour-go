@@ -101,3 +101,11 @@ func GetTypeLabel(types map[int]string, val int) string {
 		}
 	}
 }
+
+// CanUpgrade 终端能否升级
+func CanUpgrade(grantStatus int) bool {
+	if grantStatus == GrantStatusAuthorized {
+		return true
+	}
+	return false
+}

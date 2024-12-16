@@ -230,10 +230,10 @@ func (m *baseAgent) ColumnSimplify() string {
 	return "org_id, id, dept_id"
 }
 
-// ColumnGrant 字段: 授权想
+// ColumnGrant 字段: 授权
 func (m *baseAgent) ColumnGrant() string {
 	column := "org_id, id,"
-	column += "grant_product_title,grant_config,grant_order_no,grant_expire_at,grant_status"
+	column += "grant_product_title,grant_config,grant_order_no,grant_expire_at,grant_status,grant_type"
 	return column
 }
 
@@ -244,7 +244,7 @@ func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 		column = "org_id, id,"
 	}
 	if grant {
-		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,"
+		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,grant_type,"
 	}
 	column = column +
 		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +
@@ -261,7 +261,7 @@ func (m *baseAgent) ColumnConfig(needId, grant bool) string {
 		column = "org_id, id, host_name, agent_ip,"
 	}
 	if grant {
-		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,"
+		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,grant_type,"
 	}
 	column = column +
 		"platform_type, os_type, process_switch, process_mode, dll_switch, dll_mode, tamper_switch, tamper_mode, " +
