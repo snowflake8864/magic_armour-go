@@ -1,6 +1,7 @@
 package agent_callback_service
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_order"
@@ -48,47 +49,68 @@ func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string,
 
 // GrantAutoExpire 授权自动到期
 func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
+	types := enums.Get1stIsStrReturnSliceOfInt("type", enum_product.WebMapInt)
+	for _, grantType := range types {
+		_ = crd.doGrantAutoExpire(orgId, expireAt, grantType)
+	}
+	return nil
+}
+
+func (crd *AgentCurd) doGrantAutoExpire(orgId int64, expireAt string, grantType int) error {
 	conditions := agent_models.SearchConditions{
 		OrgId:            orgId,
 		GrantStatus:      enum_agent.GrantStatusAuthorized,
+		GrantType:        grantType,
 		GrantExpireAtLte: expireAt,
 	}
 	agentIds := crd.masterModel.GetIdsByByConditions(conditions)
 	if agentIds == nil || len(agentIds) == 0 {
 		return nil
 	}
-	//授权配置
-	grantConfig := enum_product.ProductGrantConfig{}
-	grantConfig.Default()
+
 	updates := map[string]interface{}{
-		"grant_product_title":   "",
-		"grant_config":          json_helper.Encode(grantConfig),
-		"grant_order_no":        "",
-		"grant_status":          enum_agent.GrantStatusExpired,
-		"grant_expire_at":       "",
-		"common_time":           enum_agent.HeartbeatCommonTime,
-		"fast_time":             enum_agent.HeartbeatFastTime,
-		"process_switch":        enums.SwitchOff,
-		"process_mode":          enum_agent.ModeMonitor,
-		"dll_switch":            enums.SwitchOff,
-		"dll_mode":              enum_agent.ModeMonitor,
-		"tamper_switch":         enums.SwitchOff,
-		"tamper_mode":           enum_agent.ModeMonitor,
-		"blackmail_switch":      enums.SwitchOff,
-		"blackmail_mode":        enum_agent.ModeMonitor,
-		"plug_switch":           enums.SwitchOff,
-		"usb_switch":            enums.SwitchOff,
-		"usb_mode":              enum_agent.ModeMonitor,
-		"syslog_dns_switch":     enums.SwitchOff,
-		"syslog_outer_switch":   enums.SwitchOff,
-		"syslog_inner_switch":   enums.SwitchOff,
-		"syslog_process_switch": enums.SwitchOff,
-		"syslog_login_switch":   enums.SwitchOff,
-		"outreach_alarm_switch": enums.SwitchOff,
-		"login_solve_switch":    enums.SwitchOff,
+		"grant_product_title": "",
+		"grant_order_no":      "",
 	}
+
+	//测试授权到期初始化终端配置
+	//正式授权到期保留授权配置
+	if grantType == enum_product.TypeGold {
+		updates["grant_status"] = enum_agent.GrantStatusExpired
+	} else {
+		//授权配置
+		grantConfig := enum_product.ProductGrantConfig{}
+		grantConfig.Default()
+		updates["grant_config"] = json_helper.Encode(grantConfig)
+		updates["grant_status"] = enum_agent.GrantStatusUnauthorized
+		updates["common_time"] = enum_agent.HeartbeatCommonTime
+		updates["fast_time"] = enum_agent.HeartbeatFastTime
+		updates["process_switch"] = enums.SwitchOff
+		updates["process_mode"] = enum_agent.ModeMonitor
+		updates["dll_switch"] = enums.SwitchOff
+		updates["dll_mode"] = enum_agent.ModeMonitor
+		updates["tamper_switch"] = enums.SwitchOff
+		updates["tamper_mode"] = enum_agent.ModeMonitor
+		updates["blackmail_switch"] = enums.SwitchOff
+		updates["blackmail_mode"] = enum_agent.ModeMonitor
+		updates["plug_switch"] = enums.SwitchOff
+		updates["usb_switch"] = enums.SwitchOff
+		updates["usb_mode"] = enum_agent.ModeMonitor
+		updates["syslog_dns_switch"] = enums.SwitchOff
+		updates["syslog_outer_switch"] = enums.SwitchOff
+		updates["syslog_inner_switch"] = enums.SwitchOff
+		updates["syslog_process_switch"] = enums.SwitchOff
+		updates["syslog_login_switch"] = enums.SwitchOff
+		updates["outreach_alarm_switch"] = enums.SwitchOff
+		updates["login_solve_switch"] = enums.SwitchOff
+	}
+
+	fmt.Println(updates)
+
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
-		task_service.CreateCurdFactory().AddTaskForAgents(orgId, agentIds, enum_task.TypeAgentConfigDownload, "授权到期")
+		if grantType != enum_product.TypeGold {
+			task_service.CreateCurdFactory().AddTaskForAgents(orgId, agentIds, enum_task.TypeAgentConfigDownload, "授权到期")
+		}
 	}
 
 	return nil

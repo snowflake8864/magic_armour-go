@@ -36,6 +36,7 @@ type SearchConditions struct {
 	IsOnline            *int
 	IsSafe              *int
 	GrantStatus         int
+	GrantType           int
 	GrantExpireAtLte    string
 	Alias               string
 	ContactName         string
@@ -122,6 +123,12 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "grant_status",
 			Val: condition.GrantStatus,
+		})
+	}
+	if condition.GrantType > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "grant_type",
+			Val: condition.GrantType,
 		})
 	}
 	if !string_helper.IsEmpty(condition.GrantExpireAtLte) {

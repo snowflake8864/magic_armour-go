@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/model/platform/prodcut_models"
+	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/service/organization/order_service"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
@@ -68,4 +69,8 @@ func TestImportLicense(t *testing.T) {
 func TestGetGrantTypeByOrderNo(t *testing.T) {
 	fmt.Println(enum_order.GetGrantTypeByOrderNo("Lhj924121100061"))
 	fmt.Println(enum_order.GetGrantTypeByOrderNo("Lhj924121100061"))
+}
+
+func TestGetGrantAutoExpire(t *testing.T) {
+	agent_callback_service.CreateCurdFactory().GrantAutoExpire(1, "2024-11-24")
 }
