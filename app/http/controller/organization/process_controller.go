@@ -311,7 +311,7 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 		OrgId:    orgId,
 		AgentId:  agentId,
 		ProcHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
-		Dir:      ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		ProcDir:  ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}
 

@@ -82,6 +82,8 @@ type SearchConditions struct {
 	StatusList          []int
 	Dir                 string
 	Dirs                []string
+	ProcDir             string
+	DllDir              string
 	GlobalType          int
 	DataFrom            int
 	OpenSwitch          *int
@@ -240,12 +242,17 @@ func (m *baseProc) conditions2WhereForRunning(condition SearchConditions, t1, t2
 			Val: condition.DllHash,
 		})
 	}
-	if !string_helper.IsEmpty(condition.Dir) {
+	if !string_helper.IsEmpty(condition.ProcDir) {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: t1 + "dir like",
-			Val: "%" + condition.Dir + "%",
+			Key: t1 + "proc_dir like",
+			Val: "%" + condition.ProcDir + "%",
 		})
-
+	}
+	if !string_helper.IsEmpty(condition.DllDir) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: t1 + "dll_dir like",
+			Val: "%" + condition.DllDir + "%",
+		})
 	}
 
 	if condition.Status > 0 {

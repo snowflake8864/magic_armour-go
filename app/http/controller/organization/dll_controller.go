@@ -291,7 +291,7 @@ func (u *DllController) PageRunningForAgent(ctx *gin.Context) {
 		OrgId:   orgId,
 		AgentId: agentId,
 		DllHash: ctx.GetString(consts.ValidatorPrefixOrg + "hash"),
-		Dir:     ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
+		DllDir:  ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
 		Status:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "status")),
 	}
 
