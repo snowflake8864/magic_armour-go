@@ -85,8 +85,18 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	if productModel == nil || productModel.Id == 0 {
 		return -1, errors.New("产品不存在")
 	}
-	if productModel.GrantType == enum_product.TypeTest && orderParam.GrantDuration > 1 {
-		return -1, errors.New("购买测试授权类型的产品不能超过一个月")
+	if productModel.GrantType == enum_product.TypeTest {
+		if orderParam.GrantDuration > 1 {
+			return -1, errors.New("购买测试授权类型的产品不能超过一个月")
+		}
+
+		search := order_models.SearchConditions{
+			OrgId:     orderParam.OrgId,
+			GrantType: enum_product.TypeTest,
+		}
+		if total := crd.masterModel.Count(search); total > 0 {
+			return -1, errors.New("不能重复购买测试授权类型的产品")
+		}
 	}
 
 	// 有未完成的订单
@@ -162,6 +172,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 	if err1 != nil {
 		return -2, err1
 	}
+
 	/*licenseResp := LicenseResp{
 		Serial:    "8d3080e2eff8fa3026a7cdef0c30d8d3",
 		Type:      enum_product.TypeGold,
@@ -184,6 +195,16 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		},
 		ModuleLabel: nil,
 	}*/
+
+	if licenseResp.Type == enum_product.TypeTest {
+		search := order_models.SearchConditions{
+			OrgId:     orderParam.OrgId,
+			GrantType: enum_product.TypeTest,
+		}
+		if total := crd.masterModel.Count(search); total > 0 {
+			return -1, errors.New("不能重复导入测试授权类型的产品")
+		}
+	}
 
 	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
