@@ -3,6 +3,7 @@ package enum_order
 import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
 
@@ -126,11 +127,16 @@ func FormatPayBankcard(m map[string]string) map[string]string {
 	return result
 }
 
-// GetTypeByNum  通过订单编号获取订单类型
-func GetTypeByNum(orderNo string) string {
+// GetPrefixByOrderNo  通过订单编号获取前缀
+func GetPrefixByOrderNo(orderNo string) string {
 	if strings.Contains(orderNo, OrderNoPrefixCloud) {
 		return OrderNoPrefixCloud
 	} else {
 		return OrderNoPrefixOffline
 	}
+}
+
+// GetGrantTypeByOrderNo  通过订单编号获取授权类型
+func GetGrantTypeByOrderNo(orderNo string) int {
+	return string_helper.ToInt(orderNo[3:4])
 }

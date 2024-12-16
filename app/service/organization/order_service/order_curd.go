@@ -39,13 +39,13 @@ type OrderCurd struct {
 	redisExpire int
 }
 
-func (crd *OrderCurd) makerOrderNo(prefix string) string {
+func (crd *OrderCurd) makerOrderNo(prefix string, grantType int) string {
 	today := date_helper.SpecialDatetime("20060102")
 	key := crd.redisPrefix + today
 	if val, err := crd.redisClient.Incr(key); err == nil {
 		_, _ = crd.redisClient.Expire(key, crd.redisExpire)
 		num := int_helper.IntToStr(val)
-		return prefix + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
+		return prefix + int_helper.IntToStr(grantType) + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
 	} else {
 		return ""
 	}
@@ -104,7 +104,8 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	}
 
 	//新增订单
-	orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixCloud)
+	orderParam.GrantType = productModel.GrantType
+	orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixCloud, orderParam.GrantType)
 	//企业相关
 	orderParam.OrgName = orgModel.Name
 	orderParam.UserName = orgModel.UserName
@@ -112,7 +113,6 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	orderParam.UserPhone = orgModel.UserPhone
 	//产品相关
 	orderParam.ProductTitle = productModel.Title
-	orderParam.GrantType = productModel.GrantType
 	orderParam.GrantModule = productModel.GrantModule
 	orderParam.SalePrice = productModel.Price
 	orderParam.TotalAmount = float_helper.Mul(orderParam.SalePrice, orderParam.BuyNumber, 2, orderParam.GrantDuration)
@@ -236,7 +236,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		if minimum == 0 {
 			break
 		}
-		orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixOffline)
+		orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixOffline, orderParam.GrantType)
 		//最小值为购买数目
 		orderParam.BuyNumber = minimum
 		//授权配置

@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/organization/order_models"
@@ -62,4 +63,9 @@ func TestImportLicense(t *testing.T) {
 		fmt.Println(err.Error())
 		return
 	}
+}
+
+func TestGetGrantTypeByOrderNo(t *testing.T) {
+	fmt.Println(enum_order.GetGrantTypeByOrderNo("Lhj924121100061"))
+	fmt.Println(enum_order.GetGrantTypeByOrderNo("Lhj924121100061"))
 }

@@ -27,7 +27,7 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 
 // BatchGrant 批量授权
 func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string, expireAt string) bool {
-	if enum_order.GetTypeByNum(orderNo) == enum_order.OrderNoPrefixCloud {
+	if enum_order.GetPrefixByOrderNo(orderNo) == enum_order.OrderNoPrefixCloud {
 		//导入授权终端过期时间与证书过期时间相同
 		//购买授权终端过期时间为当前时间加上授权时长
 		expireAt, _, _, _ = date_helper.CalcByDay(grantDuration)
@@ -64,7 +64,7 @@ func (crd *AgentCurd) GrantAutoExpire(orgId int64, expireAt string) error {
 		"grant_product_title":   "",
 		"grant_config":          json_helper.Encode(grantConfig),
 		"grant_order_no":        "",
-		"grant_status":          enum_agent.GrantStatusUnauthorized,
+		"grant_status":          enum_agent.GrantStatusExpired,
 		"grant_expire_at":       "",
 		"common_time":           enum_agent.HeartbeatCommonTime,
 		"fast_time":             enum_agent.HeartbeatFastTime,
