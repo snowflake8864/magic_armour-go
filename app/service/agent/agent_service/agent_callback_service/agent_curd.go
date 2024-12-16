@@ -1,7 +1,6 @@
 package agent_callback_service
 
 import (
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_order"
@@ -104,8 +103,6 @@ func (crd *AgentCurd) doGrantAutoExpire(orgId int64, expireAt string, grantType 
 		updates["outreach_alarm_switch"] = enums.SwitchOff
 		updates["login_solve_switch"] = enums.SwitchOff
 	}
-
-	fmt.Println(updates)
 
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
 		if grantType != enum_product.TypeGold {
