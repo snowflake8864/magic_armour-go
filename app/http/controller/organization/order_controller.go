@@ -69,6 +69,13 @@ func (u *OrderController) PublishedForProduct(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&org_trans.Product{}).TransList(models))
 }
 
+// Remind 到期提醒
+func (u *OrderController) Remind(ctx *gin.Context) {
+	models := product_service.CreateCurdFactory().GetPublished()
+
+	response.SuccessReturnData(ctx, (&org_trans.Product{}).TransList(models))
+}
+
 // ValidList 有效订单列表
 func (u *OrderController) ValidList(ctx *gin.Context) {
 

@@ -780,6 +780,7 @@ func InitOrganizationRouter() *gin.Engine {
 						public.POST("grantDuration", (&organization.OrderController{}).GrantDuration)
 						public.POST("payMethod", (&organization.OrderController{}).PayMethod)
 						public.POST("payBankcard", (&organization.OrderController{}).PayBankcard)
+						public.POST("remind", (&organization.OrderController{}).Remind)
 					}
 					product := order.Group("product/")
 					{
