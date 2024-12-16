@@ -37,6 +37,7 @@ func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string,
 		"grant_config":        grantModule,
 		"grant_order_no":      orderNo,
 		"grant_status":        enum_agent.GrantStatusAuthorized,
+		"grant_type":          enum_order.GetGrantTypeByOrderNo(orderNo),
 		"grant_expire_at":     expireAt,
 	}
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
