@@ -677,7 +677,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	}
 
 	//修改终端
-	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt) {
+	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantType, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt) {
 		return errors.New("终端授权失败")
 	}
 

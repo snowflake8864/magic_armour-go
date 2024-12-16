@@ -26,7 +26,7 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 }
 
 // BatchGrant 批量授权
-func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantDuration int, grantModule string, productTitle string, expireAt string) bool {
+func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantType, grantDuration int, grantModule, productTitle, expireAt string) bool {
 	if enum_order.GetPrefixByOrderNo(orderNo) == enum_order.OrderNoPrefixCloud {
 		//导入授权终端过期时间与证书过期时间相同
 		//购买授权终端过期时间为当前时间加上授权时长
@@ -37,7 +37,7 @@ func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string,
 		"grant_config":        grantModule,
 		"grant_order_no":      orderNo,
 		"grant_status":        enum_agent.GrantStatusAuthorized,
-		"grant_type":          enum_order.GetGrantTypeByOrderNo(orderNo),
+		"grant_type":          grantType,
 		"grant_expire_at":     expireAt,
 	}
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
