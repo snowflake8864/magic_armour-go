@@ -1,7 +1,9 @@
 package order_models
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
@@ -131,5 +133,20 @@ func (crd *baseOrder) ColumnCalcOfUsage() string {
 	var columns []string
 	columns = append(columns, "SUM(buy_number) AS buy_number")
 	columns = append(columns, "SUM(usage_number) AS usage_number")
+	return strings.Join(columns, ", ")
+}
+
+type RespRemind struct {
+	TotalNumber     int64 `json:"total_number"`
+	UnexpiredNumber int64 `json:"unexpired_number"`
+	GoldNumber      int64 `json:"gold_number"`
+}
+
+// ColumnCalcOfRemind 字段： 统计提醒数
+func (crd *baseOrder) ColumnCalcOfRemind() string {
+	var columns []string
+	columns = append(columns, "COUNT(*) as total_number")
+	columns = append(columns, fmt.Sprintf("SUM(if(is_expire=%d, 1,0)) as unexpired_number", enums.IsNot))
+	columns = append(columns, fmt.Sprintf("SUM(if(grant_type=%d, 1,0)) as gold_number", enum_product.TypeGold))
 	return strings.Join(columns, ", ")
 }

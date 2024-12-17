@@ -235,3 +235,17 @@ func (m *OrderModel) CalcByConditions(condition SearchConditions, column string)
 		return nil
 	}
 }
+
+// CalcRemindByConditions 通过条件获取多条记录
+func (m *OrderModel) CalcRemindByConditions(condition SearchConditions, column string) (item *RespRemind) {
+	tmp := m.Model(m).Select(column)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}

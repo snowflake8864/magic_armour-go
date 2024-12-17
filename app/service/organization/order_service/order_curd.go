@@ -9,12 +9,14 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/product_service"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -25,25 +27,25 @@ import (
 
 func CreateCurdFactory() *OrderCurd {
 	return &OrderCurd{
-		masterModel: order_models.CreateOrderFactory(),
-		redisClient: redis_factory.GetOneRedisClient(),
-		redisPrefix: "order_number_",
-		redisExpire: 86400,
+		masterModel:       order_models.CreateOrderFactory(),
+		redisClient:       redis_factory.GetOneRedisClient(),
+		redisNumberPrefix: "order_number_",
+		redisNumberExpire: 86400,
 	}
 }
 
 type OrderCurd struct {
-	masterModel *order_models.OrderModel
-	redisClient *redis_factory.RedisClient
-	redisPrefix string
-	redisExpire int
+	masterModel       *order_models.OrderModel
+	redisClient       *redis_factory.RedisClient
+	redisNumberPrefix string
+	redisNumberExpire int
 }
 
 func (crd *OrderCurd) makerOrderNo(prefix string, grantType int) string {
 	today := date_helper.SpecialDatetime("20060102")
-	key := crd.redisPrefix + today
+	key := crd.redisNumberPrefix + today
 	if val, err := crd.redisClient.Incr(key); err == nil {
-		_, _ = crd.redisClient.Expire(key, crd.redisExpire)
+		_, _ = crd.redisClient.Expire(key, crd.redisNumberExpire)
 		num := int_helper.IntToStr(val)
 		return prefix + int_helper.IntToStr(grantType) + today[2:] + string_helper.Pad(num, 4, "0000000", "LEFT") + int_helper.IntRandom2Str(1, 9)
 	} else {
@@ -705,4 +707,38 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	CreateLogFactory().Add(&logParam)
 
 	return nil
+}
+
+// ExpiredRemindForOrg 企业授权过期过期提醒
+func (crd *OrderCurd) ExpiredRemindForOrg(orgId int64) (int, int, string) {
+	version := cur_app.GetAppUsageVersion()
+	conditions := order_models.SearchConditions{
+		OrgId:       orgId,
+		OrderStatus: enum_order.OrderStatusCompleted,
+	}
+	respRemind := crd.masterModel.CalcRemindByConditions(conditions, crd.masterModel.ColumnCalcOfRemind())
+	if respRemind.TotalNumber == 0 {
+		//没有完成订单: 不提示
+		return 0, version, ""
+	}
+	if respRemind.UnexpiredNumber > 0 {
+		//存在未过期订单: 不提示
+		return 0, version, ""
+	}
+	if respRemind.GoldNumber > 0 {
+		//全部过期 & 有正式授权： 提示
+		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
+			return 1, version, "订单授权已到期，请联系供应商，获取最新授权!"
+		} else {
+			return 1, version, "订单授权已到期，请购买授权!"
+		}
+	} else {
+		//全部过期 & 有正式授权： 提示, 根据不同版本跳转到不同页面
+		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
+			return 2, version, "订单授权已到期，请联系供应商，获取最新授权!"
+		} else {
+			return 2, version, "订单授权已到期，请购买授权!"
+		}
+
+	}
 }

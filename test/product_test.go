@@ -74,3 +74,7 @@ func TestGetGrantTypeByOrderNo(t *testing.T) {
 func TestGetGrantAutoExpire(t *testing.T) {
 	agent_callback_service.CreateCurdFactory().GrantAutoExpire(1, "2024-11-24")
 }
+
+func TestGetGrantExpiredRemind(t *testing.T) {
+	order_service.CreateCurdFactory().ExpiredRemindForOrg(1)
+}
