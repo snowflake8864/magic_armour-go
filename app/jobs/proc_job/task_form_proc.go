@@ -13,7 +13,7 @@ func TaskFromProcess(orgId int64, agentId string, at string) {
 	condition := proc_models.SearchConditions{
 		OrgId:           orgId,
 		AgentId:         agentId,
-		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormat),
+		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 
@@ -30,7 +30,7 @@ func TaskFromDll(orgId int64, agentId string, at string) {
 	condition := proc_models.SearchConditions{
 		OrgId:           orgId,
 		AgentId:         agentId,
-		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormat),
+		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
 	variable.ZapLog.Sugar().Debug(fmt.Sprintf("TaskFromDll orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 

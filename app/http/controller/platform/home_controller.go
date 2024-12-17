@@ -56,7 +56,7 @@ func (u *HomeController) calcRatio(divisor, dividend int) (expect, percent strin
 // AlarmTodayStat 告警: 今天统计
 func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	//今天
-	today := date_helper.SpecialDatetime(variable.DayFormat)
+	today := date_helper.SpecialDatetime(variable.DateFormatToday)
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := alarm_service.CreateStatDailyFactory()
@@ -79,7 +79,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 // AgentTodayStat 终端: 今天统计
 func (u *HomeController) AgentTodayStat(ctx *gin.Context) {
 	//今天
-	today := date_helper.SpecialDatetime(variable.DayFormat)
+	today := date_helper.SpecialDatetime(variable.DateFormatToday)
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_models.CreateDailyFactory()
@@ -118,7 +118,7 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 	var linuxArr []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			dateArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			dateArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
 			winArr = append(winArr, model.AgentWinOnline)
 			linuxArr = append(winArr, model.AgentLinuxOnline)
 		}
@@ -133,7 +133,7 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 // UserTodayStat 用户: 今天统计
 func (u *HomeController) UserTodayStat(ctx *gin.Context) {
 	//今天
-	today := date_helper.SpecialDatetime(variable.DayFormat)
+	today := date_helper.SpecialDatetime(variable.DateFormatToday)
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	StatDailyFact := org_stat_models.CreateDailyFactory()
@@ -185,7 +185,7 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	var onlineArr []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			onlineArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			onlineArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
 			onlineArr = append(onlineArr, model.UserOnline)
 		}
 	}

@@ -36,7 +36,7 @@ func SaveAccess() gin.HandlerFunc {
 			}
 
 			var param = agent_access_models.AccessLogModel{}
-			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
+			param.CreatedAt = startTime.Local().Format(variable.DateFormatNow)
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method

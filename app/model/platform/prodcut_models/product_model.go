@@ -66,7 +66,7 @@ func (m *ProductModel) CreateTable() bool {
 }
 
 func (m *ProductModel) InitData() bool {
-	curTime := time.Now().Format(variable.DateFormat)
+	curTime := time.Now().Format(variable.DateFormatNow)
 
 	list := []ProductModel{
 		{

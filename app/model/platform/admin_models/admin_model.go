@@ -89,7 +89,7 @@ func (m *AdminModel) CreateTable() bool {
 }
 
 func (m *AdminModel) InitData() bool {
-	curTime := time.Now().Format(variable.DateFormat)
+	curTime := time.Now().Format(variable.DateFormatNow)
 	list := []AdminModel{
 		{
 			Id:              1,

@@ -129,7 +129,7 @@ func (crd *License) Parse(path string) (error, *LicenseResp) {
 		if timestamp == 0 {
 			return errors.New("授权开始时间错误"), nil
 		}
-		licenseResp.StartAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DayFormat)
+		licenseResp.StartAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DateFormatToday)
 	} else {
 		return errors.New("授权文件缺少开始时间"), nil
 	}
@@ -139,7 +139,7 @@ func (crd *License) Parse(path string) (error, *LicenseResp) {
 		if timestamp == 0 {
 			return errors.New("授权过期时间错误"), nil
 		}
-		licenseResp.ExpireAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DayFormat)
+		licenseResp.ExpireAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DateFormatToday)
 	} else {
 		return errors.New("授权文件缺少过期时间"), nil
 	}

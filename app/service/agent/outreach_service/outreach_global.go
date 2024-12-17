@@ -20,7 +20,7 @@ type GlobalCurd struct {
 
 // AddDefault 新增默认数据
 func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string) error {
-	curTime := time.Now().Format(variable.DateFormat)
+	curTime := time.Now().Format(variable.DateFormatNow)
 	ipList := []string{
 		"fe80::1/10",
 		"127.0.0.0/8",

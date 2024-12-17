@@ -52,11 +52,11 @@ func TestInsertMany(t *testing.T) {
 	var st = &[]migrate_models.MigrateModel{
 		{
 			Migration: "20240108000001_init_paltforma' or '2'='2",
-			CreatedAt: time.Now().Format(variable.DateFormat),
+			CreatedAt: time.Now().Format(variable.DateFormatNow),
 		},
 		{
 			Migration: "20240108000001_init_paltforma' or '3'='3",
-			CreatedAt: time.Now().Format(variable.DateFormat),
+			CreatedAt: time.Now().Format(variable.DateFormatNow),
 		},
 	}
 	result := modelFact.InsertBatch(st)

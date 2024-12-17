@@ -123,7 +123,7 @@ func existMigration(migration string) bool {
 	}
 	var st = migrate_models.MigrateModel{
 		Migration: migration,
-		CreatedAt: time.Now().Format(variable.DateFormat),
+		CreatedAt: time.Now().Format(variable.DateFormatNow),
 	}
 	notExistMigrateList = append(notExistMigrateList, st)
 	return false

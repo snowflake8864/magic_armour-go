@@ -29,18 +29,18 @@ func CreateBeforeHook(gormDB *gorm.DB) {
 				row := destValueOf.Index(i)
 				if row.Type().Kind() == reflect.Struct {
 					if b, column := structHasSpecialField("CreatedAt", row); b {
-						destValueOf.Index(i).FieldByName(column).Set(reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+						destValueOf.Index(i).FieldByName(column).Set(reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 					}
 					if b, column := structHasSpecialField("UpdatedAt", row); b {
-						destValueOf.Index(i).FieldByName(column).Set(reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+						destValueOf.Index(i).FieldByName(column).Set(reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 					}
 
 				} else if row.Type().Kind() == reflect.Map {
 					if b, column := structHasSpecialField("created_at", row); b {
-						row.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+						row.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 					}
 					if b, column := structHasSpecialField("updated_at", row); b {
-						row.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+						row.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 					}
 				}
 			}
@@ -48,17 +48,17 @@ func CreateBeforeHook(gormDB *gorm.DB) {
 			//  if destValueOf.Type().Kind() == reflect.Struct
 			// 参数校验无错误自动设置 CreatedAt、 UpdatedAt
 			if b, column := structHasSpecialField("CreatedAt", gormDB.Statement.Dest); b {
-				gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormat))
+				gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormatNow))
 			}
 			if b, column := structHasSpecialField("UpdatedAt", gormDB.Statement.Dest); b {
-				gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormat))
+				gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormatNow))
 			}
 		} else if destValueOf.Type().Kind() == reflect.Map {
 			if b, column := structHasSpecialField("created_at", gormDB.Statement.Dest); b {
-				destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+				destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 			}
 			if b, column := structHasSpecialField("updated_at", gormDB.Statement.Dest); b {
-				destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+				destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 			}
 		}
 	}
@@ -79,12 +79,12 @@ func UpdateBeforeHook(gormDB *gorm.DB) {
 	} else if reflect.TypeOf(gormDB.Statement.Dest).Kind() == reflect.Ptr && reflect.ValueOf(gormDB.Statement.Dest).Elem().Kind() == reflect.Struct {
 		// 参数校验无错误自动设置 UpdatedAt
 		if b, column := structHasSpecialField("UpdatedAt", gormDB.Statement.Dest); b {
-			gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormat))
+			gormDB.Statement.SetColumn(column, time.Now().Format(variable.DateFormatNow))
 		}
 	} else if reflect.TypeOf(gormDB.Statement.Dest).Kind() == reflect.Ptr && reflect.ValueOf(gormDB.Statement.Dest).Elem().Kind() == reflect.Map {
 		if b, column := structHasSpecialField("updated_at", gormDB.Statement.Dest); b {
 			destValueOf := reflect.ValueOf(gormDB.Statement.Dest).Elem()
-			destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormat)))
+			destValueOf.SetMapIndex(reflect.ValueOf(column), reflect.ValueOf(time.Now().Format(variable.DateFormatNow)))
 		}
 	}
 }

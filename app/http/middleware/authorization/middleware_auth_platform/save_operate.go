@@ -29,7 +29,7 @@ func SaveOperate() gin.HandlerFunc {
 
 		go func(c *gin.Context) {
 			var param = operate_models.LogModel{}
-			param.CreatedAt = startTime.Local().Format(variable.DateFormat)
+			param.CreatedAt = startTime.Local().Format(variable.DateFormatNow)
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method

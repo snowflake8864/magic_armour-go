@@ -9,7 +9,7 @@ import (
 
 // CurDatetime 获取当前日期， 默认格式
 func CurDatetime() string {
-	return time.Now().Format(variable.DateFormat)
+	return time.Now().Format(variable.DateFormatNow)
 }
 
 // SpecialDatetime 获取当前日期，特殊格式
@@ -30,7 +30,7 @@ func WeekdayCurr() time.Weekday {
 // CalcByDay 按天计算日期
 func CalcByDay(d int) (day, dayStart, dayEnd string, month int) {
 	t := time.Now().AddDate(0, 0, d)
-	day = t.Format(variable.DayFormat)
+	day = t.Format(variable.DateFormatToday)
 	dayStart = day + " 00:00:00"
 	dayEnd = day + " 23:59:59"
 	month = string_helper.ToInt(t.Format("200601"))
@@ -80,7 +80,7 @@ func AddTimestampByMinute(m int64) int64 {
 
 // CalcDatetimeByMinute 按分钟把给定时间从新计算
 func CalcDatetimeByMinute(t string, m int64) string {
-	timestamp := DatetimeToTimestamp(t, variable.DateFormat)
+	timestamp := DatetimeToTimestamp(t, variable.DateFormatNow)
 	timestamp = AddTimestampByMinute(m)
 	return TimestampToDatetime(timestamp)
 }
@@ -92,7 +92,7 @@ func TimestampToDatetime(timestamp int64) string {
 	}
 	t := time.Unix(timestamp, 0).Local()
 
-	return t.Format(variable.DateFormat)
+	return t.Format(variable.DateFormatNow)
 }
 
 // TimestampToDatetimeByFormat 时间戳转成日期， 指定格式

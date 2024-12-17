@@ -21,7 +21,7 @@ func TestDate(t *testing.T) {
 	curDatetime := date_helper.CurDatetime()
 	fmt.Println("现在时间：", curDatetime)
 
-	timestamp := date_helper.DatetimeToTimestamp(curDatetime, variable.DateFormat)
+	timestamp := date_helper.DatetimeToTimestamp(curDatetime, variable.DateFormatNow)
 	fmt.Println("时间戳：", timestamp)
 	date := date_helper.TimestampToDatetime(timestamp)
 	fmt.Println("时间戳还原时间：", date)

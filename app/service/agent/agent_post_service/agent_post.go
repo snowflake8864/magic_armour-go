@@ -46,7 +46,7 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 		return err
 	}
 	now := date_helper.CurDatetime()
-	monitorDay := date_helper.SpecialDatetime(variable.DayFormat)
+	monitorDay := date_helper.SpecialDatetime(variable.DateFormatToday)
 	//fmt.Println("params========================================")
 	//fmt.Println(json_helper.Encode(param))
 	var cpuTops []agent_monitor_models.MonitorTop

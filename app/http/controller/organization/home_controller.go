@@ -51,7 +51,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	alarmConditions := alarm_stat_models.SearchConditions{}
 	alarmConditions.OrgId = loginInfo.OrgId
-	alarmConditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat) //今天
+	alarmConditions.StatDay = date_helper.SpecialDatetime(variable.DateFormatToday) //今天
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
@@ -103,7 +103,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	conditions := alarm_stat_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
-	conditions.StatDay = date_helper.SpecialDatetime(variable.DayFormat)
+	conditions.StatDay = date_helper.SpecialDatetime(variable.DateFormatToday)
 	err, agentIds := u.getCurrUserAgentIds(u.getLogin(ctx))
 	if err != nil {
 		//不是管理员 & 无终端
@@ -175,7 +175,7 @@ func (u *HomeController) AlarmDailyStat(ctx *gin.Context) {
 	var total []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			date = append(date, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DayFormat)))
+			date = append(date, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
 			total = append(total, model.AddTotal)
 		}
 	}
