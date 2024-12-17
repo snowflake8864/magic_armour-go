@@ -18,20 +18,23 @@ func CreateIpPolicyFactory() *IpPolicyModel {
 type IpPolicyModel struct {
 	basePlug
 	model.BaseModel
-	Id         int64  `json:"id" gorm:"primaryKey"`
-	OrgId      int64  `json:"org_id"`
-	AgentId    string `json:"agent_id"`
-	Ip         string `json:"ip"`
-	Type       int    `json:"type"`
-	Direction  int    `json:"direction"`
-	Remark     string `json:"remark"`
-	OpenSwitch int    `json:"open_switch"`
-	CreateId   int64  `json:"create_id"`
-	CreateName string `json:"create_name"`
-	CreatedAt  string `json:"created_at"`
-	UpdateId   int64  `json:"update_id"`
-	UpdateName string `json:"update_name"`
-	UpdatedAt  string `json:"updated_at"`
+	Id            int64  `json:"id" gorm:"primaryKey"`
+	OrgId         int64  `json:"org_id"`
+	AgentId       string `json:"agent_id"`
+	Ip            string `json:"ip"`
+	Type          int    `json:"type"`
+	Direction     int    `json:"direction"`
+	Remark        string `json:"remark"`
+	EffectMode    int    `json:"effect_mode"`
+	EffectStartAt string `json:"effect_start_at"  gorm:"default:NULL"`
+	EffectEndAt   string `json:"effect_end_at"  gorm:"default:NULL"`
+	OpenSwitch    int    `json:"open_switch"`
+	CreateId      int64  `json:"create_id"`
+	CreateName    string `json:"create_name"`
+	CreatedAt     string `json:"created_at"`
+	UpdateId      int64  `json:"update_id"`
+	UpdateName    string `json:"update_name"`
+	UpdatedAt     string `json:"updated_at"`
 }
 
 // 表名
@@ -52,6 +55,9 @@ func (m *IpPolicyModel) CreateTable() bool {
 			ip varchar(128)  NOT NULL DEFAULT '' COMMENT 'ip',
 			direction tinyint(1) NOT NULL DEFAULT '0' COMMENT '方向(1IN 2OUT),二进制表示',
 			remark varchar(256)  NOT NULL DEFAULT '' COMMENT '备注',
+			effect_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '生效模式',
+			effect_start_at dateV2 NULL COMMENT '生效开始时间',
+			effect_end_at dateV2 NULL COMMENT '生效结束时间',
 			open_switch tinyint NOT NULL DEFAULT '0' COMMENT '开关',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,

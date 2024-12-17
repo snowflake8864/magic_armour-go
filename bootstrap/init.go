@@ -88,6 +88,13 @@ func init() {
 			variable.GormDbAlarm = dbAlarm
 		}
 	}
+	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbSyslog.IsInitGlobalGormMysql") == 1 {
+		if dbSyslog, err := gorm_v2.GetOneMysqlClient(variable.DbNameSyslog); err != nil {
+			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
+		} else {
+			variable.GormDbSyslog = dbSyslog
+		}
+	}
 
 	// 7.雪花算法全局变量
 	variable.SnowFlake = snow_flake.CreateSnowflakeFactory()

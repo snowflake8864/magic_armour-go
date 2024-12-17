@@ -9,7 +9,7 @@ import (
 
 // CreateProcessFactory 通讯日志：进程启动
 func CreateProcessFactory() *ProcessModel {
-	return &ProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &ProcessModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
 }
 
 // 结构体

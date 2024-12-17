@@ -9,7 +9,7 @@ import (
 
 // CreateInnerFactory 通讯日志：对内通讯
 func CreateInnerFactory() *InnerModel {
-	return &InnerModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &InnerModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
 }
 
 // 结构体

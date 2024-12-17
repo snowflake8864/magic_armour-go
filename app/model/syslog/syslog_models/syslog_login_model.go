@@ -9,7 +9,7 @@ import (
 
 // CreateLoginFactory 通讯日志：登录
 func CreateLoginFactory() *LoginModel {
-	return &LoginModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &LoginModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
 }
 
 // 结构体

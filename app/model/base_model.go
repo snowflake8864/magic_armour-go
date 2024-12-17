@@ -40,6 +40,11 @@ func UseDbConn(selectDb string) *gorm.DB {
 			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
 		}
 		db = variable.GormDbAgent
+	case variable.DbNameSyslog:
+		if variable.GormDbSyslog == nil {
+			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
+		}
+		db = variable.GormDbSyslog
 	default:
 		variable.ZapLog.Error(my_errors.ErrorsDbDriverNotExists + selectDb)
 	}

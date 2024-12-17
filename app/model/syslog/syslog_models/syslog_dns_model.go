@@ -9,7 +9,7 @@ import (
 
 // CreateDnsFactory 通讯日志：DNS解析
 func CreateDnsFactory() *DnsModel {
-	return &DnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &DnsModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
 }
 
 // 结构体

@@ -9,7 +9,7 @@ import (
 
 // CreateOuterFactory 通讯日志：对外通讯
 func CreateOuterFactory() *OuterModel {
-	return &OuterModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAlarm)}}
+	return &OuterModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameSyslog)}}
 }
 
 // 结构体
