@@ -225,6 +225,7 @@ func (aa *RequestHuanshi) analogSendByUdp(tt string, paramJson string) error {
 	msg += int_helper.IntToStr((facility * 8) + level)
 	msg += ">"
 	msg += paramJson
+	//variable.ZapLog.Sugar().Debug("============================", address)
 	//variable.ZapLog.Sugar().Info(msg)
 	_, err = conn.Write([]byte(msg))
 	if err != nil {

@@ -292,6 +292,7 @@ func (crd *PlugCalc) getHuanshiCli(pushTypeFiled string) *huanshi_platform.Reque
 	config.HuanshiAlarmIp = vals[enum_dictionary.HuanshiAlarmIp]
 	config.HuanshiAlarmPort = vals[enum_dictionary.HuanshiAlarmPort]
 	config.HuanshiLogIp = vals[enum_dictionary.HuanshiLogIp]
+	config.HuanshiLogPort = vals[enum_dictionary.HuanshiLogPort]
 
 	return huanshi_platform.CreateRequestFactory(config)
 }

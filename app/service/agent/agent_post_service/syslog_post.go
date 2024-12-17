@@ -89,7 +89,7 @@ func (crd *SyslogPost) getAgentAt(t int64, now string) string {
 	return date_helper.TimestampToDatetime(t)
 }
 
-// 发送DNS日志
+// 发送DNS日志: 入队列
 func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, now string) {
 
 	model := syslog_models.DnsModel{
@@ -105,6 +105,7 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 	}
 	//fmt.Println("sendDns ============================")
 	//fmt.Println(json_helper.Encode(&model))
+	//_ = job_callback_syslog.CreateDnsUploadFactory().Add(&model)
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutDns,
 		Data: json_helper.Encode(&model),
@@ -131,7 +132,7 @@ func (crd *SyslogPost) formatInner(param *syslogComm, orgId int64, agentId strin
 	}
 }
 
-// 发送对内通讯日志
+// 发送对内通讯日志: 直接入库
 func (crd *SyslogPost) sendInner(models *[]syslog_models.InnerModel) error {
 	modelLength := len(*models)
 	if modelLength == 0 {
@@ -145,8 +146,6 @@ func (crd *SyslogPost) sendInner(models *[]syslog_models.InnerModel) error {
 			if end > modelLength {
 				end = modelLength
 			}
-			//syslog_job.UploadInner(json_helper.Encode(data[i:end]))
-
 			msg := &kafka_go.MessageStruct{
 				Type: kafka_go.TypeSyslogPutInner,
 				Data: json_helper.Encode(data[i:end]),
@@ -181,7 +180,7 @@ func (crd *SyslogPost) formatOuter(param *syslogComm, orgId int64, agentId strin
 	}
 }
 
-// 发送对外通讯日志
+// 发送对外通讯日志: 直接入库
 func (crd *SyslogPost) sendOuter(models *[]syslog_models.OuterModel) error {
 
 	modelLength := len(*models)
@@ -196,7 +195,6 @@ func (crd *SyslogPost) sendOuter(models *[]syslog_models.OuterModel) error {
 			if end > modelLength {
 				end = modelLength
 			}
-			syslog_job.UploadOuter(json_helper.Encode(data[i:end]))
 			msg := &kafka_go.MessageStruct{
 				Type: kafka_go.TypeSyslogPutOuter,
 				Data: json_helper.Encode(data[i:end]),
@@ -229,7 +227,7 @@ func (crd *SyslogPost) formatProcess(param *syslogComm, orgId int64, agentId str
 	}
 }
 
-// 发送进程启动日志
+// 发送进程启动日志: 直接入库
 func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 
 	modelLength := len(*models)
@@ -245,7 +243,6 @@ func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 			if end > modelLength {
 				end = modelLength
 			}
-			syslog_job.UploadProcess(json_helper.Encode(data[i:end]))
 			msg := &kafka_go.MessageStruct{
 				Type: kafka_go.TypeSyslogPutProcess,
 				Data: json_helper.Encode(data[i:end]),
@@ -275,7 +272,7 @@ func (crd *SyslogPost) formatLogin(param *syslogComm, orgId int64, agentId strin
 	}
 }
 
-// 发送登录志
+// 发送登录错误日志: 直接入库
 func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) error {
 
 	modelLength := len(*models)
@@ -283,20 +280,21 @@ func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) erro
 		return nil
 	}
 
-	/*data := *models
-	cxt := context.Background()
-	for i := 0; i < modelLength; i += crd.supportNumber {
-		end := i + crd.supportNumber
-		if end > modelLength {
-			end = modelLength
+	/*
+		data := *models
+		cxt := context.Background()
+		for i := 0; i < modelLength; i += crd.supportNumber {
+			end := i + crd.supportNumber
+			if end > modelLength {
+				end = modelLength
+			}
+			msg := &kafka_go.MessageStruct{
+				Type: kafka_go.TypeSyslogPutLoginSuccess,
+				Data: json_helper.Encode(data[i:end]),
+			}
+			crd.queryClient.ProduceSyslog(cxt, msg)
 		}
-		syslog_job.UploadLoginSuccess(json_helper.Encode(data[i:end]))
-		msg := &kafka_go.MessageStruct{
-			Type: kafka_go.TypeSyslogPutLoginSuccess,
-			Data: json_helper.Encode(data[i:end]),
-		}
-		crd.queryClient.ProduceSyslog(cxt, msg)
-	}*/
+	*/
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
 		return err
@@ -305,14 +303,14 @@ func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) erro
 	return nil
 }
 
-// 发送登录志
+// 发送登录错误日志: 入队列
 func (crd *SyslogPost) sendLoginFail(model *syslog_models.LoginModel) {
 	//fmt.Println("sendLoginFail ============================")
 	//fmt.Println(json_helper.Encode(model))
+	//_ = job_callback_syslog.CreateLoginUploadFactory().Add(model)
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutLoginFail,
 		Data: json_helper.Encode(model),
 	}
-
 	crd.queryClient.ProduceSyslog(context.Background(), msg)
 }
