@@ -235,6 +235,7 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	config := huanshi_platform.RequestConfig{
 		HuanshiCallbackUrl: ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_callback_url"),
 		HuanshiUrl:         ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_url"),
+		HuanshiSwitch:      enums.SwitchOn,
 	}
 	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
 	if err := threatenPlatform.Online(); err != nil {

@@ -110,11 +110,14 @@ func (aa *RequestHuanshi) checkCode(bodyContext string, err error) error {
 
 // Online 是否在线
 func (aa *RequestHuanshi) Online() error {
+	if aa.Config.HuanshiSwitch == enums.SwitchOff {
+		return nil
+	}
 	uri := aa.Config.HuanshiUrl + "/web/heartbeat"
 
 	bodyContext, err := http_request.GetNoParams(uri, map[string]interface{}{})
-	if err := aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 
 	return nil
@@ -129,6 +132,10 @@ type ResponseToken struct {
 
 // GenerateToken 生成口令
 func (aa *RequestHuanshi) GenerateToken() error {
+	if aa.Config.HuanshiSwitch == enums.SwitchOff {
+		return nil
+	}
+
 	uri := aa.Config.HuanshiUrl + "/web/site_auth/login"
 	Timestamp := date_helper.CurTimestamp()
 	//  $param['rsa'] = md5( $param['url'].'_'.$param['time'].'_'.$hs_private_rsa);
@@ -190,8 +197,8 @@ func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 	param["url"] = aa.Config.HuanshiCallbackUrl
 
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), param)
-	if err = aa.checkCode(bodyContext, err); err != nil {
-		return err
+	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+		return err1
 	}
 	return nil
 }
