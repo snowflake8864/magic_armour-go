@@ -221,6 +221,9 @@ func (u *SystemController) HuanshiGet(ctx *gin.Context) {
 		enum_dictionary.HuanshiLogSwitch,
 		enum_dictionary.HuanshiLogIp,
 		enum_dictionary.HuanshiLogPort,
+		enum_dictionary.HuanshiThirdSwitch,
+		enum_dictionary.HuanshiThirdIp,
+		enum_dictionary.HuanshiThirdPort,
 	}
 	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
@@ -259,6 +262,9 @@ func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 		enum_dictionary.HuanshiLogSwitch:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_switch"),
 		enum_dictionary.HuanshiLogIp:       ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_log_ip"),
 		enum_dictionary.HuanshiLogPort:     ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_port"),
+		enum_dictionary.HuanshiThirdSwitch: ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_third_switch"),
+		enum_dictionary.HuanshiThirdIp:     ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_third_ip"),
+		enum_dictionary.HuanshiThirdPort:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_third_port"),
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {

@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/helpers/huanshi_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -29,33 +30,7 @@ type HuanshiCmd struct {
 
 // getHsCli  获取幻势客户端
 func (crd *HuanshiCmd) getHsCli() (err error, cli *huanshi_platform.RequestHuanshi) {
-	dictIds := []string{
-		enum_dictionary.HuanshiCallbackUrl,
-		enum_dictionary.HuanshiCallIp,
-		enum_dictionary.HuanshiSwitch,
-		enum_dictionary.HuanshiUrl,
-		enum_dictionary.HuanshiAlarmSwitch,
-		enum_dictionary.HuanshiAlarmIp,
-		enum_dictionary.HuanshiAlarmPort,
-		enum_dictionary.HuanshiLogSwitch,
-		enum_dictionary.HuanshiLogIp,
-		enum_dictionary.HuanshiLogPort,
-	}
-	vals := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
-	if string_helper.ToInt(vals[enum_dictionary.HuanshiSwitch]) == enums.SwitchOff {
-		return errors.New("幻势功能已关闭"), nil
-	}
-
-	//客户端
-	cli = huanshi_platform.CreateRequestFactory(huanshi_platform.RequestConfig{
-		HuanshiCallbackUrl: vals[enum_dictionary.HuanshiCallbackUrl],
-		HuanshiCallIp:      vals[enum_dictionary.HuanshiCallIp],
-		HuanshiUrl:         vals[enum_dictionary.HuanshiUrl],
-		HuanshiAlarmIp:     vals[enum_dictionary.HuanshiAlarmIp],
-		HuanshiAlarmPort:   vals[enum_dictionary.HuanshiAlarmPort],
-		HuanshiLogIp:       vals[enum_dictionary.HuanshiLogIp],
-		HuanshiLogPort:     vals[enum_dictionary.HuanshiLogIp],
-	})
+	cli = huanshi_helper.GetHuanshiCli("")
 
 	//验证在线
 	if err = cli.Online(); err != nil {
@@ -103,17 +78,17 @@ func (crd *HuanshiCmd) getDepartmentMap(orgId int64, agentModels []*agent_models
 // Push  推送
 func (crd *HuanshiCmd) Push() {
 	variable.ZapLog.Sugar().Debug("push start")
+	//
+	orgModels := crd.getOrgModels()
+	if orgModels == nil || len(orgModels) == 0 {
+		variable.ZapLog.Sugar().Debug("push orgModels empty")
+		return
+	}
 
 	//获取客户端
 	err, hsCli := crd.getHsCli()
 	if err != nil {
 		variable.ZapLog.Sugar().Debug("push ", err.Error())
-		return
-	}
-
-	orgModels := crd.getOrgModels()
-	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Sugar().Debug("push orgModels empty")
 		return
 	}
 

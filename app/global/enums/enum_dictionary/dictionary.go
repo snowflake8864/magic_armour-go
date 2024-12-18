@@ -49,16 +49,20 @@ const (
 	ThreatenAppExpire   string = "threaten_app_expire"   //威胁情报:应用过期时间
 	ThreatenCacheExpire string = "threaten_cache_expire" //威胁情报:缓存结果保留周期(天)
 
-	HuanshiCallbackUrl          string = "huanshi_callback_url"           //幻势:回调地址(有端口)
-	HuanshiCallIp               string = "huanshi_callback_ip"            //幻势:回调ip
-	HuanshiSwitch               string = "huanshi_switch"                 //幻势:开关
-	HuanshiUrl                  string = "huanshi_url"                    //幻势:服务器地址
-	HuanshiAlarmSwitch          string = "huanshi_alarm_switch"           //幻势:告警开关
-	HuanshiAlarmIp              string = "huanshi_alarm_ip"               //幻势:告警ip
-	HuanshiAlarmPort            string = "huanshi_alarm_port"             //幻势:告警端口
-	HuanshiLogSwitch            string = "huanshi_log_switch"             //幻势:日志开关
-	HuanshiLogIp                string = "huanshi_log_ip"                 //幻势:日志ip
-	HuanshiLogPort              string = "huanshi_log_port"               //幻势:日志端口
+	HuanshiCallbackUrl string = "huanshi_callback_url" //幻势:回调地址(有端口)
+	HuanshiCallIp      string = "huanshi_callback_ip"  //幻势:回调ip
+	HuanshiSwitch      string = "huanshi_switch"       //幻势:开关
+	HuanshiUrl         string = "huanshi_url"          //幻势:服务器地址
+	HuanshiAlarmSwitch string = "huanshi_alarm_switch" //幻势:告警开关
+	HuanshiAlarmIp     string = "huanshi_alarm_ip"     //幻势:告警ip
+	HuanshiAlarmPort   string = "huanshi_alarm_port"   //幻势:告警端口
+	HuanshiLogSwitch   string = "huanshi_log_switch"   //幻势:日志开关
+	HuanshiLogIp       string = "huanshi_log_ip"       //幻势:日志ip
+	HuanshiLogPort     string = "huanshi_log_port"     //幻势:日志端口
+	HuanshiThirdSwitch string = "huanshi_third_switch" //幻势:友商开关
+	HuanshiThirdIp     string = "huanshi_third_ip"     //幻势:友商ip
+	HuanshiThirdPort   string = "huanshi_third_port"   //幻势:友商端口
+
 	HuanshiAlarmSwitchProcess   string = "huanshi_alarm_switch_process"   //幻势:告警开关-进程
 	HuanshiAlarmSwitchDll       string = "huanshi_alarm_switch_dll"       //幻势:告警开关-模块
 	HuanshiAlarmSwitchTamper    string = "huanshi_alarm_switch_tamper"    //幻势:告警开关-防篡改
@@ -69,6 +73,12 @@ const (
 	HuanshiAlarmSwitchLogin     string = "huanshi_alarm_switch_login"     //幻势:告警开关-登录口令破解
 	HuanshiAlarmSwitchOutreach  string = "huanshi_alarm_switch_outreach"  //幻势:告警开关-外联
 	HuanshiAlarmSwitchSelf      string = "huanshi_alarm_switch_self"      //幻势:告警开关-自保
+	HuanshiLogSwitchOrgOperate  string = "huanshi_log_switch_org_operate" //幻势:日志开关-企业操作
+	HuanshiLogSwitchDns         string = "huanshi_log_switch_dns"         //幻势:日志开关-DNS
+	HuanshiLogSwitchInner       string = "huanshi_log_switch_inner"       //幻势:日志开关-对内通信
+	HuanshiLogSwitchOuter       string = "huanshi_log_switch_outer"       //幻势:日志开关-对外通信
+	HuanshiLogSwitchProcess     string = "huanshi_log_switch_process"     //幻势:日志开关-进程启动
+	HuanshiLogSwitchLogin       string = "huanshi_log_switch_login"       //幻势:日志开关-登录
 
 	OrderBankcardNo   string = "order_bankcard_no"   //订单：银行卡-卡号
 	OrderBankcardName string = "order_bankcard_name" //订单：银行卡-卡名
@@ -134,6 +144,9 @@ var EnumSlice = map[string][]string{
 		HuanshiLogSwitch,
 		HuanshiLogIp,
 		HuanshiLogPort,
+		HuanshiThirdSwitch,
+		HuanshiThirdIp,
+		HuanshiThirdPort,
 		HuanshiAlarmSwitchProcess,
 		HuanshiAlarmSwitchDll,
 		HuanshiAlarmSwitchTamper,
@@ -144,6 +157,12 @@ var EnumSlice = map[string][]string{
 		HuanshiAlarmSwitchLogin,
 		HuanshiAlarmSwitchOutreach,
 		HuanshiAlarmSwitchSelf,
+		HuanshiLogSwitchOrgOperate,
+		HuanshiLogSwitchDns,
+		HuanshiLogSwitchInner,
+		HuanshiLogSwitchOuter,
+		HuanshiLogSwitchProcess,
+		HuanshiLogSwitchLogin,
 	},
 	ModuleOrder: {
 		OrderBankcardNo,

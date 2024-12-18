@@ -2,6 +2,7 @@ package job_callback_syslog
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -41,7 +42,7 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.ProcessModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchProcess); hsCli != nil {
 		hsData := huanshi_platform.LogProcess{
 			LogBase: huanshi_platform.LogBase{
 				OrgId:     model.OrgId,
@@ -93,7 +94,7 @@ func (crd *SyslogProcessUpload) BatchAdd(list *[]syslog_models.ProcessModel) err
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchProcess); hsCli != nil {
 		for _, model := range inserts {
 			hsData := huanshi_platform.LogProcess{
 				LogBase: huanshi_platform.LogBase{

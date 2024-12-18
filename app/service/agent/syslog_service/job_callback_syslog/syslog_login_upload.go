@@ -3,6 +3,7 @@ package job_callback_syslog
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
@@ -35,7 +36,7 @@ func (crd *SyslogLoginUpload) Add(model *syslog_models.LoginModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchLogin); hsCli != nil {
 		if err := hsCli.SyncLogLogin(crd.initHs(model)); err != nil {
 			variable.ZapLog.Sugar().Debug(err.Error())
 		}
@@ -72,7 +73,7 @@ func (crd *SyslogLoginUpload) BatchAddSuccess(list *[]syslog_models.LoginModel) 
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchLogin); hsCli != nil {
 		for _, model := range inserts {
 			if err := hsCli.SyncLogLogin(crd.initHs(&model)); err != nil {
 				variable.ZapLog.Sugar().Debug(err.Error())

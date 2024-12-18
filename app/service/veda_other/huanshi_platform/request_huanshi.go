@@ -2,6 +2,7 @@ package huanshi_platform
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
@@ -29,11 +30,12 @@ const (
 
 	DataTypeAgent string = "zhongduan" //数据类型: 终端
 
-	LogTypeDns     int = 1 //日志类型：dns
-	LogTypeOuter   int = 2 //日志类型：对外通讯
-	LogTypeInner   int = 3 //日志类型：对内通讯
-	LogTypeProcess int = 4 //日志类型：进程启动
-	LogTypeLogin   int = 5 //日志类型：登录
+	LogTypeDns        int = 1 //日志类型：dns
+	LogTypeOuter      int = 2 //日志类型：对外通讯
+	LogTypeInner      int = 3 //日志类型：对内通讯
+	LogTypeProcess    int = 4 //日志类型：进程启动
+	LogTypeLogin      int = 5 //日志类型：登录
+	LogTypeOrgOperate int = 6 //日志类型：企业操作
 )
 
 func CreateRequestFactory(c RequestConfig) *RequestHuanshi {
@@ -51,13 +53,19 @@ func CreateRequestFactory(c RequestConfig) *RequestHuanshi {
 }
 
 type RequestConfig struct {
+	HuanshiSwitch      int
 	HuanshiCallbackUrl string
 	HuanshiCallIp      string
 	HuanshiUrl         string
+	HuanshiAlarmSwitch int
 	HuanshiAlarmIp     string
 	HuanshiAlarmPort   string
+	HuanshiLogSwitch   int
 	HuanshiLogIp       string
 	HuanshiLogPort     string
+	HuanshiThirdSwitch int
+	HuanshiThirdIp     string
+	HuanshiThirdPort   string
 }
 
 type RequestHuanshi struct {
@@ -170,8 +178,11 @@ func (aa *RequestHuanshi) GetHeaders() (headers map[string]interface{}) {
 }
 */
 func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
-	uri := aa.Config.HuanshiUrl + "/web/device/add"
+	if aa.Config.HuanshiSwitch == enums.SwitchOff {
+		return nil
+	}
 
+	uri := aa.Config.HuanshiUrl + "/web/device/add"
 	//默认值
 	param["platform"] = aa.RequestPlatform
 	param["edition"] = aa.Edition
@@ -179,36 +190,61 @@ func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
 	param["url"] = aa.Config.HuanshiCallbackUrl
 
 	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), param)
-	if err := aa.checkCode(bodyContext, err); err != nil {
+	if err = aa.checkCode(bodyContext, err); err != nil {
 		return err
 	}
 	return nil
 }
 
-// 同步Udp模拟发送SYSLOG
-func (aa *RequestHuanshi) analogSendByUdp(tt string, paramJson string) error {
-	//发送地址
-	var address string
+// SYSLOG发送
+func (aa *RequestHuanshi) sendBySyslog(tt string, paramJson string) error {
 	var facility, level int
 	if tt == "agent" {
-		address = aa.Config.HuanshiAlarmIp + ":" + aa.Config.HuanshiAlarmPort
 		//@todo 通道:LOCAL7; 等级:info
 		facility = 23
 		level = 6
 	} else if tt == "alarm" {
-		address = aa.Config.HuanshiAlarmIp + ":" + aa.Config.HuanshiAlarmPort
 		//@todo 通道:LOCAL5; 等级:info
 		facility = 21
 		level = 5
 	} else if tt == "log" {
-		address = aa.Config.HuanshiLogIp + ":" + aa.Config.HuanshiLogPort
 		//@todo 通道:LOCAL3; 等级:warning
 		facility = 19
 		level = 4
 	} else {
 		return errors.New("type not in [agent alarm log]")
 	}
+	//地址
+	var addresses []string
 
+	//幻势平台
+	if aa.Config.HuanshiSwitch == enums.SwitchOn {
+		if tt == "agent" {
+			addresses = append(addresses, aa.Config.HuanshiAlarmIp+":"+aa.Config.HuanshiAlarmPort)
+		} else if tt == "alarm" && aa.Config.HuanshiAlarmSwitch == enums.SwitchOn {
+			addresses = append(addresses, aa.Config.HuanshiAlarmIp+":"+aa.Config.HuanshiAlarmPort)
+		} else if tt == "log" && aa.Config.HuanshiLogSwitch == enums.SwitchOn {
+			addresses = append(addresses, aa.Config.HuanshiLogIp+":"+aa.Config.HuanshiLogIp)
+		}
+	}
+	//友商平台
+	if aa.Config.HuanshiThirdSwitch == enums.SwitchOn {
+		addresses = append(addresses, aa.Config.HuanshiThirdIp+":"+aa.Config.HuanshiThirdPort)
+	}
+
+	if len(addresses) > 0 {
+		for _, addr := range addresses {
+			if err1 := aa.analogSyslog(addr, facility, level, paramJson); err1 != nil {
+				variable.ZapLog.Sugar().Error("analogSyslog: " + err1.Error())
+			}
+		}
+	}
+
+	return nil
+}
+
+// 模拟 Syslog
+func (aa *RequestHuanshi) analogSyslog(address string, facility, level int, paramJson string) error {
 	//请求地址
 	conn, err := net.Dial("udp", address)
 	if err != nil {
@@ -260,7 +296,7 @@ func (aa *RequestHuanshi) SyncAgentBySyslog(param *AgentData) error {
 	//默认值
 	param.Platform = aa.RequestPlatform
 	param.DataType = DataTypeAgent
-	if err := aa.analogSendByUdp("agent", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("agent", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -336,7 +372,7 @@ func (aa *RequestHuanshi) SyncAlarmComm(param AlarmComm) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -356,7 +392,7 @@ func (aa *RequestHuanshi) SyncAlarmOutreach(param AlarmOutreach) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -376,7 +412,7 @@ func (aa *RequestHuanshi) SyncAlarmLogin(param AlarmLogin) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -396,7 +432,7 @@ func (aa *RequestHuanshi) SyncAlarmPlug(param AlarmPlug) error {
 		param.DeptName = cache.DeptName
 	}
 
-	if err := aa.analogSendByUdp("alarm", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("alarm", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -407,10 +443,10 @@ type LogBase struct {
 	DeviceIp   string `json:"device_ip"`   //设备IP
 	Platform   string `json:"platform"`    //来源
 	LogType    int    `json:"log_type"`    //日志类型
-	OrgId      int64  `json:"org_id"`
-	AgentId    string `json:"agent_id"`   //终端标识
-	AgentIp    string `json:"agent_ip"`   //终端ip
-	CreatedAt  string `json:"created_at"` //终端ip
+	OrgId      int64  `json:"org_id"`      //企业编号
+	AgentId    string `json:"agent_id"`    //终端标识
+	AgentIp    string `json:"agent_ip"`    //终端ip
+	CreatedAt  string `json:"created_at"`  //终端ip
 }
 
 // LogProcess 日志数据结构： 进程启动日志
@@ -470,7 +506,7 @@ func (aa *RequestHuanshi) SyncLogDns(param LogDns) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -486,7 +522,7 @@ func (aa *RequestHuanshi) SyncLogNetwork(param LogNetwork) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -503,7 +539,7 @@ func (aa *RequestHuanshi) SyncLogProcess(param LogProcess) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil
@@ -520,7 +556,7 @@ func (aa *RequestHuanshi) SyncLogLogin(param LogLogin) error {
 		param.DeviceMark = cache.OrgCode
 		param.AgentIp = cache.AgentIp
 	}
-	if err := aa.analogSendByUdp("log", json_helper.Encode(param)); err != nil {
+	if err := aa.sendBySyslog("log", json_helper.Encode(param)); err != nil {
 		return err
 	}
 	return nil

@@ -19,6 +19,9 @@ type HuanshiSet struct {
 	HuanshiLogSwitch   *int   `form:"huanshi_log_switch" json:"huanshi_log_switch" binding:"required,oneof=0 1"`
 	HuanshiLogIp       string `form:"huanshi_log_ip" json:"huanshi_log_ip" binding:"omitempty,max=128"`
 	HuanshiLogPort     int    `form:"huanshi_log_port" json:"huanshi_log_port" binding:"omitempty,max=65535"`
+	HuanshiThirdSwitch *int   `form:"huanshi_third_switch" json:"huanshi_third_switch" binding:"required,oneof=0 1"`
+	HuanshiThirdIp     string `form:"huanshi_third_ip" json:"huanshi_third_ip" binding:"omitempty,max=128"`
+	HuanshiThirdPort   int    `form:"huanshi_third_port" json:"huanshi_third_port" binding:"omitempty,max=65535"`
 }
 
 func (n HuanshiSet) CheckParams(context *gin.Context) {

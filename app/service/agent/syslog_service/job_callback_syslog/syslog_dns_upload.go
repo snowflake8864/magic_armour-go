@@ -2,6 +2,7 @@ package job_callback_syslog
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
@@ -38,7 +39,7 @@ func (crd *SyslogDnsUpload) Add(model *syslog_models.DnsModel) error {
 	}
 
 	//推送到幻势,
-	if hsCli := crd.getHuanshiCli(); hsCli != nil {
+	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitch); hsCli != nil {
 		hsData := huanshi_platform.LogDns{
 			LogBase: huanshi_platform.LogBase{
 				OrgId:     model.OrgId,
