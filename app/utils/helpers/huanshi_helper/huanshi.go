@@ -32,7 +32,7 @@ func GetHuanshiCli(pushTypeFiled string) *huanshi_platform.RequestHuanshi {
 	if len(vals) != len(dictIds) {
 		return nil
 	}
-	// 要推送信息对应已关闭
+	// 要推送信息类型为关闭状态
 	if !string_helper.IsEmpty(pushTypeFiled) && string_helper.ToInt(vals[pushTypeFiled]) == enums.SwitchOff {
 		return nil
 	}
