@@ -330,6 +330,7 @@ func InitPlatformRouter() *gin.Engine {
 						huanshi.POST("get", (&platform.SystemController{}).HuanshiGet)
 						huanshi.POST("online", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiOnline"))
 						huanshi.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiSet"))
+						huanshi.POST("setThird", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemHuanshiSetThird"))
 					}
 					upgrade := system.Group("upgrade/")
 					{

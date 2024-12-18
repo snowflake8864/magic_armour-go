@@ -262,6 +262,19 @@ func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 		enum_dictionary.HuanshiLogSwitch:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_switch"),
 		enum_dictionary.HuanshiLogIp:       ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_log_ip"),
 		enum_dictionary.HuanshiLogPort:     ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_log_port"),
+	}
+
+	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
+		response.FailSimplify(ctx, "保持失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+// HuanshiSetThird  幻势配置
+func (u *SystemController) HuanshiSetThird(ctx *gin.Context) {
+	idAndVal := map[string]interface{}{
 		enum_dictionary.HuanshiThirdSwitch: ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_third_switch"),
 		enum_dictionary.HuanshiThirdIp:     ctx.GetString(consts.ValidatorPrefixPlatform + "huanshi_third_ip"),
 		enum_dictionary.HuanshiThirdPort:   ctx.GetFloat64(consts.ValidatorPrefixPlatform + "huanshi_third_port"),
