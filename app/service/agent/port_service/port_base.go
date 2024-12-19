@@ -22,8 +22,8 @@ func (crd *PortBase) checkSourcePort(portStr string) error {
 			if !crd.checkPortRange(currPort[0]) || !crd.checkPortRange(currPort[1]) {
 				return errors.New("无效的端口【" + portRange + "】")
 			}
-			minPort := string_helper.ToInt(currPort[0])
-			maxPort := string_helper.ToInt(currPort[1])
+			minPort := string_helper.ToInt64(currPort[0])
+			maxPort := string_helper.ToInt64(currPort[1])
 			if minPort >= maxPort {
 				return errors.New("端口范围无效【" + portRange + "】")
 			}
@@ -37,7 +37,7 @@ func (crd *PortBase) checkSourcePort(portStr string) error {
 			if !crd.checkPortRange(portRange) {
 				return errors.New("端口无效【" + portRange + "】")
 			}
-			intPort := string_helper.ToInt(portRange)
+			intPort := string_helper.ToInt64(portRange)
 
 			if !occupyFact.CheckPort(intPort) {
 				return errors.New("本次端口有重复添加【" + portRange + "】")
@@ -77,13 +77,13 @@ func (crd *PortBase) checkPortUnique(portStr string, existsList []string) error 
 		for _, portRange := range portArr {
 			if strings.Contains(portRange, "-") {
 				currPort := strings.Split(portRange, "-")
-				minPort := string_helper.ToInt(currPort[0])
-				maxPort := string_helper.ToInt(currPort[1])
+				minPort := string_helper.ToInt64(currPort[0])
+				maxPort := string_helper.ToInt64(currPort[1])
 				for i := minPort; i <= maxPort; i++ {
 					occupyFact.SetPort(i)
 				}
 			} else {
-				occupyFact.SetPort(string_helper.ToInt(portRange))
+				occupyFact.SetPort(string_helper.ToInt64(portRange))
 			}
 		}
 	}
@@ -93,15 +93,15 @@ func (crd *PortBase) checkPortUnique(portStr string, existsList []string) error 
 	for _, portRange := range portArr {
 		if strings.Contains(portRange, "-") {
 			currPort := strings.Split(portRange, "-")
-			minPort := string_helper.ToInt(currPort[0])
-			maxPort := string_helper.ToInt(currPort[1])
+			minPort := string_helper.ToInt64(currPort[0])
+			maxPort := string_helper.ToInt64(currPort[1])
 			for i := minPort; i <= maxPort; i++ {
 				if !occupyFact.CheckPort(i) {
 					return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
 				}
 			}
 		} else {
-			intPort := string_helper.ToInt(portRange)
+			intPort := string_helper.ToInt64(portRange)
 			if !occupyFact.CheckPort(intPort) {
 				return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
 			}
