@@ -172,34 +172,44 @@ func (aa *RequestHuanshi) GetHeaders() (headers map[string]interface{}) {
 	return headers
 }
 
-// SyncDeviceByTcp 通过TCO同步设备
-/*
-参数：param {
-"deviceMark": "" //设备标识
-"platform": "" //请求平台
-"edition":  "" //产品版本号
-"ip": "" //回调IP
-"url": "" //回调地址
-"agentNum": "" //终端总数
-"onlineAgentNum": "" 在线终端数
+type DeviceData struct {
+	Edition  string `json:"edition"`  //产品版本号
+	Platform string `json:"platform"` //对应平台
+	IP       string `json:"ip"`       //回调IP
+	Url      string `json:"url"`      //回调地址
+
+	DeviceMark string `json:"deviceMark"` //设备标识
+	DeviceRoot string `json:"deviceRoot"` //设备管理员
+
+	AgentNum       int `json:"agentNum"`       //终端总数
+	OnlineAgentNum int `json:"onlineAgentNum"` //终端在线数
 }
-*/
-func (aa *RequestHuanshi) SyncDeviceByTcp(param map[string]interface{}) error {
+
+// SyncDevices 同步设备
+func (aa *RequestHuanshi) SyncDevices(params *[]DeviceData) error {
 	if aa.Config.HuanshiSwitch == enums.SwitchOff {
 		return nil
 	}
+	if err := aa.Online(); err != nil {
+		return errors.New("网络连接： " + err.Error())
+	}
+	if err := aa.GenerateToken(); err != nil {
+		return errors.New("生成口令： " + err.Error())
+	}
 
 	uri := aa.Config.HuanshiUrl + "/web/device/add"
-	//默认值
-	param["platform"] = aa.RequestPlatform
-	param["edition"] = aa.Edition
-	param["ip"] = aa.Config.HuanshiCallIp
-	param["url"] = aa.Config.HuanshiCallbackUrl
 
-	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), param)
-	if err1 := aa.checkCode(bodyContext, err); err1 != nil {
-		return err1
+	for _, param := range *params {
+		param.Platform = aa.RequestPlatform
+		param.Edition = aa.Edition
+		param.IP = aa.Config.HuanshiCallIp
+		param.Url = aa.Config.HuanshiCallbackUrl
+		bodyContext, err := http_request.PostWithJson(uri, aa.GetHeaders(), param)
+		if err1 := aa.checkCode(bodyContext, err); err1 != nil {
+			return errors.New("同步设备： " + err1.Error())
+		}
 	}
+
 	return nil
 }
 

@@ -1,7 +1,6 @@
 package huanshi_cmd
 
 import (
-	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -29,20 +28,8 @@ type HuanshiCmd struct {
 }
 
 // getHsCli  获取幻势客户端
-func (crd *HuanshiCmd) getHsCli() (err error, cli *huanshi_platform.RequestHuanshi) {
-	cli = huanshi_helper.GetHuanshiCli("")
-
-	//验证在线
-	if err = cli.Online(); err != nil {
-		return errors.New("网络连接失败： " + err.Error()), nil
-	}
-
-	//生成token
-	if err = cli.GenerateToken(); err != nil {
-		return errors.New("生成口令： " + err.Error()), nil
-	}
-
-	return nil, cli
+func (crd *HuanshiCmd) getHsCli() *huanshi_platform.RequestHuanshi {
+	return huanshi_helper.GetHuanshiCli("")
 }
 
 func (crd *HuanshiCmd) getOrgModels() []*organization_models.OrganizationModel {
@@ -86,18 +73,21 @@ func (crd *HuanshiCmd) Push() {
 	}
 
 	//获取客户端
-	err, hsCli := crd.getHsCli()
-	if err != nil {
-		variable.ZapLog.Sugar().Debug("push ", err.Error())
+	hsCli := crd.getHsCli()
+	if hsCli == nil {
+		variable.ZapLog.Sugar().Debug("push getHsCli fail")
 		return
 	}
 
 	//先同步设备数据
+	var devices []huanshi_platform.DeviceData
 	for _, orgModel := range orgModels {
-		if err1 := hsCli.SyncDeviceByTcp(crd.initDevice(orgModel)); err1 != nil {
-			variable.ZapLog.Sugar().Debug("push SyncDeviceByTcp：", err1.Error())
-			return
-		}
+		devices = append(devices, crd.initDevice(orgModel))
+
+	}
+	if err1 := hsCli.SyncDevices(&devices); err1 != nil {
+		variable.ZapLog.Sugar().Debug("push SyncDevices：", err1.Error())
+		return
 	}
 	//休眠一下, 等待幻势处理设备数据
 	time.Sleep(time.Second * 5)
@@ -177,15 +167,19 @@ func (crd *HuanshiCmd) Push() {
 
 	variable.ZapLog.Sugar().Debug("push end")
 }
-func (crd *HuanshiCmd) initDevice(orgModel *organization_models.OrganizationModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["deviceMark"] = orgModel.Code
 
+func (crd *HuanshiCmd) initDevice(orgModel *organization_models.OrganizationModel) huanshi_platform.DeviceData {
+	data := huanshi_platform.DeviceData{
+		DeviceMark: orgModel.Code,
+		DeviceRoot: orgModel.UserName,
+	}
+
+	//统计终端
 	agentFact := agent_models.CreateAgentFactory()
 	calc := agentFact.CalcByConditions(agent_models.SearchConditions{OrgId: orgModel.Id},
 		agentFact.ColumnCalcAgents(false, true, false, false, false))
-	data["agentNum"] = calc.TotalNumber
-	data["onlineAgentNum"] = calc.OnlineNumber
+	data.AgentNum = calc.TotalNumber
+	data.OnlineAgentNum = calc.OnlineNumber
 
 	return data
 }
