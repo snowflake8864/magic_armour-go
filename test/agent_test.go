@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"goskeleton/command/console/agent_cmd"
 	"testing"
 )
 
@@ -62,6 +63,6 @@ func TestAgentDecrypt(t *testing.T) {
 	fmt.Println(d.AgentId)
 }
 
-func TestGetMapsByAgents(t *testing.T) {
-
+func TestAgentGrantExpired(t *testing.T) {
+	agent_cmd.CreateAgentFactory().GrantExpired()
 }
