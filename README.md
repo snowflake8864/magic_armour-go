@@ -34,9 +34,9 @@
 
 ### 守护进程，注意<kbd>supervisord.conf</kbd>路径
 
-      1. supervisorctl -c /data/supervisor/etc/supervisord.conf reload
-      2. supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
-      3. systemctl status supervisord.service
+      supervisorctl -c /data/supervisor/etc/supervisord.conf reload
+      supervisorctl -c /data/supervisor/etc/supervisord.conf restart all
+      systemctl status supervisord.service
 
 
 ### 管理平台隐藏页面
