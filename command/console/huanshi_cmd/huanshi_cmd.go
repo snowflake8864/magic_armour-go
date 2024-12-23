@@ -145,6 +145,7 @@ func (crd *HuanshiCmd) Push() {
 				AgentId:      agentModel.AgentId,
 				Os:           agentModel.OsName,
 				Ip:           agentModel.AgentIp,
+				Mac:          agentModel.MacId,
 				NetIp:        agentModel.NetIp,
 				HostName:     agentModel.HostName,
 				Status:       agentModel.IsOnline,

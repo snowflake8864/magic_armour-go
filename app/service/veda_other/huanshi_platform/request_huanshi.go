@@ -294,6 +294,7 @@ type AgentData struct {
 	AgentId      string `json:"agentId"`      //终端编号
 	Os           string `json:"os"`           //系统
 	Ip           string `json:"ip"`           //终端ip
+	Mac          string `json:"mac"`          //终端Mac
 	NetIp        string `json:"netIp"`        //通讯ip
 	HostName     string `json:"hostName"`     //计算机名称
 	Status       int    `json:"status"`       //终端上线状态
