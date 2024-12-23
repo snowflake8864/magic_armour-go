@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
+	"goskeleton/app/service/agent/syslog_service/job_callback_syslog"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -39,10 +41,6 @@ func TestHsAccess(t *testing.T) {
 	fmt.Println("token:", accessToken)
 }
 
-func TestHsPush(t *testing.T) {
-	huanshi_cmd.CreateCmdFactory().Push()
-}
-
 func TestHsAnalog(t *testing.T) {
 	serverAddr := "192.168.17.119:514"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                // Syslog 服务器地址
 	logMsg := "<190>{\"deviceMark\":\"6e2f364c4c6ca7ab00d47c05928a7dbc\",\"platform\":\"huanjia\",\"dataType\":\"zhongduan\",\"org_id\":1,\"agentId\":\"neokylin_test_001\",\"os\":\"NeoKylin Desktop 5.0_U4 (Loongson)\",\"ip\":\"192.168.17.154,fe80::392d:7a87:b6d9:fed6\",\"netIp\":\"127.0.0.1\",\"hostName\":\"NeoKylin\",\"status\":0,\"onlineTime\":\"2024-07-04 11:26:41\",\"version\":\"2.0.0.29\",\"deptCode\":\"\",\"deptName\":\"\",\"agentType\":\"\",\"aliasName\":\"\",\"contactName\":\"\",\"contactPhone\":\"\"}\n" // 要发送的日志信息
@@ -64,10 +62,11 @@ func TestHsAnalog(t *testing.T) {
 	log.Printf("Sent syslog message: %s", logMsg)
 }
 
-func TestHsAlarm(t *testing.T) {
-
+func TestHsPush(t *testing.T) {
 	huanshi_cmd.CreateCmdFactory().Push()
+}
 
+func TestHsAlarm(t *testing.T) {
 	model := alarm_models.ProcessModel{
 		OrgId:     1,
 		AgentId:   "win2010_test_001",
@@ -85,6 +84,32 @@ func TestHsAlarm(t *testing.T) {
 	models = append(models, model)
 
 	if err := job_callback_alarm.CreateProcessUploadFactory().BatchAdd(&models); err != nil {
+		fmt.Println(err.Error())
+	}
+
+}
+
+func TestHsLog(t *testing.T) {
+	model := syslog_models.OuterModel{
+		OrgId:            1,
+		AgentId:          "win2010_test_001",
+		AgentAt:          date_helper.CurDatetime(),
+		CreatedAt:        date_helper.CurDatetime(),
+		ProcHash:         "d0baee1681b7a74e873fe2d272cf5986",
+		ProcId:           6550,
+		ProcDir:          "c:/test.exe",
+		TargetIp:         "20.20.20.20",
+		TargetPort:       443,
+		TargetPortStatus: 1,
+		SourceIp:         "192.168.4.63",
+		SourcePort:       9552,
+		Proto:            6,
+	}
+
+	var models []syslog_models.OuterModel
+	models = append(models, model)
+
+	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(&models); err != nil {
 		fmt.Println(err.Error())
 	}
 

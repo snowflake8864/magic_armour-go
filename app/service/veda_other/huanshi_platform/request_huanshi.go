@@ -241,14 +241,13 @@ func (aa *RequestHuanshi) sendBySyslog(tt string, paramJson string) error {
 		} else if tt == "alarm" && aa.Config.HuanshiAlarmSwitch == enums.SwitchOn {
 			addresses = append(addresses, aa.Config.HuanshiAlarmIp+":"+aa.Config.HuanshiAlarmPort)
 		} else if tt == "log" && aa.Config.HuanshiLogSwitch == enums.SwitchOn {
-			addresses = append(addresses, aa.Config.HuanshiLogIp+":"+aa.Config.HuanshiLogIp)
+			addresses = append(addresses, aa.Config.HuanshiLogIp+":"+aa.Config.HuanshiLogPort)
 		}
 	}
 	//友商平台
 	if aa.Config.HuanshiThirdSwitch == enums.SwitchOn {
 		addresses = append(addresses, aa.Config.HuanshiThirdIp+":"+aa.Config.HuanshiThirdPort)
 	}
-
 	if len(addresses) > 0 {
 		for _, addr := range addresses {
 			if err1 := aa.analogSyslog(addr, facility, level, paramJson); err1 != nil {
@@ -279,7 +278,7 @@ func (aa *RequestHuanshi) analogSyslog(address string, facility, level int, para
 	msg += ">"
 	msg += paramJson
 	//variable.ZapLog.Sugar().Debug("============================", address)
-	//variable.ZapLog.Sugar().Info(msg)
+	//variable.ZapLog.Sugar().Debug(msg)
 	_, err = conn.Write([]byte(msg))
 	if err != nil {
 		return errors.New("net.Write err:" + err.Error())
