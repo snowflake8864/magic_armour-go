@@ -188,3 +188,22 @@ func FileDownloadAndRename(c *gin.Context, fullDir, newName string) {
 	// 服务文件
 	http.ServeContent(c.Writer, c.Request, newName, time.Now(), file)
 }
+
+// CheckIsSuccess 验证返回结果是否成功
+func CheckIsSuccess(httpCode int, resp *string) bool {
+	if httpCode != http.StatusOK {
+		return false
+	}
+
+	if strings.Contains(*resp, "\"code\":\"") {
+		if strings.Contains(*resp, "\"code\":\""+consts.CurdStatusOkCode+"\"") {
+			return true
+		} else {
+			return false
+		}
+	} else {
+		return false
+	}
+
+	return false
+}

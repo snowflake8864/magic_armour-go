@@ -13,7 +13,7 @@ import (
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
-	"net/http"
+	"goskeleton/app/utils/response"
 	"time"
 )
 
@@ -33,12 +33,19 @@ func SaveOperate() gin.HandlerFunc {
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
+			//是否需要记录
+			param.Module, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
+			if string_helper.IsEmpty(param.Module) {
+				variable.ZapLog.Debug("SaveOrgOperate path error: " + param.Path)
+				return
+			}
+
 			param.Input = authorization.GetRequestParams(c)
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
 			param.Status = enum_org_operate.StatusFail
-			if param.HttpCode == http.StatusOK {
+			if response.CheckIsSuccess(param.HttpCode, &param.Resp) {
 				param.Status = enum_org_operate.StatusSuccess
 			}
 
@@ -83,12 +90,13 @@ func SaveOperate() gin.HandlerFunc {
 			if param.OrgId > 0 && !string_helper.IsEmpty(param.CreateName) {
 				go org_operate_service.CreateCurdFactory().Add(&param)
 			}
-
 			/*
 				variable.ZapLog.Info("=============================================SaveOrgOperate start =============================================")
 				variable.ZapLog.Info(json_helper.Encode(param))
 				variable.ZapLog.Info("=============================================SaveOrgOperate end =============================================")
+
 			*/
+
 		}(context.Copy())
 
 	}

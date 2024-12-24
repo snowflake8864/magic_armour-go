@@ -13,7 +13,7 @@ import (
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
-	"net/http"
+	"goskeleton/app/utils/response"
 	"time"
 )
 
@@ -33,20 +33,20 @@ func SaveOperate() gin.HandlerFunc {
 			param.Path = c.Request.RequestURI
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
+			//是否需要记录
+			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
+			if string_helper.IsEmpty(param.Module) {
+				//variable.ZapLog.Debug("SaveOperate path error: " + param.Path)
+				return
+			}
+
 			param.Input = authorization.GetRequestParams(c)
 			param.HttpCode = bodyLogWriter.ResponseWriter.Status()
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
 			param.Status = enum_platform_operate.StatusFail
-			if param.HttpCode == http.StatusOK {
+			if response.CheckIsSuccess(param.HttpCode, &param.Resp) {
 				param.Status = enum_platform_operate.StatusSuccess
-			}
-
-			//是否需要记录
-			param.Module, _ = enum_platform_operate.GetModuleAndLabelByPath(param.Path)
-			if string_helper.IsEmpty(param.Module) {
-				variable.ZapLog.Debug("SaveOperate path error: " + param.Path)
-				return
 			}
 
 			//忽略验证的请求地址

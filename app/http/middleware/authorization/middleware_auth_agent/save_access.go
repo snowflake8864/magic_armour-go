@@ -15,7 +15,7 @@ import (
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
-	"net/http"
+	"goskeleton/app/utils/response"
 	"strings"
 	"time"
 )
@@ -45,7 +45,7 @@ func SaveAccess() gin.HandlerFunc {
 			param.DelayTime = time.Now().Sub(startTime).Milliseconds()
 			param.Resp = bodyLogWriter.Body.String()
 			param.Status = enum_agent_access.StatusFail
-			if param.HttpCode == http.StatusOK {
+			if response.CheckIsSuccess(param.HttpCode, &param.Resp) {
 				param.Status = enum_agent_access.StatusSuccess
 			}
 
