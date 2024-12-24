@@ -26,7 +26,7 @@ func (crd *PolicyCurd) addTask(orgId int64, agentId string, remark string) {
 }
 
 // 获取已存在的虚开端口列表
-func (crd *PolicyCurd) getExistsPorts(orgId int64, agentId string) []string {
+func (crd *PolicyCurd) getExistsPorts(orgId int64, agentId string, excludeId int64) []string {
 	conditions := port_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
@@ -38,7 +38,9 @@ func (crd *PolicyCurd) getExistsPorts(orgId int64, agentId string) []string {
 	}
 	var portList []string
 	for _, model := range models {
-		portList = append(portList, model.SourcePort)
+		if model.Id != excludeId {
+			portList = append(portList, model.SourcePort)
+		}
 	}
 
 	return portList
@@ -59,7 +61,7 @@ func (crd *PolicyCurd) Add(param *port_models.VirtualPolicyModel) error {
 	if err := crd.checkSourcePort(param.SourcePort); err != nil {
 		return err
 	}
-	if err := crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, param.AgentId)); err != nil {
+	if err := crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, param.AgentId, 0)); err != nil {
 		return err
 	}
 
@@ -93,7 +95,7 @@ func (crd *PolicyCurd) Edit(param *port_models.VirtualPolicyModel, isRoot int) e
 		if err := crd.checkSourcePort(param.SourcePort); err != nil {
 			return err
 		}
-		if err := crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, param.AgentId)); err != nil {
+		if err := crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, param.AgentId, param.Id)); err != nil {
 			return err
 		}
 	}

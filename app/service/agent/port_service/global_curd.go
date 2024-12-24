@@ -51,7 +51,7 @@ func (crd *GlobalCurd) getDeptIds(orgId int64, deptId int64) (error, []int64) {
 }
 
 // 获取已存在的虚开端口列表
-func (crd *GlobalCurd) getExistsPorts(orgId int64, deptIds []int64) []string {
+func (crd *GlobalCurd) getExistsPorts(orgId int64, deptIds []int64, excludeId int64) []string {
 	deptIds = append(deptIds, 0)
 	conditions := port_models.SearchConditions{
 		OrgId:   orgId,
@@ -64,7 +64,9 @@ func (crd *GlobalCurd) getExistsPorts(orgId int64, deptIds []int64) []string {
 	}
 	var portList []string
 	for _, model := range models {
-		portList = append(portList, model.SourcePort)
+		if model.Id != excludeId {
+			portList = append(portList, model.SourcePort)
+		}
 	}
 
 	return portList
@@ -94,7 +96,7 @@ func (crd *GlobalCurd) Add(param *port_models.VirtualGlobalModel) error {
 	if err != nil {
 		return err
 	}
-	if err = crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, deptIds)); err != nil {
+	if err = crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, deptIds, 0)); err != nil {
 		return err
 	}
 
@@ -140,7 +142,7 @@ func (crd *GlobalCurd) Edit(param *port_models.VirtualGlobalModel, isRoot int) e
 	}
 
 	if hashModel.SourcePort != param.SourcePort {
-		if err = crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, deptIds)); err != nil {
+		if err = crd.checkPortUnique(param.SourcePort, crd.getExistsPorts(param.OrgId, deptIds, param.Id)); err != nil {
 			return err
 		}
 	}
