@@ -204,7 +204,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 			GrantType: enum_product.TypeTest,
 		}
 		if total := crd.masterModel.Count(search); total > 0 {
-			return -1, errors.New("不能重复导入测试授权类型的产品")
+			return -1, errors.New("不能重复导入测试授权")
 		}
 	}
 
