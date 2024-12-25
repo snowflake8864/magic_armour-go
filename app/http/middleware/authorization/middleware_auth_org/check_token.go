@@ -22,8 +22,18 @@ func CheckToken() gin.HandlerFunc {
 			response.ErrorTokenFail(context, consts.OrgLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
 			return
 		}
+
+		isDelay := true
+		//忽略延时的请求地址
+		ignoreDelay := map[string]struct{}{
+			"/v5/organization/order/public/expiredRemind": {},
+		}
+		if _, exist := ignoreDelay[context.Request.RequestURI]; exist {
+			isDelay = false
+		}
+
 		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
-		loginInfo, err := user_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, true)
+		loginInfo, err := user_service.CreateAuthFactory().DecryptByLogin(headerParams.Authorization, isDelay)
 		// token验证通过，同时绑定在请求上下文
 		key := variable.ConfigYml.GetString("Token.BindContextKeyName")
 		context.Set(key, loginInfo)

@@ -36,7 +36,7 @@ func SaveOperate() gin.HandlerFunc {
 			//是否需要记录
 			param.Module, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
 			if string_helper.IsEmpty(param.Module) {
-				variable.ZapLog.Debug("SaveOrgOperate path error: " + param.Path)
+				//variable.ZapLog.Debug("SaveOrgOperate path error: " + param.Path)
 				return
 			}
 
