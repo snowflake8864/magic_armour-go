@@ -93,6 +93,7 @@ func (crd *AgentCurd) doGrantAutoExpire(orgId int64, expireAt string, grantType 
 		updates["tamper_mode"] = enum_agent.ModeMonitor
 		updates["blackmail_switch"] = enums.SwitchOff
 		updates["blackmail_mode"] = enum_agent.ModeMonitor
+		updates["port_switch"] = enums.SwitchOff
 		updates["plug_switch"] = enums.SwitchOff
 		updates["usb_switch"] = enums.SwitchOff
 		updates["usb_mode"] = enum_agent.ModeMonitor
