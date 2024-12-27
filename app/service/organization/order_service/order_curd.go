@@ -200,8 +200,9 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 
 	if licenseResp.Type == enum_product.TypeTest {
 		search := order_models.SearchConditions{
-			OrgId:     orderParam.OrgId,
-			GrantType: enum_product.TypeTest,
+			OrgId:       orderParam.OrgId,
+			GrantType:   enum_product.TypeTest,
+			OrderStatus: enum_order.OrderStatusCompleted,
 		}
 		if total := crd.masterModel.Count(search); total > 0 {
 			return -1, errors.New("不能重复导入测试授权")
