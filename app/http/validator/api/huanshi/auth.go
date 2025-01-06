@@ -10,8 +10,8 @@ import (
 
 type Auth struct {
 	Time     int    `form:"time" json:"time"  binding:"required,min=1600000000"` //  验证规则：必填，最小长度为1
-	Secret   string `form:"secret" json:"secret"  binding:"required,len=32"`     //  验证规则：必填，最小长度为1
-	DeviceId string `form:"deviceId" json:"deviceId"  binding:"required,len=32"` //  验证规则：必填，最小长度为1
+	Secret   string `form:"secret" json:"secret"  binding:"required,max=64"`     //  验证规则：必填，最小长度为1
+	DeviceId string `form:"deviceId" json:"deviceId"  binding:"required,max=32"` //  验证规则：必填，最小长度为1
 }
 
 func (n Auth) CheckParams(context *gin.Context) {
