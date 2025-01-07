@@ -7,14 +7,14 @@ import (
 
 func CreateRsaFactory() *rsaCrypt {
 	/**
-	-----BEGIN RSA PUBLIC KEY-----
+	-----BEGIN PUBLIC KEY-----
 	MIIBCgKCAQEAwlCBJWEwP97VDdmu1XVxAm+NY9xgLM7sSH6n2CCfgoWQtbNE01tj
 	i/zndl/zVnd2Ci06aX8aqssTAgqe3MKV5RIhD/gx0XVpM+5/1igFh2BuxdrFPNO1
 	+GfBu6qnnWfPeSCikKI0yY6TKvM9GOiQXca1Sym8oouwY8oV3eWC/Fg5voNmsh78
 	iDdsHjB/2YbEEQX+Io++3j3sxzeekNe9K21k0eCH4NoumsZ8S2xsocaEVDNelPYX
 	Zv4emKgIuJCO+Qi6LrjTQ5MDXFLc0kWTHAKWwO3iF00V0dee/HEj4DAYQcWFcNIl
 	Nwx2FKxXL089ZZbWmrkPiEzXpjVIQwdClQIDAQAB
-	-----END RSA PUBLIC KEY-----
+	-----END PUBLIC KEY-----
 	*/
 	base64PubKey2048 := "" +
 		"MIIBCgKCAQEAwlCBJWEwP97VDdmu1XVxAm+NY9xgLM7sSH6n2CCfgoWQtbNE01tj" +
