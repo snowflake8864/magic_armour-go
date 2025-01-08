@@ -287,25 +287,33 @@ func (aa *RequestHuanshi) analogSyslog(address string, facility, level int, para
 }
 
 type AgentData struct {
-	DeviceMark   string `json:"deviceMark"`   //设备标识
-	Platform     string `json:"platform"`     //来源
-	DataType     string `json:"dataType"`     //数据类型
-	OrgId        int64  `json:"org_id"`       //企业编号
-	AgentId      string `json:"agentId"`      //终端编号
-	Os           string `json:"os"`           //系统
-	Ip           string `json:"ip"`           //终端ip
-	Mac          string `json:"mac"`          //终端Mac
-	NetIp        string `json:"netIp"`        //通讯ip
-	HostName     string `json:"hostName"`     //计算机名称
-	Status       int    `json:"status"`       //终端上线状态
-	OnlineTime   string `json:"onlineTime"`   //终端上线时间
-	Version      string `json:"version"`      //终端版本
-	DeptCode     string `json:"deptCode"`     //组织架构
-	DeptName     string `json:"deptName"`     //组织架构
-	AgentType    string `json:"agentType"`    //终端类型
-	AliasName    string `json:"aliasName"`    //别名
-	ContactName  string `json:"contactName"`  //管理人
-	ContactPhone string `json:"contactPhone"` //管理人
+	DeviceMark   string  `json:"deviceMark"`   //设备标识
+	Platform     string  `json:"platform"`     //来源
+	DataType     string  `json:"dataType"`     //数据类型
+	OrgId        int64   `json:"orgId"`        //企业编号
+	AgentId      string  `json:"agentId"`      //终端编号
+	Os           string  `json:"os"`           //系统
+	Ip           string  `json:"ip"`           //终端ip
+	Mac          string  `json:"mac"`          //终端Mac
+	NetIp        string  `json:"netIp"`        //通讯ip
+	HostName     string  `json:"hostName"`     //计算机名称
+	Status       int     `json:"status"`       //终端上线状态
+	OnlineTime   string  `json:"onlineTime"`   //终端上线时间
+	Version      string  `json:"version"`      //终端版本
+	DeptCode     string  `json:"deptCode"`     //组织架构
+	DeptName     string  `json:"deptName"`     //组织架构
+	AgentType    string  `json:"agentType"`    //终端类型
+	AliasName    string  `json:"aliasName"`    //别名
+	ContactName  string  `json:"contactName"`  //管理人
+	ContactPhone string  `json:"contactPhone"` //管理人
+	CpuInfo      string  `json:"cpuInfo"`      //终端硬件信息
+	MemoryInfo   string  `json:"memoryInfo"`   //终端硬件信息
+	DiskInfo     string  `json:"diskInfo"`     //终端硬件信息
+	NetworkCard  string  `json:"networkCard"`  //终端硬件信息
+	CpuLoad      float64 `json:"cpuLoad"`      //终端在线时，最近资源监控数据
+	MemoryLoad   float64 `json:"memoryLoad"`   //终端在线时，最近资源监控数据
+	DiskLoad     float64 `json:"diskLoad"`     //终端在线时，最近资源监控数据
+
 }
 
 // SyncAgentBySyslog 通过SYSLOG同步终端
@@ -323,7 +331,7 @@ type AlarmBase struct {
 	DeviceMark  string `json:"deviceMark"`  //设备标识
 	Platform    string `json:"platform"`    //来源
 	Type        int    `json:"type"`        //类型模块
-	OrgId       int64  `json:"org_id"`      //企业编号
+	OrgId       int64  `json:"orgId"`       //企业编号
 	AgentId     string `json:"uid"`         //终端编号
 	AgentIp     string `json:"ip"`          //终端ip
 	ContactName string `json:"contactName"` //管理人
