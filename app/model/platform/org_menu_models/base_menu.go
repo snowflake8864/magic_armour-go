@@ -9,6 +9,7 @@ type SearchConditions struct {
 	Id           int64
 	Ids          []int64
 	IsRoot       *int
+	IsShow       *int
 	UsageVerList []int
 }
 
@@ -34,6 +35,12 @@ func (m *baseMenu) conditions2Where(condition SearchConditions) (wheres []model_
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_root",
 			Val: *condition.IsRoot,
+		})
+	}
+	if condition.IsShow != nil && *condition.IsShow != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_show",
+			Val: *condition.IsShow,
 		})
 	}
 	if len(condition.UsageVerList) > 0 {

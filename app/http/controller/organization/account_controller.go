@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -10,7 +9,6 @@ import (
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/cur_app"
-	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -78,7 +76,6 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		response.SuccessReturnData(ctx, []interface{}{})
 		return
 	}
-	fmt.Println(json_helper.Encode(models))
 
 	var nodes []*tree.Node
 	for _, model := range models {
@@ -101,7 +98,6 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 			Child: []*tree.Node{},
 		})
 	}
-	fmt.Println(json_helper.Encode(nodes))
 	response.SuccessReturnData(ctx, tree.RealTree(nodes))
 }
 
