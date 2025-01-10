@@ -173,7 +173,7 @@ func (m *AgentModel) CreateTable() bool {
 }
 
 func (m *AgentModel) AlterTable(ver string) bool {
-	sql := `ALTER TABLE` + m.TableName()
+	sql := `ALTER TABLE ` + m.TableName()
 	switch ver {
 	case "3.1.0_T4":
 		sql += `
