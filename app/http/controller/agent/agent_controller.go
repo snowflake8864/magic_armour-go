@@ -93,6 +93,8 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["self_protect_switch"] = agentModel.SelfProtectSwitch
 	//内核升级
 	mapConf["kernel_upgrade_switch"] = agentModel.KernelUpgradeSwitch
+	//上传准入
+	mapConf["internet_switch"] = agentModel.SelfProtectSwitch
 
 	//外联管控间隔时间(秒)
 	mapConf["outreach_switch"] = agentModel.OutreachAlarmSwitch
