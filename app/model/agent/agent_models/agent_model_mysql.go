@@ -73,6 +73,7 @@ type AgentModel struct {
 	OutreachAlarmSwitch int    `json:"outreach_alarm_switch"`
 	SelfProtectSwitch   int    `json:"self_protect_switch"`
 	KernelUpgradeSwitch int    `json:"kernel_upgrade_switch"`
+	InternetSwitch      int    `json:"internet_switch"`
 	CommonTime          int    `json:"common_time"`
 	FastTime            int    `json:"fast_time"`
 	AutoWhiteSwitch     int    `json:"auto_white_switch"`
@@ -163,6 +164,25 @@ func (m *AgentModel) CreateTable() bool {
 			KEY index_created_at (created_at)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='终端表';
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *AgentModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE` + m.TableName()
+	switch ver {
+	case "3.1.0_T4":
+		sql += `
+			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

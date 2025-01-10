@@ -237,7 +237,9 @@ func initTableAndData() {
 func appendTableAndData() {
 	//获取迁移表数据
 	getMigrationMap()
-
+	if ver := "3.1.0_T4"; !existMigration(ver) {
+		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+	}
 	//保存迁移数据
 	saveMigrations()
 }
