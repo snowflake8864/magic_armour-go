@@ -64,6 +64,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		param.OutreachAlarmSwitch = enums.SwitchOff
 		param.SelfProtectSwitch = enums.SwitchOn
 		param.KernelUpgradeSwitch = enums.SwitchOn
+		param.InternetSwitch = enums.SwitchOn
 		param.CommonTime = enum_agent.HeartbeatCommonTime
 		param.FastTime = enum_agent.HeartbeatFastTime
 		param.AutoWhiteSwitch = enums.SwitchOn
