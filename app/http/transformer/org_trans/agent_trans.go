@@ -95,6 +95,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data["kernel_upgrade_switch"] = model.KernelUpgradeSwitch
 	data["hardware_switch"] = model.HardwareSwitch
 	data["hardware_time"] = model.HardwareTime
+	data["internet_switch"] = model.InternetSwitch
 	data["created_at"] = model.CreatedAt
 
 	//扩展信息
