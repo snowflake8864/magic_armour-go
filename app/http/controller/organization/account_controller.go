@@ -60,17 +60,21 @@ func (u *AccountController) ModifyUser(ctx *gin.Context) {
 func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
+	IsYes := enums.IsYes
 	conditions := org_menu_models.SearchConditions{
 		UsageVerList: []int{
 			0,
 			cur_app.GetAppUsageVersion(),
 		},
+		IsShow: &IsYes,
 	}
+
 	//不是管理员， 只能看非管理员菜单
 	if loginInfo.IsRoot == enums.IsNot {
 		IsNot := enums.IsNot
 		conditions.IsRoot = &IsNot
 	}
+
 	models := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
 	if models == nil {
 		response.SuccessReturnData(ctx, []interface{}{})
