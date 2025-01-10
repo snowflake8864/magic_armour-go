@@ -43,9 +43,14 @@
 
 - /#/menuConfiguration
 - /#/dataDictionary
-- DROP TABLE IF EXISTS my_table FORCE;
 
 ### 注意事项
 
 - 服务器时区应设置为东8区
 - 每个路由都有限流设置
+- Doris 数据库
+
+      DROP TABLE IF EXISTS table_name FORCE;
+
+
+### 定时任务，参考 Crontab.txt
