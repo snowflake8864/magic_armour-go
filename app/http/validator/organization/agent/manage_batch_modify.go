@@ -19,7 +19,7 @@ type ManageBatchModify struct {
 	SyslogLoginSwitch   *int `form:"syslogLoginSwitch" json:"syslogLoginSwitch" binding:"required,oneof=-100 0 1"`
 	SelfProtectSwitch   *int `form:"selfProtectSwitch" json:"selfProtectSwitch" binding:"required,oneof=-100 0 1"`
 	AutoWhiteSwitch     *int `form:"autoWhiteSwitch" json:"autoWhiteSwitch" binding:"required,oneof=-100 0 1"`
-	InternetSwitch      *int `form:"internetSwitch" json:"internetSwitch" binding:"required,oneof=0 1"`
+	InternetSwitch      *int `form:"internetSwitch" json:"internetSwitch" binding:"required,oneof=-100 0 1"`
 }
 
 func (n ManageBatchModify) CheckParams(context *gin.Context) {
