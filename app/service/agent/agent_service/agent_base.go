@@ -41,6 +41,7 @@ type ManualColumn struct {
 	OutreachAlarmSwitch *int
 	SelfProtectSwitch   *int
 	KernelUpgradeSwitch *int
+	InternetSwitch      *int
 	CommonTime          int
 	FastTime            int
 	AutoWhiteSwitch     *int
@@ -90,6 +91,10 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 
 	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt {
 		updates["self_protect_switch"] = *param.SelfProtectSwitch
+		hasTask = true
+	}
+	if param.InternetSwitch != nil && *param.InternetSwitch != enums.AllDefaultInt {
+		updates["internet_switch"] = *param.InternetSwitch
 		hasTask = true
 	}
 	//如果未授权, 下面功能不可用

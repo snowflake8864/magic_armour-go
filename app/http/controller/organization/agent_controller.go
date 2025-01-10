@@ -173,8 +173,8 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 	SyslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
 	SyslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
 	SyslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
-	//OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
-	//SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	InternetSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "internetSwitch"))
 	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 
 	var param = agent_service.ManualColumn{
@@ -184,9 +184,9 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 		SyslogInnerSwitch:   &SyslogInnerSwitch,
 		SyslogProcessSwitch: &SyslogProcessSwitch,
 		SyslogLoginSwitch:   &SyslogLoginSwitch,
-		//OutreachAlarmSwitch: &OutreachAlarmSwitch,
-		//SelfProtectSwitch:   &SelfProtectSwitch,
-		AutoWhiteSwitch: &AutoWhiteSwitch,
+		SelfProtectSwitch:   &SelfProtectSwitch,
+		InternetSwitch:      &InternetSwitch,
+		AutoWhiteSwitch:     &AutoWhiteSwitch,
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "批量修改")
 	if err != nil {
@@ -273,14 +273,15 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 	usbSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "usbSwitch"))
 	usbMode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "usbMode"))
 	loginSolveSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "loginSolveSwitch"))
-	SyslogDnsSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogDnsSwitch"))
-	SyslogOuterSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogOuterSwitch"))
-	SyslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
-	SyslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
-	SyslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
-	OutreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
-	SelfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
-	AutoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
+	syslogDnsSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogDnsSwitch"))
+	syslogOuterSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogOuterSwitch"))
+	syslogInnerSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogInnerSwitch"))
+	syslogProcessSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogProcessSwitch"))
+	syslogLoginSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "syslogLoginSwitch"))
+	outreachAlarmSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "outreachAlarmSwitch"))
+	selfProtectSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "selfProtectSwitch"))
+	internetSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "internetSwitch"))
+	autoWhiteSwitch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "autoWhiteSwitch"))
 	commonTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "commonTime"))
 	fastTime := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "fastTime"))
 
@@ -310,15 +311,16 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		PlugSwitch:          &plugSwitch,
 		UsbSwitch:           &usbSwitch,
 		UsbMode:             usbMode,
-		OutreachAlarmSwitch: &OutreachAlarmSwitch,
+		OutreachAlarmSwitch: &outreachAlarmSwitch,
 		LoginSolveSwitch:    &loginSolveSwitch,
-		SyslogDnsSwitch:     &SyslogDnsSwitch,
-		SyslogOuterSwitch:   &SyslogOuterSwitch,
-		SyslogInnerSwitch:   &SyslogInnerSwitch,
-		SyslogProcessSwitch: &SyslogProcessSwitch,
-		SyslogLoginSwitch:   &SyslogLoginSwitch,
-		SelfProtectSwitch:   &SelfProtectSwitch,
-		AutoWhiteSwitch:     &AutoWhiteSwitch,
+		SyslogDnsSwitch:     &syslogDnsSwitch,
+		SyslogOuterSwitch:   &syslogOuterSwitch,
+		SyslogInnerSwitch:   &syslogInnerSwitch,
+		SyslogProcessSwitch: &syslogProcessSwitch,
+		SyslogLoginSwitch:   &syslogLoginSwitch,
+		SelfProtectSwitch:   &selfProtectSwitch,
+		InternetSwitch:      &internetSwitch,
+		AutoWhiteSwitch:     &autoWhiteSwitch,
 		CommonTime:          commonTime,
 		FastTime:            fastTime,
 	}

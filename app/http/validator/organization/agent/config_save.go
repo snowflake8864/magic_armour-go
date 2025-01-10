@@ -32,6 +32,7 @@ type ConfigSave struct {
 	OutreachAlarmSwitch *int `form:"outreachAlarmSwitch" json:"outreachAlarmSwitch" binding:"required,oneof=0 1"`
 	SelfProtectSwitch   *int `form:"selfProtectSwitch" json:"selfProtectSwitch" binding:"required,oneof=0 1"`
 	AutoWhiteSwitch     *int `form:"autoWhiteSwitch" json:"autoWhiteSwitch" binding:"required,oneof=0 1"`
+	InternetSwitch      *int `form:"internetSwitch" json:"internetSwitch" binding:"required,oneof=0 1"`
 	CommonTime          int  `form:"commonTime" json:"commonTime" binding:"required,min=30,max=300"`
 	FastTime            int  `form:"fastTime" json:"fastTime" binding:"required,min=10,max=100"`
 }
