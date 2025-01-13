@@ -74,6 +74,7 @@ type AgentModelDoris struct {
 	OutreachAlarmSwitch int    `json:"outreach_alarm_switch"`
 	SelfProtectSwitch   int    `json:"self_protect_switch"`
 	KernelUpgradeSwitch int    `json:"kernel_upgrade_switch"`
+	InternetSwitch      int    `json:"internet_switch"`
 	CommonTime          int    `json:"common_time"`
 	FastTime            int    `json:"fast_time"`
 	AutoWhiteSwitch     int    `json:"auto_white_switch"`
@@ -150,6 +151,7 @@ func (m *AgentModelDoris) CreateTable() bool {
 			outreach_alarm_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '外联告警:开关',
 			self_protect_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自我保护:开关',
 			kernel_upgrade_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '内核升级:开关',
+			internet_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上网准入:开关',
 			common_time int(11) NOT NULL DEFAULT '60' COMMENT ' 心跳间隔:普通(秒)',
 			fast_time int(11) NOT NULL DEFAULT '5' COMMENT '心跳间隔:快速(秒)',
 			auto_white_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '自动匹配白名单:开关',
