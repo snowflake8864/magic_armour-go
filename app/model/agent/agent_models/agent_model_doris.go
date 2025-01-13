@@ -10,12 +10,12 @@ import (
 
 // 终端表
 
-func CreateAgentFactory1() *AgentModel1 {
-	return &AgentModel1{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
+func CreateAgentFactory1() *AgentModelDoris {
+	return &AgentModelDoris{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNameAgent)}}
 }
 
 // 结构体
-type AgentModel1 struct {
+type AgentModelDoris struct {
 	baseAgent
 	model.BaseModel
 	AgentId             string `json:"id"  gorm:"primaryKey;column:id"`
@@ -86,11 +86,11 @@ type AgentModel1 struct {
 
 // 表名
 
-func (m *AgentModel1) TableName() string {
+func (m *AgentModelDoris) TableName() string {
 	return "a_agents"
 }
 
-func (m *AgentModel1) CreateTable() bool {
+func (m *AgentModelDoris) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -178,7 +178,7 @@ func (m *AgentModel1) CreateTable() bool {
 }
 
 // InsertItem 插入一条
-func (m *AgentModel1) InsertItem(s *AgentModel1) bool {
+func (m *AgentModelDoris) InsertItem(s *AgentModelDoris) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -193,7 +193,7 @@ func (m *AgentModel1) InsertItem(s *AgentModel1) bool {
 }
 
 // InsertBatch 插入多条
-func (m *AgentModel1) InsertBatch(list *[]AgentModel1) bool {
+func (m *AgentModelDoris) InsertBatch(list *[]AgentModelDoris) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -207,7 +207,7 @@ func (m *AgentModel1) InsertBatch(list *[]AgentModel1) bool {
 }
 
 // UpdateById 通过id修改
-func (m *AgentModel1) UpdateById(id string, updates map[string]interface{}) (bool, int64) {
+func (m *AgentModelDoris) UpdateById(id string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id=?", id).Updates(updates)
 	})
@@ -221,7 +221,7 @@ func (m *AgentModel1) UpdateById(id string, updates map[string]interface{}) (boo
 }
 
 // UpdateByIds 通过id集合修改
-func (m *AgentModel1) UpdateByIds(ids []string, updates map[string]interface{}) (bool, int64) {
+func (m *AgentModelDoris) UpdateByIds(ids []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id IN ?", ids).Updates(updates)
 	})
@@ -234,7 +234,7 @@ func (m *AgentModel1) UpdateByIds(ids []string, updates map[string]interface{}) 
 }
 
 // UpdateByOrgAndAgent 通过企业id和终端id修改
-func (m *AgentModel1) UpdateByOrgAndAgent(orgId int64, agentId string, updates map[string]interface{}) (bool, int64) {
+func (m *AgentModelDoris) UpdateByOrgAndAgent(orgId int64, agentId string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Updates(updates)
 	})
@@ -247,7 +247,7 @@ func (m *AgentModel1) UpdateByOrgAndAgent(orgId int64, agentId string, updates m
 }
 
 // UpdateByOrgAndAgents 通过企业id和终端id集合修改
-func (m *AgentModel1) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
+func (m *AgentModelDoris) UpdateByOrgAndAgents(orgId int64, agentIds []string, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Updates(updates)
 	})
@@ -260,7 +260,7 @@ func (m *AgentModel1) UpdateByOrgAndAgents(orgId int64, agentIds []string, updat
 }
 
 // UpdateByConditions 通过条件修改
-func (m *AgentModel1) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+func (m *AgentModelDoris) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -277,7 +277,7 @@ func (m *AgentModel1) UpdateByConditions(condition SearchConditions, updates map
 }
 
 // DeleteById 通过id删除
-func (m *AgentModel1) DeleteById(id string) bool {
+func (m *AgentModelDoris) DeleteById(id string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id=?", id).Delete(m)
 	})
@@ -291,7 +291,7 @@ func (m *AgentModel1) DeleteById(id string) bool {
 }
 
 // DeleteByIds 通过id集合删除
-func (m *AgentModel1) DeleteByIds(ids []string) bool {
+func (m *AgentModelDoris) DeleteByIds(ids []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("id IN ?", ids).Delete(m)
 	})
@@ -305,7 +305,7 @@ func (m *AgentModel1) DeleteByIds(ids []string) bool {
 }
 
 // DeleteByOrgAndAgent 通过企业id和终端id删除
-func (m *AgentModel1) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
+func (m *AgentModelDoris) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id=?", orgId, agentId).Delete(m)
 	})
@@ -319,7 +319,7 @@ func (m *AgentModel1) DeleteByOrgAndAgent(orgId int64, agentId string) bool {
 }
 
 // DeleteByOrg 通过企业i删除
-func (m *AgentModel1) DeleteByOrg(orgId int64) bool {
+func (m *AgentModelDoris) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -333,7 +333,7 @@ func (m *AgentModel1) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByOrgAndAgents 通通过企业id和终端id集合删除
-func (m *AgentModel1) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
+func (m *AgentModelDoris) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND id IN ?", orgId, agentIds).Delete(m)
 	})
@@ -346,7 +346,7 @@ func (m *AgentModel1) DeleteByOrgAndAgents(orgId int64, agentIds []string) bool 
 }
 
 // DeleteByConditions 通过条件删除
-func (m *AgentModel1) DeleteByConditions(condition SearchConditions) bool {
+func (m *AgentModelDoris) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -364,7 +364,7 @@ func (m *AgentModel1) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *AgentModel1) GetItemById(id, column string) (item *AgentModel1) {
+func (m *AgentModelDoris) GetItemById(id, column string) (item *AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("id=?", id).Take(&item)
 	})
@@ -378,7 +378,7 @@ func (m *AgentModel1) GetItemById(id, column string) (item *AgentModel1) {
 }
 
 // GetItemsByIds 通过id集合获取多条记录
-func (m *AgentModel1) GetItemsByIds(ids []string, column string) (items []*AgentModel1) {
+func (m *AgentModelDoris) GetItemsByIds(ids []string, column string) (items []*AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("id IN ?", ids).Find(&items)
 	})
@@ -392,7 +392,7 @@ func (m *AgentModel1) GetItemsByIds(ids []string, column string) (items []*Agent
 }
 
 // GetItemByOrgAndAgent 通过企业id和终端id获取一条记录
-func (m *AgentModel1) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentModel1) {
+func (m *AgentModelDoris) GetItemByOrgAndAgent(orgId int64, agentId, column string) (item *AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND id=?", orgId, agentId).Take(&item)
 	})
@@ -406,7 +406,7 @@ func (m *AgentModel1) GetItemByOrgAndAgent(orgId int64, agentId, column string) 
 }
 
 // GetItemsByOrg 通过企业id获取多条记录
-func (m *AgentModel1) GetItemsByOrg(orgId int64, column string) (items []*AgentModel1) {
+func (m *AgentModelDoris) GetItemsByOrg(orgId int64, column string) (items []*AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=?", orgId).Find(&items)
 	})
@@ -420,13 +420,13 @@ func (m *AgentModel1) GetItemsByOrg(orgId int64, column string) (items []*AgentM
 }
 
 // GetMapsByOrgAndAgents 通过企业id和终端ids获取多条记录, 有映射关系
-func (m *AgentModel1) GetMapsByOrgAndAgents(orgId int64, agentIds []string, column string) map[string]*AgentModel1 {
+func (m *AgentModelDoris) GetMapsByOrgAndAgents(orgId int64, agentIds []string, column string) map[string]*AgentModelDoris {
 	models := m.GetItemsByOrgAndAgents(orgId, agentIds, column)
 
 	if models == nil {
 		return nil
 	}
-	result := make(map[string]*AgentModel1)
+	result := make(map[string]*AgentModelDoris)
 	for _, item := range models {
 		result[item.AgentId] = item
 	}
@@ -434,7 +434,7 @@ func (m *AgentModel1) GetMapsByOrgAndAgents(orgId int64, agentIds []string, colu
 }
 
 // GetItemsByOrgAndAgents 通过企业id和终端id获取多条记录
-func (m *AgentModel1) GetItemsByOrgAndAgents(orgId int64, agentIds []string, column string) (items []*AgentModel1) {
+func (m *AgentModelDoris) GetItemsByOrgAndAgents(orgId int64, agentIds []string, column string) (items []*AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Select(m.GetColumn(column)).Where("org_id=? AND id IN ?", orgId, agentIds).Find(&items)
 	})
@@ -448,7 +448,7 @@ func (m *AgentModel1) GetItemsByOrgAndAgents(orgId int64, agentIds []string, col
 }
 
 // GetIdsByByConditions s 通过条件获取ID集合
-func (m *AgentModel1) GetIdsByByConditions(condition SearchConditions) (ids []string) {
+func (m *AgentModelDoris) GetIdsByByConditions(condition SearchConditions) (ids []string) {
 	models := m.GetListByConditions(condition, m.ColumnBasic(true, false))
 
 	if models == nil {
@@ -462,12 +462,12 @@ func (m *AgentModel1) GetIdsByByConditions(condition SearchConditions) (ids []st
 }
 
 // GetListByConditions 通过条件获取多条记录
-func (m *AgentModel1) GetListByConditions(condition SearchConditions, column string) (items []*AgentModel1) {
+func (m *AgentModelDoris) GetListByConditions(condition SearchConditions, column string) (items []*AgentModelDoris) {
 	return m.GetItemsByConditions(condition, 0, 0, "", column)
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *AgentModel1) GetItemsByConditions(condition SearchConditions, offset, limit int, order, column string) (items []*AgentModel1) {
+func (m *AgentModelDoris) GetItemsByConditions(condition SearchConditions, offset, limit int, order, column string) (items []*AgentModelDoris) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -495,7 +495,7 @@ func (m *AgentModel1) GetItemsByConditions(condition SearchConditions, offset, l
 }
 
 // Count 通过条件统计
-func (m *AgentModel1) Count(condition SearchConditions) int64 {
+func (m *AgentModelDoris) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -513,7 +513,7 @@ func (m *AgentModel1) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *AgentModel1) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AgentModel1) {
+func (m *AgentModelDoris) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*AgentModelDoris) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}
@@ -525,7 +525,7 @@ func (m *AgentModel1) Page(condition SearchConditions, offset, limit int, order 
 }
 
 // CalcByConditions 通过条件获取多条记录
-func (m *AgentModel1) CalcByConditions(condition SearchConditions, column string) (item *AgentCalc) {
+func (m *AgentModelDoris) CalcByConditions(condition SearchConditions, column string) (item *AgentCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(m.GetColumn(column))
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -543,7 +543,7 @@ func (m *AgentModel1) CalcByConditions(condition SearchConditions, column string
 }
 
 // CalcByConditionsGroupOrg 通过条件获取多条记录
-func (m *AgentModel1) CalcByConditionsGroupOrg(condition SearchConditions, column string) (items []*AgentCalc) {
+func (m *AgentModelDoris) CalcByConditionsGroupOrg(condition SearchConditions, column string) (items []*AgentCalc) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select(column)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -561,7 +561,7 @@ func (m *AgentModel1) CalcByConditionsGroupOrg(condition SearchConditions, colum
 }
 
 // CalcByConditionsGroupAgentReturnMap 通过条件获取多条记录且按企业分组
-func (m *AgentModel1) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[int64]*AgentCalc {
+func (m *AgentModelDoris) CalcByConditionsGroupAgentReturnMap(condition SearchConditions, column string) map[int64]*AgentCalc {
 	var result = make(map[int64]*AgentCalc)
 
 	items := m.CalcByConditionsGroupOrg(condition, column)
