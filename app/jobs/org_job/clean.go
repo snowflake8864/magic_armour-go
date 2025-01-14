@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/model/agent/plug_models"
@@ -29,6 +30,10 @@ func Clean(orgId int64) {
 	task_models.CreateTaskFactory().DeleteByOrg(orgId)
 	//错误文件
 	agent_error_models.CreateErrorFactory().DeleteByConditions(agent_error_models.SearchConditions{
+		OrgId: orgId,
+	})
+	//终端上线日志
+	agent_online_models.CreateOnlineLogFactory().DeleteByConditions(agent_online_models.SearchConditions{
 		OrgId: orgId,
 	})
 
