@@ -33,7 +33,7 @@ func (m *baseOnline) conditions2Where(condition SearchConditions) (wheres []mode
 	}
 	if !string_helper.IsEmpty(condition.AgentId) {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "id",
+			Key: "agent_id",
 			Val: condition.AgentId,
 		})
 	}
