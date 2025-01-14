@@ -1,0 +1,126 @@
+{
+  "agent_config": {
+    "serveripport": "",
+    "api_port": 0,
+    "logipport": "",
+    "syslog_port": 0,
+    "logproto": 0,
+    "logsent": 0,
+    "crontime": 60,
+    "dynamic_switch": 1,
+    "extortion_protect": 0,
+    "extortion_switch": 1,
+    "file_protect": 0,
+    "file_switch": 1,
+    "hardware_switch": 1,
+    "hardware_time": 300,
+    "internet_switch": 1,
+    "kernel_upgrade_switch": 1,
+    "module_protect": 0,
+    "module_switch": 0,
+    "open_port_switch": 1,
+    "outreach_switch": 1,
+    "outreach_time": 180,
+    "proc_protect": 0,
+    "proc_switch": 0,
+    "self_protect_switch": 0,
+    "syslog_dns_switch": 1,
+    "syslog_inner_switch": 1,
+    "syslog_login_switch": 1,
+    "syslog_outer_switch": 1,
+    "syslog_process_switch": 1,
+    "syslog_switch": 1,
+    "usb_protect": 0,
+    "usb_switch": 1
+  },
+  "alarm_conf": {
+    "dir": "/opt/veda/",
+    "size": 1000,
+    "process_name": "alarm_process.json",
+    "dll_name": "alarm_dll.json",
+    "blackmail_name": "alarm_blackmail.json",
+    "tamper_name": "alarm_tamper.json",
+    "port_name": "alarm_port.json",
+    "usb_name": "alarm_usb.json",
+    "outreach_name": "alarm_outreach.json",
+    "self_protect_name": "alarm_self_protect.json"
+  },
+  "syslog_conf": {
+    "dir": "c:\\veda\\",
+    "size": 1000,
+    "dns_name": "syslog_dns.json",
+    "outer_name": "syslog_outer.json",
+    "inner_name": "syslog_inner.json",
+    "process_name": "syslog_process.json",
+    "login_name": "syslog_login.json"
+  },
+  "dll_white_list": [
+    {
+      "hash": ""
+    }
+  ],
+  "dll_black_list": [
+    {
+      "hash": ""
+    }
+  ],
+  "tamper_policy_list": [
+    {
+      "id": 0,
+      "dir": "",
+      "type": 1,
+      "hash": "",
+      "protect_rw": 1,
+      "include_file": "",
+      "protect_file": "",
+      "protect_folder": "",
+      "is_extend": 0,
+      "process": [
+        {
+          "hash": ""
+        }
+      ]
+    }
+  ],
+  "blackmail_policy_list": [
+    {
+      "type": 1,
+      "file_suffix": "",
+      "process": [
+        {
+          "hash": "",
+          "name": ""
+        }
+      ]
+    }
+  ],
+  "port_virtual_policy_list": [
+    {
+      "id": 0,
+      "type": "ipv4",
+      "protocol": "tcp",
+      "source_ip": "0.0.0.0",
+      "source_port": "",
+      "dest_ip": "",
+      "dest_port": "",
+      "alarm_level": 2,
+      "source_port_type": 0
+    }
+  ],
+  "plug_dynamic_list": [
+    {
+      "type": "",
+      "typeName": "",
+      "ip": "",
+      "direction": 3,
+      "starttime": "",
+      "endtime": 0
+    }
+  ],
+  "plug_black_list": [
+    {
+      "ip": "",
+      "direction": 3
+    }
+  ]
+}
