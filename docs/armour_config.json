@@ -33,7 +33,7 @@
     "usb_protect": 0,
     "usb_switch": 1
   },
-  "alarm_conf": {
+  "alarm_config": {
     "dir": "/opt/veda/",
     "size": 1000,
     "process_name": "alarm_process.json",
@@ -45,7 +45,7 @@
     "outreach_name": "alarm_outreach.json",
     "self_protect_name": "alarm_self_protect.json"
   },
-  "syslog_conf": {
+  "syslog_config": {
     "dir": "c:\\veda\\",
     "size": 1000,
     "dns_name": "syslog_dns.json",
