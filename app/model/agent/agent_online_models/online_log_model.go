@@ -154,7 +154,7 @@ func (m *OnlineLogModel) GetItemsByConditions(condition SearchConditions, offset
 		if !string_helper.IsEmpty(order) {
 			tmp = tmp.Order(order)
 		} else {
-			tmp = tmp.Order("created_at ASC")
+			tmp = tmp.Order("created_at DESC")
 		}
 		return tmp.Find(&items)
 	})
