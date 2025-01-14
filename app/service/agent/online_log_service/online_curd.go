@@ -19,6 +19,9 @@ type OnlineLogCurd struct {
 // Add 新增
 func (crd *OnlineLogCurd) Add(param *agent_online_models.OnlineLogModel) error {
 	param.Id = variable.SnowFlake.GetId()
+	if string_helper.IsEmpty(param.CreatedAt) {
+		param.CreatedAt = date_helper.CurDatetime()
+	}
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
 	}
