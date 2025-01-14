@@ -122,5 +122,24 @@
       "ip": "",
       "direction": 3
     }
+  ],
+  "usb_white_list": [
+    {
+      "perpheral_eid": "",
+      "perpheral_name": ""
+    }
+  ],
+  "usb_black_list": [
+    {
+      "perpheral_eid": "",
+      "perpheral_name": ""
+    }
+  ],
+  "outreach_detect_list": [
+    {
+      "addr": "",
+      "method": "get",
+      "type": 1
+    }
   ]
 }
