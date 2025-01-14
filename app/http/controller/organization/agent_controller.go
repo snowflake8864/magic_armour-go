@@ -14,10 +14,12 @@ import (
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
 	"sort"
 )
@@ -362,9 +364,11 @@ func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
 
 // PageForOnlineLog 上线日子：分页
 func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
 	//页面上传
 	conditions := agent_online_models.SearchConditions{}
-	conditions.OrgId = u.getLogin(ctx).OrgId
+	conditions.OrgId = loginInfo.OrgId
 	conditions.AgentId = u.getAgentIdFromGin(ctx)
 	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
@@ -377,7 +381,19 @@ func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 	offset, pageSize, _ := u.getPageAndSort(ctx, "")
 
 	//分页
-	total, logModels := agent_online_models.CreateOnlineLogFactory().Page(conditions, offset, pageSize, "")
+	total, models := agent_online_models.CreateOnlineLogFactory().Page(conditions, offset, pageSize, "")
 
-	response.SuccessReturnData(ctx, (&org_trans.AgentOnline{}).TransPage(total, logModels, nil))
+	//获取组织架构
+	departmentMaps := map[int64]*department_models.DepartmentModel{}
+	if models != nil && len(models) > 0 {
+		var deptIds []int64
+		for _, model := range models {
+			if model.DeptId > 0 {
+				deptIds = append(deptIds, model.DeptId)
+			}
+		}
+		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
+	}
+
+	response.SuccessReturnData(ctx, (&org_trans.AgentOnline{}).TransPage(total, models, departmentMaps))
 }
