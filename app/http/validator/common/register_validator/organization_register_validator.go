@@ -144,6 +144,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, agent3.MonitorList{})
 	key = consts.ValidatorPrefixOrg + "AgentMonitorInfo"
 	containers.Set(key, agent3.MonitorInfo{})
+	key = consts.ValidatorPrefixOrg + "AgentOnlineLogPage"
+	containers.Set(key, agent3.OnlineLogPage{})
 
 	//信任目录
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalPage"

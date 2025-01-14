@@ -400,6 +400,14 @@ func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColum
 		}
 	}
 
+	/*//上传准入开启
+	if param.InternetSwitch != nil && *param.InternetSwitch == enums.SwitchOn {
+		//windows XP和2003  不支持
+		if model.OsType == enum_software.OsTypeWinXp {
+			tasks = append(tasks, enum_task.TypePluggingDownload, enum_task.TypePlugIpBlackDownload)
+		}
+	}*/
+
 	//外设开启
 	if param.UsbSwitch != nil && *param.UsbSwitch == enums.SwitchOn {
 		tasks = append(tasks, enum_task.TypeUsbWhiteDownload, enum_task.TypeUsbBlackDownload)

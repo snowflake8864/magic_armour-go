@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
@@ -357,4 +358,26 @@ func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
 	model := agent_monitor_models.CreateMonitorFactory().GetItemByConditions(conditions)
 
 	response.SuccessReturnData(ctx, model)
+}
+
+// PageForOnlineLog 上线日子：分页
+func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
+	//页面上传
+	conditions := agent_online_models.SearchConditions{}
+	conditions.OrgId = u.getLogin(ctx).OrgId
+	conditions.AgentId = u.getAgentIdFromGin(ctx)
+	conditions.AgentIp = ctx.GetString(consts.ValidatorPrefixOrg + "agentIp")
+	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
+	isOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
+	conditions.IsOnline = &isOnline
+	conditions.CreateAtGte = ctx.GetString(consts.ValidatorPrefixOrg + "startTime")
+	conditions.CreateAtLte = ctx.GetString(consts.ValidatorPrefixOrg + "endTime")
+
+	//分页参数和排序参数
+	offset, pageSize, _ := u.getPageAndSort(ctx, "")
+
+	//分页
+	total, logModels := agent_online_models.CreateOnlineLogFactory().Page(conditions, offset, pageSize, "")
+
+	response.SuccessReturnData(ctx, (&org_trans.AgentOnline{}).TransPage(total, logModels, nil))
 }

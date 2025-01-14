@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
+	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/model/agent/outreach_models"
@@ -239,6 +240,7 @@ func appendTableAndData() {
 	getMigrationMap()
 	if ver := "3.1.0_T4"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+		_ = agent_online_models.CreateOnlineLogFactory().CreateTable()
 	}
 	//保存迁移数据
 	saveMigrations()

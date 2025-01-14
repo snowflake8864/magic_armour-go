@@ -188,6 +188,10 @@ func InitOrganizationRouter() *gin.Engine {
 						monitor.POST("list", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentMonitorList"))
 						monitor.POST("info", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentMonitorInfo"))
 					}
+					onlineLog := agent.Group("onlineLog/")
+					{
+						onlineLog.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentOnlineLogPage"))
+					}
 
 				} //终端
 
