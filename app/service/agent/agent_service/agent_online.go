@@ -5,6 +5,8 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/agent_online_models"
+	"goskeleton/app/service/agent/online_log_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -21,9 +23,8 @@ type AgentOnline struct {
 
 // RegisterOrLogin 存在登录，不存在注册
 func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, string) {
-	agentModel := crd.masterModel.GetItemByOrgAndAgent(param.OrgId, param.AgentId, crd.masterModel.ColumnSwitchAndModeForAlarm(true))
+	agentModel := crd.masterModel.GetItemByOrgAndAgent(param.OrgId, param.AgentId, "*")
 	nowDate := date_helper.CurDatetime()
-	isAllocateDept := true //是否分配组织架构
 
 	if string_helper.IsEmpty(agentModel.AgentId) {
 		//授权配置
@@ -123,17 +124,10 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		}
 		//添加任务
 		crd.addTask(agentModel, manual, false, "终端上线")
-
-		//有组织架构
-		if agentModel.DeptId > 0 {
-			isAllocateDept = false
-		}
 	}
 
-	//自动分配组织架构,使用通信IP
-	if isAllocateDept {
-		crd.autoAllocateDept(param.OrgId, param.AgentId, param.NetIp)
-	}
+	//记录上线日志
+	crd.saveOnlineLog(param, agentModel, nowDate)
 
 	//生成token
 	token := CreateCacheFactory().EncryptByLogin(param)
@@ -142,5 +136,25 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 }
 
 // autoAllocateDept 自动分配组织架构
-func (crd *AgentOnline) autoAllocateDept(orgId int64, agentId, agentIp string) {
+func (crd *AgentOnline) saveOnlineLog(param *agent_models.AgentModel, agentModel *agent_models.AgentModel, nowDate string) {
+	data := agent_online_models.OnlineLogModel{
+		OrgId:     param.OrgId,
+		AgentId:   param.AgentId,
+		HostName:  param.HostName,
+		MacId:     param.MacId,
+		AgentIp:   param.AgentIp,
+		NetIp:     param.NetIp,
+		OsName:    param.OsName,
+		Ver:       param.Ver,
+		IsOnline:  enums.IsYes,
+		CreatedAt: nowDate,
+	}
+
+	if !string_helper.IsEmpty(agentModel.AgentId) {
+		data.DeptId = agentModel.DeptId
+		data.Alias = agentModel.Alias
+		data.ContactName = agentModel.ContactName
+		data.ContactTel = agentModel.ContactTel
+	}
+	_ = online_log_service.CreateCurdFactory().Add(&data)
 }

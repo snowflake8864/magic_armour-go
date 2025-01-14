@@ -18,18 +18,21 @@ func CreateOnlineLogFactory() *OnlineLogModel {
 type OnlineLogModel struct {
 	baseOnline
 	model.BaseModel
-	Id        int64  `json:"id" gorm:"primaryKey"`
-	OrgId     int64  `json:"org_id"`
-	AgentId   string `json:"agent_id"`
-	Path      string `json:"path"`
-	NetIp     string `json:"net_ip"`
-	Input     string `json:"input"`
-	Method    string `json:"method"`
-	Status    int    `json:"status"`
-	HttpCode  int    `json:"http_code"`
-	DelayTime int64  `json:"delay_time"`
-	Resp      string `json:"resp"`
-	CreatedAt string `json:"created_at"`
+	Id          int64  `json:"id" gorm:"primaryKey"`
+	OrgId       int64  `json:"org_id"`
+	AgentId     string `json:"agent_id"`
+	HostName    string `json:"host_name"`
+	MacId       string `json:"mac_id"`
+	AgentIp     string `json:"agent_ip"`
+	NetIp       string `json:"net_ip"`
+	OsName      string `json:"os_name"`
+	IsOnline    int    `json:"is_online"`
+	DeptId      int64  `json:"dept_id"`
+	Ver         string `json:"ver"`
+	Alias       string `json:"alias"`
+	ContactName string `json:"contact_name"`
+	ContactTel  string `json:"contact_tel"`
+	CreatedAt   string `json:"created_at"`
 }
 
 // 表名
