@@ -135,7 +135,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 	return true, token
 }
 
-// autoAllocateDept 自动分配组织架构
+// saveOnlineLog 记录上线日志
 func (crd *AgentOnline) saveOnlineLog(param *agent_models.AgentModel, agentModel *agent_models.AgentModel, nowDate string) {
 	data := agent_online_models.OnlineLogModel{
 		OrgId:     param.OrgId,

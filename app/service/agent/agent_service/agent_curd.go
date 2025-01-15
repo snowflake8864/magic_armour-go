@@ -83,14 +83,23 @@ func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int
 
 // SetLivingByAgent 设置终端活动中
 func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, id, crd.masterModel.ColumnBasic(true, false))
+
 	nowDate := date_helper.CurDatetime()
 
+	//设置活动时间
 	updates := map[string]interface{}{
 		"live_at": nowDate,
 		//"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
 		"is_online": enums.IsYes,
 	}
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+
+	//记录上线日志
+	if model.IsOnline == enums.IsNot {
+		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate))
+	}
+
 	return isOk
 }
 
