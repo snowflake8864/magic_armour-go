@@ -35,6 +35,7 @@ func (t *AgentOnline) pageGeneral(model *agent_online_models.OnlineLogModel, dep
 	data["contact_name"] = model.ContactName
 	data["contact_tel"] = model.ContactTel
 	data["alias"] = model.Alias
+	data["remark"] = model.Remark
 	data["created_at"] = model.CreatedAt
 
 	return data
