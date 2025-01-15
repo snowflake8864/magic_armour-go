@@ -30,7 +30,6 @@
       ./app_cli.linux64 migrate -A (init|dictionary|menu|append)
       ./app_cli.linux64 queue  -A (init|consume) -T (common|process|dll|threaten|alarm|syslog|crontab)
       ./app_cli.linux64 crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
-      ./app_cli.linux64 upgrade  -A (log) 
 
 
 ### 守护进程，注意<kbd>supervisord.conf</kbd>路径
