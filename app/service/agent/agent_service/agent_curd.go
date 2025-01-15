@@ -45,7 +45,7 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 		for _, model := range models {
 			agentIds = append(agentIds, model.AgentId)
 
-			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate, "心跳"))
+			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate, "自动离线"))
 		}
 		_ = online_log_service.CreateCurdFactory().BatchAdd(&onlineLogList)
 	}
@@ -97,7 +97,7 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 
 	//记录上线日志
 	if model.IsOnline == enums.IsNot {
-		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "自动离线"))
+		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "心跳"))
 	}
 
 	return isOk
