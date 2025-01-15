@@ -8,6 +8,8 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/agent_online_models"
+	"goskeleton/app/service/agent/online_log_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -33,11 +35,50 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 		IsOnline:  &isOnline,
 		LiveAtLte: floorAt,
 	}
-	updates := map[string]interface{}{
-		"is_online": enums.IsNot,
+
+	var agentIds []string
+
+	models := crd.masterModel.GetListByConditions(condition, crd.masterModel.ColumnBasic(true, false))
+	if len(models) > 0 {
+		nowDate := date_helper.CurDatetime()
+		var onlineLogList []agent_online_models.OnlineLogModel
+		for _, model := range models {
+			agentIds = append(agentIds, model.AgentId)
+
+			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate))
+		}
+		_ = online_log_service.CreateCurdFactory().BatchAdd(&onlineLogList)
 	}
-	isOk, _ := crd.masterModel.UpdateByConditions(condition, updates)
-	return isOk
+
+	//修改
+	if len(agentIds) > 0 {
+		condition.AgentIds = agentIds
+		updates := map[string]interface{}{
+			"is_online": enums.IsNot,
+		}
+		crd.masterModel.UpdateByConditions(condition, updates)
+	}
+
+	return true
+}
+
+func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int, nowDate string) *agent_online_models.OnlineLogModel {
+	return &agent_online_models.OnlineLogModel{
+		OrgId:       model.OrgId,
+		AgentId:     model.AgentId,
+		HostName:    model.HostName,
+		MacId:       model.MacId,
+		AgentIp:     model.AgentIp,
+		NetIp:       model.NetIp,
+		OsName:      model.OsName,
+		Ver:         model.Ver,
+		IsOnline:    isOnLine,
+		DeptId:      model.DeptId,
+		Alias:       model.Alias,
+		ContactName: model.ContactName,
+		ContactTel:  model.ContactTel,
+		CreatedAt:   nowDate,
+	}
 }
 
 // SetLivingByAgent 设置终端活动中

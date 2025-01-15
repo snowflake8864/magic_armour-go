@@ -66,3 +66,7 @@ func TestAgentDecrypt(t *testing.T) {
 func TestAgentGrantExpired(t *testing.T) {
 	agent_cmd.CreateAgentFactory().GrantExpired()
 }
+
+func TestAgentOffline(t *testing.T) {
+	agent_cmd.CreateAgentFactory().Offline()
+}
