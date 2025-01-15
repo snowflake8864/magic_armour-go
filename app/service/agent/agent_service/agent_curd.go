@@ -45,7 +45,7 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 		for _, model := range models {
 			agentIds = append(agentIds, model.AgentId)
 
-			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate))
+			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate, "心跳"))
 		}
 		_ = online_log_service.CreateCurdFactory().BatchAdd(&onlineLogList)
 	}
@@ -62,7 +62,7 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 	return true
 }
 
-func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int, nowDate string) *agent_online_models.OnlineLogModel {
+func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int, nowDate, remark string) *agent_online_models.OnlineLogModel {
 	return &agent_online_models.OnlineLogModel{
 		OrgId:       model.OrgId,
 		AgentId:     model.AgentId,
@@ -77,6 +77,7 @@ func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int
 		Alias:       model.Alias,
 		ContactName: model.ContactName,
 		ContactTel:  model.ContactTel,
+		Remark:      remark,
 		CreatedAt:   nowDate,
 	}
 }
@@ -89,15 +90,14 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 
 	//设置活动时间
 	updates := map[string]interface{}{
-		"live_at": nowDate,
-		//"online_at": gorm.Expr("IF(is_online=?, ?, online_at)", enums.IsNot, nowDate),
+		"live_at":   nowDate,
 		"is_online": enums.IsYes,
 	}
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
 
 	//记录上线日志
 	if model.IsOnline == enums.IsNot {
-		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate))
+		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "自动离线"))
 	}
 
 	return isOk

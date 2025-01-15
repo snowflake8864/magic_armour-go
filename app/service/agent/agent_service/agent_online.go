@@ -147,6 +147,7 @@ func (crd *AgentOnline) saveOnlineLog(param *agent_models.AgentModel, agentModel
 		OsName:    param.OsName,
 		Ver:       param.Ver,
 		IsOnline:  enums.IsYes,
+		Remark:    "认证",
 		CreatedAt: nowDate,
 	}
 

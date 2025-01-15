@@ -32,6 +32,7 @@ type OnlineLogModel struct {
 	Alias       string `json:"alias"`
 	ContactName string `json:"contact_name"`
 	ContactTel  string `json:"contact_tel"`
+	Remark      string `json:"remark"`
 	CreatedAt   string `json:"created_at"`
 }
 
@@ -58,7 +59,8 @@ func (m *OnlineLogModel) CreateTable() bool {
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
 			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
-			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话'
+			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
+			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注'
 		)
 		DUPLICATE  KEY(org_id, agent_id, agent_ip, net_ip, created_at, is_online)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
