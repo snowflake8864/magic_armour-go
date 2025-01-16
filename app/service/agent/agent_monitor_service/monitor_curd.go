@@ -9,15 +9,42 @@ import (
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/gomail_factory"
 	"goskeleton/app/utils/helpers/float_helper"
+	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/redis_factory"
 )
 
 func CreateMonitorFactory() *MonitorCurd {
-	return &MonitorCurd{agent_monitor_models.CreateMonitorFactory()}
+	return &MonitorCurd{
+		masterModel:  agent_monitor_models.CreateMonitorFactory(),
+		redisClient:  redis_factory.GetOneRedisClient(),
+		newestPrefix: "agent_newest_monitor_",
+		newestExpire: 600,
+	}
 }
 
 type MonitorCurd struct {
-	masterModel *agent_monitor_models.MonitorModel
+	masterModel  *agent_monitor_models.MonitorModel
+	redisClient  *redis_factory.RedisClient
+	newestPrefix string
+	newestExpire int
+}
+
+func (crd *MonitorCurd) keyBynNewest(orgId int64, agentId string) string {
+	return crd.newestPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
+}
+
+// SaveAgent 保存终端信息
+func (crd *MonitorCurd) SaveAgent(orgId int64, agentId string, param *agent_monitor_models.MonitorModel) error {
+	key := crd.keyBynNewest(orgId, agentId)
+	data := json_helper.Encode(param)
+	//新增缓存
+	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
+		return errors.New("cache agent fail: " + err.Error())
+	}
+
+	return nil
 }
 
 // Add 新增
@@ -27,6 +54,8 @@ func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
 	}
+
+	//缓存数据
 
 	//发送告警邮件
 	crd.sendEmail(param)
