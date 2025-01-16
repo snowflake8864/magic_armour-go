@@ -177,7 +177,7 @@ func (m *AgentModel) AlterTable(ver string) bool {
 	switch ver {
 	case "3.1.0_T4":
 		sql += `
-			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
+			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '1' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
 		`
 		break
 	default:
