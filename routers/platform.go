@@ -335,6 +335,7 @@ func InitPlatformRouter() *gin.Engine {
 					upgrade := system.Group("upgrade/")
 					{
 						upgrade.POST("run", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemUpgradeRun"))
+						upgrade.POST("saveLog", (&platform.SystemController{}).UpgradeSaveLog)
 					}
 				} //服务器相关
 			}

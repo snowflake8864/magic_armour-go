@@ -5,9 +5,14 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-// GetAppUsageVersion 获取当前程序使用版本
+// GetAppUsageVersion 获取当前程序使用版本(离线|云版)
 func GetAppUsageVersion() int {
 	return variable.ConfigYml.GetInt("AppCustomConfig.Version")
+}
+
+// GetCustomVersionNumber 获取自定义版本号
+func GetCustomVersionNumber() string {
+	return variable.ConfigYml.GetString("AppCustomConfig.VersionNumber")
 }
 
 // GetPlatformConfig  获取平台自定义配置
@@ -15,7 +20,7 @@ func GetPlatformConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
-	if ver := variable.ConfigYml.GetString("AppCustomConfig.VersionNumber"); !string_helper.IsEmpty(ver) {
+	if ver := GetCustomVersionNumber(); !string_helper.IsEmpty(ver) {
 		data["ver_number"] = ver
 	}
 	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Title")
@@ -37,7 +42,7 @@ func GetOrganizationConfig() map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
-	if ver := variable.ConfigYml.GetString("AppCustomConfig.VersionNumber"); !string_helper.IsEmpty(ver) {
+	if ver := GetCustomVersionNumber(); !string_helper.IsEmpty(ver) {
 		data["ver_number"] = ver
 	}
 

@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/platform/server_monitor_models"
@@ -318,7 +319,7 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 		return
 	}
 
-	//执行命令
+	//执行命令, 如果脚本有重启服务, 不会返回执行结果
 	cmd := exec.Command(cur_app.ShellInit(), shellPath, shellDir)
 	if err := cmd.Run(); err != nil {
 		response.FailData(ctx, "exec command failed", err.Error())
@@ -326,4 +327,13 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	}
 
 	response.SuccessSimplify(ctx)
+}
+
+// UpgradeSaveLog  系统升级保存日志
+func (u *SystemController) UpgradeSaveLog(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, gin.H{
+		"version_inner": variable.VersionNumber,
+		"version_outer": cur_app.GetCustomVersionNumber(),
+	})
+
 }

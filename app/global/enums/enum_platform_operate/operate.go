@@ -91,7 +91,8 @@ var pathModuleLabel = map[string][]string{
 	"/v5/platform/system/network/set":                {ModuleSystem, "修改网络配置"},
 	"/v5/platform/system/ssh/set":                    {ModuleSystem, "修改SSH开关"},
 	"/v5/platform/system/time/set":                   {ModuleSystem, "修改系统时间"},
-	"/v5/platform/system/upgrade/run":                {ModuleSystem, "升级系统"},
+	"/v5/platform/system/upgrade/run":                {ModuleSystem, "系统升级"},
+	"/v5/platform/system/upgrade/saveLog":            {ModuleSystem, "系统升级"},
 	"/v5/platform/system/huanshi/setThird":           {ModuleSystem, "设置第三方日志平台"},
 	"/v5/platform/system/huanshi/set":                {ModuleSystem, "设置日志平台"},
 }
