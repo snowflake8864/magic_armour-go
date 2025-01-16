@@ -35,16 +35,30 @@ func (crd *MonitorCurd) keyBynNewest(orgId int64, agentId string) string {
 	return crd.newestPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
-// SaveAgent 保存终端信息
-func (crd *MonitorCurd) SaveAgent(orgId int64, agentId string, param *agent_monitor_models.MonitorModel) error {
-	key := crd.keyBynNewest(orgId, agentId)
+// cacheNewest 缓存最新一次监控数据
+func (crd *MonitorCurd) cacheNewest(param *agent_monitor_models.MonitorModel) error {
+	key := crd.keyBynNewest(param.OrgId, param.AgentId)
 	data := json_helper.Encode(param)
 	//新增缓存
-	if isOK, err := aa.redisClient.SetEx(key, data, aa.cacheExpire); !isOK {
-		return errors.New("cache agent fail: " + err.Error())
+	if isOK, err := crd.redisClient.SetEx(key, data, crd.newestExpire); !isOK {
+		return errors.New("cache newest monitor fail: " + err.Error())
 	}
 
 	return nil
+}
+
+// getNewest 获取最新一次监控数据
+func (crd *MonitorCurd) getNewest(orgId int64, agentId string) (err error, data **agent_monitor_models.MonitorModel) {
+	jsonStr := crd.redisClient.Get(crd.keyBynNewest(orgId, agentId))
+	if string_helper.IsEmpty(jsonStr) {
+		return errors.New("缓存数据不存在"), data
+	}
+
+	err = json_helper.ToStruct(jsonStr, &data)
+	if err != nil {
+		return errors.New("缓存数据错误"), data
+	}
+	return nil, data
 }
 
 // Add 新增
@@ -56,6 +70,9 @@ func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 	}
 
 	//缓存数据
+	if err := crd.cacheNewest(param); err != nil {
+		variable.ZapLog.Sugar().Debug(err.Error())
+	}
 
 	//发送告警邮件
 	crd.sendEmail(param)
