@@ -18,7 +18,7 @@ func RequestParams(ctx *gin.Context) {
 		contextType := strings.ToLower(ctx.Request.Header.Get("Content-Type"))
 		requestBody, err := ctx.GetRawData()
 		if err != nil {
-			variable.ZapLog.Error(ctx.Request.RequestURI + " RequestParams GetRawData,err: " + err.Error())
+			variable.ZapLog.Error(ctx.Request.RequestURI + " RequestParams GetRawData err: " + err.Error())
 			return
 		}
 		// 重置请求体，以便后续的中间件和处理程序可以正常读取
@@ -30,7 +30,7 @@ func RequestParams(ctx *gin.Context) {
 		if strings.Contains(contextType, "application/json") {
 			err1 := ctx.ShouldBind(&bindParams)
 			if err1 != nil { // 报错
-				variable.ZapLog.Error(ctx.Request.RequestURI + " RequestParams 获取参数异常: " + err1.Error())
+				variable.ZapLog.Error(ctx.Request.RequestURI + " ShouldBind ShouldBind err: " + err1.Error())
 				return
 			}
 		} else {
