@@ -42,14 +42,14 @@ func GetNoParams(uri string, headers map[string]interface{}) (string, error) {
 	return formatResp(cli.Get(uri))
 }
 
-// PostWithForm POST方法, Content-Type默认为application/form-data
+// PostWithForm POST方法, Content-Type默认为x-www-form-urlencoded
 func PostWithForm(uri string, headers, params map[string]interface{}) (string, error) {
 	cli := goCurl.CreateHttpClient()
 
 	//默认
 	headers["User-Agent"] = userAgent
 	if _, isOk := headers["Content-Type"]; !isOk {
-		headers["Content-Type"] = "application/form-data"
+		headers["Content-Type"] = "x-www-form-urlencoded"
 	}
 	resp, err := cli.Post(uri, goCurl.Options{
 		Headers:       headers,
