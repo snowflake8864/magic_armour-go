@@ -1,7 +1,7 @@
 package enum_threaten
 
 const (
-	CenterSupportNumber int = 20 //威胁情报中心支持数量:最大300,建议不超过200
+	CenterSupportNumber int = 50 //威胁情报中心支持数量:最大300,建议不超过200
 
 	LevelUnknown      int = 0  //威胁情报中心等级：未知
 	LevelWhite        int = 1  //威胁情报中心等级：白名单

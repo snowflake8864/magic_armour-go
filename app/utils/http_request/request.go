@@ -6,6 +6,8 @@ import (
 	"goskeleton/app/global/variable"
 )
 
+const userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36')"
+
 func formatResp(resp *goCurl.Response, err error) (string, error) {
 	msg := ""
 	if err != nil {
@@ -29,7 +31,9 @@ func formatResp(resp *goCurl.Response, err error) (string, error) {
 
 // GetNoParams GET方法, 无参数
 func GetNoParams(uri string, headers map[string]interface{}) (string, error) {
-	headers["Content-Type"] = "application/x-www-form-urlencoded"
+	if _, isOk := headers["User-Agent"]; !isOk {
+		headers["User-Agent"] = userAgent
+	}
 	cli := goCurl.CreateHttpClient(goCurl.Options{
 		Headers:       headers,
 		SetResCharset: "utf-8",
@@ -38,12 +42,15 @@ func GetNoParams(uri string, headers map[string]interface{}) (string, error) {
 	return formatResp(cli.Get(uri))
 }
 
-// PostWithForm POST方法, Content-Type默认为application/x-www-form-urlencoded
+// PostWithForm POST方法, Content-Type默认为application/form-data
 func PostWithForm(uri string, headers, params map[string]interface{}) (string, error) {
 	cli := goCurl.CreateHttpClient()
 
 	//默认
-	headers["Content-Type"] = "application/x-www-form-urlencoded"
+	headers["User-Agent"] = userAgent
+	if _, isOk := headers["Content-Type"]; !isOk {
+		headers["Content-Type"] = "application/form-data"
+	}
 	resp, err := cli.Post(uri, goCurl.Options{
 		Headers:       headers,
 		FormParams:    params,
@@ -58,6 +65,7 @@ func PostWithJson(uri string, headers map[string]interface{}, params interface{}
 	cli := goCurl.CreateHttpClient()
 
 	//默认
+	headers["User-Agent"] = userAgent
 	headers["Content-Type"] = "application/json"
 	resp, err := cli.Post(uri, goCurl.Options{
 		Headers:       headers,

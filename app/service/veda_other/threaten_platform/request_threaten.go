@@ -148,7 +148,7 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
-	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
+	bodyContext, err := http_request.PostWithJson(uri, aa.GetHeaders(), params)
 
 	err2, respComm := aa.checkCode(bodyContext, err)
 	if err2 != nil {
@@ -228,7 +228,7 @@ func (aa *RequestThreaten) PushHashes(list *[]PushHashes) error {
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
 	}
-	bodyContext, err := http_request.PostWithForm(uri, aa.GetHeaders(), params)
+	bodyContext, err := http_request.PostWithJson(uri, aa.GetHeaders(), params)
 	if err1, _ := aa.checkCode(bodyContext, err); err1 != nil {
 		return err1
 	}
