@@ -30,7 +30,7 @@ func RequestParams(ctx *gin.Context) {
 		if strings.Contains(contextType, "application/json") {
 			err1 := ctx.ShouldBind(&bindParams)
 			if err1 != nil { // 报错
-				//variable.ZapLog.Error("RequestParams 获取参数异常: " + err1.Error())
+				variable.ZapLog.Error(ctx.Request.RequestURI + " RequestParams 获取参数异常: " + err1.Error())
 				return
 			}
 		} else {
