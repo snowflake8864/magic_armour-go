@@ -47,8 +47,8 @@ func (crd *MonitorCurd) cacheNewest(param *agent_monitor_models.MonitorModel) er
 	return nil
 }
 
-// getNewest 获取最新一次监控数据
-func (crd *MonitorCurd) getNewest(orgId int64, agentId string) (err error, data **agent_monitor_models.MonitorModel) {
+// GetNewest 获取最新一次监控数据
+func (crd *MonitorCurd) GetNewest(orgId int64, agentId string) (err error, data *agent_monitor_models.MonitorModel) {
 	jsonStr := crd.redisClient.Get(crd.keyBynNewest(orgId, agentId))
 	if string_helper.IsEmpty(jsonStr) {
 		return errors.New("缓存数据不存在"), data

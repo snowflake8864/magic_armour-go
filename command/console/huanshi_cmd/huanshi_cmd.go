@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/service/agent/agent_monitor_service"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -21,10 +22,17 @@ import (
 )
 
 func CreateCmdFactory() *HuanshiCmd {
-	return &HuanshiCmd{}
+	return &HuanshiCmd{
+		agentModel:     agent_models.CreateAgentFactory(),
+		departmentCurd: department_service.CreateCurdFactory(),
+		monitorCurd:    agent_monitor_service.CreateMonitorFactory(),
+	}
 }
 
 type HuanshiCmd struct {
+	agentModel     *agent_models.AgentModel
+	departmentCurd *department_service.DepartmentCurd
+	monitorCurd    *agent_monitor_service.MonitorCurd
 }
 
 // getHsCli  获取幻势客户端
@@ -41,10 +49,9 @@ func (crd *HuanshiCmd) getOrgModels() []*organization_models.OrganizationModel {
 }
 
 func (crd *HuanshiCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
-	agentFact := agent_models.CreateAgentFactory()
-	return agentFact.GetListByConditions(agent_models.SearchConditions{
+	return crd.agentModel.GetListByConditions(agent_models.SearchConditions{
 		OrgId: orgId,
-	}, agentFact.ColumnBasic(true, false))
+	}, crd.agentModel.ColumnBasic(true, false))
 }
 
 func (crd *HuanshiCmd) getDepartmentMap(orgId int64, agentModels []*agent_models.AgentModel) map[int64]*department_models.DepartmentModel {
@@ -59,7 +66,7 @@ func (crd *HuanshiCmd) getDepartmentMap(orgId int64, agentModels []*agent_models
 	if len(deptIds) == 0 {
 		return nil
 	}
-	return department_service.CreateCurdFactory().GetMapsByIds(orgId, deptIds)
+	return crd.departmentCurd.GetMapsByIds(orgId, deptIds)
 }
 
 // Push  推送
@@ -157,8 +164,20 @@ func (crd *HuanshiCmd) Push() {
 				AliasName:    agentModel.Alias,
 				ContactName:  agentModel.ContactName,
 				ContactPhone: agentModel.ContactTel,
+				CpuInfo:      agentModel.CpuDesc,
+				MemoryInfo:   agentModel.MemDesc,
+				DiskInfo:     agentModel.HdDesc,
+				NetworkCard:  agentModel.NetworkCard,
 			}
-			//variable.ZapLog.Sugar().Debug(json_helper.Encode(agentData))
+			//最近一次资源监控
+			if agentModel.IsOnline == enums.IsYes {
+				if err2, newestMonitor := crd.monitorCurd.GetNewest(orgModel.Id, agentModel.AgentId); err2 == nil {
+					agentData.CpuLoad = newestMonitor.CpuUsage
+					agentData.MemoryLoad = newestMonitor.MemUsage
+					agentData.DiskLoad = newestMonitor.HdUsage
+				}
+			}
+			variable.ZapLog.Sugar().Debug(json_helper.Encode(agentData))
 			if err1 := hsCli.SyncAgentBySyslog(&agentData); err1 != nil {
 				variable.ZapLog.Sugar().Debug("push SyncAgentBySyslog：", err1.Error())
 				return
