@@ -18,7 +18,7 @@ func RequestParams(ctx *gin.Context) {
 		contextType := strings.ToLower(ctx.Request.Header.Get("Content-Type"))
 		requestBody, err := ctx.GetRawData()
 		if err != nil {
-			variable.ZapLog.Error("RequestParams GetRawData,err: " + err.Error())
+			variable.ZapLog.Error(ctx.Request.RequestURI + " RequestParams GetRawData,err: " + err.Error())
 			return
 		}
 		// 重置请求体，以便后续的中间件和处理程序可以正常读取
