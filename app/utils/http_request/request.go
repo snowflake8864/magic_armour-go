@@ -17,12 +17,13 @@ func formatResp(resp *goCurl.Response, err error) (string, error) {
 		variable.ZapLog.Error(msg)
 		return "", err
 	}
-	if txt, err := resp.GetContents(); err == nil {
+
+	if txt, err2 := resp.GetContents(); err2 == nil {
 		return txt, nil
 	} else {
-		msg = fmt.Sprintf("content fail：%s\n", err.Error())
+		msg = fmt.Sprintf("content fail：%s\n", err2.Error())
 		variable.ZapLog.Error(msg)
-		return "", err
+		return "", err2
 	}
 }
 
