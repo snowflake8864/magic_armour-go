@@ -61,7 +61,9 @@ func (crd *ThreatenCache) BatchAdd(list *[]threaten_models.CacheModel, checkExis
 			}
 			model.Level = enum_threaten.LevelDefault
 
-			inserts = append(inserts, model)
+			if !string_helper.IsEmpty(model.Id) {
+				inserts = append(inserts, model)
+			}
 		}
 	}
 
