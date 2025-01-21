@@ -33,6 +33,7 @@ type AgentModel struct {
 	AgentStartAt        string `json:"agent_start_at"`
 	OsStartAt           string `json:"os_start_at"`
 	Ver                 string `json:"ver"`
+	ModVer              string `json:"mod_ver"`
 	Auth                string `json:"auth"`
 	IsOnline            int    `json:"is_online"`
 	OnlineAt            string `json:"online_at"`
@@ -177,6 +178,7 @@ func (m *AgentModel) AlterTable(ver string) bool {
 	switch ver {
 	case "3.1.0_T4":
 		sql += `
+			ADD COLUMN mod_ver varchar(64)  NOT NULL DEFAULT '' COMMENT '终端内核版本' AFTER ver,
 			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '1' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
 		`
 		break
