@@ -178,7 +178,7 @@ func (m *AgentModel) AlterTable(ver string) bool {
 	switch ver {
 	case "3.1.0_T4":
 		sql += `
-			ADD COLUMN mod_ver varchar(64)  NOT NULL DEFAULT '' COMMENT '终端内核版本' AFTER ver,
+			ADD COLUMN mod_ver varchar(64) NOT NULL DEFAULT '' COMMENT '终端内核版本' AFTER ver,
 			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '1' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
 		`
 		break
