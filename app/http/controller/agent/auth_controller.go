@@ -68,7 +68,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	//系统类型
 	param.OsType = enum_software.GetOsTypeByName(param.OsName)
 	if param.OsType == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "未知的系统类型")
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "os unknown: "+param.OsName)
 		return
 	}
 
@@ -105,17 +105,17 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	//验证企业
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(userInfo.OrgId)
 	if orgModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业不存在:"+errOrg)
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "org not exist:"+errOrg)
 		return
 	}
 	if orgModel.Status != enum_organization.StatusNormal {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "企业状态异常:"+errOrg)
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "org status abnormal: "+errOrg)
 		return
 	}
 	//验证用户
 	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
 	if userModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "用户不存在:"+errOrg)
+		response.FailRoutine(ctx, consts.AgentINSTALLCode, "user not exist: "+errOrg)
 		return
 	}
 

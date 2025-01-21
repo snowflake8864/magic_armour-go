@@ -201,7 +201,7 @@ func GetOsTypeByName(name string) int {
 			return OsTypeLinuxCentos
 		}
 		return OsTypeLinuxCentos
-	} else if strings.Contains(name, "neokylin") || strings.Contains(name, "麒麟") {
+	} else if strings.Contains(name, "neokylin") || strings.Contains(name, "麒麟") || strings.Contains(name, "kylin") {
 		return OsTypeLinuxNeokylin
 	} else if strings.Contains(name, "uos") || strings.Contains(name, "统信") {
 		return OsTypeLinuxUos
