@@ -6,7 +6,13 @@ import (
 	"goskeleton/app/global/variable"
 )
 
-const userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36')"
+const (
+	userAgent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2272.118 Safari/537.36')"
+
+	ContentTypeFormFile    = "multipart/form-data"
+	ContentTypeFormDefault = "application/x-www-form-urlencoded"
+	ContentTypeJson        = "application/json"
+)
 
 func formatResp(resp *goCurl.Response, err error) (string, error) {
 	msg := ""
@@ -49,7 +55,7 @@ func PostWithForm(uri string, headers, params map[string]interface{}) (string, e
 	//默认
 	headers["User-Agent"] = userAgent
 	if _, isOk := headers["Content-Type"]; !isOk {
-		headers["Content-Type"] = "x-www-form-urlencoded"
+		headers["Content-Type"] = ContentTypeFormDefault
 	}
 	resp, err := cli.Post(uri, goCurl.Options{
 		Headers:       headers,
@@ -66,7 +72,7 @@ func PostWithJson(uri string, headers map[string]interface{}, params interface{}
 
 	//默认
 	headers["User-Agent"] = userAgent
-	headers["Content-Type"] = "application/json"
+	headers["Content-Type"] = ContentTypeJson
 	resp, err := cli.Post(uri, goCurl.Options{
 		Headers:       headers,
 		JSON:          params,
