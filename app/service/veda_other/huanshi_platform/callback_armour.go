@@ -78,6 +78,8 @@ func (aa *CallbackArmour) CheckToken(token string) (string, error) {
 	if deviceId, err := openssl_encrypt.CreateRsaFactory().DecryptByHex(val); err != nil {
 		return "", errors.New("token decrypt fail")
 	} else {
+		_, _ = aa.redisClient.Del(aa.cacheKey)
+
 		return deviceId, nil
 	}
 }

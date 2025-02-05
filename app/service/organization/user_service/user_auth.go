@@ -261,6 +261,40 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 	return result, 0, nil
 }
 
+// LoginByHs 幻势登录
+func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (result map[string]interface{}, errCode int, err error) {
+	//企业验证
+	orgModel, err := organization_models.CreateOrganizationFactory().GetItemByCode(orgCode)
+	if err != nil || orgModel.Id == 0 {
+		return nil, -1, errors.New("企业不存在")
+	}
+	if orgModel.Status == enum_organization.StatusVerifying {
+		return nil, -1, errors.New("账户审核中，请联系管理员")
+	}
+	if orgModel.Status == enum_organization.StatusLocking {
+		return nil, -1, errors.New("账户已锁定，请联系管理员")
+	}
+
+	//获取用户
+	err, userModel := crd.HasUser(orgModel.UserName)
+	if err != nil {
+		return nil, -1, err
+	}
+	if userModel.Status == enum_user.StatusLocking {
+		return nil, -99, errors.New("用户已锁定，请联系管理员")
+	}
+	if userModel.Status == enum_user.StatusVerifying {
+		return nil, -99, errors.New("用户审核中，请联系管理员")
+	}
+
+	CreateCurdFactory().loginSuccess(userModel.Id)
+
+	result = crd.loginAfter(userModel, orgModel, netIp)
+
+	return result, 0, nil
+
+}
+
 // loginAfter
 func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string) map[string]interface{} {
 	var deptIds, deptWithChild []int64
@@ -286,9 +320,9 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 	//缓存
 	jsonStr := json_helper.Encode(loginInfo)
 	token := md5_encrypt.MD5(jsonStr)
-	crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
+	_, _ = crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
-	//
+	//返回给前端数据
 	result := make(map[string]interface{})
 	result["userid"] = userModel.Id
 	result["username"] = userModel.Username

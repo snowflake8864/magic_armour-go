@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -122,7 +123,19 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 
 // HsLogin 幻势登录
 func (u *AuthController) HsLogin(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AuthController HsLogin")
+	token := ctx.GetString(consts.ValidatorPrefixOrg + "token")
+
+	deviceId, err := huanshi_platform.CreateCallbackFactory().CheckToken(token)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	result, errCode, err := user_service.CreateAuthFactory().LoginByHs(deviceId, ctx.ClientIP())
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
+	response.SuccessReturnData(ctx, result)
 }
 
 // Logout 幻势登录
