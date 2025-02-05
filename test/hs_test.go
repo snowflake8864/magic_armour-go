@@ -25,15 +25,15 @@ func TestHsAccess(t *testing.T) {
 	currentTime := time.Now().Unix()
 	fmt.Println("currentTime:", currentTime)
 
-	hsAccessFact := huanshi_platform.CreateCallbackFactory(deviceId)
-	secret := hsAccessFact.GenerateSecret(currentTime)
+	hsAccessFact := huanshi_platform.CreateCallbackFactory()
+	secret := hsAccessFact.GenerateSecret(deviceId, currentTime)
 	fmt.Println("secret:", secret)
 
-	if isOk, errMsg := hsAccessFact.CheckSecret(currentTime, secret); !isOk {
+	if isOk, errMsg := hsAccessFact.CheckSecret(deviceId, currentTime, secret); !isOk {
 		fmt.Println("CheckSecret:", errMsg)
 	}
 
-	accessToken, err := hsAccessFact.GenerateToken(secret)
+	accessToken, err := hsAccessFact.GenerateToken(deviceId, secret)
 	fmt.Println(accessToken)
 	if err != nil {
 		fmt.Println("GenerateToken err:", err.Error())

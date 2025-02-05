@@ -29,6 +29,7 @@ const (
 	AlarmTypeSelf      int = 10 //告警类型: 自保
 
 	DataTypeAgent string = "zhongduan" //数据类型: 终端
+	ApiVer        int    = 2           //回调api版本
 
 	LogTypeDns        int = 1 //日志类型：dns
 	LogTypeOuter      int = 2 //日志类型：对外通讯
@@ -36,6 +37,7 @@ const (
 	LogTypeProcess    int = 4 //日志类型：进程启动
 	LogTypeLogin      int = 5 //日志类型：登录
 	LogTypeOrgOperate int = 6 //日志类型：企业操作
+
 )
 
 func CreateRequestFactory(c RequestConfig) *RequestHuanshi {
@@ -177,6 +179,7 @@ type DeviceData struct {
 	Platform string `json:"platform"` //对应平台
 	IP       string `json:"ip"`       //回调IP
 	Url      string `json:"url"`      //回调地址
+	ApiVer   int    `json:"apiVer"`   //回调接口版本
 
 	DeviceMark string `json:"deviceMark"` //设备标识
 	DeviceRoot string `json:"deviceRoot"` //设备管理员
@@ -204,6 +207,7 @@ func (aa *RequestHuanshi) SyncDevices(params *[]DeviceData) error {
 		param.Edition = aa.Edition
 		param.IP = aa.Config.HuanshiCallIp
 		param.Url = aa.Config.HuanshiCallbackUrl
+		param.ApiVer = ApiVer
 		bodyContext, err := http_request.PostWithJson(uri, aa.GetHeaders(), param)
 		if err1 := aa.checkCode(bodyContext, err); err1 != nil {
 			return errors.New("同步设备： " + err1.Error())
