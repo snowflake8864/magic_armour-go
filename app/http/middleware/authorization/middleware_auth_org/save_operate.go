@@ -55,7 +55,6 @@ func SaveOperate() gin.HandlerFunc {
 				"/v5/organization/auth/getSliderCode": {},
 				"/v5/organization/auth/sendSms":       {},
 				"/v5/organization/auth/normalLogin":   {},
-				"/v5/organization/auth/hsLogin":       {},
 			}
 			if _, exist := ignoreAuth[param.Path]; exist {
 				//获取参数中登录名
