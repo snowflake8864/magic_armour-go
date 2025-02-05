@@ -49,13 +49,6 @@ func SaveOperate() gin.HandlerFunc {
 				param.Status = enum_org_operate.StatusSuccess
 			}
 
-			//是否需要记录
-			param.Module, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
-			if string_helper.IsEmpty(param.Module) {
-				variable.ZapLog.Debug("SaveOrgOperate path error: " + param.Path)
-				return
-			}
-
 			//忽略验证的请求地址
 			ignoreAuth := map[string]struct{}{
 				"/v5/organization/auth/checkUser":     {},

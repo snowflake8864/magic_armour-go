@@ -67,6 +67,18 @@ type UserCacheLogin struct {
 	LoginIp       string  `json:"login_ip"`
 }
 
+type UserBackLogin struct {
+	OrgId    int64  `json:"org_id"`
+	OrgName  string `json:"org_name"`
+	OrgCode  string `json:"org_code"`
+	OrgType  int    `json:"org_type"`
+	UserId   int64  `json:"userid"`
+	Username string `json:"username"`
+	IsRoot   int    `json:"is_root"`
+	Token    string `json:"token"`
+	Position string `json:"position"`
+}
+
 func (crd *UserAuth) keyByToken(val string) string {
 	return crd.tokenPrefix + val
 }
@@ -181,7 +193,7 @@ func (crd *UserAuth) EncryptPw(pw string) string {
 }
 
 // LoginByPw 密码登录
-func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
+func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
 	if !crd.CheckBySlider(ActonLogin, username, slider) {
 		return nil, -88, errors.New("滑块不正确")
 	}
@@ -244,10 +256,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		if diff <= 0 {
 			//设置锁定
 			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
-			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
+			return nil, -2, errors.New("用户名或密码错误, 已被锁定" +
 				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
 		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
-			return result, -2, errors.New("用户名或密码错误, 还有" +
+			return backInfo, -2, errors.New("用户名或密码错误, 还有" +
 				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.OrganizationLoginErrorRemind] + "分钟")
 		} else {
 			return nil, -2, errors.New("用户名或密码错误")
@@ -256,13 +268,13 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 
 	curdFact.loginSuccess(userModel.Id)
 
-	result = crd.loginAfter(userModel, orgModel, netIp)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp)
 
-	return result, 0, nil
+	return backInfo, 0, nil
 }
 
 // LoginByHs 幻势登录
-func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (result map[string]interface{}, errCode int, err error) {
+func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemByCode(orgCode)
 	if err != nil || orgModel.Id == 0 {
@@ -289,14 +301,14 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (result map[string]
 
 	CreateCurdFactory().loginSuccess(userModel.Id)
 
-	result = crd.loginAfter(userModel, orgModel, netIp)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp)
 
-	return result, 0, nil
+	return backInfo, 0, nil
 
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string) map[string]interface{} {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string) *UserBackLogin {
 	var deptIds, deptWithChild []int64
 	//不是管理员
 	if userModel.IsRoot == enums.IsNot {
@@ -322,18 +334,23 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 	token := md5_encrypt.MD5(jsonStr)
 	_, _ = crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
+	//记录日志
+
 	//返回给前端数据
-	result := make(map[string]interface{})
-	result["userid"] = userModel.Id
-	result["username"] = userModel.Username
-	result["is_root"] = userModel.IsRoot
-	result["position"] = userModel.Position
-	result["org_type"] = orgModel.Type
-	result["org_name"] = orgModel.Name
-	result["org_code"] = orgModel.Code
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
-	result["token"] = encryptToken
-	return result
+	backInfo := UserBackLogin{
+		OrgId:    orgModel.Id,
+		OrgName:  orgModel.Name,
+		OrgCode:  orgModel.Code,
+		OrgType:  orgModel.Type,
+		UserId:   userModel.Id,
+		Username: userModel.Username,
+		IsRoot:   userModel.IsRoot,
+		Token:    encryptToken,
+		Position: userModel.Position,
+	}
+
+	return &backInfo
 }
 
 // DecryptByLogin 登录信息解密
