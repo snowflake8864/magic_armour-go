@@ -17,7 +17,7 @@ func CreateCallbackFactory(deviceId string) *CallbackArmour {
 		aesFactory:  openssl_encrypt.CreateAesFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		cacheKey:    "huanshi_access_token",
-		timeDiffMax: 8 * 60 * 60,
+		timeDiffMax: 10 * 60 * 60,
 	}
 }
 
