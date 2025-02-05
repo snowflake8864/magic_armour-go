@@ -1,9 +1,11 @@
 package huanshi_platform
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -13,8 +15,7 @@ import (
 func CreateCallbackFactory() *CallbackArmour {
 	return &CallbackArmour{
 		privateRsa:  variable.HuanshiPrivateRsa,
-		cacheExpire: 600,
-		aesFactory:  openssl_encrypt.CreateAesFactory(),
+		cacheExpire: 120,
 		redisClient: redis_factory.GetOneRedisClient(),
 		cacheKey:    "huanshi_access_token",
 		timeDiffMax: 10 * 60 * 60,
@@ -24,7 +25,6 @@ func CreateCallbackFactory() *CallbackArmour {
 type CallbackArmour struct {
 	privateRsa  string //约定的私钥
 	cacheExpire int    //缓存有效期
-	aesFactory  *openssl_encrypt.AesCrypt
 	redisClient *redis_factory.RedisClient
 	cacheKey    string
 	timeDiffMax int //时间差最大值
@@ -49,16 +49,9 @@ func (aa *CallbackArmour) CheckSecret(deviceId string, timestamp int64, secret s
 	return true, ""
 }
 
-type AccessGenerateToken struct {
-	Secret   string `json:"secret"`
-	Expire   int    `json:"expire"`
-	Token    string `json:"token"`
-	DeviceId string `json:"device_id"`
-}
-
 // GenerateToken 生成口令
 func (aa *CallbackArmour) GenerateToken(deviceId, secret string) (interface{}, error) {
-	token, _ := aa.aesFactory.CbcEncryptToHex(deviceId)
+	token, _ := openssl_encrypt.CreateRsaFactory().EncryptToHex(deviceId)
 
 	isOK, err := aa.redisClient.SetEx(aa.cacheKey, token, aa.cacheExpire)
 	if !isOK || err != nil {
@@ -70,4 +63,21 @@ func (aa *CallbackArmour) GenerateToken(deviceId, secret string) (interface{}, e
 		"expire": aa.cacheExpire,
 		"token":  token,
 	}, nil
+}
+
+// CheckToken 校验口令并发货设备标识
+func (aa *CallbackArmour) CheckToken(token string) (string, error) {
+	val := aa.redisClient.Get(aa.cacheKey)
+	if string_helper.IsEmpty(val) {
+		return "", errors.New("token expired")
+	}
+	if val != token {
+		return "", errors.New("token different")
+	}
+
+	if deviceId, err := openssl_encrypt.CreateRsaFactory().DecryptByHex(val); err != nil {
+		return "", errors.New("token decrypt fail")
+	} else {
+		return deviceId, nil
+	}
 }

@@ -179,3 +179,14 @@ func TestAesCrypt(t *testing.T) {
 	fmt.Println("解密:")
 	fmt.Println(decrypted)
 }
+
+func TestRasHex(t *testing.T) {
+	token, err := openssl_encrypt.CreateRsaFactory().EncryptToHex("122222222")
+	assert.Nil(t, err)
+	fmt.Println("加密:")
+	fmt.Println(token)
+	decrypted, err := openssl_encrypt.CreateRsaFactory().DecryptByHex(token)
+	assert.Nil(t, err)
+	fmt.Println("解密:")
+	fmt.Println(decrypted)
+}
