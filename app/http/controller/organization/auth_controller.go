@@ -141,7 +141,7 @@ func (u *AuthController) HsLogin(ctx *gin.Context) {
 		return
 	}
 
-	//保存日志
+	//保存企业操作日志 - 需要单独处理
 	var param = org_operate_models.LogModel{}
 	param.CreatedAt = date_helper.CurDatetime()
 	param.Path = ctx.Request.RequestURI
