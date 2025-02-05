@@ -19,7 +19,7 @@ import (
 
 func TestHsAccess(t *testing.T) {
 	//获取备标识码
-	deviceId := ""
+	deviceId := "c75e1ac6a10710f35e43a880"
 	fmt.Println("deviceId:", deviceId)
 
 	currentTime := time.Now().Unix()

@@ -2,6 +2,7 @@ package huanshi_platform
 
 import (
 	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -16,6 +17,7 @@ func CreateCallbackFactory(deviceId string) *CallbackArmour {
 		aesFactory:  openssl_encrypt.CreateAesFactory(),
 		redisClient: redis_factory.GetOneRedisClient(),
 		cacheKey:    "huanshi_access_token",
+		timeDiffMax: 8 * 60 * 60,
 	}
 }
 
@@ -26,18 +28,19 @@ type CallbackArmour struct {
 	aesFactory  *openssl_encrypt.AesCrypt
 	redisClient *redis_factory.RedisClient
 	cacheKey    string
+	timeDiffMax int //时间差最大值
 }
 
 // GenerateSecret 生成秘钥
 func (aa *CallbackArmour) GenerateSecret(timestamp int64) string {
-	return md5_encrypt.MD5(aa.privateRsa + aa.deviceId + string(timestamp-1))
+	return md5_encrypt.MD5(aa.privateRsa + aa.deviceId + int_helper.Int64ToStr(timestamp-1))
 }
 
 // CheckSecret 校验秘钥
 func (aa *CallbackArmour) CheckSecret(timestamp int64, secret string) (bool, string) {
 	currentTime := time.Now()
 
-	if diff := int(currentTime.Unix() - timestamp); diff > aa.cacheExpire || diff < aa.cacheExpire {
+	if diff := int(currentTime.Unix() - timestamp); diff > aa.timeDiffMax {
 		return false, "秘钥已无效"
 	}
 	if aa.GenerateSecret(timestamp) != secret {
