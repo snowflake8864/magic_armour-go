@@ -8,8 +8,10 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/middleware/authorization"
 	"goskeleton/app/model/organization/org_operate_models"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/organization/org_operate_service"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -66,16 +68,34 @@ func SaveOperate() gin.HandlerFunc {
 				//获取用户
 				userModel := user_service.CreateCurdFactory().GetItemByName(param.CreateName)
 				if string_helper.IsEmpty(userModel.Username) {
-					variable.ZapLog.Error("SaveOrgOperate param name is empty,Name:" + param.CreateName + " IP: " + param.NetIp)
+					variable.ZapLog.Error("SaveOrgOperate param name is empty,Name:" + param.CreateName + " ,IP: " + param.NetIp)
 					return
 				}
 				param.CreateId = userModel.Id
 				param.OrgId = userModel.OrgId
+				param.Source = enum_org_operate.SourceWeb
+			} else if param.Path == "/v5/organization/auth/hsLogin" { //幻势秘钥登录
+				//获取参数中企业标识
+				orgCode := huanshi_platform.CreateCallbackFactory().GetDeviceIdByToken(c.GetString(consts.ValidatorPrefixOrg + "token"))
+				if string_helper.IsEmpty(orgCode) {
+					variable.ZapLog.Error("SaveOrgOperate param token is empty, IP: " + param.NetIp)
+					return
+				}
+				orgModel, err := organization_models.CreateOrganizationFactory().GetItemByCode(orgCode)
+				if err != nil || orgModel.Id == 0 {
+					variable.ZapLog.Error("SaveOrgOperate param name is empty,orgCode:" + orgCode + " ,IP: " + param.NetIp)
+					return
+				}
+				param.CreateId = 0
+				param.CreateName = orgModel.UserName
+				param.OrgId = orgModel.Id
+				param.Source = enum_org_operate.SourceHs
 			} else {
 				if loginInfo := cur_userinfo.GetCurrentUser(c); loginInfo != nil && loginInfo.OrgId > 0 {
 					param.OrgId = loginInfo.OrgId
 					param.CreateId = loginInfo.UserId
 					param.CreateName = loginInfo.Username
+					param.Source = loginInfo.Source
 				}
 			}
 

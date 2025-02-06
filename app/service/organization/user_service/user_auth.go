@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_org_operate"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/model/organization/organization_models"
@@ -65,6 +66,7 @@ type UserCacheLogin struct {
 	DeptWithChild []int64 `json:"dept_with_child"` //直接管理的组织架构以及子集
 	LoginAt       string  `json:"login_at"`
 	LoginIp       string  `json:"login_ip"`
+	Source        int     `json:"source"`
 }
 
 type UserBackLogin struct {
@@ -77,6 +79,7 @@ type UserBackLogin struct {
 	IsRoot   int    `json:"is_root"`
 	Token    string `json:"token"`
 	Position string `json:"position"`
+	Source   int    `json:"source"`
 }
 
 func (crd *UserAuth) keyByToken(val string) string {
@@ -268,7 +271,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 
 	curdFact.loginSuccess(userModel.Id)
 
-	backInfo = crd.loginAfter(userModel, orgModel, netIp)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceWeb)
 
 	return backInfo, 0, nil
 }
@@ -301,14 +304,14 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 
 	CreateCurdFactory().loginSuccess(userModel.Id)
 
-	backInfo = crd.loginAfter(userModel, orgModel, netIp)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceHs)
 
 	return backInfo, 0, nil
 
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string) *UserBackLogin {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string, source int) *UserBackLogin {
 	var deptIds, deptWithChild []int64
 	//不是管理员
 	if userModel.IsRoot == enums.IsNot {
@@ -327,6 +330,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 		DeptWithChild: deptWithChild,
 		LoginAt:       date_helper.CurDatetime(),
 		LoginIp:       netIp,
+		Source:        source,
 	}
 
 	//缓存
@@ -348,6 +352,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 		IsRoot:   userModel.IsRoot,
 		Token:    encryptToken,
 		Position: userModel.Position,
+		Source:   source,
 	}
 
 	return &backInfo

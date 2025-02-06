@@ -33,6 +33,7 @@ type LogModel struct {
 	CreateId   int64  `json:"create_id"`
 	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
+	Source     int    `json:"source"`
 }
 
 // 表名
@@ -66,6 +67,25 @@ func (m *LogModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *LogModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "3.1.0_T4":
+		sql += `
+			ADD COLUMN source tinyint(1) NOT NULL DEFAULT '1' COMMENT '来源' AFTER create_name;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

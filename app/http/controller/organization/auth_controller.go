@@ -3,17 +3,12 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums/enum_org_operate"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
-	"goskeleton/app/model/organization/org_operate_models"
-	"goskeleton/app/service/organization/org_operate_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
-	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
-	"net/http"
 )
 
 // AuthController 安全验证相关
@@ -140,22 +135,6 @@ func (u *AuthController) HsLogin(ctx *gin.Context) {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
-
-	//保存企业操作日志 - 需要单独处理
-	var param = org_operate_models.LogModel{}
-	param.CreatedAt = date_helper.CurDatetime()
-	param.Path = ctx.Request.RequestURI
-	param.NetIp = ctx.ClientIP()
-	param.Method = ctx.Request.Method
-	//是否需要记录
-	param.Module, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
-	param.Input = "token: " + token
-	param.HttpCode = http.StatusOK
-	param.Status = enum_org_operate.StatusSuccess
-	param.OrgId = backInfo.OrgId
-	param.CreateId = backInfo.UserId
-	param.CreateName = backInfo.Username
-	go org_operate_service.CreateCurdFactory().Add(&param)
 
 	response.SuccessReturnData(ctx, backInfo)
 }

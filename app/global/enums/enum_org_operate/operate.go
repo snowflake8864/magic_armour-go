@@ -27,6 +27,9 @@ const (
 
 	StatusSuccess int = 1
 	StatusFail    int = 2
+
+	SourceWeb int = 1
+	SourceHs  int = 2
 )
 
 var EnumMap = map[string]map[string]string{

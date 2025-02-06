@@ -33,6 +33,7 @@ func (t *Operation) pageGeneral(model *org_operate_models.LogModel) map[string]i
 	data["create_id"] = model.CreateId
 	data["create_name"] = model.CreateName
 	data["created_at"] = model.CreatedAt
+	data["source"] = model.Source
 
 	return data
 }

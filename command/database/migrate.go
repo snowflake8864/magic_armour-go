@@ -241,6 +241,7 @@ func appendTableAndData() {
 	if ver := "3.1.0_T4"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = agent_online_models.CreateOnlineLogFactory().CreateTable()
+		_ = org_operate_models.CreateLogFactory().AlterTable(ver)
 	}
 	//保存迁移数据
 	saveMigrations()

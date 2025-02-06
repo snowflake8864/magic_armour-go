@@ -65,6 +65,14 @@ func (aa *CallbackArmour) GenerateToken(deviceId, secret string) (interface{}, e
 	}, nil
 }
 
+func (aa *CallbackArmour) GetDeviceIdByToken(token string) string {
+	if deviceId, err := openssl_encrypt.CreateRsaFactory().DecryptByHex(token); err != nil {
+		return ""
+	} else {
+		return deviceId
+	}
+}
+
 // CheckToken 校验口令并发货设备标识
 func (aa *CallbackArmour) CheckToken(token string) (string, error) {
 	val := aa.redisClient.Get(aa.cacheKey)
@@ -75,7 +83,7 @@ func (aa *CallbackArmour) CheckToken(token string) (string, error) {
 		return "", errors.New("token different")
 	}
 
-	if deviceId, err := openssl_encrypt.CreateRsaFactory().DecryptByHex(val); err != nil {
+	if deviceId := aa.GetDeviceIdByToken(token); string_helper.IsEmpty(deviceId) {
 		return "", errors.New("token decrypt fail")
 	} else {
 		_, _ = aa.redisClient.Del(aa.cacheKey)
