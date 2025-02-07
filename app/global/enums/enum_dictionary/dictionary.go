@@ -42,12 +42,13 @@ const (
 	AgentOutreachDetectMax     string = "agent_outreach_detect_max"     //终端:外联探测最大数
 	AgentOutreachDetectTime    string = "agent_outreach_detect_time"    //终端:外联探测间隔时间(秒)
 
-	ThreatenSwitch      string = "threaten_switch"       //威胁情报:开关
-	ThreatenUrl         string = "threaten_url"          //威胁情报:服务器地址
-	ThreatenAppId       string = "threaten_app_id"       //威胁情报:应用id
-	ThreatenAppKey      string = "threaten_app_key"      //威胁情报:应用key
-	ThreatenAppExpire   string = "threaten_app_expire"   //威胁情报:应用过期时间
-	ThreatenCacheExpire string = "threaten_cache_expire" //威胁情报:缓存结果保留周期(天)
+	ThreatenSwitch        string = "threaten_switch"         //威胁情报:开关
+	ThreatenUrl           string = "threaten_url"            //威胁情报:服务器地址
+	ThreatenAppId         string = "threaten_app_id"         //威胁情报:应用id
+	ThreatenAppKey        string = "threaten_app_key"        //威胁情报:应用key
+	ThreatenAppExpire     string = "threaten_app_expire"     //威胁情报:应用过期时间
+	ThreatenCacheExpire   string = "threaten_cache_expire"   //威胁情报:缓存结果保留周期(天)
+	ThreatenSupportNumber string = "threaten_support_number" //威胁情报:校验支持数量,最大300
 
 	HuanshiCallbackUrl string = "huanshi_callback_url" //幻势:回调地址(有端口)
 	HuanshiCallIp      string = "huanshi_callback_ip"  //幻势:回调ip
@@ -132,6 +133,7 @@ var EnumSlice = map[string][]string{
 		ThreatenAppKey,
 		ThreatenAppExpire,
 		ThreatenCacheExpire,
+		ThreatenSupportNumber,
 	},
 	ModuleHuanshi: {
 		HuanshiCallbackUrl,

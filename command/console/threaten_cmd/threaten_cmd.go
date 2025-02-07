@@ -88,6 +88,14 @@ func (crd *ThreatenCmd) Cache2Pushes() {
 	variable.ZapLog.Sugar().Debug("CacheToPushes end")
 }
 
+func (crd *ThreatenCmd) getSupportNumber() int {
+	if number := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.ThreatenSupportNumber); string_helper.IsEmpty(number) {
+		return enum_threaten.CenterSupportNumber
+	} else {
+		return string_helper.ToInt(number)
+	}
+}
+
 // SyncForPushes  推送列表： 同步数据到威胁情报中心
 func (crd *ThreatenCmd) SyncForPushes() {
 	variable.ZapLog.Sugar().Debug("SyncForPushes start")
@@ -103,7 +111,7 @@ func (crd *ThreatenCmd) SyncForPushes() {
 	}
 	cacheFact := threaten_models.CreatePushFactory()
 	page := 0
-	limit := enum_threaten.CenterSupportNumber
+	limit := crd.getSupportNumber()
 	for page = 1; page <= 10; page++ {
 		//每次获取固定条数
 		offset := (page - 1) * limit
@@ -289,7 +297,7 @@ func (crd *ThreatenCmd) DeleteForCache() {
 	}
 	cacheFact := threaten_models.CreateCacheFactory()
 	page := 0
-	limit := enum_threaten.CenterSupportNumber
+	limit := crd.getSupportNumber()
 	for {
 		page++
 		offset := (page - 1) * limit
@@ -317,7 +325,7 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 
 	cacheFact := threaten_models.CreateCacheFactory()
 	page := 0
-	limit := enum_threaten.CenterSupportNumber
+	limit := crd.getSupportNumber()
 	conditions := threaten_models.SearchConditions{
 		LevelList:  []int{enum_threaten.LevelWhite, enum_threaten.LevelBlack},
 		CheckAtGte: floorAt,
@@ -427,7 +435,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 	}
 	cacheFact := threaten_models.CreateCacheFactory()
 	page := 0
-	limit := enum_threaten.CenterSupportNumber
+	limit := crd.getSupportNumber()
 	for {
 		//未同步一次最多验证n回
 		if level == enum_threaten.LevelDefault && page >= 10 {
