@@ -422,6 +422,7 @@ func InitOrganizationRouter() *gin.Engine {
 						public.POST("protocols", (&organization.PortController{}).Protocols)
 						public.POST("ipTypes", (&organization.PortController{}).IpTypes)
 						public.POST("alarmLevels", (&organization.PortController{}).AlarmLevels)
+						public.POST("forwardTypes", (&organization.PortController{}).ForwardTypes)
 					}
 					working := port.Group("working/")
 					{

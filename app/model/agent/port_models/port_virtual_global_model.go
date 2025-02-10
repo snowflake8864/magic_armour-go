@@ -27,6 +27,7 @@ type VirtualGlobalModel struct {
 	SourcePort  string `json:"source_port"`
 	ForwardIp   string `json:"forward_ip"`
 	ForwardPort string `json:"forward_port"`
+	ForwardType int    `json:"forward_type"`
 	AlarmLevel  int    `json:"alarm_level"`
 	OpenSwitch  int    `json:"open_switch"`
 	CreateId    int64  `json:"create_id"`

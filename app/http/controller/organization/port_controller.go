@@ -47,6 +47,13 @@ func (u *PortController) AlarmLevels(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
+// ForwardTypes 转发类型
+func (u *PortController) ForwardTypes(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("forward_type", enum_port.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("forward_type", enum_port.EnumMapInt)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+}
+
 // PageForManage 分页
 func (u *PortController) PageForManage(ctx *gin.Context) {
 
