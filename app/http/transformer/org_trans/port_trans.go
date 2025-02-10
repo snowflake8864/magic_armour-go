@@ -39,6 +39,7 @@ func (t *PortTrans) TransGlobalPage(total int64, models []*port_models.VirtualGl
 			}
 			data["forward_port"] = forwardPort
 			data["forward_type"] = model.ForwardType
+			data["forward_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("forward_type", model.ForwardType, enum_port.EnumMapInt)
 			data["alarm_level"] = model.AlarmLevel
 			data["alarm_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("alarm_level", model.AlarmLevel, enum_port.EnumMapInt)
 			data["open_switch"] = model.OpenSwitch
@@ -81,6 +82,7 @@ func (t *PortTrans) TransPolicyPage(total int64, models []*port_models.VirtualPo
 			}
 			data["forward_port"] = forwardPort
 			data["forward_type"] = model.ForwardType
+			data["forward_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("forward_type", model.ForwardType, enum_port.EnumMapInt)
 			data["alarm_level"] = model.AlarmLevel
 			data["alarm_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("alarm_level", model.AlarmLevel, enum_port.EnumMapInt)
 			data["open_switch"] = model.OpenSwitch

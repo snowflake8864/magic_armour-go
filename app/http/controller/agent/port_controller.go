@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_port"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/port_models"
@@ -59,7 +60,7 @@ func (u *PortController) GetVirtual(ctx *gin.Context) {
 	if globalModels != nil && len(globalModels) > 0 {
 		for _, model := range globalModels {
 			policies := u.format(model.Type, model.Protocol, model.SourceIp, model.SourcePort,
-				model.ForwardIp, model.ForwardPort, model.AlarmLevel)
+				model.ForwardIp, model.ForwardPort, model.ForwardType, model.AlarmLevel)
 			for _, policy := range policies {
 				result = append(result, policy)
 			}
@@ -75,7 +76,7 @@ func (u *PortController) GetVirtual(ctx *gin.Context) {
 	if policyModels != nil && len(policyModels) > 0 {
 		for _, model := range policyModels {
 			policies := u.format(model.Type, model.Protocol, model.SourceIp, model.SourcePort,
-				model.ForwardIp, model.ForwardPort, model.AlarmLevel)
+				model.ForwardIp, model.ForwardPort, model.ForwardType, model.AlarmLevel)
 			for _, policy := range policies {
 				result = append(result, policy)
 			}
@@ -91,13 +92,14 @@ type PortResp struct {
 	Protocol       string `json:"protocol"`
 	SourceIp       string `json:"source_ip"`
 	SourcePort     string `json:"source_port"`
+	SourcePortType int    `json:"source_port_type"` //虚拟端口类型：1单个端口 2范围
 	ForwardIp      string `json:"dest_ip"`
 	ForwardPort    string `json:"dest_port"`
+	ForwardType    int    `json:"dest_port_type"`
 	AlarmLevel     int    `json:"alarm_level"`
-	SourcePortType int    `json:"source_port_type"` //虚拟端口类型：1单个端口 2范围
 }
 
-func (u *PortController) format(pType, protocol, sourceIp, sourcePort, forwardIp, forwardPort string, alarmLevel int) (list []*PortResp) {
+func (u *PortController) format(pType, protocol, sourceIp, sourcePort, forwardIp, forwardPort string, forwardType, alarmLevel int) (list []*PortResp) {
 
 	//源端口:单端口(80);多端口(80,90);范围(80-90)
 	sourcePortArr := strings.Split(sourcePort, ",")
@@ -109,6 +111,10 @@ func (u *PortController) format(pType, protocol, sourceIp, sourcePort, forwardIp
 		if string_helper.IsEmpty(forwardIp) {
 			forwardPort = ""
 		}
+		if forwardType == enum_port.ForwardTypeOriginal {
+			forwardPort = ""
+		}
+
 		list = append(list, &PortResp{
 			Type:           pType,
 			Protocol:       protocol,
@@ -116,6 +122,7 @@ func (u *PortController) format(pType, protocol, sourceIp, sourcePort, forwardIp
 			SourcePort:     sPort,
 			ForwardIp:      forwardIp,
 			ForwardPort:    forwardPort,
+			ForwardType:    forwardType,
 			AlarmLevel:     alarmLevel,
 			SourcePortType: sourcePortType,
 		})
