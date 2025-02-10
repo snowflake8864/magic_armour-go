@@ -58,6 +58,10 @@ func (crd *PolicyCurd) Add(param *port_models.VirtualPolicyModel) error {
 		param.SourceIp = enum_port.Ipv6BehalfAll
 	}
 
+	if param.ForwardType == enum_port.ForwardTypeOriginal {
+		param.ForwardPort = "0"
+	}
+
 	if err := crd.checkSourcePort(param.SourcePort); err != nil {
 		return err
 	}
@@ -79,6 +83,9 @@ func (crd *PolicyCurd) Edit(param *port_models.VirtualPolicyModel, isRoot int) e
 		param.SourceIp = enum_port.Ipv4BehalfAll
 	} else {
 		param.SourceIp = enum_port.Ipv6BehalfAll
+	}
+	if param.ForwardType == enum_port.ForwardTypeOriginal {
+		param.ForwardPort = "0"
 	}
 
 	//验证数据

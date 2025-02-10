@@ -86,6 +86,9 @@ func (crd *GlobalCurd) Add(param *port_models.VirtualGlobalModel) error {
 	} else {
 		param.SourceIp = enum_port.Ipv6BehalfAll
 	}
+	if param.ForwardType == enum_port.ForwardTypeOriginal {
+		param.ForwardPort = "0"
+	}
 
 	if err := crd.checkSourcePort(param.SourcePort); err != nil {
 		return err
@@ -118,6 +121,9 @@ func (crd *GlobalCurd) Edit(param *port_models.VirtualGlobalModel, isRoot int) e
 		param.SourceIp = enum_port.Ipv4BehalfAll
 	} else {
 		param.SourceIp = enum_port.Ipv6BehalfAll
+	}
+	if param.ForwardType == enum_port.ForwardTypeOriginal {
+		param.ForwardPort = "0"
 	}
 
 	if err := crd.checkSourcePort(param.SourcePort); err != nil {
