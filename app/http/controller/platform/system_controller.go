@@ -128,14 +128,9 @@ func (u *SystemController) SntpSet(ctx *gin.Context) {
 		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
 		return
 	}
-
-	if !strings.Contains(outStr, addr) {
-		response.FailData(ctx, "exec command fail", outStr)
-		return
-	}
-
+	
 	//修改数据字典
-	dictionary_service.CreateCurdFactory().UpdateValById(enum_dictionary.PlatformSntpCmd, addr)
+	dictionary_service.CreateCurdFactory().UpdateValById(enum_dictionary.PlatformSntpAddr, addr)
 
 	response.SuccessSimplify(ctx)
 }
