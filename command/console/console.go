@@ -114,7 +114,7 @@ func handleDay(mode, interval, at string) {
 			proc_cmd.CreateCmdFactory().ClearRunning()
 			//清理服务器监控
 			service_cmd.CreateCmdFactory().Delete()
-			//SNTP同步
+			//SNTP同步时间
 			sntp_cmd.CreateCmdFactory().Sync()
 			break
 		case AtOne:
