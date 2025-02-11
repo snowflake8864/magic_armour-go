@@ -12,6 +12,7 @@ import (
 	"goskeleton/command/console/plug_cmd"
 	"goskeleton/command/console/proc_cmd"
 	"goskeleton/command/console/service_cmd"
+	"goskeleton/command/console/sntp_cmd"
 	"goskeleton/command/console/syslog_cmd"
 	"goskeleton/command/console/threaten_cmd"
 )
@@ -113,6 +114,8 @@ func handleDay(mode, interval, at string) {
 			proc_cmd.CreateCmdFactory().ClearRunning()
 			//清理服务器监控
 			service_cmd.CreateCmdFactory().Delete()
+			//SNTP同步
+			sntp_cmd.CreateCmdFactory().Sync()
 			break
 		case AtOne:
 			variable.ZapLog.Sugar().Debug("订单自动过期")
