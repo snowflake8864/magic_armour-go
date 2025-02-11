@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/files"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/sntp_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"goskeleton/app/utils/zip_factory"
@@ -113,23 +114,11 @@ func (u *SystemController) SntpSet(ctx *gin.Context) {
 	if !string_helper.IsEmpty(addr) {
 		//获取命令
 		command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
-		cmd := exec.Command("/bin/bash", "-c", command+" "+addr)
 
-		var stdout, stderr bytes.Buffer
-		cmd.Stdout = &stdout // 标准输出
-		cmd.Stderr = &stderr // 标准错误
-		err := cmd.Run()
-		if err != nil {
-			response.FailData(ctx, "exec command Run failed", err.Error())
+		if err := sntp_helper.Exec(command, addr); err != nil {
+			response.FailData(ctx, err.Error(), command)
 			return
 		}
-
-		outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-		if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
-			response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
-			return
-		}
-
 	}
 
 	//修改数据字典
