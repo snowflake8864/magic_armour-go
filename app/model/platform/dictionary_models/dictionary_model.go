@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
-	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
@@ -65,7 +64,8 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformServiceCodeList + `', '["s0001"]','平台:服务器编号列表'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformTimeCmd +
 		`', 'sudo /bin/timedatectl set-timezone Asia/Shanghai && sudo /sbin/hwclock --set --date "%s" && sudo /sbin/hwclock --hctosys && sudo /sbin/clock -w','平台:时间修改命令'),
-			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformInstallAt + `', '` + date_helper.CurDatetime() + `','平台:安装时间'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSntpAddr + `', '','平台:SNTP服务器地址'),
+			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSntpCmd + `', 'sudo /usr/sbin/ntpdate','平台:SNTP同步命令'),
 
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorMax + `', '10','企业:登录错误次数最大值(100)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorRemind + `', '3','企业:登录错误次数提醒'),

@@ -90,6 +90,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/platform/system/agentLogConfig/set":         {ModuleSystem, "修改终端日志配置"},
 	"/v5/platform/system/network/set":                {ModuleSystem, "修改网络配置"},
 	"/v5/platform/system/ssh/set":                    {ModuleSystem, "修改SSH开关"},
+	"/v5/platform/system/sntp/set":                   {ModuleSystem, "设置SNTP服务"},
 	"/v5/platform/system/time/set":                   {ModuleSystem, "修改系统时间"},
 	"/v5/platform/system/upgrade/run":                {ModuleSystem, "系统升级"},
 	"/v5/platform/system/upgrade/saveLog":            {ModuleSystem, "系统升级"},

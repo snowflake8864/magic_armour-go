@@ -320,6 +320,11 @@ func InitPlatformRouter() *gin.Engine {
 						network.POST("get", (&platform.SystemController{}).NetworkGet)
 						network.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemNetworkSet"))
 					}
+					sntp := system.Group("sntp/")
+					{
+						sntp.POST("get", (&platform.SystemController{}).SntpGet)
+						sntp.POST("set", validatorFactory.Create(consts.ValidatorPrefixPlatform+"SystemSntpSet"))
+					}
 					agentLog := system.Group("agentLogConfig/")
 					{
 						agentLog.POST("get", (&platform.SystemController{}).AgentLogConfigGet)

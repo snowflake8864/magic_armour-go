@@ -198,4 +198,6 @@ func PlatformRegisterValidator() {
 	containers.Set(key, system4.HuanshiSetThird{})
 	key = consts.ValidatorPrefixPlatform + "SystemUpgradeRun"
 	containers.Set(key, system4.UpgradeRun{})
+	key = consts.ValidatorPrefixPlatform + "SystemSntpSet"
+	containers.Set(key, system4.SntpSet{})
 }

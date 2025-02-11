@@ -19,6 +19,8 @@ const (
 	PlatformServiceCodeList   string = "platform_service_code_list"   //平台:服务器编号列表
 	PlatformTimeCmd           string = "platform_time_cmd"            //平台:时间修改命令
 	PlatformInstallAt         string = "platform_install_at"          //平台:安装时间
+	PlatformSntpAddr          string = "platform_sntp_addr"           //平台:SNTP服务器地址
+	PlatformSntpCmd           string = "platform_sntp_cmd"            //平台:SNTP同步命令
 
 	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
 	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
@@ -100,6 +102,8 @@ var EnumSlice = map[string][]string{
 		PlatformServiceCodeList,
 		PlatformTimeCmd,
 		PlatformInstallAt,
+		PlatformSntpAddr,
+		PlatformSntpCmd,
 	},
 	ModuleOrganization: {
 		OrganizationLoginErrorMax,

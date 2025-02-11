@@ -97,6 +97,49 @@ func (u *SystemController) SshSet(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// SntpGet Sntp服务
+func (u *SystemController) SntpGet(ctx *gin.Context) {
+	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpAddr)
+
+	response.SuccessReturnData(ctx, gin.H{
+		"add": val,
+	})
+}
+
+// SntpSet  SSH服务
+func (u *SystemController) SntpSet(ctx *gin.Context) {
+	addr := ctx.GetString(consts.ValidatorPrefixPlatform + "addr")
+
+	//获取命令
+	command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
+	cmd := exec.Command("/bin/bash", "-c", command+" "+addr)
+
+	var stdout, stderr bytes.Buffer
+	cmd.Stdout = &stdout // 标准输出
+	cmd.Stderr = &stderr // 标准错误
+	err := cmd.Run()
+	if err != nil {
+		response.FailData(ctx, "exec command Run failed", err.Error())
+		return
+	}
+
+	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
+		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
+		return
+	}
+
+	if !strings.Contains(outStr, addr) {
+		response.FailData(ctx, "exec command fail", outStr)
+		return
+	}
+
+	//修改数据字典
+	dictionary_service.CreateCurdFactory().UpdateValById(enum_dictionary.PlatformSntpCmd, addr)
+
+	response.SuccessSimplify(ctx)
+}
+
 // NetworkGet  网络服务
 func (u *SystemController) NetworkGet(ctx *gin.Context) {
 
