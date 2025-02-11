@@ -110,25 +110,28 @@ func (u *SystemController) SntpGet(ctx *gin.Context) {
 func (u *SystemController) SntpSet(ctx *gin.Context) {
 	addr := ctx.GetString(consts.ValidatorPrefixPlatform + "addr")
 
-	//获取命令
-	command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
-	cmd := exec.Command("/bin/bash", "-c", command+" "+addr)
+	if !string_helper.IsEmpty(addr) {
+		//获取命令
+		command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
+		cmd := exec.Command("/bin/bash", "-c", command+" "+addr)
 
-	var stdout, stderr bytes.Buffer
-	cmd.Stdout = &stdout // 标准输出
-	cmd.Stderr = &stderr // 标准错误
-	err := cmd.Run()
-	if err != nil {
-		response.FailData(ctx, "exec command Run failed", err.Error())
-		return
+		var stdout, stderr bytes.Buffer
+		cmd.Stdout = &stdout // 标准输出
+		cmd.Stderr = &stderr // 标准错误
+		err := cmd.Run()
+		if err != nil {
+			response.FailData(ctx, "exec command Run failed", err.Error())
+			return
+		}
+
+		outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
+		if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
+			response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
+			return
+		}
+
 	}
 
-	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
-	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
-		response.FailData(ctx, "exec command output empty", fmt.Sprintf("out:\n%s\nerr:\n%s\n", outStr, errStr))
-		return
-	}
-	
 	//修改数据字典
 	dictionary_service.CreateCurdFactory().UpdateValById(enum_dictionary.PlatformSntpAddr, addr)
 
