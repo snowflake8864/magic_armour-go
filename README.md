@@ -14,7 +14,7 @@
       go env -w GOARCH=amd64
       // 程序运行的最终系统，linux、windows、darwin(苹果macos系统)
       go env -w GOOS=linux
-      // window编译设置Cgo模块关闭，因为windows上做cgo开发太麻烦，如果引用了Cgo库库，那么请在linux环境开发、编译  
+      // window编译设置Cgo模块关闭，因为windows上做cgo开发太麻烦，如果引用了Cgo库库，那么请在linux环境开发、编译
       go env -w CGO_ENABLED=0
       // 编译出最终可执行文件，进入根目录（也就是 go.mod 所在的目录）
       go build -o app_agent.linux64     -ldflags "-w -s"  -trimpath  ./cmd/agent/main.go
