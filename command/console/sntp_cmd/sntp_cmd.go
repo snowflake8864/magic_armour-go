@@ -23,8 +23,10 @@ func (crd *SntpCmd) Sync() {
 		//获取命令
 		command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
 
-		if err := sntp_helper.Exec(command, addr); err != nil {
-			variable.ZapLog.Sugar().Debug("Sync fail", err.Error())
+		if err, output := sntp_helper.Exec(command, addr); err != nil {
+			variable.ZapLog.Sugar().Debug("Sync fail: ", err.Error())
+		} else {
+			variable.ZapLog.Sugar().Debug("Sync ok: ", output)
 		}
 	}
 

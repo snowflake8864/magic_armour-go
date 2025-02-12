@@ -115,8 +115,8 @@ func (u *SystemController) SntpSet(ctx *gin.Context) {
 		//获取命令
 		command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
 
-		if err := sntp_helper.Exec(command, addr); err != nil {
-			response.FailData(ctx, err.Error(), command)
+		if err, output := sntp_helper.Exec(command, addr); err != nil {
+			response.FailData(ctx, err.Error(), output)
 			return
 		}
 	}
