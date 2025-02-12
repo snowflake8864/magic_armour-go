@@ -115,6 +115,7 @@ func (crd *PolicyCurd) Edit(param *port_models.VirtualPolicyModel, isRoot int) e
 	updates["source_port"] = param.SourcePort
 	updates["forward_ip"] = param.ForwardIp
 	updates["forward_port"] = param.ForwardPort
+	updates["forward_type"] = param.ForwardType
 	updates["alarm_level"] = param.AlarmLevel
 	updates["open_switch"] = enums.SwitchOff
 	updates["update_id"] = param.UpdateId
