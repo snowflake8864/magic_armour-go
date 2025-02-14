@@ -25,6 +25,15 @@ func TestDate(t *testing.T) {
 	fmt.Println("时间戳：", timestamp)
 	date := date_helper.TimestampToDatetime(timestamp)
 	fmt.Println("时间戳还原时间：", date)
+
+	fmt.Println("--------------------------")
+	dateDay := "2025-02-14"
+	fmt.Println("现在时间：", dateDay)
+
+	timestampDay := date_helper.DatetimeToTimestamp(dateDay, variable.DateFormatToday)
+	fmt.Println("时间戳：", timestampDay)
+	dateDay1 := date_helper.TimestampToDatetime(timestampDay)
+	fmt.Println("时间戳还原时间：", dateDay1)
 }
 
 func TestOpenAutoWhite(t *testing.T) {
