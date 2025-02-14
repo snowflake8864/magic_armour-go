@@ -11,6 +11,7 @@ import (
 
 type GlobalIpWhiteAdd struct {
 	IpAdd
+	IpEffectMode
 }
 
 func (n GlobalIpWhiteAdd) CheckParams(context *gin.Context) {

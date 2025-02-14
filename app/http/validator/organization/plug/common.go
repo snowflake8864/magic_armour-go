@@ -5,6 +5,12 @@ type IpAdd struct {
 	Remark string `form:"remark" json:"remark" binding:"required,max=128"`
 }
 
+type IpEffectMode struct {
+	EffectMode    *int   `form:"effectMode" json:"effectMode" binding:"required,oneof=0 1"`
+	EffectStartAt string `form:"effectStartAt" json:"effectStartAt" binding:"omitempty,datetime=2006-01-02"`
+	EffectEndAt   string `form:"effectEndAt" json:"effectEndAt" binding:"omitempty,datetime=2006-01-02"`
+}
+
 type ConfigPortAdd struct {
 	Weight    int `form:"weight" json:"weight" binding:"required,min=1,max=100"`
 	CountTime int `form:"countTime" json:"countTime" binding:"required,min=1,max=120"`

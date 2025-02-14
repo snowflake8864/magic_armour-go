@@ -30,6 +30,13 @@ func (u *PlugController) PlugTypes(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
+// EffectModes 有效模式
+func (u *PlugController) EffectModes(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("effect_mode", enum_plug.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("effect_mode", enum_plug.EnumMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+}
+
 // PageForManage 分页
 func (u *PlugController) PageForManage(ctx *gin.Context) {
 
@@ -498,14 +505,17 @@ func (u *PlugController) IpSetSwitchForGlobal(ctx *gin.Context, ipType int) {
 func (u *PlugController) IpAddForGlobal(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 	param := plug_models.IpGlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Type:       ipType,
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		CreateId:   loginInfo.UserId,
-		CreateName: loginInfo.Username,
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
+		OrgId:         loginInfo.OrgId,
+		Ip:            ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Type:          ipType,
+		Remark:        ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		EffectMode:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "effectMode")),
+		EffectStartAt: ctx.GetString(consts.ValidatorPrefixOrg + "effectStartAt"),
+		EffectEndAt:   ctx.GetString(consts.ValidatorPrefixOrg + "effectEndAt"),
+		CreateId:      loginInfo.UserId,
+		CreateName:    loginInfo.Username,
+		UpdateId:      loginInfo.UserId,
+		UpdateName:    loginInfo.Username,
 	}
 
 	if err := plug_service.CreateGlobalIpCurdFactory().Add(&param); err != nil {
@@ -519,13 +529,16 @@ func (u *PlugController) IpAddForGlobal(ctx *gin.Context, ipType int) {
 func (u *PlugController) IpEditForGlobal(ctx *gin.Context, ipType int) {
 	loginInfo := u.getLogin(ctx)
 	param := plug_models.IpGlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Type:       ipType,
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
+		OrgId:         loginInfo.OrgId,
+		Id:            string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+		Ip:            ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Type:          ipType,
+		Remark:        ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		EffectMode:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "effectMode")),
+		EffectStartAt: ctx.GetString(consts.ValidatorPrefixOrg + "effectStartAt"),
+		EffectEndAt:   ctx.GetString(consts.ValidatorPrefixOrg + "effectEndAt"),
+		UpdateId:      loginInfo.UserId,
+		UpdateName:    loginInfo.Username,
 	}
 
 	if err := plug_service.CreateGlobalIpCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {

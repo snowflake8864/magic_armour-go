@@ -116,6 +116,10 @@ func (t *PlugTrans) TranIpGlobalPage(total int64, models []*plug_models.IpGlobal
 			data["id"] = fmt.Sprintf("%d", model.Id)
 			data["type"] = model.Type
 			data["ip"] = model.Ip
+			data["effect_mode"] = model.EffectMode
+			data["effect_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("effect_mode", model.EffectMode, enum_plug.EnumMap)
+			data["effect_start_at"] = model.EffectStartAt
+			data["effect_end_at"] = model.EffectEndAt
 			data["remark"] = model.Remark
 			data["direction"] = model.Direction
 			data["direction_label"] = enum_plug.GetDirectionLabel(model.Direction)

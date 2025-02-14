@@ -459,6 +459,7 @@ func InitOrganizationRouter() *gin.Engine {
 					public := plug.Group("public/")
 					{
 						public.POST("plugTypes", (&organization.PlugController{}).PlugTypes)
+						public.POST("effectModes", (&organization.PlugController{}).EffectModes)
 					}
 
 					manage := plug.Group("manage/")

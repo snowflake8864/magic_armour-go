@@ -17,6 +17,9 @@ const (
 	DirectionIn  int = 1 //方向:IN，二进制表示
 	DirectionOut int = 2 //方向:OUT，二进制表示
 	DirectionAll int = 3 //封堵类型:
+
+	EffectModeAlways int = 0 //有效模式: 长期有效
+	EffectModeRange  int = 1 //有效模式: 区间有效
 )
 
 var EnumMap = map[string]map[int]string{
@@ -32,12 +35,20 @@ var EnumMap = map[string]map[int]string{
 		SourcePortVirtual: "端口虚开",
 		SourceLoginSolve:  "口令暴力破解",
 	},
+	"effect_mode": {
+		EffectModeAlways: "长期有效",
+		EffectModeRange:  "区间有效",
+	},
 }
 
 var WebMapInt = map[string][]int{
 	"plug_type": {
 		PlugTypeTemporary,
 		PlugTypePermanent,
+	},
+	"effect_mode": {
+		EffectModeAlways,
+		EffectModeRange,
 	},
 }
 

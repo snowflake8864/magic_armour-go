@@ -41,6 +41,10 @@ func (crd *GlobalIpCurd) Add(param *plug_models.IpGlobalModel) error {
 	param.OpenSwitch = enums.SwitchOn
 	param.CreatedAt = date_helper.CurDatetime()
 	param.UpdatedAt = param.CreatedAt
+	if param.EffectMode == enum_plug.EffectModeAlways {
+		param.EffectStartAt = ""
+		param.EffectEndAt = ""
+	}
 
 	//验证数据
 	conditions := plug_models.SearchConditions{
@@ -94,6 +98,15 @@ func (crd *GlobalIpCurd) Edit(param *plug_models.IpGlobalModel, isRoot int) erro
 	updates["update_id"] = param.UpdateId
 	updates["update_name"] = param.UpdateName
 	updates["updated_at"] = date_helper.CurDatetime()
+	updates["effect_mode"] = param.EffectMode
+	if param.EffectMode == enum_plug.EffectModeAlways {
+		updates["effect_start_at"] = ""
+		updates["effect_end_at"] = ""
+	} else {
+		updates["effect_start_at"] = param.EffectStartAt
+		updates["effect_end_at"] = param.EffectEndAt
+	}
+
 	if isOk, _ := crd.masterModel.UpdateByConditions(plug_models.SearchConditions{
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
