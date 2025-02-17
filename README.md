@@ -10,7 +10,7 @@
 
 #### 目标平台为 linux(通过windows系统直接编译出linux可执行程序)
 
-      // cpu架构，amd64、arm64
+      // cpu架构: amd64、arm64
       go env -w GOARCH=amd64
       // 程序运行的最终系统，linux、windows、darwin(苹果macos系统)
       go env -w GOOS=linux
