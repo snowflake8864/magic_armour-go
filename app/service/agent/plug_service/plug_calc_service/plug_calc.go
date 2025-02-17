@@ -219,7 +219,7 @@ func (crd *PlugCalc) hasDynamic(orgId int64, agentId string, attackIp string) bo
 	}
 }
 
-func (crd *PlugCalc) inIpEffect(nowTimestamp int64, effectMode int, effectStartAt, effectEndAt string) bool {
+func (crd *PlugCalc) InIpEffect(nowTimestamp int64, effectMode int, effectStartAt, effectEndAt string) bool {
 	if effectMode == enum_plug.EffectModeRange {
 		if !string_helper.IsEmpty(effectStartAt) {
 			//没有开始
@@ -251,7 +251,7 @@ func (crd *PlugCalc) hasGlobalLib(orgId int64, attackIp string) bool {
 	}
 	nowTimestamp := date_helper.CurTimestamp()
 	for _, model := range models {
-		if ip_helper.IsIPInRange(attackIp, model.Ip) && crd.inIpEffect(nowTimestamp, model.EffectMode, model.EffectStartAt, model.EffectEndAt) {
+		if ip_helper.IsIPInRange(attackIp, model.Ip) && crd.InIpEffect(nowTimestamp, model.EffectMode, model.EffectStartAt, model.EffectEndAt) {
 			return true
 		}
 	}
@@ -272,7 +272,7 @@ func (crd *PlugCalc) hasAgentLib(orgId int64, agentId string, attackIp string) b
 	}
 	nowTimestamp := date_helper.CurTimestamp()
 	for _, model := range models {
-		if ip_helper.IsIPInRange(attackIp, model.Ip) && crd.inIpEffect(nowTimestamp, model.EffectMode, model.EffectStartAt, model.EffectEndAt) {
+		if ip_helper.IsIPInRange(attackIp, model.Ip) && crd.InIpEffect(nowTimestamp, model.EffectMode, model.EffectStartAt, model.EffectEndAt) {
 			return true
 		}
 	}

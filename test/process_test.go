@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/proc_job"
+	"goskeleton/app/service/agent/plug_service/plug_calc_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"goskeleton/command/console/proc_cmd"
@@ -42,4 +43,12 @@ func TestOpenAutoWhite(t *testing.T) {
 
 func TestThreatenRepairStatus(t *testing.T) {
 	proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
+}
+
+func TestInIpEffect(t *testing.T) {
+	curTimestamp := date_helper.CurTimestamp()
+	fmt.Println("现在时间戳：", curTimestamp)
+
+	a := plug_calc_service.CreatePlugCalcFactory().InIpEffect(curTimestamp, 1, "2025-02-18", "2025-03-01")
+	fmt.Println(a)
 }
