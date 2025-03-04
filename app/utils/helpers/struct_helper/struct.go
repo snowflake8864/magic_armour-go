@@ -1,6 +1,9 @@
 package struct_helper
 
-import "reflect"
+import (
+	"reflect"
+	"strings"
+)
 
 // Copy 复制结构体
 // dst 目标结构体，src 源结构体
@@ -42,4 +45,49 @@ func Copy(dst, src interface{}) {
 			}
 		}
 	}
+}
+
+// SimpleStructToMapWithJsonTags  converts a simple struct to a map[string]interface{} using JSON tags as keys.
+// 忽略字段是: Struct\Slice\Array
+func SimpleStructToMapWithJsonTags(obj interface{}) map[string]interface{} {
+	data := make(map[string]interface{})
+	val := reflect.ValueOf(obj)
+
+	if val.Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+
+	if val.Kind() != reflect.Struct {
+		return nil // or handle non-struct types differently if needed
+	}
+
+	typ := val.Type()
+	for i := 0; i < val.NumField(); i++ {
+		field := typ.Field(i)
+		fieldVal := val.Field(i)
+		jsonTag := field.Tag.Get("json")
+
+		// If no JSON tag is specified, use the field name as the key
+		if jsonTag == "" {
+			jsonTag = field.Name
+		} else if jsonTag == "-" {
+			// Skip fields with "-" JSON tag
+			continue
+		} else if strings.Contains(jsonTag, ",") {
+			// Split the tag into name and options, and use the name part
+			jsonTag = strings.SplitN(jsonTag, ",", 2)[0]
+		}
+
+		// Handle nested structs and slices recursively
+		switch fieldVal.Kind() {
+		case reflect.Struct:
+			break
+		case reflect.Slice, reflect.Array:
+			break
+		default:
+			data[jsonTag] = fieldVal.Interface()
+		}
+	}
+
+	return data
 }
