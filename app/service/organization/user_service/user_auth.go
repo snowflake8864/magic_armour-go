@@ -182,7 +182,7 @@ func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isP
 	orgModel, _ := organization_models.CreateOrganizationFactory().GetItemById(orgId)
 	if orgModel == nil || orgModel.Id == 0 {
 		return errors.New("用户名或密码错误"), false
-	} else if orgModel.LoginPhoneCheck == enums.SwitchOn {
+	} else if orgModel.LoginPhoneCheck == enums.IsNot {
 		return nil, true
 	} else {
 		return nil, false
