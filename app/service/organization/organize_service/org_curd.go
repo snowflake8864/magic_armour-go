@@ -92,7 +92,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	orgParam.Status = enum_organization.StatusVerifying
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
-	orgParam.LoginPhoneCheck = enums.IsNot
+	orgParam.LoginPhoneCheck = enums.SwitchOff
 	orgParam.CreatedAt = date_helper.CurDatetime()
 	orgParam.Code = crd.makeCode()
 	if err = tx.Create(orgParam).Error; err != nil {
