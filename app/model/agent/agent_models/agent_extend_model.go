@@ -61,6 +61,27 @@ func (m *ExtendModel) CreateTable() bool {
 	}
 }
 
+func (m *ExtendModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MAT_3.1.0_R1":
+		sql += `
+			ADD COLUMN pw_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:策略(json)' AFTER login_solve_config,
+			ADD COLUMN pw_jump_newest varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:最新密码' AFTER pw_jump_config,
+			ADD COLUMN ip_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT 'ip跳变:策略(json)' AFTER pw_jump_newest;
+		`
+		break
+	default:
+		return true
+	}
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *ExtendModel) InsertItem(s *ExtendModel) bool {
 

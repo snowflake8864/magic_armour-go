@@ -243,6 +243,11 @@ func appendTableAndData() {
 		_ = agent_online_models.CreateOnlineLogFactory().CreateTable()
 		_ = org_operate_models.CreateLogFactory().AlterTable(ver)
 	}
+	if ver := "MAT_3.1.0_R1"; !existMigration(ver) {
+		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+		_ = agent_models.CreateExtendFactory().AlterTable(ver)
+		_ = organization_models.CreateExtendFactory().AlterTable(ver)
+	}
 	//保存迁移数据
 	saveMigrations()
 }
