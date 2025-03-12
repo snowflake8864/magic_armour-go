@@ -17,6 +17,7 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"strings"
+	"time"
 )
 
 func CreateConsumerFactory() *ConsumerClient {
@@ -79,6 +80,8 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 	if err != nil {
 		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
 		return result, err
+	} else if len(msg.Value) == 0 {
+		return nil, nil
 	} else {
 		err = json.Unmarshal(msg.Value, result)
 		if err != nil {
@@ -95,6 +98,10 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		data, err := k.readMessage(ctx, r)
 		if err != nil {
 			continue // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
+		} else if data == nil {
+			// 当前消息读取为空时，并不退出for终止所有后续消费，休眠后继续处理
+			time.Sleep(2 * time.Second)
+			continue
 		}
 		switch data.Type {
 		case kafka_go.TypeCommonAgentDelete:
