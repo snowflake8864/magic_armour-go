@@ -693,7 +693,7 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					globalConfig := ipJump.Group("globalConfig/")
 					{
-						globalConfig.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigGet"))
+						globalConfig.POST("get", (&organization.IpJumpController{}).Cycles)
 						globalConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigSave"))
 						globalConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigExecute"))
 					}
