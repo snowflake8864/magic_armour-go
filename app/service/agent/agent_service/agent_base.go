@@ -49,16 +49,18 @@ type ManualColumn struct {
 	LoginSolveSwitch    *int
 	HardwareSwitch      *int
 	HardwareTime        int
+	PwJumpSwitch        *int
+	IpJumpSwitch        *int
 }
 
 type AgentBase struct {
 }
 
 // 获取修改数据
-func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask bool,
-	openAutoWhite bool, updates map[string]interface{}) {
+func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask, hasConfigTask bool,
+	updates map[string]interface{}, openAutoWhite bool) {
 	if model == nil {
-		return errors.New("终端不存在"), hasTask, openAutoWhite, updates
+		return errors.New("终端不存在"), hasTask, hasConfigTask, updates, openAutoWhite
 	}
 	updates = make(map[string]interface{})
 	if param.DeptId != nil {
@@ -89,17 +91,35 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		updates["remark"] = *param.Remark
 	}
 
+	//放在有任务的最上面
+	if param.PwJumpSwitch != nil && *param.PwJumpSwitch != enums.AllDefaultInt {
+		updates["pw_jump_switch"] = *param.PwJumpSwitch
+		if *param.PwJumpSwitch == enums.SwitchOn {
+			hasTask = true
+		}
+	}
+	//放在有任务的最上面
+	if param.IpJumpSwitch != nil && *param.IpJumpSwitch != enums.AllDefaultInt {
+		updates["ip_jump_switch"] = *param.IpJumpSwitch
+		if *param.IpJumpSwitch == enums.SwitchOn {
+			hasTask = true
+		}
+	}
+
 	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt {
 		updates["self_protect_switch"] = *param.SelfProtectSwitch
 		hasTask = true
+		hasConfigTask = true
 	}
 	if param.InternetSwitch != nil && *param.InternetSwitch != enums.AllDefaultInt {
 		updates["internet_switch"] = *param.InternetSwitch
 		hasTask = true
+		hasConfigTask = true
 	}
+
 	//如果未授权, 下面功能不可用
 	if model.GrantStatus == enum_agent.GrantStatusUnauthorized {
-		return nil, hasTask, openAutoWhite, updates
+		return nil, hasTask, hasConfigTask, updates, openAutoWhite
 	}
 
 	//以下授权可用功能
@@ -107,10 +127,12 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	if param.CommonTime > 0 && model.CommonTime != param.CommonTime {
 		updates["common_time"] = param.CommonTime
 		hasTask = true
+		hasConfigTask = true
 	}
 	if param.FastTime > 0 && model.FastTime != param.FastTime {
 		updates["fast_time"] = param.FastTime
 		hasTask = true
+		hasConfigTask = true
 	}
 
 	//可信防护已授权
@@ -130,6 +152,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.ProcessSwitch != *param.ProcessSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 			//方便下发相关任务
 			model.ProcessSwitch = *param.ProcessSwitch
@@ -143,6 +166,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				updates["process_mode"] = param.ProcessMode
 				if model.ProcessMode != param.ProcessMode {
 					hasTask = true
+					hasConfigTask = true
 				}
 			} else {
 				updates["process_mode"] = enum_agent.ModeMonitor
@@ -156,6 +180,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				//有任务
 				if model.DllSwitch != *param.DllSwitch {
 					hasTask = true
+					hasConfigTask = true
 				}
 				//方便下发相关任务
 				model.DllSwitch = *param.DllSwitch
@@ -169,6 +194,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 					updates["dll_mode"] = param.DllMode
 					if model.DllMode != param.DllMode {
 						hasTask = true
+						hasConfigTask = true
 					}
 				} else {
 					updates["dll_mode"] = enum_agent.ModeMonitor
@@ -185,6 +211,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.TamperSwitch != *param.TamperSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 			//方便下发相关任务
 			model.TamperSwitch = *param.TamperSwitch
@@ -198,6 +225,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				updates["tamper_mode"] = param.TamperMode
 				if model.TamperMode != param.TamperMode {
 					hasTask = true
+					hasConfigTask = true
 				}
 			} else {
 				updates["tamper_mode"] = enum_agent.ModeMonitor
@@ -212,6 +240,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.BlackmailSwitch != *param.BlackmailSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 			//方便下发相关任务
 			model.BlackmailSwitch = *param.BlackmailSwitch
@@ -225,6 +254,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				updates["blackmail_mode"] = param.BlackmailMode
 				if model.BlackmailMode != param.BlackmailMode {
 					hasTask = true
+					hasConfigTask = true
 				}
 			} else {
 				updates["blackmail_mode"] = enum_agent.ModeMonitor
@@ -240,6 +270,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				//有任务
 				if model.PortSwitch != *param.PortSwitch {
 					hasTask = true
+					hasConfigTask = true
 				}
 				//方便下发相关任务
 				model.PortSwitch = *param.PortSwitch
@@ -255,6 +286,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				//有任务
 				if model.PlugSwitch != *param.PlugSwitch {
 					hasTask = true
+					hasConfigTask = true
 				}
 				//方便下发相关任务
 				model.PlugSwitch = *param.PlugSwitch
@@ -269,6 +301,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.UsbSwitch != *param.UsbSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 			//方便下发相关任务
 			model.UsbSwitch = *param.UsbSwitch
@@ -282,6 +315,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 				updates["usb_mode"] = param.UsbMode
 				if model.UsbMode != param.UsbMode {
 					hasTask = true
+					hasConfigTask = true
 				}
 			} else {
 				updates["usb_mode"] = enum_agent.ModeMonitor
@@ -296,6 +330,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.SyslogDnsSwitch != *param.SyslogDnsSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 		if param.SyslogOuterSwitch != nil && *param.SyslogOuterSwitch != enums.AllDefaultInt {
@@ -303,6 +338,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.SyslogOuterSwitch != *param.SyslogOuterSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 		if param.SyslogInnerSwitch != nil && *param.SyslogInnerSwitch != enums.AllDefaultInt {
@@ -310,6 +346,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.SyslogInnerSwitch != *param.SyslogInnerSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 		if param.SyslogProcessSwitch != nil && *param.SyslogProcessSwitch != enums.AllDefaultInt {
@@ -317,6 +354,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.SyslogProcessSwitch != *param.SyslogProcessSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 		if param.SyslogLoginSwitch != nil && *param.SyslogLoginSwitch != enums.AllDefaultInt {
@@ -324,6 +362,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.SyslogLoginSwitch != *param.SyslogLoginSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 	}
@@ -335,6 +374,7 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 			//有任务
 			if model.OutreachAlarmSwitch != *param.OutreachAlarmSwitch {
 				hasTask = true
+				hasConfigTask = true
 			}
 		}
 	}
@@ -346,13 +386,14 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 		}
 	}
 
-	return err, hasTask, openAutoWhite, updates
+	return err, hasTask, hasConfigTask, updates, openAutoWhite
 }
 
 // addTask 新增任务
-func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColumn, isTrustDir bool, remark string) {
-	tasks := []int{
-		enum_task.TypeAgentConfigDownload,
+func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColumn, hasConfigTask, isTrustDir bool, remark string) {
+	var tasks []int
+	if hasConfigTask {
+		tasks = append(tasks, enum_task.TypeAgentConfigDownload)
 	}
 	if isTrustDir {
 		tasks = append(tasks, enum_task.TypeTrustDir)
