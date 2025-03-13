@@ -19,14 +19,14 @@ const (
 var EnumIntMap = map[string]map[int]string{
 	"combine": {
 		CombineNumber:      "数字",
-		CombineLowerLetter: "",
-		CombineUpperLetter: "有效",
-		CombineSpecialChar: "有效",
+		CombineLowerLetter: "小写字母",
+		CombineUpperLetter: "大写字母",
+		CombineSpecialChar: "特殊字符",
 	},
 	"cycle": {
-		CycleDay:   "正式",
-		CycleWeek:  "测试",
-		CycleMonth: "样本",
+		CycleDay:   "每天",
+		CycleWeek:  "每周",
+		CycleMonth: "每月",
 	},
 }
 
