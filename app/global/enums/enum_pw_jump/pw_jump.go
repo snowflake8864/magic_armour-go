@@ -16,6 +16,20 @@ const (
 	CycleMonth int = 3 //周期: 月
 )
 
+var EnumIntMap = map[string]map[int]string{
+	"combine": {
+		CombineNumber:      "数字",
+		CombineLowerLetter: "",
+		CombineUpperLetter: "有效",
+		CombineSpecialChar: "有效",
+	},
+	"cycle": {
+		CycleDay:   "正式",
+		CycleWeek:  "测试",
+		CycleMonth: "样本",
+	},
+}
+
 // PwJumpConfig 密码跳变
 type PwJumpConfig struct {
 	Switch  int `json:"switch"`
