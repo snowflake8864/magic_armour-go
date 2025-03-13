@@ -99,14 +99,13 @@ func (u *PortController) PageForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *PortController) SetSwitchForManage(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	orgId := u.getLogin(ctx).OrgId
+	agentId := u.getAgentIdFromGin(ctx)
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	var param = agent_service.ManualColumn{
 		PortSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "端口虚开管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "端口虚开管理-开关")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
