@@ -90,20 +90,11 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	if param.Remark != nil && *param.Remark != enums.AllDefaultStr {
 		updates["remark"] = *param.Remark
 	}
-
-	//放在有任务的最上面
 	if param.PwJumpSwitch != nil && *param.PwJumpSwitch != enums.AllDefaultInt {
 		updates["pw_jump_switch"] = *param.PwJumpSwitch
-		if *param.PwJumpSwitch == enums.SwitchOn {
-			hasTask = true
-		}
 	}
-	//放在有任务的最上面
 	if param.IpJumpSwitch != nil && *param.IpJumpSwitch != enums.AllDefaultInt {
 		updates["ip_jump_switch"] = *param.IpJumpSwitch
-		if *param.IpJumpSwitch == enums.SwitchOn {
-			hasTask = true
-		}
 	}
 
 	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt {
