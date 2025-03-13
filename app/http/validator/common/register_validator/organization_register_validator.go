@@ -13,6 +13,7 @@ import (
 	dll3 "goskeleton/app/http/validator/organization/dll"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
+	ipJump3 "goskeleton/app/http/validator/organization/ip_jump"
 	loginSolve3 "goskeleton/app/http/validator/organization/login_solve"
 	operationLog3 "goskeleton/app/http/validator/organization/operation_log"
 	order3 "goskeleton/app/http/validator/organization/order"
@@ -611,6 +612,24 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, pwJump3.AgentConfigSave{})
 	key = consts.ValidatorPrefixOrg + "PwJumpGlobalConfigExecute" //
 	containers.Set(key, pwJump3.AgentConfigExecute{})
+
+	//IP跳变
+	key = consts.ValidatorPrefixOrg + "IpJumpManagePage" //
+	containers.Set(key, ipJump3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "IpJumpManageSetSwitch" //
+	containers.Set(key, ipJump3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "IpJumpManageBatchSetConfig" //
+	containers.Set(key, ipJump3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "IpJumpAgentConfigGet" //
+	containers.Set(key, ipJump3.AgentConfigGet{})
+	key = consts.ValidatorPrefixOrg + "IpJumpAgentConfigSave" //
+	containers.Set(key, ipJump3.AgentConfigSave{})
+	key = consts.ValidatorPrefixOrg + "IpJumpAgentConfigExecute" //
+	containers.Set(key, ipJump3.AgentConfigExecute{})
+	key = consts.ValidatorPrefixOrg + "IpJumpGlobalConfigSave" //
+	containers.Set(key, ipJump3.AgentConfigSave{})
+	key = consts.ValidatorPrefixOrg + "IpJumpGlobalConfigExecute" //
+	containers.Set(key, ipJump3.AgentConfigExecute{})
 
 	//告警
 	key = consts.ValidatorPrefixOrg + "AlarmManagePage"
