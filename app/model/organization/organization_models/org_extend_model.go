@@ -22,6 +22,8 @@ type ExtendModel struct {
 	LoginSolveConfig     string `json:"login_solve_config"`
 	AlarmNoticeConfig    string `json:"alarm_notice_config"`
 	HardwareNoticeConfig string `json:"hardware_notice_config"`
+	PwJumpConfig         string `json:"pw_jump_config"`
+	IpJumpConfig         string `json:"ip_jump_config"`
 	UpdatedAt            string `json:"updated_at"`
 }
 

@@ -23,6 +23,9 @@ type ExtendModel struct {
 	PlugPortConfig   string `json:"plug_port_config"`
 	PlugLoginConfig  string `json:"plug_login_config"`
 	LoginSolveConfig string `json:"login_solve_config"`
+	PwJumpConfig     string `json:"pw_jump_config"`
+	PwJumpNewest     string `json:"pw_jump_newest"`
+	IpJumpConfig     string `json:"ip_jump_config"`
 	ProcessFlushAt   string `json:"process_flush_at"`
 	DllFlushAt       string `json:"dll_flush_at"`
 }

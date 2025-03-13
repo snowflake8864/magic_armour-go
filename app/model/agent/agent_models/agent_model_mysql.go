@@ -82,6 +82,8 @@ type AgentModel struct {
 	LoginSolveSwitch    int    `json:"login_solve_switch"`
 	HardwareSwitch      int    `json:"hardware_switch"`
 	HardwareTime        int    `json:"hardware_time"`
+	PwJumpSwitch        int    `json:"pw_jump_switch"`
+	IpJumpSwitch        int    `json:"ip_jump_switch"`
 	CreatedAt           string `json:"created_at"`
 }
 
