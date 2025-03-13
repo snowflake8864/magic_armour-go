@@ -28,11 +28,14 @@ func RequestParams(ctx *gin.Context) {
 		}()
 		// 绑定参数
 		if strings.Contains(contextType, "application/json") {
-			err1 := ctx.ShouldBind(&bindParams)
-			if err1 != nil { // 报错
-				variable.ZapLog.Error(ctx.Request.RequestURI + " ShouldBind ShouldBind err: " + err1.Error())
-				return
+			if len(requestBody) > 0 {
+				err1 := ctx.ShouldBind(&bindParams)
+				if err1 != nil { // 报错
+					variable.ZapLog.Error(ctx.Request.RequestURI + " ShouldBind ShouldBind err: " + err1.Error())
+					return
+				}
 			}
+
 		} else {
 			_ = ctx.Request.ParseMultipartForm(32 << 20)
 			if len(ctx.Request.PostForm) > 0 {
