@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Agent struct {
@@ -20,7 +21,7 @@ type Agent struct {
 }
 
 func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, agentExtend map[string]interface{}) map[string]interface{} {
-	data := make(map[string]interface{})
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	data["agent_id"] = model.AgentId
 	data["host_name"] = model.HostName
 	data["mac_id"] = model.MacId
