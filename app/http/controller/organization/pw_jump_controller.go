@@ -80,7 +80,7 @@ func (u *PwJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 
 	var param = agent_service.ManualColumn{
-		OutreachAlarmSwitch: &Switch,
+		PwJumpSwitch: &Switch,
 	}
 	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "口令跳变管理-批量")
 	if err != nil {
