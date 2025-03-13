@@ -84,7 +84,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		CreateExtendFactory().AddDefault(param.OrgId, param.AgentId)
 
 		//添加任务
-		crd.addTask(param, nil, true, "终端第一次上线")
+		crd.addTask(param, nil, true, true, "终端第一次上线")
 
 	} else {
 		updates := map[string]interface{}{
@@ -123,7 +123,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			OutreachAlarmSwitch: &agentModel.OutreachAlarmSwitch,
 		}
 		//添加任务
-		crd.addTask(agentModel, manual, false, "终端上线")
+		crd.addTask(agentModel, manual, true, false, "终端上线")
 	}
 
 	//记录上线日志

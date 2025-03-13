@@ -179,7 +179,7 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 		return -1, errors.New("终端不存在")
 	}
 
-	err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+	err1, hasTask, hasConfigTask, updates, openAutoWhite := crd.getUpdates(model, param)
 	if err1 != nil {
 		return -1, err1
 	}
@@ -194,7 +194,7 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 
 	//需要下发任务
 	if hasTask {
-		crd.addTask(model, param, false, remark)
+		crd.addTask(model, param, hasConfigTask, false, remark)
 	}
 	//开启自动白名单
 	if openAutoWhite {
@@ -214,10 +214,11 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 	//修改的数据
 	updateResult := make(map[string]map[string]interface{}) // 修改结果
 	agentUpdate := make(map[string][]string)                //终端修改数据
+	agentConfigTask := make(map[string]bool)                //终端修改数据
 	var hasTaskList []*agent_models.AgentModel              //有任务的终端列表
 	var openAutoWhiteList []string                          //开启自动白名单终端
 	for _, model := range models {
-		err1, hasTask, openAutoWhite, updates := crd.getUpdates(model, param)
+		err1, hasTask, hasConfigTask, updates, openAutoWhite := crd.getUpdates(model, param)
 		if err1 != nil || updates == nil || len(updates) == 0 {
 			continue
 		}
@@ -238,6 +239,7 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 		//需要下发任务
 		if hasTask {
 			hasTaskList = append(hasTaskList, model)
+			agentConfigTask[model.AgentId] = hasConfigTask
 		}
 
 		//开启自动白名单
@@ -266,7 +268,12 @@ func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn
 	//任务
 	if len(hasTaskList) > 0 {
 		for _, model := range hasTaskList {
-			crd.addTask(model, param, false, remark)
+			hasConfigTask := false
+			if val, isOK := agentConfigTask[model.AgentId]; isOK {
+				hasConfigTask = val
+			}
+
+			crd.addTask(model, param, hasConfigTask, false, remark)
 		}
 	}
 
