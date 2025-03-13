@@ -18,6 +18,14 @@ var EnumIntMap = map[string]map[int]string{
 	},
 }
 
+var WebMapInt = map[string][]int{
+	"cycle": {
+		CycleDay,
+		CycleWeek,
+		CycleMonth,
+	},
+}
+
 // PwJumpConfig 密码跳变
 type PwJumpConfig struct {
 	Switch  int    `json:"switch"`

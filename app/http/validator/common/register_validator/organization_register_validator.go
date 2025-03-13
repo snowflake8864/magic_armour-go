@@ -22,6 +22,7 @@ import (
 	procGlobal3 "goskeleton/app/http/validator/organization/proc_global"
 	procSample3 "goskeleton/app/http/validator/organization/proc_sample"
 	process3 "goskeleton/app/http/validator/organization/process"
+	pwJump3 "goskeleton/app/http/validator/organization/pw_jump"
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	safetyReport3 "goskeleton/app/http/validator/organization/safety_report"
 	software3 "goskeleton/app/http/validator/organization/software"
@@ -590,6 +591,26 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, loginSolve3.PolicyConfigSet{})
 	key = consts.ValidatorPrefixOrg + "LoginSolveGlobalConfigSet"
 	containers.Set(key, loginSolve3.GlobalConfigSet{})
+
+	//密码跳变
+	key = consts.ValidatorPrefixOrg + "PwJumpManagePage" //
+	containers.Set(key, pwJump3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "PwJumpManageSetSwitch" //
+	containers.Set(key, pwJump3.ManageSetSwitch{})
+	key = consts.ValidatorPrefixOrg + "PwJumpManageBatchSetConfig" //
+	containers.Set(key, pwJump3.ManageBatchSetConfig{})
+	key = consts.ValidatorPrefixOrg + "PwJumpManageShowPw" //
+	containers.Set(key, pwJump3.ManageShowPw{})
+	key = consts.ValidatorPrefixOrg + "PwJumpAgentConfigGet" //
+	containers.Set(key, pwJump3.AgentConfigGet{})
+	key = consts.ValidatorPrefixOrg + "PwJumpAgentConfigSave" //
+	containers.Set(key, pwJump3.AgentConfigSave{})
+	key = consts.ValidatorPrefixOrg + "PwJumpAgentConfigExecute" //
+	containers.Set(key, pwJump3.AgentConfigExecute{})
+	key = consts.ValidatorPrefixOrg + "PwJumpGlobalConfigSave" //
+	containers.Set(key, pwJump3.AgentConfigSave{})
+	key = consts.ValidatorPrefixOrg + "PwJumpGlobalConfigExecute" //
+	containers.Set(key, pwJump3.AgentConfigExecute{})
 
 	//告警
 	key = consts.ValidatorPrefixOrg + "AlarmManagePage"

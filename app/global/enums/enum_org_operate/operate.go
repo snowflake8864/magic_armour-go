@@ -17,6 +17,8 @@ const (
 	ModuleUsb                   = "usb"
 	ModuleOutreach              = "outreach"
 	ModuleLoginSolve            = "loginSolve"
+	ModulePwJump                = "pwJump"
+	ModuleIpJump                = "ipJump"
 	ModuleAlarm                 = "alarm"
 	ModuleOrder                 = "order"
 	ModuleAccount               = "account"
@@ -46,6 +48,8 @@ var EnumMap = map[string]map[string]string{
 		ModuleUsb:            "外接设备",
 		ModuleOutreach:       "外联管控",
 		ModuleLoginSolve:     "口令破解",
+		ModulePwJump:         "口令跳变",
+		ModuleIpJump:         "IP跳变",
 		ModuleAlarm:          "告警管理",
 		ModuleOrder:          "订单授权",
 		ModuleAccount:        "账户管理",
@@ -69,6 +73,8 @@ var WebMapString = map[string][]string{
 		ModuleUsb,
 		ModuleOutreach,
 		ModuleLoginSolve,
+		ModulePwJump,
+		ModuleIpJump,
 		ModuleAlarm,
 		ModuleOrder,
 		ModuleAccount,
@@ -263,6 +269,21 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/loginSolve/manage/batchSetConfig": {ModuleLoginSolve, "管理页：批量配置"},
 	"/v5/organization/loginSolve/policyConfig/set":      {ModuleLoginSolve, "终端策略：保存"},
 	"/v5/organization/loginSolve/globalConfig/set":      {ModuleLoginSolve, "全局策略：保存"},
+
+	"/v5/organization/pwJump/manage/setSwitch":      {ModulePwJump, "管理页：开关"},
+	"/v5/organization/pwJump/manage/batchSetConfig": {ModulePwJump, "管理页：批量配置"},
+	"/v5/organization/pwJump/manage/showPw":         {ModulePwJump, "管理页：查看密码"},
+	"/v5/organization/pwJump/agentConfig/save":      {ModulePwJump, "终端配置：保存"},
+	"/v5/organization/pwJump/agentConfig/execute":   {ModulePwJump, "终端配置：立即执行"},
+	"/v5/organization/pwJump/globalConfig/save":     {ModulePwJump, "全局配置：保存"},
+	"/v5/organization/pwJump/globalConfig/execute":  {ModulePwJump, "全局配置：立即执行"},
+
+	"/v5/organization/ipJump/manage/setSwitch":      {ModuleIpJump, "管理页：开关"},
+	"/v5/organization/ipJump/manage/batchSetConfig": {ModuleIpJump, "管理页：批量配置"},
+	"/v5/organization/ipJump/agentConfig/save":      {ModuleIpJump, "终端配置：保存"},
+	"/v5/organization/ipJump/agentConfig/execute":   {ModuleIpJump, "终端配置：立即执行"},
+	"/v5/organization/ipJump/globalConfig/save":     {ModuleIpJump, "全局配置：保存"},
+	"/v5/organization/ipJump/globalConfig/execute":  {ModuleIpJump, "全局配置：立即执行"},
 
 	"/v5/organization/alarm/manage/clear":        {ModuleAlarm, "管理页：清空"},
 	"/v5/organization/alarm/manage/batchClear":   {ModuleAlarm, "管理页：批量清空"},

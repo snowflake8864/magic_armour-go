@@ -643,6 +643,62 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 				} //口令破解
 
+				//密码跳变
+				pwJump := vOrg.Group("pwJump/")
+				{
+					public := pwJump.Group("public/")
+					{
+						public.POST("combines", (&organization.PwJumpController{}).Combines)
+						public.POST("cycles", (&organization.PwJumpController{}).Cycles)
+					}
+					manage := pwJump.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpManageBatchSetConfig"))
+						manage.POST("showPw", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpManageShowPw"))
+					}
+					agentConfig := pwJump.Group("agentConfig/")
+					{
+						agentConfig.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpAgentConfigGet"))
+						agentConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpAgentConfigSave"))
+						agentConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpAgentConfigExecute"))
+					}
+					globalConfig := pwJump.Group("globalConfig/")
+					{
+						globalConfig.POST("get", (&organization.PwJumpController{}).Cycles)
+						globalConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpGlobalConfigSave"))
+						globalConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpGlobalConfigExecute"))
+					}
+				} //密码跳变
+
+				//ip跳变
+				ipJump := vOrg.Group("ipJump/")
+				{
+					public := ipJump.Group("public/")
+					{
+						public.POST("cycles", (&organization.IpJumpController{}).Cycles)
+					}
+					manage := ipJump.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpManagePage"))
+						manage.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpManageSetSwitch"))
+						manage.POST("batchSetConfig", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpManageBatchSetConfig"))
+					}
+					agentConfig := ipJump.Group("agentConfig/")
+					{
+						agentConfig.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpAgentConfigGet"))
+						agentConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpAgentConfigSave"))
+						agentConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpAgentConfigExecute"))
+					}
+					globalConfig := ipJump.Group("globalConfig/")
+					{
+						globalConfig.POST("get", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigGet"))
+						globalConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigSave"))
+						globalConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"IpJumpGlobalConfigExecute"))
+					}
+				} //ip跳变
+
 				//告警
 				alarm := vOrg.Group("alarm/")
 				{
