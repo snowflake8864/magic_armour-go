@@ -6,13 +6,13 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_ip_jump"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/agent/outreach_service"
-	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -52,14 +52,12 @@ func (u *IpJumpController) PageForManage(ctx *gin.Context) {
 
 // SetSwitchForManage 管理页: 设置开关
 func (u *IpJumpController) SetSwitchForManage(ctx *gin.Context) {
-	agentIds := []string{
-		u.getAgentIdFromGin(ctx),
-	}
+	agentId := u.getAgentIdFromGin(ctx)
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	var param = agent_service.ManualColumn{
-		OutreachAlarmSwitch: &Switch,
+		IpJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "外联管控管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(u.getLogin(ctx).OrgId, agentId, &param, "IP跳变管理-开关")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -74,9 +72,9 @@ func (u *IpJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 
 	var param = agent_service.ManualColumn{
-		OutreachAlarmSwitch: &Switch,
+		IpJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "外联管控管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "IP跳变管理-批量")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -84,40 +82,103 @@ func (u *IpJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// AddForGlobal 全局策略: 添加
-func (u *IpJumpController) AddForGlobal(ctx *gin.Context) {
+// GetForAgentConfig 终端策略: 获取
+func (u *IpJumpController) GetForAgentConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := outreach_models.GlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
-		CreateId:   loginInfo.UserId,
-		CreateName: loginInfo.Username,
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := agent_service.CreateExtendFactory().GetIpJumpConfig(loginInfo.OrgId, agentId)
+
+	response.SuccessReturnData(ctx, config)
+}
+
+func (u *IpJumpController) getConfig(ctx *gin.Context) enum_ip_jump.IpJumpConfig {
+	config := enum_ip_jump.IpJumpConfig{
+		Switch:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
+		Ip:      ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Mask:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mask")),
+		Gateway: ctx.GetString(consts.ValidatorPrefixOrg + "gateway"),
 	}
-	if err := outreach_service.CreateGlobalFactory().Add(&param); err != nil {
+	config.Format()
+	return config
+}
+
+// SaveForAgentConfig 终端策略: 保存
+func (u *IpJumpController) SaveForAgentConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := agent_service.CreateExtendFactory().SetIpJumpConfig(loginInfo.OrgId, agentId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// EditForGlobal 全局策略: 编辑
-func (u *IpJumpController) EditForGlobal(ctx *gin.Context) {
+// ExecuteForAgentConfig 终端策略: 执行
+func (u *IpJumpController) ExecuteForAgentConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := outreach_models.GlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
+	agentId := u.getAgentIdFromGin(ctx)
 
-	if err := outreach_service.CreateGlobalFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+	config := u.getConfig(ctx)
+
+	if err := agent_service.CreateExtendFactory().SetIpJumpConfig(loginInfo.OrgId, agentId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+
+	// 下发任务
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeIpJump, "终端策略")
+
+	response.SuccessSimplify(ctx)
+}
+
+// GetForGlobalConfig 全局策略: 获取
+func (u *IpJumpController) GetForGlobalConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	model := OrgExtendFact.GetItemByOrg(loginInfo.OrgId)
+	response.SuccessReturnData(ctx, OrgExtendFact.FormatIpJumpConfig(model.IpJumpConfig))
+}
+
+// SaveForGlobalConfig 全局策略: 保存
+func (u *IpJumpController) SaveForGlobalConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := organize_service.CreateOrgExtendFactory().SetIpJumpConfig(loginInfo.OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
+// ExecuteForGlobalConfig 全局策略: 执行
+func (u *IpJumpController) ExecuteForGlobalConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := organize_service.CreateOrgExtendFactory().SetIpJumpConfig(loginInfo.OrgId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	agentFact := agent_models.CreateAgentFactory()
+	ipJumpSwitch := enums.IsYes
+	conditions := agent_models.SearchConditions{
+		OrgId:        loginInfo.OrgId,
+		IpJumpSwitch: &ipJumpSwitch,
+	}
+
+	// 下发任务
+	if agentIds := agentFact.GetIdsByByConditions(conditions); len(agentIds) > 0 {
+		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypeIpJump, "全局策略")
+	}
+
 	response.SuccessSimplify(ctx)
 }
