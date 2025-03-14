@@ -627,9 +627,9 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "IpJumpAgentConfigExecute" //
 	containers.Set(key, ipJump3.AgentConfigExecute{})
 	key = consts.ValidatorPrefixOrg + "IpJumpGlobalConfigSave" //
-	containers.Set(key, ipJump3.AgentConfigSave{})
+	containers.Set(key, ipJump3.GlobalConfigSave{})
 	key = consts.ValidatorPrefixOrg + "IpJumpGlobalConfigExecute" //
-	containers.Set(key, ipJump3.AgentConfigExecute{})
+	containers.Set(key, ipJump3.GlobalConfigExecute{})
 
 	//告警
 	key = consts.ValidatorPrefixOrg + "AlarmManagePage"
