@@ -141,6 +141,10 @@ func InitAgentRouter() *gin.Engine {
 
 			//通讯日志相关
 			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogPut")) //上传通讯日志
+
+			//策略跳变
+			vAgent.GET("getPwJump", (&agent.JumpController{}).GetPwJump) //
+			vAgent.GET("getIpJump", (&agent.JumpController{}).GetIpJump) //
 		}
 	}
 	return router
