@@ -1,6 +1,8 @@
 package openssl_encrypt
 
 import (
+	"fmt"
+	"github.com/wenzhenxi/gorsa"
 	goEncryptRsa "github.com/wumansgy/goEncrypt/rsa"
 	"strings"
 )
@@ -115,7 +117,7 @@ type rsaCrypt struct {
 	hexPriKey2048    string
 }
 
-// EncryptToBase64 加密并返回Base64
+// EncryptToBase64 公钥加密并返回Base64
 func (a *rsaCrypt) EncryptToBase64(data string) (result string, err error) {
 	result, err = goEncryptRsa.RsaEncryptToBase64([]byte(data), a.base64PubKey2048)
 	if err != nil {
@@ -124,7 +126,7 @@ func (a *rsaCrypt) EncryptToBase64(data string) (result string, err error) {
 	return result, nil
 }
 
-// DecryptByBase64 解密
+// DecryptByBase64 私钥解密
 func (a *rsaCrypt) DecryptByBase64(data string) (string, error) {
 	data = strings.ReplaceAll(data, " ", "+")
 	plainText, err := goEncryptRsa.RsaDecryptByBase64(data, a.base64PriKey2048)
@@ -132,6 +134,32 @@ func (a *rsaCrypt) DecryptByBase64(data string) (string, error) {
 		return "", err
 	}
 	return string(plainText), nil
+}
+
+// PriEncryptToHex 私钥加密并返回Hex
+func (a *rsaCrypt) PriEncryptToHex(data string) (string, error) {
+	privateKey := fmt.Sprintf(
+		"-----BEGIN Private key-----\n%s\n-----END Private key-----",
+		a.base64PriKey2048,
+	)
+	encodedData, err := gorsa.PriKeyEncrypt(data, privateKey)
+	if err != nil {
+		return "", err
+	}
+	return encodedData, nil
+}
+
+// PubDecryptByHex 公钥解密
+func (a *rsaCrypt) PubDecryptByHex(data string) (string, error) {
+	publicKey := fmt.Sprintf(
+		"-----BEGIN Public key-----\n%s\n-----END Public key-----",
+		a.base64PubKey2048,
+	)
+	decodedData, err := gorsa.PublicDecrypt(data, publicKey)
+	if err != nil {
+		return "", err
+	}
+	return decodedData, nil
 }
 
 // EncryptToHex 加密并返回Hex

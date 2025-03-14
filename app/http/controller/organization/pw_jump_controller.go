@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/outreach_service"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 )
 
@@ -88,6 +89,22 @@ func (u *PwJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 		return
 	}
 	response.SuccessSimplify(ctx)
+}
+
+// ShowPwForManage 管理页: 显示密码
+func (u *PwJumpController) ShowPwForManage(ctx *gin.Context) {
+	agentId := u.getAgentIdFromGin(ctx)
+
+	rsaFact := openssl_encrypt.CreateRsaFactory()
+	pw, err := rsaFact.PriEncryptToHex(agentId)
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"pw": pw,
+	})
 }
 
 // AddForGlobal 全局策略: 添加

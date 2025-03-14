@@ -1689,6 +1689,8 @@ github.com/ugorji/go v1.2.7/go.mod h1:nF9osbDWLy6bDVv/Rtoh6QgnvNDpmCalQV5urGCCS6
 github.com/ugorji/go/codec v1.2.7/go.mod h1:WGN1fab3R1fzQlVQTkfxVtIBhWDRqOviHU95kRgeqEY=
 github.com/ugorji/go/codec v1.2.11 h1:BMaWp1Bb6fHwEtbplGBGJ498wD+LKlNSl25MjdZY4dU=
 github.com/ugorji/go/codec v1.2.11/go.mod h1:UNopzCgEMSXjBc6AOMqYvWC1ktqTAfzJZUZgYf6w6lg=
+github.com/wenzhenxi/gorsa v0.0.0-20230530123828-0320cce15d81 h1:mCWpbHxvTg/p9wIKzyR34b65g9p142HFpp6YtsyXTDw=
+github.com/wenzhenxi/gorsa v0.0.0-20230530123828-0320cce15d81/go.mod h1:nfhBTKji6rC8lrjyikx8NJ85JHg6ZQam0a9Je+2RVOg=
 github.com/wumansgy/goEncrypt v1.1.0 h1:Krr2FJL4GEsMTBvLfsnoTmgWb7rkGnL4siJ9K2cxMs0=
 github.com/wumansgy/goEncrypt v1.1.0/go.mod h1:dWgF7mi5Ujmt8V5EoyRqjH6XtZ8wmNQyT4u2uvH8Pyg=
 github.com/xdg-go/pbkdf2 v1.0.0 h1:Su7DPu48wXMwC3bs7MCNG+z4FhcyEuz5dlvchbq0B0c=
