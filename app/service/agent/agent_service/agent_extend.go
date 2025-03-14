@@ -222,7 +222,7 @@ func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) string {
 		return ""
 	}
 
-	if pw, err := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(model.PwJumpNewest); err != nil {
+	if pw, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(model.PwJumpNewest); err != nil {
 		return ""
 	} else {
 		return pw

@@ -92,10 +92,11 @@ func (u *PwJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 
 // ShowPwForManage 管理页: 显示密码
 func (u *PwJumpController) ShowPwForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
 	response.SuccessReturnData(ctx, gin.H{
-		"pw": agentId,
+		"pw": agent_service.CreateExtendFactory().GetPwJumpNewest(loginInfo.OrgId, agentId),
 	})
 }
 
