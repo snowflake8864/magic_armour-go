@@ -2,6 +2,7 @@ package agent_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_pw_jump"
@@ -235,6 +236,30 @@ func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, pw string) 
 	updates := make(map[string]interface{})
 	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(pw)
 	updates["pw_jump_newest"] = pw
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// GetIpJumpConfig 获取IP跳变
+func (crd *AgentExtend) GetIpJumpConfig(orgId int64, agentId string) (config enum_ip_jump.IpJumpConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_config")
+	if model != nil && !string_helper.IsEmpty(model.IpJumpConfig) {
+		_ = json_helper.ToStruct(model.IpJumpConfig, &config)
+	}
+
+	config.Format()
+	return config
+}
+
+// SetIpJumpConfig 设置IP跳变
+func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum_ip_jump.IpJumpConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["ip_jump_config"] = json_helper.Encode(config)
 
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil

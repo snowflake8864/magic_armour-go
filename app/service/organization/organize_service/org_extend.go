@@ -113,7 +113,7 @@ func (crd *OrgExtend) FormatPwJumpConfig(configJson string) (data enum_pw_jump.P
 }
 
 // FormatIpJumpConfig 格式化： IP跳变配置
-func (crd *OrgExtend) FormatIpJumpConfig(configJson string) (data enum_ip_jump.PwJumpConfig) {
+func (crd *OrgExtend) FormatIpJumpConfig(configJson string) (data enum_ip_jump.IpJumpConfig) {
 	err := json_helper.ToStruct(configJson, &data)
 	if err != nil {
 		data.Format()
@@ -200,7 +200,7 @@ func (crd *OrgExtend) SetPwJumpConfig(orgId int64, config enum_pw_jump.PwJumpCon
 }
 
 // SetIpJumpConfig 设置IP跳变
-func (crd *OrgExtend) SetIpJumpConfig(orgId int64, config enum_ip_jump.PwJumpConfig) error {
+func (crd *OrgExtend) SetIpJumpConfig(orgId int64, config enum_ip_jump.IpJumpConfig) error {
 	config.Format()
 	updates := make(map[string]interface{})
 	updates["ip_jump_config"] = json_helper.Encode(config)

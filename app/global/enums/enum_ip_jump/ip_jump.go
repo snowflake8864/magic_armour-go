@@ -26,8 +26,8 @@ var WebMapInt = map[string][]int{
 	},
 }
 
-// PwJumpConfig 密码跳变
-type PwJumpConfig struct {
+// IpJumpConfig 密码跳变
+type IpJumpConfig struct {
 	Switch  int    `json:"switch"`
 	Cycle   int    `json:"cycle"`   //
 	Ip      string `json:"ip"`      //
@@ -35,7 +35,7 @@ type PwJumpConfig struct {
 	Gateway string `json:"gateway"` //
 }
 
-func (c *PwJumpConfig) Format() {
+func (c *IpJumpConfig) Format() {
 	if c.Switch == 0 {
 		c.Switch = enums.SwitchOff
 	}
