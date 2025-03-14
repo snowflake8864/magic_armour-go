@@ -117,6 +117,31 @@ func (u *PwJumpController) GetForAgentConfig(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, config)
 }
 
+func (u *PwJumpController) getConfig(ctx *gin.Context) enum_pw_jump.PwJumpConfig {
+	config := enum_pw_jump.PwJumpConfig{
+		Switch:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
+		Combine: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "combine")),
+		Size:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "size")),
+	}
+	config.Format()
+	return config
+}
+
+// SaveForAgentConfig 终端策略: 保存
+func (u *PwJumpController) SaveForAgentConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := agent_service.CreateExtendFactory().SetPwJumpConfig(loginInfo.OrgId, agentId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
+
 // AddForGlobal 全局策略: 添加
 func (u *PwJumpController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)

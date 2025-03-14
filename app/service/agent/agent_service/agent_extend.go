@@ -114,6 +114,19 @@ func (crd *AgentExtend) GetPwJumpConfig(orgId int64, agentId string) (config enu
 	return config
 }
 
+// SetPwJumpConfig 设置密码跳变
+func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum_pw_jump.PwJumpConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["pw_jump_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
 // SetPlugOfPort 设置封堵配置： 端口虚开
 func (crd *AgentExtend) SetPlugOfPort(orgId int64, agentId string, config enum_plug.PlugPortConfig) error {
 	config.Format()
