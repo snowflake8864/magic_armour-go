@@ -10,11 +10,9 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
-	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/agent/outreach_service"
 	"goskeleton/app/service/agent/task_service"
-	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -154,40 +152,49 @@ func (u *PwJumpController) ExecuteForAgentConfig(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// AddForGlobal 全局策略: 添加
-func (u *PwJumpController) AddForGlobal(ctx *gin.Context) {
+// GetForGlobalConfig 全局策略: 获取
+func (u *PwJumpController) GetForGlobalConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := outreach_models.GlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
-		CreateId:   loginInfo.UserId,
-		CreateName: loginInfo.Username,
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
-	if err := outreach_service.CreateGlobalFactory().Add(&param); err != nil {
+
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	model := OrgExtendFact.GetItemByOrg(loginInfo.OrgId)
+	response.SuccessReturnData(ctx, OrgExtendFact.FormatPwJumpConfig(model.PwJumpConfig))
+}
+
+// SaveForGlobalConfig 全局策略: 保存
+func (u *PwJumpController) SaveForGlobalConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := organize_service.CreateOrgExtendFactory().SetPwJumpConfig(loginInfo.OrgId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
 }
 
-// EditForGlobal 全局策略: 编辑
-func (u *PwJumpController) EditForGlobal(ctx *gin.Context) {
+// ExecuteForGlobalConfig 全局策略: 执行
+func (u *PwJumpController) ExecuteForGlobalConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	param := outreach_models.GlobalModel{
-		OrgId:      loginInfo.OrgId,
-		Id:         string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
-		Ip:         ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Title:      ctx.GetString(consts.ValidatorPrefixOrg + "title"),
-		UpdateId:   loginInfo.UserId,
-		UpdateName: loginInfo.Username,
-	}
 
-	if err := outreach_service.CreateGlobalFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+	config := u.getConfig(ctx)
+
+	if err := organize_service.CreateOrgExtendFactory().SetPwJumpConfig(loginInfo.OrgId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+	agentFact := agent_models.CreateAgentFactory()
+	pwJumpSwitch := enums.IsYes
+	conditions := agent_models.SearchConditions{
+		OrgId:        loginInfo.OrgId,
+		PwJumpSwitch: &pwJumpSwitch,
+	}
+
+	// 下发任务
+	if agentIds := agentFact.GetIdsByByConditions(conditions); len(agentIds) > 0 {
+		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypePwJump, "全局策略")
+	}
+
 	response.SuccessSimplify(ctx)
 }

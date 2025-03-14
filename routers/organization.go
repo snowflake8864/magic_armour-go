@@ -666,7 +666,7 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					globalConfig := pwJump.Group("globalConfig/")
 					{
-						globalConfig.POST("get", (&organization.PwJumpController{}).Cycles)
+						globalConfig.POST("get", (&organization.PwJumpController{}).GetForGlobalConfig)
 						globalConfig.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpGlobalConfigSave"))
 						globalConfig.POST("execute", validatorFactory.Create(consts.ValidatorPrefixOrg+"PwJumpGlobalConfigExecute"))
 					}
