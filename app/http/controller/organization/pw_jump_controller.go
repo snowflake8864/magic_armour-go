@@ -6,12 +6,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_pw_jump"
+	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/outreach_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -139,6 +141,24 @@ func (u *PwJumpController) SaveForAgentConfig(ctx *gin.Context) {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+	response.SuccessSimplify(ctx)
+}
+
+// ExecuteForAgentConfig 终端策略: 执行
+func (u *PwJumpController) ExecuteForAgentConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := u.getConfig(ctx)
+
+	if err := agent_service.CreateExtendFactory().SetPwJumpConfig(loginInfo.OrgId, agentId, config); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	// 下发任务
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePwJump, "终端策略")
+
 	response.SuccessSimplify(ctx)
 }
 
