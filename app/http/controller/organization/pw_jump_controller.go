@@ -107,6 +107,16 @@ func (u *PwJumpController) ShowPwForManage(ctx *gin.Context) {
 	})
 }
 
+// GetForAgentConfig 终端策略: 获取
+func (u *PwJumpController) GetForAgentConfig(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	config := agent_service.CreateExtendFactory().GetPwJumpConfig(loginInfo.OrgId, agentId)
+
+	response.SuccessReturnData(ctx, config)
+}
+
 // AddForGlobal 全局策略: 添加
 func (u *PwJumpController) AddForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)

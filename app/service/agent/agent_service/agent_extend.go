@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -96,6 +97,17 @@ func (crd *AgentExtend) GetPlugOfLogin(orgId int64, agentId string) (config enum
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "plug_login_config")
 	if model != nil && !string_helper.IsEmpty(model.PlugLoginConfig) {
 		_ = json_helper.ToStruct(model.PlugLoginConfig, &config)
+	}
+
+	config.Format()
+	return config
+}
+
+// GetPwJumpConfig 获取密码跳变
+func (crd *AgentExtend) GetPwJumpConfig(orgId int64, agentId string) (config enum_pw_jump.PwJumpConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_config")
+	if model != nil && !string_helper.IsEmpty(model.PwJumpConfig) {
+		_ = json_helper.ToStruct(model.PwJumpConfig, &config)
 	}
 
 	config.Format()
