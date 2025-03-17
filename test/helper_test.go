@@ -80,3 +80,25 @@ func TestPwJumpConfig(t *testing.T) {
 	fmt.Println("pw15: ", config.GeneratePw())
 
 }
+
+func TestIPv4Range(t *testing.T) {
+	testCases := []string{
+		"192.168.1.5/24",
+		"192.168.1.5/16",
+		"10.0.0.1/255.255.255.0",
+		"172.16.0.5 255.255.0.0",
+		"203.0.113.17/31",
+		"192.0.2.3/32",
+	}
+	for _, tc := range testCases {
+		fmt.Println("Testing:", tc)
+		iPv4Range := ip_helper.IPv4Range{IpWithMask: tc}
+		err, networkIp, broadcastIp, firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber := iPv4Range.CalcRange()
+		if err != nil {
+			fmt.Println("Error:", err)
+			continue
+		}
+		fmt.Printf("NetworkIP: %-15s Broadcast: %-15s FirstIP: %-15s LastIP: %s FirstNumber: %-15d LastNumber: %-15d\n\n",
+			networkIp, broadcastIp, firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber)
+	}
+}

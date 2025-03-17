@@ -42,52 +42,57 @@ func IPv4ToUint32(ipStr string) (uint32, error) {
 	return binary.BigEndian.Uint32(ipv4), nil
 }
 
-// IPv4Range IPv4地址范围
-type IPv4Range struct {
-	ipStr   string
-	maskBit int
+// Uint32ToIPv4 将无符号32位整数转换为IPv4地址字符串
+func Uint32ToIPv4(ipNum uint32) string {
+	// 创建一个4字节的切片来存储IP地址的各个部分
+	ipBytes := make([]byte, 4)
+	// 使用BigEndian将uint32数值写入切片中
+	binary.BigEndian.PutUint32(ipBytes, ipNum)
+	// 将切片转换为net.IP类型，并转换为字符串格式
+	ip := net.IP(ipBytes).To4().String()
+	return ip
 }
 
-func (s *IPv4Range) getIpWithMask() string {
-	return fmt.Sprintf("%s/%d", s.ipStr, s.maskBit)
+// IPv4Range IPv4地址范围
+type IPv4Range struct {
+	IpWithMask string //支持192.168.1.5/24 10.0.0.1/255.255.255.0
 }
 
 // CalcRange 计算IPv4地址范围，包括网络地址、广播地址、第一可用地址、最后可用地址
-func (s *IPv4Range) CalcRange() (err error, networkIP, broadcastIP, firstUsableIp, lastUsableIp string) {
-	ipWithMask := s.getIpWithMask()
+func (s *IPv4Range) CalcRange() (err error, networkIp, broadcastIp, firstUsableIp, lastUsableIp string, firstUsableNumber, lastUsableNumber uint32) {
 	// 尝试解析为CIDR格式
-	ip, ipNet, err := net.ParseCIDR(ipWithMask)
+	ip, ipNet, err := net.ParseCIDR(s.IpWithMask)
 	if err == nil {
 		if ip.To4() == nil {
-			return fmt.Errorf("only IPv4 is supported"), "", "", "", ""
+			return fmt.Errorf("only IPv4 is supported"), "", "", "", "", 0, 0
 		}
 		mask := ipNet.Mask
 		networkAddr := ipNet.IP.To4()
 		broadcastAddr := s.calcBroadcast(networkAddr, mask)
 
 		ones, _ := mask.Size()
-		first, last := s.calcUsableIPs(networkAddr, broadcastAddr, ones)
+		firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber = s.calcUsableIPs(networkAddr, broadcastAddr, ones)
 
-		return nil, networkAddr.String(), broadcastAddr.String(), first, last
+		return nil, networkAddr.String(), broadcastAddr.String(), firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber
 	}
 
 	// 尝试其他格式（如"192.168.1.0 255.255.255.0"）
-	parts := strings.FieldsFunc(ipWithMask, func(r rune) bool { return r == '/' || r == ' ' })
+	parts := strings.FieldsFunc(s.IpWithMask, func(r rune) bool { return r == '/' || r == ' ' })
 	if len(parts) != 2 {
-		return fmt.Errorf("invalid IP/mask format"), "", "", "", ""
+		return fmt.Errorf("invalid IP/mask format"), "", "", "", "", 0, 0
 	}
 
 	// 解析IP
 	ip = net.ParseIP(parts[0])
 	if ip == nil || ip.To4() == nil {
-		return fmt.Errorf("invalid IPv4 address"), "", "", "", ""
+		return fmt.Errorf("invalid IPv4 address"), "", "", "", "", 0, 0
 	}
 	ip = ip.To4()
 
 	// 解析掩码
 	mask, err := s.parseMask(parts[1])
 	if err != nil {
-		return err, "", "", "", ""
+		return err, "", "", "", "", 0, 0
 	}
 
 	// 计算网络地址和广播地址
@@ -96,9 +101,9 @@ func (s *IPv4Range) CalcRange() (err error, networkIP, broadcastIP, firstUsableI
 
 	// 计算可用地址
 	ones, _ := mask.Size()
-	first, last := s.calcUsableIPs(networkAddr, broadcastAddr, ones)
+	firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber = s.calcUsableIPs(networkAddr, broadcastAddr, ones)
 
-	return nil, networkAddr.String(), broadcastAddr.String(), first, last
+	return nil, networkAddr.String(), broadcastAddr.String(), firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber
 }
 
 // 解析子网掩码（支持CIDR数字或点分十进制）
@@ -142,19 +147,22 @@ func (s *IPv4Range) calcBroadcast(network net.IP, mask net.IPMask) net.IP {
 }
 
 // 计算可用IP范围
-func (s *IPv4Range) calcUsableIPs(network, broadcast net.IP, maskBits int) (string, string) {
+func (s *IPv4Range) calcUsableIPs(network, broadcast net.IP, maskBits int) (string, string, uint32, uint32) {
 	switch {
 	case maskBits == 32: // 单个地址
-		return "", ""
+		return "", "", 0, 0
 	case maskBits == 31: // RFC 3021特殊处理
-		return network.String(), s.addIP(network, 1).String()
+		last := s.addIP(network, 1)
+		return network.String(), last.String(), s.ipToUint(network), s.ipToUint(last)
 	default: // 常规情况
 		first := s.addIP(network, 1)
 		last := s.subIP(broadcast, 1)
-		if s.ipToUint(first) > s.ipToUint(last) {
-			return "", ""
+		firstNum := s.ipToUint(first)
+		lastNum := s.ipToUint(last)
+		if firstNum > lastNum {
+			return "", "", 0, 0
 		}
-		return first.String(), last.String()
+		return first.String(), last.String(), firstNum, lastNum
 	}
 }
 

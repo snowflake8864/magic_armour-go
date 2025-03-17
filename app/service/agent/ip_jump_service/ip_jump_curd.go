@@ -1,6 +1,8 @@
 package ip_jump_service
 
 import (
+	"errors"
+	"fmt"
 	"goskeleton/app/http/validator/organization/ip_jump"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -41,6 +43,7 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	} else if agentSize < crd.poolInitMax {
 		crd.poolInitMax = agentSize
 	}
+	fmt.Println("poolInitMax: ", crd.poolInitMax)
 	//存在ip集合
 	existIps := make(map[string]struct{})
 	if agentSize > 0 {
@@ -48,14 +51,35 @@ func (crd *IpJumpCurd) InitIpPool() error {
 			existIps[agentModel.NetIp] = struct{}{}
 		}
 	}
+	fmt.Println("existIps: ", existIps)
 
 	//根据策略生成IP池
-	var ips []string
-	ip_helper.IsIPInRange()
+	var ipList []string
+	iPv4Range := ip_helper.IPv4Range{IpWithMask: fmt.Sprintf("%s/%d", crd.jumpConfig.Ip, crd.jumpConfig.Mask)}
+	if err, _, _, _, _, firstUsableNumber, lastUsableNumber := iPv4Range.CalcRange(); err != nil {
+		return err
+	} else {
+		newNumber := firstUsableNumber
+		for newNumber <= lastUsableNumber {
+			//转成ip
+			newIp := ip_helper.Uint32ToIPv4(newNumber)
+			if _, isOK := existIps[newIp]; !isOK {
+				ipList = append(ipList, newIp)
+				//IP池到达预期数目
+				if len(ipList) >= crd.poolInitMax {
+					break
+				}
+			}
+		}
+	}
 
 	//先删除
 	cacheKey := crd.keyByIpPool()
 	_, _ = crd.redisClient.Del(cacheKey)
+	//在缓存
+	if isOK, err := crd.redisClient.RPush(cacheKey, ipList); err != nil || !isOK {
+		return errors.New("生成IP池失败")
+	}
 
 	return nil
 }
