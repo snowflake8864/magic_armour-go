@@ -23,14 +23,16 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypePwJump}, ctx.ClientIP())
 
 	config := enum_pw_jump.PwJumpConfig{}
+	scheme := 1
 	//优先终端策略
 	if config = agent_service.CreateExtendFactory().GetPwJumpConfig(loginInfo.OrgId, loginInfo.AgentId); config.Switch == enums.SwitchOff {
 		OrgExtendFact := organize_service.CreateOrgExtendFactory()
-		config = OrgExtendFact.FormatPwJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).IpJumpConfig)
+		config = OrgExtendFact.FormatPwJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).PwJumpConfig)
 		if config.Switch == enums.SwitchOff {
 			response.FailSimplify(ctx, "Switch Off")
 			return
 		}
+		scheme = 2
 	}
 
 	pw := config.GeneratePw()
@@ -41,7 +43,10 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, gin.H{
-		"pw": pw,
+		"pw":      pw,
+		"scheme":  scheme,
+		"combine": config.Combine,
+		"size":    config.Size,
 	})
 }
 

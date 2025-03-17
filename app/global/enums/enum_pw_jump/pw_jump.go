@@ -91,7 +91,7 @@ func (c *PwJumpConfig) GeneratePw() string {
 		password = append(password, tmp[rand.Intn(len(tmp))])
 	}
 	if (c.Combine & CombineSpecialChar) > 0 {
-		tmp := []rune("!@#$%^&*()_+-=[]{}|;:',.<>/?")
+		tmp := []rune("!@#$%^&*()_+")
 		charSets = append(charSets, tmp)
 		//确保生成一个选中密码
 		password = append(password, tmp[rand.Intn(len(tmp))])
