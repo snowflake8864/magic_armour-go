@@ -244,6 +244,11 @@ func (m *baseAgent) ColumnSimplify() string {
 	return "org_id, id, dept_id"
 }
 
+// ColumnIp 字段: IP相关
+func (m *baseAgent) ColumnIp() string {
+	return "org_id, id, dept_id, agent_ip, net_ip"
+}
+
 // ColumnGrant 字段: 授权
 func (m *baseAgent) ColumnGrant() string {
 	column := "org_id, id,"
