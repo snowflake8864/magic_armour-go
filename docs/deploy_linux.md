@@ -89,7 +89,7 @@ firewall-cmd --complete-reload
 firewall-cmd --syncList-ports   
 ```
 
-#### 通过chrome浏览器访问 ip:3000  登录，一般都能成功登陆，默认账号密码：admin/admin
+#### 通过chrome浏览器访问 needle:3000  登录，一般都能成功登陆，默认账号密码：admin/admin
 
 ##### 如果您登陆遇到了如下错误，那么请继续向下看：
 ![登录报错](https://www.ginskeleton.com/images/login_err.jpg)    

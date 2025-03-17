@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/http/validator/organization/ip_jump"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/ip_helper"
 	"goskeleton/app/utils/redis_factory"
 )
 
@@ -34,11 +35,27 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	//获取终端列表
 	agentFact := agent_models.CreateAgentFactory()
 	agentModels := agentFact.GetItemsByOrg(crd.orgId, agentFact.ColumnIp())
-	if agentSize := len(agentModels); agentSize == 0 {
-		crd.poolInitMax = 8
+	agentSize := len(agentModels)
+	if agentSize == 0 {
+		crd.poolInitMax = 32
 	} else if agentSize < crd.poolInitMax {
 		crd.poolInitMax = agentSize
 	}
+	//存在ip集合
+	existIps := make(map[string]struct{})
+	if agentSize > 0 {
+		for _, agentModel := range agentModels {
+			existIps[agentModel.NetIp] = struct{}{}
+		}
+	}
+
+	//根据策略生成IP池
+	var ips []string
+	ip_helper.IsIPInRange()
+
+	//先删除
+	cacheKey := crd.keyByIpPool()
+	_, _ = crd.redisClient.Del(cacheKey)
 
 	return nil
 }
