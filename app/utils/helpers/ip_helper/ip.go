@@ -44,10 +44,17 @@ func IPv4ToUint32(ipStr string) (uint32, error) {
 
 // IPv4Range IPv4地址范围
 type IPv4Range struct {
+	ipStr   string
+	maskBit int
+}
+
+func (s *IPv4Range) getIpWithMask() string {
+	return fmt.Sprintf("%s/%d", s.ipStr, s.maskBit)
 }
 
 // CalcRange 计算IPv4地址范围，包括网络地址、广播地址、第一可用地址、最后可用地址
-func (s *IPv4Range) CalcRange(ipWithMask string) (err error, networkIP, broadcastIP, firstUsableIp, lastUsableIp string) {
+func (s *IPv4Range) CalcRange() (err error, networkIP, broadcastIP, firstUsableIp, lastUsableIp string) {
+	ipWithMask := s.getIpWithMask()
 	// 尝试解析为CIDR格式
 	ip, ipNet, err := net.ParseCIDR(ipWithMask)
 	if err == nil {
