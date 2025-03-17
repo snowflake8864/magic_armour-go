@@ -43,7 +43,6 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	} else if agentSize < crd.poolInitMax {
 		crd.poolInitMax = agentSize
 	}
-	fmt.Println("poolInitMax: ", crd.poolInitMax)
 	//存在ip集合
 	existIps := map[string]struct{}{
 		crd.jumpConfig.Gateway: {},
@@ -60,10 +59,9 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	if err, _, _, _, _, firstUsableNumber, lastUsableNumber := iPv4Range.CalcRange(); err != nil {
 		return err
 	} else {
-		newNumber := firstUsableNumber
-		for newNumber <= lastUsableNumber {
+		for i := firstUsableNumber; i <= lastUsableNumber; i++ {
 			//转成ip
-			newIp := ip_helper.Uint32ToIPv4(newNumber)
+			newIp := ip_helper.Uint32ToIPv4(i)
 
 			if _, isOK := existIps[newIp]; !isOK {
 				ipList = append(ipList, newIp)
