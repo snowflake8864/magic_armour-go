@@ -3,14 +3,14 @@ package ip_jump_service
 import (
 	"errors"
 	"fmt"
-	"goskeleton/app/http/validator/organization/ip_jump"
+	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
 	"goskeleton/app/utils/redis_factory"
 )
 
-func CreatCurdFactory(orgId int64, jumpConfig *ip_jump.GlobalConfig) *IpJumpCurd {
+func CreatCurdFactory(orgId int64, jumpConfig *enum_ip_jump.IpJumpConfig) *IpJumpCurd {
 	return &IpJumpCurd{
 		redisClient:  redis_factory.GetOneRedisClient(),
 		poolInitMax:  256,
@@ -22,9 +22,9 @@ func CreatCurdFactory(orgId int64, jumpConfig *ip_jump.GlobalConfig) *IpJumpCurd
 
 type IpJumpCurd struct {
 	redisClient  *redis_factory.RedisClient
-	poolInitMax  int                   //ip次初始化最大长度
-	ipPoolPrefix string                // IP次前缀
-	jumpConfig   *ip_jump.GlobalConfig //跳变配置
+	poolInitMax  int                        //ip次初始化最大长度
+	ipPoolPrefix string                     // IP次前缀
+	jumpConfig   *enum_ip_jump.IpJumpConfig //跳变配置
 	orgId        int64
 }
 
@@ -45,13 +45,14 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	}
 	fmt.Println("poolInitMax: ", crd.poolInitMax)
 	//存在ip集合
-	existIps := make(map[string]struct{})
+	existIps := map[string]struct{}{
+		crd.jumpConfig.Gateway: {},
+	}
 	if agentSize > 0 {
 		for _, agentModel := range agentModels {
 			existIps[agentModel.NetIp] = struct{}{}
 		}
 	}
-	fmt.Println("existIps: ", existIps)
 
 	//根据策略生成IP池
 	var ipList []string
@@ -63,6 +64,7 @@ func (crd *IpJumpCurd) InitIpPool() error {
 		for newNumber <= lastUsableNumber {
 			//转成ip
 			newIp := ip_helper.Uint32ToIPv4(newNumber)
+
 			if _, isOK := existIps[newIp]; !isOK {
 				ipList = append(ipList, newIp)
 				//IP池到达预期数目

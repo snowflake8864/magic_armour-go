@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/ip_jump_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/response"
@@ -148,33 +149,44 @@ func (u *IpJumpController) GetForGlobalConfig(ctx *gin.Context) {
 // SaveForGlobalConfig 全局策略: 保存
 func (u *IpJumpController) SaveForGlobalConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-
 	config := u.getConfig(ctx)
 
 	if err := organize_service.CreateOrgExtendFactory().SetIpJumpConfig(loginInfo.OrgId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+
+	//生成IP跳变池
+	if err := ip_jump_service.CreatCurdFactory(loginInfo.OrgId, &config).InitIpPool(); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
 
 // ExecuteForGlobalConfig 全局策略: 执行
 func (u *IpJumpController) ExecuteForGlobalConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-
 	config := u.getConfig(ctx)
 
 	if err := organize_service.CreateOrgExtendFactory().SetIpJumpConfig(loginInfo.OrgId, config); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
+
+	//生成IP跳变池
+	if err := ip_jump_service.CreatCurdFactory(loginInfo.OrgId, &config).InitIpPool(); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
 	agentFact := agent_models.CreateAgentFactory()
 	ipJumpSwitch := enums.IsYes
 	conditions := agent_models.SearchConditions{
 		OrgId:        loginInfo.OrgId,
 		IpJumpSwitch: &ipJumpSwitch,
 	}
-
 	// 下发任务
 	if agentIds := agentFact.GetIdsByByConditions(conditions); len(agentIds) > 0 {
 		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypeIpJump, "全局策略")
