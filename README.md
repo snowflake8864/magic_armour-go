@@ -42,6 +42,7 @@
 
 - /#/menuConfiguration
 - /#/dataDictionary
+- /#/agentManagement/purchaseAuthorization?orgId=
 
 ### 注意事项
 
