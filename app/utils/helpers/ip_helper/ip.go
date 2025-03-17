@@ -1,25 +1,190 @@
 package ip_helper
 
 import (
+	"encoding/binary"
+	"fmt"
 	"net"
+	"strconv"
 	"strings"
 )
 
-// IsIPInRange 检查IP地址是否在IP段中(支持iptv6)
-func IsIPInRange(ip string, ipWithMask string) bool {
+// IsIPInRange 检查needle否在haystack中(支持ipv6)
+func IsIPInRange(needle string, haystack string) bool {
 
-	if !strings.Contains(ipWithMask, "/") {
-		if ip == ipWithMask {
+	if !strings.Contains(haystack, "/") {
+		if needle == haystack {
 			return true
 		} else {
 			return false
 		}
 	}
 
-	if _, ipNet, err := net.ParseCIDR(ipWithMask); err != nil {
+	if _, ipNet, err := net.ParseCIDR(haystack); err != nil {
 		return false
 	} else {
-		return ipNet.Contains(net.ParseIP(ip))
+		return ipNet.Contains(net.ParseIP(needle))
 	}
 
+}
+
+// IPv4ToUint32 将IPv4地址转换为无符号32位整数
+func IPv4ToUint32(ipStr string) (uint32, error) {
+	ip := net.ParseIP(ipStr)
+	if ip == nil {
+		return 0, fmt.Errorf("invalid IP address: %s", ipStr)
+	}
+
+	ipv4 := ip.To4()
+	if ipv4 == nil {
+		return 0, fmt.Errorf("not an IPv4 address: %s", ipStr)
+	}
+
+	return binary.BigEndian.Uint32(ipv4), nil
+}
+
+// Uint32ToIPv4 将无符号32位整数转换为IPv4地址字符串
+func Uint32ToIPv4(ipNum uint32) string {
+	// 创建一个4字节的切片来存储IP地址的各个部分
+	ipBytes := make([]byte, 4)
+	// 使用BigEndian将uint32数值写入切片中
+	binary.BigEndian.PutUint32(ipBytes, ipNum)
+	// 将切片转换为net.IP类型，并转换为字符串格式
+	ip := net.IP(ipBytes).To4().String()
+	return ip
+}
+
+// IPv4Range IPv4地址范围
+type IPv4Range struct {
+	IpWithMask string //支持192.168.1.5/24 10.0.0.1/255.255.255.0
+}
+
+// CalcRange 计算IPv4地址范围，包括网络地址、广播地址、第一可用地址、最后可用地址
+func (s *IPv4Range) CalcRange() (err error, networkIp, broadcastIp, firstUsableIp, lastUsableIp string, firstUsableNumber, lastUsableNumber uint32) {
+	// 尝试解析为CIDR格式
+	ip, ipNet, err := net.ParseCIDR(s.IpWithMask)
+	if err == nil {
+		if ip.To4() == nil {
+			return fmt.Errorf("only IPv4 is supported"), "", "", "", "", 0, 0
+		}
+		mask := ipNet.Mask
+		networkAddr := ipNet.IP.To4()
+		broadcastAddr := s.calcBroadcast(networkAddr, mask)
+
+		ones, _ := mask.Size()
+		firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber = s.calcUsableIPs(networkAddr, broadcastAddr, ones)
+
+		return nil, networkAddr.String(), broadcastAddr.String(), firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber
+	}
+
+	// 尝试其他格式（如"192.168.1.0 255.255.255.0"）
+	parts := strings.FieldsFunc(s.IpWithMask, func(r rune) bool { return r == '/' || r == ' ' })
+	if len(parts) != 2 {
+		return fmt.Errorf("invalid IP/mask format"), "", "", "", "", 0, 0
+	}
+
+	// 解析IP
+	ip = net.ParseIP(parts[0])
+	if ip == nil || ip.To4() == nil {
+		return fmt.Errorf("invalid IPv4 address"), "", "", "", "", 0, 0
+	}
+	ip = ip.To4()
+
+	// 解析掩码
+	mask, err := s.parseMask(parts[1])
+	if err != nil {
+		return err, "", "", "", "", 0, 0
+	}
+
+	// 计算网络地址和广播地址
+	networkAddr := ip.Mask(mask).To4()
+	broadcastAddr := s.calcBroadcast(networkAddr, mask)
+
+	// 计算可用地址
+	ones, _ := mask.Size()
+	firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber = s.calcUsableIPs(networkAddr, broadcastAddr, ones)
+
+	return nil, networkAddr.String(), broadcastAddr.String(), firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber
+}
+
+// 解析子网掩码（支持CIDR数字或点分十进制）
+func (s *IPv4Range) parseMask(maskStr string) (net.IPMask, error) {
+	// 尝试解析为CIDR数字
+	if cidr, err := strconv.Atoi(maskStr); err == nil {
+		if cidr < 0 || cidr > 32 {
+			return nil, fmt.Errorf("invalid CIDR prefix")
+		}
+		mask := net.CIDRMask(cidr, 32)
+		if ones, _ := mask.Size(); ones != cidr {
+			return nil, fmt.Errorf("invalid mask")
+		}
+		return mask, nil
+	}
+
+	// 尝试解析为点分十进制
+	maskIP := net.ParseIP(maskStr)
+	if maskIP == nil {
+		return nil, fmt.Errorf("invalid mask format")
+	}
+	maskIP = maskIP.To4()
+	if maskIP == nil {
+		return nil, fmt.Errorf("invalid IPv4 mask")
+	}
+
+	mask := net.IPv4Mask(maskIP[0], maskIP[1], maskIP[2], maskIP[3])
+	if ones, bits := mask.Size(); bits != 32 || ones == 0 {
+		return nil, fmt.Errorf("non-contiguous mask")
+	}
+	return mask, nil
+}
+
+// 计算广播地址
+func (s *IPv4Range) calcBroadcast(network net.IP, mask net.IPMask) net.IP {
+	broadcast := make(net.IP, len(network))
+	for i := range network {
+		broadcast[i] = network[i] | ^mask[i]
+	}
+	return broadcast
+}
+
+// 计算可用IP范围
+func (s *IPv4Range) calcUsableIPs(network, broadcast net.IP, maskBits int) (string, string, uint32, uint32) {
+	switch {
+	case maskBits == 32: // 单个地址
+		return "", "", 0, 0
+	case maskBits == 31: // RFC 3021特殊处理
+		last := s.addIP(network, 1)
+		return network.String(), last.String(), s.ipToUint(network), s.ipToUint(last)
+	default: // 常规情况
+		first := s.addIP(network, 1)
+		last := s.subIP(broadcast, 1)
+		firstNum := s.ipToUint(first)
+		lastNum := s.ipToUint(last)
+		if firstNum > lastNum {
+			return "", "", 0, 0
+		}
+		return first.String(), last.String(), firstNum, lastNum
+	}
+}
+
+// IP地址转换辅助函数
+func (s *IPv4Range) ipToUint(ip net.IP) uint32 {
+	ip = ip.To4()
+	return uint32(ip[0])<<24 | uint32(ip[1])<<16 | uint32(ip[2])<<8 | uint32(ip[3])
+}
+
+func (s *IPv4Range) uintToIP(n uint32) net.IP {
+	return net.IPv4(
+		byte(n>>24),
+		byte(n>>16),
+		byte(n>>8),
+		byte(n),
+	)
+}
+
+func (s *IPv4Range) addIP(ip net.IP, inc uint32) net.IP {
+	return s.uintToIP(s.ipToUint(ip) + inc)
+}
+
+func (s *IPv4Range) subIP(ip net.IP, dec uint32) net.IP {
+	return s.uintToIP(s.ipToUint(ip) - dec)
 }
