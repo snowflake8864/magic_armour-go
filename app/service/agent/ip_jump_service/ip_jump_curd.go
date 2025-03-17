@@ -13,7 +13,6 @@ import (
 func CreatCurdFactory(orgId int64, jumpConfig *enum_ip_jump.IpJumpConfig) *IpJumpCurd {
 	return &IpJumpCurd{
 		redisClient:  redis_factory.GetOneRedisClient(),
-		poolInitMax:  256,
 		ipPoolPrefix: "ip_jump_",
 		jumpConfig:   jumpConfig,
 		orgId:        orgId,
@@ -22,7 +21,6 @@ func CreatCurdFactory(orgId int64, jumpConfig *enum_ip_jump.IpJumpConfig) *IpJum
 
 type IpJumpCurd struct {
 	redisClient  *redis_factory.RedisClient
-	poolInitMax  int                        //ip次初始化最大长度
 	ipPoolPrefix string                     // IP次前缀
 	jumpConfig   *enum_ip_jump.IpJumpConfig //跳变配置
 	orgId        int64
@@ -38,10 +36,13 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	agentFact := agent_models.CreateAgentFactory()
 	agentModels := agentFact.GetItemsByOrg(crd.orgId, agentFact.ColumnIp())
 	agentSize := len(agentModels)
+	poolInitSize := 0
 	if agentSize == 0 {
-		crd.poolInitMax = 32
-	} else if agentSize < crd.poolInitMax {
-		crd.poolInitMax = agentSize
+		poolInitSize = 32
+	} else if agentSize < 256 {
+		poolInitSize = agentSize * 2
+	} else {
+		poolInitSize = agentSize + 256
 	}
 	//存在ip集合
 	existIps := map[string]struct{}{
@@ -66,7 +67,7 @@ func (crd *IpJumpCurd) InitIpPool() error {
 			if _, isOK := existIps[newIp]; !isOK {
 				ipList = append(ipList, newIp)
 				//IP池到达预期数目
-				if len(ipList) >= crd.poolInitMax {
+				if len(ipList) >= poolInitSize {
 					break
 				}
 			}
@@ -82,4 +83,15 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	}
 
 	return nil
+}
+
+// NewestIp 新IP
+func (crd *IpJumpCurd) NewestIp(netIp string) (error, string) {
+	cacheKey := crd.keyByIpPool()
+
+	ipStr, err := crd.redisClient.LPopToStr(cacheKey)
+	if err != nil {
+		return errors.New("get newest ip fail"), ""
+	}
+	return nil, ipStr
 }

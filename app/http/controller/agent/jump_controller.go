@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/ip_jump_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/response"
@@ -56,8 +57,23 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeIpJump}, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, gin.H{
-		"source_ip": ctx.ClientIP(),
-		"target_ip": ctx.ClientIP(),
-	})
+	//企业策略
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	config := OrgExtendFact.FormatIpJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).IpJumpConfig)
+	if config.Switch == enums.SwitchOff {
+		response.FailSimplify(ctx, "Switch Off")
+		return
+	}
+	sourceIp := ctx.ClientIP()
+	//生成IP跳变池
+	if err, targetIp := ip_jump_service.CreatCurdFactory(loginInfo.OrgId, &config).NewestIp(sourceIp); err != nil {
+		response.FailSimplify(ctx, "Switch Off")
+		return
+	} else {
+		response.SuccessReturnData(ctx, gin.H{
+			"source_ip": sourceIp,
+			"target_ip": targetIp,
+		})
+		return
+	}
 }
