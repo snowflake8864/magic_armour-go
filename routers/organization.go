@@ -699,6 +699,21 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 				} //ip跳变
 
+				//备份回滚
+				backup := vOrg.Group("backup")
+				{
+					manage := backup.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BackupManagePage"))
+					}
+					history := backup.Group("history/")
+					{
+						history.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"BackupHistoryPage"))
+						history.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"BackupHistoryAdd"))
+						history.POST("rollback", validatorFactory.Create(consts.ValidatorPrefixOrg+"BackupHistoryRollback"))
+					}
+				} //备份回滚
+
 				//告警
 				alarm := vOrg.Group("alarm/")
 				{

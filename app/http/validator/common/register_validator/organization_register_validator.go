@@ -8,6 +8,7 @@ import (
 	agentAccessLog3 "goskeleton/app/http/validator/organization/agent_access_log"
 	alarm3 "goskeleton/app/http/validator/organization/alarm"
 	auth3 "goskeleton/app/http/validator/organization/auth"
+	backup3 "goskeleton/app/http/validator/organization/backup"
 	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
 	department3 "goskeleton/app/http/validator/organization/department"
 	dll3 "goskeleton/app/http/validator/organization/dll"
@@ -630,6 +631,16 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, ipJump3.GlobalConfigSave{})
 	key = consts.ValidatorPrefixOrg + "IpJumpGlobalConfigExecute" //
 	containers.Set(key, ipJump3.GlobalConfigExecute{})
+
+	//备份回滚
+	key = consts.ValidatorPrefixOrg + "BackupManagePage" //
+	containers.Set(key, backup3.ManagePage{})
+	key = consts.ValidatorPrefixOrg + "BackupHistoryPage" //
+	containers.Set(key, backup3.HistoryPage{})
+	key = consts.ValidatorPrefixOrg + "BackupHistoryAdd" //
+	containers.Set(key, backup3.HistoryAdd{})
+	key = consts.ValidatorPrefixOrg + "BackupHistoryRollback" //
+	containers.Set(key, backup3.HistoryRollback{})
 
 	//告警
 	key = consts.ValidatorPrefixOrg + "AlarmManagePage"
