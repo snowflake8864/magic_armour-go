@@ -66,7 +66,7 @@ func (crd *BackupCurd) RollbackStart(param *backup_models.BackupModel) error {
 	if existModel == nil || string_helper.IsEmpty(existModel.Id) {
 		return errors.New("数据不存在")
 	}
-	if existModel.BackupStatus == enum_backup.BackupStatusSuccess {
+	if existModel.BackupStatus != enum_backup.BackupStatusSuccess {
 		return errors.New("备份没有成功， 不能进行回滚")
 	}
 	if existModel.RollbackStatus == enum_backup.RollbackStatusRunning {
