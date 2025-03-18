@@ -44,10 +44,9 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, gin.H{
-		"pw":      pw,
-		"scheme":  scheme,
-		"combine": config.Combine,
-		"size":    config.Size,
+		"pw":     pw,
+		"scheme": scheme,
+		"config": config,
 	})
 }
 
