@@ -30,13 +30,13 @@ type BackupModel struct {
 	BackupStatus    int    `json:"backup_status"`
 	BackupId        int64  `json:"backup_id"`
 	BackupName      string `json:"backup_name"`
-	BackupStartAt   string `json:"backup_start_at"`
-	BackupEndAt     string `json:"backup_end_at"`
+	BackupStartAt   string `json:"backup_start_at" gorm:"default:NULL"`
+	BackupEndAt     string `json:"backup_end_at" gorm:"default:NULL"`
 	RollbackStatus  int    `json:"rollback_status"`
 	RollbackId      int64  `json:"rollback_id"`
 	RollbackName    string `json:"rollback_name"`
-	RollbackStartAt string `json:"rollback_start_at"`
-	RollbackEndAt   string `json:"rollback_end_at"`
+	RollbackStartAt string `json:"rollback_start_at" gorm:"default:NULL"`
+	RollbackEndAt   string `json:"rollback_end_at"  gorm:"default:NULL"`
 	CreatedAt       string `json:"created_at"`
 }
 
