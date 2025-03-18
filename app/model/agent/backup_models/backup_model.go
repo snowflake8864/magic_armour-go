@@ -18,20 +18,26 @@ func CreateBackupFactory() *BackupModel {
 type BackupModel struct {
 	baseBackup
 	model.BaseModel
-	Id         string `json:"id" gorm:"primaryKey"`
-	OrgId      int64  `json:"org_id"`
-	AgentId    string `json:"agent_id"`
-	Name       string `json:"name"`
-	Intro      string `json:"intro"`
-	Type       string `json:"type"`
-	Status     int    `json:"status"`
-	IsOnline   int    `json:"is_online"`
-	Alias      string `json:"alias"`
-	Remark     string `json:"remark"`
-	CreatedAt  string `json:"created_at"`
-	UpdateId   int64  `json:"update_id"`
-	UpdateName string `json:"update_name"`
-	UpdatedAt  string `json:"updated_at"`
+	Id              string `json:"id" gorm:"primaryKey"`
+	OrgId           int64  `json:"org_id"`
+	AgentId         string `json:"agent_id"`
+	Name            string `json:"name"`
+	Remark          string `json:"remark"`
+	SourcePath      string `json:"source_path"`
+	StorageDir      string `json:"storage_dir"`
+	FileName        string `json:"file_name"`
+	FileSize        string `json:"file_size"`
+	BackupStatus    int    `json:"backup_status"`
+	BackupId        int64  `json:"backup_id"`
+	BackupName      string `json:"backup_name"`
+	BackupStartAt   string `json:"backup_start_at"`
+	BackupEndAt     string `json:"backup_end_at"`
+	RollbackStatus  int    `json:"rollback_status"`
+	RollbackId      int64  `json:"rollback_id"`
+	RollbackName    string `json:"rollback_name"`
+	RollbackStartAt string `json:"rollback_start_at"`
+	RollbackEndAt   string `json:"rollback_end_at"`
+	CreatedAt       string `json:"created_at"`
 }
 
 // 表名
