@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/agent_online_models"
+	"goskeleton/app/model/agent/backup_models"
 	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/model/agent/outreach_models"
@@ -247,7 +248,9 @@ func appendTableAndData() {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = agent_models.CreateExtendFactory().AlterTable(ver)
 		_ = organization_models.CreateExtendFactory().AlterTable(ver)
+		_ = backup_models.CreateBackupFactory().CreateTable()
 	}
+
 	//保存迁移数据
 	saveMigrations()
 }
