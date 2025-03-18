@@ -112,6 +112,8 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/trustDir/global/edit":        {ModuleAgent, "全局信任目录：编辑"},
 	"/v5/organization/trustDir/global/setSwitch":   {ModuleAgent, "全局信任目录：开关"},
 	"/v5/organization/trustDir/global/delete":      {ModuleAgent, "全局信任目录：删除"},
+	"/v5/organization/backup/history/add":          {ModuleAgent, "备份回滚：添加"},
+	"/v5/organization/backup/history/rollback":     {ModuleAgent, "备份回滚：回滚"},
 
 	"/v5/organization/process/manage/setSwitch":        {ModuleProcess, "管理页：开关"},
 	"/v5/organization/process/manage/setMode":          {ModuleProcess, "管理页：模式"},
