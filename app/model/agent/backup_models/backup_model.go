@@ -18,28 +18,28 @@ func CreateBackupFactory() *BackupModel {
 type BackupModel struct {
 	baseBackup
 	model.BaseModel
-	Id               string `json:"id" gorm:"primaryKey"`
-	OrgId            int64  `json:"org_id"`
-	AgentId          string `json:"agent_id"`
-	Name             string `json:"name"`
-	Remark           string `json:"remark"`
-	SourcePath       string `json:"source_path"`
-	StorageDir       string `json:"storage_dir"`
-	FileName         string `json:"file_name"`
-	FileSize         string `json:"file_size"`
-	BackupStatus     int    `json:"backup_status"`
-	BackupId         int64  `json:"backup_id"`
-	BackupName       string `json:"backup_name"`
-	BackupStartAt    string `json:"backup_start_at" gorm:"default:NULL"`
-	BackupEndAt      string `json:"backup_end_at" gorm:"default:NULL"`
-	BackupFailReason string `json:"backup_fail_reason"`
-	RollbackStatus   int    `json:"rollback_status"`
-	RollbackId       int64  `json:"rollback_id"`
-	RollbackName     string `json:"rollback_name"`
-	RollbackStartAt  string `json:"rollback_start_at" gorm:"default:NULL"`
-	RollbackEndAt    string `json:"rollback_end_at"  gorm:"default:NULL"`
-	RollbackReason   string `json:"rollback_fail_reason"`
-	CreatedAt        string `json:"created_at"`
+	Id                 string `json:"id" gorm:"primaryKey"`
+	OrgId              int64  `json:"org_id"`
+	AgentId            string `json:"agent_id"`
+	Name               string `json:"name"`
+	Remark             string `json:"remark"`
+	SourcePath         string `json:"source_path"`
+	StorageDir         string `json:"storage_dir"`
+	FileName           string `json:"file_name"`
+	FileSize           string `json:"file_size"`
+	BackupStatus       int    `json:"backup_status"`
+	BackupId           int64  `json:"backup_id"`
+	BackupName         string `json:"backup_name"`
+	BackupStartAt      string `json:"backup_start_at" gorm:"default:NULL"`
+	BackupEndAt        string `json:"backup_end_at" gorm:"default:NULL"`
+	BackupFailReason   string `json:"backup_fail_reason"`
+	RollbackStatus     int    `json:"rollback_status"`
+	RollbackId         int64  `json:"rollback_id"`
+	RollbackName       string `json:"rollback_name"`
+	RollbackStartAt    string `json:"rollback_start_at" gorm:"default:NULL"`
+	RollbackEndAt      string `json:"rollback_end_at"  gorm:"default:NULL"`
+	RollbackFailReason string `json:"rollback_fail_reason"`
+	CreatedAt          string `json:"created_at"`
 }
 
 // 表名
