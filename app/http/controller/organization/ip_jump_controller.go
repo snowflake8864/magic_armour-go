@@ -88,9 +88,16 @@ func (u *IpJumpController) GetForAgentConfig(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
-	config := agent_service.CreateExtendFactory().GetIpJumpConfig(loginInfo.OrgId, agentId)
+	agentConfig := agent_service.CreateExtendFactory().GetIpJumpConfig(loginInfo.OrgId, agentId)
 
-	response.SuccessReturnData(ctx, config)
+	OrgExtendFact := organize_service.CreateOrgExtendFactory()
+	globalConfig := OrgExtendFact.FormatIpJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).IpJumpConfig)
+
+	agentConfig.Ip = globalConfig.Ip
+	agentConfig.Mask = globalConfig.Mask
+	agentConfig.Gateway = globalConfig.Gateway
+
+	response.SuccessReturnData(ctx, agentConfig)
 }
 
 func (u *IpJumpController) getConfig(ctx *gin.Context) enum_ip_jump.IpJumpConfig {
