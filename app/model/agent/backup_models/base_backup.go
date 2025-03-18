@@ -7,11 +7,14 @@ import (
 )
 
 type SearchConditions struct {
-	OrgId          int64
-	AgentId        string
-	Id             string
-	BackupStatus   int
-	RollbackStatus int
+	OrgId            int64
+	AgentId          string
+	AgentIds         []string
+	Id               string
+	SourcePath       string
+	BackupStatus     int
+	BackupStatusList []int
+	RollbackStatus   int
 }
 
 // Calc 统计
@@ -46,19 +49,39 @@ func (m *baseBackup) conditions2Where(condition SearchConditions) (wheres []mode
 			Val: condition.AgentId,
 		})
 	}
+	if len(condition.AgentIds) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "agent_id in",
+			Val: condition.AgentIds,
+		})
+	}
 	if !string_helper.IsEmpty(condition.Id) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "id",
 			Val: condition.Id,
 		})
-
 	}
+
+	if !string_helper.IsEmpty(condition.SourcePath) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "source_path",
+			Val: condition.SourcePath,
+		})
+	}
+
 	if condition.BackupStatus > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "backup_status",
 			Val: condition.BackupStatus,
 		})
 	}
+	if len(condition.BackupStatusList) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "backup_status in",
+			Val: condition.BackupStatusList,
+		})
+	}
+
 	if condition.RollbackStatus > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "rollback_status",

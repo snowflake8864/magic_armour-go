@@ -11,8 +11,8 @@ import (
 
 type HistoryAdd struct {
 	data_type.AgentSingle
-	SourcePath string `form:"source_path" json:"source_path" binding:"required,max=512"`
-	StorageDir string `form:"storage_dir" json:"storage_dir" binding:"required,max=512"`
+	SourcePath string `form:"sourcePath" json:"sourcePath" binding:"required,max=512"`
+	StorageDir string `form:"storageDir" json:"storageDir" binding:"required,max=512"`
 	Remark     string `form:"remark" json:"remark" binding:"omitempty,max=128"`
 }
 
@@ -30,7 +30,7 @@ func (n HistoryAdd) CheckParams(context *gin.Context) {
 		response.FailSimplify(context, "[organization backup HistoryAdd]表单验证器json化失败")
 	} else {
 		// 验证完成，调用控制器,并将验证器成员(字段)递给控制器，保持上下文数据一致性
-		(&organization.BackupController{}).PageForManage(extraAddBindDataContext)
+		(&organization.BackupController{}).AddForHistory(extraAddBindDataContext)
 	}
 
 }

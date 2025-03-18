@@ -18,26 +18,28 @@ func CreateBackupFactory() *BackupModel {
 type BackupModel struct {
 	baseBackup
 	model.BaseModel
-	Id              string `json:"id" gorm:"primaryKey"`
-	OrgId           int64  `json:"org_id"`
-	AgentId         string `json:"agent_id"`
-	Name            string `json:"name"`
-	Remark          string `json:"remark"`
-	SourcePath      string `json:"source_path"`
-	StorageDir      string `json:"storage_dir"`
-	FileName        string `json:"file_name"`
-	FileSize        string `json:"file_size"`
-	BackupStatus    int    `json:"backup_status"`
-	BackupId        int64  `json:"backup_id"`
-	BackupName      string `json:"backup_name"`
-	BackupStartAt   string `json:"backup_start_at" gorm:"default:NULL"`
-	BackupEndAt     string `json:"backup_end_at" gorm:"default:NULL"`
-	RollbackStatus  int    `json:"rollback_status"`
-	RollbackId      int64  `json:"rollback_id"`
-	RollbackName    string `json:"rollback_name"`
-	RollbackStartAt string `json:"rollback_start_at" gorm:"default:NULL"`
-	RollbackEndAt   string `json:"rollback_end_at"  gorm:"default:NULL"`
-	CreatedAt       string `json:"created_at"`
+	Id               string `json:"id" gorm:"primaryKey"`
+	OrgId            int64  `json:"org_id"`
+	AgentId          string `json:"agent_id"`
+	Name             string `json:"name"`
+	Remark           string `json:"remark"`
+	SourcePath       string `json:"source_path"`
+	StorageDir       string `json:"storage_dir"`
+	FileName         string `json:"file_name"`
+	FileSize         string `json:"file_size"`
+	BackupStatus     int    `json:"backup_status"`
+	BackupId         int64  `json:"backup_id"`
+	BackupName       string `json:"backup_name"`
+	BackupStartAt    string `json:"backup_start_at" gorm:"default:NULL"`
+	BackupEndAt      string `json:"backup_end_at" gorm:"default:NULL"`
+	BackupFailReason string `json:"backup_fail_reason"`
+	RollbackStatus   int    `json:"rollback_status"`
+	RollbackId       int64  `json:"rollback_id"`
+	RollbackName     string `json:"rollback_name"`
+	RollbackStartAt  string `json:"rollback_start_at" gorm:"default:NULL"`
+	RollbackEndAt    string `json:"rollback_end_at"  gorm:"default:NULL"`
+	RollbackReason   string `json:"rollback_fail_reason"`
+	CreatedAt        string `json:"created_at"`
 }
 
 // 表名
@@ -64,11 +66,13 @@ func (m *BackupModel) CreateTable() bool {
 			backup_name varchar(128)  NOT NULL DEFAULT '' COMMENT '备份用户(user.username)',
 			backup_start_at datetime NULL COMMENT '备份开始时间',
 			backup_end_at datetime NULL COMMENT '备份结束时间',
+		    backup_fail_reason varchar(512)  NOT NULL DEFAULT '' COMMENT '备份失败原因',
 			rollback_status tinyint NOT NULL DEFAULT '1' COMMENT '备份状态(1默认 2进行中 3成功 4失败)',
 			rollback_id int NOT NULL DEFAULT '0' COMMENT '回滚用户(user.id)',
 			rollback_name varchar(128)  NOT NULL DEFAULT '' COMMENT '回滚用户(user.username)',
 			rollback_start_at datetime NULL COMMENT '回滚开始时间',
 			rollback_end_at datetime NULL COMMENT '回滚结束时间',
+			rollback_fail_reason varchar(512)  NOT NULL DEFAULT '' COMMENT '回滚失败原因',
 			created_at datetime NOT NULL,
 			INDEX index_created_at (created_at) USING INVERTED
 		)
