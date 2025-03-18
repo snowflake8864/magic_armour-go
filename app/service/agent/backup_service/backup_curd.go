@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *BackupCurd {
@@ -34,6 +35,7 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 	param.SourcePath = path_helper.ToStandard(param.SourcePath)
 	param.StorageDir = path_helper.ToStandard(param.StorageDir)
 	param.BackupStatus = enum_backup.BackupStatusDefault
+	param.RollbackStatus = enum_backup.RollbackStatusDefault
 	param.BackupStartAt = now
 	param.CreatedAt = now
 
@@ -52,5 +54,40 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 		return errors.New("保存失败")
 	}
 
+	///新增任务
+	task_service.CreateCurdFactory().AddTaskForAgent(param.OrgId, param.AgentId, enum_task.TypeSystemBackup, "")
+
+	return nil
+}
+
+// RollbackStart 回滚开始
+func (crd *BackupCurd) RollbackStart(param *backup_models.BackupModel) error {
+	existModel := crd.masterModel.GetItemByOrgAndAgentAndHash(param.OrgId, param.AgentId, param.Id)
+	if existModel == nil || string_helper.IsEmpty(existModel.Id) {
+		return errors.New("数据不存在")
+	}
+	if existModel.BackupStatus == enum_backup.BackupStatusSuccess {
+		return errors.New("备份没有成功， 不能进行回滚")
+	}
+	if existModel.RollbackStatus == enum_backup.RollbackStatusRunning {
+		return errors.New("正在回滚中， 不能重复进行")
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	updates["rollback_status"] = enum_backup.RollbackStatusWaiting
+	updates["rollback_id"] = param.RollbackId
+	updates["rollback_name"] = param.RollbackName
+	updates["rollback_start_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(backup_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
+
+	//新增任务
+	task_service.CreateCurdFactory().AddTaskForAgent(param.OrgId, param.AgentId, enum_task.TypeSystemRollback, "")
 	return nil
 }

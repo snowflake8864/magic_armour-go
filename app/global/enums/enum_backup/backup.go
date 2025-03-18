@@ -7,21 +7,23 @@ const (
 	BackupStatusFail    int = 4 //备份状态: 失败
 
 	RollbackStatusDefault int = 1 //回滚状态: 未开始
-	RollbackStatusRunning int = 2 //回滚状态: 进行中
-	RollbackStatusSuccess int = 3 //回滚状态: 成功
-	RollbackStatusFail    int = 4 //回滚状态: 失败
+	RollbackStatusWaiting int = 2 //回滚状态: 进行中
+	RollbackStatusRunning int = 3 //回滚状态: 进行中
+	RollbackStatusSuccess int = 4 //回滚状态: 成功
+	RollbackStatusFail    int = 5 //回滚状态: 失败
 )
 
 var EnumIntMap = map[string]map[int]string{
 	"backup_status": {
 		BackupStatusDefault: "未开始",
-		BackupStatusRunning: "进行中",
+		BackupStatusRunning: "执行中",
 		BackupStatusSuccess: "成功",
 		BackupStatusFail:    "失败",
 	},
 	"rollback_status": {
 		RollbackStatusDefault: "未开始",
-		RollbackStatusRunning: "进行中",
+		RollbackStatusWaiting: "等待执行",
+		RollbackStatusRunning: "执行中",
 		RollbackStatusSuccess: "成功",
 		RollbackStatusFail:    "失败",
 	},
@@ -36,6 +38,7 @@ var WebMapInt = map[string][]int{
 	},
 	"rollback_status": {
 		RollbackStatusDefault,
+		RollbackStatusWaiting,
 		RollbackStatusRunning,
 		RollbackStatusSuccess,
 		RollbackStatusFail,

@@ -92,3 +92,21 @@ func (u *BackupController) AddForHistory(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// RollbackForHistory 备份历史: 回滚
+func (u *BackupController) RollbackForHistory(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	param := backup_models.BackupModel{
+		OrgId:        loginInfo.OrgId,
+		AgentId:      u.getAgentIdFromGin(ctx),
+		Id:           ctx.GetString(consts.ValidatorPrefixOrg + "id"),
+		RollbackId:   loginInfo.UserId,
+		RollbackName: loginInfo.Username,
+	}
+
+	if err := backup_service.CreateCurdFactory().RollbackStart(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
