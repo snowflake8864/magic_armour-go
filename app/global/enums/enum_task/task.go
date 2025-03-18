@@ -40,6 +40,8 @@ const (
 	TypeOutreachDetectDownload    int = 35 //任务类型: 下载外联主动探测策略
 	TypePwJump                    int = 36 //任务类型: 密码跳变
 	TypeIpJump                    int = 37 //任务类型: IP跳变
+	TypeSystemBackup              int = 38 //任务类型: 系统备份
+	TypeSystemRollback            int = 39 //任务类型: 系统回滚
 
 )
 
@@ -77,6 +79,8 @@ var EnumMap = map[string]map[int]string{
 		TypeOutreachDetectDownload:    "下载外联主动探测名单",
 		TypePwJump:                    "口令跳变",
 		TypeIpJump:                    "IP跳变",
+		TypeSystemBackup:              "系统备份",
+		TypeSystemRollback:            "系统回滚",
 	},
 }
 
@@ -114,5 +118,7 @@ var WebMapInt = map[string][]int{
 		TypeOutreachDetectDownload,
 		TypePwJump,
 		TypeIpJump,
+		TypeSystemBackup,
+		TypeSystemRollback,
 	},
 }
