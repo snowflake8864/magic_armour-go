@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_pw_jump"
@@ -71,8 +72,8 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 	} else {
 		response.SuccessReturnData(ctx, gin.H{
 			"source_ip": sourceIp,
-			"target_ip": targetIp,
-			"config":    config,
+			"target_ip": fmt.Sprintf("%s/%d", targetIp, config.Mask),
+			"gateway":   config.Gateway,
 		})
 		return
 	}
