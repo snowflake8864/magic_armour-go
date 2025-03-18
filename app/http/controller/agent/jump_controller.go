@@ -73,6 +73,7 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 		response.SuccessReturnData(ctx, gin.H{
 			"source_ip": sourceIp,
 			"target_ip": targetIp,
+			"config":    config,
 		})
 		return
 	}

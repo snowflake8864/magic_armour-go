@@ -30,16 +30,20 @@ func (crd *IpJumpCurd) keyByIpPool() string {
 	return crd.ipPoolPrefix + int_helper.Int64ToStr(crd.orgId)
 }
 
+func (crd *IpJumpCurd) getIpWithMask() string {
+	return fmt.Sprintf("%s/%d", crd.jumpConfig.Ip, crd.jumpConfig.Mask)
+}
+
 // InitIpPool 初始化IP池
 func (crd *IpJumpCurd) InitIpPool() error {
 	//获取终端列表
 	agentFact := agent_models.CreateAgentFactory()
 	agentModels := agentFact.GetItemsByOrg(crd.orgId, agentFact.ColumnIp())
 	agentSize := len(agentModels)
-	poolInitSize := 0
+	var poolInitSize int
 	if agentSize == 0 {
 		poolInitSize = 32
-	} else if agentSize < 256 {
+	} else if agentSize <= 256 {
 		poolInitSize = agentSize * 2
 	} else {
 		poolInitSize = agentSize + 256
@@ -56,7 +60,7 @@ func (crd *IpJumpCurd) InitIpPool() error {
 
 	//根据策略生成IP池
 	var ipList []string
-	iPv4Range := ip_helper.IPv4Range{IpWithMask: fmt.Sprintf("%s/%d", crd.jumpConfig.Ip, crd.jumpConfig.Mask)}
+	iPv4Range := ip_helper.IPv4Range{IpWithMask: crd.getIpWithMask()}
 	if err, _, _, _, _, firstUsableNumber, lastUsableNumber := iPv4Range.CalcRange(); err != nil {
 		return err
 	} else {
@@ -86,12 +90,19 @@ func (crd *IpJumpCurd) InitIpPool() error {
 }
 
 // NewestIp 新IP
-func (crd *IpJumpCurd) NewestIp(netIp string) (error, string) {
+func (crd *IpJumpCurd) NewestIp(agentIp string) (error, string) {
 	cacheKey := crd.keyByIpPool()
-
+	//从IP池取出
 	ipStr, err := crd.redisClient.LPopToStr(cacheKey)
 	if err != nil {
 		return errors.New("get newest ip fail"), ""
 	}
+
+	//终端IP符合新IP池规则
+	if ip_helper.IsIPInRange(agentIp, crd.getIpWithMask()) {
+		//终端IP放入IP池末尾, 防止掩码比较大情况下ip池不够用
+		_, _ = crd.redisClient.RPush(cacheKey, agentIp)
+	}
+
 	return nil, ipStr
 }
