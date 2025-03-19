@@ -110,6 +110,7 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeSystemRollback}, ctx.ClientIP())
 
 	result := []map[string]interface{}{} //需初始化
+	var ids []string                     //需修改状态
 
 	condition := backup_models.SearchConditions{
 		OrgId:          loginInfo.OrgId,
@@ -136,7 +137,13 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 				"file_name":   model.FileName,
 				"file_size":   model.FileSize,
 			})
+
+			ids = append(ids, model.Id)
 		}
+	}
+
+	if len(ids) > 0 {
+		_ = backup_service.CreateCurdFactory().RollbackRunning(loginInfo.OrgId, loginInfo.AgentId, ids)
 	}
 
 	response.SuccessReturnData(ctx, result)
