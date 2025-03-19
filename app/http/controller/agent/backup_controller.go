@@ -152,5 +152,13 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 // UploadRollback 上传回滚结果
 func (u *BackupController) UploadRollback(ctx *gin.Context) {
 
+	param := u.getResp(ctx, false)
+
+	if err := backup_service.CreateCurdFactory().RollbackComplete(param); err != nil {
+		response.FailData(ctx, "RollbackComplete fail", err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 	response.SuccessSimplify(ctx)
 }
