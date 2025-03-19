@@ -144,3 +144,22 @@ func (crd *BackupCurd) RollbackRunning(orgId int64, agentId string, ids []string
 	}
 	return nil
 }
+
+// RollbackComplete 回滚完成
+func (crd *BackupCurd) RollbackComplete(param *backup_models.BackupModel) error {
+	conditions := backup_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
+	}
+
+	//修改
+	updates := make(map[string]interface{})
+	updates["rollback_status"] = param.RollbackStatus
+	updates["rollback_fail_reason"] = param.BackupFailReason
+	updates["rollback_end_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	return nil
+}
