@@ -51,3 +51,42 @@ func (u *BackupController) GetBackups(ctx *gin.Context) {
 
 	response.SuccessReturnData(ctx, result)
 }
+
+// GetRollbacks 获取回滚策略
+func (u *BackupController) GetRollbacks(ctx *gin.Context) {
+	//关闭任务
+	loginInfo := u.getLogin(ctx)
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeSystemRollback}, ctx.ClientIP())
+
+	result := []map[string]interface{}{} //需初始化
+
+	condition := backup_models.SearchConditions{
+		OrgId:          loginInfo.OrgId,
+		AgentId:        loginInfo.AgentId,
+		BackupStatus:   enum_backup.BackupStatusSuccess,
+		RollbackStatus: enum_backup.RollbackStatusWaiting,
+	}
+	models := backup_models.CreateBackupFactory().GetListByConditions(condition)
+	if models != nil && len(models) > 0 {
+		for _, model := range models {
+			var sourcePath, storageDir string
+
+			if loginInfo.PlatformType == enum_software.PlatformTypeWindows {
+				sourcePath = path_helper.ToWindows(model.SourcePath)
+				storageDir = path_helper.ToWindows(model.StorageDir)
+			} else {
+				sourcePath = path_helper.ToStandard(model.SourcePath)
+				storageDir = path_helper.ToStandard(model.StorageDir)
+			}
+			result = append(result, map[string]interface{}{
+				"id":          model.Id,
+				"source_path": sourcePath,
+				"storage_dir": storageDir,
+				"file_name":   model.FileName,
+				"file_size":   model.FileSize,
+			})
+		}
+	}
+
+	response.SuccessReturnData(ctx, result)
+}

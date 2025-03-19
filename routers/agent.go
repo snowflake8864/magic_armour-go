@@ -149,7 +149,7 @@ func InitAgentRouter() *gin.Engine {
 			//备份回滚
 			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)     //
 			vAgent.Any("uploadBackup", (&agent.BackupController{}).GetBackups)   //
-			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetBackups)   //
+			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks) //
 			vAgent.Any("uploadRollback", (&agent.BackupController{}).GetBackups) //
 		}
 	}
