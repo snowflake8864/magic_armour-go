@@ -79,8 +79,11 @@ func (crd *BackupCurd) BackupComplete(param *backup_models.BackupModel) error {
 		AgentId: param.AgentId,
 		Id:      param.Id,
 	}
+
 	//修改
 	updates := make(map[string]interface{})
+	updates["file_name"] = param.FileName
+	updates["file_size"] = param.FileSize
 	updates["backup_status"] = param.BackupStatus
 	updates["backup_fail_reason"] = param.BackupFailReason
 	updates["backup_end_at"] = date_helper.CurDatetime()

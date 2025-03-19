@@ -95,6 +95,11 @@ func (u *BackupController) getResp(ctx *gin.Context, isBackup bool) *backup_mode
 func (u *BackupController) UploadBackup(ctx *gin.Context) {
 	param := u.getResp(ctx, true)
 
+	if err := backup_service.CreateCurdFactory().BackupComplete(param); err != nil {
+		response.FailData(ctx, "BackupComplete fail", err.Error())
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
 
