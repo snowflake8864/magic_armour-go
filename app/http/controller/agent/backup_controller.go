@@ -72,7 +72,7 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeSystemRollback}, ctx.ClientIP())
 
-	result := []map[string]interface{}{} //需初始化
+	var result []map[string]interface{} //需初始化
 
 	condition := backup_models.SearchConditions{
 		OrgId:          loginInfo.OrgId,
