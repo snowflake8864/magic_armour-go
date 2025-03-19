@@ -146,12 +146,3 @@ type agentDir struct {
 	Type       int    `json:"type"`
 	//Pid int `json:"pid"` //策略id(不在使用)
 }
-
-// 备份回滚
-type backupRollback struct {
-	Id         string `json:"id"` //下发策略数据返回
-	IsOK       bool   `json:"is_ok"`
-	FileName   string `json:"file_name"`
-	FileSize   string `json:"file_size"`
-	FailReason string `json:"fail_reason"`
-}

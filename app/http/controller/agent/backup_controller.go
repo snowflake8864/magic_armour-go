@@ -52,6 +52,12 @@ func (u *BackupController) GetBackups(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
+// UploadBackup 上传备份结果
+func (u *BackupController) UploadBackup(ctx *gin.Context) {
+
+	response.SuccessSimplify(ctx)
+}
+
 // GetRollbacks 获取回滚策略
 func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 	//关闭任务
@@ -89,4 +95,10 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, result)
+}
+
+// UploadRollback 上传回滚结果
+func (u *BackupController) UploadRollback(ctx *gin.Context) {
+
+	response.SuccessSimplify(ctx)
 }

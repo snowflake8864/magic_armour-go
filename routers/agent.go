@@ -147,10 +147,10 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump) //
 
 			//备份回滚
-			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)     //
-			vAgent.Any("uploadBackup", (&agent.BackupController{}).GetBackups)   //
-			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks) //
-			vAgent.Any("uploadRollback", (&agent.BackupController{}).GetBackups) //
+			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)                                  //
+			vAgent.POST("uploadBackup", validatorFactory.Create(consts.ValidatorPrefixAgent+"BackupPut"))     //上传备份结果
+			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks)                              //
+			vAgent.POST("uploadRollback", validatorFactory.Create(consts.ValidatorPrefixAgent+"RollbackPut")) //上传回滚结果
 		}
 	}
 	return router
