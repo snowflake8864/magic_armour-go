@@ -82,6 +82,8 @@ type AgentModel struct {
 	LoginSolveSwitch    int    `json:"login_solve_switch"`
 	HardwareSwitch      int    `json:"hardware_switch"`
 	HardwareTime        int    `json:"hardware_time"`
+	PwJumpSwitch        int    `json:"pw_jump_switch"`
+	IpJumpSwitch        int    `json:"ip_jump_switch"`
 	CreatedAt           string `json:"created_at"`
 }
 
@@ -181,7 +183,11 @@ func (m *AgentModel) AlterTable(ver string) bool {
 			ADD COLUMN mod_ver varchar(64) NOT NULL DEFAULT '' COMMENT '终端内核版本' AFTER ver,
 			ADD COLUMN internet_switch tinyint(1) NOT NULL DEFAULT '1' COMMENT '上网准入:开关' AFTER kernel_upgrade_switch;
 		`
-		break
+	case "MAT_3.1.0_R1":
+		sql += `
+			ADD COLUMN pw_jump_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '密码跳变:开关' AFTER hardware_time,
+			ADD COLUMN ip_jump_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT 'ip跳变:开关' AFTER pw_jump_switch;
+		`
 	default:
 		return true
 	}

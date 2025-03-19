@@ -21,6 +21,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
 	github.com/stretchr/testify v1.8.4
+	github.com/wenzhenxi/gorsa v0.0.0-20230530123828-0320cce15d81 // indirect
 	github.com/wumansgy/goEncrypt v1.1.0
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.17.0 // indirect

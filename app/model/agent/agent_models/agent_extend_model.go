@@ -23,6 +23,9 @@ type ExtendModel struct {
 	PlugPortConfig   string `json:"plug_port_config"`
 	PlugLoginConfig  string `json:"plug_login_config"`
 	LoginSolveConfig string `json:"login_solve_config"`
+	PwJumpConfig     string `json:"pw_jump_config"`
+	PwJumpNewest     string `json:"pw_jump_newest"`
+	IpJumpConfig     string `json:"ip_jump_config"`
 	ProcessFlushAt   string `json:"process_flush_at"`
 	DllFlushAt       string `json:"dll_flush_at"`
 }
@@ -53,6 +56,27 @@ func (m *ExtendModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *ExtendModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MAT_3.1.0_R1":
+		sql += `
+			ADD COLUMN pw_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:策略(json)' AFTER login_solve_config,
+			ADD COLUMN pw_jump_newest varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:最新密码' AFTER pw_jump_config,
+			ADD COLUMN ip_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT 'ip跳变:策略(json)' AFTER pw_jump_newest;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

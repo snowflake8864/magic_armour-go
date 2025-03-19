@@ -22,6 +22,8 @@ type ExtendModel struct {
 	LoginSolveConfig     string `json:"login_solve_config"`
 	AlarmNoticeConfig    string `json:"alarm_notice_config"`
 	HardwareNoticeConfig string `json:"hardware_notice_config"`
+	PwJumpConfig         string `json:"pw_jump_config"`
+	IpJumpConfig         string `json:"ip_jump_config"`
 	UpdatedAt            string `json:"updated_at"`
 }
 
@@ -44,6 +46,26 @@ func (m *ExtendModel) CreateTable() bool {
 			PRIMARY KEY (id)
         ) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:扩展表';
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *ExtendModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MAT_3.1.0_R1":
+		sql += `
+			ADD COLUMN pw_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:策略(json)' AFTER hardware_notice_config,
+			ADD COLUMN ip_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT 'ip跳变:策略(json)' AFTER pw_jump_config;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

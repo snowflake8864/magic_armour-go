@@ -260,6 +260,24 @@ func (r *RedisClient) SisMember(key string, value interface{}) (bool, error) {
 	return exist, nil
 }
 
+// 下面是List相关
+
+func (r *RedisClient) RPush(key string, values interface{}) (bool, error) {
+	_, err := r.client.Do("RPUSH", redis.Args{}.Add(key).AddFlat(values)...)
+	if err != nil {
+		return false, err
+	}
+	return true, err
+}
+
+func (r *RedisClient) LPopToStr(key string) (string, error) {
+	val, err := r.String(r.client.Do("LPOP", key))
+	if err != nil {
+		return "", err
+	}
+	return val, err
+}
+
 // ReleaseOneRedisClient 释放连接到连接池
 func (r *RedisClient) ReleaseOneRedisClient() {
 	_ = r.client.Close()

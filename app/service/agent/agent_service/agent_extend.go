@@ -2,13 +2,16 @@ package agent_service
 
 import (
 	"errors"
+	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateExtendFactory() *AgentExtend {
@@ -187,4 +190,80 @@ func (crd *AgentExtend) BatchSetFlushAt(orgId int64, agentIds []string, process 
 	}
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates)
 	return isOk
+}
+
+// GetPwJumpConfig 获取密码跳变
+func (crd *AgentExtend) GetPwJumpConfig(orgId int64, agentId string) (config enum_pw_jump.PwJumpConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_config")
+	if model != nil && !string_helper.IsEmpty(model.PwJumpConfig) {
+		_ = json_helper.ToStruct(model.PwJumpConfig, &config)
+	}
+
+	config.Format()
+	return config
+}
+
+// SetPwJumpConfig 设置密码跳变
+func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum_pw_jump.PwJumpConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["pw_jump_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// GetPwJumpNewest 获取密码跳变最新密码
+func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) string {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_newest")
+	if model == nil || string_helper.IsEmpty(model.PwJumpNewest) {
+		return ""
+	}
+
+	if pw, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(model.PwJumpNewest); err != nil {
+		return ""
+	} else {
+		return pw
+	}
+}
+
+// SetPwJumpNewest 设置密码跳变最新密码
+func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, pw string) error {
+
+	updates := make(map[string]interface{})
+	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(pw)
+	updates["pw_jump_newest"] = pw
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// GetIpJumpConfig 获取IP跳变
+func (crd *AgentExtend) GetIpJumpConfig(orgId int64, agentId string) (config enum_ip_jump.IpJumpConfig) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_config")
+	if model != nil && !string_helper.IsEmpty(model.IpJumpConfig) {
+		_ = json_helper.ToStruct(model.IpJumpConfig, &config)
+	}
+
+	config.Format()
+	return config
+}
+
+// SetIpJumpConfig 设置IP跳变
+func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum_ip_jump.IpJumpConfig) error {
+	config.Format()
+	updates := make(map[string]interface{})
+	updates["ip_jump_config"] = json_helper.Encode(config)
+
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
 }

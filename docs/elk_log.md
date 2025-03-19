@@ -212,11 +212,11 @@ filter {
        # 注意：索引模式 以 logstash- 开头，表示使用系统默认json解析模板，否则又要自己定义解析模板，此外，注意全程小写.  
 	   mutate { add_field => { "[@metadata][target_index]" => "logstash-nginx001-%{+YYYY.MM.dd}" } }
 	   
-	   # 建议同时开启 ip 位置转换功能，这样在 logstash 就能自动统计访问者的地理位置分布
+	   # 建议同时开启 needle 位置转换功能，这样在 logstash 就能自动统计访问者的地理位置分布
 	       geoip {
                 source => "remote_addr"
                 target => "geoip"
-                # ip 与经纬度转换城市数据库下载地址：https://dev.maxmind.com/geoip/geoip2/downloadable/  （需要注册账号才能有下载地址）
+                # needle 与经纬度转换城市数据库下载地址：https://dev.maxmind.com/geoip/geoip2/downloadable/  （需要注册账号才能有下载地址）
                 # 数据库文件放置在logstash容器映射的日志目录，不要放在配置文件目录，会报错。  
                 database => "/usr/share/licenseResp/testlog/GeoLite2-City.mmdb"
             }

@@ -5,6 +5,7 @@ import (
 	"encoding/pem"
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/wenzhenxi/gorsa"
 	goEncryptAes "github.com/wumansgy/goEncrypt/aes"
 	goEncryptRsa "github.com/wumansgy/goEncrypt/rsa"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -189,4 +190,34 @@ func TestRasHex(t *testing.T) {
 	assert.Nil(t, err)
 	fmt.Println("解密:")
 	fmt.Println(decrypted)
+}
+
+func TestGorsaExample(t *testing.T) {
+	res, err := gorsa.GenerateKey(2028)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	publicKey := res.PublicKeyBase64
+	privateKey := res.PrivateKeyBase64
+
+	fmt.Println("\n私钥: \n\r" + privateKey)
+	fmt.Println("\n公钥: \n\r" + publicKey)
+	fmt.Println("\n私钥加密 —— 公钥解密")
+
+	str := `{"domainId":"id", "externalUserId":"test001"}`
+	fmt.Println("\n\r明文：\r\n" + str)
+	encodedData, err := gorsa.PriKeyEncrypt(str, privateKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("\n密文：\r\n" + encodedData)
+
+	decodedData, err := gorsa.PublicDecrypt(encodedData, publicKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println("\n解密后文字: \r\n" + decodedData)
 }

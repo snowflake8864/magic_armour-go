@@ -57,6 +57,13 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/uninstall":       "卸载",
 		"/v1/error/upload":    "上传错误文件",
 		"/v1/gettrustdir":     "获取信任目录",
+
+		"/v1/getPwJump":      "获取口令跳变",
+		"/v1/getIpJump":      "获取IP跳变",
+		"/v1/getBackups":     "获取备份策略",
+		"/v1/uploadBackup":   "上传备份结果",
+		"/v1/getRollbacks":   "获取回滚策略",
+		"/v1/uploadRollback": "上传回滚结果",
 	},
 }
 
@@ -100,6 +107,12 @@ var WebMapStr = map[string][]string{
 		"/v1/uninstall",
 		"/v1/error/upload",
 		"/v1/gettrustdir",
+		"/v1/getPwJump",
+		"/v1/getIpJump",
+		"/v1/getBackups",
+		"/v1/uploadBackup",
+		"/v1/getRollbacks",
+		"/v1/uploadRollback",
 	},
 }
 

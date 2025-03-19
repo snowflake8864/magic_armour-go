@@ -52,6 +52,8 @@ type SearchConditions struct {
 	PlugSwitch          *int
 	UsbSwitch           *int
 	OutreachAlarmSwitch *int
+	PwJumpSwitch        *int
+	IpJumpSwitch        *int
 }
 
 type baseAgent struct {
@@ -222,12 +224,29 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 			Val: *condition.OutreachAlarmSwitch,
 		})
 	}
+	if condition.IpJumpSwitch != nil && *condition.IpJumpSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "ip_jump_switch",
+			Val: *condition.IpJumpSwitch,
+		})
+	}
+	if condition.PwJumpSwitch != nil && *condition.PwJumpSwitch != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "pw_jump_switch",
+			Val: *condition.PwJumpSwitch,
+		})
+	}
 	return wheres
 }
 
 // ColumnSimplify 字段: 最简单的
 func (m *baseAgent) ColumnSimplify() string {
 	return "org_id, id, dept_id"
+}
+
+// ColumnIp 字段: IP相关
+func (m *baseAgent) ColumnIp() string {
+	return "org_id, id, dept_id, agent_ip, net_ip"
 }
 
 // ColumnGrant 字段: 授权
@@ -268,7 +287,8 @@ func (m *baseAgent) ColumnConfig(needId, grant bool) string {
 		"blackmail_switch, blackmail_mode, port_switch, plug_switch, usb_switch, usb_mode," +
 		"syslog_dns_switch, syslog_outer_switch, syslog_inner_switch, syslog_process_switch, syslog_login_switch," +
 		"outreach_alarm_switch, self_protect_switch, kernel_upgrade_switch, auto_white_switch, alarm_ai_switch," +
-		"internet_switch,login_solve_switch, hardware_switch, hardware_time, common_time,fast_time"
+		"internet_switch,login_solve_switch,pw_jump_switch,ip_jump_switch," +
+		"hardware_switch, hardware_time, common_time,fast_time"
 	return column
 }
 

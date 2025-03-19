@@ -116,5 +116,9 @@ var WebMapInt = map[string][]int{
 		TypeAgentUninstall,
 		TypeResetUUid,
 		TypeOutreachDetectDownload,
+		TypePwJump,
+		TypeIpJump,
+		TypeSystemBackup,
+		TypeSystemRollback,
 	},
 }

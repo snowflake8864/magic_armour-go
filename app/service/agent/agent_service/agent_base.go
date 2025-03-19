@@ -49,6 +49,8 @@ type ManualColumn struct {
 	LoginSolveSwitch    *int
 	HardwareSwitch      *int
 	HardwareTime        int
+	PwJumpSwitch        *int
+	IpJumpSwitch        *int
 }
 
 type AgentBase struct {
@@ -87,6 +89,12 @@ func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualCo
 	}
 	if param.Remark != nil && *param.Remark != enums.AllDefaultStr {
 		updates["remark"] = *param.Remark
+	}
+	if param.PwJumpSwitch != nil && *param.PwJumpSwitch != enums.AllDefaultInt {
+		updates["pw_jump_switch"] = *param.PwJumpSwitch
+	}
+	if param.IpJumpSwitch != nil && *param.IpJumpSwitch != enums.AllDefaultInt {
+		updates["ip_jump_switch"] = *param.IpJumpSwitch
 	}
 
 	if param.SelfProtectSwitch != nil && *param.SelfProtectSwitch != enums.AllDefaultInt {
