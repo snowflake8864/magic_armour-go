@@ -21,11 +21,6 @@ type BackupCurd struct {
 	masterModel *backup_models.BackupModel
 }
 
-// 新增任务
-func (crd *BackupCurd) addTask(orgId int64, agentId string, remark string) {
-	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeBlackmailPolicyDownload, remark)
-}
-
 // Add 新增
 func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 	now := date_helper.CurDatetime()
