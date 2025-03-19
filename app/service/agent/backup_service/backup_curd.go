@@ -102,6 +102,9 @@ func (crd *BackupCurd) RollbackStart(param *backup_models.BackupModel) error {
 	if existModel.BackupStatus != enum_backup.BackupStatusSuccess {
 		return errors.New("备份没有成功， 不能进行回滚")
 	}
+	if existModel.RollbackStatus == enum_backup.RollbackStatusWaiting {
+		return errors.New("等待客户端执行， 不能重复进行")
+	}
 	if existModel.RollbackStatus == enum_backup.RollbackStatusRunning {
 		return errors.New("正在回滚中， 不能重复进行")
 	}
