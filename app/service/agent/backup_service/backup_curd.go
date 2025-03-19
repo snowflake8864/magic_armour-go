@@ -55,6 +55,23 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 	return nil
 }
 
+// BackupRunning 执行中
+func (crd *BackupCurd) BackupRunning(orgId int64, agentId string, ids []string) error {
+	conditions := backup_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+		Ids:     ids,
+	}
+	//修改
+	updates := make(map[string]interface{})
+	updates["backup_status"] = enum_backup.BackupStatusRunning
+	updates["backup_start_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
 // RollbackStart 回滚开始
 func (crd *BackupCurd) RollbackStart(param *backup_models.BackupModel) error {
 	existModel := crd.masterModel.GetItemByOrgAndAgentAndHash(param.OrgId, param.AgentId, param.Id)

@@ -11,6 +11,7 @@ type SearchConditions struct {
 	AgentId          string
 	AgentIds         []string
 	Id               string
+	Ids              []string
 	SourcePath       string
 	BackupStatus     int
 	BackupStatusList []int
@@ -59,6 +60,12 @@ func (m *baseBackup) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "id",
 			Val: condition.Id,
+		})
+	}
+	if len(condition.Ids) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.Ids,
 		})
 	}
 

@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/backup_models"
+	"goskeleton/app/service/agent/backup_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/response"
@@ -22,7 +23,8 @@ func (u *BackupController) GetBackups(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, []int{enum_task.TypeSystemBackup}, ctx.ClientIP())
 
-	result := []map[string]interface{}{} //需初始化
+	var result []map[string]interface{} //需初始化
+	var ids []string                    //需修改状态
 
 	condition := backup_models.SearchConditions{
 		OrgId:        loginInfo.OrgId,
@@ -46,7 +48,13 @@ func (u *BackupController) GetBackups(ctx *gin.Context) {
 				"source_path": sourcePath,
 				"storage_dir": storageDir,
 			})
+
+			ids = append(ids, model.Id)
 		}
+	}
+
+	if len(ids) > 0 {
+		_ = backup_service.CreateCurdFactory().BackupRunning(loginInfo.OrgId, loginInfo.AgentId, ids)
 	}
 
 	response.SuccessReturnData(ctx, result)
