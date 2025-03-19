@@ -145,6 +145,12 @@ func InitAgentRouter() *gin.Engine {
 			//策略跳变
 			vAgent.Any("getPwJump", (&agent.JumpController{}).GetPwJump) //
 			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump) //
+
+			//备份回滚
+			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)     //
+			vAgent.Any("uploadBackup", (&agent.BackupController{}).GetBackups)   //
+			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetBackups)   //
+			vAgent.Any("uploadRollback", (&agent.BackupController{}).GetBackups) //
 		}
 	}
 	return router
