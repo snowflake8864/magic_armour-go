@@ -160,5 +160,4 @@ func (u *BackupController) UploadRollback(ctx *gin.Context) {
 	}
 
 	response.SuccessSimplify(ctx)
-	response.SuccessSimplify(ctx)
 }
