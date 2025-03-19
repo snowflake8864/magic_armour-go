@@ -55,7 +55,7 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 	return nil
 }
 
-// BackupRunning 执行中
+// BackupRunning 备份执行中
 func (crd *BackupCurd) BackupRunning(orgId int64, agentId string, ids []string) error {
 	conditions := backup_models.SearchConditions{
 		OrgId:   orgId,
@@ -66,6 +66,24 @@ func (crd *BackupCurd) BackupRunning(orgId int64, agentId string, ids []string) 
 	updates := make(map[string]interface{})
 	updates["backup_status"] = enum_backup.BackupStatusRunning
 	updates["backup_start_at"] = date_helper.CurDatetime()
+	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
+		return errors.New("保存失败")
+	}
+	return nil
+}
+
+// BackupComplete 备份完成
+func (crd *BackupCurd) BackupComplete(param *backup_models.BackupModel) error {
+	conditions := backup_models.SearchConditions{
+		OrgId:   param.OrgId,
+		AgentId: param.AgentId,
+		Id:      param.Id,
+	}
+	//修改
+	updates := make(map[string]interface{})
+	updates["backup_status"] = param.BackupStatus
+	updates["backup_fail_reason"] = param.BackupFailReason
+	updates["backup_end_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
 		return errors.New("保存失败")
 	}

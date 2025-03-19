@@ -2,6 +2,7 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_backup"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
@@ -61,7 +62,38 @@ func (u *BackupController) GetBackups(ctx *gin.Context) {
 }
 
 // UploadBackup 上传备份结果
+func (u *BackupController) getResp(ctx *gin.Context, isBackup bool) *backup_models.BackupModel {
+	loginInfo := u.getLogin(ctx)
+
+	param := backup_models.BackupModel{}
+	param.OrgId = loginInfo.OrgId
+	param.AgentId = loginInfo.AgentId
+	param.Id = ctx.GetString(consts.ValidatorPrefixAgent + "id")
+	state := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "state"))
+	if isBackup {
+		param.FileName = ctx.GetString(consts.ValidatorPrefixAgent + "file_name")
+		param.FileSize = ctx.GetString(consts.ValidatorPrefixAgent + "file_size")
+		param.BackupFailReason = ctx.GetString(consts.ValidatorPrefixAgent + "fail_reason")
+		if state == 0 {
+			param.BackupStatus = enum_backup.BackupStatusFail
+		} else {
+			param.BackupStatus = enum_backup.BackupStatusSuccess
+		}
+	} else {
+		param.RollbackFailReason = ctx.GetString(consts.ValidatorPrefixAgent + "fail_reason")
+		if state == 0 {
+			param.RollbackStatus = enum_backup.RollbackStatusFail
+		} else {
+			param.RollbackStatus = enum_backup.RollbackStatusSuccess
+		}
+	}
+
+	return &param
+}
+
+// UploadBackup 上传备份结果
 func (u *BackupController) UploadBackup(ctx *gin.Context) {
+	param := u.getResp(ctx, true)
 
 	response.SuccessSimplify(ctx)
 }
