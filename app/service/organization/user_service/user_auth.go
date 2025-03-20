@@ -260,10 +260,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 			//设置锁定
 			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
 			return nil, -2, errors.New("用户名或密码错误, 已被锁定" +
-				mapDict[enum_dictionary.OrganizationLoginErrorRemind] + "分钟，请稍后在试")
+				mapDict[enum_dictionary.OrganizationLoginLockDuration] + "分钟，请稍后在试")
 		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
 			return backInfo, -2, errors.New("用户名或密码错误, 还有" +
-				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.OrganizationLoginErrorRemind] + "分钟")
+				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.OrganizationLoginLockDuration] + "分钟")
 		} else {
 			return nil, -2, errors.New("用户名或密码错误")
 		}
