@@ -43,6 +43,7 @@ const (
 	AgentTypes                 string = "agent_types"                   //终端:终端类型-离线版 todo http://192.168.19.9/zentao/story-view-781.html
 	AgentOutreachDetectMax     string = "agent_outreach_detect_max"     //终端:外联探测最大数
 	AgentOutreachDetectTime    string = "agent_outreach_detect_time"    //终端:外联探测间隔时间(秒)
+	AgentDebugSwitch           string = "agent_debug_switch"            //终端:调试开关
 
 	ThreatenSwitch        string = "threaten_switch"         //威胁情报:开关
 	ThreatenUrl           string = "threaten_url"            //威胁情报:服务器地址
@@ -128,6 +129,7 @@ var EnumSlice = map[string][]string{
 		AgentTypes,
 		AgentOutreachDetectMax,
 		AgentOutreachDetectTime,
+		AgentDebugSwitch,
 	},
 
 	ModuleThreaten: {

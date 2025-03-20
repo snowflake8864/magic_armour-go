@@ -56,6 +56,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 		enum_dictionary.AgentHttpPort,
 		enum_dictionary.AgentLogSendProto,
 		enum_dictionary.AgentOutreachDetectTime,
+		enum_dictionary.AgentDebugSwitch,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
@@ -68,6 +69,10 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["logsent"] = 0
 	mapConf["api_port"] = string_helper.ToInt(mapDict[enum_dictionary.AgentHttpPort])
 	mapConf["syslog_port"] = 0
+	mapConf["debug_switch"] = enums.SwitchOn
+	if val, isOK := mapDict[enum_dictionary.AgentDebugSwitch]; isOK {
+		mapConf["debug_switch"] = string_helper.ToInt(val)
+	}
 
 	//进程
 	mapConf["proc_switch"] = agentModel.ProcessSwitch
