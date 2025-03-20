@@ -100,7 +100,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			continue // 当前消息读取失败时，并不退出for终止所有后续消费，而是跳过该消息即可
 		} else if data == nil {
 			// 当前消息读取为空时，并不退出for终止所有后续消费，休眠后继续处理
-			time.Sleep(2 * time.Second)
+			time.Sleep(3 * time.Second)
 			continue
 		}
 		switch data.Type {
