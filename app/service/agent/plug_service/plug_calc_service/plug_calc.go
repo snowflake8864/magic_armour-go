@@ -179,6 +179,7 @@ func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) e
 
 // 新增
 func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugType, duration int) error {
+	//防止并发
 	if !crd.toLock(orgId, agentId, ip) {
 		return errors.New("toLock fail")
 	}
