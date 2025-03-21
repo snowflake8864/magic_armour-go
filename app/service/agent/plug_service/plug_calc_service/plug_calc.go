@@ -25,24 +25,28 @@ import (
 
 func CreatePlugCalcFactory() *PlugCalc {
 	return &PlugCalc{
-		masterModel: plug_models.CreateDynamicFactory(),
-		alarmModel:  alarm_models.CreatePlugFactory(),
-		redisClient: redis_factory.GetOneRedisClient(),
-		cachePrefix: "plug_",
-		cacheExpire: 90,
+		masterModel:   plug_models.CreateDynamicFactory(),
+		alarmModel:    alarm_models.CreatePlugFactory(),
+		redisClient:   redis_factory.GetOneRedisClient(),
+		successPrefix: "plug_ok_",
+		SuccessExpire: 90,
+		lockPrefix:    "plug_lock_",
+		lockExpire:    30,
 	}
 }
 
 type PlugCalc struct {
-	masterModel *plug_models.DynamicModel
-	alarmModel  *alarm_models.PlugModel
-	redisClient *redis_factory.RedisClient
-	cachePrefix string
-	cacheExpire int
+	masterModel   *plug_models.DynamicModel
+	alarmModel    *alarm_models.PlugModel
+	redisClient   *redis_factory.RedisClient
+	successPrefix string
+	SuccessExpire int
+	lockPrefix    string
+	lockExpire    int
 }
 
 func (crd *PlugCalc) keySuccess(orgId int64, agentId string, attackIp string) string {
-	return md5_encrypt.MD5(crd.cachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + attackIp)
+	return md5_encrypt.MD5(crd.successPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + attackIp)
 }
 
 // 是否存在成功数据
@@ -58,7 +62,22 @@ func (crd *PlugCalc) existSuccess(orgId int64, agentId string, attackIp string) 
 // 缓存成功数据
 func (crd *PlugCalc) cacheSuccess(orgId int64, agentId string, attackIp string) {
 	key := crd.keySuccess(orgId, agentId, attackIp)
-	_, _ = crd.redisClient.SetEx(key, "0", crd.cacheExpire)
+	_, _ = crd.redisClient.SetEx(key, "0", crd.SuccessExpire)
+}
+
+func (crd *PlugCalc) keyLock(orgId int64, agentId string, attackIp string) string {
+	return md5_encrypt.MD5(crd.lockPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId + "_" + attackIp)
+}
+
+func (crd *PlugCalc) toLock(orgId int64, agentId string, attackIp string) bool {
+	key := crd.keySuccess(orgId, agentId, attackIp)
+	isOk, _ := crd.redisClient.Lock(key, "1", crd.lockExpire)
+	return isOk
+}
+
+func (crd *PlugCalc) unLock(orgId int64, agentId string, attackIp string) {
+	key := crd.keySuccess(orgId, agentId, attackIp)
+	_, _ = crd.redisClient.Del(key)
 }
 
 // CalcByPort 计算: 来源端口虚开告警
@@ -115,9 +134,6 @@ func (crd *PlugCalc) CalcByPort(orgId int64, agentId string, attackIp string, su
 		return err
 	}
 
-	//成功则缓存
-	crd.cacheSuccess(orgId, agentId, attackIp)
-
 	return nil
 }
 
@@ -158,14 +174,16 @@ func (crd *PlugCalc) CalcByLogin(orgId int64, agentId string, attackIp string) e
 		return err
 	}
 
-	//成功则缓存
-	crd.cacheSuccess(orgId, agentId, attackIp)
-
 	return nil
 }
 
 // 新增
 func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugType, duration int) error {
+	if !crd.toLock(orgId, agentId, ip) {
+		return errors.New("toLock fail")
+	}
+	defer crd.unLock(orgId, agentId, ip)
+
 	now := date_helper.CurDatetime()
 	var endAt string
 	if plugType == enum_plug.PlugTypeTemporary {
@@ -189,8 +207,11 @@ func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugTyp
 		UpdatedAt:  now,
 	}
 	if !crd.masterModel.InsertItem(&modelPlug) {
-		return errors.New("保存动态封堵失败")
+		return errors.New("save fail")
 	}
+
+	//成功则缓存
+	crd.cacheSuccess(orgId, agentId, ip)
 
 	//新增任务
 	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypePluggingDownload, "")
