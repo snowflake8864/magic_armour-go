@@ -1,0 +1,52 @@
+## 清理磁盘日志
+10 1 * * * /home/veda/clear_disk.sh >> /var/log/armour_disk_clear.log 2>&1
+
+## 每隔[1分钟]
+# 威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
+*/1 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A AgentOffline >> /var/log/armour_crontab.log 2>&1
+# 终端离线
+*/1 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A AgentOffline >> /var/log/armour_crontab.log 2>&1
+
+## 每隔[2分钟]
+# 动态封堵已过期的自动解封
+*/2 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A PlugExpired >> /var/log/armour_crontab.log 2>&1
+# 终端安全状态
+*/2 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A AgentSafe >> /var/log/armour_crontab.log 2>&1
+
+## 每隔[3分钟]
+# 从进程或模块添加任务
+*/3 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A TaskAddFromProc  >> /var/log/armour_crontab.log 2>&1
+# 威胁情报同步数据到威胁情报中心
+*/3 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ThreatenPushesSync >> /var/log/armour_crontab.log 2>&1
+# 服务器状态监控
+*/3 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ServiceMonitor  >> /var/log/armour_crontab.log 2>&1
+
+## 每隔[5分钟]
+# 同步推送数据到幻势
+*/5 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A HuanshiPush >> /var/log/armour_crontab.log 2>&1
+
+## 每隔[12分钟]
+# 统计企业今天相关数据
+*/12 * * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A CollectOrgToday >> /var/log/armour_crontab.log 2>&1
+
+## 每隔[1小时]
+# 威胁情报缓存修复进程模块
+0 */1 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ThreatenRepairProc >> /var/log/armour_crontab.log 2>&1
+
+## 每天一次
+# 每天清理一次数据
+7 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A Daily >> /var/log/armour_crontab.log 2>&1
+# 订单自动过期
+17 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A OrderExpired >> /var/log/armour_crontab.log 2>&1
+# 终端授权自动过期
+27 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A GrantExpired >> /var/log/armour_crontab.log 2>&1
+# 统计企业昨天相关数据
+37 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A CollectOrgYesterday >> /var/log/armour_crontab.log 2>&1
+# 告警邮件通知
+47 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A AlarmEmailNotice >> /var/log/armour_crontab.log 2>&1
+# 删除威胁情报缓存
+57 0 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ThreatenCacheDelete >> /var/log/armour_crontab.log 2>&1
+# 威胁情报缓存同步未知状态数据到威胁情报中心
+17 1 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ThreatenCacheUnknownSync >> /var/log/armour_crontab.log 2>&1
+# 从进程或模块添加到威胁情报缓存
+17 2 * * * /home/wwwroot/armour_go/app_cli.linux64 crontab -A ThreatenCacheAddFromProc >> /var/log/armour_crontab.log 2>&1
