@@ -26,7 +26,7 @@ type AlarmPlugSave struct {
 // Add 新增
 func (crd *AlarmPlugSave) Add(plugModel *plug_models.DynamicModel) error {
 	alarmType := enum_alarm.TypePlugDynamicFromPort
-	if plugModel.Source == enum_plug.SourcePortVirtual {
+	if plugModel.Source == enum_plug.SourceLoginSolve {
 		alarmType = enum_alarm.TypePlugDynamicFromLogin
 	}
 
