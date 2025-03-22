@@ -165,10 +165,8 @@ func Int64RemoveRepeatByMap(slc []int64) []int64 {
 
 // StringIn 是否存在
 func StringIn(s string, slc []string) bool {
-	for _, e := range slc {
-		if e == s {
-			return true
-		}
-	}
-	return false
+	toMap := String2Map(slc)
+
+	_, isOk := toMap[s]
+	return isOk
 }
