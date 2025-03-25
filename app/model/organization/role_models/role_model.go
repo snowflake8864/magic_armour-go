@@ -69,36 +69,6 @@ func (m *RoleModel) InsertItem(s *RoleModel) bool {
 	}
 }
 
-// DeleteById 通过id删除
-func (m *RoleModel) DeleteById(id string) bool {
-	result := m.Where("order_no=?", id).Delete(m)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// UpdateById 通过id修改
-func (m *RoleModel) UpdateById(id string, updates map[string]interface{}) bool {
-	result := m.Model(m).Where("order_no=?", id).Updates(updates)
-	if result.Error == nil {
-		return true
-	} else {
-		return false
-	}
-}
-
-// GetItemById 通过id获取一条记录
-func (m *RoleModel) GetItemById(id int64) (item *RoleModel) {
-	result := m.Model(m).Where("order_no=?", id).Take(&item)
-	if result.Error == nil {
-		return item
-	} else {
-		return item
-	}
-}
-
 // InsertBatch 插入多条
 func (m *RoleModel) InsertBatch(list *[]RoleModel) bool {
 	result := m.Create(list)
@@ -107,6 +77,16 @@ func (m *RoleModel) InsertBatch(list *[]RoleModel) bool {
 	} else {
 		variable.ZapLog.Sugar().Error(result.Error.Error())
 		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *RoleModel) GetItemById(id int64) (item *RoleModel) {
+	result := m.Model(m).Where("id=?", id).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return item
 	}
 }
 
@@ -168,7 +148,7 @@ func (m *RoleModel) GetItemsByConditions(condition SearchConditions, offset, lim
 // Count 通过条件统计
 func (m *RoleModel) Count(condition SearchConditions) int64 {
 	var total int64
-	tmp := m.Model(m).Select("order_no")
+	tmp := m.Model(m).Select("id")
 	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 		tmp = tmp.Where(whereSQL, vals...)
 	}

@@ -17,6 +17,7 @@ import (
 	"goskeleton/app/model/agent/task_models"
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/model/syslog/syslog_models"
 )
 
@@ -165,6 +166,11 @@ func Clean(orgId int64) {
 
 	//备份记录
 	backup_models.CreateBackupFactory().DeleteByConditions(backup_models.SearchConditions{
+		OrgId: orgId,
+	})
+
+	//企业角色
+	role_models.CreateRoleFactory().DeleteByConditions(role_models.SearchConditions{
 		OrgId: orgId,
 	})
 }
