@@ -1,4 +1,4 @@
-package order_models
+package role_models
 
 import (
 	"fmt"
@@ -10,32 +10,22 @@ import (
 )
 
 type SearchConditions struct {
-	OrderNo      string
-	OrgId        int64
-	OrgIds       []int64
-	OrgName      string
-	UserName     string
-	UserPhone    string
-	ProductTitle string
-	GrantType    int
-	OrderStatus  int
-	IsExpire     *int
-	CreateAtGte  string
-	CreateAtLte  string
-	ExpireAtLte  string
-	StatusList   []int
-	PayOrderNo   string
+	Id          int64
+	OrgId       int64
+	Name        string
+	CreateAtGte string
+	CreateAtLte string
 }
 
-type baseOrder struct {
+type baseRole struct {
 }
 
 // conditions2Where 查询条件转化
-func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
-	if !string_helper.IsEmpty(condition.OrderNo) {
+func (crd *baseRole) conditions2Where(condition SearchConditions) (wheres []model_comm.Conditions) {
+	if condition.Id > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "order_no",
-			Val: condition.OrderNo,
+			Key: "id",
+			Val: condition.Id,
 		})
 	}
 	if condition.OrgId > 0 {
@@ -129,7 +119,7 @@ func (crd *baseOrder) conditions2Where(condition SearchConditions) (wheres []mod
 }
 
 // ColumnCalcOfUsage 字段： 统计使用数
-func (crd *baseOrder) ColumnCalcOfUsage() string {
+func (crd *baseRole) ColumnCalcOfUsage() string {
 	var columns []string
 	columns = append(columns, "SUM(buy_number) AS buy_number")
 	columns = append(columns, "SUM(usage_number) AS usage_number")
@@ -143,7 +133,7 @@ type RespRemind struct {
 }
 
 // ColumnCalcOfRemind 字段： 统计提醒数
-func (crd *baseOrder) ColumnCalcOfRemind() string {
+func (crd *baseRole) ColumnCalcOfRemind() string {
 	var columns []string
 	columns = append(columns, "COUNT(*) as total_number")
 	columns = append(columns, fmt.Sprintf("SUM(if(is_expire=%d, 1,0)) as unexpired_number", enums.IsNot))
