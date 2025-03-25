@@ -29,9 +29,9 @@ func CreatePlugCalcFactory() *PlugCalc {
 		alarmModel:    alarm_models.CreatePlugFactory(),
 		redisClient:   redis_factory.GetOneRedisClient(),
 		successPrefix: "plug_ok_",
-		SuccessExpire: 90,
+		SuccessExpire: 60,
 		lockPrefix:    "plug_lock_",
-		lockExpire:    30,
+		lockExpire:    15,
 	}
 }
 
@@ -70,13 +70,13 @@ func (crd *PlugCalc) keyLock(orgId int64, agentId string, attackIp string) strin
 }
 
 func (crd *PlugCalc) toLock(orgId int64, agentId string, attackIp string) bool {
-	key := crd.keySuccess(orgId, agentId, attackIp)
+	key := crd.keyLock(orgId, agentId, attackIp)
 	isOk, _ := crd.redisClient.Lock(key, "1", crd.lockExpire)
 	return isOk
 }
 
 func (crd *PlugCalc) unLock(orgId int64, agentId string, attackIp string) {
-	key := crd.keySuccess(orgId, agentId, attackIp)
+	key := crd.keyLock(orgId, agentId, attackIp)
 	_, _ = crd.redisClient.Del(key)
 }
 
