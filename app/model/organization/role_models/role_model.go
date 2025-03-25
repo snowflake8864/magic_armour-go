@@ -90,7 +90,7 @@ func (m *RoleModel) UpdateById(id string, updates map[string]interface{}) bool {
 }
 
 // GetItemById 通过id获取一条记录
-func (m *RoleModel) GetItemById(id string) (item *RoleModel) {
+func (m *RoleModel) GetItemById(id int64) (item *RoleModel) {
 	result := m.Model(m).Where("order_no=?", id).Take(&item)
 	if result.Error == nil {
 		return item
