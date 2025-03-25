@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/agent_online_models"
+	"goskeleton/app/model/agent/backup_models"
 	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/model/agent/plug_models"
@@ -154,6 +155,16 @@ func Clean(orgId int64) {
 		OrgId: orgId,
 	})
 	syslog_models.CreateLoginFactory().DeleteByConditions(syslog_models.SearchConditions{
+		OrgId: orgId,
+	})
+
+	//上线日志
+	agent_online_models.CreateOnlineLogFactory().DeleteByConditions(agent_online_models.SearchConditions{
+		OrgId: orgId,
+	})
+
+	//备份记录
+	backup_models.CreateBackupFactory().DeleteByConditions(backup_models.SearchConditions{
 		OrgId: orgId,
 	})
 }
