@@ -94,7 +94,6 @@ func (crd *RoleCurd) existsName(name string, orgId int64, id int64) bool {
 	if model.Id != id {
 		return true
 	}
-
 	return false
 }
 

@@ -31,6 +31,12 @@ func (crd *baseRole) conditions2Where(condition SearchConditions) (wheres []mode
 		})
 	}
 
+	if !string_helper.IsEmpty(condition.Name) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "name",
+			Val: condition.Name,
+		})
+	}
 	if !string_helper.IsEmpty(condition.CreateAtGte) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at >=",

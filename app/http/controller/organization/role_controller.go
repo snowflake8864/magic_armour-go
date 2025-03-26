@@ -64,7 +64,14 @@ func (u *RoleController) EditForManage(ctx *gin.Context) {
 
 // DeleteForManage 管理页：删除
 func (u *RoleController) DeleteForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "DeleteForManage")
+	loginInfo := u.getLogin(ctx)
+	id := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
+
+	if err := role_service.CreateCurdFactory().DeleteById(id, loginInfo.OrgId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // LoginMenuTreeForPower 权限：用户登录后的菜单树
