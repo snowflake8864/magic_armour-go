@@ -152,6 +152,8 @@ func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
 
 // SaveMenus 保存菜单
 func (crd *RoleCurd) SaveMenus(param *role_models.RoleModel) error {
-
+	if existsModel := crd.hasId(param.Id, param.OrgId); existsModel == nil {
+		return errors.New("数据不存在")
+	}
 	return nil
 }

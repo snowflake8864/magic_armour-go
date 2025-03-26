@@ -74,22 +74,12 @@ func (u *RoleController) DeleteForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// LoginMenuTreeForPower 权限：用户登录后的菜单树
-func (u *RoleController) LoginMenuTreeForPower(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "LoginMenuTreeForPower")
+// GetTreeForMenu 菜单：获取树
+func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "GetTreeForMenu")
 }
 
-// EditableMenuTreeForPower 权限：可编辑的菜单树
-func (u *RoleController) EditableMenuTreeForPower(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditableMenuTreeForPower")
-}
-
-// GetSelectedMenusForPower 权限：获取已选中的菜单集合
-func (u *RoleController) GetSelectedMenusForPower(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetSelectedMenusForPower")
-}
-
-// SetSelectedMenusForPower 权限：保存已选中的菜单集合
-func (u *RoleController) SetSelectedMenusForPower(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SetSelectedMenusForPower")
+// SaveForMenu  菜单：保存
+func (u *RoleController) SaveForMenu(ctx *gin.Context) {
+	response.SuccessReturnData(ctx, "SaveForMenu")
 }
