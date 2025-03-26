@@ -8,7 +8,7 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
-func CreateRoleCurdFactory() *RoleCurd {
+func CreateCurdFactory() *RoleCurd {
 	return &RoleCurd{masterModel: role_models.CreateRoleFactory()}
 }
 
@@ -16,38 +16,41 @@ type RoleCurd struct {
 	masterModel *role_models.RoleModel
 }
 
+func (crd *RoleCurd) defaultMenus() string {
+	return "1,2,3,4,5" //最小权限
+}
+
 // AddDefault 新增默认
 func (crd *RoleCurd) AddDefault(orgId int64) bool {
 	now := date_helper.CurDatetime()
 	remark := "默认"
-	menus := "1,2,3,4,5" //最小权限
 
 	params := []role_models.RoleModel{
-		role_models.RoleModel{
+		{
 			OrgId:      orgId,
 			Name:       "管理员",
 			Remark:     remark,
-			Menus:      menus,
+			Menus:      crd.defaultMenus(),
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
 			CreatedAt:  now,
 		},
-		role_models.RoleModel{
+		{
 			OrgId:      orgId,
 			Name:       "操作员",
 			Remark:     remark,
-			Menus:      menus,
+			Menus:      crd.defaultMenus(),
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
 			CreatedAt:  now,
 		},
-		role_models.RoleModel{
+		{
 			OrgId:      orgId,
 			Name:       "审计员",
 			Remark:     remark,
-			Menus:      menus,
+			Menus:      crd.defaultMenus(),
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
@@ -63,6 +66,11 @@ func (crd *RoleCurd) Add(param *role_models.RoleModel) bool {
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
+	if string_helper.IsEmpty(param.Menus) {
+		param.Menus = crd.defaultMenus()
+	}
+	param.IsDefault = enums.IsNot
+
 	return crd.masterModel.InsertItem(param)
 }
 

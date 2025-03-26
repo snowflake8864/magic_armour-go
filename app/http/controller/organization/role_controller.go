@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/role_models"
+	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/utils/response"
 )
 
@@ -36,7 +37,20 @@ func (u *RoleController) AllForManage(ctx *gin.Context) {
 
 // AddForManage 管理页：添加
 func (u *RoleController) AddForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AddForManage")
+	loginInfo := u.getLogin(ctx)
+	param := role_models.RoleModel{
+		OrgId:      loginInfo.OrgId,
+		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	if !role_service.CreateCurdFactory().Add(&param) {
+		response.FailSimplify(ctx, "保存失败")
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // EditForManage 管理页：编辑
