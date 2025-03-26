@@ -118,6 +118,21 @@ func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 		return errors.New("默认数据不让修改")
 	}
 
+	if crd.existsName(param.Name, param.OrgId, param.Id) {
+		return errors.New("名称已存在")
+	}
+
+	//修改
+	updates := map[string]interface{}{
+		"name":   param.Name,
+		"remark": param.Remark,
+	}
+
+	if isOk, _ := crd.masterModel.UpdateByConditions(role_models.SearchConditions{
+		Id: param.Id,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
 	return nil
 }
 
@@ -127,6 +142,10 @@ func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
 		return errors.New("数据不存在")
 	} else if existsModel.IsDefault == enums.IsYes {
 		return errors.New("默认数据不让删除")
+	}
+
+	if !crd.masterModel.DeleteByConditions(role_models.SearchConditions{Id: id}) {
+		return errors.New("删除")
 	}
 
 	return nil

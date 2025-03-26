@@ -45,7 +45,21 @@ func (u *RoleController) AddForManage(ctx *gin.Context) {
 
 // EditForManage 管理页：编辑
 func (u *RoleController) EditForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "EditForManage")
+	loginInfo := u.getLogin(ctx)
+	param := role_models.RoleModel{
+		Id:         int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OrgId:      loginInfo.OrgId,
+		Name:       ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		CreateId:   loginInfo.UserId,
+		CreateName: loginInfo.Username,
+	}
+
+	if err := role_service.CreateCurdFactory().UpdateById(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
 
 // DeleteForManage 管理页：删除
