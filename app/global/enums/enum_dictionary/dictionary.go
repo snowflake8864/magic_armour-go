@@ -44,6 +44,7 @@ const (
 	AgentOutreachDetectMax     string = "agent_outreach_detect_max"     //终端:外联探测最大数
 	AgentOutreachDetectTime    string = "agent_outreach_detect_time"    //终端:外联探测间隔时间(秒)
 	AgentDebugIds              string = "agent_debug_ids"               //终端:调试终端集合
+	AgentDebugPort             string = "agent_debug_port"              //终端:调试端口
 
 	ThreatenSwitch        string = "threaten_switch"         //威胁情报:开关
 	ThreatenUrl           string = "threaten_url"            //威胁情报:服务器地址
@@ -130,6 +131,7 @@ var EnumSlice = map[string][]string{
 		AgentOutreachDetectMax,
 		AgentOutreachDetectTime,
 		AgentDebugIds,
+		AgentDebugPort,
 	},
 
 	ModuleThreaten: {
