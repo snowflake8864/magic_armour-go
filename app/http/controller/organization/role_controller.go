@@ -2,12 +2,31 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
+	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/utils/response"
 )
 
 // RoleController 角色相关
 type RoleController struct {
 	ControllerBase
+}
+
+// PageForManage 管理页：分页
+func (u *RoleController) PageForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	condition := role_models.SearchConditions{
+		OrgId: loginInfo.OrgId,
+		Name:  ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+	}
+	//分页参数和排序参数
+	offset, pageSize, order := u.getPageAndSort(ctx, "")
+
+	total, models := role_models.CreateRoleFactory().Page(condition, offset, pageSize, order)
+
+	response.SuccessReturnData(ctx, (&org_trans.Role{}).TransPage(total, models))
 }
 
 // AllForManage 管理页：全部角色
