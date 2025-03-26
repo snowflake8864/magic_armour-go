@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/utils/helpers/ip_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
+	"strings"
 	"testing"
 )
 
@@ -101,4 +103,11 @@ func TestIPv4Range(t *testing.T) {
 		fmt.Printf("NetworkIP: %-15s Broadcast: %-15s FirstIP: %-15s LastIP: %s FirstNumber: %-15d LastNumber: %-15d\n\n",
 			networkIp, broadcastIp, firstUsableIp, lastUsableIp, firstUsableNumber, lastUsableNumber)
 	}
+}
+
+func TestStringSpilt(t *testing.T) {
+	fmt.Println(json_helper.Encode(strings.Split("1,24,4,", ",")))
+	fmt.Println(json_helper.Encode(strings.Split("1", ",")))
+	fmt.Println(json_helper.Encode(strings.Split("", ",")))
+	fmt.Println(json_helper.Encode(strings.Split(",2,", ",")))
 }

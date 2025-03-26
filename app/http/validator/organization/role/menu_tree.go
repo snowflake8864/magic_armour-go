@@ -9,6 +9,7 @@ import (
 )
 
 type MenuTreeGet struct {
+	ID
 }
 
 func (n MenuTreeGet) CheckParams(context *gin.Context) {

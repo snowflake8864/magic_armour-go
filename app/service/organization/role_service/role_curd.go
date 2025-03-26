@@ -97,7 +97,7 @@ func (crd *RoleCurd) existsName(name string, orgId int64, id int64) bool {
 	return false
 }
 
-func (crd *RoleCurd) hasId(id int64, orgId int64) *role_models.RoleModel {
+func (crd *RoleCurd) HasId(id int64, orgId int64) *role_models.RoleModel {
 	model := crd.masterModel.GetItemById(id)
 	if model == nil || model.Id == 0 {
 		return nil
@@ -111,7 +111,7 @@ func (crd *RoleCurd) hasId(id int64, orgId int64) *role_models.RoleModel {
 
 // UpdateById 删除
 func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
-	if existsModel := crd.hasId(param.Id, param.OrgId); existsModel == nil {
+	if existsModel := crd.HasId(param.Id, param.OrgId); existsModel == nil {
 		return errors.New("数据不存在")
 	} else if existsModel.IsDefault == enums.IsYes {
 		return errors.New("默认数据不让修改")
@@ -137,7 +137,7 @@ func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 
 // DeleteById 删除
 func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
-	if existsModel := crd.hasId(id, orgId); existsModel == nil {
+	if existsModel := crd.HasId(id, orgId); existsModel == nil {
 		return errors.New("数据不存在")
 	} else if existsModel.IsDefault == enums.IsYes {
 		return errors.New("默认数据不让删除")
@@ -152,7 +152,7 @@ func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
 
 // SaveMenus 保存菜单
 func (crd *RoleCurd) SaveMenus(param *role_models.RoleModel) error {
-	if existsModel := crd.hasId(param.Id, param.OrgId); existsModel == nil {
+	if existsModel := crd.HasId(param.Id, param.OrgId); existsModel == nil {
 		return errors.New("数据不存在")
 	}
 	return nil
