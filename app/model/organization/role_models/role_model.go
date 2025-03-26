@@ -90,6 +90,20 @@ func (m *RoleModel) GetItemById(id int64) (item *RoleModel) {
 	}
 }
 
+// GetItemByConditions 通过条件获取一条记录
+func (m *RoleModel) GetItemByConditions(condition SearchConditions) (item *RoleModel) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return item
+	}
+}
+
 // UpdateByConditions 通过条件修改
 func (m *RoleModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	tmp := m.Model(m)

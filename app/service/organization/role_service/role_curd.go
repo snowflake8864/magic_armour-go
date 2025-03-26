@@ -62,7 +62,11 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 }
 
 // Add 新增
-func (crd *RoleCurd) Add(param *role_models.RoleModel) bool {
+func (crd *RoleCurd) Add(param *role_models.RoleModel) error {
+	if crd.existsName(param.Name, param.OrgId, 0) {
+		return errors.New("名称已存在")
+	}
+
 	if string_helper.IsEmpty(param.CreatedAt) {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
@@ -71,11 +75,30 @@ func (crd *RoleCurd) Add(param *role_models.RoleModel) bool {
 	}
 	param.IsDefault = enums.IsNot
 
-	return crd.masterModel.InsertItem(param)
+	if !crd.masterModel.InsertItem(param) {
+		return errors.New("保存失败")
+	}
+	return nil
 }
 
-// DeleteById 删除
-func (crd *RoleCurd) exists(id int64, orgId int64) *role_models.RoleModel {
+func (crd *RoleCurd) existsName(name string, orgId int64, id int64) bool {
+	model := crd.masterModel.GetItemByConditions(role_models.SearchConditions{
+		OrgId: orgId,
+		Name:  name,
+	})
+	//数据库没有
+	if model == nil || model.Id == 0 {
+		return false
+	}
+	//不是当前id
+	if model.Id != id {
+		return true
+	}
+
+	return false
+}
+
+func (crd *RoleCurd) hasId(id int64, orgId int64) *role_models.RoleModel {
 	model := crd.masterModel.GetItemById(id)
 	if model == nil || model.Id == 0 {
 		return nil
@@ -89,7 +112,7 @@ func (crd *RoleCurd) exists(id int64, orgId int64) *role_models.RoleModel {
 
 // UpdateById 删除
 func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
-	if existsModel := crd.exists(param.Id, param.OrgId); existsModel == nil {
+	if existsModel := crd.hasId(param.Id, param.OrgId); existsModel == nil {
 		return errors.New("数据不存在")
 	} else if existsModel.IsDefault == enums.IsYes {
 		return errors.New("默认数据不让修改")
@@ -100,7 +123,7 @@ func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 
 // DeleteById 删除
 func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
-	if existsModel := crd.exists(id, orgId); existsModel == nil {
+	if existsModel := crd.hasId(id, orgId); existsModel == nil {
 		return errors.New("数据不存在")
 	} else if existsModel.IsDefault == enums.IsYes {
 		return errors.New("默认数据不让删除")

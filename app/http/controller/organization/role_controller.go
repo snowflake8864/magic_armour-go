@@ -36,8 +36,8 @@ func (u *RoleController) AddForManage(ctx *gin.Context) {
 		CreateName: loginInfo.Username,
 	}
 
-	if !role_service.CreateCurdFactory().Add(&param) {
-		response.FailSimplify(ctx, "保存失败")
+	if err := role_service.CreateCurdFactory().Add(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
