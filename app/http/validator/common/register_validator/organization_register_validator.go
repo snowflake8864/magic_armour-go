@@ -106,8 +106,6 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, department3.Delete{})
 
 	//角色
-	key = consts.ValidatorPrefixOrg + "RolePage" //
-	containers.Set(key, role3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "RoleAdd" //
 	containers.Set(key, role3.ManageAdd{})
 	key = consts.ValidatorPrefixOrg + "RoleEdit" //

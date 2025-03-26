@@ -14,25 +14,15 @@ type RoleController struct {
 	ControllerBase
 }
 
-// PageForManage 管理页：分页
-func (u *RoleController) PageForManage(ctx *gin.Context) {
+// AllForManage 管理页：全部角色
+func (u *RoleController) AllForManage(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	condition := role_models.SearchConditions{
 		OrgId: loginInfo.OrgId,
-		Name:  ctx.GetString(consts.ValidatorPrefixOrg + "name"),
 	}
-	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, "")
-
-	total, models := role_models.CreateRoleFactory().Page(condition, offset, pageSize, order)
-
-	response.SuccessReturnData(ctx, (&org_trans.Role{}).TransPage(total, models))
-}
-
-// AllForManage 管理页：全部角色
-func (u *RoleController) AllForManage(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "AllForManage")
+	models := role_models.CreateRoleFactory().GetListByConditions(condition)
+	response.SuccessReturnData(ctx, (&org_trans.Role{}).TransList(models))
 }
 
 // AddForManage 管理页：添加

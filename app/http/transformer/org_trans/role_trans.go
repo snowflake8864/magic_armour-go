@@ -32,3 +32,16 @@ func (t *Role) TransPage(total int64, models []*role_models.RoleModel) interface
 		"items": items,
 	}
 }
+
+// TransList 转换成管理页需要的数据
+func (t *Role) TransList(models []*role_models.RoleModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			tmp := t.pageGeneral(model)
+			items = append(items, tmp)
+		}
+	}
+
+	return items
+}

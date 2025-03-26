@@ -132,11 +132,10 @@ func InitOrganizationRouter() *gin.Engine {
 				//角色
 				role := vOrg.Group("role/")
 				{
-					role.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"RolePage"))
+					role.POST("getAll", (&organization.RoleController{}).AllForManage)
 					role.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"RoleAdd"))
 					role.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"RoleEdit"))
 					role.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"RoleDelete"))
-					role.POST("getAll", (&organization.RoleController{}).AllForManage)
 					role.POST("getMenuTree", validatorFactory.Create(consts.ValidatorPrefixOrg+"RoleGetMenuTree"))
 					role.POST("saveMenus", validatorFactory.Create(consts.ValidatorPrefixOrg+"RoleSaveMenus"))
 				}
