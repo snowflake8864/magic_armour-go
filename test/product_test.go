@@ -81,5 +81,5 @@ func TestGetGrantExpiredRemind(t *testing.T) {
 }
 
 func TestOrgAddDefaultRole(t *testing.T) {
-	role_service.CreateCurdFactory().AddDefault(2)
+	role_service.CreateCurdFactory().AddDefault(1)
 }
