@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -40,15 +41,19 @@ func (u *UserController) Page(ctx *gin.Context) {
 	total, userModels := user_models.CreateUserFactory().Page(conditions, offset, pageSize, order)
 
 	departmentMaps := make(map[int64]*department_models.DepartmentModel)
+	roleMaps := make(map[int64]*role_models.RoleModel)
 	if userModels != nil && len(userModels) > 0 {
 		var deptIds []int64
+		var roleIds []int64
 		for _, model := range userModels {
 			deptIds = append(deptIds, json_helper.ToSliceInt64(model.Depts)...)
+			roleIds = append(roleIds, model.RoleId)
 		}
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, deptIds)
+		roleMaps = role_models.CreateRoleFactory().GetMapsByOrgAndIds(loginInfo.OrgId, roleIds)
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.User{}).TransPage(total, userModels, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.User{}).TransPage(total, userModels, departmentMaps, roleMaps))
 }
 
 // Add 添加

@@ -8,6 +8,7 @@ import (
 type SearchConditions struct {
 	Id          int64
 	OrgId       int64
+	Ids         []int64
 	Name        string
 	CreateAtGte string
 	CreateAtLte string
@@ -22,6 +23,12 @@ func (crd *baseRole) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "id",
 			Val: condition.Id,
+		})
+	}
+	if len(condition.Ids) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "id in",
+			Val: condition.Ids,
 		})
 	}
 	if condition.OrgId > 0 {

@@ -104,6 +104,19 @@ func (m *RoleModel) GetItemByConditions(condition SearchConditions) (item *RoleM
 	}
 }
 
+// GetMapsByOrgAndIds 通过企业id和ids获取多条记录, 有映射关系
+func (m *RoleModel) GetMapsByOrgAndIds(orgId int64, ids []int64) map[int64]*RoleModel {
+	models := m.GetListByConditions(SearchConditions{OrgId: orgId, Ids: ids})
+	if models == nil {
+		return nil
+	}
+	result := make(map[int64]*RoleModel)
+	for _, item := range models {
+		result[item.Id] = item
+	}
+	return result
+}
+
 // UpdateByConditions 通过条件修改
 func (m *RoleModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
 	tmp := m.Model(m)
