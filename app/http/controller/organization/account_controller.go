@@ -71,8 +71,9 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		IsShow: &IsYes,
 	}
 
-	//不是管理员， 只能看非管理员菜单
+	//不是root
 	if loginInfo.IsRoot == enums.IsNot {
+		//只能看非root菜单
 		IsNot := enums.IsNot
 		conditions.IsRoot = &IsNot
 
