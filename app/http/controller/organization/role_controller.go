@@ -3,10 +3,16 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/role_models"
+	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/organization/role_service"
+	"goskeleton/app/service/platform/org_menu_service"
+	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
+	"strings"
 )
 
 // RoleController 角色相关
@@ -76,7 +82,37 @@ func (u *RoleController) DeleteForManage(ctx *gin.Context) {
 
 // GetTreeForMenu 菜单：获取树
 func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "GetTreeForMenu")
+	loginInfo := u.getLogin(ctx)
+	roleId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
+
+	//角色菜单
+	roleModel := role_service.CreateCurdFactory().HasId(roleId, loginInfo.OrgId)
+	if roleModel == nil {
+		response.SuccessReturnData(ctx, []interface{}{})
+	}
+	roleMenus := make(map[int64]struct{})
+	for _, val := range strings.Split(roleModel.Menus, ",") {
+		menuId := string_helper.ToInt64(val)
+		roleMenus[menuId] = struct{}{}
+	}
+
+	//企业全部菜单
+	IsYes := enums.IsYes
+	conditions := org_menu_models.SearchConditions{
+		UsageVerList: []int{
+			0, //全部版本
+			cur_app.GetAppUsageVersion(),
+		},
+		IsShow: &IsYes,
+	}
+	//不是管理员， 只能看非管理员菜单
+	if loginInfo.IsRoot == enums.IsNot {
+		IsNot := enums.IsNot
+		conditions.IsRoot = &IsNot
+	}
+	menuModels := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(menuModels, roleMenus))
+
 }
 
 // SaveForMenu  菜单：保存
