@@ -127,6 +127,7 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 		"position": userParam.Position,
 		"intro":    userParam.Intro,
 		"depts":    userParam.Depts,
+		"role_id":  userParam.RoleId,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
 		return errors.New("保存失败")

@@ -15,6 +15,7 @@ type Edit struct {
 	Position    string `form:"position" json:"position" binding:"omitempty,max=128"`
 	Intro       string `form:"intro" json:"intro" binding:"omitempty,max=200"`
 	Departments string `form:"departments" json:"departments"`
+	RoleId      int    `form:"roleId" json:"roleId" binding:"required"`
 }
 
 func (n Edit) CheckParams(context *gin.Context) {

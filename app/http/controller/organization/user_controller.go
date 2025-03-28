@@ -65,6 +65,7 @@ func (u *UserController) Add(ctx *gin.Context) {
 		Position:   ctx.GetString(consts.ValidatorPrefixOrg + "position"),
 		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
 		Depts:      ctx.GetString(consts.ValidatorPrefixOrg + "departments"),
+		RoleId:     int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "roleId")),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
@@ -93,6 +94,7 @@ func (u *UserController) Edit(ctx *gin.Context) {
 		Position:   ctx.GetString(consts.ValidatorPrefixOrg + "position"),
 		Intro:      ctx.GetString(consts.ValidatorPrefixOrg + "intro"),
 		Depts:      ctx.GetString(consts.ValidatorPrefixOrg + "departments"),
+		RoleId:     int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "roleId")),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
