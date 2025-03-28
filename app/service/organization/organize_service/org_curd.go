@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/organization/org_log_service"
+	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -174,7 +175,8 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo *admin
 		return -3, errors.New("保存企业日志失败")
 	}
 
-	//新增
+	//默认企业角色
+	role_service.CreateCurdFactory().AddDefault(orgId)
 
 	return errCode, err
 }
