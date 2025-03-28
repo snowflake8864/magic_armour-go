@@ -16,8 +16,20 @@ type RoleCurd struct {
 	masterModel *role_models.RoleModel
 }
 
-func (crd *RoleCurd) defaultMenus() string {
+func (crd *RoleCurd) defaultMinMenus() string {
 	return "1,2,3,4,5" //最小权限
+}
+
+func (crd *RoleCurd) defaultAuditorMenus() string {
+	return "1,2,3,4,5,53,54"
+}
+
+func (crd *RoleCurd) defaultOperatorMenus() string {
+	return "1,2,3,4,5,10,11,12,87,13,14,15,69,17,18,19,20,21,71,22,23,68,25,26,27,28,29,30,31,32,33,34,35,36,37,38,73,62,63,64,51,52"
+}
+
+func (crd *RoleCurd) defaultAdministratorMenus() string {
+	return "1,2,3,4,5,10,11,12,13,14,15,17,18,19,20,21,22,23,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,67,68,71,73,75,81,82"
 }
 
 // AddDefault 新增默认
@@ -30,7 +42,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 			OrgId:      orgId,
 			Name:       "管理员",
 			Remark:     remark,
-			Menus:      crd.defaultMenus(),
+			Menus:      crd.defaultAdministratorMenus(),
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
@@ -40,7 +52,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 			OrgId:      orgId,
 			Name:       "操作员",
 			Remark:     remark,
-			Menus:      crd.defaultMenus(),
+			Menus:      crd.defaultOperatorMenus(),
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
@@ -50,7 +62,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 			OrgId:      orgId,
 			Name:       "审计员",
 			Remark:     remark,
-			Menus:      crd.defaultMenus(),
+			Menus:      crd.defaultAuditorMenus() + ",53,54",
 			IsDefault:  enums.IsYes,
 			CreateId:   0,
 			CreateName: "",
@@ -71,7 +83,7 @@ func (crd *RoleCurd) Add(param *role_models.RoleModel) error {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
 	if string_helper.IsEmpty(param.Menus) {
-		param.Menus = crd.defaultMenus()
+		param.Menus = crd.defaultMinMenus()
 	}
 	param.IsDefault = enums.IsNot
 

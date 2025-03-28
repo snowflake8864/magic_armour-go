@@ -98,18 +98,16 @@ func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
 
 	//企业全部菜单
 	IsYes := enums.IsYes
+	IsNot := enums.IsNot
 	conditions := org_menu_models.SearchConditions{
 		UsageVerList: []int{
 			0, //全部版本
 			cur_app.GetAppUsageVersion(),
 		},
-		IsShow: &IsYes,
+		IsShow: &IsYes, //不显示
+		IsRoot: &IsNot, //只能非root菜单
 	}
-	//不是管理员， 只能看非管理员菜单
-	if loginInfo.IsRoot == enums.IsNot {
-		IsNot := enums.IsNot
-		conditions.IsRoot = &IsNot
-	}
+
 	menuModels := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
 	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(menuModels, roleMenus))
 

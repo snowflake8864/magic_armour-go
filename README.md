@@ -48,6 +48,7 @@
 
 - 服务器时区应设置为东8区: 日期转成时间戳时默认按照东8区计算
 - 每个路由都有限流设置
+- 新增菜单注意给默认角色
 - Doris 数据库
 
       DROP TABLE IF EXISTS table_name FORCE;
