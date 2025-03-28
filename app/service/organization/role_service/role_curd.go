@@ -155,5 +155,15 @@ func (crd *RoleCurd) SaveMenus(param *role_models.RoleModel) error {
 	if existsModel := crd.HasId(param.Id, param.OrgId); existsModel == nil {
 		return errors.New("数据不存在")
 	}
+	//修改
+	updates := map[string]interface{}{
+		"menus": param.Menus,
+	}
+
+	if isOk, _ := crd.masterModel.UpdateByConditions(role_models.SearchConditions{
+		Id: param.Id,
+	}, updates); !isOk {
+		return errors.New("保存失败")
+	}
 	return nil
 }

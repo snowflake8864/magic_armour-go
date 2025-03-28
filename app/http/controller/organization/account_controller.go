@@ -8,11 +8,11 @@ import (
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
-	"goskeleton/app/utils/tree"
 )
 
 // AccountController 首页相关
@@ -63,7 +63,7 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	IsYes := enums.IsYes
 	conditions := org_menu_models.SearchConditions{
 		UsageVerList: []int{
-			0,
+			0, //全部版本
 			cur_app.GetAppUsageVersion(),
 		},
 		IsShow: &IsYes,
@@ -81,28 +81,7 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		return
 	}
 
-	var nodes []*tree.Node
-	for _, model := range models {
-		nodes = append(nodes, &tree.Node{
-			ID:       model.Id,
-			ParentId: model.ParentId,
-			Data: map[string]interface{}{
-				"name":       model.Name,
-				"type":       model.Type,
-				"code":       model.Code,
-				"sort":       model.Sort,
-				"is_show":    model.IsShow,
-				"is_root":    model.IsRoot,
-				"usage_ver":  model.UsageVer,
-				"remark":     model.Remark,
-				"api":        model.Api,
-				"level":      model.Level,
-				"created_at": model.CreatedAt,
-			},
-			Child: []*tree.Node{},
-		})
-	}
-	response.SuccessReturnData(ctx, tree.RealTree(nodes))
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil))
 }
 
 // ModifyPw 修改密码

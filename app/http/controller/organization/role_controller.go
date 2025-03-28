@@ -81,5 +81,16 @@ func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
 
 // SaveForMenu  菜单：保存
 func (u *RoleController) SaveForMenu(ctx *gin.Context) {
-	response.SuccessReturnData(ctx, "SaveForMenu")
+	loginInfo := u.getLogin(ctx)
+	param := role_models.RoleModel{
+		Id:    int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id")),
+		OrgId: loginInfo.OrgId,
+		Menus: ctx.GetString(consts.ValidatorPrefixOrg + "menus"),
+	}
+
+	if err := role_service.CreateCurdFactory().SaveMenus(&param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }

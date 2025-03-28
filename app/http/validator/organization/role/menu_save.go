@@ -9,6 +9,8 @@ import (
 )
 
 type MenuSave struct {
+	ID
+	Menus string `form:"menus" json:"menus" binding:"required"`
 }
 
 func (n MenuSave) CheckParams(context *gin.Context) {

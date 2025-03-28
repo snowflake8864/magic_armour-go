@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/tree"
 )
 
 func CreateCurdFactory() *MenuCurd {
@@ -65,4 +66,38 @@ func (crd *MenuCurd) DeleteById(id int64) (errCode int, err error) {
 		return -1, errors.New("删除失败")
 	}
 	return errCode, err
+}
+
+func (crd *MenuCurd) ToTree(models []*org_menu_models.OrgMenuModel, selectedMap map[int64]struct{}) []*tree.Node {
+
+	var nodes []*tree.Node
+	for _, model := range models {
+		//是否选中
+		isSelect := 0
+		if _, isOk := selectedMap[model.Id]; isOk {
+			isSelect = 1
+		}
+
+		nodes = append(nodes, &tree.Node{
+			ID:       model.Id,
+			ParentId: model.ParentId,
+			Data: map[string]interface{}{
+				"name":        model.Name,
+				"type":        model.Type,
+				"code":        model.Code,
+				"sort":        model.Sort,
+				"is_show":     model.IsShow,
+				"is_root":     model.IsRoot,
+				"is_selected": isSelect,
+				"usage_ver":   model.UsageVer,
+				"remark":      model.Remark,
+				"api":         model.Api,
+				"level":       model.Level,
+				"created_at":  model.CreatedAt,
+			},
+			Child: []*tree.Node{},
+		})
+	}
+
+	return tree.RealTree(nodes)
 }
