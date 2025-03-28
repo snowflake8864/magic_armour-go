@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/service/organization/order_service"
+	"goskeleton/app/service/organization/role_service"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
 	"testing"
 )
@@ -77,4 +78,8 @@ func TestGetGrantAutoExpire(t *testing.T) {
 
 func TestGetGrantExpiredRemind(t *testing.T) {
 	order_service.CreateCurdFactory().ExpiredRemindForOrg(1)
+}
+
+func TestOrgAddDefaultRole(t *testing.T) {
+	role_service.CreateCurdFactory().AddDefault(2)
 }
