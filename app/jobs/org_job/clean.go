@@ -110,6 +110,16 @@ func Clean(orgId int64) {
 		OrgId: orgId,
 	})
 
+	//备份记录
+	backup_models.CreateBackupFactory().DeleteByConditions(backup_models.SearchConditions{
+		OrgId: orgId,
+	})
+
+	//企业角色
+	role_models.CreateRoleFactory().DeleteByConditions(role_models.SearchConditions{
+		OrgId: orgId,
+	})
+
 	//告警
 	alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
 		OrgId: orgId,
@@ -164,13 +174,4 @@ func Clean(orgId int64) {
 		OrgId: orgId,
 	})
 
-	//备份记录
-	backup_models.CreateBackupFactory().DeleteByConditions(backup_models.SearchConditions{
-		OrgId: orgId,
-	})
-
-	//企业角色
-	role_models.CreateRoleFactory().DeleteByConditions(role_models.SearchConditions{
-		OrgId: orgId,
-	})
 }
