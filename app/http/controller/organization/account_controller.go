@@ -7,12 +7,14 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/org_menu_models"
+	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
+	"strings"
 )
 
 // AccountController 首页相关
@@ -73,6 +75,12 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	if loginInfo.IsRoot == enums.IsNot {
 		IsNot := enums.IsNot
 		conditions.IsRoot = &IsNot
+
+		//角色菜单
+		roleModel := role_service.CreateCurdFactory().HasId(loginInfo.RoleId, loginInfo.OrgId)
+		for _, val := range strings.Split(roleModel.Menus, ",") {
+			conditions.Ids = append(conditions.Ids, string_helper.ToInt64(val))
+		}
 	}
 
 	models := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
