@@ -243,17 +243,19 @@ func (crd *PlugCalc) hasDynamic(orgId int64, agentId string, attackIp string) bo
 
 func (crd *PlugCalc) InIpEffect(nowTimestamp int64, effectMode int, effectStartAt, effectEndAt string) bool {
 	if effectMode == enum_plug.EffectModeRange {
+		//正确： startTimestamp <= nowTimestamp <= endTimestamp
 		if !string_helper.IsEmpty(effectStartAt) {
-			//没有开始
-			if val := date_helper.DatetimeToTimestamp(effectStartAt+" 00:00:00", variable.DateFormatNow); val > nowTimestamp {
+			//没有开始: 开始时间大于现在时间
+			if startTimestamp := date_helper.DatetimeToTimestamp(effectStartAt+" 00:00:00", variable.DateFormatNow); startTimestamp > nowTimestamp {
 				return false
 			}
 		}
 		if !string_helper.IsEmpty(effectEndAt) {
-			//已经结束
-			if val := date_helper.DatetimeToTimestamp(effectEndAt+" 23:59:59", variable.DateFormatNow); val < nowTimestamp {
+			//已经结束: 现在时间大于结束时间
+			if endTimestamp := date_helper.DatetimeToTimestamp(effectEndAt+" 23:59:59", variable.DateFormatNow); nowTimestamp > endTimestamp {
 				return false
 			}
+
 		}
 	}
 

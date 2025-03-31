@@ -68,7 +68,7 @@
 
     function  send_msg() {
         //发送消息
-        $user_send_msg=$("#sendmsg").val()
+        $user_send_msg=$("#sendmsg").startTimestamp()
         console.log("发送消息："+$user_send_msg)
         websocket.send($user_send_msg)
     }
