@@ -330,7 +330,7 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 	if userExist == nil || userExist.Id == 0 {
 		return errors.New("用户不存在")
 	}
-	if userModel := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 && userModel.Id != userExist.Id {
+	if userModel := crd.GetItemByPhone(userParam.Phone); userExist != nil && userModel.Id > 0 && userModel.Id != userExist.Id {
 		return errors.New("手机号码已存在")
 	}
 
@@ -347,12 +347,19 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 		return errors.New("旧密码不正确")
 	}
 
-	//修改密码
+	//修改手机
 	updates := map[string]interface{}{
 		"phone": userParam.Phone,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
 		return errors.New("修改手机号码失败")
+	}
+
+	//同步修改企业
+	if userExist.IsRoot == enums.IsYes {
+		organization_models.CreateOrganizationFactory().UpdateById(userParam.OrgId, map[string]interface{}{
+			"user_phone": userParam.Phone,
+		})
 	}
 
 	//新增企业日志
@@ -392,12 +399,19 @@ func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp str
 		return errors.New("旧密码不正确")
 	}
 
-	//修改密码
+	//修改邮箱失
 	updates := map[string]interface{}{
 		"email": userParam.Email,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
 		return errors.New("修改邮箱失败")
+	}
+
+	//同步修改企业
+	if userExist.IsRoot == enums.IsYes {
+		organization_models.CreateOrganizationFactory().UpdateById(userParam.OrgId, map[string]interface{}{
+			"user_email": userParam.Email,
+		})
 	}
 
 	//新增企业日志
