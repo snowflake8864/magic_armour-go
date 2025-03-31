@@ -252,7 +252,7 @@ func (m *ProcessModel) CalcByConditionsGroupAgent(condition SearchConditions, co
 }
 
 // GetListByConditionsDistinctHash 通过条件获取多条记录
-func (m *ProcessModel) GetListByConditionsDistinctHash(condition SearchConditions) (items []*ProcessModel) {
+func (m *ProcessModel) GetListByConditionsDistinctHash(condition SearchConditions, offset, limit int) (items []*ProcessModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		tmp.Select("distinct(proc_hash), dir, agent_id")
@@ -260,7 +260,7 @@ func (m *ProcessModel) GetListByConditionsDistinctHash(condition SearchCondition
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 
-		return tmp.Find(&items)
+		return tmp.Find(&items).Offset(offset).Limit(limit)
 	})
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {

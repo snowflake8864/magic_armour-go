@@ -9,6 +9,7 @@ import (
 )
 
 type ManageDelete struct {
+	ID
 }
 
 func (n ManageDelete) CheckParams(context *gin.Context) {

@@ -28,7 +28,7 @@
 
       ./app_cli.linux64 migrate -A (init|dictionary|menu|append)
       ./app_cli.linux64 queue  -A (init|consume) -T (common|process|dll|threaten|alarm|syslog|crontab)
-      ./app_cli.linux64 crontab -U (minute|hour|day) -M(every|once) -A (zero|one|two|three|four|five|six|ten|fifteen|twenty|thirty)
+      ./app_cli.linux64 crontab -A (AgentOffline)
 
 
 ### 守护进程，注意<kbd>supervisord.conf</kbd>路径
@@ -48,9 +48,10 @@
 
 - 服务器时区应设置为东8区: 日期转成时间戳时默认按照东8区计算
 - 每个路由都有限流设置
+- 新增菜单注意给默认角色
 - Doris 数据库
 
       DROP TABLE IF EXISTS table_name FORCE;
 
 
-### 定时任务，参考 <kbd>docs/Crontab.txt</kbd>
+### 定时任务，参考 <kbd>docs/Crontab_v2.txt</kbd>

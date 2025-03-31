@@ -88,7 +88,8 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentOutreachDetectMax + `', '10','终端：外联探测最大数(不超过20)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentOutreachDetectTime + `', '180','终端：外联探测间隔时间(秒)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentTypes + `', '` + json_helper.Encode(enum_agent.AgentTypeDefault()) + `','终端：终端类型'),
-			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentDebugSwitch + `', '0','终端：调试开关(0|1)'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentDebugIds + `', '','终端：调试集合(多个,隔开)'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentDebugPort + `', '19110','终端：调试端口'),
 
 
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenSwitch + `', '0','威胁情报:开关'),

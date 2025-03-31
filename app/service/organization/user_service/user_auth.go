@@ -61,6 +61,7 @@ type UserCacheLogin struct {
 	OrgCode       string  `json:"org_code"`
 	UserId        int64   `json:"user_id"`
 	Username      string  `json:"username"`
+	RoleId        int64   `json:"role_id"`
 	IsRoot        int     `json:"is_root"`
 	DeptIds       []int64 `json:"dept_ids"`        //直接管理的组织架构
 	DeptWithChild []int64 `json:"dept_with_child"` //直接管理的组织架构以及子集
@@ -325,6 +326,7 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 		OrgCode:       orgModel.Code,
 		UserId:        userModel.Id,
 		Username:      userModel.Username,
+		RoleId:        userModel.RoleId,
 		IsRoot:        userModel.IsRoot,
 		DeptIds:       deptIds,
 		DeptWithChild: deptWithChild,

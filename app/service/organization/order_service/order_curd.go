@@ -41,7 +41,12 @@ type OrderCurd struct {
 	redisNumberExpire int
 }
 
-func (crd *OrderCurd) makerOrderNo(prefix string, grantType int) string {
+func (crd *OrderCurd) makerOrderNo(grantType int) string {
+	prefix := enum_order.OrderNoPrefixCloud
+	if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
+		prefix = enum_order.OrderNoPrefixOffline
+	}
+
 	today := date_helper.SpecialDatetime("20060102")
 	key := crd.redisNumberPrefix + today
 	if val, err := crd.redisClient.Incr(key); err == nil {
@@ -117,7 +122,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 
 	//新增订单
 	orderParam.GrantType = productModel.GrantType
-	orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixCloud, orderParam.GrantType)
+	orderParam.OrderNo = crd.makerOrderNo(orderParam.GrantType)
 	//企业相关
 	orderParam.OrgName = orgModel.Name
 	orderParam.UserName = orgModel.UserName
@@ -262,7 +267,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		if minimum == 0 {
 			break
 		}
-		orderParam.OrderNo = crd.makerOrderNo(enum_order.OrderNoPrefixOffline, orderParam.GrantType)
+		orderParam.OrderNo = crd.makerOrderNo(orderParam.GrantType)
 		//最小值为购买数目
 		orderParam.BuyNumber = minimum
 		//授权配置
@@ -682,7 +687,8 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	}
 
 	//修改终端
-	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantType, orderModel.GrantDuration, orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt) {
+	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantType,
+		orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt, orderModel.GrantDuration) {
 		return errors.New("终端授权失败")
 	}
 

@@ -26,7 +26,7 @@ func TestUpdate(t *testing.T) {
 	fact := dictionary_service.CreateCurdFactory()
 	fmt.Println("------------------------------")
 	fmt.Println(fact.UpdateValById("agent_save_access_log", "1"))
-	fmt.Println(fact.UpdateValById("agent_save_access_log_test", "1"))
+	fmt.Println(fact.UpdateValById("agent_debug_ids", "win2010_test_001"))
 }
 
 func TestRebuildCache(t *testing.T) {

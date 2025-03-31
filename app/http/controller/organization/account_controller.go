@@ -7,12 +7,14 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/org_menu_models"
+	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
-	"goskeleton/app/utils/tree"
+	"strings"
 )
 
 // AccountController 首页相关
@@ -31,7 +33,7 @@ func (u *AccountController) GetUser(ctx *gin.Context) {
 
 	model := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
 
-	info := (&org_trans.User{}).TransInfo(model, nil)
+	info := (&org_trans.User{}).TransInfo(model, nil, nil)
 	info["org_name"] = loginInfo.OrgName
 	info["org_code"] = loginInfo.OrgCode
 	response.SuccessReturnData(ctx, info)
@@ -63,16 +65,23 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	IsYes := enums.IsYes
 	conditions := org_menu_models.SearchConditions{
 		UsageVerList: []int{
-			0,
+			0, //全部版本
 			cur_app.GetAppUsageVersion(),
 		},
 		IsShow: &IsYes,
 	}
 
-	//不是管理员， 只能看非管理员菜单
+	//不是root
 	if loginInfo.IsRoot == enums.IsNot {
+		//只能看非root菜单
 		IsNot := enums.IsNot
 		conditions.IsRoot = &IsNot
+
+		//角色菜单
+		roleModel := role_service.CreateCurdFactory().HasId(loginInfo.RoleId, loginInfo.OrgId)
+		for _, val := range strings.Split(roleModel.Menus, ",") {
+			conditions.Ids = append(conditions.Ids, string_helper.ToInt64(val))
+		}
 	}
 
 	models := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
@@ -81,28 +90,7 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		return
 	}
 
-	var nodes []*tree.Node
-	for _, model := range models {
-		nodes = append(nodes, &tree.Node{
-			ID:       model.Id,
-			ParentId: model.ParentId,
-			Data: map[string]interface{}{
-				"name":       model.Name,
-				"type":       model.Type,
-				"code":       model.Code,
-				"sort":       model.Sort,
-				"is_show":    model.IsShow,
-				"is_root":    model.IsRoot,
-				"usage_ver":  model.UsageVer,
-				"remark":     model.Remark,
-				"api":        model.Api,
-				"level":      model.Level,
-				"created_at": model.CreatedAt,
-			},
-			Child: []*tree.Node{},
-		})
-	}
-	response.SuccessReturnData(ctx, tree.RealTree(nodes))
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil))
 }
 
 // ModifyPw 修改密码

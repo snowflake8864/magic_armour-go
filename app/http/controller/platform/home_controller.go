@@ -185,7 +185,7 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 	var onlineArr []int
 	if models != nil && len(models) > 0 {
 		for _, model := range models {
-			onlineArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
+			dateArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
 			onlineArr = append(onlineArr, model.UserOnline)
 		}
 	}

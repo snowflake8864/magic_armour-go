@@ -97,7 +97,7 @@ func (crd *HuanshiCmd) Push() {
 		return
 	}
 	//休眠一下, 等待幻势处理设备数据
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second * 1)
 	//终端类型
 	jsonStr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentTypes)
 	typeMap := enum_agent.GetTypeMap(jsonStr)
@@ -177,7 +177,7 @@ func (crd *HuanshiCmd) Push() {
 					agentData.DiskLoad = newestMonitor.HdUsage
 				}
 			}
-			variable.ZapLog.Sugar().Debug(json_helper.Encode(agentData))
+			//variable.ZapLog.Sugar().Debug(json_helper.Encode(agentData))
 			if err1 := hsCli.SyncAgentBySyslog(&agentData); err1 != nil {
 				variable.ZapLog.Sugar().Debug("push SyncAgentBySyslog：", err1.Error())
 				return

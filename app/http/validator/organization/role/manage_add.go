@@ -9,6 +9,7 @@ import (
 )
 
 type ManageAdd struct {
+	Add
 }
 
 func (n ManageAdd) CheckParams(context *gin.Context) {

@@ -3,6 +3,7 @@ package role_models
 import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 // 角色表
@@ -14,6 +15,7 @@ func CreateRoleFactory() *RoleModel {
 //结构体
 
 type RoleModel struct {
+	baseRole
 	model.BaseModel
 	Id         int64  `json:"id" gorm:"primaryKey"`
 	OrgId      int64  `json:"org_id"`
@@ -54,5 +56,147 @@ func (m *RoleModel) CreateTable() bool {
 		return true
 	} else {
 		return false
+	}
+}
+
+// InsertItem 插入一条
+func (m *RoleModel) InsertItem(s *RoleModel) bool {
+	result := m.Model(m).Create(s)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// InsertBatch 插入多条
+func (m *RoleModel) InsertBatch(list *[]RoleModel) bool {
+	result := m.Create(list)
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		variable.ZapLog.Sugar().Error(result.Error.Error())
+		return false
+	}
+}
+
+// GetItemById 通过id获取一条记录
+func (m *RoleModel) GetItemById(id int64) (item *RoleModel) {
+	result := m.Model(m).Where("id=?", id).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return item
+	}
+}
+
+// GetItemByConditions 通过条件获取一条记录
+func (m *RoleModel) GetItemByConditions(condition SearchConditions) (item *RoleModel) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return item
+	}
+}
+
+// GetMapsByOrgAndIds 通过企业id和ids获取多条记录, 有映射关系
+func (m *RoleModel) GetMapsByOrgAndIds(orgId int64, ids []int64) map[int64]*RoleModel {
+	models := m.GetListByConditions(SearchConditions{OrgId: orgId, Ids: ids})
+	if models == nil {
+		return nil
+	}
+	result := make(map[int64]*RoleModel)
+	for _, item := range models {
+		result[item.Id] = item
+	}
+	return result
+}
+
+// UpdateByConditions 通过条件修改
+func (m *RoleModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) (bool, int64) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Updates(updates)
+	if result.Error == nil {
+		return true, result.RowsAffected
+	} else {
+		return false, 0
+	}
+}
+
+// DeleteByConditions 通过条件删除
+func (m *RoleModel) DeleteByConditions(condition SearchConditions) bool {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Delete(m)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// GetListByConditions 通过条件获取多条记录
+func (m *RoleModel) GetListByConditions(condition SearchConditions) (items []*RoleModel) {
+	return m.GetItemsByConditions(condition, 0, 0, "")
+}
+
+// GetItemsByConditions 通过条件获取多条记录
+func (m *RoleModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*RoleModel) {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	if limit > 0 {
+		tmp = tmp.Offset(offset).Limit(limit)
+	}
+	if !string_helper.IsEmpty(order) {
+		tmp = tmp.Order(order)
+	} else {
+		tmp = tmp.Order("created_at ASC")
+	}
+	result := tmp.Find(&items)
+	if result.Error == nil {
+		return items
+	} else {
+		return nil
+	}
+}
+
+// Count 通过条件统计
+func (m *RoleModel) Count(condition SearchConditions) int64 {
+	var total int64
+	tmp := m.Model(m).Select("id")
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Count(&total)
+	if result.Error == nil {
+		return total
+	} else {
+		return 0
+	}
+}
+
+// Page 通过条件分页
+func (m *RoleModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*RoleModel) {
+	total = m.Count(condition)
+	if total == 0 {
+		return total, nil
+	}
+	items = m.GetItemsByConditions(condition, offset, limit, order)
+	if len(items) > 0 {
+		return total, items
+	} else {
+		return 0, nil
 	}
 }

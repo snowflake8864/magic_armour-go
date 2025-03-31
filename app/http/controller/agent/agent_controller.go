@@ -22,6 +22,7 @@ import (
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/path_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
@@ -56,7 +57,8 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 		enum_dictionary.AgentHttpPort,
 		enum_dictionary.AgentLogSendProto,
 		enum_dictionary.AgentOutreachDetectTime,
-		enum_dictionary.AgentDebugSwitch,
+		enum_dictionary.AgentDebugIds,
+		enum_dictionary.AgentDebugPort,
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 
@@ -69,9 +71,16 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["logsent"] = 0
 	mapConf["api_port"] = string_helper.ToInt(mapDict[enum_dictionary.AgentHttpPort])
 	mapConf["syslog_port"] = 0
-	mapConf["debug_switch"] = enums.SwitchOn
-	if val, isOK := mapDict[enum_dictionary.AgentDebugSwitch]; isOK {
-		mapConf["debug_switch"] = string_helper.ToInt(val)
+	//调试开关
+	mapConf["debug_switch"] = enums.SwitchOff
+	debugPort := enums.SwitchOff
+	if val, isOK := mapDict[enum_dictionary.AgentDebugPort]; isOK && !string_helper.IsEmpty(val) {
+		debugPort = string_helper.ToInt(val)
+	}
+	if val, isOK := mapDict[enum_dictionary.AgentDebugIds]; isOK && !string_helper.IsEmpty(val) {
+		if slice_helper.StringIn(loginInfo.AgentId, strings.Split(val, ",")) {
+			mapConf["debug_switch"] = debugPort
+		}
 	}
 
 	//进程

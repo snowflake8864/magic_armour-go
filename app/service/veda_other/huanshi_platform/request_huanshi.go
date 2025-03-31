@@ -20,8 +20,8 @@ const (
 	AlarmTypeProcess   int = 1  //告警类型: 进程
 	AlarmTypeDll       int = 2  //告警类型: 模块
 	AlarmTypeTamper    int = 3  //告警类型: 防篡改
-	AlarmTypeBlackmail int = 4  //告警类型: 虚开
-	AlarmTypePort      int = 5  //告警类型: 端口
+	AlarmTypeBlackmail int = 4  //告警类型: 勒索
+	AlarmTypePort      int = 5  //告警类型: 端口虚开
 	AlarmTypeUsb       int = 6  //告警类型: 外设
 	AlarmTypePlug      int = 7  //告警类型: 动态封堵
 	AlarmTypeOutreach  int = 8  //告警类型: 外联

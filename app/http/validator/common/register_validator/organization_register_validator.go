@@ -26,6 +26,7 @@ import (
 	process3 "goskeleton/app/http/validator/organization/process"
 	pwJump3 "goskeleton/app/http/validator/organization/pw_jump"
 	registry3 "goskeleton/app/http/validator/organization/registry"
+	role3 "goskeleton/app/http/validator/organization/role"
 	safetyReport3 "goskeleton/app/http/validator/organization/safety_report"
 	software3 "goskeleton/app/http/validator/organization/software"
 	syslog3 "goskeleton/app/http/validator/organization/syslog"
@@ -103,6 +104,18 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, department3.Edit{})
 	key = consts.ValidatorPrefixOrg + "DepartmentDelete"
 	containers.Set(key, department3.Delete{})
+
+	//角色
+	key = consts.ValidatorPrefixOrg + "RoleAdd" //
+	containers.Set(key, role3.ManageAdd{})
+	key = consts.ValidatorPrefixOrg + "RoleEdit" //
+	containers.Set(key, role3.ManageEdit{})
+	key = consts.ValidatorPrefixOrg + "RoleDelete" //
+	containers.Set(key, role3.ManageDelete{})
+	key = consts.ValidatorPrefixOrg + "RoleGetMenuTree" //
+	containers.Set(key, role3.MenuTreeGet{})
+	key = consts.ValidatorPrefixOrg + "RoleSaveMenus" //
+	containers.Set(key, role3.MenuSave{})
 
 	//用户管理
 	key = consts.ValidatorPrefixOrg + "UserPage"

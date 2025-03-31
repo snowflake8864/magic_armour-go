@@ -9,6 +9,8 @@ import (
 )
 
 type ManageEdit struct {
+	ID
+	Add
 }
 
 func (n ManageEdit) CheckParams(context *gin.Context) {

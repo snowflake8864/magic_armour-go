@@ -8,7 +8,6 @@ import (
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
-	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
@@ -26,11 +25,13 @@ func (crd *AgentCurd) DeleteByOrg(orgId int64) bool {
 }
 
 // BatchGrant 批量授权
-func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantType, grantDuration int, grantModule, productTitle, expireAt string) bool {
+func (crd *AgentCurd) BatchGrant(orgId int64, agentIds []string, orderNo string, grantType int, grantModule, productTitle, expireAt string, grantDuration int) bool {
 	if enum_order.GetPrefixByOrderNo(orderNo) == enum_order.OrderNoPrefixCloud {
 		//导入授权终端过期时间与证书过期时间相同
 		//购买授权终端过期时间为当前时间加上授权时长
-		expireAt, _, _, _ = date_helper.CalcByDay(grantDuration)
+		//todo bug[10110] 改成已订单过期为准
+		//expireAt = date_helper.TimestampToDatetimeByFormat(date_helper.AddTimestampByDays(0, grantDuration, 0), variable.DateFormatToday)
+
 	}
 	updates := map[string]interface{}{
 		"grant_product_title": productTitle,
