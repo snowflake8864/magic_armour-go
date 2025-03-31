@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/helpers/timeout_control_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
@@ -91,7 +92,13 @@ func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
 	code = int_helper.IntRandom2Str(100000, 999999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
 
-	go ali_sms.SendAuthCode(phone, code)
+	// 调用客户端
+	timeout_control_helper.TimeoutControl(func(errChan chan error) {
+		// 赋值
+		err := ali_sms.SendAuthCode(phone, code)
+
+		errChan <- err
+	}, fmt.Sprintf("pt action=%s,phone=%s,code=%s", "auth", phone, code))
 	return code
 }
 
