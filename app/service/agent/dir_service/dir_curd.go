@@ -1,7 +1,6 @@
 package dir_service
 
 import (
-	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_task"
@@ -39,7 +38,6 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	if string_helper.IsEmpty(dir) {
 		dir = enum_tamper.RootDir
 	}
-	fmt.Println("dir: ", dir)
 	dir = path_helper.ToStandard(dir)
 
 	//缓存的路径
