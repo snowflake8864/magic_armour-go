@@ -3,6 +3,9 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_tamper"
+	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/organization/department_models"
@@ -13,6 +16,13 @@ import (
 // FileDirController 文件目录相关
 type FileDirController struct {
 	ControllerBase
+}
+
+// GetTypes 类型
+func (u *FileDirController) GetTypes(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("search_type", enum_tamper.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("search_type", enum_tamper.EnumMapInt)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
 }
 
 // Page 分页
@@ -41,4 +51,14 @@ func (u *FileDirController) Page(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, (&org_trans.TrustDirTrans{}).TransGlobalPage(total, models, departmentMaps))
+}
+
+// HasUpload 判断是否上传
+func (u *FileDirController) HasUpload(ctx *gin.Context) {
+
+}
+
+// Refresh 刷新
+func (u *FileDirController) Refresh(ctx *gin.Context) {
+
 }

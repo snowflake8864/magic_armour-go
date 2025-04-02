@@ -222,8 +222,10 @@ func InitOrganizationRouter() *gin.Engine {
 				//文件目录
 				fileDir := vOrg.Group("fileDir/")
 				{
+					fileDir.POST("getTypes", (&organization.FileDirController{}).GetTypes)
 					fileDir.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirPage"))
-					fileDir.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirPage"))
+					fileDir.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirRefresh"))
+					fileDir.POST("hasUpload", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirHasUpload"))
 				} //文件目录
 
 				//进程

@@ -175,6 +175,10 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalDelete"
 	containers.Set(key, trustDir3.GlobalDelete{})
 
+	//文件目录
+	key = consts.ValidatorPrefixOrg + "FileDirPage"
+	containers.Set(key, trustDir3.GlobalPage{})
+
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
 	containers.Set(key, process3.ManagePage{})
