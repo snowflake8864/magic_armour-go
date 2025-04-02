@@ -1,7 +1,6 @@
 package dir_service
 
 import (
-	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_task"
@@ -14,22 +13,22 @@ import (
 
 func CreateDirCurdFactory() *DirCurd {
 	return &DirCurd{
-		masterModel: dir_models.CreateDirFactory(),
-		redisClient: redis_factory.GetOneRedisClient(),
-		cachePrefix: "agent_dir_search_",
-		cacheExpire: 86400 * 3,
+		masterModel:  dir_models.CreateDirFactory(),
+		redisClient:  redis_factory.GetOneRedisClient(),
+		searchPrefix: "agent_dir_search_",
+		searchExpire: 86400,
 	}
 }
 
 type DirCurd struct {
-	masterModel *dir_models.DirModel
-	redisClient *redis_factory.RedisClient
-	cachePrefix string
-	cacheExpire int
+	masterModel  *dir_models.DirModel
+	redisClient  *redis_factory.RedisClient
+	searchPrefix string
+	searchExpire int
 }
 
 func (crd *DirCurd) keyBySearch(orgId int64, agentId string) string {
-	return crd.cachePrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
+	return crd.searchPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
 // SaveBySearch 保存当前查询路径
@@ -41,18 +40,19 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	//缓存的路径
 	cacheDir := crd.redisClient.Get(crd.keyBySearch(orgId, agentId))
 	cacheKey := crd.keyBySearch(orgId, agentId)
+
 	//任务
 	task := enum_task.TypeDirStructureUpload
 	existUnfinishedTask := task_service.CreateCacheFactory().ExistUnfinished(orgId, agentId, task)
 	//终端存在未完成任务 && 查询路径一样
 	if existUnfinishedTask && cacheDir == dir {
-		return errors.New("不能连续查询目录")
+		return nil
 	}
 
 	// 强制刷新
 	if force {
 		//更新查询路径
-		_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.cacheExpire)
+		_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.searchExpire)
 		//终端不存在未完成任务
 		if !existUnfinishedTask {
 			task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, task, "强刷")
@@ -72,7 +72,7 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	}
 
 	//更新查询路径
-	_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.cacheExpire)
+	_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.searchExpire)
 	//终端不存在未完成任务
 	if !existUnfinishedTask {
 		task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, task, "")

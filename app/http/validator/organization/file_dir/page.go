@@ -13,7 +13,7 @@ type Page struct {
 	data_type.Page
 	data_type.AgentSingle
 	Dir
-	Force     *int   `form:"force" json:"force" binding:"required,oneof=0 1"`
+	FileType  int    `form:"type" json:"type" binding:"required,oneof=-100 1 2"`
 	StartTime string `form:"startTime" json:"startTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 	EndTime   string `form:"endTime" json:"endTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 }

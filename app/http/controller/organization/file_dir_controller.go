@@ -55,10 +55,10 @@ func (u *FileDirController) Page(ctx *gin.Context) {
 
 // HasUpload 判断是否上传
 func (u *FileDirController) HasUpload(ctx *gin.Context) {
-
+	response.SuccessSimplify(ctx)
 }
 
 // Refresh 刷新
 func (u *FileDirController) Refresh(ctx *gin.Context) {
-
+	response.SuccessSimplify(ctx)
 }
