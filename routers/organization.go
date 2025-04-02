@@ -211,13 +211,20 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					global := trustDir.Group("global/")
 					{
-						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalPage"))
+						global.POST("getTypes", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalPage"))
 						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalAdd"))
 						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalEdit"))
 						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalSetSwitch"))
 						global.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalDelete"))
 					}
 				} //信任目录
+
+				//文件目录
+				fileDir := vOrg.Group("fileDir/")
+				{
+					fileDir.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirPage"))
+					fileDir.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirPage"))
+				} //文件目录
 
 				//进程
 				process := vOrg.Group("process/")
