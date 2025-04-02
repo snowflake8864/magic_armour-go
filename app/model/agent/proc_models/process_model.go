@@ -260,8 +260,9 @@ func (m *ProcessModel) GetListByConditionsDistinctHash(condition SearchCondition
 			tmp = tmp.Where(whereSQL, vals...)
 		}
 
-		return tmp.Find(&items).Offset(offset).Limit(limit)
+		return tmp.Offset(offset).Limit(limit).Find(&items)
 	})
+
 	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items

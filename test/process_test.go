@@ -49,6 +49,6 @@ func TestInIpEffect(t *testing.T) {
 	curTimestamp := date_helper.CurTimestamp()
 	fmt.Println("现在时间戳：", curTimestamp)
 
-	a := plug_calc_service.CreatePlugCalcFactory().InIpEffect(curTimestamp, 1, "2025-02-18", "2025-03-01")
+	a := plug_calc_service.CreatePlugCalcFactory().InIpEffect(curTimestamp, 1, "2025-04-01", "2025-05-01")
 	fmt.Println(a)
 }

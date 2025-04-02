@@ -2,6 +2,7 @@ package admin_service
 
 import (
 	"errors"
+	"fmt"
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -13,10 +14,10 @@ import (
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/helpers/timeout_control_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/redis_factory"
-	"strconv"
 	"strings"
 )
 
@@ -91,7 +92,13 @@ func (crd *AdminAuth) GenerateBySms(phone string) (code string) {
 	code = int_helper.IntRandom2Str(100000, 999999)
 	crd.redisClient.SetEx(crd.keyBySms(phone), code, crd.sliderExpire)
 
-	go ali_sms.SendAuthCode(phone, code)
+	// 调用客户端
+	timeout_control_helper.TimeoutControl(func(errChan chan error) {
+		// 赋值
+		err := ali_sms.SendAuthCode(phone, code)
+
+		errChan <- err
+	}, fmt.Sprintf("pt action=%s,phone=%s,code=%s", "auth", phone, code))
 	return code
 }
 
@@ -184,11 +191,15 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp string) 
 		if diff <= 0 {
 			//设置锁定
 			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
-			return result, -2, errors.New("用户名或密码错误, 已被锁定" +
-				mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟，请稍后在试")
+
+			return nil, -2,
+				errors.New(fmt.Sprintf("用户名或密码错误, 已被锁定%s分钟，请稍后在试", mapDict[enum_dictionary.PlatformLoginLockDuration]))
+
 		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
-			return result, -2, errors.New("用户名或密码错误, 还有" +
-				strconv.Itoa(diff) + "次即将被锁定" + mapDict[enum_dictionary.PlatformLoginLockDuration] + "分钟")
+
+			return nil, -2,
+				errors.New(fmt.Sprintf("用户名或密码错误, 还有%d次即将被锁定%s分钟", diff, mapDict[enum_dictionary.PlatformLoginLockDuration]))
+
 		} else {
 			return nil, -2, errors.New("用户名或密码错误")
 		}

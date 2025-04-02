@@ -357,7 +357,7 @@ func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
 		break
 	}
 	var models []*proc_models.ProcessModel
-	limit := 500
+	limit := 100
 	if string_helper.IsEmpty(agentId) {
 		models = proc_models.CreateProcessFactory().GetListByConditionsDistinctHash(condition, 0, limit)
 	} else {
