@@ -32,13 +32,17 @@ func (crd *DirCurd) keyBySearch(orgId int64, agentId string) string {
 	return crd.searchPrefix + int_helper.Int64ToStr(orgId) + "_" + agentId
 }
 
-// SaveBySearch 保存当前查询路径
-func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force bool) error {
+func (crd *DirCurd) DealSearchDir(dir string) string {
 	//为空默认根路径
 	if string_helper.IsEmpty(dir) {
 		dir = enum_tamper.RootDir
 	}
-	dir = path_helper.ToStandard(dir)
+	return path_helper.ToStandard(dir)
+}
+
+// SaveBySearch 保存当前查询路径
+func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force bool) error {
+	dir = crd.DealSearchDir(dir)
 
 	//缓存路径
 	cacheKey := crd.keyBySearch(orgId, agentId)

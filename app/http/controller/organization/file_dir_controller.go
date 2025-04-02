@@ -7,10 +7,8 @@ import (
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
-	"goskeleton/app/model/agent/trust_dir_models"
-	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/service/agent/dir_service"
-	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -30,29 +28,24 @@ func (u *FileDirController) GetTypes(ctx *gin.Context) {
 // Page 分页
 func (u *FileDirController) Page(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+	dir := dir_service.CreateDirCurdFactory().DealSearchDir(ctx.GetString(consts.ValidatorPrefixOrg + "dir"))
 	//查询条件
-	condition := trust_dir_models.SearchConditions{
-		OrgId: loginInfo.OrgId,
-		Name:  ctx.GetString(consts.ValidatorPrefixOrg + "name"),
+	condition := dir_models.SearchConditions{
+		OrgId:        loginInfo.OrgId,
+		AgentId:      agentId,
+		SearchDir:    dir,
+		FileName:     ctx.GetString(consts.ValidatorPrefixOrg + "fileName"),
+		FileType:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "fileType")),
+		StartTimeGte: ctx.GetString(consts.ValidatorPrefixOrg + "startTime"),
+		StartTimeLte: ctx.GetString(consts.ValidatorPrefixOrg + "endTime"),
 	}
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
-	total, models := trust_dir_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
+	total, models := dir_models.CreateDirFactory().Page(condition, offset, pageSize, order)
 
-	//获取组织架构
-	departmentMaps := map[int64]*department_models.DepartmentModel{}
-	if models != nil && len(models) > 0 {
-		var deptIds []int64
-		for _, model := range models {
-			if model.DeptId > 0 {
-				deptIds = append(deptIds, model.DeptId)
-			}
-		}
-		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
-	}
-
-	response.SuccessReturnData(ctx, (&org_trans.TrustDirTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.FileDirTrans{}).TranslPage(total, models))
 }
 
 // HasUpload 判断是否上传

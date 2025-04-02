@@ -13,7 +13,8 @@ type Page struct {
 	data_type.Page
 	data_type.AgentSingle
 	Dir
-	FileType  int    `form:"type" json:"type" binding:"required,oneof=-100 1 2"`
+	FileName  string `form:"fileName" json:"fileName" binding:"omitempty,max=128"`
+	FileType  int    `form:"fileType" json:"fileType" binding:"required,oneof=-100 1 2"`
 	StartTime string `form:"startTime" json:"startTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 	EndTime   string `form:"endTime" json:"endTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 }
