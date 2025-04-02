@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/dir_service"
 	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -56,7 +57,17 @@ func (u *FileDirController) Page(ctx *gin.Context) {
 
 // HasUpload 判断是否上传
 func (u *FileDirController) HasUpload(ctx *gin.Context) {
-	response.SuccessSimplify(ctx)
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	exist := enums.IsYes
+	if val := dir_service.CreateDirCurdFactory().GetBySearch(loginInfo.OrgId, agentId); string_helper.IsEmpty(val) {
+		exist = enums.IsNot
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"exist": exist,
+	})
 }
 
 // Refresh 刷新
