@@ -1,12 +1,14 @@
 package dir_service
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
 )
@@ -37,9 +39,12 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	if string_helper.IsEmpty(dir) {
 		dir = enum_tamper.RootDir
 	}
+	fmt.Println("dir: ", dir)
+	dir = path_helper.ToStandard(dir)
+
 	//缓存的路径
-	cacheDir := crd.redisClient.Get(crd.keyBySearch(orgId, agentId))
 	cacheKey := crd.keyBySearch(orgId, agentId)
+	cacheDir := crd.redisClient.Get(cacheKey)
 
 	//任务
 	task := enum_task.TypeDirStructureUpload
@@ -47,6 +52,14 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	//终端存在未完成任务 && 查询路径一样
 	if existUnfinishedTask && cacheDir == dir {
 		return nil
+	}
+
+	//上次查询条件
+	condition := dir_models.SearchConditions{
+		OrgId:     orgId,
+		AgentId:   agentId,
+		SearchDir: dir,
+		FileType:  enums.AllDefaultInt,
 	}
 
 	// 强制刷新
@@ -57,26 +70,24 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 		if !existUnfinishedTask {
 			task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, task, "强刷")
 		}
-		return nil
+
+		//删除上传查询痕迹
+		crd.masterModel.DeleteByConditions(condition)
+
+	} else {
+		//存在上次查询痕迹
+		if crd.masterModel.Count(condition) > 0 {
+			return nil
+		}
+
+		//更新查询路径
+		_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.searchExpire)
+		//终端不存在未完成任务
+		if !existUnfinishedTask {
+			task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, task, "")
+		}
 	}
 
-	//存在上次查询痕迹
-	condition := dir_models.SearchConditions{
-		OrgId:     orgId,
-		AgentId:   agentId,
-		SearchDir: dir,
-		FileType:  enums.AllDefaultInt,
-	}
-	if crd.masterModel.Count(condition) > 0 {
-		return nil
-	}
-
-	//更新查询路径
-	_, _ = crd.redisClient.SetEx(cacheKey, dir, crd.searchExpire)
-	//终端不存在未完成任务
-	if !existUnfinishedTask {
-		task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, task, "")
-	}
 	return nil
 }
 
@@ -101,13 +112,4 @@ func (crd *DirCurd) BatchAdd(orgId int64, agentId string, searchDir string, para
 
 	return nil
 
-}
-
-// DelByCreateAtGte 删除：大于创建时间
-func (crd *DirCurd) DelByCreateAtGte(at string) bool {
-	search := dir_models.SearchConditions{
-		FileType:    enums.AllDefaultInt,
-		CreateAtGte: at,
-	}
-	return crd.masterModel.DeleteByConditions(search)
 }

@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/service/agent/dir_service"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
 )
@@ -60,5 +61,18 @@ func (u *FileDirController) HasUpload(ctx *gin.Context) {
 
 // Refresh 刷新
 func (u *FileDirController) Refresh(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+	dir := ctx.GetString(consts.ValidatorPrefixOrg + "dir")
+	force := false
+	if val := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "force")); val == 1 {
+		force = true
+	}
+
+	if err := dir_service.CreateDirCurdFactory().SaveBySearch(loginInfo.OrgId, agentId, dir, force); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
 	response.SuccessSimplify(ctx)
 }
