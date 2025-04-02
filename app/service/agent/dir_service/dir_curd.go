@@ -40,7 +40,7 @@ func (crd *DirCurd) SaveBySearch(orgId int64, agentId string, dir string, force 
 	}
 	dir = path_helper.ToStandard(dir)
 
-	//缓存的路径
+	//缓存路径
 	cacheKey := crd.keyBySearch(orgId, agentId)
 	cacheDir := crd.redisClient.Get(cacheKey)
 
@@ -96,6 +96,9 @@ func (crd *DirCurd) GetBySearch(orgId int64, agentId string) string {
 
 // BatchAdd 新增
 func (crd *DirCurd) BatchAdd(orgId int64, agentId string, searchDir string, params *[]dir_models.DirModel) error {
+	//删除缓存路径
+	_, _ = crd.redisClient.Del(crd.keyBySearch(orgId, agentId))
+
 	//先删除原来查询路径
 	condition := dir_models.SearchConditions{
 		OrgId:     orgId,
