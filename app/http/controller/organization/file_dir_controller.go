@@ -53,9 +53,9 @@ func (u *FileDirController) HasUpload(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
-	exist := enums.IsYes
+	exist := enums.IsNot
 	if val := dir_service.CreateDirCurdFactory().GetBySearch(loginInfo.OrgId, agentId); string_helper.IsEmpty(val) {
-		exist = enums.IsNot
+		exist = enums.IsYes
 	}
 
 	response.SuccessReturnData(ctx, gin.H{
