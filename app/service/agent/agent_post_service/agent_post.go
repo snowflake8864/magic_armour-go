@@ -104,7 +104,7 @@ func (crd *AgentPost) SaveDir(orgId int64, agentId, inputJson string) error {
 	//获取查询路径
 	searchDir := dirFact.GetBySearch(orgId, agentId)
 	if string_helper.IsEmpty(searchDir) {
-		return errors.New("获取查询路径为空")
+		return errors.New("search dir is empty")
 	}
 	//
 	searchDir = path_helper.ToStandard(searchDir)
