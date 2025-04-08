@@ -211,7 +211,7 @@ func InitOrganizationRouter() *gin.Engine {
 				{
 					global := trustDir.Group("global/")
 					{
-						global.POST("getTypes", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalPage"))
+						global.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalPage"))
 						global.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalAdd"))
 						global.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalEdit"))
 						global.POST("setSwitch", validatorFactory.Create(consts.ValidatorPrefixOrg+"TrustDirGlobalSetSwitch"))
