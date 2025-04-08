@@ -94,7 +94,7 @@ var pathModuleLabel = map[string][]string{
 
 	"/v5/organization/agent/manage/delete":         {ModuleAgent, "管理页:删除"},
 	"/v5/organization/agent/manage/uninstall":      {ModuleAgent, "管理页:卸载"},
-	"/v5/organization/agent/manage/upgrade":        {ModuleAgent, "管理页:卸载"},
+	"/v5/organization/agent/manage/upgrade":        {ModuleAgent, "管理页:升级"},
 	"/v5/organization/agent/manage/batchDelete":    {ModuleAgent, "管理页:批量删除"},
 	"/v5/organization/agent/manage/batchUninstall": {ModuleAgent, "管理页:批量卸载"},
 	"/v5/organization/agent/manage/batchUpgrade":   {ModuleAgent, "管理页:批量升级"},
