@@ -83,8 +83,11 @@ func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int
 }
 
 // SetLivingByAgent 设置终端活动中
-func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
+func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) (bool, error) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, id, crd.masterModel.ColumnBasic(true, false))
+	if model == nil || model.OrgId == 0 {
+		return false, nil
+	}
 
 	nowDate := date_helper.CurDatetime()
 
@@ -93,14 +96,14 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 		"live_at":   nowDate,
 		"is_online": enums.IsYes,
 	}
-	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	_, _ = crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
 
 	//记录上线日志
 	if model.IsOnline == enums.IsNot {
 		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "心跳"))
 	}
 
-	return isOk
+	return true, nil
 }
 
 // SetSafeByAgent 设置终端安全状态
