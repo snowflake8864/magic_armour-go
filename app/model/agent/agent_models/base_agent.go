@@ -244,6 +244,15 @@ func (m *baseAgent) ColumnSimplify() string {
 	return "org_id, id, dept_id"
 }
 
+// ColumnSimplifyAppend 字段: 最简单的
+func (m *baseAgent) ColumnSimplifyAppend(isOnline bool) string {
+	column := "org_id, id, dept_id"
+	if isOnline {
+		column += ", is_online"
+	}
+	return column
+}
+
 // ColumnIp 字段: IP相关
 func (m *baseAgent) ColumnIp() string {
 	return "org_id, id, dept_id, agent_ip, net_ip"

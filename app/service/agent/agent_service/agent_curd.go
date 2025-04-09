@@ -115,13 +115,24 @@ func (crd *AgentCurd) SetSafeByAgent(orgId int64, id string, isSafe int) bool {
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (errCode int, err error) {
 	var validIds []string
-	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplify()); agentModels != nil && len(agentModels) > 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplifyAppend(true)); agentModels != nil && len(agentModels) > 0 {
 		for _, model := range agentModels {
-			validIds = append(validIds, model.AgentId)
+			if isUninstall {
+				//卸载必须在线
+				if model.IsOnline == enums.IsYes {
+					validIds = append(validIds, model.AgentId)
+				}
+			} else {
+				//删除必须离线
+				if model.IsOnline == enums.IsNot {
+					validIds = append(validIds, model.AgentId)
+				}
+			}
+
 		}
 	}
 	if len(validIds) == 0 {
-		return -1, errors.New("终端不存在")
+		return -1, errors.New("没有符合条件的终端")
 	}
 
 	if isOK := crd.masterModel.DeleteByOrgAndAgents(orgId, validIds); !isOK {
