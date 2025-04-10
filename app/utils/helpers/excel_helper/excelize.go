@@ -44,8 +44,26 @@ func (h *ExcelHandler) GetCellValue(sheet, cell string) (string, error) {
 	return h.File.GetCellValue(sheet, cell)
 }
 
+// CreateSheetAndWriteHeader 创建Sheet且写入标题
+func (h *ExcelHandler) CreateSheetAndWriteHeader(sheet, startCell, endCell string, values []interface{}) error {
+	// 创建工作表
+	if _, err := h.File.NewSheet(sheet); err != nil {
+		return fmt.Errorf("NewSheet fail: %s", err.Error())
+	}
+
+	// 写入标题行
+	if err := h.SetRowValues(sheet, startCell, values); err != nil {
+		return fmt.Errorf("WriteHeader fail: %s", err.Error())
+	}
+	//并应用样式
+	if err := h.ApplyStyle(sheet, startCell, endCell, "header"); err != nil {
+		return fmt.Errorf("ApplyStyle fail: %s", err.Error())
+	}
+	return nil
+}
+
 // SetRowValues 按行连续写入数据
-// 示例：SetRowValues("Sheet1", "A1", []interface{}{"姓名", "年龄", "性别"})
+// 示例：SetRowValues("Sheet1", "B1", []interface{}{"姓名", "年龄", "性别"})
 func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{}) error {
 	axis := startCell
 	for i, value := range values {
@@ -78,7 +96,7 @@ func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{
 }
 
 // StreamWriteRows 使用流式写入器提升大批量数据性能
-// 示例：SetRowValues("Sheet1", "A1", []interface{}{"姓名", "年龄", "性别"})
+// 示例：StreamWriteRows("Sheet1", "A2", [][]interface{}{{"张三", 28, "技术部"},{"李四", 32, "市场部"}}
 func (h *ExcelHandler) StreamWriteRows(sheet string, rows [][]interface{}) error {
 	streamWriter, err := h.File.NewStreamWriter(sheet)
 	if err != nil {

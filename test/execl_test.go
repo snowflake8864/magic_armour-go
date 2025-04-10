@@ -50,6 +50,27 @@ func TestExcelWrite(t *testing.T) {
 
 	// 保存文件
 	if err := handler.SaveAs("demo.xlsx"); err != nil {
+		fmt.Println("SaveAs: ", err.Error())
+	}
+}
+
+func TestCreateSheets(t *testing.T) {
+	handler := excel_helper.NewExcelHandler()
+
+	// 初始化默认样式
+	if err := handler.InitDefaultStyles(); err != nil {
 		fmt.Println("InitDefaultStyles: ", err.Error())
+		return
+	}
+
+	for i := 1; i <= 10; i++ {
+		if err := handler.CreateSheetAndWriteHeader(fmt.Sprintf("测试%d", i), "A1", "C1", []interface{}{"姓名", "年龄", "部门"}); err != nil {
+			fmt.Println("CreateSheetAndWriteHeader: ", err.Error())
+		}
+	}
+
+	// 保存文件
+	if err := handler.SaveAs("demo1.xlsx"); err != nil {
+		fmt.Println("SaveAs: ", err.Error())
 	}
 }
