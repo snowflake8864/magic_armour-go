@@ -32,7 +32,7 @@ func ConvertToUTF8(rawData []byte) (string, error) {
 	// 步骤1：获取对应编码的编码器
 	enc := DetectWithSaintfish(rawData)
 	if enc == "UTF-8" {
-		return string(rawData), nil
+		//return string(rawData), nil
 	}
 
 	return ConvertWithMahonia(rawData, enc), nil
