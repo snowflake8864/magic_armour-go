@@ -24,8 +24,8 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/wenzhenxi/gorsa v0.0.0-20230530123828-0320cce15d81 // indirect
 	github.com/wumansgy/goEncrypt v1.1.0
+	github.com/xuri/excelize/v2 v2.9.0 // indirect
 	go.uber.org/zap v1.26.0
-	golang.org/x/crypto v0.17.0 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
