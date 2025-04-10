@@ -5,6 +5,11 @@ import (
 	"github.com/xuri/excelize/v2"
 )
 
+const (
+	StyleHeader    string = "header"
+	StyleHighlight string = "highlight"
+)
+
 // ExcelHandler 封装 Excel 操作句柄
 type ExcelHandler struct {
 	File   *excelize.File
@@ -33,6 +38,19 @@ func NewExcelHandlerFromFile(filename string) (*ExcelHandler, error) {
 
 // ======================= 基础操作 =======================
 
+// CreateSheet 创建Sheet，存在不在新建
+func (h *ExcelHandler) CreateSheet(sheet string) error {
+	// 确保工作表存在
+	if index, _ := h.File.GetSheetIndex(sheet); index > -1 {
+		return nil
+	}
+	// 创建工作表
+	if _, err := h.File.NewSheet(sheet); err != nil {
+		return fmt.Errorf("NewSheet fail: %s", err.Error())
+	}
+	return nil
+}
+
 // SetCellValue 设置单元格值
 // sheet: 工作表名称, cell: 单元格坐标(如"A1"), value: 要写入的值
 func (h *ExcelHandler) SetCellValue(sheet, cell string, value interface{}) error {
@@ -44,19 +62,14 @@ func (h *ExcelHandler) GetCellValue(sheet, cell string) (string, error) {
 	return h.File.GetCellValue(sheet, cell)
 }
 
-// CreateSheetAndWriteHeader 创建Sheet且写入标题
-func (h *ExcelHandler) CreateSheetAndWriteHeader(sheet, startCell, endCell string, values []interface{}) error {
-	// 创建工作表
-	if _, err := h.File.NewSheet(sheet); err != nil {
-		return fmt.Errorf("NewSheet fail: %s", err.Error())
-	}
-
+// SetHeader 设置标题
+func (h *ExcelHandler) SetHeader(sheet, startCell, endCell string, values []interface{}) error {
 	// 写入标题行
 	if err := h.SetRowValues(sheet, startCell, values); err != nil {
 		return fmt.Errorf("WriteHeader fail: %s", err.Error())
 	}
 	//并应用样式
-	if err := h.ApplyStyle(sheet, startCell, endCell, "header"); err != nil {
+	if err := h.ApplyStyle(sheet, startCell, endCell, StyleHeader); err != nil {
 		return fmt.Errorf("ApplyStyle fail: %s", err.Error())
 	}
 	return nil
@@ -68,24 +81,15 @@ func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{
 	axis := startCell
 	for i, value := range values {
 		// 写入当前单元格
-		if err := h.File.SetCellValue(sheet, axis, value); err != nil {
-			return err
-		}
-
-		// 解析当前坐标
-		col, row, err := excelize.CellNameToCoordinates(axis)
+		err := h.File.SetCellValue(sheet, axis, value)
 		if err != nil {
-			return fmt.Errorf("解析坐标失败: %v", err)
+			return fmt.Errorf("写入当前单元格失败: %v", err)
 		}
-
-		// 计算下一个单元格坐标（列+1，行不变）
-		nextCol := col + 1
-		nextRow := row
 
 		// 生成新坐标
-		axis, err = excelize.CoordinatesToCellName(nextCol, nextRow)
+		axis, err = h.GetNextCell(axis)
 		if err != nil {
-			return fmt.Errorf("生成坐标失败: %v", err)
+			return fmt.Errorf("生成新坐标失败: %v", err)
 		}
 
 		if i >= 1000 { // 安全保护
@@ -95,18 +99,55 @@ func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{
 	return nil
 }
 
+// ======================= 流式操作 =======================
+
+//流式写入器不支持以下操作
+//MergeCell() 合并单元格
+//SetCellStyle() 单独设置样式
+//AddComment()    添加批注
+//如需样式处理，需在 SetRow 时通过 excelize.Cell{Value: ..., StyleID: ...} 指定
+
+// StreamSetHeader 流式设置标题
+func (h *ExcelHandler) StreamSetHeader(sheet, startCell, endCell string, values []interface{}) error {
+	// 写入标题行
+	if err := h.SetRowValues(sheet, startCell, values); err != nil {
+		return fmt.Errorf("WriteHeader fail: %s", err.Error())
+	}
+	//并应用样式
+	if err := h.ApplyStyle(sheet, startCell, endCell, StyleHeader); err != nil {
+		return fmt.Errorf("ApplyStyle fail: %s", err.Error())
+	}
+	return nil
+}
+
 // StreamWriteRows 使用流式写入器提升大批量数据性能
-// 示例：StreamWriteRows("Sheet1", "A2", [][]interface{}{{"张三", 28, "技术部"},{"李四", 32, "市场部"}}
-func (h *ExcelHandler) StreamWriteRows(sheet string, rows [][]interface{}) error {
+// 示例：StreamWriteRows("Sheet1", []interface{}{"姓名", "年龄", "性别"}, [][]interface{}{{"张三", 28, "技术部"},{"李四", 32, "市场部"}}, 1, 1)
+func (h *ExcelHandler) StreamWriteRows(sheet string, headerData []interface{}, rowsData [][]interface{}, startCol, startRow int) error {
+	// 创建流式写入器
 	streamWriter, err := h.File.NewStreamWriter(sheet)
 	if err != nil {
 		return err
 	}
-	for i, row := range rows {
-		cell, _ := excelize.CoordinatesToCellName(1, i+1)
-		if err := streamWriter.SetRow(cell, row); err != nil {
-			return err
+
+	for i, rowData := range rowsData {
+		//生成起始单元格坐标
+		startCell, _ := excelize.CoordinatesToCellName(startCol, startRow+i)
+		fmt.Println("startCell:", startCell)
+
+		// 创建单元格数据
+		cells := make([]interface{}, len(rowData))
+		for _, value := range rowData {
+			cells = append(cells, excelize.Cell{
+				Value: value,
+			})
 		}
+
+		// 写入行数据
+		if err1 := streamWriter.SetRow(startCell, rowData); err1 != nil {
+			//if err1 := streamWriter.SetRow(startCell, cells); err1 != nil {
+			return fmt.Errorf("写入第(%d)行失败: %v", i, err1)
+		}
+
 	}
 	return streamWriter.Flush()
 }
@@ -143,7 +184,7 @@ func (h *ExcelHandler) InitDefaultStyles() error {
 		Fill:      excelize.Fill{Type: "pattern", Color: []string{"2c7be5"}, Pattern: 1},
 		Alignment: &excelize.Alignment{Horizontal: "center"},
 	}
-	if err := h.AddStyle("header", headerStyle); err != nil {
+	if err := h.AddStyle(StyleHeader, headerStyle); err != nil {
 		return err
 	}
 
@@ -155,20 +196,29 @@ func (h *ExcelHandler) InitDefaultStyles() error {
 			{Type: "top", Color: "000000", Style: 1},
 		},
 	}
-	return h.AddStyle("highlight", highlightStyle)
+	return h.AddStyle(StyleHighlight, highlightStyle)
 }
 
 // ======================= 单元格 =======================
 
 // GetNextCell 获取右侧相邻单元格（辅助函数）
-func GetNextCell(cell string) (string, error) {
+func (h *ExcelHandler) GetNextCell(cell string) (string, error) {
 	//解析当前坐标
 	col, row, err := excelize.CellNameToCoordinates(cell)
 	if err != nil {
 		return "", err
 	}
-	//计算下一个单元格坐标（列+1，行不变）
-	return excelize.CoordinatesToCellName(col+1, row)
+
+	// 计算下一个单元格坐标（列+1，行不变）
+	nextCol := col + 1
+	nextRow := row
+
+	// 生成新坐标
+	cell, err = excelize.CoordinatesToCellName(nextCol, nextRow)
+	if err != nil {
+		return "", fmt.Errorf("生成坐标失败: %v", err)
+	}
+	return cell, nil
 }
 
 // MergeCells 合并单元格
