@@ -1,14 +1,18 @@
 package tamper_service
 
 import (
+	"errors"
 	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/excel_helper"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/map_helper"
+	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"strings"
 )
@@ -20,6 +24,7 @@ func CreatePolicyExcelFactory(orgId int64, agentId string) *PolicyExcel {
 		agentId:     agentId,
 		sheetName:   "Sheet1",
 		sep:         "|",
+		colsLen:     9,
 	}
 }
 
@@ -29,6 +34,7 @@ type PolicyExcel struct {
 	agentId     string
 	sheetName   string
 	sep         string
+	colsLen     int
 }
 
 func (crd *PolicyExcel) generateExportPath() string {
@@ -37,6 +43,14 @@ func (crd *PolicyExcel) generateExportPath() string {
 	name := md5_encrypt.MD5(fmt.Sprintf("%s_%d", crd.agentId, variable.SnowFlake.GetId()))
 
 	return fullDir + name + ".xlsx"
+}
+
+func (crd *PolicyExcel) getPolicies() []*tamper_models.PolicyModel {
+	condition := tamper_models.SearchConditions{
+		OrgId:   crd.orgId,
+		AgentId: crd.agentId,
+	}
+	return tamper_models.CreatePolicyFactory().GetListByConditions(condition)
 }
 
 // Export 导出
@@ -57,7 +71,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 		"排除文件夹：多个以竖线隔开 如: www|test\n" +
 		"继承关系：0否 1是 如：是\n" +
 		"信任进程：多个hash以竖线隔开如: aa|bb"
-	if err := excelHandler.MergeCells(crd.sheetName, 1, 1, 1, 9); err != nil {
+	if err := excelHandler.MergeCells(crd.sheetName, 1, 1, 1, crd.colsLen); err != nil {
 		return "", fmt.Errorf("merge cells fail: %v", err)
 	}
 	if err := excelHandler.SetCellValue(crd.sheetName, "A1", top); err != nil {
@@ -88,11 +102,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 	_ = excelHandler.SetColWidth(crd.sheetName, "I", "I", 30)
 
 	//策略数据
-	condition := tamper_models.SearchConditions{
-		OrgId:   crd.orgId,
-		AgentId: crd.agentId,
-	}
-	models := tamper_models.CreatePolicyFactory().GetListByConditions(condition)
+	models := crd.getPolicies()
 	if len(models) >= 0 {
 		var rowsData [][]interface{}
 		for _, model := range models {
@@ -131,4 +141,118 @@ func (crd *PolicyExcel) Export() (string, error) {
 	}
 
 	return path, nil
+}
+
+// Import 导入
+func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) error {
+	//创建新 Excel 文件
+	excelHandler, err := excel_helper.NewExcelHandlerFromFile(fullPath)
+	if err != nil {
+		return fmt.Errorf("read file: %v", err)
+	}
+	defer excelHandler.Close()
+
+	// 获取工作表中指定单元格的值
+	if cellVal, err1 := excelHandler.GetCellValue(crd.sheetName, "A2"); err1 != nil {
+		return fmt.Errorf("read file: %v", err1)
+	} else if cellVal != "类型" {
+		return errors.New("文件格式不正确，不能导入")
+	}
+
+	//获取所有行数据
+	rowsValues, err2 := excelHandler.GetRowsValues(crd.sheetName)
+	if err2 != nil {
+		return fmt.Errorf("get rows: %v", err)
+	}
+	if len(rowsValues) <= 2 {
+		return nil
+	}
+
+	//获取现有策略
+	policyMap := make(map[string]struct{})
+	models := crd.getPolicies()
+	if len(models) >= 0 {
+		for _, model := range models {
+			policyMap[model.Dir] = struct{}{}
+		}
+	}
+
+	//属性映射
+	typeMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("type", enum_tamper.EnumMapInt))
+	powerMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt))
+	extendMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("is_extend", enum_tamper.EnumMapInt))
+
+	now := date_helper.CurDatetime()
+	var insList []*tamper_models.PolicyModel
+	//处理行数据
+	for i, rowValues := range rowsValues {
+		//忽略前2行
+		if i < 2 {
+			continue
+		}
+		//补足
+		if colRealLen := len(rowValues); colRealLen < crd.colsLen {
+			tmp := make([]string, crd.colsLen-colRealLen)
+			rowValues = append(rowValues, tmp...)
+		}
+		fmt.Println("i: ", i)
+		fmt.Println("LEN: ", len(rowValues))
+		fmt.Println(json_helper.Encode(rowValues))
+
+		//初始化数据结构
+		model := tamper_models.PolicyModel{
+			Id:            variable.SnowFlake.GetId(),
+			OrgId:         crd.orgId,
+			AgentId:       crd.agentId,
+			IncludeSuffix: rowValues[3],
+			ExcludeSuffix: rowValues[4],
+			ExcludeFolder: rowValues[4],
+			OpenSwitch:    enums.SwitchOff,
+			Remark:        rowValues[8],
+			CreateId:      userId,
+			CreateName:    userName,
+			CreatedAt:     now,
+			UpdateId:      userId,
+			UpdateName:    userName,
+			UpdatedAt:     now,
+		}
+
+		// 类型是否正确
+		if val, isOk := typeMap[rowValues[0]]; isOk {
+			model.Type = val
+		} else {
+			continue
+		}
+		//路径是否重复
+		dir := path_helper.ToStandard(rowValues[1])
+		if _, isOk := policyMap[dir]; isOk {
+			continue
+		} else {
+			model.Dir = dir
+		}
+		// 保护权限是否正确
+		protectRw := 0
+		for _, val := range strings.Split(rowValues[2], crd.sep) {
+			if v, isOk := powerMap[val]; isOk {
+				protectRw += v
+			}
+		}
+		if protectRw == 0 {
+			continue
+		} else {
+			model.ProtectRw = protectRw
+		}
+		// 继承是否正确
+		if val, isOk := extendMap[rowValues[6]]; isOk {
+			model.IsExtend = val
+		} else {
+			continue
+		}
+
+		insList = append(insList, &model)
+	}
+
+	fmt.Println(json_helper.Encode(rowValues))
+
+	return nil
 }

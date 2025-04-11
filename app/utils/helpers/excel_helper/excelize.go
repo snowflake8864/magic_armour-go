@@ -62,6 +62,15 @@ func (h *ExcelHandler) GetCellValue(sheet, cell string) (string, error) {
 	return h.File.GetCellValue(sheet, cell)
 }
 
+// GetRowsValues 获取所有行值
+func (h *ExcelHandler) GetRowsValues(sheet string) ([][]string, error) {
+	rows, err := h.File.GetRows(sheet)
+	if err != nil {
+		return nil, fmt.Errorf("NewSheet fail: %s", err.Error())
+	}
+	return rows, nil
+}
+
 // SetHeader 设置标题
 func (h *ExcelHandler) SetHeader(sheet, startCell, endCell string, values []interface{}) error {
 	// 写入标题行

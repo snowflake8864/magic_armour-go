@@ -35,3 +35,12 @@ func SortDescIntAndInt(map1 map[int]int) [][]int {
 
 	return result
 }
+
+// FlipIntAndString 交互键和值
+func FlipIntAndString(map1 map[int]string) map[string]int {
+	result := make(map[string]int)
+	for k, v := range map1 {
+		result[v] = k
+	}
+	return result
+}
