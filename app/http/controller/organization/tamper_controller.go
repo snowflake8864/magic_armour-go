@@ -333,7 +333,15 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 
 // ExportForPolicy 终端策略: 导出
 func (u *TamperController) ExportForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
 
+	if fullPath, err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId).Export(); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else {
+		response.FileDownload(ctx, fullPath)
+	}
 }
 
 // PageForGlobal 全局策略: 分页

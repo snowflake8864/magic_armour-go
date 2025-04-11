@@ -98,6 +98,19 @@ func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{
 	return nil
 }
 
+// SetRowsValues 多行连续写入数据
+// 示例：SetRowsValues("Sheet1", 1,2, [][]interface{}{{"张三", 28, "技术部"},{"李四", 32, "市场部"}})
+func (h *ExcelHandler) SetRowsValues(sheet string, startCol, startRow int, rowsData [][]interface{}) error {
+	for i, values := range rowsData {
+		startCell, _ := excelize.CoordinatesToCellName(startCol, startRow+i)
+
+		if err := h.SetRowValues(sheet, startCell, values); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // ======================= 流式操作 =======================
 
 //流式写入器不支持以下操作
