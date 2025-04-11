@@ -52,11 +52,11 @@ COPY  ./${pm05_api_version}  $work
 
 # 修改镜像源为国内镜像地址
 RUN set -ex \
-    &&  sed   -i  's/http/#http/g'  /etc/apk/repositories  \
-    &&  sed   -i  '$ahttp://mirrors.ustc.edu.cn/alpine/v3.14/main'  /etc/apk/repositories   \
-    &&  sed   -i  '$ahttp://mirrors.ustc.edu.cn/alpine/v3.14/community'  /etc/apk/repositories  \
-    &&  sed   -i  '$ahttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.14/main'  /etc/apk/repositories   \
-    &&  sed   -i  '$ahttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.14/community'  /etc/apk/repositories   \
+    &&  sed   -j  's/http/#http/g'  /etc/apk/repositories  \
+    &&  sed   -j  '$ahttp://mirrors.ustc.edu.cn/alpine/v3.14/main'  /etc/apk/repositories   \
+    &&  sed   -j  '$ahttp://mirrors.ustc.edu.cn/alpine/v3.14/community'  /etc/apk/repositories  \
+    &&  sed   -j  '$ahttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.14/main'  /etc/apk/repositories   \
+    &&  sed   -j  '$ahttps://mirrors.tuna.tsinghua.edu.cn/alpine/v3.14/community'  /etc/apk/repositories   \
     &&  apk   update  \
     &&  apk   add --no-cache  \
         -U    tzdata  \

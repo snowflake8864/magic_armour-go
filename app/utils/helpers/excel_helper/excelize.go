@@ -151,26 +151,26 @@ func (h *ExcelHandler) StreamWriteRows(sheet string, headerData []interface{}, r
 	//起始行增加
 	startRow++
 
-	/*for i, rowData := range rowsData {
+	for i, rowData := range rowsData {
 		//生成起始单元格坐标
 		startCell, _ := excelize.CoordinatesToCellName(startCol, startRow+i)
-		fmt.Println("startCell:", startCell)
+		//fmt.Println("startCell:", startCell)
 
 		// 创建单元格数据
 		cells := make([]interface{}, len(rowData))
-		for _, value := range rowData {
-			cells = append(cells, excelize.Cell{
+		for j, value := range rowData {
+			cells[j] = excelize.Cell{
 				Value: value,
-			})
+			}
 		}
 
 		// 写入行数据
-		if err1 := streamWriter.SetRow(startCell, rowData); err1 != nil {
-			//if err1 := streamWriter.SetRow(startCell, cells); err1 != nil {
+		//if err1 := streamWriter.SetRow(startCell, rowData); err1 != nil {
+		if err1 := streamWriter.SetRow(startCell, cells); err1 != nil {
 			return fmt.Errorf("写入第(%d)行失败: %v", i, err1)
 		}
 
-	}*/
+	}
 	return streamWriter.Flush()
 }
 

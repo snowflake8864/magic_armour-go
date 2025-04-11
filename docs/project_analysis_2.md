@@ -31,7 +31,7 @@ func (context *Test) SelectDataMultiple() bool {
 	if context.PrepareSql(sql) {
 	
 		var code, name, company_name, indudtry, created_at string
-		for i := 1; i <= 100; i++ {
+		for j := 1; j <= 100; j++ {
 			//2.执行批量查询
 			rows := context.QuerySqlForMultiple()
 			if rows == nil {
@@ -39,7 +39,7 @@ func (context *Test) SelectDataMultiple() bool {
 				return false
 			} else {
 				// 我们只输出最后一行数据
-				if i == 100 {
+				if j == 100 {
 					for rows.Next() {
 						_ = rows.Scan(&code, &name, &company_name, &indudtry, &created_at)
 						fmt.Println(code, name, company_name, indudtry, created_at)

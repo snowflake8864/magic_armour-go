@@ -101,31 +101,36 @@ func TestStreamWriteRows(t *testing.T) {
 		fmt.Println("InitDefaultStyles: ", err.Error())
 		return
 	}
-	sheet := "Sheet-5"
-	if err := handler.CreateSheet(sheet); err != nil {
-		fmt.Println("CreateSheet: ", err.Error())
-	}
 
 	// 批量写入10万行数据
 	startTime := time.Now()
 	var rowsData [][]interface{}
 	headerData := []interface{}{"姓名", "年龄", "性别"}
+	sheetTotal := 10
+	rowTotal := 100000
 
-	for i := 0; i < 10; i++ {
-		rowsData = append(rowsData, []interface{}{
-			fmt.Sprintf("项目%d", i),
-			int_helper.IntRandom(20, 55),
-			fmt.Sprintf("部门%d", i),
-		})
-	}
+	for i := 1; i <= sheetTotal; i++ {
+		sheet := fmt.Sprintf("测试%d", i)
+		fmt.Println("CreateSheet: ", sheet)
+		if err := handler.CreateSheet(sheet); err != nil {
+			fmt.Println("CreateSheet: ", err.Error())
+		}
 
-	//流式写入
-	if err := handler.StreamWriteRows(sheet, headerData, rowsData, 1, 1); err != nil {
-		fmt.Println("StreamWriteRows: ", err.Error())
+		for j := 0; j < rowTotal; j++ {
+			rowsData = append(rowsData, []interface{}{
+				fmt.Sprintf("项目%d", j),
+				int_helper.IntRandom(20, 55),
+				fmt.Sprintf("部门%d", j),
+			})
+		}
+		//流式写入
+		if err := handler.StreamWriteRows(sheet, headerData, rowsData, 1, 1); err != nil {
+			fmt.Println("StreamWriteRows: ", err.Error())
+		}
 	}
 
 	// 性能统计
-	fmt.Printf("写入完成 总行数: %d\n", len(rowsData))
+	fmt.Printf("写人完成, sheet总数:%d,每个sheet行数:%d \n", sheetTotal, rowTotal)
 	fmt.Printf("耗时: %.2f秒\n", time.Since(startTime).Seconds())
 	fmt.Printf("内存占用: ≈%.2f MB\n", getMemoryUsage())
 
