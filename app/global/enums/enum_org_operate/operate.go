@@ -165,6 +165,8 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/tamper/policy/editFile":       {ModuleTamper, "终端策略：编辑文件策略"},
 	"/v5/organization/tamper/policy/setSwitch":      {ModuleTamper, "终端策略：开关"},
 	"/v5/organization/tamper/policy/delete":         {ModuleTamper, "终端策略：删除"},
+	"/v5/organization/tamper/policy/import":         {ModuleTamper, "终端策略：导入"},
+	"/v5/organization/tamper/policy/export":         {ModuleTamper, "终端策略：导出"},
 	"/v5/organization/tamper/global/addFolder":      {ModuleTamper, "全局策略：添加目录策略"},
 	"/v5/organization/tamper/global/addFile":        {ModuleTamper, "全局策略：添加文件策略"},
 	"/v5/organization/tamper/global/editFolder":     {ModuleTamper, "全局策略：编辑目录策略"},

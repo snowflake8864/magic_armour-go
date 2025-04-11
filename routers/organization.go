@@ -381,6 +381,8 @@ func InitOrganizationRouter() *gin.Engine {
 						policy.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyEditFolder"))
 						policy.POST("editFile", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyEditFile"))
 						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyDelete"))
+						policy.POST("import", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyImport"))
+						policy.POST("export", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyExport"))
 					}
 					global := tamper.Group("global/")
 					{

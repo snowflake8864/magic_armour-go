@@ -326,6 +326,16 @@ func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// ImportForPolicy 终端策略: 导入
+func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
+
+}
+
+// ExportForPolicy 终端策略: 导出
+func (u *TamperController) ExportForPolicy(ctx *gin.Context) {
+
+}
+
 // PageForGlobal 全局策略: 分页
 func (u *TamperController) PageForGlobal(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
