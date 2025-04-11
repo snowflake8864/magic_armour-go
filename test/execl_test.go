@@ -102,6 +102,9 @@ func TestStreamWriteRows(t *testing.T) {
 		return
 	}
 	sheet := "Sheet-5"
+	if err := handler.CreateSheet(sheet); err != nil {
+		fmt.Println("CreateSheet: ", err.Error())
+	}
 
 	// 批量写入10万行数据
 	startTime := time.Now()
@@ -118,7 +121,7 @@ func TestStreamWriteRows(t *testing.T) {
 
 	//流式写入
 	if err := handler.StreamWriteRows(sheet, headerData, rowsData, 1, 1); err != nil {
-		fmt.Println("CreateSheetAndWriteHeader: ", err.Error())
+		fmt.Println("StreamWriteRows: ", err.Error())
 	}
 
 	// 性能统计

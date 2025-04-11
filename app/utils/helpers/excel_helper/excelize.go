@@ -113,19 +113,15 @@ func (h *ExcelHandler) StreamSetHeader(sw *excelize.StreamWriter, values []inter
 		return fmt.Errorf("生成坐标失败: %v", err)
 	}
 
+	//样式
+	styleID := h.GetStyleID(StyleHeader)
+
+	//设置头部数据
 	cells := make([]interface{}, len(values))
-	if styleID, ok := h.GetStyleID(StyleHeader); ok {
-		for _, value := range values {
-			cells = append(cells, excelize.Cell{
-				Value:   value,
-				StyleID: styleID,
-			})
-		}
-	} else {
-		for _, value := range values {
-			cells = append(cells, excelize.Cell{
-				Value: value,
-			})
+	for i, value := range values {
+		cells[i] = excelize.Cell{
+			Value:   value,
+			StyleID: styleID,
 		}
 	}
 
@@ -148,7 +144,9 @@ func (h *ExcelHandler) StreamWriteRows(sheet string, headerData []interface{}, r
 	}
 
 	// 流式写入标题（需直接操作原始接口）
-	_ = h.StreamSetHeader(streamWriter, headerData, startCol, startRow)
+	if err1 := h.StreamSetHeader(streamWriter, headerData, startCol, startRow); err1 != nil {
+		return err
+	}
 
 	//起始行增加
 	startRow++
@@ -190,16 +188,19 @@ func (h *ExcelHandler) AddStyle(styleName string, style *excelize.Style) error {
 }
 
 // GetStyleID 获取样式变化
-func (h *ExcelHandler) GetStyleID(styleName string) (int, bool) {
-	styleID, ok := h.Styles[styleName]
+func (h *ExcelHandler) GetStyleID(styleName string) int {
+	if styleID, ok := h.Styles[styleName]; !ok {
+		return 0
+	} else {
+		return styleID
+	}
 
-	return styleID, ok
 }
 
 // ApplyStyle 应用已存在的样式到单元格
 func (h *ExcelHandler) ApplyStyle(sheet, topLeftCell, bottomRightCell, styleName string) error {
-	styleID, ok := h.GetStyleID(styleName)
-	if !ok {
+	styleID := h.GetStyleID(styleName)
+	if styleID <= 0 {
 		return fmt.Errorf("样式未定义: %s", styleName)
 	}
 	return h.File.SetCellStyle(sheet, topLeftCell, bottomRightCell, styleID)
