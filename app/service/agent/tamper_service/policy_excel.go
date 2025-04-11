@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/excel_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"strings"
 )
@@ -96,6 +97,15 @@ func (crd *PolicyExcel) Export() (string, error) {
 		var rowsData [][]interface{}
 		for _, model := range models {
 
+			var processes []tamper_models.Process
+			_ = json_helper.ToAny(model.Processes, &processes)
+			var processHashes []string
+			if len(processes) > 0 {
+				for _, proc := range processes {
+					processHashes = append(processHashes, proc.Hash)
+				}
+			}
+
 			rowsData = append(rowsData, []interface{}{
 				enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_tamper.EnumMapInt),
 				model.Dir,
@@ -104,7 +114,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 				model.ExcludeSuffix,
 				model.ExcludeFolder,
 				enums.Get1stIsStrAnd2ndIsIntReturnStr("is_extend", model.IsExtend, enum_tamper.EnumMapInt),
-				"",
+				strings.Join(processHashes, crd.sep),
 				model.Remark,
 			})
 		}
@@ -116,7 +126,6 @@ func (crd *PolicyExcel) Export() (string, error) {
 
 	// 保存文件
 	path := crd.generateExportPath()
-	fmt.Println("path:", path)
 	if err := excelHandler.SaveAs(path); err != nil {
 		return "", fmt.Errorf("save path fail: %v", err)
 	}
