@@ -291,6 +291,12 @@ func (h *ExcelHandler) Close() error {
 // ======================= 高级功能 =======================
 
 // SetColWidth 设置列宽
+// 示例SetColWidth(sheetName, "A", "C", 15)
 func (h *ExcelHandler) SetColWidth(sheet, startCol, endCol string, width float64) error {
 	return h.File.SetColWidth(sheet, startCol, endCol, width)
+}
+
+// SetRowHeight 设置行高
+func (h *ExcelHandler) SetRowHeight(sheet string, row int, height float64) error {
+	return h.File.SetRowHeight(sheet, row, height)
 }

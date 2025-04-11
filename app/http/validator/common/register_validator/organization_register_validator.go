@@ -358,7 +358,7 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "TamperPolicyImport" //
 	containers.Set(key, tamper3.PolicyImport{})
 	key = consts.ValidatorPrefixOrg + "TamperPolicyExport" //
-	containers.Set(key, tamper3.PolicyImport{})
+	containers.Set(key, tamper3.PolicyExport{})
 	key = consts.ValidatorPrefixOrg + "TamperGlobalPage"
 	containers.Set(key, tamper3.GlobalPage{})
 	key = consts.ValidatorPrefixOrg + "TamperGlobalSetSwitch"

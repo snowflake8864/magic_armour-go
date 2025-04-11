@@ -341,6 +341,7 @@ func (u *TamperController) ExportForPolicy(ctx *gin.Context) {
 		return
 	} else {
 		response.FileDownload(ctx, fullPath)
+		return
 	}
 }
 

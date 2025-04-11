@@ -47,7 +47,8 @@ func (crd *PolicyExcel) Export() (string, error) {
 	_ = excelHandler.InitDefaultStyles()
 
 	//顶部
-	top := "类型：单个文件或文件夹 如：文件夹\n" +
+	top := "" +
+		"类型：单个文件或文件夹 如：文件夹\n" +
 		"名称：当前文件或文件夹路径 如：D:\\Backup\\Downloads\n" +
 		"保护中：读取|写入|删除|重命名|新建 如：读取|写入\n" +
 		"包含文件类型：多个以竖线隔开 如: gif|jpg\n" +
@@ -61,6 +62,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 	if err := excelHandler.SetCellValue(crd.sheetName, "A1", top); err != nil {
 		return "", fmt.Errorf("set top fail: %v", err)
 	}
+	_ = excelHandler.SetRowHeight(crd.sheetName, 1, 160)
 
 	//头部
 	header := []interface{}{
@@ -77,6 +79,12 @@ func (crd *PolicyExcel) Export() (string, error) {
 	if err := excelHandler.SetHeader(crd.sheetName, "A2", "I2", header); err != nil {
 		return "", fmt.Errorf("set header fail: %v", err)
 	}
+	_ = excelHandler.SetColWidth(crd.sheetName, "A", "A", 20)
+	_ = excelHandler.SetColWidth(crd.sheetName, "B", "B", 50)
+	_ = excelHandler.SetColWidth(crd.sheetName, "C", "F", 30)
+	_ = excelHandler.SetColWidth(crd.sheetName, "G", "G", 15)
+	_ = excelHandler.SetColWidth(crd.sheetName, "H", "H", 50)
+	_ = excelHandler.SetColWidth(crd.sheetName, "I", "I", 30)
 
 	//策略数据
 	condition := tamper_models.SearchConditions{
@@ -110,8 +118,8 @@ func (crd *PolicyExcel) Export() (string, error) {
 	path := crd.generateExportPath()
 	fmt.Println("path:", path)
 	if err := excelHandler.SaveAs(path); err != nil {
-		fmt.Println("SaveAs: ", err.Error())
+		return "", fmt.Errorf("save path fail: %v", err)
 	}
 
-	return "", nil
+	return path, nil
 }
