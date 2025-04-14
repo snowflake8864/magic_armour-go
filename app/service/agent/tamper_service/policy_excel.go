@@ -28,7 +28,7 @@ func CreatePolicyExcelFactory(orgId int64, agentId string) *PolicyExcel {
 		sheetName:   "Sheet1",
 		sep:         "|",
 		colsLen:     9,
-		processMap:  map[string]string{},
+		processMap:  make(map[string]string),
 	}
 }
 
