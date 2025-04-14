@@ -56,8 +56,13 @@ func (crd *DllUpload) BatchAdd(orgId int64, agentId string, models *[]proc_model
 	var hashes []string
 	insertMap := make(map[string]proc_models.DllModel)
 	for _, model := range *models {
-		hashes = append(hashes, model.DllHash)
-		insertMap[model.DllHash] = model
+		if !string_helper.IsEmpty(model.DllHash) {
+			hashes = append(hashes, model.DllHash)
+			insertMap[model.DllHash] = model
+		}
+	}
+	if len(insertMap) == 0 {
+		return nil
 	}
 
 	//去掉已存在数据

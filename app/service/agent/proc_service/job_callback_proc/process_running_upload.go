@@ -29,12 +29,19 @@ func (crd *ProcessRunningUpload) BatchAdd(list *[]proc_models.ProcessRunningMode
 	createdAt := date_helper.CurDatetime()
 	var inserts []proc_models.ProcessRunningModel
 	for _, model := range *list {
+		if string_helper.IsEmpty(model.ProcHash) {
+			continue
+		}
 		if string_helper.IsEmpty(model.CreatedAt) {
 			model.CreatedAt = createdAt
 		}
 		model.ProcDir = path_helper.ToStandard(model.ProcDir)
 
 		inserts = append(inserts, model)
+	}
+
+	if len(inserts) == 0 {
+		return true
 	}
 	return crd.masterModel.InsertBatch(&inserts)
 }

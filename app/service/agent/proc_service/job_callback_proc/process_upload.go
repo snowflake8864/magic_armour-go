@@ -56,8 +56,13 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 	var hashes []string
 	insertMap := make(map[string]proc_models.ProcessModel)
 	for _, model := range *models {
-		hashes = append(hashes, model.ProcHash)
-		insertMap[model.ProcHash] = model
+		if !string_helper.IsEmpty(model.ProcHash) {
+			hashes = append(hashes, model.ProcHash)
+			insertMap[model.ProcHash] = model
+		}
+	}
+	if len(insertMap) == 0 {
+		return nil
 	}
 
 	//去掉已存在数据
