@@ -4,8 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -13,6 +15,7 @@ import (
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/map_helper"
 	"goskeleton/app/utils/helpers/path_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"strings"
 )
@@ -25,6 +28,7 @@ func CreatePolicyExcelFactory(orgId int64, agentId string) *PolicyExcel {
 		sheetName:   "Sheet1",
 		sep:         "|",
 		colsLen:     9,
+		processMap:  map[string]string{},
 	}
 }
 
@@ -35,6 +39,7 @@ type PolicyExcel struct {
 	sheetName   string
 	sep         string
 	colsLen     int
+	processMap  map[string]string
 }
 
 func (crd *PolicyExcel) generateExportPath() string {
@@ -144,6 +149,53 @@ func (crd *PolicyExcel) Export() (string, error) {
 }
 
 // Import 导入
+func (crd *PolicyExcel) getProcesses(hashes string) string {
+	result := []tamper_models.Process{}
+	if string_helper.IsEmpty(hashes) {
+		return json_helper.Encode(result)
+	}
+
+	//需求去查询的
+	var queryList []string
+	//转成数组格式
+	hashList := strings.Split(hashes, crd.sep)
+	for _, hash := range hashList {
+		if val, isOK := crd.processMap[hash]; !isOK {
+			queryList = append(queryList, hash)
+			crd.processMap[hash] = ""
+		} else if !string_helper.IsEmpty(val) {
+			result = append(result, tamper_models.Process{
+				Hash: hash,
+				Dir:  val,
+			})
+		}
+	}
+
+	//查询进程白名单
+	if len(queryList) > 0 {
+		condition := proc_models.SearchConditions{
+			OrgId:      crd.orgId,
+			AgentId:    crd.agentId,
+			ProcHashes: queryList,
+			Status:     enum_process.ProcStatusWhite,
+		}
+		models := proc_models.CreateProcessFactory().GetListByConditions(condition)
+		if models != nil && len(models) > 0 {
+			for _, model := range models {
+				crd.processMap[model.ProcHash] = model.Dir
+
+				result = append(result, tamper_models.Process{
+					Hash: model.ProcHash,
+					Dir:  model.Dir,
+				})
+			}
+		}
+	}
+
+	return json_helper.Encode(result)
+}
+
+// Import 导入
 func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) error {
 	//创建新 Excel 文件
 	excelHandler, err := excel_helper.NewExcelHandlerFromFile(fullPath)
@@ -181,9 +233,8 @@ func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) e
 	typeMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("type", enum_tamper.EnumMapInt))
 	powerMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt))
 	extendMap := map_helper.FlipIntAndString(enums.Get1stIsStrReturnMapIntOfStr("is_extend", enum_tamper.EnumMapInt))
-
 	now := date_helper.CurDatetime()
-	var insList []*tamper_models.PolicyModel
+	var insList []tamper_models.PolicyModel
 	//处理行数据
 	for i, rowValues := range rowsValues {
 		//忽略前2行
@@ -195,9 +246,6 @@ func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) e
 			tmp := make([]string, crd.colsLen-colRealLen)
 			rowValues = append(rowValues, tmp...)
 		}
-		fmt.Println("i: ", i)
-		fmt.Println("LEN: ", len(rowValues))
-		fmt.Println(json_helper.Encode(rowValues))
 
 		//初始化数据结构
 		model := tamper_models.PolicyModel{
@@ -248,11 +296,17 @@ func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) e
 		} else {
 			continue
 		}
+		//信任进程
+		model.Processes = crd.getProcesses(rowValues[7])
 
-		insList = append(insList, &model)
+		insList = append(insList, model)
 	}
 
-	fmt.Println(json_helper.Encode(rowValues))
+	if len(insList) > 0 {
+		if !crd.masterModel.InsertBatch(&insList) {
+			return errors.New("batch insert fail")
+		}
+	}
 
 	return nil
 }
