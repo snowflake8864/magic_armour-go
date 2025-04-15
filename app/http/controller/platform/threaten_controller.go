@@ -136,7 +136,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//上传文件
-	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xxx"})
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"})
 	if !isOk {
 		response.FailSimplify(ctx, "上传文件失败")
 		return
