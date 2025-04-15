@@ -337,7 +337,7 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 	//上传文件
 	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
 	if !isOk {
-		response.FailSimplify(ctx, "上传证书失败")
+		response.FailSimplify(ctx, "上传文件失败")
 	}
 	uploadParam.Type = enum_upload.TypeTamperPolicy
 	uploadParam.OperateSource = enums.OperateSourceOrganize
