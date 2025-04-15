@@ -7,11 +7,14 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/service/veda_other/threaten_platform"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -131,6 +134,20 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 
 // ImportForCache 缓存: 导入
 func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	//上传文件
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	if !isOk {
+		response.FailSimplify(ctx, "上传文件失败")
+	}
+	uploadParam.Type = enum_upload.TypeThreatenCaches
+	uploadParam.OperateSource = enums.OperateSourcePlatform
+	uploadParam.OperateId = loginInfo.AdminId
+	uploadParam.OperateName = loginInfo.Username
+	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+		response.FailSimplify(ctx, "保存文件失败")
+		return
+	}
 
 	response.SuccessSimplify(ctx)
 }
