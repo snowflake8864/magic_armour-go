@@ -171,7 +171,7 @@ func StringIn(s string, slc []string) bool {
 	return isOk
 }
 
-// 泛型版本的分割函数（Go 1.18+）
+// ChunkSlice 泛型版本的分割函数（Go 1.18+）
 func ChunkSlice[T any](slice []T, chunkSize int) [][]T {
 	// 防御性检查
 	if chunkSize <= 0 {

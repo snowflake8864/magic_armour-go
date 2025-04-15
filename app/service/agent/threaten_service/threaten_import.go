@@ -108,9 +108,14 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 	if total == 0 {
 		return nil
 	}
+	// 循环切割
 	chunkSize := 200
-	for {
-
+	for i := 0; i < total; i += chunkSize {
+		end := i + chunkSize
+		if end > total {
+			end = total
+		}
+		//insList[i:end]
 	}
 
 	//处理需要重写
