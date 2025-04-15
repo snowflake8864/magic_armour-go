@@ -8,6 +8,8 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/utils/helpers/file_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/md5_encrypt"
 	"os"
 	"path"
@@ -21,7 +23,7 @@ func GetDefaultPath() string {
 }
 
 // Upload 上传指定路径
-func Upload(context *gin.Context, savePath string) (r bool, upload upload_models.UploadModel) {
+func Upload(context *gin.Context, savePath string, allowExt []string) (r bool, upload upload_models.UploadModel) {
 
 	newSavePath, newReturnPath := GenerateYearMonthPath(savePath)
 
@@ -30,12 +32,21 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 	if err != nil {
 		return false, upload
 	}
+	//有.
+	suffix := path.Ext(file.Filename)
+	fmt.Println("suffix:", suffix)
+	if string_helper.IsEmpty(suffix) {
+		return false, upload
+	}
+	if len(allowExt) > 0 && !slice_helper.StringIn(suffix, allowExt) {
+		return false, upload
+	}
 
 	//  保存文件，原始文件名进行全局唯一编码加密、md5 加密，保证在后台存储不重复
 	var saveErr error
 	if sequence := variable.SnowFlake.GetId(); sequence > 0 {
 		saveFileName := fmt.Sprintf("%d%s", sequence, file.Filename)
-		saveFileName = md5_encrypt.MD5(saveFileName) + path.Ext(saveFileName)
+		saveFileName = md5_encrypt.MD5(saveFileName) + suffix
 
 		if saveErr = context.SaveUploadedFile(file, newSavePath+saveFileName); saveErr == nil {
 			//  上传成功,返回资源的相对路径，这里请根据实际返回绝对路径或者相对路径
@@ -44,7 +55,7 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 			upload.StoragePath = strings.ReplaceAll(newReturnPath+saveFileName, variable.BasePath, "")
 			upload.StorageName = saveFileName
 			upload.FullPath = newSavePath + saveFileName
-			upload.Suffix = path.Ext(saveFileName)
+			upload.Suffix = suffix
 			_, fileHash := file_helper.Md5sum(upload.FullPath)
 			upload.FileHash = fileHash
 			return true, upload

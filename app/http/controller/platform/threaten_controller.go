@@ -136,10 +136,12 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	//上传文件
-	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xxx"})
 	if !isOk {
 		response.FailSimplify(ctx, "上传文件失败")
+		return
 	}
+
 	uploadParam.Type = enum_upload.TypeThreatenCaches
 	uploadParam.OperateSource = enums.OperateSourcePlatform
 	uploadParam.OperateId = loginInfo.AdminId

@@ -251,7 +251,7 @@ func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 // UploadErrorFile 上传转储(错误) 文件
 func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 	remark, _ := ctx.GetPostForm("remark")
-	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath()); r == true {
+	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"}); r == true {
 		uploadParam.Type = enum_upload.TypeAgentError
 		loginInfo := u.getLogin(ctx)
 		uploadParam.OperateSource = enums.OperateSourceAgent

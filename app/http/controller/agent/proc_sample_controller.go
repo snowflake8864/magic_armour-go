@@ -66,7 +66,7 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		response.SuccessSimplify(ctx)
 	}
 
-	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath()); r == true {
+	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"}); r == true {
 		uploadParam.Type = enum_upload.TypeProcSample
 		uploadParam.OperateSource = enums.OperateSourceAgent
 		uploadParam.OperateId = loginInfo.OrgId

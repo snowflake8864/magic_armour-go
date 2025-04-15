@@ -28,7 +28,7 @@ func (u *Upload) StartUpload(context *gin.Context) {
 		return
 	}
 
-	if r, uploadParam := upload_file.Upload(context, upload_file.GetDefaultPath()); r == true {
+	if r, uploadParam := upload_file.Upload(context, upload_file.GetDefaultPath(), []string{".zip"}); r == true {
 		uploadParam.Type = fileType
 		loginInfo := u.getLogin(context)
 		uploadParam.OperateSource = enums.OperateSourcePlatform

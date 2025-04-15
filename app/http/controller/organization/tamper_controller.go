@@ -335,9 +335,10 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	//上传文件
-	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xlsx"})
 	if !isOk {
 		response.FailSimplify(ctx, "上传文件失败")
+		return
 	}
 	uploadParam.Type = enum_upload.TypeTamperPolicy
 	uploadParam.OperateSource = enums.OperateSourceOrganize
