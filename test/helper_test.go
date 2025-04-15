@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_pw_jump"
+	"goskeleton/app/utils/helpers/file_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -110,4 +111,15 @@ func TestStringSpilt(t *testing.T) {
 	fmt.Println(json_helper.Encode(strings.Split("1", ",")))
 	fmt.Println(json_helper.Encode(strings.Split("", ",")))
 	fmt.Println(json_helper.Encode(strings.Split(",2,", ",")))
+}
+
+func TestFileListDir(t *testing.T) {
+	names, err := file_helper.ListDir("D:/go_project/magic_armour-go/storage/app/uploaded/2025_04/7c1b9dd19807937de5f6894cbeb2470f_unzip")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(json_helper.Encode(names))
+
 }

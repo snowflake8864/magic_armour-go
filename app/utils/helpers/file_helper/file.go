@@ -6,8 +6,10 @@ import (
 	"errors"
 	"io"
 	"os"
+	"path/filepath"
 )
 
+// Md5sum 文件hash值
 func Md5sum(dir string) (error, string) {
 	// 打开文件
 	file, err := os.Open(dir)
@@ -33,7 +35,7 @@ func Md5sum(dir string) (error, string) {
 	return nil, md5String
 }
 
-// 文件是否存在
+// ExistsFile 文件是否存在
 func ExistsFile(filePath string) bool {
 	_, err := os.Stat(filePath)
 	if err != nil {
@@ -44,7 +46,7 @@ func ExistsFile(filePath string) bool {
 	return true
 }
 
-// 复制文件
+// CopyFile 复制文件
 func CopyFile(srcFile, destFile string) error {
 	source, err := os.Open(srcFile)
 	if err != nil {
@@ -71,7 +73,7 @@ func CopyFile(srcFile, destFile string) error {
 	return nil
 }
 
-// 文件信息
+// FileInfo 文件信息
 func FileInfo(filePath string) (os.FileInfo, error) {
 	fileInfo, err := os.Stat(filePath)
 	if err != nil {
@@ -79,4 +81,47 @@ func FileInfo(filePath string) (os.FileInfo, error) {
 	}
 
 	return fileInfo, nil
+}
+
+// ListDir 获取目录中的所有文件
+func ListDir(dirname string) ([]string, error) {
+	entries, err := os.ReadDir(dirname)
+	if err != nil {
+		return nil, err
+	}
+	names := make([]string, len(entries))
+	for i, entry := range entries {
+		names[i] = entry.Name()
+	}
+	return names, nil
+}
+
+// GetAllFiles 递归获取目录下所有文件路径
+func GetAllFiles(dir string) ([]string, error) {
+	var files []string
+
+	// 读取目录内容
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, err
+	}
+
+	// 遍历目录条目
+	for _, entry := range entries {
+		fullPath := filepath.Join(dir, entry.Name())
+
+		if entry.IsDir() {
+			// 递归处理子目录
+			subFiles, err := GetAllFiles(fullPath)
+			if err != nil {
+				return nil, err // 遇到错误立即返回
+			}
+			files = append(files, subFiles...)
+		} else {
+			// 添加文件路径
+			files = append(files, fullPath)
+		}
+	}
+
+	return files, nil
 }
