@@ -81,7 +81,10 @@ func (u *TaskController) Get(ctx *gin.Context) {
 	} else {
 		if taskCacheFact.LockAgentLive(loginInfo.OrgId, loginInfo.AgentId) {
 			//设置存活状态
-			agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId)
+			if isExist, _ := agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId); !isExist {
+				response.ErrorTokenFail(ctx, consts.AgentLoginExpiredCode, "agent not exist")
+				return
+			}
 		}
 
 		//是否有未完成的任务

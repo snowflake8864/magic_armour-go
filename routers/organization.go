@@ -219,6 +219,15 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 				} //信任目录
 
+				//文件目录
+				fileDir := vOrg.Group("fileDir/")
+				{
+					fileDir.POST("getTypes", (&organization.FileDirController{}).GetTypes)
+					fileDir.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirPage"))
+					fileDir.POST("refresh", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirRefresh"))
+					fileDir.POST("hasUpload", validatorFactory.Create(consts.ValidatorPrefixOrg+"FileDirHasUpload"))
+				} //文件目录
+
 				//进程
 				process := vOrg.Group("process/")
 				{
@@ -372,6 +381,8 @@ func InitOrganizationRouter() *gin.Engine {
 						policy.POST("editFolder", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyEditFolder"))
 						policy.POST("editFile", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyEditFile"))
 						policy.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyDelete"))
+						policy.POST("import", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyImport"))
+						policy.POST("export", validatorFactory.Create(consts.ValidatorPrefixOrg+"TamperPolicyExport"))
 					}
 					global := tamper.Group("global/")
 					{

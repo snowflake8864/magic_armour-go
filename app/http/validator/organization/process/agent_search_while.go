@@ -11,8 +11,9 @@ import (
 
 type AgentSearchWhile struct {
 	data_type.AgentSingleOmitempty
-	Type string `form:"type" json:"type" binding:"required,oneof=dir hash"`
-	Val  string `form:"val" json:"val" binding:"required,min=2"`
+	PlatformType int    `form:"platformType" json:"platformType" binding:"omitempty,oneof=1 2"`
+	Type         string `form:"type" json:"type" binding:"required,oneof=dir hash"`
+	Val          string `form:"val" json:"val" binding:"required,min=2"`
 }
 
 func (n AgentSearchWhile) CheckParams(context *gin.Context) {

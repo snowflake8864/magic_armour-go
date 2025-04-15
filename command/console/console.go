@@ -102,6 +102,9 @@ func start(action string) {
 		service_cmd.CreateCmdFactory().Delete()
 		//SNTP同步时间
 		sntp_cmd.CreateCmdFactory().Sync()
+		//清理终端文件目录
+		agent_cmd.CreateDirFactory().Clear()
+
 	case "OrderExpired": //未知支付订单自动过期
 		order_cmd.CreateCmdFactory().OrderExpired()
 	case "GrantExpired": //终端授权自动过期

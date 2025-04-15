@@ -12,6 +12,7 @@ import (
 	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
 	department3 "goskeleton/app/http/validator/organization/department"
 	dll3 "goskeleton/app/http/validator/organization/dll"
+	fileDir3 "goskeleton/app/http/validator/organization/file_dir"
 	findPw3 "goskeleton/app/http/validator/organization/find_pw"
 	home3 "goskeleton/app/http/validator/organization/home"
 	ipJump3 "goskeleton/app/http/validator/organization/ip_jump"
@@ -174,6 +175,14 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, trustDir3.GlobalSetSwitch{})
 	key = consts.ValidatorPrefixOrg + "TrustDirGlobalDelete"
 	containers.Set(key, trustDir3.GlobalDelete{})
+
+	//文件目录
+	key = consts.ValidatorPrefixOrg + "FileDirPage" //
+	containers.Set(key, fileDir3.Page{})
+	key = consts.ValidatorPrefixOrg + "FileDirRefresh" //
+	containers.Set(key, fileDir3.Refresh{})
+	key = consts.ValidatorPrefixOrg + "FileDirHasUpload" //
+	containers.Set(key, fileDir3.HasUpLoad{})
 
 	//进程
 	key = consts.ValidatorPrefixOrg + "ProcessManagePage"
@@ -346,6 +355,10 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, tamper3.PolicyEditFile{})
 	key = consts.ValidatorPrefixOrg + "TamperPolicyDelete"
 	containers.Set(key, tamper3.PolicyDelete{})
+	key = consts.ValidatorPrefixOrg + "TamperPolicyImport" //
+	containers.Set(key, tamper3.PolicyImport{})
+	key = consts.ValidatorPrefixOrg + "TamperPolicyExport" //
+	containers.Set(key, tamper3.PolicyExport{})
 	key = consts.ValidatorPrefixOrg + "TamperGlobalPage"
 	containers.Set(key, tamper3.GlobalPage{})
 	key = consts.ValidatorPrefixOrg + "TamperGlobalSetSwitch"

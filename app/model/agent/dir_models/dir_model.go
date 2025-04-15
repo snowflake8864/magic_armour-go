@@ -39,6 +39,16 @@ func (m *DirModel) TableName() string {
 	return "a_dirs"
 }
 
+func (m *DirModel) TruncateTable() bool {
+	sql := "TRUNCATE TABLE " + m.TableName()
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
 func (m *DirModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
@@ -134,7 +144,7 @@ func (m *DirModel) GetItemsByConditions(condition SearchConditions, offset, limi
 func (m *DirModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
-		tmp := tx.Model(m).Select("id")
+		tmp := tx.Model(m).Select("*")
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
 			tmp = tmp.Where(whereSQL, vals...)
 		}

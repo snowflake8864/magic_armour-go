@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_tamper"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -14,6 +15,8 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/tamper_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -324,6 +327,47 @@ func (u *TamperController) DeleteForPolicy(ctx *gin.Context) {
 		return
 	}
 	response.SuccessSimplify(ctx)
+}
+
+// ImportForPolicy 终端策略: 导入
+func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	//上传文件
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	if !isOk {
+		response.FailSimplify(ctx, "上传证书失败")
+	}
+	uploadParam.Type = enum_upload.TypeTamperPolicy
+	uploadParam.OperateSource = enums.OperateSourceOrganize
+	uploadParam.OrgId = loginInfo.OrgId
+	uploadParam.OperateId = loginInfo.UserId
+	uploadParam.OperateName = loginInfo.Username
+	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+		response.FailSimplify(ctx, "保存文件失败")
+		return
+	}
+
+	if err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId).Import(uploadParam.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
+}
+
+// ExportForPolicy 终端策略: 导出
+func (u *TamperController) ExportForPolicy(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	if fullPath, err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId).Export(); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else {
+		response.FileDownload(ctx, fullPath)
+	}
 }
 
 // PageForGlobal 全局策略: 分页

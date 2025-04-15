@@ -82,8 +82,8 @@ consumer, err := HelloWorld.CreateConsumer()
     // 这里创建场景模型的时候通过不同的模型名称创建即可，主要有：hello_world、work_queue、publish_subscribe 
 	hello_producer, _ := hello_world.CreateProducer()
 	var res bool
-	for i := 0; i < 10; i++ {
-		str := fmt.Sprintf("%d_hello_world开始发送消息测试", (i + 1))
+	for j := 0; j < 10; j++ {
+		str := fmt.Sprintf("%d_hello_world开始发送消息测试", (j + 1))
 		res = hello_producer.Send(str)
 		//time.Sleep(time.Second * 1)
 	}
@@ -154,15 +154,15 @@ consumer, err := HelloWorld.CreateConsumer()
 	producer, _ := Topics.CreateProducer()
 	var res bool
 	var key string
-	for i := 1; i <= 10; i++ {
+	for j := 1; j <= 10; j++ {
 
 		//  将 偶数 和  奇数 分发到不同的key，消费者端，启动两个也各自处理偶数和奇数
-		if i%2 == 0 {
+		if j%2 == 0 {
 			key = "key.even" //  偶数键
 		} else {
 			key = "key.odd" //  奇数键
 		}
-		str_data := fmt.Sprintf("%d_Routing_%s, 开始发送消息测试", i, key)
+		str_data := fmt.Sprintf("%d_Routing_%s, 开始发送消息测试", j, key)
 		res = producer.Send(key, str_data)
 		//time.Sleep(time.Second * 1)
 	}

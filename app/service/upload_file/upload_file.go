@@ -23,7 +23,7 @@ func GetDefaultPath() string {
 // Upload 上传指定路径
 func Upload(context *gin.Context, savePath string) (r bool, upload upload_models.UploadModel) {
 
-	newSavePath, newReturnPath := generateYearMonthPath(savePath)
+	newSavePath, newReturnPath := GenerateYearMonthPath(savePath)
 
 	//  1.获取上传的文件名(参数验证器已经验证完成了第一步错误，这里简化)
 	file, err := context.FormFile(variable.ConfigYml.GetString("FileUploadSetting.UploadFileField")) //  file 是一个文件结构体（文件对象）
@@ -57,8 +57,8 @@ func Upload(context *gin.Context, savePath string) (r bool, upload upload_models
 
 }
 
-// 文件上传可以设置按照 xxx年-xx月 格式存储
-func generateYearMonthPath(savePathPre string) (string, string) {
+// GenerateYearMonthPath 文件上传可以设置按照 xxx年-xx月 格式存储
+func GenerateYearMonthPath(savePathPre string) (string, string) {
 	returnPath := variable.BasePath + variable.ConfigYml.GetString("FileUploadSetting.UploadFileReturnPath")
 	curYearMonth := time.Now().Format("2006_01")
 	newSavePathPre := savePathPre + curYearMonth

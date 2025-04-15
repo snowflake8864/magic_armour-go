@@ -137,9 +137,9 @@ return false
 > 如果用户传递的参数是  ids 格式如右侧： "100,200,300,400"
 ```code
     //批量删除
-    func (i *IptvUser) BatchDeleteData(ids string) bool {
-        if i.Where(" FIND_IN_SET(id,?)", ids).Delete(i).Error == nil {
-            go i.syncDelTbUsers(ids)
+    func (j *IptvUser) BatchDeleteData(ids string) bool {
+        if j.Where(" FIND_IN_SET(id,?)", ids).Delete(j).Error == nil {
+            go j.syncDelTbUsers(ids)
             return true
         }
         return false

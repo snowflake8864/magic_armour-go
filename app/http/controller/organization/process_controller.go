@@ -154,7 +154,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 	var validIds []string
-	if Switch == enums.SwitchOn && Mode == enum_agent.ModeProject {
+	if Mode == enum_agent.ModeProject {
 		condition := proc_models.SearchConditions{
 			OrgId:    orgId,
 			AgentIds: agentIds,
@@ -337,13 +337,14 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 
 // SearchWhileForAgent 单终端: 查询白名单
 func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
-	orgId := u.getLogin(ctx).OrgId
-	agentId := u.getAgentIdFromGin(ctx)
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx) //指定终端才有
 	Type := ctx.GetString(consts.ValidatorPrefixOrg + "type")
 	Val := ctx.GetString(consts.ValidatorPrefixOrg + "val")
+	platformType := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")) //全局才有
 	//查询条件
 	condition := proc_models.SearchConditions{
-		OrgId:   orgId,
+		OrgId:   loginInfo.OrgId,
 		AgentId: agentId,
 		Status:  enum_process.ProcStatusWhite,
 	}
@@ -357,14 +358,33 @@ func (u *ProcessController) SearchWhileForAgent(ctx *gin.Context) {
 		break
 	}
 	var models []*proc_models.ProcessModel
+	var result []map[string]interface{}
 	limit := 100
 	if string_helper.IsEmpty(agentId) {
+		//用户管理的终端
+		if err, currIds := u.getCurrUserAgentIds(loginInfo); err == nil {
+			//平台相应终端集合
+			platformAgentIds := agent_models.CreateAgentFactory().GetIdsByByConditions(agent_models.SearchConditions{
+				OrgId:        loginInfo.OrgId,
+				AgentIds:     currIds,
+				PlatformType: platformType,
+			})
+			if len(platformAgentIds) == 0 {
+				response.SuccessReturnData(ctx, result)
+				return
+			} else {
+				condition.AgentIds = platformAgentIds
+			}
+		} else {
+			response.SuccessReturnData(ctx, result)
+			return
+		}
+
 		models = proc_models.CreateProcessFactory().GetListByConditionsDistinctHash(condition, 0, limit)
 	} else {
 		models = proc_models.CreateProcessFactory().GetItemsByConditions(condition, 0, limit, "")
 	}
 
-	var result []map[string]interface{}
 	if models != nil || len(models) > 0 {
 		for _, model := range models {
 			result = append(result, map[string]interface{}{

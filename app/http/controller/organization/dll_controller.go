@@ -136,7 +136,7 @@ func (u *DllController) BatchSetConfigForManage(ctx *gin.Context) {
 	Switch := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch"))
 	Mode := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode"))
 	var validIds []string
-	if Switch == enums.SwitchOn && Mode == enum_agent.ModeProject {
+	if Mode == enum_agent.ModeProject {
 		condition := proc_models.SearchConditions{
 			OrgId:    orgId,
 			AgentIds: agentIds,

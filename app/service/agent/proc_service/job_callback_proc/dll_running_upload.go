@@ -27,6 +27,9 @@ func (crd *DllRunningUpload) BatchAdd(list *[]proc_models.DllRunningModel) bool 
 	createdAt := date_helper.CurDatetime()
 	var inserts []proc_models.DllRunningModel
 	for _, model := range *list {
+		if string_helper.IsEmpty(model.DllHash) {
+			continue
+		}
 		if string_helper.IsEmpty(model.CreatedAt) {
 			model.CreatedAt = createdAt
 		}
@@ -34,6 +37,9 @@ func (crd *DllRunningUpload) BatchAdd(list *[]proc_models.DllRunningModel) bool 
 		model.ProcDir = path_helper.ToStandard(model.ProcDir)
 
 		inserts = append(inserts, model)
+	}
+	if len(inserts) == 0 {
+		return true
 	}
 	return crd.masterModel.InsertBatch(&inserts)
 }

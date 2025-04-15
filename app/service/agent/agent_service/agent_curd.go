@@ -83,8 +83,11 @@ func (crd *AgentCurd) initOnlineLog(model *agent_models.AgentModel, isOnLine int
 }
 
 // SetLivingByAgent 设置终端活动中
-func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
+func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) (bool, error) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, id, crd.masterModel.ColumnBasic(true, false))
+	if model == nil || model.OrgId == 0 {
+		return false, nil
+	}
 
 	nowDate := date_helper.CurDatetime()
 
@@ -93,14 +96,14 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) bool {
 		"live_at":   nowDate,
 		"is_online": enums.IsYes,
 	}
-	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	_, _ = crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
 
 	//记录上线日志
 	if model.IsOnline == enums.IsNot {
 		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "心跳"))
 	}
 
-	return isOk
+	return true, nil
 }
 
 // SetSafeByAgent 设置终端安全状态
@@ -115,13 +118,24 @@ func (crd *AgentCurd) SetSafeByAgent(orgId int64, id string, isSafe int) bool {
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (errCode int, err error) {
 	var validIds []string
-	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplify()); agentModels != nil && len(agentModels) > 0 {
+	if agentModels := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnSimplifyAppend(true)); agentModels != nil && len(agentModels) > 0 {
 		for _, model := range agentModels {
-			validIds = append(validIds, model.AgentId)
+			if isUninstall {
+				//卸载必须在线
+				if model.IsOnline == enums.IsYes {
+					validIds = append(validIds, model.AgentId)
+				}
+			} else {
+				//删除必须离线
+				if model.IsOnline == enums.IsNot {
+					validIds = append(validIds, model.AgentId)
+				}
+			}
+
 		}
 	}
 	if len(validIds) == 0 {
-		return -1, errors.New("终端不存在")
+		return -1, errors.New("没有符合条件的终端")
 	}
 
 	if isOK := crd.masterModel.DeleteByOrgAndAgents(orgId, validIds); !isOK {

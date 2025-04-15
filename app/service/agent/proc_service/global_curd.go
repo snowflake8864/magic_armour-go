@@ -109,7 +109,7 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 	for _, model := range *list {
 		id := strings.ToLower(model.Id)
 		if _, isOk := existMap[id]; !isOk {
-			hashes = append(hashList, id)
+			hashes = append(hashes, id)
 
 			inserts = append(inserts, proc_models.ProcGlobalModel{
 				Id:         id,

@@ -47,7 +47,7 @@ func (context *Test) SelectDataMultiple() bool {
 		}
 
 
-		for i := 1; i <= 500; i++ {
+		for j := 1; j <= 500; j++ {
 			var nColumn = make([]Column, 0)
 			//2.执行批量查询
 			rows := context.QuerySqlForMultiple()
@@ -72,7 +72,7 @@ func (context *Test) SelectDataMultiple() bool {
 
 				}
 				//// 我们只输出最后一行数据
-				if i == 500 {
+				if j == 500 {
 					fmt.Println("循环结束，最终需要返回的结果成员数量：",len(nColumn))
 					fmt.Printf("%#+v\n",nColumn)
 				}
