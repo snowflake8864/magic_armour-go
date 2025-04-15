@@ -168,6 +168,8 @@ func PlatformRegisterValidator() {
 	containers.Set(key, threaten4.CacheGetAttr{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenCacheDelete"
 	containers.Set(key, threaten4.CacheDelete{})
+	key = consts.ValidatorPrefixPlatform + "ThreatenCacheImport"
+	containers.Set(key, threaten4.CacheImport{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenCacheBatchWhite"
 	containers.Set(key, threaten4.PushBatchWhite{})
 	key = consts.ValidatorPrefixPlatform + "ThreatenCacheBatchBlack"
