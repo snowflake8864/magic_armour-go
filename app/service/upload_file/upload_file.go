@@ -32,9 +32,8 @@ func Upload(context *gin.Context, savePath string, allowExt []string) (r bool, u
 	if err != nil {
 		return false, upload
 	}
-	//有.
+	//后缀有.
 	suffix := path.Ext(file.Filename)
-	fmt.Println("suffix:", suffix)
 	if string_helper.IsEmpty(suffix) {
 		return false, upload
 	}
