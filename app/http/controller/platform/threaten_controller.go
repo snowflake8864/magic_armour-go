@@ -129,6 +129,12 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
+// ImportForCache 缓存: 导入
+func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
+
+	response.SuccessSimplify(ctx)
+}
+
 // GetAttrForCache 缓存: 获取属性
 func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
