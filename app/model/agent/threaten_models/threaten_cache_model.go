@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 // 威胁情报缓存表
@@ -118,6 +119,24 @@ func (m *CacheModel) InsertBatch(list *[]CacheModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// CustomizeInsertBatch 插入多条
+func (m *CacheModel) CustomizeInsertBatch(list *[]CacheModel) bool {
+	sql := "INSERT INTO `" + m.TableName() + "` (`id`,`level`,`source`,`data_from`,`check_at`,`check_source`,`created_at`) VALUES "
+	var values []string
+	for _, val := range *list {
+		values = append(values, fmt.Sprintf("('%s', %d, %d, %d,'%s', %d,'%s')",
+			val.Id, val.Level, val.Source, val.DataFrom, val.CheckAt, val.CheckSource, val.CreatedAt))
+	}
+	sql += strings.Join(values, ",")
+
 	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
