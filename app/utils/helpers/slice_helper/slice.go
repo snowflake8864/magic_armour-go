@@ -170,3 +170,26 @@ func StringIn(s string, slc []string) bool {
 	_, isOk := toMap[s]
 	return isOk
 }
+
+// 泛型版本的分割函数（Go 1.18+）
+func ChunkSlice[T any](slice []T, chunkSize int) [][]T {
+	// 防御性检查
+	if chunkSize <= 0 {
+		return nil
+	}
+
+	// 预计算分块数量
+	total := len(slice)
+	chunks := make([][]T, 0, (total+chunkSize-1)/chunkSize)
+
+	// 循环切割
+	for i := 0; i < total; i += chunkSize {
+		end := i + chunkSize
+		if end > total {
+			end = total
+		}
+		chunks = append(chunks, slice[i:end])
+	}
+
+	return chunks
+}

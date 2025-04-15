@@ -1,6 +1,7 @@
 package threaten_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
@@ -117,6 +118,7 @@ func (m *CacheModel) InsertBatch(list *[]CacheModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
+	fmt.Println(sql)
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true
