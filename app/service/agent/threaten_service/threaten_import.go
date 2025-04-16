@@ -127,11 +127,11 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 	}
 
 	//处理需要重写
-	if len(rewriteList) == 0 {
+	if len(rewriteList) > 0 {
 		ctx := context.Background()
 		producerFact := producer_kafka.CreateProducerFactory()
 		for _, model := range rewriteList {
-			model.Dir = "GGG"
+			model.CheckInfo = "GGG"
 			producerFact.ProduceThreaten(ctx, &kafka_go.MessageStruct{
 				Type: kafka_go.TypeThreatenSyncRewrite,
 				Data: json_helper.Encode(model),
