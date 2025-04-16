@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -362,7 +363,7 @@ func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, model)
 }
 
-// PageForOnlineLog 上线日子：分页
+// PageForOnlineLog 上线日志：分页
 func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
@@ -396,4 +397,12 @@ func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, (&org_trans.AgentOnline{}).TransPage(total, models, departmentMaps))
+}
+
+// ClearForOnlineLog 上线日志：分页
+func (u *AgentController) ClearForOnlineLog(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	fmt.Println(loginInfo)
+
+	response.SuccessSimplify(ctx)
 }
