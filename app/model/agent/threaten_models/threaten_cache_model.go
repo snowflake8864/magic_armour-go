@@ -127,8 +127,8 @@ func (m *CacheModel) InsertBatch(list *[]CacheModel) bool {
 	}
 }
 
-// CustomizeInsertBatch 插入多条
-func (m *CacheModel) CustomizeInsertBatch(list *[]CacheModel) bool {
+// CustomizeImportInsert 自定义导入插入
+func (m *CacheModel) CustomizeImportInsert(list *[]CacheModel) bool {
 	sql := "INSERT INTO `" + m.TableName() + "` (`id`,`level`,`source`,`data_from`,`check_at`,`check_source`,`created_at`) VALUES "
 	var values []string
 	for _, val := range *list {
@@ -138,6 +138,7 @@ func (m *CacheModel) CustomizeInsertBatch(list *[]CacheModel) bool {
 	sql += strings.Join(values, ",")
 
 	fmt.Println(sql)
+	return false
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true

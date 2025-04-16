@@ -91,6 +91,11 @@ func TestReadSyslog(t *testing.T) {
 
 }
 
+func TestReadThreaten(t *testing.T) {
+	consumer_kafka.CreateConsumerFactory().ConsumeThreaten()
+
+}
+
 func TestConsumeGroup(t *testing.T) {
 	consumer_kafka.CreateConsumerFactory().ConsumeProcess()
 

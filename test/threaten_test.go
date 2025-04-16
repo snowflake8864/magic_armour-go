@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/jobs/threaten_job"
 	"goskeleton/app/model/agent/threaten_models"
@@ -106,4 +107,14 @@ func TestThreatenBatchAdd(t *testing.T) {
 			DataFrom:  enum_threaten.DataFromProcess,
 		})
 	threaten_service.CreateCacheFactory().BatchAdd(&list, false)
+}
+
+func TestThreatenImport(t *testing.T) {
+	filename := "D:/go_project/magic_armour-go/storage/app/uploaded/2025_04/7c1b9dd19807937de5f6894cbeb2470f_unzip/test.xlsx"
+
+	err := threaten_service.CreateImportFactory().ParseExcel(filename)
+	if err != nil {
+		fmt.Println("ParseExcel err :", err.Error())
+	}
+
 }

@@ -1,6 +1,7 @@
 package threaten_service
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"goskeleton/app/global/enums"
@@ -8,8 +9,11 @@ import (
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/excel_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/map_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"strings"
 )
 
@@ -98,7 +102,7 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 		}
 
 		insList = append(insList, model)
-		if enum_threaten.HasLevel(model.Level) {
+		if enum_threaten.IsWhite(model.Level) || enum_threaten.IsBlack(model.Level) {
 			rewriteList = append(rewriteList, model)
 		}
 	}
@@ -109,16 +113,31 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 		return nil
 	}
 	// 循环切割
-	chunkSize := 200
+	chunkSize := 500
 	for i := 0; i < total; i += chunkSize {
 		end := i + chunkSize
 		if end > total {
 			end = total
 		}
-		//insList[i:end]
+
+		chunks := insList[i:end]
+		if crd.masterModel.CustomizeImportInsert(&chunks) {
+			return errors.New("写入失败")
+		}
 	}
 
 	//处理需要重写
+	if len(rewriteList) == 0 {
+		ctx := context.Background()
+		producerFact := producer_kafka.CreateProducerFactory()
+		for _, model := range rewriteList {
+			producerFact.ProduceThreaten(ctx, &kafka_go.MessageStruct{
+				Type: kafka_go.TypeThreatenSyncRewrite,
+				Data: json_helper.Encode(model),
+			})
+		}
+
+	}
 
 	return nil
 }
