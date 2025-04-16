@@ -179,7 +179,7 @@ func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 			if path.Ext(filename) == ".xlsx" {
 				msg := &kafka_go.MessageStruct{
 					Type: kafka_go.TypeThreatenImport,
-					Data: filename,
+					Data: unzipDir + "/" + filename,
 				}
 				producerFact.ProduceThreaten(ctx, msg)
 			}

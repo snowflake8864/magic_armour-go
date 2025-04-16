@@ -131,7 +131,6 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 		ctx := context.Background()
 		producerFact := producer_kafka.CreateProducerFactory()
 		for _, model := range rewriteList {
-			model.CheckInfo = "GGG"
 			producerFact.ProduceThreaten(ctx, &kafka_go.MessageStruct{
 				Type: kafka_go.TypeThreatenSyncRewrite,
 				Data: json_helper.Encode(model),

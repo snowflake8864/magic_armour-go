@@ -34,3 +34,13 @@ func HandelRewire(jsonStr string) {
 	}
 	return
 }
+
+func HandelImport(filename string) {
+
+	variable.ZapLog.Info(fmt.Sprintf("HandelImport filename:%s", filename))
+
+	if err := threaten_service.CreateImportFactory().ParseExcel(filename); err != nil {
+		variable.ZapLog.Error(fmt.Sprintf("ParseExcel fail: %s", err.Error()))
+	}
+	return
+}
