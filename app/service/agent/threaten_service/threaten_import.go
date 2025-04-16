@@ -121,7 +121,7 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 		}
 
 		chunks := insList[i:end]
-		if crd.masterModel.CustomizeImportInsert(&chunks) {
+		if !crd.masterModel.CustomizeImportInsert(&chunks) {
 			return errors.New("写入失败")
 		}
 	}
@@ -131,6 +131,7 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 		ctx := context.Background()
 		producerFact := producer_kafka.CreateProducerFactory()
 		for _, model := range rewriteList {
+			model.Dir = "GGG"
 			producerFact.ProduceThreaten(ctx, &kafka_go.MessageStruct{
 				Type: kafka_go.TypeThreatenSyncRewrite,
 				Data: json_helper.Encode(model),
