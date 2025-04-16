@@ -137,8 +137,6 @@ func (m *CacheModel) CustomizeImportInsert(list *[]CacheModel) bool {
 	}
 	sql += strings.Join(values, ",")
 
-	fmt.Println(sql)
-	return false
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true
