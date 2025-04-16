@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -17,6 +16,7 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/online_log_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -402,7 +402,11 @@ func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 // ClearForOnlineLog 上线日志：分页
 func (u *AgentController) ClearForOnlineLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	fmt.Println(loginInfo)
+
+	if err := online_log_service.CreateCurdFactory().DeleteByOrg(loginInfo.OrgId); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
 
 	response.SuccessSimplify(ctx)
 }

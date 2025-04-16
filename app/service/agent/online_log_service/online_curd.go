@@ -50,3 +50,9 @@ func (crd *OnlineLogCurd) BatchAdd(list *[]agent_online_models.OnlineLogModel) e
 
 	return nil
 }
+
+// DeleteByOrg 按照企业删除
+func (crd *OnlineLogCurd) DeleteByOrg(orgId int64) error {
+
+	return nil
+}
