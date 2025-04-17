@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/model_comm"
-	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"strings"
 )
@@ -331,13 +330,13 @@ func (m *baseAgent) ColumnCalcAgents(org, online, safe, win, winOnline bool) str
 		columns = append(columns, "org_id")
 	}
 	if online {
-		columns = append(columns, "SUM(IF(is_online ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS online_number")
+		columns = append(columns, fmt.Sprintf("SUM(IF(is_online =%d, 1, 0)) AS online_number", enums.IsYes))
 	}
 	if safe {
-		columns = append(columns, "SUM(IF(is_safe ="+int_helper.IntToStr(enums.IsYes)+", 1, 0)) AS safe_number")
+		columns = append(columns, fmt.Sprintf("SUM(IF(is_safe =%d, 1, 0)) AS safe_number", enums.IsYes))
 	}
 	if win {
-		columns = append(columns, "SUM(IF(platform_type ="+int_helper.IntToStr(enum_software.PlatformTypeWindows)+", 1, 0)) AS windows_number")
+		columns = append(columns, fmt.Sprintf("SUM(IF(platform_type=%d, 1, 0)) AS windows_online_number", enum_software.PlatformTypeWindows))
 	}
 	if winOnline {
 		columns = append(columns, fmt.Sprintf("SUM(IF(platform_type=%d AND is_online=%d, 1, 0)) AS windows_online_number", enum_software.PlatformTypeWindows, enums.IsYes))
