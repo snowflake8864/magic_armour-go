@@ -403,8 +403,8 @@ func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 func (u *AgentController) ClearForOnlineLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	if err := online_log_service.CreateCurdFactory().DeleteByOrg(loginInfo.OrgId); err != nil {
-		response.FailSimplify(ctx, err.Error())
+	if !online_log_service.CreateCurdFactory().DeleteByOrg(loginInfo.OrgId) {
+		response.FailSimplify(ctx, "清空失败")
 		return
 	}
 
