@@ -62,14 +62,17 @@ func (crd *OrderCurd) calcDeclineAmount(TotalAmount, RealAmount float64) float64
 	return float_helper.Sub(TotalAmount, RealAmount, 2)
 }
 
-func (crd *OrderCurd) getExpireAt() string {
-	days := 365
+func (crd *OrderCurd) getExpireAt(grantDuration int) string {
+	//bug[10110] 改成已订单过期为准
+	return date_helper.TimestampToDatetimeByFormat(date_helper.AddTimestampByDays(0, grantDuration, 0), variable.DateFormatToday)
+
+	/*days := 365
 	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrderExpireDays); !string_helper.IsEmpty(val) {
 		days = string_helper.ToInt(val)
 	}
 
 	day, _, _, _ := date_helper.CalcByDay(days)
-	return day
+	return day*/
 }
 
 func (crd *OrderCurd) getLicenseDefaultName() string {
@@ -146,7 +149,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 		orderParam.OrderStatus = enum_order.OrderStatusUnpaid
 	}
 	orderParam.IsExpire = enums.IsNot
-	orderParam.ExpireAt = crd.getExpireAt()
+	orderParam.ExpireAt = crd.getExpireAt(orderParam.GrantDuration)
 	if err = tx.Create(orderParam).Error; err != nil {
 		tx.Rollback()
 		return -1, errors.New("保存订单失败")
@@ -529,6 +532,7 @@ func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName s
 	updates := map[string]interface{}{
 		"order_status": enum_order.OrderStatusCompleted,
 		"complete_at":  now,
+		"expire_at":    crd.getExpireAt(orderModel.GrantDuration),
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
 		return -1, errors.New("订单修改失败")
