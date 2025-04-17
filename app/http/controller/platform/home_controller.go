@@ -120,7 +120,7 @@ func (u *HomeController) AgentDailyOnline(ctx *gin.Context) {
 		for _, model := range models {
 			dateArr = append(dateArr, date_helper.DaysInMonthByTimestamp(date_helper.DatetimeToTimestamp(model.StatDay, variable.DateFormatToday)))
 			winArr = append(winArr, model.AgentWinOnline)
-			linuxArr = append(winArr, model.AgentLinuxOnline)
+			linuxArr = append(linuxArr, model.AgentLinuxOnline)
 		}
 	}
 	response.SuccessReturnData(ctx, gin.H{
