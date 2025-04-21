@@ -1,11 +1,13 @@
 package threaten_models
 
 import (
+	"fmt"
 	"gorm.io/gorm"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
+	"strings"
 )
 
 // 威胁情报缓存表
@@ -117,6 +119,24 @@ func (m *CacheModel) InsertBatch(list *[]CacheModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
+	result := m.Exec(m.TrimSql(sql))
+	if result.Error == nil {
+		return true
+	} else {
+		return false
+	}
+}
+
+// CustomizeImportInsert 自定义导入插入
+func (m *CacheModel) CustomizeImportInsert(list *[]CacheModel) bool {
+	sql := "INSERT INTO `" + m.TableName() + "` (`id`,`level`,`source`,`data_from`,`check_at`,`check_source`,`created_at`) VALUES "
+	var values []string
+	for _, val := range *list {
+		values = append(values, fmt.Sprintf("('%s', %d, %d, %d,'%s', %d,'%s')",
+			val.Id, val.Level, val.Source, val.DataFrom, val.CheckAt, val.CheckSource, val.CreatedAt))
+	}
+	sql += strings.Join(values, ",")
+
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
 		return true

@@ -46,6 +46,7 @@ const (
 	TypeSyslogPutLoginFail    string = "syslog_put_login_fail"    //类型：通讯日志-登录日志上传(失败)
 
 	TypeThreatenSyncRewrite string = "threaten_sync_rewrite" //类型：威胁情报同步后重写
+	TypeThreatenImport      string = "threaten_import"       //类型：威胁情报导入
 
 	TypeCrontabAlarmStat          string = "crontab_alarm_stat"            //类型：定时任务-告警统计
 	TypeCrontabAgentSafe          string = "crontab_agent_safe"            //类型：定时任务-终端安全状态

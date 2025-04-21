@@ -258,9 +258,10 @@ func (u *OrderController) ImportForLicense(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	//上传文件
-	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath())
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".lic"})
 	if !isOk {
 		response.FailSimplify(ctx, "上传证书失败")
+		return
 	}
 	uploadParam.Type = enum_upload.TypeLicense
 	uploadParam.OperateSource = enums.OperateSourceOrganize

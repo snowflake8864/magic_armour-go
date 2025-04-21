@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
+	"goskeleton/app/service/agent/online_log_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -362,7 +363,7 @@ func (u *AgentController) InfoForMonitor(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, model)
 }
 
-// PageForOnlineLog 上线日子：分页
+// PageForOnlineLog 上线日志：分页
 func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
@@ -396,4 +397,16 @@ func (u *AgentController) PageForOnlineLog(ctx *gin.Context) {
 	}
 
 	response.SuccessReturnData(ctx, (&org_trans.AgentOnline{}).TransPage(total, models, departmentMaps))
+}
+
+// ClearForOnlineLog 上线日志：分页
+func (u *AgentController) ClearForOnlineLog(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	if !online_log_service.CreateCurdFactory().DeleteByOrg(loginInfo.OrgId) {
+		response.FailSimplify(ctx, "清空失败")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }

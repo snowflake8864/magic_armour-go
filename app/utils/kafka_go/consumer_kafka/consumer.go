@@ -174,6 +174,9 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeThreatenSyncRewrite:
 			threaten_job.HandelRewire(data.Data)
 			break
+		case kafka_go.TypeThreatenImport:
+			threaten_job.HandelImport(data.Data)
+			break
 
 		case kafka_go.TypeCrontabAlarmStat:
 			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)

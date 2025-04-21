@@ -82,6 +82,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/platform/threaten/cache/delete":             {ModuleThreaten, "缓存-删除"},
 	"/v5/platform/threaten/cache/clear":              {ModuleThreaten, "缓存-清空"},
 	"/v5/platform/threaten/cache/refresh":            {ModuleThreaten, "缓存-刷新"},
+	"/v5/platform/threaten/cache/import":             {ModuleThreaten, "缓存-导入"},
 	"/v5/platform/threaten/cache/batchWhite":         {ModuleThreaten, "缓存-批量白名单"},
 	"/v5/platform/threaten/cache/batchBlack":         {ModuleThreaten, "缓存-批量黑名单"},
 	"/v5/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},

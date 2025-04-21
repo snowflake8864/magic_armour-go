@@ -7,15 +7,23 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/service/veda_other/threaten_platform"
+	"goskeleton/app/utils/helpers/file_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/kafka_go"
+	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/response"
+	"goskeleton/app/utils/zip_factory"
+	"path"
 	"strings"
 )
 
@@ -126,6 +134,58 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 		response.FailSimplify(ctx, "删除失败")
 		return
 	}
+	response.SuccessSimplify(ctx)
+}
+
+// ImportForCache 缓存: 导入
+func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
+	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.ThreatenSwitch); string_helper.ToInt(val) == enums.SwitchOn {
+		response.FailSimplify(ctx, "威胁情报功能已开启，不需要人工导入")
+		return
+	}
+
+	loginInfo := u.getLogin(ctx)
+	//上传文件
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"})
+	if !isOk {
+		response.FailSimplify(ctx, "上传文件失败")
+		return
+	}
+	uploadParam.Type = enum_upload.TypeThreatenCaches
+	uploadParam.OperateSource = enums.OperateSourcePlatform
+	uploadParam.OperateId = loginInfo.AdminId
+	uploadParam.OperateName = loginInfo.Username
+	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+		response.FailSimplify(ctx, "保存文件失败")
+		return
+	}
+
+	//解压
+	fileNameArr := strings.Split(uploadParam.StorageName, ".")
+	unzipDir := path.Dir(uploadParam.FullPath) + "/" + fileNameArr[0] + "_unzip"
+	if err := zip_factory.UnzipFile(uploadParam.FullPath, unzipDir); err != nil {
+		response.FailData(ctx, "解压失败", err.Error())
+		return
+	}
+
+	//获取列表
+	if fileList, err := file_helper.ListDir(unzipDir); err != nil {
+		response.FailData(ctx, "获取文件失败", err.Error())
+		return
+	} else {
+		producerFact := producer_kafka.CreateProducerFactory()
+		for _, filename := range fileList {
+			//丢入队列
+			if path.Ext(filename) == ".xlsx" {
+				msg := &kafka_go.MessageStruct{
+					Type: kafka_go.TypeThreatenImport,
+					Data: unzipDir + "/" + filename,
+				}
+				producerFact.ProduceThreaten(ctx, msg)
+			}
+		}
+	}
+
 	response.SuccessSimplify(ctx)
 }
 

@@ -202,6 +202,7 @@ func InitOrganizationRouter() *gin.Engine {
 					onlineLog := agent.Group("onlineLog/")
 					{
 						onlineLog.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AgentOnlineLogPage"))
+						onlineLog.POST("clear", (&organization.AgentController{}).ClearForOnlineLog)
 					}
 
 				} //终端

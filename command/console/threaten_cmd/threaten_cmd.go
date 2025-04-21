@@ -473,7 +473,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
 		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
-			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err.Error())
+			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err1.Error())
 		}
 	}
 

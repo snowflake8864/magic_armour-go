@@ -11,7 +11,7 @@ import (
 type PurchaseAdd struct {
 	ProductId     int `form:"productId" json:"productId" binding:"required"`
 	BuyNumber     int `form:"buyNumber" json:"buyNumber" binding:"required,max=10000"`
-	GrantDuration int `form:"grantDuration" json:"grantDuration" binding:"required,max=36"`
+	GrantDuration int `form:"grantDuration" json:"grantDuration" binding:"required,max=120"`
 	PayMethod     int `form:"payMethod" json:"payMethod" binding:"required"`
 }
 

@@ -282,6 +282,7 @@ func InitPlatformRouter() *gin.Engine {
 						cache.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheDelete"))
 						cache.POST("batchWhite", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchWhite"))
 						cache.POST("batchBlack", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheBatchBlack"))
+						cache.POST("import", validatorFactory.Create(consts.ValidatorPrefixPlatform+"ThreatenCacheImport"))
 						cache.POST("allWhite", (&platform.ThreatenController{}).AllWhiteForPush)
 						cache.POST("clear", (&platform.ThreatenController{}).ClearForCache)
 						cache.POST("refresh", (&platform.ThreatenController{}).RefreshForCache)
