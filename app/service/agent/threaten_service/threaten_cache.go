@@ -71,6 +71,9 @@ func (crd *ThreatenCache) BatchAdd(list *[]threaten_models.CacheModel, checkExis
 			}
 		}
 	}
+	if len(inserts) == 0 {
+		return true
+	}
 
 	return crd.masterModel.InsertBatch(&inserts)
 }

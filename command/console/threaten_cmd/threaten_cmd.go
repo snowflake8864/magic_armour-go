@@ -206,10 +206,12 @@ func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.
 			if procModels == nil || len(procModels) == 0 {
 				continue
 			}
+			var insList []threaten_models.CacheModel
 			for _, procModel := range procModels {
+				if _, isOk := existsMap[procModel.ProcHash]; !isOk {
+					existsMap[procModel.ProcHash] = struct{}{}
 
-				if _, isOk := existsMap[procModel.ProcHash]; isOk {
-					param := threaten_models.CacheModel{
+					insList = append(insList, threaten_models.CacheModel{
 						Id:        procModel.ProcHash,
 						Source:    enum_threaten.SourceAgentUpload,
 						Dir:       procModel.Dir,
@@ -220,16 +222,32 @@ func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.
 						Signature: procModel.Signature,
 						Attribute: "",
 						DataFrom:  enum_threaten.DataFromProcess,
-					}
-					threaten_service.CreateCacheFactory().Add(&param, true)
-				} else {
-					existsMap[procModel.ProcHash] = struct{}{}
+					})
 				}
 			}
+			crd.insertThreatens(insList)
 		} //agentModels
 	} //orgModels
 
 	existsMap = nil
+}
+
+func (crd *ThreatenCmd) insertThreatens(insList []threaten_models.CacheModel) {
+	total := len(insList)
+	if total == 0 {
+		return
+	}
+	// 循环切割
+	chunkSize := 200
+	for i := 0; i < total; i += chunkSize {
+		end := i + chunkSize
+		if end > total {
+			end = total
+		}
+
+		chunks := insList[i:end]
+		threaten_service.CreateCacheFactory().BatchAdd(&chunks, true)
+	}
 }
 
 func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.OrganizationModel) {
@@ -251,10 +269,12 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 			if procModels == nil || len(procModels) == 0 {
 				continue
 			}
+			var insList []threaten_models.CacheModel
 			for _, procModel := range procModels {
+				if _, isOk := existsMap[procModel.DllHash]; !isOk {
+					existsMap[procModel.DllHash] = struct{}{}
 
-				if _, isOk := existsMap[procModel.DllHash]; isOk {
-					param := threaten_models.CacheModel{
+					insList = append(insList, threaten_models.CacheModel{
 						Id:        procModel.DllHash,
 						Source:    enum_threaten.SourceAgentUpload,
 						Dir:       procModel.Dir,
@@ -265,12 +285,10 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 						Signature: procModel.Signature,
 						Attribute: procModel.Attribute,
 						DataFrom:  enum_threaten.DataFromDll,
-					}
-					threaten_service.CreateCacheFactory().Add(&param, true)
-				} else {
-					existsMap[procModel.DllHash] = struct{}{}
+					})
 				}
 			}
+			crd.insertThreatens(insList)
 		} //agentModels
 	} //orgModels
 
