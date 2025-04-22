@@ -20,6 +20,9 @@ type ThreatenCache struct {
 
 // Add 新增
 func (crd *ThreatenCache) Add(param *threaten_models.CacheModel, checkExist bool) bool {
+	if string_helper.IsEmpty(param.Id) {
+		return true
+	}
 	if checkExist {
 		if isExist, _ := crd.masterModel.GetLevelById(param.Id); isExist {
 			return true
@@ -46,7 +49,9 @@ func (crd *ThreatenCache) BatchAdd(list *[]threaten_models.CacheModel, checkExis
 	if checkExist {
 		var ids []string
 		for _, model := range *list {
-			ids = append(ids, model.Id)
+			if !string_helper.IsEmpty(model.Id) {
+				ids = append(ids, model.Id)
+			}
 		}
 		hasMap = crd.masterModel.GetLevelsByIds(ids)
 	}
