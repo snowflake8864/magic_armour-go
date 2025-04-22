@@ -227,6 +227,7 @@ func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.
 			}
 			crd.insertThreatens(insList)
 		} //agentModels
+		time.Sleep(3 * time.Millisecond)
 	} //orgModels
 
 	existsMap = nil
@@ -290,6 +291,7 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 			}
 			crd.insertThreatens(insList)
 		} //agentModels
+		time.Sleep(3 * time.Millisecond)
 	} //orgModels
 
 	existsMap = nil
