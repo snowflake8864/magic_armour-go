@@ -38,7 +38,7 @@ func (crd *SyslogLoginUpload) Add(model *syslog_models.LoginModel) error {
 	//推送到幻势,
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchLogin); hsCli != nil {
 		if err := hsCli.SyncLogLogin(crd.initHs(model)); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 
@@ -46,7 +46,7 @@ func (crd *SyslogLoginUpload) Add(model *syslog_models.LoginModel) error {
 	if model.Status == enums.IsNot {
 		//计算口令破解告警
 		if err := job_callback_alarm.CreateLoginCalcFactory().Calc(model.OrgId, model.AgentId, model.SourceIp, model.CreatedAt); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 	return nil
@@ -76,7 +76,7 @@ func (crd *SyslogLoginUpload) BatchAddSuccess(list *[]syslog_models.LoginModel) 
 	if hsCli := crd.getHuanshiCli(enum_dictionary.HuanshiLogSwitchLogin); hsCli != nil {
 		for _, model := range inserts {
 			if err := hsCli.SyncLogLogin(crd.initHs(&model)); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Error(err.Error())
 			}
 		}
 	}

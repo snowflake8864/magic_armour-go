@@ -132,7 +132,7 @@ func (crd *AgentPost) SaveDir(orgId int64, agentId, inputJson string) error {
 		}
 	}
 	if err := dirFact.BatchAdd(orgId, agentId, searchDir, &models); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Error(err.Error())
 	}
 
 	return nil
