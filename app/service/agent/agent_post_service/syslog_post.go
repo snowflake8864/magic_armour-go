@@ -67,16 +67,16 @@ func (crd *SyslogPost) ToQuery(orgId int64, agentId, inputJson string) error {
 	}
 
 	if err := crd.sendInner(&innerModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendInner: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendInner: " + err.Error())
 	}
 	if err := crd.sendOuter(&outerModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendOuter: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendOuter: " + err.Error())
 	}
 	if err := crd.sendProcess(&processModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendProcess: " + err.Error())
 	}
 	if err := crd.sendLoginSuccess(&loginSuccessModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendLoginSuccess: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendLoginSuccess: " + err.Error())
 	}
 
 	return nil

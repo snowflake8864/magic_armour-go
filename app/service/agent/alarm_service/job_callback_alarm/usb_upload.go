@@ -72,7 +72,7 @@ func (crd *AlarmUsbUpload) BatchAdd(list *[]alarm_models.UsbModel) error {
 				PeripheralContact: aliasMap[model.UsbHash],
 			}
 			if err := hsCli.SyncAlarmComm(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}
