@@ -180,7 +180,7 @@ func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHas
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	fmt.Println(json_helper.Encode(respComm)
+	fmt.Println(json_helper.Encode(respComm))
 	fmt.Println(fmt.Sprintf("data type:%T ", respComm.Data))
 
 	var result []ResponseCheckHashes
