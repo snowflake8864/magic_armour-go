@@ -81,13 +81,6 @@ func (crd *ThreatenCmd) getThreatenCli(isOnline, isToken bool) (err error, cli *
 	return nil, cli
 }
 
-// Cache2Pushes  推送列表： 本地缓存数据同步威胁情报推送列表
-func (crd *ThreatenCmd) Cache2Pushes() {
-	variable.ZapLog.Sugar().Debug("CacheToPushes start")
-
-	variable.ZapLog.Sugar().Debug("CacheToPushes end")
-}
-
 func (crd *ThreatenCmd) getSupportNumber() int {
 	if number := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.ThreatenSupportNumber); string_helper.IsEmpty(number) {
 		return enum_threaten.CenterSupportNumber

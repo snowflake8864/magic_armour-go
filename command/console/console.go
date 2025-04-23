@@ -70,8 +70,6 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().SyncForPushes()
 
 	//以下建议每5分钟执行一次
-	case "ThreatenCache2Pushes": //本地缓存数据同步威胁情报推送列表 - 暂时不做
-		threaten_cmd.CreateCmdFactory().Cache2Pushes()
 
 	//以下建议每12分钟执行一次
 	case "CollectOrgToday": //统计企业今天相关数据
