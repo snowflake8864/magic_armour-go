@@ -110,7 +110,7 @@ func (crd *AlarmLoginCalc) Calc(orgId int64, agentId string, attackIp string, at
 
 	//动态封堵
 	if err := plug_calc_service.CreatePlugCalcFactory().CalcByLogin(model.OrgId, model.AgentId, attackIp); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 	}
 
 	return nil
@@ -131,7 +131,7 @@ func (crd *AlarmLoginCalc) PushHs(model *alarm_models.LoginModel) {
 			Total:    model.SolveTotal,
 		}
 		if err := hsCli.SyncAlarmLogin(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 }
@@ -141,24 +141,24 @@ func (crd *AlarmLoginCalc) sendEmail(loginModel *alarm_models.LoginModel, agentM
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()
 	extendModel := OrgExtendFact.GetItemByOrg(agentModel.OrgId)
 	if extendModel == nil || extendModel.Id == 0 {
-		variable.ZapLog.Sugar().Debug("企业扩展不存在, orgId=", agentModel.OrgId)
+		variable.ZapLog.Sugar().Info("企业扩展不存在, orgId=", agentModel.OrgId)
 		return
 	}
 	noticeConfig := OrgExtendFact.FormatAlarmNoticeConfig(extendModel.AlarmNoticeConfig)
 	if noticeConfig.EmailSwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Debug("EmailSwitch关闭, orgId=", agentModel.OrgId)
+		variable.ZapLog.Sugar().Info("EmailSwitch关闭, orgId=", agentModel.OrgId)
 		return
 	}
 	if string_helper.IsEmpty(noticeConfig.Email) {
-		variable.ZapLog.Sugar().Debug("邮箱为空, orgId=", agentModel.OrgId)
+		variable.ZapLog.Sugar().Info("邮箱为空, orgId=", agentModel.OrgId)
 		return
 	}
 	if noticeConfig.TimelySwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Debug("TimelySwitch关闭, orgId=", agentModel.OrgId)
+		variable.ZapLog.Sugar().Info("TimelySwitch关闭, orgId=", agentModel.OrgId)
 		return
 	}
 	if len(noticeConfig.TimelyMod) == 0 {
-		variable.ZapLog.Sugar().Debug("没有选中告警模块, orgId=", agentModel.OrgId)
+		variable.ZapLog.Sugar().Info("没有选中告警模块, orgId=", agentModel.OrgId)
 		return
 	}
 
@@ -173,7 +173,7 @@ func (crd *AlarmLoginCalc) sendEmail(loginModel *alarm_models.LoginModel, agentM
 	//发送邮件
 	subject, context := gomail_factory.CreateTemplateFactory().GetAlarmTimely(&mailParam)
 	if err := gomail_factory.CreateMailerFactory().SendHtmlMsg(noticeConfig.Email, subject, context); err != nil {
-		variable.ZapLog.Sugar().Debug("发送邮件错误, orgId=", agentModel, "【error】", err.Error())
+		variable.ZapLog.Sugar().Info("发送邮件错误, orgId=", agentModel, "【error】", err.Error())
 		return
 	}
 }

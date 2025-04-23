@@ -43,7 +43,7 @@ func (k *Mailer) SendHtmlMsg(to, subject, body string) error {
 
 	err := k.Dialer.DialAndSend(message)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 		return err
 	}
 	return nil

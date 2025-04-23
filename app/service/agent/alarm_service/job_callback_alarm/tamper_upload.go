@@ -63,7 +63,7 @@ func (crd *AlarmTamperUpload) BatchAdd(list *[]alarm_models.TamperModel) error {
 				ExceptionProcess: model.ProcDir,
 			}
 			if err := hsCli.SyncAlarmComm(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}

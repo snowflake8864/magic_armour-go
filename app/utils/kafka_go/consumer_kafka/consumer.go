@@ -78,14 +78,14 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 
 	msg, err := r.ReadMessage(ctx)
 	if err != nil {
-		variable.ZapLog.Error(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
+		variable.ZapLog.Warn(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
 		return result, err
 	} else if len(msg.Value) == 0 {
 		return nil, nil
 	} else {
 		err = json.Unmarshal(msg.Value, result)
 		if err != nil {
-			variable.ZapLog.Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
+			variable.ZapLog.Info(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
 		return result, err
 
@@ -196,7 +196,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
-			variable.ZapLog.Debug(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
+			variable.ZapLog.Info(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
 		}
 	}
 }

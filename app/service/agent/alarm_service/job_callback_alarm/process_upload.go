@@ -62,7 +62,7 @@ func (crd *AlarmProcessUpload) BatchAdd(list *[]alarm_models.ProcessModel) error
 				Dir: model.ProcDir,
 			}
 			if err := hsCli.SyncAlarmComm(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}
