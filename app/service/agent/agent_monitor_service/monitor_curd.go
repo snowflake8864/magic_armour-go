@@ -71,7 +71,7 @@ func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 
 	//缓存数据
 	if err := crd.cacheNewest(param); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 	}
 
 	//发送告警邮件
@@ -85,20 +85,20 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()
 	extendModel := OrgExtendFact.GetItemByOrg(model.OrgId)
 	if extendModel == nil || extendModel.Id == 0 {
-		variable.ZapLog.Sugar().Debug("企业扩展不存在, orgId=", model.OrgId)
+		variable.ZapLog.Sugar().Info("企业扩展不存在, orgId=", model.OrgId)
 		return
 	}
 	noticeConfig := OrgExtendFact.FormatHardwareNoticeConfig(extendModel.HardwareNoticeConfig)
 	if noticeConfig.EmailSwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Debug("EmailSwitch关闭, orgId=", model.OrgId)
+		variable.ZapLog.Sugar().Info("EmailSwitch关闭, orgId=", model.OrgId)
 		return
 	}
 	if string_helper.IsEmpty(noticeConfig.Email) {
-		variable.ZapLog.Sugar().Debug("邮箱为空, orgId=", model.OrgId)
+		variable.ZapLog.Sugar().Info("邮箱为空, orgId=", model.OrgId)
 		return
 	}
 	if noticeConfig.TimelySwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Debug("TimelySwitch关闭, orgId=", model.OrgId)
+		variable.ZapLog.Sugar().Info("TimelySwitch关闭, orgId=", model.OrgId)
 		return
 	}
 
@@ -129,14 +129,14 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 		})
 	}
 	if mailParam.UsageList == nil || len(mailParam.UsageList) == 0 {
-		variable.ZapLog.Sugar().Debug("不满足条件, orgId=", model.OrgId)
+		variable.ZapLog.Sugar().Info("不满足条件, orgId=", model.OrgId)
 		return
 	}
 
 	//终端信息
 	agentFact := agent_models.CreateAgentFactory()
 	if agentModel := agentFact.GetItemByOrgAndAgent(model.OrgId, model.AgentId, agentFact.ColumnBasic(true, false)); agentModel == nil || agentModel.OrgId == 0 {
-		variable.ZapLog.Sugar().Debug("终端不存在, orgId=", model.OrgId, ", agentId=", model.AgentId)
+		variable.ZapLog.Sugar().Info("终端不存在, orgId=", model.OrgId, ", agentId=", model.AgentId)
 		return
 	} else {
 		mailParam.AgentIp = agentModel.AgentIp
@@ -146,7 +146,7 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 	//发送邮件
 	subject, context := gomail_factory.CreateTemplateFactory().GetHardwareTimely(&mailParam)
 	if err := gomail_factory.CreateMailerFactory().SendHtmlMsg(noticeConfig.Email, subject, context); err != nil {
-		variable.ZapLog.Sugar().Debug("发送邮件错误, orgId=", model.OrgId, "【error】", err.Error())
+		variable.ZapLog.Sugar().Info("发送邮件错误, orgId=", model.OrgId, "【error】", err.Error())
 		return
 	}
 
