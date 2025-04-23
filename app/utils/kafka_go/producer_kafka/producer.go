@@ -95,7 +95,7 @@ type ProducerClient struct {
 func (k *ProducerClient) writeMessage(ctx context.Context, w *kafka.Writer, msg kafka.Message) error {
 	err := w.WriteMessages(ctx, msg)
 	if err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("写入kafka失败，Tocic:%v,err:%v", w.Topic, err))
+		variable.ZapLog.Warn(fmt.Sprintf("写入kafka失败，Tocic:%v,err:%v", w.Topic, err))
 	}
 	return err
 }
@@ -104,7 +104,7 @@ func (k *ProducerClient) writeMessage(ctx context.Context, w *kafka.Writer, msg 
 func (k *ProducerClient) makeMessage(data *kafka_go.MessageStruct) kafka.Message {
 	msgContent, err := json.Marshal(&data)
 	if err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("json marshal err data:%v,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("json marshal err data:%v,err:%v", data, err))
 	}
 
 	return kafka.Message{
@@ -114,42 +114,42 @@ func (k *ProducerClient) makeMessage(data *kafka_go.MessageStruct) kafka.Message
 
 func (k *ProducerClient) ProduceCommon(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Common, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceCommon data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceCommon data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceProcess(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Process, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceProcess data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceProcess data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceDll(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Dll, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceDll data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceDll data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceThreaten(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Threaten, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceThreaten data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceThreaten data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceAlarm(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Alarm, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceAlarm data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceAlarm data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceSyslog(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Syslog, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceSyslog data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceSyslog data:%v ,err:%v", data, err))
 	}
 }
 
 func (k *ProducerClient) ProduceCrontab(ctx context.Context, data *kafka_go.MessageStruct) {
 	if err := k.writeMessage(ctx, k.Crontab, k.makeMessage(data)); err != nil {
-		variable.ZapLog.Debug(fmt.Sprintf("ProduceCrontab data:%v ,err:%v", data, err))
+		variable.ZapLog.Info(fmt.Sprintf("ProduceCrontab data:%v ,err:%v", data, err))
 	}
 }

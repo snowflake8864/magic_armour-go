@@ -51,14 +51,14 @@ func (crd *AlarmPortUpload) Add(model *alarm_models.PortModel) error {
 			RedirectIp:    model.RedirectIp,
 		}
 		if err := hsCli.SyncAlarmComm(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Info(err.Error())
 		}
 	}
 
 	//动态封堵
 	sumWeight := model.Weight * model.AttackTotal
 	if err := plug_calc_service.CreatePlugCalcFactory().CalcByPort(model.OrgId, model.AgentId, model.AttackIp, sumWeight, model.CreatedAt); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Info(err.Error())
 	}
 
 	return nil
