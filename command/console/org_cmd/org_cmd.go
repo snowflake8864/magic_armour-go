@@ -26,22 +26,22 @@ func (crd *OrgCmd) getOrgModels() []*organization_models.OrganizationModel {
 
 // TodayStatistics  今天统计
 func (crd *OrgCmd) TodayStatistics() {
-	variable.ZapLog.Debug("TodayStatistics start")
+	variable.ZapLog.Info("TodayStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(0)
 	crd.handleStat(statDay, startAt, endAt, statMonth)
 
-	variable.ZapLog.Debug("TodayStatistics end startAt:" + startAt + ", endAt:" + endAt)
+	variable.ZapLog.Info("TodayStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
 
 // YesterdayStatistics  昨天统计
 func (crd *OrgCmd) YesterdayStatistics() {
-	variable.ZapLog.Debug("DailyStatistics start")
+	variable.ZapLog.Info("DailyStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(-1)
 	crd.handleStat(statDay, startAt, endAt, statMonth)
 
-	variable.ZapLog.Debug("DailyStatistics end startAt:" + startAt + ", endAt:" + endAt)
+	variable.ZapLog.Info("DailyStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
 
 func (crd *OrgCmd) handleStat(statDay, startAt, endAt string, statMonth int) {

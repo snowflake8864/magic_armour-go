@@ -43,22 +43,22 @@ func (crd *AlarmCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 
 // TodayStatistics  今天统计
 func (crd *AlarmCmd) TodayStatistics() {
-	variable.ZapLog.Debug("TodayStatistics start")
+	variable.ZapLog.Info("TodayStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(0)
 	crd.handleStat(statDay, startAt, endAt, statMonth)
 
-	variable.ZapLog.Debug("TodayStatistics end startAt:" + startAt + ", endAt:" + endAt)
+	variable.ZapLog.Info("TodayStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
 
 // YesterdayStatistics  昨天统计
 func (crd *AlarmCmd) YesterdayStatistics() {
-	variable.ZapLog.Debug("DailyStatistics start")
+	variable.ZapLog.Info("DailyStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(-1)
 	crd.handleStat(statDay, startAt, endAt, statMonth)
 
-	variable.ZapLog.Debug("DailyStatistics end startAt:" + startAt + ", endAt:" + endAt)
+	variable.ZapLog.Info("DailyStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
 
 func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
@@ -93,11 +93,11 @@ func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
 
 // Delete  删除
 func (crd *AlarmCmd) Delete() {
-	variable.ZapLog.Debug("Delete start")
+	variable.ZapLog.Info("Delete start")
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentAlarmExpire)
 	expire := string_helper.ToInt(val)
-	variable.ZapLog.Debug(fmt.Sprintf("Delete expire: %d", expire))
+	variable.ZapLog.Info(fmt.Sprintf("Delete expire: %d", expire))
 	if expire == 1 {
 		alarm_models.CreateProcessFactory().TruncateTable()
 		alarm_models.CreateDllFactory().TruncateTable()
@@ -143,12 +143,12 @@ func (crd *AlarmCmd) Delete() {
 		})
 
 	}
-	variable.ZapLog.Debug("Delete end")
+	variable.ZapLog.Info("Delete end")
 }
 
 // EmailNotice  邮件通知
 func (crd *AlarmCmd) EmailNotice() {
-	variable.ZapLog.Debug("EmailNotice start")
+	variable.ZapLog.Info("EmailNotice start")
 
 	orgModels := crd.getOrgModels()
 
@@ -164,5 +164,5 @@ func (crd *AlarmCmd) EmailNotice() {
 		})
 	}
 
-	variable.ZapLog.Debug("EmailNotice end")
+	variable.ZapLog.Info("EmailNotice end")
 }

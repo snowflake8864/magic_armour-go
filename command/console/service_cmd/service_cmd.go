@@ -22,13 +22,13 @@ type ServiceCmd struct {
 
 // Delete 删除监控数据
 func (crd *ServiceCmd) Delete() {
-	variable.ZapLog.Debug("Delete start")
+	variable.ZapLog.Info("Delete start")
 	monitorDay, _, _, _ := date_helper.CalcByDay(-90)
 	server_monitor_models.CreateServerMonitorFactory().DeleteByConditions(server_monitor_models.SearchConditions{
 		MonitorDayLte: monitorDay,
 	})
 
-	variable.ZapLog.Debug("Delete end")
+	variable.ZapLog.Info("Delete end")
 }
 
 // Monitor  服务器状态监控
@@ -37,7 +37,7 @@ func (crd *ServiceCmd) Monitor() {
 	serviceCode := cur_app.GetServiceCode()
 	cmdInit := cur_app.ShellInit()
 	cmdServiceMonitor := cur_app.ShellServiceMonitor()
-	variable.ZapLog.Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
+	variable.ZapLog.Info(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
 
 	cmd := exec.Command(cmdInit, cmdServiceMonitor)
 	var stdout, stderr bytes.Buffer
@@ -83,5 +83,5 @@ func (crd *ServiceCmd) Monitor() {
 		variable.ZapLog.Error("Add failed")
 	}
 
-	variable.ZapLog.Debug(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
+	variable.ZapLog.Info(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))
 }

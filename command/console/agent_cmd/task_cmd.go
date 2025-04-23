@@ -15,10 +15,10 @@ type TaskCmd struct {
 
 // Delete  删除
 func (crd *TaskCmd) Delete() {
-	variable.ZapLog.Debug("Delete start")
+	variable.ZapLog.Info("Delete start")
 	_, _, dayEnd, _ := date_helper.CalcByDay(-60)
 	task_models.CreateTaskFactory().DeleteByConditions(task_models.SearchConditions{
 		CreateAtLte: dayEnd,
 	})
-	variable.ZapLog.Debug("Delete end")
+	variable.ZapLog.Info("Delete end")
 }

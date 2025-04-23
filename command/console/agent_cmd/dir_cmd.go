@@ -14,8 +14,8 @@ type DirCmd struct {
 
 // Clear  清空
 func (crd *DirCmd) Clear() {
-	variable.ZapLog.Debug("Clear start")
+	variable.ZapLog.Info("Clear start")
 	dir_models.CreateDirFactory().TruncateTable()
 
-	variable.ZapLog.Debug("Clear end")
+	variable.ZapLog.Info("Clear end")
 }

@@ -71,18 +71,18 @@ func (crd *HuanshiCmd) getDepartmentMap(orgId int64, agentModels []*agent_models
 
 // Push  推送
 func (crd *HuanshiCmd) Push() {
-	variable.ZapLog.Debug("push start")
+	variable.ZapLog.Info("push start")
 	//
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Debug("push orgModels empty")
+		variable.ZapLog.Info("push orgModels empty")
 		return
 	}
 
 	//获取客户端
 	hsCli := crd.getHsCli()
 	if hsCli == nil {
-		variable.ZapLog.Debug("push getHsCli fail")
+		variable.ZapLog.Info("push getHsCli fail")
 		return
 	}
 
@@ -93,7 +93,7 @@ func (crd *HuanshiCmd) Push() {
 
 	}
 	if err1 := hsCli.SyncDevices(&devices); err1 != nil {
-		variable.ZapLog.Debug("push SyncDevices：" + err1.Error())
+		variable.ZapLog.Info("push SyncDevices：" + err1.Error())
 		return
 	}
 	//休眠一下, 等待幻势处理设备数据
@@ -141,7 +141,7 @@ func (crd *HuanshiCmd) Push() {
 				AgentType:   agentType,
 			}
 			if err1 := hsCli.SaveAgent(orgModel.Id, agentModel.AgentId, &cacheAgent); err1 != nil {
-				variable.ZapLog.Debug("push SaveAgent：" + err1.Error())
+				variable.ZapLog.Info("push SaveAgent：" + err1.Error())
 				return
 			}
 
@@ -177,15 +177,15 @@ func (crd *HuanshiCmd) Push() {
 					agentData.DiskLoad = newestMonitor.HdUsage
 				}
 			}
-			//variable.ZapLog.Debug(json_helper.Encode(agentData))
+			//variable.ZapLog.Info(json_helper.Encode(agentData))
 			if err1 := hsCli.SyncAgentBySyslog(&agentData); err1 != nil {
-				variable.ZapLog.Debug("push SyncAgentBySyslog：" + err1.Error())
+				variable.ZapLog.Info("push SyncAgentBySyslog：" + err1.Error())
 				return
 			}
 		}
 	}
 
-	variable.ZapLog.Debug("push end")
+	variable.ZapLog.Info("push end")
 }
 
 func (crd *HuanshiCmd) initDevice(orgModel *organization_models.OrganizationModel) huanshi_platform.DeviceData {

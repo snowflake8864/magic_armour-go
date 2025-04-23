@@ -23,7 +23,7 @@ func (crd *OrderCmd) getOrgModels() []*organization_models.OrganizationModel {
 
 // OrderExpired  订单已过期的
 func (crd *OrderCmd) OrderExpired() {
-	variable.ZapLog.Debug("OrderExpired start")
+	variable.ZapLog.Info("OrderExpired start")
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	orgModels := crd.getOrgModels()
@@ -33,5 +33,5 @@ func (crd *OrderCmd) OrderExpired() {
 		}
 	}
 
-	variable.ZapLog.Debug("OrderExpired end yesterday:" + yesterday)
+	variable.ZapLog.Info("OrderExpired end yesterday:" + yesterday)
 }

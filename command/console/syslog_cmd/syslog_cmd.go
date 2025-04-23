@@ -18,7 +18,7 @@ type SyslogCmd struct {
 
 // Delete  删除
 func (crd *SyslogCmd) Delete() {
-	variable.ZapLog.Debug("Delete start")
+	variable.ZapLog.Info("Delete start")
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentSyslogExpire)
 	expire := string_helper.ToInt(val)
@@ -49,5 +49,5 @@ func (crd *SyslogCmd) Delete() {
 		})
 	}
 
-	variable.ZapLog.Debug("Delete end")
+	variable.ZapLog.Info("Delete end")
 }

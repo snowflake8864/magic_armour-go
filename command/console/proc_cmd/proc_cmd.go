@@ -60,7 +60,7 @@ func (crd *ProcCmd) getAndSetTaskAt() string {
 
 // AddFromProcForTask  任务：从进程或模块添加
 func (crd *ProcCmd) AddFromProcForTask() {
-	variable.ZapLog.Debug("AddFromProcForTask start")
+	variable.ZapLog.Info("AddFromProcForTask start")
 
 	//获取上一次执行时间， 并保存当前时间
 	preAt := crd.getAndSetTaskAt()
@@ -108,20 +108,20 @@ func (crd *ProcCmd) AddFromProcForTask() {
 
 	} //
 
-	variable.ZapLog.Debug("AddFromProcForTask end")
+	variable.ZapLog.Info("AddFromProcForTask end")
 }
 
 // ClearRunning  清空运行中数据
 func (crd *ProcCmd) ClearRunning() {
-	variable.ZapLog.Debug("ClearRunning start")
+	variable.ZapLog.Info("ClearRunning start")
 	proc_models.CreateProcessRunningFactory().TruncateTable()
 	proc_models.CreateDllRunningFactory().TruncateTable()
-	variable.ZapLog.Debug("ClearRunning end")
+	variable.ZapLog.Info("ClearRunning end")
 }
 
 // RepairStatusByThreaten  通过威胁情报修复状态
 func (crd *ProcCmd) RepairStatusByThreaten() {
-	variable.ZapLog.Debug("RepairStatusByThreaten start")
+	variable.ZapLog.Info("RepairStatusByThreaten start")
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
 		variable.ZapLog.Error("RepairStatusByThreaten orgModels empty")
@@ -136,5 +136,5 @@ func (crd *ProcCmd) RepairStatusByThreaten() {
 		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusWhite)
 		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
 	}
-	variable.ZapLog.Debug("RepairStatusByThreaten end")
+	variable.ZapLog.Info("RepairStatusByThreaten end")
 }
