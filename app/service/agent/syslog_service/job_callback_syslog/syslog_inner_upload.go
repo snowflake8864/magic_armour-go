@@ -57,7 +57,7 @@ func (crd *SyslogInnerUpload) Add(model *syslog_models.InnerModel) error {
 			Proto:            model.Proto,
 		}
 		if err := hsCli.SyncLogNetwork(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 
