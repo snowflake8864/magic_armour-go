@@ -423,23 +423,24 @@ func (crd *ThreatenCmd) SyncDefaultForCache() {
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
 func (crd *ThreatenCmd) SyncUnknownForCache() {
-	variable.ZapLog.Sugar().Debug("SyncUnknownForCache start")
-	for n := 1; n <= 3; n++ {
-		variable.ZapLog.Sugar().Debug("SyncUnknownForCache n:", n)
+	variable.ZapLog.Info("SyncUnknownForCache start")
+	// 有等级的会影响列表获取， 重复3次
+	for n := 0; n <= 2; n++ {
 		crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
+
 		time.Sleep(2 * time.Minute)
 	}
-	variable.ZapLog.Sugar().Debug("SyncUnknownForCache end")
+	variable.ZapLog.Info("SyncUnknownForCache end")
 }
 
 // 同步缓存到威胁情报
 func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
-	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level:", level)
+	variable.ZapLog.Sugar().Info("SyncCacheToThreaten level:", level)
 
 	//获取客户端
 	err, threatenCli := crd.getThreatenCli(true, false)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug("SyncCacheToThreaten ", err.Error())
+		variable.ZapLog.Sugar().Warn("SyncCacheToThreaten ", err.Error())
 		return
 	}
 
@@ -482,15 +483,13 @@ func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
 				ParentName: model.ParentDir,
 			})
 		}
-		//variable.ZapLog.Sugar().Debug("idAndDataFrom============================")
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(idAndDataFrom))
-		//variable.ZapLog.Sugar().Debug(json_helper.Encode(syncList))
+
 		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
-			variable.ZapLog.Sugar().Debug("SyncCacheToThreaten check: ", err1.Error())
+			variable.ZapLog.Sugar().Warnln("SyncCacheToThreaten check: ", err1.Error())
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("SyncCacheToThreaten level:", level, ", page:", page)
+	variable.ZapLog.Sugar().Info("SyncCacheToThreaten level:", level, ", page:", page)
 }
 
 func (crd *ThreatenCmd) keyForCheck(id string) string {
@@ -513,18 +512,17 @@ func (crd *ThreatenCmd) addForCheck(id string, level int) {
 // 同步缓存到威胁情报并进行处理
 func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
 	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
-	variable.ZapLog.Sugar().Debug("checkCacheToThreaten=============================", level)
 
 	//没有需要校验数据
 	if list == nil || len(*list) == 0 {
-		variable.ZapLog.Sugar().Debug("list == nil")
+		variable.ZapLog.Info("list == nil")
 		return nil
 	}
 
 	//去校验
 	err, checkReps := cli.CheckHashes(list)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 		return nil
 	}
 	//没有返回数据
@@ -610,7 +608,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 // 快速处理快速有等级和影响进程的
 func (crd *ThreatenCmd) fastHandleHasLevelAndInfluenceProc(idArr []string, level, dataFrom int) {
 	if len(idArr) > 0 {
-		variable.ZapLog.Sugar().Info(fmt.Sprintf("level:%d, dataFrom:%d, idArr:%s", level, dataFrom, json_helper.Encode(idArr)))
+		variable.ZapLog.Info(fmt.Sprintf("level:%d, dataFrom:%d, idArr:%s", level, dataFrom, json_helper.Encode(idArr)))
 		threaten_service.CreateCacheFactory().FastBatchSetHasLevelAndInfluenceProc(idArr, level, dataFrom)
 	}
 }
