@@ -137,11 +137,11 @@ func (crd *ProcPost) ToQueryByAll(source int, task string, orgId int64, agentId,
 	}
 
 	if err := crd.batchSendProcess(orgId, agentId, source, processModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendProcess: " + err.Error())
 	}
 
 	if err := crd.batchSendDll(orgId, agentId, source, dllModels); err != nil {
-		variable.ZapLog.Sugar().Debug("batchSendDll: " + err.Error())
+		variable.ZapLog.Sugar().Info("batchSendDll: " + err.Error())
 	}
 
 	return nil
@@ -251,19 +251,19 @@ func (crd *ProcPost) ToQueryByCommon(source int, task string, orgId int64, agent
 	}
 
 	if err := crd.batchSendProcess(orgId, agentId, source, processModels); err != nil {
-		variable.ZapLog.Sugar().Debug("sendProcess: " + err.Error())
+		variable.ZapLog.Sugar().Info("sendProcess: " + err.Error())
 	}
 
 	if err := crd.batchSendDll(orgId, agentId, source, dllModels); err != nil {
-		variable.ZapLog.Sugar().Debug("batchSendDll: " + err.Error())
+		variable.ZapLog.Sugar().Info("batchSendDll: " + err.Error())
 	}
 
 	if err := crd.batchSendProcessRunning(source, task, &processRunningModels); err != nil {
-		variable.ZapLog.Sugar().Debug("batchSendProcessRunning: " + err.Error())
+		variable.ZapLog.Sugar().Info("batchSendProcessRunning: " + err.Error())
 	}
 
 	if err := crd.batchSendDllRunning(source, task, &dllRunningModels); err != nil {
-		variable.ZapLog.Sugar().Debug("batchSendDllRunning: " + err.Error())
+		variable.ZapLog.Sugar().Info("batchSendDllRunning: " + err.Error())
 	}
 	return nil
 }
@@ -392,7 +392,7 @@ func (crd *ProcPost) CollectDll(orgId int64, agentId, inputJson string) error {
 		//修改
 		if err := job_callback_proc.CreateProcessRunningUploadFactory().UploadDlls(orgId, agentId, procHash, itemProcess.ProcId,
 			itemProcess.ModuleNumber, &dllList); err != nil {
-			variable.ZapLog.Sugar().Debug("CollectDll: " + err.Error())
+			variable.ZapLog.Sugar().Info("CollectDll: " + err.Error())
 		}
 	}
 
