@@ -25,14 +25,13 @@
 # 服务器状态监控
 */3 * * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ServiceMonitor  >> /var/log/armour_crontab.log 2>&1
 
-
 ## 每隔[12分钟]
 # 统计企业今天相关数据
 */12 * * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A CollectOrgToday >> /var/log/armour_crontab.log 2>&1
 
 ## 每隔[1小时]
 # 威胁情报缓存修复进程模块
-0 */1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenRepairProc >> /var/log/armour_crontab.log 2>&1
+#0 */1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenRepairProc >> /var/log/armour_crontab.log 2>&1
 
 ## 每天一次
 # 每天清理一次数据
@@ -51,5 +50,5 @@
 17 1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheUnknownSync >> /var/log/armour_crontab.log 2>&1
 # 从进程或模块添加到威胁情报缓存
 17 2 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheAddFromProc >> /var/log/armour_crontab.log 2>&1
-
-
+# 通过威胁情报修复进程状态
+#17 3 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A RepairProcByThreaten >> /var/log/armour_crontab.log 2>&1

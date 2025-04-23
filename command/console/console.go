@@ -124,7 +124,7 @@ func start(action string) {
 		proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 
 	default:
-		variable.ZapLog.Info(fmt.Sprintf("action=%s fail", action))
+		variable.ZapLog.Warn(fmt.Sprintf("action=%s fail", action))
 	}
 	variable.ZapLog.Info(fmt.Sprintf("action=%s end", action))
 }
