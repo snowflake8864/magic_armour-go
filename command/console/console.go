@@ -52,8 +52,6 @@ func start(action string) {
 		agent_cmd.CreateAgentFactory().Offline()
 	case "ThreatenCacheDefaultSync": //威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
 		threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
-	case "ThreatenCache2Pushes": //本地缓存数据同步威胁情报推送列表 - 暂时不做
-		threaten_cmd.CreateCmdFactory().Cache2Pushes()
 
 	//以下建议每2分钟执行一次
 	case "PlugExpired": //动态封堵已过期的自动解封
@@ -62,6 +60,8 @@ func start(action string) {
 		agent_cmd.CreateAgentFactory().HandleSafe()
 
 	//以下建议每3分钟执行一次
+	case "HuanshiPush": //同步推送数据到幻势
+		huanshi_cmd.CreateCmdFactory().Push()
 	case "TaskAddFromProc": //从进程或模块添加任务
 		proc_cmd.CreateCmdFactory().AddFromProcForTask()
 	case "ServiceMonitor": //服务器状态监控
@@ -70,8 +70,8 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().SyncForPushes()
 
 	//以下建议每5分钟执行一次
-	case "HuanshiPush": //同步推送数据到幻势
-		huanshi_cmd.CreateCmdFactory().Push()
+	case "ThreatenCache2Pushes": //本地缓存数据同步威胁情报推送列表 - 暂时不做
+		threaten_cmd.CreateCmdFactory().Cache2Pushes()
 
 	//以下建议每12分钟执行一次
 	case "CollectOrgToday": //统计企业今天相关数据
