@@ -45,13 +45,13 @@ func (crd *ServiceCmd) Monitor() {
 	cmd.Stderr = &stderr // 标准错误
 	err := cmd.Run()
 	if err != nil {
-		variable.ZapLog.Sugar().Debug("exec command Run failed", err.Error())
+		variable.ZapLog.Warn(fmt.Sprintf("exec command Run failed: %s", err.Error()))
 		return
 	}
 
 	outStr, errStr := string(stdout.Bytes()), string(stderr.Bytes())
 	if string_helper.IsEmpty(outStr) || !string_helper.IsEmpty(errStr) {
-		variable.ZapLog.Sugar().Debug(fmt.Sprintf("exec command output empty out:\n%s\nerr:\n%s\n", outStr, errStr))
+		variable.ZapLog.Warn(fmt.Sprintf("exec command output empty out:\n%s\nerr:\n%s\n", outStr, errStr))
 		return
 	}
 
@@ -80,7 +80,7 @@ func (crd *ServiceCmd) Monitor() {
 		}
 	}
 	if !service_monitor_service.CreateCurdFactory().Add(&model) {
-		variable.ZapLog.Error("Add failed")
+		variable.ZapLog.Warn("Add failed")
 	}
 
 	variable.ZapLog.Info(fmt.Sprintf("Monitor code:%s, cmd:%s %s", serviceCode, cmdInit, cmdServiceMonitor))

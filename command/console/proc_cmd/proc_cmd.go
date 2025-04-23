@@ -67,7 +67,7 @@ func (crd *ProcCmd) AddFromProcForTask() {
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Sugar().Debug("AddFromProcForTask orgModels empty")
+		variable.ZapLog.Info("AddFromProcForTask orgModels empty")
 		return
 	}
 
@@ -124,7 +124,7 @@ func (crd *ProcCmd) RepairStatusByThreaten() {
 	variable.ZapLog.Info("RepairStatusByThreaten start")
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Error("RepairStatusByThreaten orgModels empty")
+		variable.ZapLog.Info("RepairStatusByThreaten orgModels empty")
 		return
 	}
 

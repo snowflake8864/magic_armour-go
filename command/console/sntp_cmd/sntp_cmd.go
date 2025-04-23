@@ -1,6 +1,7 @@
 package sntp_cmd
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -24,9 +25,9 @@ func (crd *SntpCmd) Sync() {
 		command := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpCmd)
 
 		if err, output := sntp_helper.Exec(command, addr); err != nil {
-			variable.ZapLog.Sugar().Debug("Sync fail: ", err.Error())
+			variable.ZapLog.Warn(fmt.Sprintf("Sync fail: %s", err.Error()))
 		} else {
-			variable.ZapLog.Sugar().Debug("Sync ok: ", output)
+			variable.ZapLog.Info(fmt.Sprintf("Sync ok: %s", output))
 		}
 	}
 

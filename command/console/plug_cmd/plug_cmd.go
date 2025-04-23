@@ -39,7 +39,7 @@ func (crd *PlugCmd) DynamicExpired() {
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Error("HandleSafe orgModels empty")
+		variable.ZapLog.Info("HandleSafe orgModels empty")
 		return
 	}
 

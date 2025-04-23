@@ -91,11 +91,11 @@ func (crd *ThreatenCmd) getSupportNumber() int {
 
 // SyncForPushes  推送列表： 同步数据到威胁情报中心
 func (crd *ThreatenCmd) SyncForPushes() {
-	variable.ZapLog.Sugar().Debug("SyncForPushes start")
+	variable.ZapLog.Info("SyncForPushes start")
 	//获取客户端
 	err, threatenCli := crd.getThreatenCli(true, true)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug("SyncForPushes ", err.Error())
+		variable.ZapLog.Warn(fmt.Sprintf("SyncForPushes: %s ", err.Error()))
 		return
 	}
 
@@ -132,7 +132,7 @@ func (crd *ThreatenCmd) SyncForPushes() {
 			})
 		}
 		if err1 := threatenCli.PushHashes(&syncList); err1 != nil {
-			variable.ZapLog.Sugar().Debug("SyncForPushes fail", err1.Error())
+			variable.ZapLog.Sugar().Warn("SyncForPushes fail", err1.Error())
 			break
 		} else {
 			threaten_service.CreatePushFactory().BatchPushed(idArr)
@@ -140,7 +140,7 @@ func (crd *ThreatenCmd) SyncForPushes() {
 
 	}
 
-	variable.ZapLog.Sugar().Debug("SyncForPushes end, page:=", page)
+	variable.ZapLog.Sugar().Info("SyncForPushes end, page:=", page)
 }
 
 func (crd *ThreatenCmd) getOrgModels() []*organization_models.OrganizationModel {
@@ -158,17 +158,17 @@ func (crd *ThreatenCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 
 // AddFromProcForCache  本地缓存：从进程或模块添加
 func (crd *ThreatenCmd) AddFromProcForCache() {
-	variable.ZapLog.Sugar().Debug("AddFromProcForCache start")
+	variable.ZapLog.Debug("AddFromProcForCache start")
 	//获取客户端
 
 	if err, _ := crd.getThreatenCli(true, false); err != nil {
-		variable.ZapLog.Sugar().Debug("AddFromProcForCache ", err.Error())
+		variable.ZapLog.Sugar().Warn("AddFromProcForCache ", err.Error())
 		return
 	}
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Sugar().Debug("AddFromProcForCache orgModels empty")
+		variable.ZapLog.Info("AddFromProcForCache orgModels empty")
 		return
 	}
 
@@ -177,7 +177,7 @@ func (crd *ThreatenCmd) AddFromProcForCache() {
 	//模块
 	crd.addThreatenFromDll(orgModels)
 
-	variable.ZapLog.Sugar().Debug("AddFromProcForCache end")
+	variable.ZapLog.Info("AddFromProcForCache end")
 }
 
 func (crd *ThreatenCmd) addThreatenFromProcess(orgModels []*organization_models.OrganizationModel) {
@@ -292,17 +292,17 @@ func (crd *ThreatenCmd) addThreatenFromDll(orgModels []*organization_models.Orga
 
 // DeleteForCache  本地缓存：删除
 func (crd *ThreatenCmd) DeleteForCache() {
-	variable.ZapLog.Sugar().Debug("DeleteForCache start")
+	variable.ZapLog.Sugar().Info("DeleteForCache start")
 
 	//获取客户端
 	if err, _ := crd.getThreatenCli(false, false); err != nil {
-		variable.ZapLog.Sugar().Debug("DeleteForCache ", err.Error())
+		variable.ZapLog.Sugar().Warn("DeleteForCache ", err.Error())
 		return
 	}
 
 	val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.ThreatenCacheExpire)
 	expire := string_helper.ToInt(val)
-	variable.ZapLog.Sugar().Debug("DeleteForCache expire:", expire)
+	variable.ZapLog.Info(fmt.Sprintf("DeleteForCache expire: %d", expire))
 	_, _, dayEnd, _ := date_helper.CalcByDay(-expire)
 
 	conditions := threaten_models.SearchConditions{
@@ -326,15 +326,15 @@ func (crd *ThreatenCmd) DeleteForCache() {
 		threaten_service.CreateCacheFactory().BatchDelete(ids)
 	}
 
-	variable.ZapLog.Sugar().Debug("DeleteForCache end page:", page)
+	variable.ZapLog.Sugar().Info("DeleteForCache end page:", page)
 }
 
 // RepairProcForCache  本地缓存：修复进程模块（进程和模块上传时入队列, 威胁情报验证回写入队列, 有时间差）
 func (crd *ThreatenCmd) RepairProcForCache() {
-	variable.ZapLog.Sugar().Debug("RepairProcForCache start")
+	variable.ZapLog.Info("RepairProcForCache start")
 	//66f00330d9014b59cd3d100a886ddd2d
 	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByHour(-1))
-	variable.ZapLog.Sugar().Debug("RepairProcForCache floorAt: ", floorAt)
+	variable.ZapLog.Sugar().Info("RepairProcForCache floorAt: ", floorAt)
 
 	cacheFact := threaten_models.CreateCacheFactory()
 	page := 0
@@ -411,14 +411,14 @@ func (crd *ThreatenCmd) RepairProcForCache() {
 		}
 
 	}
-	variable.ZapLog.Sugar().Debug("RepairProcForCache page:", page)
+	variable.ZapLog.Sugar().Info("RepairProcForCache page:", page)
 }
 
 // SyncDefaultForCache  本地缓存：同步默认状态(未同步)数据到威胁情报中心
 func (crd *ThreatenCmd) SyncDefaultForCache() {
-	variable.ZapLog.Sugar().Debug("SyncDefaultForCache start")
+	variable.ZapLog.Info("SyncDefaultForCache start")
 	crd.syncCacheToThreaten(enum_threaten.LevelDefault)
-	variable.ZapLog.Sugar().Debug("SyncDefaultForCache end")
+	variable.ZapLog.Info("SyncDefaultForCache end")
 }
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
