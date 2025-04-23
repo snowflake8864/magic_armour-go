@@ -10,13 +10,13 @@ import (
 func BatchUploadDll(orgId int64, agentId string, jsonStr string) {
 	var models []proc_models.DllModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Debug(err.Error())
-		variable.ZapLog.Debug(jsonStr)
+		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 
 	if err := job_callback_proc.CreateDllUploadFactory().BatchAdd(orgId, agentId, &models); err != nil {
-		variable.ZapLog.Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 		return
 	}
 }

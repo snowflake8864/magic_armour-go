@@ -9,7 +9,7 @@ import (
 )
 
 func RepairProc(dataFrom, level int, jsonStr string) {
-	variable.ZapLog.Debug(fmt.Sprintf("RepairProc dataFrom=%d, level=%d, jsonSrt=%s", dataFrom, level, jsonStr))
+	variable.ZapLog.Info(fmt.Sprintf("RepairProc dataFrom=%d, level=%d, jsonSrt=%s", dataFrom, level, jsonStr))
 	ids := json_helper.ToSliceString(jsonStr)
 	if len(ids) == 0 {
 		return

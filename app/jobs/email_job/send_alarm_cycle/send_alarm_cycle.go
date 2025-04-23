@@ -15,26 +15,26 @@ import (
 )
 
 func Send(orgId int64) {
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("企业orgId=%d", orgId))
+	variable.ZapLog.Info(fmt.Sprintf("企业orgId=%d", orgId))
 
 	//企业扩展
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()
 	extendModel := OrgExtendFact.GetItemByOrg(orgId)
 	if extendModel == nil || extendModel.Id == 0 {
-		variable.ZapLog.Sugar().Debug("企业扩展不存在, orgId=", orgId)
+		variable.ZapLog.Sugar().Info("企业扩展不存在, orgId=", orgId)
 		return
 	}
 	noticeConfig := OrgExtendFact.FormatAlarmNoticeConfig(extendModel.AlarmNoticeConfig)
 	if noticeConfig.EmailSwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Debug("开关关闭, orgId=", orgId)
+		variable.ZapLog.Sugar().Info("开关关闭, orgId=", orgId)
 		return
 	}
 	if string_helper.IsEmpty(noticeConfig.Email) {
-		variable.ZapLog.Sugar().Debug("邮箱为空, orgId=", orgId)
+		variable.ZapLog.Sugar().Info("邮箱为空, orgId=", orgId)
 		return
 	}
 	if len(noticeConfig.CycleMod) == 0 {
-		variable.ZapLog.Sugar().Debug("没有选中告警模块, orgId=", orgId)
+		variable.ZapLog.Sugar().Info("没有选中告警模块, orgId=", orgId)
 		return
 	}
 
@@ -56,7 +56,7 @@ func Send(orgId int64) {
 
 	} else if noticeConfig.CycleInterval == enum_safety_report.AlarmNoticeCycleWeek {
 		if d := date_helper.WeekdayCurr(); d != time.Monday {
-			variable.ZapLog.Sugar().Debug("今天不是周一, orgId=", orgId)
+			variable.ZapLog.Sugar().Info("今天不是周一, orgId=", orgId)
 			return
 		}
 		//上周一
@@ -72,7 +72,7 @@ func Send(orgId int64) {
 
 	} else if noticeConfig.CycleInterval == enum_safety_report.AlarmNoticeCycleMonth {
 		if d := date_helper.DayInCurrMonth(); d != 1 {
-			variable.ZapLog.Sugar().Debug("今天不是1号, orgId=", orgId)
+			variable.ZapLog.Sugar().Info("今天不是1号, orgId=", orgId)
 			return
 		}
 		//上个月
@@ -82,7 +82,7 @@ func Send(orgId int64) {
 		mailParam.DateStart = monthFirstDay
 		mailParam.DateEnd = monthLastDay
 	} else {
-		variable.ZapLog.Sugar().Debug("发送周期错误, orgId=", orgId)
+		variable.ZapLog.Sugar().Info("发送周期错误, orgId=", orgId)
 		return
 	}
 
@@ -117,7 +117,7 @@ func Send(orgId int64) {
 	//发送邮件
 	subject, context := gomail_factory.CreateTemplateFactory().GetAlarmCycle(&mailParam)
 	if err := gomail_factory.CreateMailerFactory().SendHtmlMsg(noticeConfig.Email, subject, context); err != nil {
-		variable.ZapLog.Sugar().Debug("发送邮件错误, orgId=", orgId, "【error】", err.Error())
+		variable.ZapLog.Sugar().Warn("发送邮件错误, orgId=", orgId, "【error】", err.Error())
 		return
 	}
 }
