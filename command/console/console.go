@@ -80,10 +80,6 @@ func start(action string) {
 		//统计企业今天数据
 		org_cmd.CreateCmdFactory().TodayStatistics()
 
-	//以下建议每1小时执行一次
-	case "ThreatenRepairProc": //威胁情报缓存修复进程模块状态
-		threaten_cmd.CreateCmdFactory().RepairProcForCache()
-
 	//以下建议每天时执行一次
 	case "Daily": //每日定时清理数据
 		//清理通讯日志
@@ -124,6 +120,8 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 
 	//以下建议特殊情况下执行
+	case "ThreatenRepairProc": //威胁情报缓存修复进程模块状态
+		threaten_cmd.CreateCmdFactory().RepairProcForCache()
 	case "RepairProcByThreaten": //通过威胁情报修复进程状态
 		proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 
