@@ -10,13 +10,13 @@ import (
 func UploadProcess(jsonStr string) {
 	var models []alarm_models.ProcessModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateProcessUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -24,12 +24,12 @@ func UploadProcess(jsonStr string) {
 func UploadDll(jsonStr string) {
 	var models []alarm_models.DllModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 	if err := job_callback_alarm.CreateDllUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -37,13 +37,13 @@ func UploadDll(jsonStr string) {
 func UploadTamper(jsonStr string) {
 	var models []alarm_models.TamperModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateTamperUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -51,13 +51,13 @@ func UploadTamper(jsonStr string) {
 func UploadBlackmail(jsonStr string) {
 	var models []alarm_models.BlackmailModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateBlackmailUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -65,13 +65,13 @@ func UploadBlackmail(jsonStr string) {
 func UploadUsb(jsonStr string) {
 	var models []alarm_models.UsbModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateUsbUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -79,13 +79,13 @@ func UploadUsb(jsonStr string) {
 func UploadSelf(jsonStr string) {
 	var models []alarm_models.SelfModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateSelfUploadFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -93,13 +93,13 @@ func UploadSelf(jsonStr string) {
 func UploadOutreach(jsonStr string) {
 	var models []alarm_models.OutreachModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreateOutreachCalcFactory().BatchAdd(&models); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }
@@ -107,13 +107,13 @@ func UploadOutreach(jsonStr string) {
 func UploadPort(jsonStr string) {
 	model := alarm_models.PortModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := job_callback_alarm.CreatePortUploadFactory().Add(&model); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }

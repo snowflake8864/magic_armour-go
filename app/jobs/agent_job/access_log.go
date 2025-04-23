@@ -10,13 +10,13 @@ import (
 func SaveAccessLog(jsonStr string) {
 	model := agent_access_models.AccessLogModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
-		variable.ZapLog.Sugar().Debug(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Debug(jsonStr)
 		return
 	}
 
 	if !access_log_service.CreateCurdFactory().Add(&model) {
-		variable.ZapLog.Sugar().Debug("Add Fail" + jsonStr)
+		variable.ZapLog.Error("Add Fail" + jsonStr)
 		return
 	}
 }

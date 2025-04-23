@@ -15,7 +15,7 @@ func HandelUnknown(jsonStr string) {
 		return
 	}
 	if !threaten_service.CreateCacheFactory().BatchUnknown(idArr) {
-		variable.ZapLog.Debug(jsonStr)
+		variable.ZapLog.Error(jsonStr)
 	}
 	return
 }
@@ -23,24 +23,23 @@ func HandelUnknown(jsonStr string) {
 func HandelRewire(jsonStr string) {
 	model := threaten_models.CacheModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Debug(err.Error())
-		variable.ZapLog.Debug(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 	variable.ZapLog.Info(fmt.Sprintf("HandelRewire hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
 
 	if !threaten_service.CreateCacheFactory().Rewrite(&model) {
-		variable.ZapLog.Debug(jsonStr)
+		variable.ZapLog.Error(jsonStr)
 	}
 	return
 }
 
 func HandelImport(filename string) {
-
-	variable.ZapLog.Info(fmt.Sprintf("HandelImport filename:%s", filename))
+	variable.ZapLog.Debug(fmt.Sprintf("HandelImport filename:%s", filename))
 
 	if err := threaten_service.CreateImportFactory().ParseExcel(filename); err != nil {
-		variable.ZapLog.Error(fmt.Sprintf("ParseExcel fail: %s", err.Error()))
+		variable.ZapLog.Error(fmt.Sprintf("HandelImport fail: %s", err.Error()))
 	}
 	return
 }

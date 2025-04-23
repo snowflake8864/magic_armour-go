@@ -10,13 +10,13 @@ import (
 func UploadMonitor(jsonStr string) {
 	model := agent_monitor_models.MonitorModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
-		variable.ZapLog.Sugar().Info(jsonStr)
+		variable.ZapLog.Error(err.Error())
+		variable.ZapLog.Error(jsonStr)
 		return
 	}
 
 	if err := agent_monitor_service.CreateMonitorFactory().Add(&model); err != nil {
-		variable.ZapLog.Sugar().Info(err.Error())
+		variable.ZapLog.Error(err.Error())
 		return
 	}
 }

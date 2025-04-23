@@ -22,7 +22,7 @@ import (
 )
 
 func Clean(orgId int64) {
-	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d", orgId))
+	variable.ZapLog.Debug(fmt.Sprintf("orgId=%d", orgId))
 	//终端
 	agent_models.CreateAgentFactory().DeleteByOrg(orgId)
 	agent_models.CreateExtendFactory().DeleteByOrg(orgId)

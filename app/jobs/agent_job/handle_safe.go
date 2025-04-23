@@ -12,7 +12,7 @@ import (
 func HandleSafe(orgId int64, agentId string) {
 	statDay, _, _, statMonth := date_helper.CalcByDay(0)
 
-	variable.ZapLog.Sugar().Info(fmt.Sprintf("orgId=%d, agentId=%s, statDay=%s, statMonth=%d", orgId, agentId, statDay, statMonth))
+	variable.ZapLog.Debug(fmt.Sprintf("orgId=%d, agentId=%s, statDay=%s, statMonth=%d", orgId, agentId, statDay, statMonth))
 	condition := alarm_stat_models.SearchConditions{
 		OrgId:     orgId,
 		AgentId:   agentId,

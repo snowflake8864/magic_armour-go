@@ -15,7 +15,7 @@ import (
 )
 
 func Send(orgId int64) {
-	variable.ZapLog.Sugar().Info(fmt.Sprintf("企业orgId=%d", orgId))
+	variable.ZapLog.Sugar().Debug(fmt.Sprintf("企业orgId=%d", orgId))
 
 	//企业扩展
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()

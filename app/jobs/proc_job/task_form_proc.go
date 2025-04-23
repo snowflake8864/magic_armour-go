@@ -15,7 +15,7 @@ func TaskFromProcess(orgId int64, agentId string, at string) {
 		AgentId:         agentId,
 		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
+	variable.ZapLog.Debug(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 
 	if total := proc_models.CreateProcessFactory().Count(condition); total > 0 {
 		types := []int{
@@ -32,7 +32,7 @@ func TaskFromDll(orgId int64, agentId string, at string) {
 		AgentId:         agentId,
 		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("TaskFromDll orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
+	variable.ZapLog.Debug(fmt.Sprintf("TaskFromDll orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 
 	if total := proc_models.CreateDllFactory().Count(condition); total > 0 {
 		types := []int{
