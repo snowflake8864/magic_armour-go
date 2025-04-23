@@ -71,7 +71,7 @@ func (crd *AlarmPlugSave) Add(plugModel *plug_models.DynamicModel) error {
 		}
 
 		if err := hsCli.SyncAlarmPlug(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 	return nil

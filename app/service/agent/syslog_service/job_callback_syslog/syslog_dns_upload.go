@@ -53,13 +53,13 @@ func (crd *SyslogDnsUpload) Add(model *syslog_models.DnsModel) error {
 			TargetIp:   model.TargetIp,
 		}
 		if err := hsCli.SyncLogDns(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 
 	//外联告警
 	if err := job_callback_alarm.CreateOutreachCalcFactory().Calc(model); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 	}
 	return nil
 }

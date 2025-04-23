@@ -62,7 +62,7 @@ func (crd *DllUpload) BatchAdd(list *[]alarm_models.DllModel) error {
 				ExceptionProcess: model.ProcDir,
 			}
 			if err := hsCli.SyncAlarmComm(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}

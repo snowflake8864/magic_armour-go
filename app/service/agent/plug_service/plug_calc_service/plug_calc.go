@@ -219,7 +219,7 @@ func (crd *PlugCalc) Add(orgId int64, agentId string, ip string, source, plugTyp
 
 	//同步生成告警
 	if err := plug_callback_alarm.CreatePlugSaveFactory().Add(&modelPlug); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Info(err.Error())
 	}
 
 	return nil

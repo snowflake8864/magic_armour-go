@@ -63,7 +63,7 @@ func (crd *BlackmailUpload) BatchAdd(list *[]alarm_models.BlackmailModel) error 
 				ExceptionProcess: model.ProcDir,
 			}
 			if err := hsCli.SyncAlarmComm(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}

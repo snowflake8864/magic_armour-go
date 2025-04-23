@@ -150,7 +150,7 @@ func (crd *AlarmOutreachCalc) PushHs(hsCli *huanshi_platform.RequestHuanshi, mod
 			AnalysisIp: model.TargetIp,
 		}
 		if err := hsCli.SyncAlarmOutreach(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 }

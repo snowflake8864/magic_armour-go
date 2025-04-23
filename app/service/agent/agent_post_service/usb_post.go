@@ -37,7 +37,7 @@ func (crd *UsbPost) Save(orgId int64, agentId, inputJson string) error {
 	}
 
 	if err := usb_service.CreateUsbCurdFactory().BatchAdd(orgId, agentId, usbHashList, models); err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		variable.ZapLog.Warn(err.Error())
 	}
 
 	return nil
