@@ -59,7 +59,7 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.ProcessModel) error {
 			ParentParam: model.ParentParam,
 		}
 		if err := hsCli.SyncLogProcess(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 
@@ -112,7 +112,7 @@ func (crd *SyslogProcessUpload) BatchAdd(list *[]syslog_models.ProcessModel) err
 				ParentParam: model.ParentParam,
 			}
 			if err := hsCli.SyncLogProcess(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}

@@ -152,8 +152,7 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 
 	err2, respComm := aa.checkCode(bodyContext, err)
 	if err2 != nil {
-		variable.ZapLog.Sugar().Debug("bodyContext-----------------------------------------------------------")
-		variable.ZapLog.Sugar().Debug(bodyContext)
+		variable.ZapLog.Info(bodyContext)
 		return err2, nil
 	}
 
@@ -175,14 +174,14 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 }
 
 func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHashes {
-	variable.ZapLog.Sugar().Debug("====================================")
-	variable.ZapLog.Sugar().Debug(bodyContext)
+	fmt.Println("====================================")
+	fmt.Println(bodyContext)
 	err, respComm := aa.checkCode(bodyContext, nil)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug(err.Error())
+		fmt.Println(err.Error())
 	}
-	variable.ZapLog.Sugar().Debug(json_helper.Encode(respComm))
-	variable.ZapLog.Sugar().Debug(fmt.Sprintf("data type:%T ", respComm.Data))
+	fmt.Println(json_helper.Encode(respComm)
+	fmt.Println(fmt.Sprintf("data type:%T ", respComm.Data))
 
 	var result []ResponseCheckHashes
 	switch data := respComm.Data.(type) {
@@ -190,9 +189,9 @@ func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHas
 		return nil
 	case map[string]interface{}:
 		for hash, mapStr := range data {
-			variable.ZapLog.Sugar().Debug("hash======11111111111111: ", hash)
-			variable.ZapLog.Sugar().Debug(mapStr)
-			variable.ZapLog.Sugar().Debug(fmt.Sprintf("mapStr type:%T ", mapStr))
+			fmt.Println("hash======11111111111111: ", hash)
+			fmt.Println(mapStr)
+			fmt.Println(fmt.Sprintf("mapStr type:%T ", mapStr))
 
 			tmp := ResponseCheckHashes{}
 			jsonStr := json_helper.Encode(mapStr)

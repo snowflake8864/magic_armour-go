@@ -55,7 +55,7 @@ func (crd *PortPost) SaveWorking(orgId int64, agentId, inputJson string) error {
 		models = append(models, model)
 	}
 	if !port_service.CreateWorkingFactory().BatchAdd(orgId, agentId, &models) {
-		variable.ZapLog.Sugar().Debug("保存失败")
+		variable.ZapLog.Warn("save fail")
 	}
 
 	return nil

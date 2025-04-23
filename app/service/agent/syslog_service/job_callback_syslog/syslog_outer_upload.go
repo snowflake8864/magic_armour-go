@@ -57,7 +57,7 @@ func (crd *SyslogOuterUpload) Add(model *syslog_models.OuterModel) error {
 			Proto:            model.Proto,
 		}
 		if err := hsCli.SyncLogNetwork(hsData); err != nil {
-			variable.ZapLog.Sugar().Debug(err.Error())
+			variable.ZapLog.Warn(err.Error())
 		}
 	}
 
@@ -107,7 +107,7 @@ func (crd *SyslogOuterUpload) BatchAdd(list *[]syslog_models.OuterModel) error {
 				Proto:            model.Proto,
 			}
 			if err := hsCli.SyncLogNetwork(hsData); err != nil {
-				variable.ZapLog.Sugar().Debug(err.Error())
+				variable.ZapLog.Warn(err.Error())
 			}
 		}
 	}
