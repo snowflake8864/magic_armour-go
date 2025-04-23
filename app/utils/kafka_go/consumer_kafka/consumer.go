@@ -51,7 +51,7 @@ func (k *ConsumerClient) newConsumer(name string) *kafka.Reader {
 		MinBytes:    0,           // 最小读取字节数
 		MaxBytes:    10e6,        // 最大读取字节数
 	}
-	variable.ZapLog.Sugar().Info(fmt.Sprintf("GroupID:%s", configReader.GroupID))
+	variable.ZapLog.Info(fmt.Sprintf("GroupID:%s", configReader.GroupID))
 	return kafka.NewReader(configReader)
 }
 
@@ -78,16 +78,15 @@ func (k *ConsumerClient) readMessage(ctx context.Context, r *kafka.Reader) (*kaf
 
 	msg, err := r.ReadMessage(ctx)
 	if err != nil {
-		variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
+		variable.ZapLog.Error(fmt.Sprintf("topic:%s, 读kafka失败，err:%v", r.Config().Topic, err))
 		return result, err
 	} else if len(msg.Value) == 0 {
 		return nil, nil
 	} else {
 		err = json.Unmarshal(msg.Value, result)
 		if err != nil {
-			variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
+			variable.ZapLog.Debug(fmt.Sprintf("topic:%s, json unmarshal msg value err，msg:%v,err:%v", r.Config().Topic, result, err))
 		}
-		//variable.ZapLog.Sugar().Debug(fmt.Sprintf("topic=%s,partition=%d,offset=%d,key=%s,result=%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, result))
 		return result, err
 
 	}
@@ -197,7 +196,7 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
 			break
 		default:
-			variable.ZapLog.Sugar().Info(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
+			variable.ZapLog.Debug(fmt.Sprintf("consumeMessage data.Type: %s", data.Type))
 		}
 	}
 }
