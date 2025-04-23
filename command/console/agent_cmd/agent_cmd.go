@@ -2,6 +2,7 @@ package agent_cmd
 
 import (
 	"context"
+	"fmt"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -35,23 +36,23 @@ func (crd *AgentCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 
 // Offline 离线
 func (crd *AgentCmd) Offline() {
-	variable.ZapLog.Sugar().Debug("Offline start")
+	variable.ZapLog.Debug("Offline start")
 
 	floorAt := date_helper.TimestampToDatetime(date_helper.AddTimestampByMinute(-6))
-	variable.ZapLog.Sugar().Debug("Offline floorAt=", floorAt)
+	variable.ZapLog.Debug(fmt.Sprintf("Offline floorAt=%s", floorAt))
 
 	agent_service.CreateCurdFactory().SetOffline(floorAt)
 
-	variable.ZapLog.Sugar().Debug("Offline end")
+	variable.ZapLog.Debug("Offline end")
 }
 
 // HandleSafe 处理安全状态
 func (crd *AgentCmd) HandleSafe() {
-	variable.ZapLog.Sugar().Debug("HandleSafe start")
+	variable.ZapLog.Debug("HandleSafe start")
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Sugar().Debug("HandleSafe orgModels empty")
+		variable.ZapLog.Debug("HandleSafe orgModels empty")
 		return
 	}
 
@@ -76,12 +77,12 @@ func (crd *AgentCmd) HandleSafe() {
 
 	} //
 
-	variable.ZapLog.Sugar().Debug("HandleSafe end")
+	variable.ZapLog.Debug("HandleSafe end")
 }
 
 // GrantExpired  授权已过期的
 func (crd *AgentCmd) GrantExpired() {
-	variable.ZapLog.Sugar().Debug("GrantExpired")
+	variable.ZapLog.Debug("GrantExpired")
 	yesterday, _, _, _ := date_helper.CalcByDay(-1)
 
 	orgModels := crd.getOrgModels()
@@ -91,5 +92,5 @@ func (crd *AgentCmd) GrantExpired() {
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("OrderExpired end dayEnd:" + yesterday)
+	variable.ZapLog.Debug("OrderExpired end dayEnd:" + yesterday)
 }

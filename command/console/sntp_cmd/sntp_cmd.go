@@ -17,7 +17,7 @@ type SntpCmd struct {
 
 // Sync 同步时间
 func (crd *SntpCmd) Sync() {
-	variable.ZapLog.Sugar().Debug("Sync start")
+	variable.ZapLog.Debug("Sync start")
 	addr := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.PlatformSntpAddr)
 	if !string_helper.IsEmpty(addr) {
 		//获取命令
@@ -30,5 +30,5 @@ func (crd *SntpCmd) Sync() {
 		}
 	}
 
-	variable.ZapLog.Sugar().Debug("Sync end")
+	variable.ZapLog.Debug("Sync end")
 }

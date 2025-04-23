@@ -35,11 +35,11 @@ func (crd *PlugCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 
 // DynamicExpired  动态封堵已过期的
 func (crd *PlugCmd) DynamicExpired() {
-	variable.ZapLog.Sugar().Debug("DynamicExpired start")
+	variable.ZapLog.Debug("DynamicExpired start")
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Sugar().Debug("HandleSafe orgModels empty")
+		variable.ZapLog.Error("HandleSafe orgModels empty")
 		return
 	}
 
@@ -62,5 +62,5 @@ func (crd *PlugCmd) DynamicExpired() {
 
 	} //
 
-	variable.ZapLog.Sugar().Debug("DynamicExpired end")
+	variable.ZapLog.Debug("DynamicExpired end")
 }

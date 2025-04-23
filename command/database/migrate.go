@@ -78,7 +78,7 @@ func TestStart(action string) {
 
 // 开始执行业务
 func start(action string) {
-	variable.ZapLog.Sugar().Debug("action:" + action)
+	variable.ZapLog.Debug("action:" + action)
 	switch action {
 	case "init":
 		initTableAndData()
@@ -104,14 +104,14 @@ func getMigrationMap() {
 	migrateFact := migrate_models.CreateMigrateFactory()
 	migrateMap, _ = migrateFact.GetAllMaps()
 	if migrateMap == nil {
-		variable.ZapLog.Sugar().Debug("migrate GetAllMaps fail")
+		variable.ZapLog.Debug("migrate GetAllMaps fail")
 	}
 }
 
 // 保存本次迁移数据
 func saveMigrations() {
 	if len(notExistMigrateList) == 0 {
-		variable.ZapLog.Sugar().Debug("本次迁移数据为空")
+		variable.ZapLog.Debug("本次迁移数据为空")
 		return
 	}
 	migrateFact := migrate_models.CreateMigrateFactory()

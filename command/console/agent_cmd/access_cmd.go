@@ -14,8 +14,8 @@ type AccessCmd struct {
 
 // Clear  清空
 func (crd *AccessCmd) Clear() {
-	variable.ZapLog.Sugar().Debug("Clear start")
+	variable.ZapLog.Debug("Clear start")
 	agent_access_models.CreateAccessLogFactory().TruncateTable()
 
-	variable.ZapLog.Sugar().Debug("Clear end")
+	variable.ZapLog.Debug("Clear end")
 }
