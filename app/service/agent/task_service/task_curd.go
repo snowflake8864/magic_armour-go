@@ -82,6 +82,7 @@ func (crd *TaskCurd) CloseTasks(orgId int64, agentId string, types []int, netIp 
 		OrgId:   orgId,
 		AgentId: agentId,
 		Types:   types,
+		Status:  enum_task.StatusStart,
 	}
 	updates := map[string]interface{}{
 		"status":       enum_task.StatusFinish,
