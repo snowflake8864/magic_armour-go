@@ -32,7 +32,7 @@ func (crd *GlobalCurd) addTask(orgId int64, platformType int, deptIds []int64, r
 		IsOnline:     &isOnline,
 	}
 	if ids := agent_models.CreateAgentFactory().GetIdsByByConditions(conditions); ids != nil && len(ids) > 0 {
-		task_service.CreateCurdFactory().AddTaskForAgents(orgId, ids, enum_task.TypeBlackmailPolicyDownload, remark)
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, ids, enum_task.TypeTrustDir, remark)
 	}
 }
 
