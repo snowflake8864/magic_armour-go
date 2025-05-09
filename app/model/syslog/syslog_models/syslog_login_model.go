@@ -43,7 +43,7 @@ func (m *LoginModel) CreateTable() bool {
 			username VARCHAR(256) NOT NULL DEFAULT '' COMMENT '用户名',
 			id BIGINT NOT NULL DEFAULT '0',
 			agent_at DATETIME NULL COMMENT '终端时间',
-			type VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '登录类型',
+			type VARCHAR(32) NOT NULL DEFAULT '' COMMENT '登录类型',
 			status TINYINT NOT NULL DEFAULT '0' COMMENT '状态'
 		)
 		DUPLICATE KEY(org_id,agent_id,created_at) 
