@@ -150,7 +150,7 @@ func (m *ProcessRunningModel) GetItemsByOrgAndAgentAnDllStatus(orgId int64, agen
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=? AND agent_id=? AND dll_status=?", orgId, agentId, dllStatus).Find(&items)
 	})
-	result := m.Raw(m.TrimSql(sql)).Take(&items)
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
 	if result.Error == nil {
 		return items
 	} else {
