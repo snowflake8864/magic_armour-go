@@ -64,10 +64,28 @@ func CreateZapFactory(entry func(zapcore.Entry) error) *zap.Logger {
 		Compress:   variable.ConfigYml.GetBool("Logs.Compress"),  //是否压缩/归档旧文件
 	}
 	writer := zapcore.AddSync(lumberJackLogger)
+
+	//日志级别
+	logLevel := zap.InfoLevel //默认
+	switch variable.ConfigYml.GetString("Logs.Level") {
+	case "DEBUG":
+		logLevel = zap.DebugLevel
+	case "WARN":
+		logLevel = zap.WarnLevel
+	case "ERROR":
+		logLevel = zap.ErrorLevel
+	case "DPANIC":
+		logLevel = zap.DPanicLevel
+	case "PANIC":
+		logLevel = zap.PanicLevel
+	case "FATAL":
+		logLevel = zap.FatalLevel
+	}
+
 	// 开始初始化zap日志核心参数，
 	//参数一：编码器
 	//参数二：写入器
 	//参数三：参数级别，debug级别支持后续调用的所有函数写日志，如果是 fatal 高级别，则级别>=fatal 才可以写日志
-	zapCore := zapcore.NewCore(encoder, writer, zap.InfoLevel)
+	zapCore := zapcore.NewCore(encoder, writer, logLevel)
 	return zap.New(zapCore, zap.AddCaller(), zap.Hooks(entry), zap.AddStacktrace(zap.WarnLevel))
 }
