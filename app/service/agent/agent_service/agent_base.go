@@ -427,7 +427,7 @@ func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColum
 	//动态封堵开启
 	if param.PlugSwitch != nil && *param.PlugSwitch == enums.SwitchOn {
 		//windows XP和2003  不支持
-		if model.OsType == enum_software.OsTypeWinXp {
+		if model.OsType != enum_software.OsTypeWinXp {
 			tasks = append(tasks, enum_task.TypePluggingDownload, enum_task.TypePlugIpBlackDownload)
 		}
 	}
@@ -435,7 +435,7 @@ func (crd *AgentBase) addTask(model *agent_models.AgentModel, param *ManualColum
 	/*//上传准入开启
 	if param.InternetSwitch != nil && *param.InternetSwitch == enums.SwitchOn {
 		//windows XP和2003  不支持
-		if model.OsType == enum_software.OsTypeWinXp {
+		if model.OsType != enum_software.OsTypeWinXp {
 			tasks = append(tasks, enum_task.TypePluggingDownload, enum_task.TypePlugIpBlackDownload)
 		}
 	}*/
