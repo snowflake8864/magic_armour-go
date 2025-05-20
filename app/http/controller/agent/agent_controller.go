@@ -22,7 +22,6 @@ import (
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/path_helper"
-	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
@@ -78,7 +77,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 		debugPort = string_helper.ToInt(val)
 	}
 	if val, isOK := mapDict[enum_dictionary.AgentDebugIds]; isOK && !string_helper.IsEmpty(val) {
-		if slice_helper.StringIn(loginInfo.AgentId, strings.Split(val, ",")) {
+		if strings.Contains(val, loginInfo.AgentId) {
 			mapConf["debug_switch"] = debugPort
 		}
 	}
