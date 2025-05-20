@@ -74,7 +74,7 @@ func (u *AgentController) GetConfig(ctx *gin.Context) {
 	mapConf["debug_switch"] = enums.SwitchOff
 	debugPort := enums.SwitchOff
 	if val, isOK := mapDict[enum_dictionary.AgentDebugPort]; isOK && !string_helper.IsEmpty(val) {
-		debugPort = string_helper.ToInt(val)
+		debugPort = string_helper.ToInt(strings.TrimSpace(val))
 	}
 	if val, isOK := mapDict[enum_dictionary.AgentDebugIds]; isOK && !string_helper.IsEmpty(val) {
 		if strings.Contains(val, loginInfo.AgentId) {
