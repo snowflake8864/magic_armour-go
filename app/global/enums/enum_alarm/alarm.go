@@ -94,7 +94,9 @@ const (
 
 	/**   ---------端口告警 S--------- */
 
-	TypePortVirtual int = 4300 //登录口令暴力破解
+	TypePortVirtualCommon    int = 4300 //普通端口扫描
+	TypePortVirtualImportant int = 4301 //重要端口扫描
+	TypePortVirtualSerious   int = 4302 //y严重端口扫描
 	/**   ---------端口告警 E--------- */
 
 	/**   ---------自保告警 S--------- */
@@ -200,7 +202,9 @@ var EnumMapInt = map[string]map[int]string{
 
 		TypeLoginSolve: "登录口令暴力破解",
 
-		TypePortVirtual: "端口虚开",
+		TypePortVirtualCommon:    "普通端口扫描",
+		TypePortVirtualImportant: "重要端口扫描",
+		TypePortVirtualSerious:   "严重端口扫描",
 
 		TypeSelfProtectFileCreate:     "新建文件告警",
 		TypeSelfProtectFileDelete:     "删除文件告警",
@@ -385,9 +389,18 @@ func GetLevelByWeight(w int) int {
 		return LevelCommon
 	} else if w == enum_port.AlarmLevel3 || w == enum_port.AlarmLevel4 {
 		return LevelImportant
-	} else if w == enum_port.AlarmLevel5 {
-		return LevelSerious
 	} else {
-		return 0
+		return LevelSerious
+	}
+}
+
+// GetTypeByWeight 通过类型获取对应告警类型
+func GetTypeByWeight(w int) int {
+	if w == enum_port.AlarmLevel1 || w == enum_port.AlarmLevel2 {
+		return TypePortVirtualCommon
+	} else if w == enum_port.AlarmLevel3 || w == enum_port.AlarmLevel4 {
+		return TypePortVirtualImportant
+	} else {
+		return TypePortVirtualSerious
 	}
 }

@@ -465,7 +465,7 @@ func (crd *AlarmPost) fillPort(param *alarmPort, orgId int64, agentId string, no
 	model := alarm_models.PortModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
-		Type:         enum_alarm.TypePortVirtual,
+		Type:         enum_alarm.GetTypeByWeight(param.Weight),
 		Level:        enum_alarm.GetLevelByWeight(param.Weight),
 		AgentAt:      crd.getAgentAt(param.Time, now),
 		HandleStatus: enum_alarm.HandleStatusNot,
