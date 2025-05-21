@@ -96,7 +96,7 @@ const (
 
 	TypePortVirtualCommon    int = 4300 //普通端口扫描
 	TypePortVirtualImportant int = 4301 //重要端口扫描
-	TypePortVirtualSerious   int = 4302 //y严重端口扫描
+	TypePortVirtualSerious   int = 4302 //严重端口扫描
 	/**   ---------端口告警 E--------- */
 
 	/**   ---------自保告警 S--------- */
