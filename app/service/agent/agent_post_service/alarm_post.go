@@ -385,7 +385,7 @@ func (crd *AlarmPost) formatOutreach(param *alarmComm, orgId int64, agentId stri
 		OrgId:        orgId,
 		AgentId:      agentId,
 		Type:         param.Type,
-		Level:        param.Level,
+		Level:        enum_alarm.LevelImportant,
 		AgentAt:      crd.getAgentAt(param.AgentTime, now),
 		HandleStatus: enum_alarm.HandleStatusNot,
 		CreatedAt:    now,
