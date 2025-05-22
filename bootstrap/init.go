@@ -68,31 +68,31 @@ func init() {
 
 	// 6.根据配置初始化 gorm mysql 全局 *gorm.Db
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbPlatform.IsInitGlobalGormMysql") == 1 {
-		if dbPlatform, err := gorm_v2.GetOneMysqlClient(variable.DbNamePlatform); err != nil {
+		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNamePlatform); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbPlatform = dbPlatform
+			variable.GormDbPlatform = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbAgent.IsInitGlobalGormMysql") == 1 {
-		if dbAgent, err := gorm_v2.GetOneMysqlClient(variable.DbNameAgent); err != nil {
+		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameAgent); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbAgent = dbAgent
+			variable.GormDbAgent = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbAlarm.IsInitGlobalGormMysql") == 1 {
-		if dbAlarm, err := gorm_v2.GetOneMysqlClient(variable.DbNameAlarm); err != nil {
+		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameAlarm); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbAlarm = dbAlarm
+			variable.GormDbAlarm = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbSyslog.IsInitGlobalGormMysql") == 1 {
-		if dbSyslog, err := gorm_v2.GetOneMysqlClient(variable.DbNameSyslog); err != nil {
+		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameSyslog); err != nil {
 			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
 		} else {
-			variable.GormDbSyslog = dbSyslog
+			variable.GormDbSyslog = conn
 		}
 	}
 
