@@ -334,6 +334,7 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/user/modifyPw":     {ModuleOrg, "子用户：修改密码"},
 
 	"/v5/organization/task/history/clear": {ModuleOther, "终端任务：清空"},
+	"/v5/organization/fileDir/refresh":    {ModuleOther, "终端目录结构：刷新"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {
