@@ -108,7 +108,7 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 	} else if userExist.IsRoot == enums.IsYes {
 		return errors.New("管理员用户不能修改")
 	} else if userExist.Phone != userParam.Phone {
-		if userPhone := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 && userPhone.Id != userParam.Id {
+		if userPhone := crd.GetItemByPhone(userParam.Phone); userPhone != nil && userPhone.Id > 0 {
 			return errors.New("手机号码已存在")
 		}
 	}
