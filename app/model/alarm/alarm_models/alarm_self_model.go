@@ -26,7 +26,7 @@ type SelfModel struct {
 	HandleStatus int    `json:"handle_status"`
 	HandleRemark string `json:"handle_remark"`
 	HandleUser   string `json:"handle_user"`
-	HandleAt     string `json:"handle_at"`
+	HandleAt     string `json:"handle_at" gorm:"default:NULL"`
 	CreatedAt    string `json:"created_at"`
 	ProcHash     string `json:"proc_hash"`
 	ProcDir      string `json:"proc_dir"`

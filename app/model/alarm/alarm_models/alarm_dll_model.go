@@ -26,7 +26,7 @@ type DllModel struct {
 	HandleStatus int    `json:"handle_status"`
 	HandleRemark string `json:"handle_remark"`
 	HandleUser   string `json:"handle_user"`
-	HandleAt     string `json:"handle_at"`
+	HandleAt     string `json:"handle_at" gorm:"default:NULL"`
 	CreatedAt    string `json:"created_at"`
 	DllHash      string `json:"dll_hash"`
 	DllDir       string `json:"dll_dir"`
