@@ -71,6 +71,7 @@ func (u *BackupController) getResp(ctx *gin.Context, isBackup bool) *backup_mode
 	param.Id = ctx.GetString(consts.ValidatorPrefixAgent + "id")
 	state := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "state"))
 	if isBackup {
+		param.StorageDir = ctx.GetString(consts.ValidatorPrefixAgent + "storage_dir")
 		param.FileName = ctx.GetString(consts.ValidatorPrefixAgent + "file_name")
 		param.FileSize = ctx.GetString(consts.ValidatorPrefixAgent + "file_size")
 		param.BackupFailReason = ctx.GetString(consts.ValidatorPrefixAgent + "fail_reason")

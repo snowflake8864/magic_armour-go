@@ -82,6 +82,7 @@ func (crd *BackupCurd) BackupComplete(param *backup_models.BackupModel) error {
 
 	//修改
 	updates := make(map[string]interface{})
+	updates["storage_dir"] = param.StorageDir
 	updates["file_name"] = param.FileName
 	updates["file_size"] = param.FileSize
 	updates["backup_status"] = param.BackupStatus

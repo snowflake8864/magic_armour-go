@@ -11,6 +11,7 @@ import (
 type PutBackup struct {
 	Id         string `form:"id" json:"id" binding:"required,max=64"`
 	State      *int   `form:"state" json:"state" binding:"required,oneof=0 1"`
+	StorageDir string `form:"storage_dir" json:"storage_dir" binding:"required,max=512"`
 	FileName   string `form:"file_name" json:"file_name" binding:"required,max=128"`
 	FileSize   string `form:"file_size" json:"file_size" binding:"required,max=32"`
 	FailReason string `form:"fail_reason" json:"fail_reason" binding:"omitempty,max=512"`
