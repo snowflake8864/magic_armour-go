@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/service/agent/agent_post_service"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -69,4 +70,13 @@ func TestAgentGrantExpired(t *testing.T) {
 
 func TestAgentOffline(t *testing.T) {
 	agent_cmd.CreateAgentFactory().Offline()
+}
+
+func TestAgentMonitorToQuery(t *testing.T) {
+	inputJson := "{\"hd_size\":\"147315MB\",\"hd_usage\":\"18\",\"cpu_number\":\"4\",\"cpu_usage\":\"1.50981\",\"cpu_tops\":[{\"id\":\"1155\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"11.9172\",\"mem_size\":\"1529044KB\",\"user\":\"elsearch\"},{\"id\":\"1154\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"3.7617\",\"mem_size\":\"1075740KB\",\"user\":\"logstash\"},{\"id\":\"1159\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"1.85666\",\"mem_size\":\"2360112KB\",\"user\":\"kafka\"},{\"id\":\"19109\",\"dir\":\"/opt/osec/MagicArmor_0\",\"hash\":\"6c0b9df8b7370cacc2728d0c1eff7cd1\",\"cpu_usage\":\"0.13308\",\"mem_size\":\"7268KB\",\"user\":\"root\"},{\"id\":\"1160\",\"dir\":\"/usr/sbin/zabbix_agent2\",\"hash\":\"82dc49046011e8e0a39d9f603a8f2f34\",\"cpu_usage\":\"0.0972695\",\"mem_size\":\"15628KB\",\"user\":\"zabbix\"}],\"mem_size\":\"7970416KB\",\"mem_usage\":\"69\",\"mem_tops\":[{\"id\":\"1159\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"1.85666\",\"mem_size\":\"2360112KB\",\"user\":\"kafka\"},{\"id\":\"1155\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"11.9172\",\"mem_size\":\"1529044KB\",\"user\":\"elsearch\"},{\"id\":\"1154\",\"dir\":\"/kingdee/cosmic/jdk/jdk1.8.0_201/bin/java\",\"hash\":\"7ce2c372228aa741a17f92cdc10c6883\",\"cpu_usage\":\"3.7617\",\"mem_size\":\"1075740KB\",\"user\":\"logstash\"},{\"id\":\"1715\",\"dir\":\"/CloudResetPwdUpdateAgent/depend/jre1.8.0_131/bin/java\",\"hash\":\"a4520ff15f0b61db0b6c566274e03d05\",\"cpu_usage\":\"0.0817988\",\"mem_size\":\"69496KB\",\"user\":\"root\"},{\"id\":\"758\",\"dir\":\"/usr/bin/python2.7\",\"hash\":\"d9ba93fc1778448ad966b5f613806caf\",\"cpu_usage\":\"0.00196214\",\"mem_size\":\"28192KB\",\"user\":\"root\"}],\"self\":{\"mem_size\":\"3980KB\",\"cpu_usage\":\"0\"}}"
+	err := agent_post_service.CreateAgentFactory().MonitorToQuery(1, "ddddddd", inputJson)
+	if err != nil {
+		fmt.Println()
+		return
+	}
 }
