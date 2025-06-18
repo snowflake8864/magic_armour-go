@@ -9,6 +9,9 @@ const (
 	PlatformTypeLinux   = 1 //平台类型: linux
 	PlatformTypeWindows = 2 //平台类型: windows
 
+	ArchAmd64 = 1 //CPU架构: amd64
+	ArchArm64 = 2 //CPU架构: arm64
+
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
 	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
 	OsTypeLinuxNeokylin     = 103 //系统类型: linux 麒麟
@@ -36,6 +39,10 @@ var EnumMap = map[string]map[int]string{
 	"platform_type_alias": {
 		PlatformTypeWindows: "WIN",
 		PlatformTypeLinux:   "LINUX",
+	},
+	"arch_type": {
+		ArchAmd64: "amd64",
+		ArchArm64: "arm64",
 	},
 	"os_type": {
 		OsTypeWinSeven:          "Windows",
@@ -223,6 +230,14 @@ func GetOsTypeByName(name string) int {
 	} else {
 		return 0
 	}
+}
+
+func GetArchTypeByOS(platformType int, os string) int {
+	if platformType == PlatformTypeWindows {
+		return ArchAmd64
+	}
+
+	return ArchAmd64
 }
 
 // CanUpgradeDirect 直接比较版本号是否能升级

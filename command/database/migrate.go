@@ -250,6 +250,9 @@ func appendTableAndData() {
 		_ = organization_models.CreateExtendFactory().AlterTable(ver)
 		_ = backup_models.CreateBackupFactory().CreateTable()
 	}
+	if ver := "MA_3.1.0_R4_B5"; !existMigration(ver) {
+		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+	}
 
 	//保存迁移数据
 	saveMigrations()

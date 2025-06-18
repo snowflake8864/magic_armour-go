@@ -26,6 +26,7 @@ type AgentModel struct {
 	OsName              string `json:"os_name"`
 	PlatformType        int    `json:"platform_type"`
 	OsType              int    `json:"os_type"`
+	ArchType            int    `json:"arch_type"`
 	MemDesc             string `json:"mem_desc"`
 	HdDesc              string `json:"hd_desc"`
 	CpuDesc             string `json:"cpu_desc"`
@@ -105,7 +106,7 @@ func (m *AgentModel) CreateTable() bool {
 			net_ip varchar(64)  NOT NULL DEFAULT '' COMMENT '通讯ip',
 			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linux, 统一定义)',
-			os_type smallint NOT NULL DEFAULT '0' COMMENT '系统类别(参考ubuntu|centos等,统一定义)',
+			os_type smallint(4) NOT NULL DEFAULT '0' COMMENT '系统类别(参考ubuntu|centos等,统一定义)',
 			mem_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '内存',
 			hd_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '硬盘',
 			cpu_desc varchar(256)  NOT NULL DEFAULT '' COMMENT '处理器',
@@ -113,22 +114,22 @@ func (m *AgentModel) CreateTable() bool {
 			agent_start_at datetime NOT NULL COMMENT '终端启动时间',
 			os_start_at datetime NOT NULL COMMENT '系统启动时间',
 			ver varchar(32)  NOT NULL DEFAULT '' COMMENT '终端版本号',
-			auth varchar(128)  NOT NULL DEFAULT '' COMMENT '安全密码，终端上传',
+			auth varchar(64)  NOT NULL DEFAULT '' COMMENT '安全密码，终端上传',
 			is_online tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否在线(0不在,1在)',
 			online_at datetime NOT NULL COMMENT '上线开始时间',
 			live_at datetime NOT NULL COMMENT '最近活动时间',
 			is_safe tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否安全(0不安全,1安全)',
 			upgrade_ver varchar(32)  NOT NULL DEFAULT '' COMMENT '要升级版本号',
-			user_id int NOT NULL DEFAULT '0' COMMENT '管理员编号(user.id)',
-			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
+			user_id int(11) NOT NULL DEFAULT '0' COMMENT '管理员编号(user.id)',
+			dept_id int(11) NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			agent_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '终端类型',
 			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
 			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
 			position varchar(128)  NOT NULL DEFAULT '' COMMENT '位置',
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注',
-			grant_config varchar(1024) NOT NULL DEFAULT ''  COMMENT '授权:配置(json)',
-			grant_order_no varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
+			grant_config text NOT NULL COMMENT '授权:配置(json)',
+			grant_order_no varchar(64)  NOT NULL DEFAULT '' COMMENT '授权:订单号',
 			grant_product_title varchar(128)  NOT NULL DEFAULT '' COMMENT '授权:产品名称',
 			grant_expire_at date NULL COMMENT '授权:过期时间',
 			grant_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '授权:类型',
@@ -187,6 +188,10 @@ func (m *AgentModel) AlterTable(ver string) bool {
 		sql += `
 			ADD COLUMN pw_jump_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT '密码跳变:开关' AFTER hardware_time,
 			ADD COLUMN ip_jump_switch tinyint(1) NOT NULL DEFAULT '0' COMMENT 'ip跳变:开关' AFTER pw_jump_switch;
+		`
+	case "MA_3.1.0_R4_B5":
+		sql += `
+			ADD COLUMN arch_type tinyint(1) NOT NULL DEFAULT '1' COMMENT 'CPU架构(参考amd64|arm64等,统一定义)' AFTER os_type;
 		`
 	default:
 		return true
