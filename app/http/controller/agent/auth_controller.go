@@ -71,6 +71,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 		response.FailRoutine(ctx, consts.AgentINSTALLCode, "os unknown: "+param.OsName)
 		return
 	}
+	//CPU架构
 	param.ArchType = enum_software.GetArchTypeByOS(param.PlatformType, param.OsName)
 
 	//解密用户信息

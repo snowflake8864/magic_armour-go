@@ -9,8 +9,9 @@ const (
 	PlatformTypeLinux   = 1 //平台类型: linux
 	PlatformTypeWindows = 2 //平台类型: windows
 
-	ArchAmd64 = 1 //CPU架构: amd64
-	ArchArm64 = 2 //CPU架构: arm64
+	ArchAmd64  = 1 //CPU架构: amd64
+	ArchArm64  = 2 //CPU架构: arm64
+	ArchMips64 = 3 //CPU架构: mips64
 
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
 	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
@@ -41,8 +42,9 @@ var EnumMap = map[string]map[int]string{
 		PlatformTypeLinux:   "LINUX",
 	},
 	"arch_type": {
-		ArchAmd64: "amd64",
-		ArchArm64: "arm64",
+		ArchAmd64:  "amd64",
+		ArchArm64:  "arm64",
+		ArchMips64: "mips64",
 	},
 	"os_type": {
 		OsTypeWinSeven:          "Windows",
@@ -232,12 +234,22 @@ func GetOsTypeByName(name string) int {
 	}
 }
 
+// GetArchTypeByOS 获取CPU架构
 func GetArchTypeByOS(platformType int, os string) int {
 	if platformType == PlatformTypeWindows {
 		return ArchAmd64
 	}
 
-	return ArchAmd64
+	os = strings.ToLower(os)
+	if strings.Contains(os, "aarch64") || strings.Contains(os, "armv8-a") {
+		return ArchArm64
+	} else if strings.Contains(os, "aarch64") || strings.Contains(os, "x64_64") {
+		return ArchAmd64
+	} else if strings.Contains(os, "mips64") {
+		return ArchMips64
+	} else {
+		return ArchAmd64
+	}
 }
 
 // CanUpgradeDirect 直接比较版本号是否能升级
