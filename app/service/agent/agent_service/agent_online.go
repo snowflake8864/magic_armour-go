@@ -95,6 +95,8 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			"os_name":        param.OsName,
 			"platform_type":  param.PlatformType,
 			"os_type":        param.OsType,
+			"arch_type":      param.ArchType,
+			"mod_ver":        param.ModVer,
 			"mem_desc":       param.MemDesc,
 			"hd_desc":        param.HdDesc,
 			"cpu_desc":       param.CpuDesc,

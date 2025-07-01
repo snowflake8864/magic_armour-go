@@ -26,6 +26,8 @@ type Login struct {
 	OsStartTime  string `form:"osstarttime" json:"osstarttime"`
 	Auth         string `form:"auth" json:"auth"`
 	UserId       string `form:"userid" json:"userid"`
+	ModVer       string `form:"mod_ver" json:"mod_ver"`
+	ArchType     int    `form:"arch_type" json:"arch_type"`
 }
 
 func (n Login) CheckParams(context *gin.Context) {
@@ -60,6 +62,12 @@ func (n Login) CheckParams(context *gin.Context) {
 	if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", n.PlatformType, enum_software.EnumMap); string_helper.IsEmpty(label) {
 		response.FailRoutine(context, consts.AgentINSTALLCode, "param [PlatformType] error")
 		return
+	}
+	if n.ArchType > 0 {
+		if label := enums.Get1stIsStrAnd2ndIsIntReturnStr("arch_type", n.ArchType, enum_software.EnumMap); string_helper.IsEmpty(label) {
+			response.FailRoutine(context, consts.AgentINSTALLCode, "param [ArchType] error")
+			return
+		}
 	}
 
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）

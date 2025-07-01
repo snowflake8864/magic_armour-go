@@ -234,24 +234,6 @@ func GetOsTypeByName(name string) int {
 	}
 }
 
-// GetArchTypeByOS 获取CPU架构
-func GetArchTypeByOS(platformType int, os string) int {
-	if platformType == PlatformTypeWindows {
-		return ArchAmd64
-	}
-
-	os = strings.ToLower(os)
-	if strings.Contains(os, "aarch64") || strings.Contains(os, "armv8-a") {
-		return ArchArm64
-	} else if strings.Contains(os, "aarch64") || strings.Contains(os, "x64_64") {
-		return ArchAmd64
-	} else if strings.Contains(os, "mips64") {
-		return ArchMips64
-	} else {
-		return ArchAmd64
-	}
-}
-
 // CanUpgradeDirect 直接比较版本号是否能升级
 // 参数: newest 新版本号
 // 参数: original 原版本号
