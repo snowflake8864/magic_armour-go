@@ -73,7 +73,7 @@ func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interf
 		updates["global_status"] = enum_process.RelyStatusWhite
 		updates["status"] = enum_process.ProcStatusWhite
 		break
-	case enum_process.ProcStatusBlack:
+	case enum_process.GlobalTypeBlack:
 		updates["global_status"] = enum_process.RelyStatusBlack
 		updates["status"] = enum_process.ProcStatusBlack
 		break
@@ -117,7 +117,7 @@ func (crd *ProcessBase) getUpdatesForThreatenCallback(level int) map[string]inte
 	switch level {
 	case enum_threaten.LevelWhite:
 		updates["threaten_status"] = enum_process.RelyStatusWhite
-		statusStr = fmt.Sprintf(statusStr, enums.IsYes, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
+		statusStr = fmt.Sprintf(statusStr, enums.IsNot, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
 		syncStatusAt = fmt.Sprintf(syncStatusAt, enums.IsYes, enum_process.ProcStatusUnset, date_helper.CurTimestamp())
 		break
 	case enum_threaten.LevelBlack:
