@@ -88,7 +88,7 @@ func (crd *AgentPost) MonitorToQuery(orgId int64, agentId, inputJson string) err
 		Type: kafka_go.TypeCommonAgentPutMonitor,
 		Data: json_helper.Encode(&model),
 	}
-	crd.queryClient.ProduceSyslog(context.Background(), msg)
+	crd.queryClient.ProduceCommon(context.Background(), msg)
 
 	return nil
 }
