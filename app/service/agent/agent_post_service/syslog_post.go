@@ -86,7 +86,7 @@ func (crd *SyslogPost) getAgentAt(t int64, now string) string {
 	if t == 0 {
 		return now
 	}
-	return date_helper.TimestampToDatetime(t)
+	return now
 }
 
 // 发送DNS日志: 入队列
