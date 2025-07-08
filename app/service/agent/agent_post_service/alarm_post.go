@@ -118,7 +118,7 @@ func (crd *AlarmPost) getAgentAt(t int64, now string) string {
 	if t == 0 {
 		return now
 	}
-	return date_helper.TimestampToDatetime(t)
+	return now
 }
 
 func (crd *AlarmPost) formatProcess(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.ProcessModel {

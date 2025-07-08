@@ -27,7 +27,7 @@ type PortModel struct {
 	HandleRemark string `json:"handle_remark"`
 	HandleUser   string `json:"handle_user"`
 	HandleAt     string `json:"handle_at" gorm:"default:NULL"`
-	CreatedAt    string `json:"created_at"`
+	CreatedAt    string `json:"created_at"  gorm:"default:''"`
 	Weight       int    `json:"weight"`
 	AttackIp     string `json:"attack_ip"`
 	TargetIp     string `json:"target_ip"`
@@ -41,6 +41,7 @@ type PortModel struct {
 func (m *PortModel) TableName() string {
 	return "a_alarm_port"
 }
+
 func (m *PortModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
@@ -87,6 +88,11 @@ func (m *PortModel) TruncateTable() bool {
 	} else {
 		return false
 	}
+}
+
+func (m *PortModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
 }
 
 // InsertItem 插入一条
