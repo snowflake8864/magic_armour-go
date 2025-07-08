@@ -86,6 +86,11 @@ func (m *OutreachModel) TruncateTable() bool {
 	}
 }
 
+func (m *OutreachModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *OutreachModel) InsertItem(s *OutreachModel) bool {
 

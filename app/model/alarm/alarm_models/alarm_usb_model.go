@@ -82,6 +82,11 @@ func (m *UsbModel) TruncateTable() bool {
 	}
 }
 
+func (m *UsbModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *UsbModel) InsertItem(s *UsbModel) bool {
 

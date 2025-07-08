@@ -82,6 +82,11 @@ func (m *DllModel) TruncateTable() bool {
 	}
 }
 
+func (m *DllModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *DllModel) InsertItem(s *DllModel) bool {
 

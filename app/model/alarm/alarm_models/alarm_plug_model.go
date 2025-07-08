@@ -88,6 +88,11 @@ func (m *PlugModel) TruncateTable() bool {
 	}
 }
 
+func (m *PlugModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *PlugModel) InsertItem(s *PlugModel) bool {
 

@@ -86,6 +86,11 @@ func (m *SelfModel) TruncateTable() bool {
 	}
 }
 
+func (m *SelfModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *SelfModel) InsertItem(s *SelfModel) bool {
 

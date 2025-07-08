@@ -83,6 +83,11 @@ func (m *BlackmailModel) TruncateTable() bool {
 	}
 }
 
+func (m *BlackmailModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *BlackmailModel) InsertItem(s *BlackmailModel) bool {
 

@@ -84,6 +84,11 @@ func (m *ProcessModel) TruncateTable() bool {
 	}
 }
 
+func (m *ProcessModel) BeforeCreate(tx *gorm.DB) error {
+	m.CreatedAt = m.AgentAt // 设为终端时间
+	return nil
+}
+
 // InsertItem 插入一条
 func (m *ProcessModel) InsertItem(s *ProcessModel) bool {
 
