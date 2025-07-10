@@ -5,7 +5,6 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
-	"goskeleton/app/service/agent/syslog_service/job_callback_syslog"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/kafka_go"
@@ -91,7 +90,6 @@ func (crd *SyslogPost) getAgentAt(t int64, now string) string {
 
 // 发送DNS日志: 入队列
 func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, now string) {
-
 	model := syslog_models.DnsModel{
 		OrgId:      orgId,
 		AgentId:    agentId,
@@ -103,9 +101,7 @@ func (crd *SyslogPost) sendDns(param *syslogComm, orgId int64, agentId string, n
 		DomainName: param.DomainName,
 		TargetIp:   param.ResIp,
 	}
-	//fmt.Println("sendDns ============================")
-	//fmt.Println(json_helper.Encode(&model))
-	//_ = job_callback_syslog.CreateDnsUploadFactory().Add(&model)
+
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutDns,
 		Data: json_helper.Encode(&model),
@@ -138,25 +134,24 @@ func (crd *SyslogPost) sendInner(models *[]syslog_models.InnerModel) error {
 	if modelLength == 0 {
 		return nil
 	}
-	/*
-		data := *models
-		cxt := context.Background()
-		for i := 0; i < modelLength; i += crd.supportNumber {
-			end := i + crd.supportNumber
-			if end > modelLength {
-				end = modelLength
-			}
-			msg := &kafka_go.MessageStruct{
-				Type: kafka_go.TypeSyslogPutInner,
-				Data: json_helper.Encode(data[i:end]),
-			}
-			crd.queryClient.ProduceDll(cxt, msg)
-		}
-	*/
 
-	if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(models); err != nil {
-		return err
+	data := *models
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeSyslogPutInner,
+			Data: json_helper.Encode(data[i:end]),
+		}
+		crd.queryClient.ProduceSyslog(cxt, msg)
 	}
+
+	/*if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(models); err != nil {
+		return err
+	}*/
 
 	return nil
 }
@@ -187,24 +182,24 @@ func (crd *SyslogPost) sendOuter(models *[]syslog_models.OuterModel) error {
 	if modelLength == 0 {
 		return nil
 	}
-	/*
-		data := *models
-		cxt := context.Background()
-		for i := 0; i < modelLength; i += crd.supportNumber {
-			end := i + crd.supportNumber
-			if end > modelLength {
-				end = modelLength
-			}
-			msg := &kafka_go.MessageStruct{
-				Type: kafka_go.TypeSyslogPutOuter,
-				Data: json_helper.Encode(data[i:end]),
-			}
-			crd.queryClient.ProduceDll(cxt, msg)
-		}*/
 
-	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(models); err != nil {
-		return err
+	data := *models
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
+		}
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeSyslogPutOuter,
+			Data: json_helper.Encode(data[i:end]),
+		}
+		crd.queryClient.ProduceSyslog(cxt, msg)
 	}
+
+	/*if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(models); err != nil {
+		return err
+	}*/
 
 	return nil
 }
@@ -235,25 +230,23 @@ func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 		return nil
 	}
 
-	/*
-		data := *models
-		cxt := context.Background()
-		for i := 0; i < modelLength; i += crd.supportNumber {
-			end := i + crd.supportNumber
-			if end > modelLength {
-				end = modelLength
-			}
-			msg := &kafka_go.MessageStruct{
-				Type: kafka_go.TypeSyslogPutProcess,
-				Data: json_helper.Encode(data[i:end]),
-			}
-			crd.queryClient.ProduceDll(cxt, msg)
+	data := *models
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
 		}
-	*/
-
-	if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(models); err != nil {
-		return err
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeSyslogPutProcess,
+			Data: json_helper.Encode(data[i:end]),
+		}
+		crd.queryClient.ProduceDll(cxt, msg)
 	}
+
+	/*if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(models); err != nil {
+		return err
+	}*/
 
 	return nil
 }
@@ -280,25 +273,23 @@ func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) erro
 		return nil
 	}
 
-	/*
-		data := *models
-		cxt := context.Background()
-		for i := 0; i < modelLength; i += crd.supportNumber {
-			end := i + crd.supportNumber
-			if end > modelLength {
-				end = modelLength
-			}
-			msg := &kafka_go.MessageStruct{
-				Type: kafka_go.TypeSyslogPutLoginSuccess,
-				Data: json_helper.Encode(data[i:end]),
-			}
-			crd.queryClient.ProduceSyslog(cxt, msg)
+	data := *models
+	cxt := context.Background()
+	for i := 0; i < modelLength; i += crd.supportNumber {
+		end := i + crd.supportNumber
+		if end > modelLength {
+			end = modelLength
 		}
-	*/
-
-	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
-		return err
+		msg := &kafka_go.MessageStruct{
+			Type: kafka_go.TypeSyslogPutLoginSuccess,
+			Data: json_helper.Encode(data[i:end]),
+		}
+		crd.queryClient.ProduceSyslog(cxt, msg)
 	}
+
+	/*if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
+		return err
+	}*/
 
 	return nil
 }
@@ -307,10 +298,9 @@ func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) erro
 func (crd *SyslogPost) sendLoginFail(model *syslog_models.LoginModel) {
 	//fmt.Println("sendLoginFail ============================")
 	//fmt.Println(json_helper.Encode(model))
-	//_ = job_callback_syslog.CreateLoginUploadFactory().Add(model)
 	msg := &kafka_go.MessageStruct{
 		Type: kafka_go.TypeSyslogPutLoginFail,
 		Data: json_helper.Encode(model),
 	}
-	crd.queryClient.ProduceSyslog(context.Background(), msg)
+	crd.queryClient.ProduceCommon(context.Background(), msg)
 }
