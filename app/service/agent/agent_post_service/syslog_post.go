@@ -241,7 +241,7 @@ func (crd *SyslogPost) sendProcess(models *[]syslog_models.ProcessModel) error {
 			Type: kafka_go.TypeSyslogPutProcess,
 			Data: json_helper.Encode(data[i:end]),
 		}
-		crd.queryClient.ProduceDll(cxt, msg)
+		crd.queryClient.ProduceSyslog(cxt, msg)
 	}
 
 	/*if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(models); err != nil {

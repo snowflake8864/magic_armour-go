@@ -444,6 +444,7 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 		}
 	}
 	if len(list) > 0 {
+		cxt := context.Background()
 		for _, item := range list {
 			unique := crd.uniqueBYPort(item.AttackIp, item.TargetIp, item.TargetPort, item.RedirectIp, item.RedirectPort, item.Weight)
 			item.AttackTotal = attackTotal[unique]
@@ -452,7 +453,7 @@ func (crd *AlarmPost) ToQueryBYPort(orgId int64, agentId, inputJson string) erro
 				Type: kafka_go.TypeAlarmPutPort,
 				Data: json_helper.Encode(&item),
 			}
-			crd.queryClient.ProduceAlarm(context.Background(), msg)
+			crd.queryClient.ProduceAlarm(cxt, msg)
 		}
 
 	}
