@@ -1,21 +1,19 @@
 package agent
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_dictionary"
-	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
-	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
@@ -105,28 +103,18 @@ func (u *AuthController) Login(ctx *gin.Context) {
 			response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
 			return
 		}
-	}
-	errOrg := int_helper.Int64ToStr(userInfo.OrgId) + "+" + int_helper.Int64ToStr(userInfo.UserId)
-	//验证企业
-	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(userInfo.OrgId)
-	if orgModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "org not exist:"+errOrg)
-		return
-	}
-	if orgModel.Status != enum_organization.StatusNormal {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "org status abnormal: "+errOrg)
-		return
-	}
-	//验证用户
-	userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
-	if userModel.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "user not exist: "+errOrg)
-		return
+	} else {
+		//验证用户
+		userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
+		if userModel.Id == 0 {
+			response.FailRoutine(ctx, consts.AgentINSTALLCode, fmt.Sprintf("user not exist: orgId=%d, userId=%d", userInfo.OrgId, userInfo.UserId))
+			return
+		}
 	}
 
-	//新增或修改终端
+	//注册登录
 	param.OrgId = userInfo.OrgId
-	param.UserId = userInfo.OrgId
+	param.UserId = userInfo.UserId
 	isOk, data := agent_service.CreateOnlineFactory().RegisterOrLogin(&param)
 	if !isOk {
 		response.FailSimplify(ctx, data)
