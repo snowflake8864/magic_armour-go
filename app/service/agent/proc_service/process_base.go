@@ -12,13 +12,14 @@ import (
 type ProcessBase struct {
 }
 
-func (crd *ProcessBase) getUpdatesForSetStatus(status int) map[string]interface{} {
+// getUpdatesForSetStatus 根据设置状态动作得到修改值
+func (crd *ProcessBase) getUpdatesForSetStatus(procStatus int) map[string]interface{} {
 	updates := map[string]interface{}{
-		"status":         status,
+		"status":         procStatus,
 		"sync_status_at": 0,
 	}
 
-	switch status {
+	switch procStatus {
 	case enum_process.ProcStatusUnknown:
 		updates["self_status"] = enum_process.RelyStatusUnknown
 		break
@@ -33,6 +34,7 @@ func (crd *ProcessBase) getUpdatesForSetStatus(status int) map[string]interface{
 	return updates
 }
 
+// getUpdatesForCancel 根据取消动作得到修改值
 func (crd *ProcessBase) getUpdatesForCancel() map[string]interface{} {
 	updates := map[string]interface{}{
 		"self_status":    enum_process.RelyStatusUnset,
@@ -54,6 +56,7 @@ func (crd *ProcessBase) getUpdatesForCancel() map[string]interface{} {
 	return updates
 }
 
+// getUpdatesForBatchWhite 根据批量白名单动作得到修改值
 func (crd *ProcessBase) getUpdatesForBatchWhite() map[string]interface{} {
 	updates := map[string]interface{}{
 		"self_status":    enum_process.RelyStatusWhite,
@@ -63,6 +66,7 @@ func (crd *ProcessBase) getUpdatesForBatchWhite() map[string]interface{} {
 	return updates
 }
 
+// getUpdatesForBatchWhite 根据加入全局名单动作得到修改值
 func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interface{} {
 	updates := map[string]interface{}{
 		"sync_status_at": date_helper.CurTimestamp(),
@@ -82,6 +86,7 @@ func (crd *ProcessBase) getUpdatesForAddGlobal(globalType int) map[string]interf
 	return updates
 }
 
+// getUpdatesForDeleteGlobal 根据删除全局名单动作得到修改值
 func (crd *ProcessBase) getUpdatesForDeleteGlobal() map[string]interface{} {
 	updates := map[string]interface{}{
 		"sync_status_at": date_helper.CurTimestamp(),
@@ -109,12 +114,13 @@ func (crd *ProcessBase) getUpdatesForDeleteGlobal() map[string]interface{} {
 	return updates
 }
 
-func (crd *ProcessBase) getUpdatesForThreatenCallback(level int) map[string]interface{} {
+// getUpdatesForThreatenCallback 根据威胁情报回调动作得到修改值
+func (crd *ProcessBase) getUpdatesForThreatenCallback(threatenLevel int) map[string]interface{} {
 	updates := map[string]interface{}{}
 
 	statusStr := "IF(auto_white_switch=%d AND status=%d, %d, status)"
 	syncStatusAt := "IF(auto_white_switch=%d AND status=%d, %d, sync_status_at)"
-	switch level {
+	switch threatenLevel {
 	case enum_threaten.LevelWhite:
 		updates["threaten_status"] = enum_process.RelyStatusWhite
 		statusStr = fmt.Sprintf(statusStr, enums.IsNot, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
@@ -133,6 +139,7 @@ func (crd *ProcessBase) getUpdatesForThreatenCallback(level int) map[string]inte
 	return updates
 }
 
+// getUpdatesForAutoWhiteSwitch 根据自动匹配白名单开关动作得到修改值
 func (crd *ProcessBase) getUpdatesForAutoWhiteSwitch(openSwitch int) map[string]interface{} {
 	updates := map[string]interface{}{
 		"auto_white_switch": openSwitch,
@@ -155,6 +162,7 @@ func (crd *ProcessBase) getUpdatesForAutoWhiteSwitch(openSwitch int) map[string]
 	return updates
 }
 
+// getUpdatesForThreatenRepair 根据威胁情报修复动作得到修改值
 func (crd *ProcessBase) getUpdatesForThreatenRepair(threatenStatus int) map[string]interface{} {
 	updates := map[string]interface{}{}
 
