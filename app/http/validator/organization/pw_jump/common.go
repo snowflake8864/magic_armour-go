@@ -5,5 +5,5 @@ type Config struct {
 	Combine int  `form:"combine" json:"combine" binding:"required,min=1,max=15"`
 	Size    int  `form:"size" json:"size" binding:"required,min=6,max=24"`
 	Cycle   int  `form:"cycle" json:"cycle" binding:"required,min=1,max=3"`
-	Timing  int  `form:"timing" json:"timing" binding:"required,min=1,max=30"`
+	//Timing  int  `form:"timing" json:"timing" binding:"required,min=1,max=30"`
 }
