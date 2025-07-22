@@ -1,6 +1,7 @@
 package slice_helper
 
 import (
+	"math/rand"
 	"strconv"
 )
 
@@ -192,4 +193,11 @@ func ChunkSlice[T any](slice []T, chunkSize int) [][]T {
 	}
 
 	return chunks
+}
+
+// ShuffleStrings 使用Fisher-Yates算法打乱字符串切片顺序
+func ShuffleStrings(slice []string) {
+	rand.Shuffle(len(slice), func(i, j int) {
+		slice[i], slice[j] = slice[j], slice[i]
+	})
 }

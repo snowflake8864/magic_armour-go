@@ -701,6 +701,7 @@ func InitOrganizationRouter() *gin.Engine {
 					public := ipJump.Group("public/")
 					{
 						public.POST("cycles", (&organization.IpJumpController{}).Cycles)
+						public.POST("ways", (&organization.IpJumpController{}).Ways)
 					}
 					manage := ipJump.Group("manage/")
 					{

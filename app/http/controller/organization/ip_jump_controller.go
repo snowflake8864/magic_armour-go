@@ -24,9 +24,34 @@ type IpJumpController struct {
 
 // Cycles  口令周期
 func (u *IpJumpController) Cycles(ctx *gin.Context) {
+	var result []map[string]interface{}
+	cycleList := enums.Get1stIsStrReturnSliceOfInt("cycle", enum_ip_jump.WebMapInt)
+	for _, cycle := range cycleList {
 
-	keys := enums.Get1stIsStrReturnSliceOfInt("cycle", enum_ip_jump.WebMapInt)
-	labels := enums.Get1stIsStrReturnMapIntOfStr("cycle", enum_ip_jump.EnumIntMap)
+		//频率
+		var children []map[string]interface{}
+		for _, timing := range enum_ip_jump.GetCycleTimingMap(cycle) {
+			children = append(children, map[string]interface{}{
+				"val":   timing,
+				"label": enum_ip_jump.GetTimingLabel(cycle, timing),
+			})
+		}
+
+		//周期
+		result = append(result, map[string]interface{}{
+			"val":      cycle,
+			"label":    enums.Get1stIsStrAnd2ndIsIntReturnStr("cycle", cycle, enum_ip_jump.EnumIntMap),
+			"children": children,
+		})
+	}
+
+	response.SuccessReturnData(ctx, result)
+}
+
+// Ways 跳变方式
+func (u *IpJumpController) Ways(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("way", enum_ip_jump.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("way", enum_ip_jump.EnumIntMap)
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
@@ -103,10 +128,12 @@ func (u *IpJumpController) GetForAgentConfig(ctx *gin.Context) {
 func (u *IpJumpController) getConfig(ctx *gin.Context) enum_ip_jump.IpJumpConfig {
 	config := enum_ip_jump.IpJumpConfig{
 		Switch:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
 		Ip:      ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
 		Mask:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mask")),
 		Gateway: ctx.GetString(consts.ValidatorPrefixOrg + "gateway"),
+		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
+		Timing:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "timing")),
+		Way:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "way")),
 	}
 	config.Format()
 	return config

@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/ip_helper"
+	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/redis_factory"
 )
 
@@ -40,19 +41,12 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	agentFact := agent_models.CreateAgentFactory()
 	agentModels := agentFact.GetItemsByOrg(crd.orgId, agentFact.ColumnIp())
 	agentSize := len(agentModels)
-	var poolInitSize int
-	if agentSize == 0 {
-		poolInitSize = 32
-	} else if agentSize <= 256 {
-		poolInitSize = agentSize * 2
-	} else {
-		poolInitSize = agentSize + 256
-	}
-	//存在ip集合
+	//存在ip集合, 默认网关不能下发
 	existIps := map[string]struct{}{
 		crd.jumpConfig.Gateway: {},
 	}
 	if agentSize > 0 {
+		//终端ip不下发
 		for _, agentModel := range agentModels {
 			existIps[agentModel.NetIp] = struct{}{}
 		}
@@ -64,18 +58,42 @@ func (crd *IpJumpCurd) InitIpPool() error {
 	if err, _, _, _, _, firstUsableNumber, lastUsableNumber := iPv4Range.CalcRange(); err != nil {
 		return err
 	} else {
+		//IP池大小
+		poolSize := agentSize + 16
+		//从小到大结束值
+		var ascEndNumber uint32
 		for i := firstUsableNumber; i <= lastUsableNumber; i++ {
+			ascEndNumber = i
 			//转成ip
 			newIp := ip_helper.Uint32ToIPv4(i)
 
 			if _, isOK := existIps[newIp]; !isOK {
 				ipList = append(ipList, newIp)
 				//IP池到达预期数目
-				if len(ipList) >= poolInitSize {
+				if len(ipList) >= poolSize {
 					break
 				}
 			}
 		}
+
+		//跳变方式：随机
+		if crd.jumpConfig.Way == enum_ip_jump.WayRandom && ascEndNumber < lastUsableNumber {
+			var n uint32
+			for n = 0; n < 1024; n++ {
+				//转成ip
+				newIp := ip_helper.Uint32ToIPv4(int_helper.Unt32Random(ascEndNumber, lastUsableNumber))
+				if _, isOK := existIps[newIp]; !isOK {
+					ipList = append(ipList, newIp)
+				}
+				if n+ascEndNumber >= lastUsableNumber {
+					break
+				}
+			}
+		}
+	}
+	//跳变方式：随机
+	if crd.jumpConfig.Way == enum_ip_jump.WayRandom {
+		slice_helper.ShuffleStrings(ipList)
 	}
 
 	//先删除
