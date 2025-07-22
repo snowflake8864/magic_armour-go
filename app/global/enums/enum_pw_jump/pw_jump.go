@@ -1,6 +1,7 @@
 package enum_pw_jump
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"math/rand"
 )
@@ -47,9 +48,10 @@ var WebMapInt = map[string][]int{
 // PwJumpConfig 密码跳变
 type PwJumpConfig struct {
 	Switch  int `json:"switch"`
-	Cycle   int `json:"cycle"`   // 周期
 	Combine int `json:"combine"` //组合, 二进制形式
 	Size    int `json:"size"`    //长度
+	Cycle   int `json:"cycle"`   // 周期
+	Timing  int `json:"timing"`  //时机
 }
 
 func (c *PwJumpConfig) Format() {
@@ -57,14 +59,17 @@ func (c *PwJumpConfig) Format() {
 		c.Switch = enums.SwitchOff
 	}
 
-	if c.Cycle == 0 {
-		c.Cycle = CycleWeek
-	}
 	if c.Combine == 0 {
 		c.Combine = CombineNumber + CombineLowerLetter + CombineUpperLetter
 	}
 	if c.Size == 0 {
 		c.Size = 10
+	}
+	if c.Cycle == 0 {
+		c.Cycle = CycleWeek
+	}
+	if c.Timing == 0 {
+		c.Timing = 1
 	}
 }
 
@@ -112,4 +117,50 @@ func (c *PwJumpConfig) GeneratePw() string {
 	})
 
 	return string(password)
+}
+
+// GetCycleTimingMap 获取周期和频率的对应关系
+func GetCycleTimingMap(cycle int) []int {
+	var list []int
+	e := 1
+	if cycle == CycleWeek {
+		e = 7
+	} else if cycle == CycleMonth {
+		e = 30
+	}
+	for i := 1; i <= e; i++ {
+		list = append(list, i)
+	}
+	return list
+}
+
+// GetTimingLabel 获取周频率标记
+func GetTimingLabel(cycle, timing int) string {
+	var data string
+	if cycle == CycleWeek {
+		var val string
+		switch timing {
+		case 1:
+			val = "一"
+		case 2:
+			val = "二"
+		case 3:
+			val = "三"
+		case 4:
+			val = "四"
+		case 5:
+			val = "五"
+		case 6:
+			val = "六"
+		case 7:
+			val = "日"
+		}
+		data = fmt.Sprintf("周%v凌晨", val)
+	} else if cycle == CycleMonth {
+		data = fmt.Sprintf("%d号", timing)
+	} else {
+		data = "当天凌晨"
+	}
+
+	return data
 }

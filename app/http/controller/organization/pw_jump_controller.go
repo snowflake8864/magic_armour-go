@@ -32,9 +32,28 @@ func (u *PwJumpController) Combines(ctx *gin.Context) {
 // Cycles  口令周期
 func (u *PwJumpController) Cycles(ctx *gin.Context) {
 
-	keys := enums.Get1stIsStrReturnSliceOfInt("cycle", enum_pw_jump.WebMapInt)
-	labels := enums.Get1stIsStrReturnMapIntOfStr("cycle", enum_pw_jump.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	var result []map[string]interface{}
+	cycleList := enums.Get1stIsStrReturnSliceOfInt("cycle", enum_pw_jump.WebMapInt)
+	for _, cycle := range cycleList {
+
+		//频率
+		var children []map[string]interface{}
+		for _, timing := range enum_pw_jump.GetCycleTimingMap(cycle) {
+			children = append(children, map[string]interface{}{
+				"val":   timing,
+				"label": enum_pw_jump.GetTimingLabel(cycle, timing),
+			})
+		}
+
+		//周期
+		result = append(result, map[string]interface{}{
+			"val":      cycle,
+			"label":    enums.Get1stIsStrAnd2ndIsIntReturnStr("cycle", cycle, enum_pw_jump.EnumIntMap),
+			"children": children,
+		})
+	}
+
+	response.SuccessReturnData(ctx, result)
 }
 
 // PageForManage 分页
@@ -113,9 +132,10 @@ func (u *PwJumpController) GetForAgentConfig(ctx *gin.Context) {
 func (u *PwJumpController) getConfig(ctx *gin.Context) enum_pw_jump.PwJumpConfig {
 	config := enum_pw_jump.PwJumpConfig{
 		Switch:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
 		Combine: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "combine")),
 		Size:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "size")),
+		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
+		Timing:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "timing")),
 	}
 	config.Format()
 	return config
