@@ -249,6 +249,12 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 	if orgModel.Status == enum_organization.StatusLocking {
 		return nil, -1, errors.New("账户已锁定，请联系管理员")
 	}
+	//数据字典
+	mapDict := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrganization)
+	//启用数据库中登录有效期
+	if val, isOK := mapDict[enum_dictionary.OrganizationLoginEXPIRE]; isOK && !string_helper.IsEmpty(val) {
+		crd.tokenExpire = string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginEXPIRE]) * 60
+	}
 
 	//用户名和密码不一致
 	curdFact := CreateCurdFactory()
@@ -256,13 +262,6 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		//错误次数加1
 		curdFact.IncrPwErrorNum(userModel.Id)
 
-		//数据字典
-		dictIds := []string{
-			enum_dictionary.OrganizationLoginErrorMax,
-			enum_dictionary.OrganizationLoginLockDuration,
-			enum_dictionary.OrganizationLoginErrorRemind,
-		}
-		mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 		//达到登录错误最大次数
 		diff := string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorMax]) - userModel.PwErrorNum - 1
 		if diff <= 0 {
@@ -387,6 +386,11 @@ func (crd *UserAuth) DecryptByLogin(token string, isDelay bool) (loginInfo UserC
 	}
 
 	if isDelay {
+		//启用数据库中登录有效期
+		if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrganizationLoginEXPIRE); !string_helper.IsEmpty(val) {
+			crd.tokenExpire = string_helper.ToInt(val) * 60
+		}
+
 		_, _ = crd.redisClient.Expire(crd.keyByToken(token), crd.tokenExpire)
 	}
 	return loginInfo, nil
