@@ -28,6 +28,7 @@ import (
 	pwJump3 "goskeleton/app/http/validator/organization/pw_jump"
 	registry3 "goskeleton/app/http/validator/organization/registry"
 	role3 "goskeleton/app/http/validator/organization/role"
+	safetyManage3 "goskeleton/app/http/validator/organization/safety_manage"
 	safetyReport3 "goskeleton/app/http/validator/organization/safety_report"
 	software3 "goskeleton/app/http/validator/organization/software"
 	syslog3 "goskeleton/app/http/validator/organization/syslog"
@@ -833,6 +834,10 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, software3.OfflineDownload{})
 	key = consts.ValidatorPrefixOrg + "SoftwareOnlineDownload"
 	containers.Set(key, software3.OnlineDownload{})
+
+	//安全管理
+	key = consts.ValidatorPrefixOrg + "SafetyManageUserSave"
+	containers.Set(key, safetyManage3.UserSave{})
 
 	//安全报告
 	key = consts.ValidatorPrefixOrg + "SafetyReportAlarmNoticeSave"

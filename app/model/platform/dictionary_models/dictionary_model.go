@@ -67,10 +67,14 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSntpAddr + `', '','平台:SNTP服务器地址'),
 			('` + enum_dictionary.ModulePlatform + `', '` + enum_dictionary.PlatformSntpCmd + `', 'sudo /usr/sbin/ntpdate','平台:SNTP同步命令'),
 
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginSmsSwitch + `', '0','企业:登录短信验证开关'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginEXPIRE + `', '30','企业:登录有效期(分)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorMax + `', '10','企业:登录错误次数最大值(100)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginErrorRemind + `', '3','企业:登录错误次数提醒'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginLockDuration + `', '30','企业:登录锁定时长(分)'),
-			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationLoginSmsSwitch + `', '0','企业:登录短信验证开关'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwLengthMin + `', '6','企业:密码长度最小值(6)'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwLengthMax + `', '18','企业:密码长度最大值(18)'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwExpire + `', '30','企业:密码有效期(天)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationSubUserLimit + `', '50','企业:子用户限制数目'),
 
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentHttpUrl + `', 'https://192.168.4.1','终端:http请求地址(无端口)'),

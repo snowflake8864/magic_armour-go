@@ -952,6 +952,21 @@ func InitOrganizationRouter() *gin.Engine {
 					software.POST("onlineDownload", validatorFactory.Create(consts.ValidatorPrefixOrg+"SoftwareOnlineDownload"))
 				} //软件相关
 
+				//安全管理
+				safetyManage := vOrg.Group("safetyManage/")
+				{
+					user1 := safetyManage.Group("user/")
+					{
+						user1.POST("get", (&organization.SafetyManageController{}).GetForUser)
+						user1.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyManageUserSave"))
+					}
+
+					/*dataBackup := safetyManage.Group("dataBackup/")
+					{
+
+					}*/
+				}
+
 				//安全报告
 				safetyReport := vOrg.Group("safetyReport/")
 				{
