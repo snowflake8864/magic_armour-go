@@ -112,7 +112,6 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	userParam.Password = user_service.CreateAuthFactory().EncryptPw(userParam.Password)
 	userParam.OrgId = orgParam.Id
 	userParam.Status = enum_user.StatusNormal
-	userParam.LastLoginAt = orgParam.CreatedAt
 	userParam.CreatedAt = orgParam.CreatedAt
 	if err = tx.Create(&userParam).Error; err != nil {
 		tx.Rollback()

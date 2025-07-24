@@ -28,7 +28,8 @@ type UserModel struct {
 	Position    string `json:"position"`
 	Intro       string `json:"intro"`
 	PwErrorNum  int    `json:"pw_error_num"`
-	LastLoginAt string `json:"last_login_at"`
+	PwModifyAt  int64  `json:"pw_modify_at"`
+	LastLoginAt string `json:"last_login_at" gorm:"default:NULL"`
 	IsRoot      int    `json:"is_root"`
 	Depts       string `json:"depts"`
 	Status      int    `json:"status"`
@@ -74,6 +75,24 @@ func (m *UserModel) CreateTable() bool {
 			KEY created_at (created_at)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC COMMENT='企业:用户';
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *UserModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MA_3.1.0_R4_B5":
+		sql += `
+			ADD COLUMN pw_modify_at int(11) NOT NULL DEFAULT '0' COMMENT '密码修改时间' AFTER pw_error_num;
+		`
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

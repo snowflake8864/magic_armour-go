@@ -74,7 +74,6 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 	userParam.Status = enum_user.StatusNormal
 	userParam.IsRoot = enums.IsNot
 	userParam.PwErrorNum = 0
-	userParam.LastLoginAt = now
 	userParam.CreatedAt = now
 	if !crd.masterModel.InsertItem(userParam) {
 		return errors.New("添加子户失败")
@@ -164,7 +163,8 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 
 	//修改
 	updates := map[string]interface{}{
-		"password": CreateAuthFactory().EncryptPw(userParam.Password),
+		"password":     CreateAuthFactory().EncryptPw(userParam.Password),
+		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
 		return errors.New("保存失败")
@@ -301,7 +301,8 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 
 	//修改密码
 	updates := map[string]interface{}{
-		"password": newPw,
+		"password":     newPw,
+		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
 		return errors.New("修改密码失败")
@@ -479,7 +480,8 @@ func (crd *UserCurd) FindPwByPhone(userPhone, newPw string, netIp string) error 
 
 	//修改密码
 	updates := map[string]interface{}{
-		"password": CreateAuthFactory().EncryptPw(newPw),
+		"password":     CreateAuthFactory().EncryptPw(newPw),
+		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
 		return errors.New("修改密码失败")

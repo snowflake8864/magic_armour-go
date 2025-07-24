@@ -22,15 +22,17 @@ const (
 	PlatformSntpAddr          string = "platform_sntp_addr"           //平台:SNTP服务器地址
 	PlatformSntpCmd           string = "platform_sntp_cmd"            //平台:SNTP同步命令
 
-	OrganizationLoginSmsSwitch    string = "org_login_sms_switch"    //企业:登录短信验证开关
-	OrganizationLoginEXPIRE       string = "org_login_expire"        //企业:登录有效期(分)
-	OrganizationLoginErrorMax     string = "org_login_error_max"     //企业:登录错误次数最大值(100)
-	OrganizationLoginErrorRemind  string = "org_login_error_remind"  //企业:登录错误次数提醒
-	OrganizationLoginLockDuration string = "org_login_lock_duration" //企业:登录锁定时长(分)
-	OrganizationPwLengthMin       string = "org_pw_length_min"       //企业:密码长度最小值(6)
-	OrganizationPwLengthMax       string = "org_pw_length_max"       //企业:密码长度最大值(18)
-	OrganizationPwExpire          string = "org_pw_expire"           //企业:密码有效期(天)
-	OrganizationSubUserLimit      string = "org_sub_user_limit"      //企业:子用户限制数目
+	OrganizationLoginSmsSwitch       string = "org_login_sms_switch"       //企业:登录短信验证开关
+	OrganizationLoginEXPIRE          string = "org_login_expire"           //企业:登录有效期(分)
+	OrganizationLoginErrorMax        string = "org_login_error_max"        //企业:登录错误次数最大值(100)
+	OrganizationLoginErrorRemind     string = "org_login_error_remind"     //企业:登录错误次数提醒
+	OrganizationLoginLockDuration    string = "org_login_lock_duration"    //企业:登录锁定时长(分)
+	OrganizationPwLengthMin          string = "org_pw_length_min"          //企业:密码长度最小值(6)
+	OrganizationPwLengthMax          string = "org_pw_length_max"          //企业:密码长度最大值(18)
+	OrganizationPwExpire             string = "org_pw_expire"              //企业:密码有效期(天)
+	OrganizationPwCycleModifySwitch  string = "org_pw_cycle_modify_switch" //企业:密码周期修改开关
+	OrganizationPwlFirstModifySwitch string = "org_pw_first_modify_switch" //企业::密码首次登录修改开关
+	OrganizationSubUserLimit         string = "org_sub_user_limit"         //企业:子用户限制数目
 
 	AgentHttpUrl               string = "agent_http_url"                //终端:http请求地址(无端口)
 	AgentHttpPort              string = "agent_http_port"               //终端:http请求端口
@@ -120,6 +122,8 @@ var EnumSlice = map[string][]string{
 		OrganizationPwLengthMin,
 		OrganizationPwLengthMax,
 		OrganizationPwExpire,
+		OrganizationPwCycleModifySwitch,
+		OrganizationPwlFirstModifySwitch,
 		OrganizationSubUserLimit,
 	},
 	ModuleAgent: {

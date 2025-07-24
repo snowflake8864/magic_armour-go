@@ -19,12 +19,14 @@ func (u *SafetyManageController) GetForUser(ctx *gin.Context) {
 	vals := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrganization)
 
 	response.SuccessReturnData(ctx, gin.H{
-		"login_expire":        string_helper.ToInt(vals[enum_dictionary.OrganizationLoginEXPIRE]),
-		"login_error_max":     string_helper.ToInt(vals[enum_dictionary.OrganizationLoginErrorMax]),
-		"login_lock_duration": string_helper.ToInt(vals[enum_dictionary.OrganizationLoginLockDuration]),
-		"pw_length_min":       string_helper.ToInt(vals[enum_dictionary.OrganizationPwLengthMin]),
-		"pw_length_max":       string_helper.ToInt(vals[enum_dictionary.OrganizationPwLengthMax]),
-		"pw_expire":           string_helper.ToInt(vals[enum_dictionary.OrganizationPwExpire]),
+		"login_expire":           string_helper.ToInt(vals[enum_dictionary.OrganizationLoginEXPIRE]),
+		"login_error_max":        string_helper.ToInt(vals[enum_dictionary.OrganizationLoginErrorMax]),
+		"login_lock_duration":    string_helper.ToInt(vals[enum_dictionary.OrganizationLoginLockDuration]),
+		"pw_length_min":          string_helper.ToInt(vals[enum_dictionary.OrganizationPwLengthMin]),
+		"pw_length_max":          string_helper.ToInt(vals[enum_dictionary.OrganizationPwLengthMax]),
+		"pw_expire":              string_helper.ToInt(vals[enum_dictionary.OrganizationPwExpire]),
+		"pw_cycle_modify_switch": string_helper.ToInt(vals[enum_dictionary.OrganizationPwCycleModifySwitch]),
+		"pw_first_modify_switch": string_helper.ToInt(vals[enum_dictionary.OrganizationPwlFirstModifySwitch]),
 	})
 }
 
@@ -37,6 +39,8 @@ func (u *SafetyManageController) SaveForUser(ctx *gin.Context) {
 	idAndVal[enum_dictionary.OrganizationPwLengthMin] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_length_min")
 	idAndVal[enum_dictionary.OrganizationPwLengthMax] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_length_max")
 	idAndVal[enum_dictionary.OrganizationPwExpire] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_expire")
+	idAndVal[enum_dictionary.OrganizationPwCycleModifySwitch] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_cycle_modify_switch")
+	idAndVal[enum_dictionary.OrganizationPwlFirstModifySwitch] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_first_modify_switch")
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
 		response.FailSimplify(ctx, "保存失败")

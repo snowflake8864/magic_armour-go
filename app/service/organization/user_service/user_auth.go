@@ -72,16 +72,17 @@ type UserCacheLogin struct {
 }
 
 type UserBackLogin struct {
-	OrgId    int64  `json:"org_id"`
-	OrgName  string `json:"org_name"`
-	OrgCode  string `json:"org_code"`
-	OrgType  int    `json:"org_type"`
-	UserId   int64  `json:"userid"`
-	Username string `json:"username"`
-	IsRoot   int    `json:"is_root"`
-	Token    string `json:"token"`
-	Position string `json:"position"`
-	Source   int    `json:"source"`
+	OrgId         int64  `json:"org_id"`
+	OrgName       string `json:"org_name"`
+	OrgCode       string `json:"org_code"`
+	OrgType       int    `json:"org_type"`
+	UserId        int64  `json:"userid"`
+	Username      string `json:"username"`
+	IsRoot        int    `json:"is_root"`
+	Token         string `json:"token"`
+	Position      string `json:"position"`
+	Source        int    `json:"source"`
+	ForceModifyPw int    `json:"force_modify_pw"`
 }
 
 func (crd *UserAuth) keyByToken(val string) string {
@@ -279,9 +280,9 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		}
 	}
 
-	curdFact.loginSuccess(userModel.Id)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceWeb, mapDict)
 
-	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceWeb)
+	curdFact.loginSuccess(userModel.Id)
 
 	return backInfo, 0, nil
 }
@@ -312,16 +313,14 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 		return nil, -99, errors.New("用户审核中，请联系管理员")
 	}
 
-	CreateCurdFactory().loginSuccess(userModel.Id)
-
-	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceHs)
+	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceHs, nil)
 
 	return backInfo, 0, nil
 
 }
 
 // loginAfter
-func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string, source int) *UserBackLogin {
+func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string, source int, orgDict map[string]string) *UserBackLogin {
 	var deptIds, deptWithChild []int64
 	//不是管理员
 	if userModel.IsRoot == enums.IsNot {
@@ -349,24 +348,42 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 	token := md5_encrypt.MD5(jsonStr)
 	_, _ = crd.redisClient.SetEx(crd.keyByToken(token), jsonStr, crd.tokenExpire)
 
-	//记录日志
+	//强制修改密码
+	forceModifyPw := 0
+	if source == enum_org_operate.SourceWeb {
+		//首次登录修改密码
+		if val, isOK := orgDict[enum_dictionary.OrganizationPwlFirstModifySwitch]; isOK && !string_helper.IsEmpty(val) &&
+			string_helper.ToInt(val) == enums.SwitchOn {
+			if userModel.PwModifyAt == 0 {
+				forceModifyPw = 1
+			}
+		}
+		//周期性修改密码
+		if val, isOK := orgDict[enum_dictionary.OrganizationPwCycleModifySwitch]; isOK && !string_helper.IsEmpty(val) &&
+			string_helper.ToInt(val) == enums.SwitchOn {
+			if userModel.PwModifyAt > 0 && date_helper.CurTimestamp() > userModel.PwModifyAt {
+				forceModifyPw = 1
+			}
+		}
+	}
 
 	//返回给前端数据
 	encryptToken, _ := openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(token)
-	backInfo := UserBackLogin{
-		OrgId:    orgModel.Id,
-		OrgName:  orgModel.Name,
-		OrgCode:  orgModel.Code,
-		OrgType:  orgModel.Type,
-		UserId:   userModel.Id,
-		Username: userModel.Username,
-		IsRoot:   userModel.IsRoot,
-		Token:    encryptToken,
-		Position: userModel.Position,
-		Source:   source,
+	backInfo := &UserBackLogin{
+		OrgId:         orgModel.Id,
+		OrgName:       orgModel.Name,
+		OrgCode:       orgModel.Code,
+		OrgType:       orgModel.Type,
+		UserId:        userModel.Id,
+		Username:      userModel.Username,
+		IsRoot:        userModel.IsRoot,
+		Token:         encryptToken,
+		Position:      userModel.Position,
+		Source:        source,
+		ForceModifyPw: forceModifyPw,
 	}
 
-	return &backInfo
+	return backInfo
 }
 
 // DecryptByLogin 登录信息解密

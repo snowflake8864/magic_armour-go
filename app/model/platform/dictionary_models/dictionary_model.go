@@ -75,6 +75,8 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwLengthMin + `', '6','企业:密码长度最小值(6)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwLengthMax + `', '18','企业:密码长度最大值(18)'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwExpire + `', '30','企业:密码有效期(天)'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwCycleModifySwitch + `', '0','企业:密码周期修改开关'),
+			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationPwlFirstModifySwitch + `', '0','企业:密码首次登录修改开关'),
 			('` + enum_dictionary.ModuleOrganization + `', '` + enum_dictionary.OrganizationSubUserLimit + `', '50','企业:子用户限制数目'),
 
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentHttpUrl + `', 'https://192.168.4.1','终端:http请求地址(无端口)'),
