@@ -125,7 +125,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			OutreachAlarmSwitch: &agentModel.OutreachAlarmSwitch,
 		}
 		//添加任务
-		crd.addTask(agentModel, manual, true, false, "终端上线")
+		crd.addTask(agentModel, manual, true, true, "终端上线")
 	}
 
 	//记录上线日志
