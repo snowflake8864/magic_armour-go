@@ -838,7 +838,7 @@ func OrganizationRegisterValidator() {
 	//安全管理
 	key = consts.ValidatorPrefixOrg + "SafetyManageUserSave" //
 	containers.Set(key, safetyManage3.UserSave{})
-	key = consts.ValidatorPrefixOrg + "SafetyManageUserSaveSafetyManageBackupImport" //
+	key = consts.ValidatorPrefixOrg + "SafetyManageBackupImport" //
 	containers.Set(key, safetyManage3.BackupImport{})
 
 	//安全报告
