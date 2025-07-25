@@ -44,7 +44,7 @@ func (u *PlugController) GetDynamic(ctx *gin.Context) {
 	})
 	if policyModels != nil && len(policyModels) > 0 {
 		for _, model := range policyModels {
-			policy := u.formatDynamic(model.Source, model.Ip, model.Direction, model.StartAt, model.EndAt)
+			policy := u.formatDynamic(model.Source, model.Ip, model.Direction, model.Duration, model.StartAt, model.EndAt)
 			if _, isOK := existsPolicy[policy.Ip]; !isOK {
 				existsPolicy[policy.Ip] = struct{}{}
 				result = append(result, policy)
@@ -60,11 +60,12 @@ type PlugDynamicResp struct {
 	TypeName  string      `json:"typeName"`
 	Ip        string      `json:"ip"`
 	Direction int         `json:"direction"`
+	Duration  int         `json:"duration"`
 	StartAt   string      `json:"starttime"`
 	EndAt     interface{} `json:"endtime"`
 }
 
-func (u *PlugController) formatDynamic(source int, ip string, direction int, startAt, endAt string) *PlugDynamicResp {
+func (u *PlugController) formatDynamic(source int, ip string, direction, duration int, startAt, endAt string) *PlugDynamicResp {
 	data := &PlugDynamicResp{}
 	data.Source = int_helper.IntToStr(source)
 	data.Ip = ip
