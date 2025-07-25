@@ -183,7 +183,7 @@ func (u *Users) Register(context *gin.Context) {
 }
 ```
 
-######   2.5.1 Model业务层，位置：app\models\（XXX业务模块）
+######   2.5.1 Model业务层，位置：app\tamperGlobalModels\（XXX业务模块）
 > 控制器调度Model业务模块  
 ```go  
 
