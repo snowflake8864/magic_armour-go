@@ -360,8 +360,9 @@ func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *orga
 		}
 		//周期性修改密码
 		if val, isOK := orgDict[enum_dictionary.OrganizationPwCycleModifySwitch]; isOK && !string_helper.IsEmpty(val) &&
-			string_helper.ToInt(val) == enums.SwitchOn {
-			if userModel.PwModifyAt > 0 && date_helper.CurTimestamp() > userModel.PwModifyAt {
+			string_helper.ToInt(val) == enums.SwitchOn && userModel.PwModifyAt > 0 {
+			pwExpire := string_helper.ToInt64(orgDict[enum_dictionary.OrganizationPwExpire])
+			if date_helper.CurTimestamp() > (userModel.PwModifyAt + pwExpire*86400) {
 				forceModifyPw = 1
 			}
 		}
