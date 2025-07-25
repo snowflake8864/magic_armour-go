@@ -150,7 +150,7 @@ func (u *PlugController) GetIpBlack(ctx *gin.Context) {
 		OpenSwitch: &openSwitch,
 	})
 	if globalModels != nil && len(globalModels) > 0 {
-		for _, model := range policyModels {
+		for _, model := range globalModels {
 			policy := u.formatIp(model.Ip, model.Direction)
 			if _, isOK := existsPolicy[policy.Ip]; !isOK {
 				existsPolicy[policy.Ip] = struct{}{}
