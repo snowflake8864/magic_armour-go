@@ -70,6 +70,7 @@ func (u *PlugController) formatDynamic(source int, ip string, direction, duratio
 	data.Source = int_helper.IntToStr(source)
 	data.Ip = ip
 	data.Direction = direction
+	data.Duration = duration
 	data.StartAt = startAt
 	if string_helper.IsEmpty(endAt) {
 		data.EndAt = 0
