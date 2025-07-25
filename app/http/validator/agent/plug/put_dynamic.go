@@ -12,7 +12,7 @@ type DynamicPut struct {
 	PlugType int    `form:"plugType" json:"plugType" binding:"required,oneof=1 2"`
 	Source   int    `form:"source" json:"source" binding:"required,oneof=1 3"`
 	Ip       string `form:"ip" json:"ip" binding:"required"`
-	Duration int    `form:"duration" json:"duration" binding:"required"`
+	Duration int    `form:"duration" json:"duration"`
 }
 
 func (n DynamicPut) CheckParams(context *gin.Context) {
