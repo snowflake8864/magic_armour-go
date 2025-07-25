@@ -48,3 +48,13 @@ func (u *SafetyManageController) SaveForUser(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// ExportForBackup 数据备份: 导出
+func (u *SafetyManageController) ExportForBackup(ctx *gin.Context) {
+
+}
+
+// ImportForBackup 数据备份: 导入
+func (u *SafetyManageController) ImportForBackup(ctx *gin.Context) {
+
+}

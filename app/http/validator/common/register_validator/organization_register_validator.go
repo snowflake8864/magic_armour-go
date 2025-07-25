@@ -836,13 +836,15 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, software3.OnlineDownload{})
 
 	//安全管理
-	key = consts.ValidatorPrefixOrg + "SafetyManageUserSave"
+	key = consts.ValidatorPrefixOrg + "SafetyManageUserSave" //
 	containers.Set(key, safetyManage3.UserSave{})
+	key = consts.ValidatorPrefixOrg + "SafetyManageUserSaveSafetyManageBackupImport" //
+	containers.Set(key, safetyManage3.BackupImport{})
 
 	//安全报告
 	key = consts.ValidatorPrefixOrg + "SafetyReportAlarmNoticeSave"
 	containers.Set(key, safetyReport3.AlarmNoticeSave{})
-	key = consts.ValidatorPrefixOrg + "SafetyReportHardwareNoticeSave"
+	key = consts.ValidatorPrefixOrg + "SafetyReportHardwareNoticeSave" //
 	containers.Set(key, safetyReport3.HardwareNoticeSave{})
 
 }

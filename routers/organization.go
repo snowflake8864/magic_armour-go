@@ -961,10 +961,11 @@ func InitOrganizationRouter() *gin.Engine {
 						user1.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyManageUserSave"))
 					}
 
-					/*dataBackup := safetyManage.Group("dataBackup/")
+					backup1 := safetyManage.Group("backup/")
 					{
-
-					}*/
+						backup1.POST("export", (&organization.SafetyManageController{}).ExportForBackup)
+						backup1.POST("import", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyManageBackupImport"))
+					}
 				}
 
 				//安全报告
