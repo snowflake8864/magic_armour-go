@@ -81,6 +81,7 @@ func (crd *baseUser) Columns() []string {
 		"position",
 		"intro",
 		"pw_error_num",
+		"pw_modify_at",
 		"last_login_at",
 		"is_root",
 		"depts",

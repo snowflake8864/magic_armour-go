@@ -259,7 +259,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 
 	//用户名和密码不一致
 	curdFact := CreateCurdFactory()
-	if !curdFact.HasByUsernameAndPw(username, crd.EncryptPw(pw)) {
+	if !curdFact.HasByUsernameAndPw(userModel.Username, crd.EncryptPw(pw)) {
 		//错误次数加1
 		curdFact.IncrPwErrorNum(userModel.Id)
 
