@@ -72,6 +72,22 @@ func (crd *BackupExcel) fillTrustDirGlobal() {
 	}
 }
 
+// 格式信任目录全局数据
+func (crd *BackupExcel) appendTrustDirGlobal(jsonStr string, userId int64, userName string, now string) trust_dir_models.GlobalModel {
+	var tmpModel trust_dir_models.GlobalModel
+	if err := json_helper.ToAny(jsonStr, &tmpModel); err == nil && tmpModel.Id > 0 {
+		tmpModel.OrgId = crd.orgId
+		tmpModel.OpenSwitch = enums.SwitchOff
+		tmpModel.UpdateId = userId
+		tmpModel.UpdateName = userName
+		tmpModel.UpdatedAt = now
+		tmpModel.CreateId = userId
+		tmpModel.CreateName = userName
+		tmpModel.UpdatedAt = now
+	}
+	return tmpModel
+}
+
 // 填充可信防护全局全局数据
 func (crd *BackupExcel) fillProcGlobal() {
 	condition := proc_models.SearchConditions{
@@ -104,6 +120,22 @@ func (crd *BackupExcel) fillTamperGlobal() {
 			})
 		}
 	}
+}
+
+// 格式信任目录全局数据
+func (crd *BackupExcel) appendTamperDirGlobal(jsonStr string, userId int64, userName string, now string) tamper_models.GlobalModel {
+	var tmpModel tamper_models.GlobalModel
+	if err := json_helper.ToAny(jsonStr, &tmpModel); err == nil && tmpModel.Id > 0 {
+		tmpModel.OrgId = crd.orgId
+		tmpModel.OpenSwitch = enums.SwitchOff
+		tmpModel.UpdateId = userId
+		tmpModel.UpdateName = userName
+		tmpModel.UpdatedAt = now
+		tmpModel.CreateId = userId
+		tmpModel.CreateName = userName
+		tmpModel.UpdatedAt = now
+	}
+	return tmpModel
 }
 
 // 填充勒索全局数据
@@ -288,7 +320,7 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 	var insTamperGlobal []tamper_models.GlobalModel
 	//处理行数据
 	for i, rowVals := range rowsValues {
-		//忽略前2行
+		//忽略前1行
 		if i < 1 {
 			continue
 		}
@@ -299,17 +331,7 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 		}
 		switch rowVals[0] {
 		case typeTamperGlobal: //防篡改全局数据
-			var tmpModel tamper_models.GlobalModel
-			if err1 := json_helper.ToAny(rowVals[1], &tmpModel); err1 == nil && tmpModel.Id > 0 {
-				tmpModel.OrgId = crd.orgId
-				tmpModel.OpenSwitch = enums.SwitchOff
-				tmpModel.UpdateId = userId
-				tmpModel.UpdateName = userName
-				tmpModel.UpdatedAt = now
-				tmpModel.CreateId = userId
-				tmpModel.CreateName = userName
-				tmpModel.UpdatedAt = now
-
+			if tmpModel := crd.appendTamperDirGlobal(rowVals[1], userId, userName, now); tmpModel.Id > 0 {
 				insTamperGlobal = append(insTamperGlobal, tmpModel)
 			}
 		}
