@@ -99,6 +99,16 @@ func SaveOperate() gin.HandlerFunc {
 				}
 			}
 
+			//导出路径
+			exportAuth := map[string]struct{}{
+				"/v5/organization/tamper/policy/export":       {},
+				"/v5/organization/safetyManage/backup/export": {},
+			}
+			if _, exist := exportAuth[param.Path]; exist {
+				param.Status = enum_org_operate.StatusSuccess
+				param.Resp = ""
+			}
+
 			if param.OrgId > 0 && !string_helper.IsEmpty(param.CreateName) {
 				go org_operate_service.CreateCurdFactory().Add(&param)
 			}
