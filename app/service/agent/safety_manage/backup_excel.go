@@ -122,8 +122,8 @@ func (crd *BackupExcel) fillTamperGlobal() {
 	}
 }
 
-// 格式信任目录全局数据
-func (crd *BackupExcel) appendTamperDirGlobal(jsonStr string, userId int64, userName string, now string) tamper_models.GlobalModel {
+// 格式防篡改全局数据
+func (crd *BackupExcel) appendTamperGlobal(jsonStr string, userId int64, userName string, now string) tamper_models.GlobalModel {
 	var tmpModel tamper_models.GlobalModel
 	if err := json_helper.ToAny(jsonStr, &tmpModel); err == nil && tmpModel.Id > 0 {
 		tmpModel.OrgId = crd.orgId
@@ -318,6 +318,7 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 	}
 	now := date_helper.CurDatetime()
 	var insTamperGlobal []tamper_models.GlobalModel
+	var insTrustDirGlobal []trust_dir_models.GlobalModel
 	//处理行数据
 	for i, rowVals := range rowsValues {
 		//忽略前1行
@@ -330,13 +331,20 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 			rowVals = append(rowVals, tmp...)
 		}
 		switch rowVals[0] {
+		case typeTrustDirGlobal: //信任目录全局数据
+			if tmpModel := crd.appendTrustDirGlobal(rowVals[1], userId, userName, now); tmpModel.Id > 0 {
+				insTrustDirGlobal = append(insTrustDirGlobal, tmpModel)
+			}
 		case typeTamperGlobal: //防篡改全局数据
-			if tmpModel := crd.appendTamperDirGlobal(rowVals[1], userId, userName, now); tmpModel.Id > 0 {
+			if tmpModel := crd.appendTamperGlobal(rowVals[1], userId, userName, now); tmpModel.Id > 0 {
 				insTamperGlobal = append(insTamperGlobal, tmpModel)
 			}
 		}
 	}
 
+	if len(insTrustDirGlobal) > 0 {
+		trust_dir_models.CreateGlobalFactory().InsertBatch(&insTrustDirGlobal)
+	}
 	if len(insTamperGlobal) > 0 {
 		tamper_models.CreateGlobalFactory().InsertBatch(&insTamperGlobal)
 	}
