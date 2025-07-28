@@ -4,7 +4,14 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/agent/blackmail_models"
+	"goskeleton/app/model/agent/outreach_models"
+	"goskeleton/app/model/agent/plug_models"
+	"goskeleton/app/model/agent/port_models"
+	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/tamper_models"
+	"goskeleton/app/model/agent/trust_dir_models"
+	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/excel_helper"
@@ -14,21 +21,31 @@ import (
 
 func CreateBackupExcelFactory(orgId int64) *BackupExcel {
 	return &BackupExcel{
-		tamperGlobal: tamper_models.CreateGlobalFactory(),
-		orgId:        orgId,
-		sheetName:    "Sheet1",
-		colsLen:      2,
+		orgId:     orgId,
+		sheetName: "Sheet1",
+		colsLen:   2,
 	}
 }
 
 type BackupExcel struct {
-	tamperGlobal *tamper_models.GlobalModel
-	orgId        int64
-	sheetName    string
-	colsLen      int
+	orgId     int64
+	sheetName string
+	colsLen   int
+	rowsData  [][]interface{}
 }
 
-var backupTypeTamperGlobal = "TaG"
+var typeTrustDirGlobal = "TrDiGl"
+var typeProcGlobal = "PrGl"
+var typeTamperGlobal = "TaGl"
+var typeBlackmailGlobal = "BlGl"
+var typeBlackmailGroup = "BlGr"
+var typePortVirtualGlobal = "PoViGl"
+
+// var typePlugDynamic = "PlDy"
+var typePlugIpGlobal = "PlIpGl"
+var typeUsbGlobal = "UsGl"
+var typeOutreachGlobal = "OuGl"
+var typeOutreachDetect = "OuDe"
 
 func (crd *BackupExcel) generateExportPath() string {
 
@@ -38,11 +55,174 @@ func (crd *BackupExcel) generateExportPath() string {
 	return fullDir + name + ".xlsx"
 }
 
-func (crd *BackupExcel) getTamperGlobal() []*tamper_models.GlobalModel {
+// 填充信任目录全局数据
+func (crd *BackupExcel) fillTrustDirGlobal() {
+	condition := trust_dir_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := trust_dir_models.CreateGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeTrustDirGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充可信防护全局全局数据
+func (crd *BackupExcel) fillProcGlobal() {
+	condition := proc_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := proc_models.CreateProcGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeProcGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充防篡改全局数据
+func (crd *BackupExcel) fillTamperGlobal() {
 	condition := tamper_models.SearchConditions{
 		OrgId: crd.orgId,
 	}
-	return crd.tamperGlobal.GetListByConditions(condition)
+	models := tamper_models.CreateGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeTamperGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充勒索全局数据
+func (crd *BackupExcel) fillBlackmailGlobal() {
+	condition := blackmail_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := blackmail_models.CreateGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeBlackmailGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充勒索分组数据
+func (crd *BackupExcel) fillBlackmailGroup() {
+	condition := blackmail_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := blackmail_models.CreateGroupFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeBlackmailGroup,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充端口虚开全局数据
+func (crd *BackupExcel) fillPortVirtualGlobal() {
+	condition := port_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := port_models.CreateVirtualGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typePortVirtualGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充封堵IP全局数据
+func (crd *BackupExcel) fillPlugIpGlobal() {
+	condition := plug_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := plug_models.CreateIpGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typePlugIpGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充外设全局数据
+func (crd *BackupExcel) fillUsbGlobal() {
+	condition := usb_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := usb_models.CreateGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeUsbGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充外联全局数据
+func (crd *BackupExcel) fillOutreachGlobal() {
+	condition := outreach_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := outreach_models.CreateGlobalFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeOutreachGlobal,
+				json_helper.Encode(model),
+			})
+		}
+	}
+}
+
+// 填充外联探测数据
+func (crd *BackupExcel) fillOutreachDetect() {
+	condition := outreach_models.SearchConditions{
+		OrgId: crd.orgId,
+	}
+	models := outreach_models.CreateDetectFactory().GetListByConditions(condition)
+	if len(models) >= 0 {
+		for _, model := range models {
+			model.OrgId = 0
+			crd.rowsData = append(crd.rowsData, []interface{}{
+				typeOutreachDetect,
+				json_helper.Encode(model),
+			})
+		}
+	}
 }
 
 // Export 导出
@@ -53,22 +233,28 @@ func (crd *BackupExcel) Export() (string, error) {
 
 	//行数据
 	headerData := []interface{}{"类型", "数据"}
-	var rowsData [][]interface{}
 
-	//防篡改全局数据
-	tamperGlobalModels := crd.getTamperGlobal()
-	if len(tamperGlobalModels) >= 0 {
-		for _, model := range tamperGlobalModels {
-			model.OrgId = 0
-			rowsData = append(rowsData, []interface{}{
-				backupTypeTamperGlobal,
-				json_helper.Encode(model),
-			})
-		}
-	}
+	//信任目录
+	crd.fillTrustDirGlobal()
+	//可信防护数据
+	crd.fillProcGlobal()
+	//防篡改数据
+	crd.fillTamperGlobal()
+	//勒索数据
+	crd.fillBlackmailGroup()
+	crd.fillBlackmailGlobal()
+	//端口虚开数据
+	crd.fillPortVirtualGlobal()
+	//封堵数据
+	crd.fillPlugIpGlobal()
+	//外设数据
+	crd.fillUsbGlobal()
+	//外联数据
+	crd.fillOutreachGlobal()
+	crd.fillOutreachDetect()
 
 	//流式写入sheet
-	if err := excelHandler.StreamWriteRows(crd.sheetName, headerData, rowsData, 1, 1); err != nil {
+	if err := excelHandler.StreamWriteRows(crd.sheetName, headerData, crd.rowsData, 1, 1); err != nil {
 		return "", fmt.Errorf("StreamWriteRows fail: %v", err)
 	}
 
@@ -112,7 +298,7 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 			rowVals = append(rowVals, tmp...)
 		}
 		switch rowVals[0] {
-		case backupTypeTamperGlobal: //防篡改全局数据
+		case typeTamperGlobal: //防篡改全局数据
 			var tmpModel tamper_models.GlobalModel
 			if err1 := json_helper.ToAny(rowVals[1], &tmpModel); err1 == nil && tmpModel.Id > 0 {
 				tmpModel.OrgId = crd.orgId
@@ -130,7 +316,7 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 	}
 
 	if len(insTamperGlobal) > 0 {
-		crd.tamperGlobal.InsertBatch(&insTamperGlobal)
+		tamper_models.CreateGlobalFactory().InsertBatch(&insTamperGlobal)
 	}
 
 	return nil
