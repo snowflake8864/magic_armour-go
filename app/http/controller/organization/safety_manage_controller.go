@@ -3,9 +3,13 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_upload"
 	"goskeleton/app/service/agent/safety_manage"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/service/platform/upload_service"
+	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -64,5 +68,28 @@ func (u *SafetyManageController) ExportForBackup(ctx *gin.Context) {
 
 // ImportForBackup 数据备份: 导入
 func (u *SafetyManageController) ImportForBackup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	//上传文件
+	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xlsx"})
+	if !isOk {
+		response.FailSimplify(ctx, "上传文件失败")
+		return
+	}
+	uploadParam.Type = enum_upload.TypeImportantBackup
+	uploadParam.OperateSource = enums.OperateSourceOrganize
+	uploadParam.OrgId = loginInfo.OrgId
+	uploadParam.OperateId = loginInfo.UserId
+	uploadParam.OperateName = loginInfo.Username
+	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
+		response.FailSimplify(ctx, "保存文件失败")
+		return
+	}
+
+	if err := safety_manage.CreateBackupExcelFactory(loginInfo.OrgId).Import(uploadParam.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }

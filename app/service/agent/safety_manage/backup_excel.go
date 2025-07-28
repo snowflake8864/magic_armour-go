@@ -2,9 +2,11 @@ package safety_manage
 
 import (
 	"fmt"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/excel_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/md5_encrypt"
@@ -93,8 +95,42 @@ func (crd *BackupExcel) Import(fullPath string, userId int64, userName string) e
 	if err2 != nil {
 		return fmt.Errorf("get rows: %v", err)
 	}
-	if len(rowsValues) == 0 {
+	if len(rowsValues) < 2 {
 		return nil
+	}
+	now := date_helper.CurDatetime()
+	var insTamperGlobal []tamper_models.GlobalModel
+	//处理行数据
+	for i, rowVals := range rowsValues {
+		//忽略前2行
+		if i < 1 {
+			continue
+		}
+		//补足
+		if colRealLen := len(rowVals); colRealLen < crd.colsLen {
+			tmp := make([]string, crd.colsLen-colRealLen)
+			rowVals = append(rowVals, tmp...)
+		}
+		switch rowVals[0] {
+		case backupTypeTamperGlobal: //防篡改全局数据
+			var tmpModel tamper_models.GlobalModel
+			if err1 := json_helper.ToAny(rowVals[1], &tmpModel); err1 == nil && tmpModel.Id > 0 {
+				tmpModel.OrgId = crd.orgId
+				tmpModel.OpenSwitch = enums.SwitchOff
+				tmpModel.UpdateId = userId
+				tmpModel.UpdateName = userName
+				tmpModel.UpdatedAt = now
+				tmpModel.CreateId = userId
+				tmpModel.CreateName = userName
+				tmpModel.UpdatedAt = now
+
+				insTamperGlobal = append(insTamperGlobal, tmpModel)
+			}
+		}
+	}
+
+	if len(insTamperGlobal) > 0 {
+		crd.tamperGlobal.InsertBatch(&insTamperGlobal)
 	}
 
 	return nil
