@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/service/agent/safety_manage"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -51,7 +52,14 @@ func (u *SafetyManageController) SaveForUser(ctx *gin.Context) {
 
 // ExportForBackup 数据备份: 导出
 func (u *SafetyManageController) ExportForBackup(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	if fullPath, err := safety_manage.CreateBackupExcelFactory(loginInfo.OrgId).Export(); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	} else {
+		response.FileDownload(ctx, fullPath)
+	}
 }
 
 // ImportForBackup 数据备份: 导入

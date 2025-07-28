@@ -3,6 +3,7 @@ package test
 import (
 	"fmt"
 	"github.com/xuri/excelize/v2"
+	"goskeleton/app/service/agent/safety_manage"
 	"goskeleton/app/utils/helpers/excel_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	_ "goskeleton/bootstrap" //  为了保证单元测试与正常启动效果一致，记得引入该包
@@ -138,4 +139,13 @@ func TestStreamWriteRows(t *testing.T) {
 	if err := handler.SaveAs("10w行.xlsx"); err != nil {
 		fmt.Println("SaveAs: ", err.Error())
 	}
+}
+
+func TestExportForBackup(t *testing.T) {
+	fullPath, err := safety_manage.CreateBackupExcelFactory(1).Export()
+	if err != nil {
+		fmt.Println("Error: ", err.Error())
+	}
+	fmt.Println("fullPath: ", fullPath)
+
 }

@@ -14,7 +14,7 @@ func CreateBackupExcelFactory(orgId int64) *BackupExcel {
 	return &BackupExcel{
 		tamperGlobal: tamper_models.CreateGlobalFactory(),
 		orgId:        orgId,
-		sheetName:    "数据备份",
+		sheetName:    "Sheet1",
 		colsLen:      2,
 	}
 }
@@ -26,7 +26,7 @@ type BackupExcel struct {
 	colsLen      int
 }
 
-var backupTypeTamperGlobal string = "TaG"
+var backupTypeTamperGlobal = "TaG"
 
 func (crd *BackupExcel) generateExportPath() string {
 
@@ -48,11 +48,9 @@ func (crd *BackupExcel) Export() (string, error) {
 	//创建新 Excel 文件
 	excelHandler := excel_helper.NewExcelHandler()
 	defer excelHandler.Close()
-	// 初始化默认样式
-	_ = excelHandler.InitDefaultStyles()
-	_ = excelHandler.SetColWidth(crd.sheetName, "A", "A", 20)
-	_ = excelHandler.SetColWidth(crd.sheetName, "B", "B", 180)
+
 	//行数据
+	headerData := []interface{}{"类型", "数据"}
 	var rowsData [][]interface{}
 
 	//防篡改全局数据
@@ -68,7 +66,7 @@ func (crd *BackupExcel) Export() (string, error) {
 	}
 
 	//流式写入sheet
-	if err := excelHandler.StreamWriteRows(crd.sheetName, nil, rowsData, 1, 1); err != nil {
+	if err := excelHandler.StreamWriteRows(crd.sheetName, headerData, rowsData, 1, 1); err != nil {
 		return "", fmt.Errorf("StreamWriteRows fail: %v", err)
 	}
 
