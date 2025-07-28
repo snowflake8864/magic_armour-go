@@ -26,6 +26,9 @@ type TamperController struct {
 // GetDir 获取查询目录
 func (u *TamperController) GetDir(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+	//关闭任务
+	tasks := []int{enum_task.TypeDirStructureUpload}
+	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	result := []map[string]interface{}{} //需初始化
 
@@ -58,9 +61,6 @@ func (u *TamperController) GetDir(ctx *gin.Context) {
 // PutDir 上传目录信息
 func (u *TamperController) PutDir(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
-	//关闭任务
-	tasks := []int{enum_task.TypeDirStructureUpload}
-	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, tasks, ctx.ClientIP())
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "dir")
 	err := agent_post_service.CreateAgentFactory().SaveDir(loginInfo.OrgId, loginInfo.AgentId, inputJson)
