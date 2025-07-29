@@ -226,7 +226,7 @@ func (u *AgentController) GetTrustDir(ctx *gin.Context) {
 		OpenSwitch:   &OpenSwitch,
 	}
 
-	var result []map[string]interface{}
+	result := []map[string]interface{}{}
 
 	//全局目录
 	globalModels := trust_dir_models.CreateGlobalFactory().GetListByConditions(conditions)
