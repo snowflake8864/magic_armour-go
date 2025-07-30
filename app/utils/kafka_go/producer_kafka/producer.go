@@ -108,6 +108,7 @@ func (k *ProducerClient) makeMessage(data *kafka_go.MessageStruct) kafka.Message
 	}
 
 	return kafka.Message{
+		Key:   nil,
 		Value: msgContent,
 	}
 }
