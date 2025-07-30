@@ -10,23 +10,19 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync"
 	"time"
 )
 
-type writerConfig struct {
-	Addr         []string
-	Balancer     kafka.Balancer
-	WriteTimeout time.Duration
-	BatchSize    int
-	BatchTimeout time.Duration
-	RequiredAcks int
-	Async        bool
-}
-
-func getWriterConfig() writerConfig {
+func newProducer(name string) *kafka.Writer {
+	//主题
+	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
+	//partition := variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
+	//地址
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
 
+	//分区分配策略
 	b := variable.ConfigYml.GetString("KafkaV2.Producer.Balancer")
 	var balancer kafka.Balancer
 	if b == "roundRobin" {
@@ -38,47 +34,46 @@ func getWriterConfig() writerConfig {
 	} else {
 		balancer = &kafka.RoundRobin{}
 	}
-	return writerConfig{
-		Addr:         brokers,
-		Balancer:     balancer,
-		WriteTimeout: variable.ConfigYml.GetDuration("KafkaV2.Producer.WriteTimeout"),
-		BatchSize:    variable.ConfigYml.GetInt("KafkaV2.Producer.BatchSize"),
-		BatchTimeout: variable.ConfigYml.GetDuration("KafkaV2.Producer.BatchTimeout"),
-		RequiredAcks: variable.ConfigYml.GetInt("KafkaV2.Producer.RequiredAcks"),
-		Async:        variable.ConfigYml.GetBool("KafkaV2.Producer.Async"),
-	}
-}
 
-func newProducer(name string, c writerConfig) *kafka.Writer {
-	topic := variable.ConfigYml.GetString("KafkaV2." + name + ".Name")
-	//partition := variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
+	//写超时
+	writeTimeout := variable.ConfigYml.GetDuration("KafkaV2.Producer.WriteTimeout")
+	if writeTimeout == 0 {
+		writeTimeout = 10
+	}
+	//每批次写的数量
+	batchSize := variable.ConfigYml.GetInt("KafkaV2.Producer.BatchSize")
+	if batchSize == 0 {
+		batchSize = 20
+	}
+	//每批次写超时
+	batchTimeout := variable.ConfigYml.GetDuration("KafkaV2.Producer.BatchTimeout")
+	if batchTimeout == 0 {
+		batchTimeout = 100
+	}
+	//确认方式
+	requiredAcks := variable.ConfigYml.GetInt("KafkaV2.Producer.RequiredAcks")
+	//是否异步
+	async := variable.ConfigYml.GetBool("KafkaV2.Producer.Async")
 
 	// 配置消费者
 	return &kafka.Writer{
-		Addr:         kafka.TCP(c.Addr...),
+		Addr:         kafka.TCP(brokers...),
 		Topic:        topic,
-		Balancer:     c.Balancer,
-		WriteTimeout: c.WriteTimeout * time.Second,
-		BatchSize:    c.BatchSize,
-		BatchTimeout: c.BatchTimeout * time.Millisecond,
-		RequiredAcks: kafka.RequiredAcks(c.RequiredAcks),
-		Async:        c.Async,
+		Balancer:     balancer,
+		WriteTimeout: writeTimeout * time.Second,
+		BatchSize:    batchSize,
+		BatchTimeout: batchTimeout * time.Millisecond,
+		RequiredAcks: kafka.RequiredAcks(requiredAcks),
+		Async:        async,
 		Logger:       log.New(os.Stdout, "kafka-go: ", log.LstdFlags),
 	}
 }
 
-func CreateProducerFactory() *ProducerClient {
-	config := getWriterConfig()
-	return &ProducerClient{
-		Common:   newProducer(kafka_go.TopicCommon, config),
-		Process:  newProducer(kafka_go.TopicProcess, config),
-		Dll:      newProducer(kafka_go.TopicDll, config),
-		Threaten: newProducer(kafka_go.TopicThreaten, config),
-		Alarm:    newProducer(kafka_go.TopicAlarm, config),
-		Syslog:   newProducer(kafka_go.TopicSyslog, config),
-		Crontab:  newProducer(kafka_go.TopicCrontab, config),
-	}
-}
+// 包级别变量
+var (
+	instance *ProducerClient
+	once     sync.Once // 保证初始化只执行一次
+)
 
 // 结构体
 type ProducerClient struct {
@@ -89,6 +84,23 @@ type ProducerClient struct {
 	Alarm    *kafka.Writer
 	Syslog   *kafka.Writer
 	Crontab  *kafka.Writer
+}
+
+func CreateProducerFactory() *ProducerClient {
+	once.Do(func() {
+		// 初始化逻辑（可包含运行时条件）
+		instance = &ProducerClient{
+			Common:   newProducer(kafka_go.TopicCommon),
+			Process:  newProducer(kafka_go.TopicProcess),
+			Dll:      newProducer(kafka_go.TopicDll),
+			Threaten: newProducer(kafka_go.TopicThreaten),
+			Alarm:    newProducer(kafka_go.TopicAlarm),
+			Syslog:   newProducer(kafka_go.TopicSyslog),
+			Crontab:  newProducer(kafka_go.TopicCrontab),
+		}
+
+	})
+	return instance
 }
 
 // 生产消息
