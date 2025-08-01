@@ -89,6 +89,7 @@ func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
 	roleModel := role_service.CreateCurdFactory().HasId(roleId, loginInfo.OrgId)
 	if roleModel == nil {
 		response.SuccessReturnData(ctx, []interface{}{})
+		return
 	}
 	roleMenus := make(map[int64]struct{})
 	for _, val := range strings.Split(roleModel.Menus, ",") {
