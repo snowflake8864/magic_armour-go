@@ -71,10 +71,11 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 		return
 	} else {
 		response.SuccessReturnData(ctx, gin.H{
-			"source_ip": sourceIp,
-			"target_ip": fmt.Sprintf("%s/%d", targetIp, config.Mask),
-			"gateway":   config.Gateway,
-			"mode":      1,
+			"source_ip":  sourceIp,
+			"target_ip":  fmt.Sprintf("%s/%d", targetIp, config.Mask),
+			"gateway":    config.Gateway,
+			"mode":       1, //模式：1追加, 2修改
+			"allow_size": 3, //追加模式下允许保留数目
 		})
 		return
 	}
