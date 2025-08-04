@@ -11,7 +11,7 @@ import (
 type UserSave struct {
 	LoginExpire         int  `form:"login_expire" json:"login_expire" binding:"required,min=1,max=1440"`
 	LoginErrorMax       int  `form:"login_error_max" json:"login_error_max" binding:"required,min=1,max=100"`
-	LoginLockDuration   int  `form:"login_lock_duration" json:"login_lock_duration" binding:"required,min=13,max=240"`
+	LoginLockDuration   int  `form:"login_lock_duration" json:"login_lock_duration" binding:"required,min=3,max=240"`
 	PwLengthMin         int  `form:"pw_length_min" json:"pw_length_min" binding:"required,min=6,max=18"`
 	PwLengthMax         int  `form:"pw_length_max" json:"pw_length_max" binding:"required,min=6,max=18"`
 	PwExpire            int  `form:"pw_expire" json:"pw_expire" binding:"required,min=7,max=365"`
