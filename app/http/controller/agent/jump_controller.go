@@ -74,6 +74,7 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 			"source_ip": sourceIp,
 			"target_ip": fmt.Sprintf("%s/%d", targetIp, config.Mask),
 			"gateway":   config.Gateway,
+			"mode":      1,
 		})
 		return
 	}
