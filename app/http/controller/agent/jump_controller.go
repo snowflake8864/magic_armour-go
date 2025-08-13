@@ -3,6 +3,7 @@ package agent
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/enums/enum_task"
@@ -38,12 +39,6 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 	}
 
 	pw := config.GeneratePw()
-	//保存密码
-	/*
-		if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, pw); err != nil {
-			response.FailSimplify(ctx, "save pw fail")
-			return
-		}*/
 
 	response.SuccessReturnData(ctx, gin.H{
 		"pw":     pw,
@@ -54,7 +49,21 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 
 // PutPwJump 上报密码跳变结果
 func (u *JumpController) PutPwJump(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
 
+	newest := enum_pw_jump.PwJumpNewest{}
+	newest.Status = int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "status"))
+	newest.User = ctx.GetString(consts.ValidatorPrefixAgent + "user")
+	newest.Pw = ctx.GetString(consts.ValidatorPrefixAgent + "pw")
+	newest.Reason = ctx.GetString(consts.ValidatorPrefixAgent + "reason")
+
+	//保存密码
+	if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, newest); err != nil {
+		response.FailSimplify(ctx, "save pw fail")
+		return
+	}
+
+	response.SuccessSimplify(ctx)
 }
 
 // GetIpJump 获取IP跳变

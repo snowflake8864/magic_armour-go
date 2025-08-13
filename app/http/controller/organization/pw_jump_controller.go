@@ -114,8 +114,13 @@ func (u *PwJumpController) ShowPwForManage(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
+	newest := agent_service.CreateExtendFactory().GetPwJumpNewest(loginInfo.OrgId, agentId)
+
 	response.SuccessReturnData(ctx, gin.H{
-		"pw": agent_service.CreateExtendFactory().GetPwJumpNewest(loginInfo.OrgId, agentId),
+		"user":   newest.User,
+		"pw":     newest.Pw,
+		"status": newest.Status,
+		"reason": newest.Reason,
 	})
 }
 

@@ -11,7 +11,6 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
-	"goskeleton/app/utils/openssl_encrypt"
 )
 
 func CreateExtendFactory() *AgentExtend {
@@ -217,26 +216,27 @@ func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum
 }
 
 // GetPwJumpNewest 获取密码跳变最新密码
-func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) string {
+func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) (newest enum_pw_jump.PwJumpNewest) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_newest")
-	if model == nil || string_helper.IsEmpty(model.PwJumpNewest) {
-		return ""
+	if model != nil && !string_helper.IsEmpty(model.PwJumpNewest) {
+		_ = json_helper.ToStruct(model.PwJumpNewest, &newest)
 	}
-
-	if pw, err := openssl_encrypt.CreateAesFactory().CbcDecryptByBase64(model.PwJumpNewest); err != nil {
-		return ""
-	} else {
-		return pw
-	}
+	newest.Format()
+	return newest
 }
 
 // SetPwJumpNewest 设置密码跳变最新密码
-func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, pw string) error {
-
+func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, newest enum_pw_jump.PwJumpNewest) error {
 	updates := make(map[string]interface{})
-	pw, _ = openssl_encrypt.CreateAesFactory().CbcEncryptToBase64(pw)
-	updates["pw_jump_newest"] = pw
+	if newest.Status == enum_pw_jump.NewestStatusFail {
+		prefix := crd.GetPwJumpNewest(orgId, agentId)
+		newest.User = prefix.User
+		newest.Pw = prefix.Pw
+	} else {
+		newest.Reason = ""
+	}
 
+	updates["pw_jump_newest"] = json_helper.Encode(newest)
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {

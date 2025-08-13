@@ -15,6 +15,9 @@ const (
 	CycleDay   int = 1 //周期: 天
 	CycleWeek  int = 2 //周期: 星期
 	CycleMonth int = 3 //周期: 月
+
+	NewestStatusSuccess int = 1
+	NewestStatusFail    int = 2
 )
 
 var EnumIntMap = map[string]map[int]string{
@@ -73,15 +76,16 @@ func (c *PwJumpConfig) Format() {
 	}
 }
 
-// NewestPw 最新密码
-type NewestPw struct {
-	Status int    `json:"status"`
-	Reason string `json:"reason"`
-	User   string `json:"user"`
-	Pw     string `json:"pw"`
+// PwJumpNewest 跳变最新结果
+type PwJumpNewest struct {
+	User string `json:"user"` //最后一次成功用户
+	Pw   string `json:"pw"`   //最后一次成功密码
+
+	Status int    `json:"status"` //最近一次修改状态(0无修改 1成功  2失败)
+	Reason string `json:"reason"` //最近一次修改失败原因
 }
 
-func (c *NewestPw) Format() {
+func (c *PwJumpNewest) Format() {
 
 }
 
