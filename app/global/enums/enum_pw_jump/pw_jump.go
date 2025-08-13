@@ -73,6 +73,18 @@ func (c *PwJumpConfig) Format() {
 	}
 }
 
+// NewestPw 最新密码
+type NewestPw struct {
+	Status int    `json:"status"`
+	Reason string `json:"reason"`
+	User   string `json:"user"`
+	Pw     string `json:"pw"`
+}
+
+func (c *NewestPw) Format() {
+
+}
+
 func (c *PwJumpConfig) GeneratePw() string {
 
 	var charSets [][]rune

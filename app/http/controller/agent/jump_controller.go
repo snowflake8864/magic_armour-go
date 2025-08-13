@@ -39,16 +39,22 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 
 	pw := config.GeneratePw()
 	//保存密码
-	if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, pw); err != nil {
-		response.FailSimplify(ctx, "save pw fail")
-		return
-	}
+	/*
+		if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, pw); err != nil {
+			response.FailSimplify(ctx, "save pw fail")
+			return
+		}*/
 
 	response.SuccessReturnData(ctx, gin.H{
 		"pw":     pw,
 		"scheme": scheme,
 		"config": config,
 	})
+}
+
+// PutPwJump 上报密码跳变结果
+func (u *JumpController) PutPwJump(ctx *gin.Context) {
+
 }
 
 // GetIpJump 获取IP跳变

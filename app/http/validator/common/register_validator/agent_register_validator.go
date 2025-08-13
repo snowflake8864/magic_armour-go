@@ -97,4 +97,8 @@ func AgentRegisterValidator() {
 	containers.Set(key, backup1.PutBackup{})
 	key = consts.ValidatorPrefixAgent + "RollbackPut"
 	containers.Set(key, backup1.PutRollback{})
+
+	//跳变
+	key = consts.ValidatorPrefixAgent + "PwJumpPut"
+	containers.Set(key, backup1.PutBackup{})
 }
