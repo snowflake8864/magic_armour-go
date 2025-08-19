@@ -75,6 +75,7 @@ func (u *BackupController) getResp(ctx *gin.Context, isBackup bool) *backup_mode
 		param.FileName = ctx.GetString(consts.ValidatorPrefixAgent + "file_name")
 		param.FileSize = ctx.GetString(consts.ValidatorPrefixAgent + "file_size")
 		param.BackupFailReason = ctx.GetString(consts.ValidatorPrefixAgent + "fail_reason")
+		param.BackupParam = ctx.GetString(consts.ValidatorPrefixAgent + "param")
 		if state == 0 {
 			param.BackupStatus = enum_backup.BackupStatusFail
 		} else {
@@ -137,6 +138,7 @@ func (u *BackupController) GetRollbacks(ctx *gin.Context) {
 				"storage_dir": storageDir,
 				"file_name":   model.FileName,
 				"file_size":   model.FileSize,
+				"param":       model.BackupParam,
 			})
 
 			ids = append(ids, model.Id)

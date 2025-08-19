@@ -33,6 +33,7 @@ type BackupModel struct {
 	BackupStartAt      string `json:"backup_start_at" gorm:"default:NULL"`
 	BackupEndAt        string `json:"backup_end_at" gorm:"default:NULL"`
 	BackupFailReason   string `json:"backup_fail_reason"`
+	BackupParam        string `json:"backup_param"`
 	RollbackStatus     int    `json:"rollback_status"`
 	RollbackId         int64  `json:"rollback_id"`
 	RollbackName       string `json:"rollback_name"`
@@ -67,6 +68,7 @@ func (m *BackupModel) CreateTable() bool {
 			backup_start_at datetime NULL COMMENT '备份开始时间',
 			backup_end_at datetime NULL COMMENT '备份结束时间',
 		    backup_fail_reason varchar(512)  NOT NULL DEFAULT '' COMMENT '备份失败原因',
+			backup_param text NULL COMMENT '备份参数',
 			rollback_status tinyint NOT NULL DEFAULT '1' COMMENT '备份状态(1默认 2进行中 3成功 4失败)',
 			rollback_id int NOT NULL DEFAULT '0' COMMENT '回滚用户(user.id)',
 			rollback_name varchar(128)  NOT NULL DEFAULT '' COMMENT '回滚用户(user.username)',

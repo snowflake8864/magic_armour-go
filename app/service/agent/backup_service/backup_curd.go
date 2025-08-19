@@ -87,6 +87,7 @@ func (crd *BackupCurd) BackupComplete(param *backup_models.BackupModel) error {
 	updates["file_size"] = param.FileSize
 	updates["backup_status"] = param.BackupStatus
 	updates["backup_fail_reason"] = param.BackupFailReason
+	updates["backup_param"] = param.BackupParam
 	updates["backup_end_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
 		return errors.New("保存失败")
