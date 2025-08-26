@@ -61,7 +61,7 @@ func (c *IpJumpConfig) Format() {
 		c.Cycle = CycleWeek
 	}
 	if c.Way == 0 {
-		c.Way = WayOrderAsc
+		c.Way = WayRandom
 	}
 }
 
