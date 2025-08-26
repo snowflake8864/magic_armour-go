@@ -89,8 +89,9 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 			"source_ip":  sourceIp,
 			"target_ip":  fmt.Sprintf("%s/%d", targetIp, config.Mask),
 			"gateway":    config.Gateway,
-			"mode":       1, //模式：1追加, 2修改
-			"allow_size": 3, //追加模式下允许保留数目
+			"mode":       1,  //模式：1追加, 2修改
+			"allow_size": 3,  //追加模式下允许保留数目
+			"aging_time": 30, //追加模式下老化时间(分钟)
 		})
 		return
 	}
