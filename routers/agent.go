@@ -144,6 +144,7 @@ func InitAgentRouter() *gin.Engine {
 
 			//策略跳变
 			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump)                               //
+			vAgent.POST("putIpJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpJumpPut")) //
 			vAgent.Any("getPwJump", (&agent.JumpController{}).GetPwJump)                               //
 			vAgent.POST("putPwJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"PwJumpPut")) //
 

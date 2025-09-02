@@ -26,6 +26,7 @@ type ExtendModel struct {
 	PwJumpConfig     string `json:"pw_jump_config"`
 	PwJumpNewest     string `json:"pw_jump_newest"`
 	IpJumpConfig     string `json:"ip_jump_config"`
+	IpJumpNewest     string `json:"ip_jump_newest"`
 	ProcessFlushAt   string `json:"process_flush_at"`
 	DllFlushAt       string `json:"dll_flush_at"`
 }
@@ -70,8 +71,13 @@ func (m *ExtendModel) AlterTable(ver string) bool {
 	case "MAT_3.1.0_R1":
 		sql += `
 			ADD COLUMN pw_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:策略(json)' AFTER login_solve_config,
-			ADD COLUMN pw_jump_newest varchar(256) NOT NULL DEFAULT '' COMMENT '口令跳变:最新密码' AFTER pw_jump_config,
+			ADD COLUMN pw_jump_newest text DEFAULT NULL COMMENT '口令跳变:最新(json)' AFTER pw_jump_config,
 			ADD COLUMN ip_jump_config varchar(256) NOT NULL DEFAULT '' COMMENT 'ip跳变:策略(json)' AFTER pw_jump_newest;
+		`
+		break
+	case "MAT_3.1.0_R2":
+		sql += `
+			ADD COLUMN ip_jump_newest text DEFAULT NULL COMMENT 'ip跳变:最新(json)' AFTER ip_jump_config;
 		`
 		break
 	default:

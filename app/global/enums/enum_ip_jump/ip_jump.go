@@ -13,6 +13,8 @@ const (
 	WayRandom   int = 1 //方式: 随机
 	WayOrderAsc int = 2 //方式: 顺序-从小到大
 
+	NewestStatusSuccess int = 1
+	NewestStatusFail    int = 2
 )
 
 var EnumIntMap = map[string]map[int]string{
@@ -109,4 +111,19 @@ func GetTimingLabel(cycle, timing int) string {
 	}
 
 	return data
+}
+
+// IpJumpNewest 跳变最新结果
+type IpJumpNewest struct {
+	SourceIp string `json:"source_ip"`
+	TargetIp string `json:"target_ip"`
+	Gateway  string `json:"gateway"`
+	AgentIp  string `json:"agent_ip"`
+
+	Status int    `json:"status"` //最近一次修改状态(0无修改 1成功  2失败)
+	Reason string `json:"reason"` //最近一次修改失败原因
+}
+
+func (c *IpJumpNewest) Format() {
+
 }

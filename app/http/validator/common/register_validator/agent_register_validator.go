@@ -9,11 +9,11 @@ import (
 	auth1 "goskeleton/app/http/validator/agent/auth"
 	backup1 "goskeleton/app/http/validator/agent/backup"
 	dll1 "goskeleton/app/http/validator/agent/dll"
+	jump1 "goskeleton/app/http/validator/agent/jump"
 	plug1 "goskeleton/app/http/validator/agent/plug"
 	port1 "goskeleton/app/http/validator/agent/port"
 	procSample1 "goskeleton/app/http/validator/agent/proc_sample"
 	process1 "goskeleton/app/http/validator/agent/process"
-	pw_jump1 "goskeleton/app/http/validator/agent/pw_jump"
 	tamper1 "goskeleton/app/http/validator/agent/tamper"
 	task1 "goskeleton/app/http/validator/agent/task"
 	usb1 "goskeleton/app/http/validator/agent/usb"
@@ -101,5 +101,7 @@ func AgentRegisterValidator() {
 
 	//跳变
 	key = consts.ValidatorPrefixAgent + "PwJumpPut"
-	containers.Set(key, pw_jump1.PwJumpPut{})
+	containers.Set(key, jump1.PwJumpPut{})
+	key = consts.ValidatorPrefixAgent + "IpJumpPut"
+	containers.Set(key, jump1.IpJumpPut{})
 }

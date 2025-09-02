@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/service/agent/agent_service"
@@ -53,9 +54,9 @@ func (u *JumpController) PutPwJump(ctx *gin.Context) {
 
 	newest := enum_pw_jump.PwJumpNewest{}
 	newest.Status = int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "status"))
+	newest.Reason = ctx.GetString(consts.ValidatorPrefixAgent + "reason")
 	newest.User = ctx.GetString(consts.ValidatorPrefixAgent + "user")
 	newest.Pw = ctx.GetString(consts.ValidatorPrefixAgent + "pw")
-	newest.Reason = ctx.GetString(consts.ValidatorPrefixAgent + "reason")
 
 	//保存密码
 	if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, newest); err != nil {
@@ -95,4 +96,30 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 		})
 		return
 	}
+}
+
+// PutIpJump 上报地址跳变结果
+func (u *JumpController) PutIpJump(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	newest := enum_ip_jump.IpJumpNewest{}
+	newest.Status = int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "status"))
+	newest.Reason = ctx.GetString(consts.ValidatorPrefixAgent + "reason")
+	newest.SourceIp = ctx.GetString(consts.ValidatorPrefixAgent + "source_ip")
+	newest.TargetIp = ctx.GetString(consts.ValidatorPrefixAgent + "target_ip")
+	newest.Gateway = ctx.GetString(consts.ValidatorPrefixAgent + "gateway")
+	newest.AgentIp = ctx.GetString(consts.ValidatorPrefixAgent + "agent_ip")
+
+	//保存密码
+	if err := agent_service.CreateExtendFactory().SetIpJumpNewest(loginInfo.OrgId, loginInfo.AgentId, newest); err != nil {
+		response.FailSimplify(ctx, "save ip fail")
+		return
+	}
+
+	//修改终端
+	if newest.Status == enum_ip_jump.NewestStatusSuccess {
+		agent_service.CreateCurdFactory().SetIpByAgent(loginInfo.OrgId, loginInfo.AgentId, newest.AgentIp, ctx.ClientIP())
+	}
+
+	response.SuccessSimplify(ctx)
 }

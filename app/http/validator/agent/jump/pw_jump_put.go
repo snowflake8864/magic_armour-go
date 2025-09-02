@@ -1,4 +1,4 @@
-package pw_jump
+package jump
 
 import (
 	"fmt"

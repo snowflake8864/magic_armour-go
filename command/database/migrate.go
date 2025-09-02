@@ -250,6 +250,9 @@ func appendTableAndData() {
 		_ = organization_models.CreateExtendFactory().AlterTable(ver)
 		_ = backup_models.CreateBackupFactory().CreateTable()
 	}
+	if ver := "MAT_3.1.0_R2"; !existMigration(ver) {
+		_ = agent_models.CreateExtendFactory().AlterTable(ver)
+	}
 	if ver := "MA_3.1.0_R4_B5"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = user_models.CreateUserFactory().AlterTable(ver)

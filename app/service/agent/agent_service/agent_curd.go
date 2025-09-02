@@ -115,6 +115,16 @@ func (crd *AgentCurd) SetSafeByAgent(orgId int64, id string, isSafe int) bool {
 	return isOk
 }
 
+// SetIpByAgent 设置终端
+func (crd *AgentCurd) SetIpByAgent(orgId int64, id string, agentIp, netIp string) bool {
+	updates := map[string]interface{}{
+		"net_ip":   netIp,
+		"agent_ip": agentIp,
+	}
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	return isOk
+}
+
 // BatchDelete 批量删除
 func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (errCode int, err error) {
 	var validIds []string

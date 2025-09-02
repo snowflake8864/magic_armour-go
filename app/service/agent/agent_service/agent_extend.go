@@ -215,7 +215,7 @@ func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum
 	}
 }
 
-// GetPwJumpNewest 获取密码跳变最新密码
+// GetPwJumpNewest 获取密码跳变最新结果
 func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) (newest enum_pw_jump.PwJumpNewest) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_newest")
 	if model != nil && !string_helper.IsEmpty(model.PwJumpNewest) {
@@ -225,7 +225,7 @@ func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) (newest enu
 	return newest
 }
 
-// SetPwJumpNewest 设置密码跳变最新密码
+// SetPwJumpNewest 设置密码跳变最新结果
 func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, newest enum_pw_jump.PwJumpNewest) error {
 	updates := make(map[string]interface{})
 	if newest.Status == enum_pw_jump.NewestStatusFail {
@@ -261,6 +261,37 @@ func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum
 	updates := make(map[string]interface{})
 	updates["ip_jump_config"] = json_helper.Encode(config)
 
+	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
+		return nil
+	} else {
+		return errors.New("保存失败")
+	}
+}
+
+// GetIpJumpNewest 获取地址跳变最新密码
+func (crd *AgentExtend) GetIpJumpNewest(orgId int64, agentId string) (newest enum_ip_jump.IpJumpNewest) {
+	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_newest")
+	if model != nil && !string_helper.IsEmpty(model.IpJumpNewest) {
+		_ = json_helper.ToStruct(model.IpJumpNewest, &newest)
+	}
+	newest.Format()
+	return newest
+}
+
+// SetIpJumpNewest 设置地址码跳变最新结果
+func (crd *AgentExtend) SetIpJumpNewest(orgId int64, agentId string, newest enum_ip_jump.IpJumpNewest) error {
+	updates := make(map[string]interface{})
+	if newest.Status == enum_ip_jump.NewestStatusFail {
+		prefix := crd.GetIpJumpNewest(orgId, agentId)
+		newest.SourceIp = prefix.SourceIp
+		newest.TargetIp = prefix.TargetIp
+		newest.Gateway = prefix.Gateway
+		newest.AgentIp = prefix.AgentIp
+	} else {
+		newest.Reason = ""
+	}
+
+	updates["ip_jump_newest"] = json_helper.Encode(newest)
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
