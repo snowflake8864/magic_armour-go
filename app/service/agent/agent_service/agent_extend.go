@@ -268,7 +268,7 @@ func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum
 	}
 }
 
-// GetIpJumpNewest 获取地址跳变最新密码
+// GetIpJumpNewest 获取地址跳变最新结果
 func (crd *AgentExtend) GetIpJumpNewest(orgId int64, agentId string) (newest enum_ip_jump.IpJumpNewest) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_newest")
 	if model != nil && !string_helper.IsEmpty(model.IpJumpNewest) {
