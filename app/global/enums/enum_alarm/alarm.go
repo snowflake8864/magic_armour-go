@@ -29,8 +29,8 @@ const (
 
 	TypeProcessProtectUnknownRun int = 1101 //不明进程启动阻止告警
 	TypeProcessProtectBlackRun   int = 1102 //黑名单进程启动阻止告警
-	TypeProcessProtectUnknownEnd int = 1103 //不明进程终止告警
-	TypeProcessProtectBlackEnd   int = 1104 //黑名单进程终止告警
+	TypeProcessProtectUnknownEnd int = 1103 //不明进程终止告警(不在使用)
+	TypeProcessProtectBlackEnd   int = 1104 //黑名单进程终止告警(不在使用)
 	/**   --------进程告警 E--------- */
 
 	/**   --------模块告警 S--------- */
