@@ -513,6 +513,7 @@ type LogNetwork struct {
 	SourceIp         string `json:"source_ip"`
 	SourcePort       int    `json:"source_port"`
 	Proto            int    `json:"proto"`
+	ProtoLabel       string `json:"proto_label"`
 }
 
 // LogLogin 日志数据结构： 登录日志

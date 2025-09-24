@@ -2,7 +2,9 @@ package job_callback_syslog
 
 import (
 	"errors"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/enums/enum_syslog"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -105,6 +107,7 @@ func (crd *SyslogOuterUpload) BatchAdd(list *[]syslog_models.OuterModel) error {
 				SourceIp:         model.SourceIp,
 				SourcePort:       model.SourcePort,
 				Proto:            model.Proto,
+				ProtoLabel:       enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.Proto, enum_syslog.EnumMapInt),
 			}
 			if err := hsCli.SyncLogNetwork(hsData); err != nil {
 				variable.ZapLog.Warn(err.Error())
