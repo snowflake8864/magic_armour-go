@@ -15,6 +15,9 @@ const (
 
 	NewestStatusSuccess int = 1
 	NewestStatusFail    int = 2
+
+	ModeAppend int = 1 //模式：追加
+	ModeModify int = 2 //模式：修改
 )
 
 var EnumIntMap = map[string]map[int]string{
@@ -26,6 +29,10 @@ var EnumIntMap = map[string]map[int]string{
 	"way": {
 		WayOrderAsc: "顺序",
 		WayRandom:   "随机",
+	},
+	"mode": {
+		ModeAppend: "保持连接",
+		ModeModify: "修改原IP",
 	},
 }
 
@@ -39,17 +46,23 @@ var WebMapInt = map[string][]int{
 		WayRandom,
 		WayOrderAsc,
 	},
+	"mode": {
+		ModeAppend,
+		ModeModify,
+	},
 }
 
 // IpJumpConfig IP跳变
 type IpJumpConfig struct {
-	Switch  int    `json:"switch"`
-	Ip      string `json:"ip"`      //
-	Mask    int    `json:"mask"`    //
-	Gateway string `json:"gateway"` //
-	Cycle   int    `json:"cycle"`   //频率
-	Timing  int    `json:"timing"`  //时机
-	Way     int    `json:"way"`     //方式
+	Switch    int    `json:"switch"`
+	Ip        string `json:"ip"`         //
+	Mask      int    `json:"mask"`       //
+	Gateway   string `json:"gateway"`    //
+	Cycle     int    `json:"cycle"`      //频率
+	Timing    int    `json:"timing"`     //时机
+	Way       int    `json:"way"`        //方式
+	Mode      int    `json:"mode"`       //模式
+	AgingTime int    `json:"aging_time"` //追加模式下老化时间(分钟)
 }
 
 func (c *IpJumpConfig) Format() {
@@ -64,6 +77,12 @@ func (c *IpJumpConfig) Format() {
 	}
 	if c.Way == 0 {
 		c.Way = WayRandom
+	}
+	if c.Mode == 0 {
+		c.Mode = ModeAppend
+	}
+	if c.AgingTime == 0 {
+		c.AgingTime = 10
 	}
 }
 

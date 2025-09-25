@@ -55,6 +55,13 @@ func (u *IpJumpController) Ways(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
 }
 
+// Modes 跳变模式
+func (u *IpJumpController) Modes(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("mode", enum_ip_jump.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("mode", enum_ip_jump.EnumIntMap)
+	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+}
+
 // PageForManage 分页
 func (u *IpJumpController) PageForManage(ctx *gin.Context) {
 
@@ -127,13 +134,15 @@ func (u *IpJumpController) GetForAgentConfig(ctx *gin.Context) {
 
 func (u *IpJumpController) getConfig(ctx *gin.Context) enum_ip_jump.IpJumpConfig {
 	config := enum_ip_jump.IpJumpConfig{
-		Switch:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
-		Ip:      ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
-		Mask:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mask")),
-		Gateway: ctx.GetString(consts.ValidatorPrefixOrg + "gateway"),
-		Cycle:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
-		Timing:  int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "timing")),
-		Way:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "way")),
+		Switch:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
+		Ip:        ctx.GetString(consts.ValidatorPrefixOrg + "ip"),
+		Mask:      int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mask")),
+		Gateway:   ctx.GetString(consts.ValidatorPrefixOrg + "gateway"),
+		Cycle:     int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "cycle")),
+		Timing:    int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "timing")),
+		Way:       int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "way")),
+		Mode:      int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "mode")),
+		AgingTime: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "aging_time")),
 	}
 	config.Format()
 	return config
