@@ -81,6 +81,14 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 		return
 	}
 	sourceIp := ctx.ClientIP()
+
+	agentConfig := agent_service.CreateExtendFactory().GetIpJumpConfig(loginInfo.OrgId, loginInfo.AgentId)
+	if agentConfig.Switch == enums.SwitchOn {
+		//方式使用终端的
+		config.Mode = agentConfig.Mode
+		config.AgingTime = agentConfig.AgingTime
+	}
+
 	//生成IP跳变池
 	if err, targetIp := ip_jump_service.CreatCurdFactory(loginInfo.OrgId, &config).NewestIp(sourceIp); err != nil {
 		response.FailSimplify(ctx, "Switch Off")
@@ -90,9 +98,9 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 			"source_ip":  sourceIp,
 			"target_ip":  fmt.Sprintf("%s/%d", targetIp, config.Mask),
 			"gateway":    config.Gateway,
-			"mode":       1,  //模式：1追加, 2修改
-			"allow_size": 3,  //追加模式下允许保留数目
-			"aging_time": 30, //追加模式下老化时间(分钟)
+			"mode":       config.Mode,      //模式：1追加, 2修改
+			"allow_size": 3,                //追加模式下允许保留数目
+			"aging_time": config.AgingTime, //追加模式下老化时间(分钟)
 		})
 		return
 	}
