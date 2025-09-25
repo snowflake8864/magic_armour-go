@@ -11,8 +11,8 @@ import (
 
 type HistoryAdd struct {
 	data_type.AgentSingle
-	SourcePath string `form:"sourcePath" json:"sourcePath" binding:"required,max=512"`
-	StorageDir string `form:"storageDir" json:"storageDir" binding:"required,max=512"`
+	SourcePath string `form:"sourcePath" json:"sourcePath" binding:"omitempty,max=512"`
+	StorageDir string `form:"storageDir" json:"storageDir" binding:"omitempty,max=512"`
 	Remark     string `form:"remark" json:"remark" binding:"omitempty,max=128"`
 }
 

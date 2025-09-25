@@ -34,16 +34,16 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 	param.BackupStartAt = now
 	param.CreatedAt = now
 
-	//验证数据
-	conditions := backup_models.SearchConditions{
-		OrgId:            param.OrgId,
-		AgentId:          param.AgentId,
-		SourcePath:       param.SourcePath,
-		BackupStatusList: []int{enum_backup.BackupStatusDefault, enum_backup.BackupStatusRunning},
-	}
-	if total := crd.masterModel.Count(conditions); total > 0 {
-		return errors.New("有相同路径在备份中，不能重复添加")
-	}
+	/*	//验证数据
+		conditions := backup_models.SearchConditions{
+			OrgId:            param.OrgId,
+			AgentId:          param.AgentId,
+			SourcePath:       param.SourcePath,
+			BackupStatusList: []int{enum_backup.BackupStatusDefault, enum_backup.BackupStatusRunning},
+		}
+		if total := crd.masterModel.Count(conditions); total > 0 {
+			return errors.New("有相同路径在备份中，不能重复添加")
+		}*/
 
 	if !crd.masterModel.InsertItem(param) {
 		return errors.New("保存失败")
