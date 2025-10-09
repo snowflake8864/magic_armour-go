@@ -24,6 +24,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	delete(data, "id")
 	data["agent_id"] = model.AgentId
+	data["ver"] = enum_software.ShowVer(model.PlatformType, model.OsType, model.Ver)
 
 	data["dept_fullname"] = []interface{}{}
 	if departments != nil && len(departments) > 0 {
