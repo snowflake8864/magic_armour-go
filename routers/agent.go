@@ -84,6 +84,7 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.Any("gettrustdir", (&agent.AgentController{}).GetTrustDir)                                      //获取信任目录
 			vAgent.POST("error/upload", validatorFactory.Create(consts.ValidatorPrefixAgent+"ErrorFileUpload"))    //上传转储(错误) 文件
 			vAgent.POST("puthardwareinfo", validatorFactory.Create(consts.ValidatorPrefixAgent+"HardwareMonitor")) //硬件资源监控
+			vAgent.POST("uploadIp", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpMonitor"))              //Ip监控
 
 			//任务相关
 			vAgent.Any("gettask", (&agent.TaskController{}).Get)

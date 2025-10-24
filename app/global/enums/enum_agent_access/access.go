@@ -53,6 +53,7 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/putsyslog": "上传通信日志",
 
 		"/v1/puthardwareinfo": "上传终端资源信息",
+		"/v1/uploadIp":        "上传终端IP信息",
 		"/v1/download":        "升级",
 		"/v1/uninstall":       "卸载",
 		"/v1/error/upload":    "上传错误文件",
@@ -104,6 +105,7 @@ var WebMapStr = map[string][]string{
 		"/v1/upopenport",
 		"/v1/putsyslog",
 		"/v1/puthardwareinfo",
+		"/v1/uploadIp",
 		"/v1/download",
 		"/v1/uninstall",
 		"/v1/error/upload",

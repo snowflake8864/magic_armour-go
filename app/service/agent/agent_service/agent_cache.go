@@ -3,6 +3,7 @@ package agent_service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -46,6 +47,10 @@ func (crd *AgentCache) getKeyByLogin(val string) string {
 	return crd.authPrefix + val
 }
 
+func (crd *AgentCache) getToken(loginInfo *AgentCacheLogin) string {
+	return md5_encrypt.MD5(fmt.Sprintf("%d_%s_%s_%s", loginInfo.OrgId, loginInfo.AgentId, loginInfo.Ver, loginInfo.LoginAt))
+}
+
 // EncryptByLogin 登录信息加密并缓存
 func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 	var loginInfo AgentCacheLogin
@@ -59,10 +64,9 @@ func (crd *AgentCache) EncryptByLogin(param *agent_models.AgentModel) string {
 	loginInfo.LoginAt = date_helper.CurDatetime()
 	loginInfo.Ver = param.Ver
 
-	jsonStr := json_helper.Encode(loginInfo)
-	token := md5_encrypt.MD5(jsonStr)
+	token := crd.getToken(&loginInfo)
 
-	crd.redisClient.SetEx(crd.getKeyByLogin(token), jsonStr, crd.authExpire)
+	_, _ = crd.redisClient.SetEx(crd.getKeyByLogin(token), json_helper.Encode(loginInfo), crd.authExpire)
 	return token
 }
 
@@ -81,4 +85,26 @@ func (crd *AgentCache) DecryptByLogin(token string, isDelay bool) (loginInfo Age
 		_, _ = crd.redisClient.Expire(crd.getKeyByLogin(token), crd.authExpire)
 	}
 	return loginInfo, nil
+}
+
+// ModifyByLogin 修改登录信息
+func (crd *AgentCache) ModifyByLogin(cacheLogin *AgentCacheLogin, agentIp, netIp string) (err error) {
+	token := crd.getToken(cacheLogin)
+	jsonStr := crd.redisClient.Get(crd.getKeyByLogin(token))
+	if string_helper.IsEmpty(jsonStr) {
+		return errors.New("token expired")
+	}
+
+	var loginInfo AgentCacheLogin
+	if err = json.Unmarshal([]byte(jsonStr), &loginInfo); err != nil {
+		return errors.New("token json fail")
+	}
+
+	//agent服务去重启情况下只能修改下面信息
+	loginInfo.AgentIp = agentIp
+	loginInfo.NetIp = netIp
+
+	_, _ = crd.redisClient.SetEx(crd.getKeyByLogin(token), json_helper.Encode(loginInfo), crd.authExpire)
+
+	return nil
 }

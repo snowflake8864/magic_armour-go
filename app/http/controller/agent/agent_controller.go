@@ -10,12 +10,14 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/agent/agent_err_service"
 	"goskeleton/app/service/agent/agent_post_service"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -281,5 +283,20 @@ func (u *AgentController) MonitorHardware(ctx *gin.Context) {
 		response.SuccessReturnData(ctx, err.Error())
 		return
 	}
+	response.SuccessSimplify(ctx)
+}
+
+// MonitorIP 监控Ip
+func (u *AgentController) MonitorIP(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	ip := ctx.GetString(consts.ValidatorPrefixAgent + "ip")
+	if !agent_service.CreateCurdFactory().SetIpByAgent(loginInfo.OrgId, loginInfo.AgentId, ip, ctx.ClientIP()) {
+		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify agent fail", loginInfo.OrgId, loginInfo.AgentId))
+	}
+	if err := agent_service.CreateCacheFactory().ModifyByLogin(loginInfo, ip, ctx.ClientIP()); err != nil {
+		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify  fail: %v", loginInfo.OrgId, loginInfo.AgentId, err))
+	}
+
 	response.SuccessSimplify(ctx)
 }
