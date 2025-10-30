@@ -90,15 +90,15 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 	}
 	noticeConfig := OrgExtendFact.FormatHardwareNoticeConfig(extendModel.HardwareNoticeConfig)
 	if noticeConfig.EmailSwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Info("EmailSwitch关闭, orgId=", model.OrgId)
+		//variable.ZapLog.Sugar().Info("EmailSwitch关闭, orgId=", model.OrgId)
+		return
+	}
+	if noticeConfig.TimelySwitch == enums.SwitchOff {
+		//variable.ZapLog.Sugar().Info("TimelySwitch关闭, orgId=", model.OrgId)
 		return
 	}
 	if string_helper.IsEmpty(noticeConfig.Email) {
 		variable.ZapLog.Sugar().Info("邮箱为空, orgId=", model.OrgId)
-		return
-	}
-	if noticeConfig.TimelySwitch == enums.SwitchOff {
-		variable.ZapLog.Sugar().Info("TimelySwitch关闭, orgId=", model.OrgId)
 		return
 	}
 

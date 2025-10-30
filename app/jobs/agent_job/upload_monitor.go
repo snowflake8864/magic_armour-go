@@ -1,7 +1,6 @@
 package agent_job
 
 import (
-	"fmt"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/service/agent/agent_monitor_service"
@@ -15,7 +14,7 @@ func UploadMonitor(jsonStr string) {
 		variable.ZapLog.Warn(jsonStr)
 		return
 	}
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s", model.OrgId, model.AgentId))
+	//variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s", model.OrgId, model.AgentId))
 
 	if err := agent_monitor_service.CreateMonitorFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
