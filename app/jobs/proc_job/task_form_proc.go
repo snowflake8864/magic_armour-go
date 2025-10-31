@@ -15,9 +15,9 @@ func TaskFromProcess(orgId int64, agentId string, at string) {
 		AgentId:         agentId,
 		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
-	variable.ZapLog.Info(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 
 	if total := proc_models.CreateProcessFactory().Count(condition); total > 0 {
+		variable.ZapLog.Info(fmt.Sprintf("TaskFromProcess orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 		types := []int{
 			enum_task.TypeProcessWhiteDownload,
 			enum_task.TypeProcessBlackDownload,
@@ -32,9 +32,9 @@ func TaskFromDll(orgId int64, agentId string, at string) {
 		AgentId:         agentId,
 		SyncStatusAtGte: date_helper.DatetimeToTimestamp(at, variable.DateFormatNow),
 	}
-	variable.ZapLog.Info(fmt.Sprintf("TaskFromDll orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 
 	if total := proc_models.CreateDllFactory().Count(condition); total > 0 {
+		variable.ZapLog.Info(fmt.Sprintf("TaskFromDll orgId=%d, agentId=%s, at=%s, SyncStatusAtGte=%d", orgId, agentId, at, condition.SyncStatusAtGte))
 		types := []int{
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
