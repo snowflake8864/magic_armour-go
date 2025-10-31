@@ -13,10 +13,11 @@ func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	model := alarm_stat_models.StatDailyModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(fmt.Sprintf("startAt=%s,  endAt=%s", startAt, endAt))
+		variable.ZapLog.Info(fmt.Sprintf("startAt=%s, endAt=%s", startAt, endAt))
 		variable.ZapLog.Info(jsonStr)
 		return
 	}
+	variable.ZapLog.Info(fmt.Sprintf("orgId=%d,agentId=%s,startAt=%s,endAt=%s", model.OrgId, model.AgentId, startAt, endAt))
 
 	conditions1 := alarm_models.SearchConditions{
 		OrgId:   model.OrgId,
