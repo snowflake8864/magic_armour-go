@@ -15,7 +15,7 @@ func HandelUnknown(jsonStr string) {
 		return
 	}
 	if !threaten_service.CreateCacheFactory().BatchUnknown(idArr) {
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Info("HandelUnknown fail")
 	}
 	return
 }
@@ -30,7 +30,7 @@ func HandelRewire(jsonStr string) {
 	variable.ZapLog.Info(fmt.Sprintf("HandelRewire hash:%s, level:%d, dataFrom:%d", model.Id, model.Level, model.DataFrom))
 
 	if !threaten_service.CreateCacheFactory().Rewrite(&model) {
-		variable.ZapLog.Info(jsonStr)
+		variable.ZapLog.Info("HandelRewire fail")
 	}
 	return
 }
