@@ -11,13 +11,13 @@ func UploadDns(jsonStr string) {
 	model := syslog_models.DnsModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateDnsUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }
@@ -26,13 +26,13 @@ func UploadOuter(jsonStr string) {
 	var models []syslog_models.OuterModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }
@@ -41,13 +41,13 @@ func UploadInner(jsonStr string) {
 	var models []syslog_models.InnerModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }
@@ -56,13 +56,13 @@ func UploadProcess(jsonStr string) {
 	var models []syslog_models.ProcessModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }
@@ -71,13 +71,13 @@ func UploadLoginSuccess(jsonStr string) {
 	var models []syslog_models.LoginModel
 	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }
@@ -86,13 +86,13 @@ func UploadLoginFail(jsonStr string) {
 	model := syslog_models.LoginModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 }

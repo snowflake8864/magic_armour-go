@@ -14,7 +14,7 @@ func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Warn(err.Error())
 		variable.ZapLog.Warn(fmt.Sprintf("startAt=%s,  endAt=%s", startAt, endAt))
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 

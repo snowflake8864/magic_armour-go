@@ -11,7 +11,7 @@ func SaveAccessLog(jsonStr string) {
 	model := agent_access_models.AccessLogModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {
 		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Warn(jsonStr)
+		variable.ZapLog.Info(jsonStr)
 		return
 	}
 
