@@ -17,6 +17,7 @@ func UploadDns(jsonStr string) {
 
 	if err := job_callback_syslog.CreateDnsUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
@@ -31,6 +32,7 @@ func UploadOuter(jsonStr string) {
 
 	if err := job_callback_syslog.CreateOuterUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
@@ -45,6 +47,7 @@ func UploadInner(jsonStr string) {
 
 	if err := job_callback_syslog.CreateInnerUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
@@ -59,6 +62,7 @@ func UploadProcess(jsonStr string) {
 
 	if err := job_callback_syslog.CreateProcessUploadFactory().BatchAdd(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
@@ -73,6 +77,7 @@ func UploadLoginSuccess(jsonStr string) {
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(&models); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
@@ -87,6 +92,7 @@ func UploadLoginFail(jsonStr string) {
 
 	if err := job_callback_syslog.CreateLoginUploadFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
