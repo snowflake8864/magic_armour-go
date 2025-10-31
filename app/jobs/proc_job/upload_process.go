@@ -17,6 +17,7 @@ func BatchUploadProcess(orgId int64, agentId string, jsonStr string) {
 
 	if err := job_callback_proc.CreateProcessUploadFactory().BatchAdd(orgId, agentId, &models); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
