@@ -245,6 +245,29 @@ func (m *StatDailyModel) GetItemsByConditions(condition SearchConditions, offset
 	}
 }
 
+// GetUnsafeAgentsByConditions 通过条件获取不安全终端集合
+func (m *StatDailyModel) GetUnsafeAgentsByConditions(condition SearchConditions) (agentIds []string) {
+	var items []*StatDailyModel
+	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
+		tmp := tx.Model(m).Select("org_id,agent_id")
+		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+			tmp = tmp.Where(whereSQL, vals...)
+		}
+		tmp = tmp.Where("total>handled")
+		tmp = tmp.Order("created_at ASC")
+		return tmp.Find(&items)
+	})
+	result := m.Raw(m.TrimSql(sql)).Find(&items)
+	if result.Error == nil {
+		for _, item := range items {
+			agentIds = append(agentIds, item.AgentId)
+		}
+		return agentIds
+	} else {
+		return nil
+	}
+}
+
 // CalcByConditions 通过条件获取1条记录
 func (m *StatDailyModel) CalcByConditions(condition SearchConditions, column string) (item *StatDailyModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
