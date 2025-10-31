@@ -18,6 +18,7 @@ func UploadMonitor(jsonStr string) {
 
 	if err := agent_monitor_service.CreateMonitorFactory().Add(&model); err != nil {
 		variable.ZapLog.Warn(err.Error())
+		variable.ZapLog.Warn(jsonStr)
 		return
 	}
 }
