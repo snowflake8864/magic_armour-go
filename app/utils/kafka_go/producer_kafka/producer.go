@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/segmentio/kafka-go"
+	"goskeleton/app/core/event_manage"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/kafka_go"
 	"log"
@@ -99,6 +100,19 @@ func CreateProducerFactory() *ProducerClient {
 			Crontab:  newProducer(kafka_go.TopicCrontab),
 		}
 
+		// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+		eventManageFactory := event_manage.CreateEventManageFactory()
+		if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaProducer"); exists == false {
+			eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaProducer", func(args ...interface{}) {
+				_ = instance.Common.Close()
+				_ = instance.Dll.Close()
+				_ = instance.Threaten.Close()
+				_ = instance.Alarm.Close()
+				_ = instance.Alarm.Close()
+				_ = instance.Syslog.Close()
+				_ = instance.Crontab.Close()
+			})
+		}
 	})
 	return instance
 }

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/segmentio/kafka-go"
+	"goskeleton/app/core/event_manage"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/jobs/alarm_job"
@@ -210,6 +211,15 @@ func (k *ConsumerClient) ConsumeCommon() {
 		go k.consumeMessage(ctx, consumer)
 	}
 
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeCommon"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeCommon", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
@@ -221,6 +231,16 @@ func (k *ConsumerClient) ConsumeProcess() {
 
 	for _, consumer := range consumers {
 		go k.consumeMessage(ctx, consumer)
+	}
+
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeProcess"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeProcess", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
 	}
 
 	// 主 goroutine 可以选择等待或者处理其他逻辑
@@ -236,6 +256,15 @@ func (k *ConsumerClient) ConsumeDll() {
 		go k.consumeMessage(ctx, consumer)
 	}
 
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeDll"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeDll", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
@@ -249,6 +278,15 @@ func (k *ConsumerClient) ConsumeAlarm() {
 		go k.consumeMessage(ctx, consumer)
 	}
 
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeAlarm"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeAlarm", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
@@ -262,6 +300,15 @@ func (k *ConsumerClient) ConsumeSyslog() {
 		go k.consumeMessage(ctx, consumer)
 	}
 
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeSyslog"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeSyslog", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
@@ -274,7 +321,15 @@ func (k *ConsumerClient) ConsumeThreaten() {
 	for _, consumer := range consumers {
 		go k.consumeMessage(ctx, consumer)
 	}
-
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeThreaten"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeThreaten", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
@@ -288,6 +343,15 @@ func (k *ConsumerClient) ConsumeCrontab() {
 		go k.consumeMessage(ctx, consumer)
 	}
 
+	// 将redis的关闭事件，注册在全局事件统一管理器，由程序退出时统一销毁
+	eventManageFactory := event_manage.CreateEventManageFactory()
+	if _, exists := eventManageFactory.Get(variable.EventDestroyPrefix + "KafkaConsumeCrontab"); exists == false {
+		eventManageFactory.Set(variable.EventDestroyPrefix+"KafkaConsumeCrontab", func(args ...interface{}) {
+			for _, consumer := range consumers {
+				_ = consumer.Close()
+			}
+		})
+	}
 	// 主 goroutine 可以选择等待或者处理其他逻辑
 	select {}
 }
