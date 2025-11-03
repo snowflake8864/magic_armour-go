@@ -1,17 +1,16 @@
 package agent_cmd
 
 import (
-	"context"
 	"fmt"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/agent_service/agent_callback_service"
 	"goskeleton/app/utils/helpers/date_helper"
-	"goskeleton/app/utils/kafka_go"
-	"goskeleton/app/utils/kafka_go/producer_kafka"
 )
 
 func CreateAgentFactory() *AgentCmd {
@@ -56,26 +55,25 @@ func (crd *AgentCmd) HandleSafe() {
 		return
 	}
 
-	ctx := context.Background()
-	producerFact := producer_kafka.CreateProducerFactory()
-
+	//今天
+	statDay, _, _, statMonth := date_helper.CalcByDay(0)
 	for _, orgModel := range orgModels {
-		//获取全部终端
-		agentModels := crd.getAgentModels(orgModel.Id)
-		if agentModels == nil || len(agentModels) == 0 {
-			continue
+		//获取不安全的终端
+		condition := alarm_stat_models.SearchConditions{
+			OrgId:     orgModel.Id,
+			StatMonth: statMonth,
+			StatDay:   statDay,
 		}
+		agentIds := alarm_stat_models.CreateStatDailyFactory().GetUnsafeAgentsByConditions(condition)
 
-		for _, agentModel := range agentModels {
-			//进入队列
-			producerFact.ProduceCrontab(ctx, &kafka_go.MessageStruct{
-				Type:    kafka_go.TypeCrontabAgentSafe,
-				OrgId:   orgModel.Id,
-				AgentId: agentModel.AgentId,
-			})
+		//默认改成全部安全
+		agent_service.CreateCurdFactory().SetSafeByAgents(orgModel.Id, nil, enums.IsYes)
+
+		if len(agentIds) > 0 {
+			//改成不安全的
+			agent_service.CreateCurdFactory().SetSafeByAgents(orgModel.Id, agentIds, enums.IsNot)
 		}
-
-	} //
+	}
 
 	variable.ZapLog.Info("HandleSafe end")
 }

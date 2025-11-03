@@ -10,7 +10,7 @@ import (
 )
 
 func TestCrontabStart(t *testing.T) {
-	console.TestStart("day")
+	console.TestStart("AgentSafe")
 }
 
 func TestCrontabStart1(t *testing.T) {

@@ -106,13 +106,30 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) (bool, error) {
 	return true, nil
 }
 
-// SetSafeByAgent 设置终端安全状态
-func (crd *AgentCurd) SetSafeByAgent(orgId int64, id string, isSafe int) bool {
+// SetSafeByAgents 设置终端安全状态
+func (crd *AgentCurd) SetSafeByAgents(orgId int64, ids []string, isSafe int) bool {
 	updates := map[string]interface{}{
 		"is_safe": isSafe,
 	}
-	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
-	return isOk
+
+	if length := len(ids); length > 0 {
+		supportNumber := 50
+		for i := 0; i < length; i += supportNumber {
+			end := i + supportNumber
+			if end > length {
+				end = length
+			}
+
+			crd.masterModel.UpdateByOrgAndAgents(orgId, ids[i:end], updates)
+		}
+	} else {
+		conditions := agent_models.SearchConditions{
+			OrgId: orgId,
+		}
+		crd.masterModel.UpdateByConditions(conditions, updates)
+	}
+
+	return true
 }
 
 // SetIpByAgent 设置终端

@@ -181,9 +181,6 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeCrontabAlarmStat:
 			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
 			break
-		case kafka_go.TypeCrontabAgentSafe:
-			agent_job.HandleSafe(data.OrgId, data.AgentId)
-			break
 		case kafka_go.TypeCrontabPlugDisable:
 			plug_job.DynamicDisable(data.OrgId, data.AgentId)
 			break
