@@ -26,6 +26,7 @@ const (
 	OsTypeLinuxAlmaLinux    = 111 //系统类型: linux AlmaLinux
 	OsTypeLinuxCentosStream = 112 //系统类型: linux Centos Stream
 	OsTypeLinuxFedora       = 113 //系统类型: linux Fedora
+	OsTypeLinuxOpenEuler    = 114 //系统类型: linux OpenEuler
 
 	OsTypeWinSeven = 201 //系统类型: win7以上
 	OsTypeWinXp    = 202 //系统类型: win xp 和 win 1003
@@ -62,6 +63,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxAlmaLinux:    "AlmaLinux",
 		OsTypeLinuxCentosStream: "CentosStream",
 		OsTypeLinuxFedora:       "Fedora",
+		OsTypeLinuxOpenEuler:    "OpenEuler",
 	},
 	"os_type_alias": {
 		OsTypeWinSeven:          "windows7-至今",
@@ -79,6 +81,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxAlmaLinux:    "AlmaLinux64位",
 		OsTypeLinuxCentosStream: "CentosStream64位",
 		OsTypeLinuxFedora:       "Fedora64位",
+		OsTypeLinuxOpenEuler:    "OpenEuler64位",
 	},
 	"os_ver": {
 		//Ubuntu
@@ -107,6 +110,8 @@ var EnumMap = map[string]map[int]string{
 		1120: "64位(8-9)",
 		//Fedora
 		1130: "64位",
+		//OpenEuler
+		1140: "64位",
 
 		//windows
 		2010: "windows7-至今",
@@ -134,6 +139,7 @@ var EnumSlice = map[string]map[int][]int{
 			OsTypeLinuxAlmaLinux,
 			OsTypeLinuxCentosStream,
 			OsTypeLinuxFedora,
+			OsTypeLinuxOpenEuler,
 		},
 	},
 	"map_os_ver": {
@@ -182,6 +188,9 @@ var EnumSlice = map[string]map[int][]int{
 		OsTypeLinuxFedora: {
 			1130,
 		},
+		OsTypeLinuxOpenEuler: {
+			1140,
+		},
 	},
 }
 
@@ -229,6 +238,8 @@ func GetOsTypeByName(name string) int {
 		return OsTypeLinuxAlmaLinux
 	} else if strings.Contains(name, "fedora") {
 		return OsTypeLinuxFedora
+	} else if strings.Contains(name, "openeuler") {
+		return OsTypeLinuxOpenEuler
 	} else {
 		return 0
 	}
