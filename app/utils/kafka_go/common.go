@@ -24,10 +24,8 @@ const (
 	TypeCommonOrgClean           string = "common_org_clean"             //类型：企业清空业务数据
 	TypeCommonEmailAlarmCycle    string = "common_email_alarm_cycle"     //类型：邮件安全告警通知(周期)
 
-	TypeProcessBatchPutMaster  string = "process_batch_put_master"  //类型：上传主进程
-	TypeProcessBatchPutRunning string = "process_batch_put_running" //类型：上传运行中进程
-	TypeDllBatchPutMaster      string = "dll_batch_put_master"      //类型：上传主模块
-	TypeDllBatchPutRunning     string = "dll_batch_put_running"     //类型：上传运行中模块
+	TypeProcessBatchPutMaster string = "process_batch_put_master" //类型：上传主进程
+	TypeDllBatchPutMaster     string = "dll_batch_put_master"     //类型：上传主模块
 
 	TypeAlarmPutProcess   string = "alarm_put_process"   //类型：进程告警上传
 	TypeAlarmPutDll       string = "alarm_put_dll"       //类型：模块告警上传
@@ -49,7 +47,6 @@ const (
 	TypeThreatenImport      string = "threaten_import"       //类型：威胁情报导入
 
 	TypeCrontabAlarmStat          string = "crontab_alarm_stat"            //类型：定时任务-告警统计
-	TypeCrontabAgentSafe          string = "crontab_agent_safe"            //类型：定时任务-终端安全状态
 	TypeCrontabPlugDisable        string = "crontab_plug_disable"          //类型：定时任务-终端封堵解除
 	TypeCrontabTaskFormProcess    string = "crontab_task_form_process"     //类型：定时任务-从进程新增任务
 	TypeCrontabTaskFormDll        string = "crontab_task_form_dll"         //类型：定时任务-从模块新增任务
