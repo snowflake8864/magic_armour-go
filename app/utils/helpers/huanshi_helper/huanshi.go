@@ -51,9 +51,17 @@ func GetHuanshiCli(pushTypeFiled string) *huanshi_platform.RequestHuanshi {
 	config.HuanshiLogIp = vals[enum_dictionary.HuanshiLogIp]
 	config.HuanshiLogPort = vals[enum_dictionary.HuanshiLogPort]
 
-	config.HuanshiThirdSwitch = string_helper.ToInt(vals[enum_dictionary.HuanshiThirdSwitch])
-	config.HuanshiThirdIp = vals[enum_dictionary.HuanshiThirdIp]
-	config.HuanshiThirdPort = vals[enum_dictionary.HuanshiThirdPort]
+	if thirdSwitch := string_helper.ToInt(vals[enum_dictionary.HuanshiThirdSwitch]); thirdSwitch == enums.SwitchOn {
+		config.ThirdList = append(config.ThirdList, struct {
+			ThirdSwitch int
+			ThirdIp     string
+			ThirdPort   string
+		}{
+			ThirdSwitch: thirdSwitch,
+			ThirdIp:     vals[enum_dictionary.HuanshiThirdIp],
+			ThirdPort:   vals[enum_dictionary.HuanshiThirdPort],
+		})
+	}
 
 	return huanshi_platform.CreateRequestFactory(config)
 }

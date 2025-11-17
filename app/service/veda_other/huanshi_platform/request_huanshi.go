@@ -65,9 +65,11 @@ type RequestConfig struct {
 	HuanshiLogSwitch   int
 	HuanshiLogIp       string
 	HuanshiLogPort     string
-	HuanshiThirdSwitch int
-	HuanshiThirdIp     string
-	HuanshiThirdPort   string
+	ThirdList          []struct {
+		ThirdSwitch int
+		ThirdIp     string
+		ThirdPort   string
+	}
 }
 
 type RequestHuanshi struct {
@@ -249,8 +251,12 @@ func (aa *RequestHuanshi) sendBySyslog(tt string, paramJson string) error {
 		}
 	}
 	//友商平台
-	if aa.Config.HuanshiThirdSwitch == enums.SwitchOn {
-		addresses = append(addresses, aa.Config.HuanshiThirdIp+":"+aa.Config.HuanshiThirdPort)
+	if len(aa.Config.ThirdList) > 0 {
+		for _, item := range aa.Config.ThirdList {
+			if item.ThirdSwitch == enums.SwitchOn {
+				addresses = append(addresses, item.ThirdIp+":"+item.ThirdPort)
+			}
+		}
 	}
 	if len(addresses) > 0 {
 		for _, addr := range addresses {
