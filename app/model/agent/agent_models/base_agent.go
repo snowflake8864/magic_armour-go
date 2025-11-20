@@ -274,8 +274,8 @@ func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 		column += "grant_product_title,grant_config, grant_order_no,grant_expire_at,grant_status,grant_type,"
 	}
 	column = column +
-		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, " +
-		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver," +
+		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, arch_type, " +
+		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver,mod_ver," +
 		"is_online, online_at, live_at, is_safe, dept_id,user_id," +
 		"agent_type,alias,contact_name,contact_tel, position, remark, created_at"
 	return column
