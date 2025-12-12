@@ -79,8 +79,9 @@ func (k *ConsumerClient) createPartitionConsumers(topicNames []string) (readers 
 					Topic:   topic,
 					//Partition:      partition,
 					GroupBalancers: []kafka.GroupBalancer{&kafka.RangeGroupBalancer{}},
-					MinBytes:       10e3,
-					MaxBytes:       10e6,
+					//MinBytes:       10e3,		//1KB
+					MinBytes:       1024,
+					MaxBytes:       10e6,        //10M
 					StartOffset:    startOffset, //kafka.FirstOffset
 					CommitInterval: commitInterval,
 				})
