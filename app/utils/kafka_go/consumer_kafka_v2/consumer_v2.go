@@ -171,6 +171,10 @@ func (k *ConsumerClient) consumeTopic(ctx context.Context, idx int, reader *kafk
 				time.Sleep(100 * time.Millisecond) //短暂休眠避免CPU忙等待
 				continue
 			}
+			if len(m.Value) == 1 {
+				time.Sleep(3 * time.Second) //短暂休眠避免CPU忙等待
+				continue
+			}
 
 			if err := k.handleData(m.Value); err != nil {
 				variable.ZapLog.Info(fmt.Sprintf("Consumer [%d] handleData err: %v", idx, err))
