@@ -73,10 +73,10 @@ func start(action string) {
 
 	//以下建议每12分钟执行一次
 	case "CollectOrgToday": //统计企业今天相关数据
-		//统计告警今天数据
-		alarm_cmd.CreateCmdFactory().TodayStatistics()
 		//统计企业今天数据
 		org_cmd.CreateCmdFactory().TodayStatistics()
+		//统计告警今天数据
+		alarm_cmd.CreateCmdFactory().TodayStatistics()
 
 	//以下建议每天时执行一次
 	case "Daily": //每日定时清理数据
