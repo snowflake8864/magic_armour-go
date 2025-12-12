@@ -167,21 +167,17 @@ func (k *ConsumerClient) consumeTopic(ctx context.Context, idx int, reader *kafk
 				if errors.Is(err, context.Canceled) {
 					return nil
 				}
-				variable.ZapLog.Info(fmt.Sprintf("Consumer [%d] FetchMessage err: %v", idx, err))
-				time.Sleep(100 * time.Millisecond) //短暂休眠避免CPU忙等待
-				continue
-			}
-			if len(m.Value) == 0 {
-				time.Sleep(3 * time.Second) //短暂休眠避免CPU忙等待
+				variable.ZapLog.Info(fmt.Sprintf("Consumer [%s] [%d] FetchMessage err: %v", m.Topic, idx, err))
+				time.Sleep(300 * time.Millisecond) //短暂休眠避免CPU忙等待
 				continue
 			}
 
 			if err := k.handleData(m.Value); err != nil {
-				variable.ZapLog.Info(fmt.Sprintf("Consumer [%d] handleData err: %v", idx, err))
+				variable.ZapLog.Info(fmt.Sprintf("Consumer [%s] [%d] handleData err: %v", m.Topic, idx, err))
 			}
 
 			if err := reader.CommitMessages(ctx, m); err != nil && !errors.Is(err, context.Canceled) {
-				variable.ZapLog.Info(fmt.Sprintf("Consumer [%d] CommitMessages err: %v", idx, err))
+				variable.ZapLog.Info(fmt.Sprintf("Consumer [%s] [%d] CommitMessages err: %v", m.Topic, idx, err))
 			}
 		}
 	}
