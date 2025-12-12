@@ -32,7 +32,6 @@ type ConsumerClient struct {
 
 // 创建分区消费者
 func (k *ConsumerClient) createPartitionConsumers(topicNames []string) (readers []*kafka.Reader) {
-
 	//地址
 	addr := variable.ConfigYml.GetString("KafkaV2.Addr")
 	brokers := strings.Split(addr, ",")
@@ -40,7 +39,7 @@ func (k *ConsumerClient) createPartitionConsumers(topicNames []string) (readers 
 	groupId := variable.ConfigYml.GetString("KafkaV2.Consumer.GroupId")
 	commitInterval := variable.ConfigYml.GetDuration("KafkaV2.Consumer.CommitInterval")
 	startOffset := variable.ConfigYml.GetInt64("KafkaV2.Consumer.StartOffset")
-	//每个主题消费者梳理是否与主题分区数量一直
+	//每个主题消费者是否与主题分区数量保持一致(0|1)
 	fullDose := variable.ConfigYml.GetInt("KafkaV2.Consumer.FullDose")
 
 	var wg sync.WaitGroup
@@ -57,9 +56,16 @@ func (k *ConsumerClient) createPartitionConsumers(topicNames []string) (readers 
 			continue
 		}
 
+		//默认消费者数量
 		partitions := 1
 		if fullDose == 1 {
-			partitions = variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
+			//指定消费者数量
+			if numbers := variable.ConfigYml.GetInt("KafkaV2." + name + ".Numbers"); numbers > 0 {
+				partitions = numbers
+			} else {
+				//跟分区一致
+				partitions = variable.ConfigYml.GetInt("KafkaV2." + name + ".Partition")
+			}
 		}
 		variable.ZapLog.Info(fmt.Sprintf("Consumers topic=%s, partitions=%d", topicName, partitions))
 		for p := 0; p < partitions; p++ {
