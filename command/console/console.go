@@ -54,7 +54,7 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
 
 	//以下建议每2分钟执行一次
-	case "PlugExpired": //动态封堵已过期的自动解封 -- agent进入队列模式改成直接按企业查询并解封
+	case "PlugExpired": //动态封堵已过期的自动解封 -> agent进入队列模式改成直接按企业查询并解封
 		plug_cmd.CreateCmdFactory().DynamicExpired()
 	case "AgentSafe": //终端安全状态
 		agent_cmd.CreateAgentFactory().HandleSafe()
@@ -118,9 +118,9 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 
 	//以下建议特殊情况下执行
-	case "ThreatenRepairProc": //威胁情报缓存修复进程模块状态 - 去掉
+	case "ThreatenRepairProc": //威胁情报缓存修复进程模块状态 -> 去掉
 		threaten_cmd.CreateCmdFactory().RepairProcForCache()
-	case "RepairProcByThreaten": //通过威胁情报修复进程状态 - 查询全部缓存并修改进程或模块
+	case "RepairProcByThreaten": //通过威胁情报修复进程状态 -> 查询全部缓存并修改进程或模块
 		proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 
 	default:
