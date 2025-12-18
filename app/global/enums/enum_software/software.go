@@ -13,6 +13,7 @@ const (
 	ArchArm64  = 2 //CPU架构: arm64
 	ArchMips64 = 3 //CPU架构: mips64
 
+	OsTypeLinuxUnknown      = 100 //系统类型: linux 未知
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
 	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
 	OsTypeLinuxNeokylin     = 103 //系统类型: linux 麒麟
@@ -27,6 +28,7 @@ const (
 	OsTypeLinuxCentosStream = 112 //系统类型: linux Centos Stream
 	OsTypeLinuxFedora       = 113 //系统类型: linux Fedora
 	OsTypeLinuxOpenEuler    = 114 //系统类型: linux OpenEuler
+	OsTypeLinuxSuse         = 115 //系统类型: linux SUSE
 
 	OsTypeWinSeven = 201 //系统类型: win7以上
 	OsTypeWinXp    = 202 //系统类型: win xp 和 win 1003
@@ -64,6 +66,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxCentosStream: "CentosStream",
 		OsTypeLinuxFedora:       "Fedora",
 		OsTypeLinuxOpenEuler:    "OpenEuler",
+		OsTypeLinuxSuse:         "SUSE",
 	},
 	"os_type_alias": {
 		OsTypeWinSeven:          "windows7-至今",
@@ -82,6 +85,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxCentosStream: "CentosStream64位",
 		OsTypeLinuxFedora:       "Fedora64位",
 		OsTypeLinuxOpenEuler:    "OpenEuler64位",
+		OsTypeLinuxSuse:         "SUSE64位",
 	},
 	"os_ver": {
 		//Ubuntu
@@ -112,6 +116,8 @@ var EnumMap = map[string]map[int]string{
 		1130: "64位",
 		//OpenEuler
 		1140: "64位",
+		//SUSE
+		1150: "64位",
 
 		//windows
 		2010: "windows7-至今",
@@ -140,6 +146,7 @@ var EnumSlice = map[string]map[int][]int{
 			OsTypeLinuxCentosStream,
 			OsTypeLinuxFedora,
 			OsTypeLinuxOpenEuler,
+			OsTypeLinuxSuse,
 		},
 	},
 	"map_os_ver": {
@@ -191,6 +198,9 @@ var EnumSlice = map[string]map[int][]int{
 		OsTypeLinuxOpenEuler: {
 			1140,
 		},
+		OsTypeLinuxSuse: {
+			1150,
+		},
 	},
 }
 
@@ -240,8 +250,10 @@ func GetOsTypeByName(name string) int {
 		return OsTypeLinuxFedora
 	} else if strings.Contains(name, "openeuler") {
 		return OsTypeLinuxOpenEuler
+	} else if strings.Contains(name, "suse") || strings.Contains(name, "sles") {
+		return OsTypeLinuxSuse
 	} else {
-		return 0
+		return OsTypeLinuxUnknown
 	}
 }
 
