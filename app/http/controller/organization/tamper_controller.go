@@ -405,6 +405,7 @@ func (u *TamperController) SetSwitchForGlobal(ctx *gin.Context) {
 	param := tamper_models.GlobalModel{
 		OrgId:        loginInfo.OrgId,
 		PlatformType: int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "platformType")),
+		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		OpenSwitch:   int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "switch")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,
