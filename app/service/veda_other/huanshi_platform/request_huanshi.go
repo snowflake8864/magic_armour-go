@@ -316,6 +316,7 @@ type AgentData struct {
 	AliasName    string  `json:"aliasName"`    //别名
 	ContactName  string  `json:"contactName"`  //管理人
 	ContactPhone string  `json:"contactPhone"` //管理人
+	Position     string  `json:"position"`     //位置
 	CpuInfo      string  `json:"cpuInfo"`      //终端硬件信息
 	MemoryInfo   string  `json:"memoryInfo"`   //终端硬件信息
 	DiskInfo     string  `json:"diskInfo"`     //终端硬件信息

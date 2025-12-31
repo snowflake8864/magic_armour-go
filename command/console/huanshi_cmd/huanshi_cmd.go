@@ -164,6 +164,7 @@ func (crd *HuanshiCmd) Push() {
 				AliasName:    agentModel.Alias,
 				ContactName:  agentModel.ContactName,
 				ContactPhone: agentModel.ContactTel,
+				Position:     agentModel.Position,
 				CpuInfo:      agentModel.CpuDesc,
 				MemoryInfo:   agentModel.MemDesc,
 				DiskInfo:     agentModel.HdDesc,
