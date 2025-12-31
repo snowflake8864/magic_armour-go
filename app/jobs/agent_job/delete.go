@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/model/agent/task_models"
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/syslog/syslog_models"
 )
 
@@ -87,6 +88,10 @@ func Delete(orgId int64, agentId string) {
 	})
 
 	//告警
+	alarm_stat_models.CreateStatDailyFactory().DeleteByConditions(alarm_stat_models.SearchConditions{
+		OrgId:   orgId,
+		AgentId: agentId,
+	})
 	alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
 		OrgId:   orgId,
 		AgentId: agentId,
