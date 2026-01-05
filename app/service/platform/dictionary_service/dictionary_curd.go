@@ -2,6 +2,7 @@ package dictionary_service
 
 import (
 	"goskeleton/app/model/platform/dictionary_models"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 func CreateCurdFactory() *DictionaryCurd {
@@ -31,7 +32,12 @@ func (crd *DictionaryCurd) GetAll() (items []*dictionary_models.DictionaryModel)
 
 // UpdateValById 通过Id修改值
 func (crd *DictionaryCurd) UpdateValById(id string, val interface{}) bool {
-	err := crd.masterModel.UpdateValById(id, val)
+	var err error
+	if model := crd.masterModel.GetItemById(id); model != nil && !string_helper.IsEmpty(model.Id) {
+		err = crd.masterModel.UpdateValById(id, val)
+	} else {
+		err = crd.masterModel.InsertValById(id, val)
+	}
 	if err != nil {
 		return false
 	}

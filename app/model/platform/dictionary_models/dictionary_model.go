@@ -162,6 +162,23 @@ func (m *DictionaryModel) GetAll() (items []*DictionaryModel) {
 	return items
 }
 
+// GetItemById 通过id获取一条记录
+func (m *DictionaryModel) GetItemById(id string) (item *DictionaryModel) {
+	result := m.Model(m).Where("id=?", id).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
+func (m *DictionaryModel) InsertValById(id string, val interface{}) error {
+	result := m.Model(&m).Create(map[string]interface{}{
+		"id": id, "val": val,
+	})
+	return result.Error
+}
+
 func (m *DictionaryModel) UpdateValById(id string, val interface{}) error {
 	result := m.Model(&m).Where("id=?", id).Update("val", val)
 	return result.Error
