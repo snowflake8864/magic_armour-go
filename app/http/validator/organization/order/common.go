@@ -4,7 +4,7 @@ package order
 type SearchOrder struct {
 	ProductName string `form:"productName" json:"productName" binding:"omitempty,max=128"`
 	IsExpire    *int   `form:"isExpire" json:"isExpire" binding:"omitempty,oneof=-100 0 1"`
-	OrderStatus *int   `form:"orderStatus" json:"orderStatus" binding:"omitempty,oneof=-100 1 5 8"`
+	OrderStatus *int   `form:"orderStatus" json:"orderStatus" binding:"omitempty,oneof=-100 1 5 8 33"`
 	StartTime   string `form:"startTime" json:"startTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 	EndTime     string `form:"endTime" json:"endTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 }
