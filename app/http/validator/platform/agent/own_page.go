@@ -13,7 +13,7 @@ import (
 type OwnPage struct {
 	data_type.Page
 	common_data.OrganizeSingle
-	AgentId     string `form:"agentId" json:"agentId" binding:"omitempty,min=8,max=32"`
+	data_type.AgentSingleOmitempty
 	DeptIds     []int  `form:"deptId" json:"deptId" binding:"omitempty,dive"`
 	HostName    string `form:"hostName" json:"hostName" binding:"omitempty,min=1"`
 	AgentIp     string `form:"agentIp" json:"agentIp" binding:"omitempty,ip"`

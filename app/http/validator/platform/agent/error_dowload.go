@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/controller/platform"
+	"goskeleton/app/http/validator/common/data_type"
 	"goskeleton/app/http/validator/core/data_transfer"
 	"goskeleton/app/http/validator/platform/common_data"
 	"goskeleton/app/utils/response"
@@ -11,8 +12,8 @@ import (
 
 type ErrorDownload struct {
 	common_data.OrganizeSingle
-	AgentId string `form:"agentId" json:"agentId" binding:"required,min=8,max=32"`
-	Id      int    `form:"id" json:"id" binding:"required"`
+	data_type.AgentSingle
+	Id int `form:"id" json:"id" binding:"required"`
 }
 
 func (n ErrorDownload) CheckParams(context *gin.Context) {
