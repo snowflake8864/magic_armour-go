@@ -12,7 +12,6 @@ import (
 	"goskeleton/app/jobs/alarm_job"
 	"goskeleton/app/jobs/email_job/send_alarm_cycle"
 	"goskeleton/app/jobs/org_job"
-	"goskeleton/app/jobs/plug_job"
 	"goskeleton/app/jobs/proc_job"
 	"goskeleton/app/jobs/syslog_job"
 	"goskeleton/app/jobs/threaten_job"
@@ -248,10 +247,7 @@ func (k *ConsumerClient) handleData(msg []byte) error {
 	case kafka_go.TypeSyslogPutProcess:
 		syslog_job.UploadProcess(data.Data)
 		break
-	case kafka_go.TypeSyslogPutLoginSuccess:
-		syslog_job.UploadLoginSuccess(data.Data)
-		break
-	case kafka_go.TypeSyslogPutLoginFail:
+	case kafka_go.TypeCommonAgentLoginFail:
 		syslog_job.UploadLoginFail(data.Data)
 		break
 	case kafka_go.TypeCommonAgentPutMonitor:
@@ -267,9 +263,6 @@ func (k *ConsumerClient) handleData(msg []byte) error {
 
 	case kafka_go.TypeCrontabAlarmStat:
 		alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
-		break
-	case kafka_go.TypeCrontabPlugDisable:
-		plug_job.DynamicDisable(data.OrgId, data.AgentId)
 		break
 	case kafka_go.TypeCrontabTaskFormProcess:
 		proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)

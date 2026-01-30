@@ -67,21 +67,6 @@ func UploadProcess(jsonStr string) {
 	}
 }
 
-func UploadLoginSuccess(jsonStr string) {
-	var models []syslog_models.LoginModel
-	if err := json_helper.ToStruct(jsonStr, &models); err != nil {
-		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Info(jsonStr)
-		return
-	}
-
-	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(&models); err != nil {
-		variable.ZapLog.Warn(err.Error())
-		variable.ZapLog.Info(jsonStr)
-		return
-	}
-}
-
 func UploadLoginFail(jsonStr string) {
 	model := syslog_models.LoginModel{}
 	if err := json_helper.ToStruct(jsonStr, &model); err != nil {

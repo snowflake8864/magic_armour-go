@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/service/agent/syslog_service/job_callback_syslog"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/kafka_go"
@@ -265,7 +266,7 @@ func (crd *SyslogPost) formatLogin(param *syslogComm, orgId int64, agentId strin
 	}
 }
 
-// 发送登录错误日志: 直接入库
+// 发送登录成功日志: 直接入库
 func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) error {
 
 	modelLength := len(*models)
@@ -273,23 +274,9 @@ func (crd *SyslogPost) sendLoginSuccess(models *[]syslog_models.LoginModel) erro
 		return nil
 	}
 
-	data := *models
-	cxt := context.Background()
-	for i := 0; i < modelLength; i += crd.supportNumber {
-		end := i + crd.supportNumber
-		if end > modelLength {
-			end = modelLength
-		}
-		msg := &kafka_go.MessageStruct{
-			Type: kafka_go.TypeSyslogPutLoginSuccess,
-			Data: json_helper.Encode(data[i:end]),
-		}
-		crd.queryClient.ProduceSyslog(cxt, msg)
-	}
-
-	/*if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
+	if err := job_callback_syslog.CreateLoginUploadFactory().BatchAddSuccess(models); err != nil {
 		return err
-	}*/
+	}
 
 	return nil
 }
@@ -299,7 +286,7 @@ func (crd *SyslogPost) sendLoginFail(model *syslog_models.LoginModel) {
 	//fmt.Println("sendLoginFail ============================")
 	//fmt.Println(json_helper.Encode(model))
 	msg := &kafka_go.MessageStruct{
-		Type: kafka_go.TypeSyslogPutLoginFail,
+		Type: kafka_go.TypeCommonAgentLoginFail,
 		Data: json_helper.Encode(model),
 	}
 	crd.queryClient.ProduceCommon(context.Background(), msg)

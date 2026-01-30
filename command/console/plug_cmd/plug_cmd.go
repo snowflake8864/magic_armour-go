@@ -1,23 +1,23 @@
 package plug_cmd
 
 import (
-	"context"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/organization_models"
-	"goskeleton/app/utils/kafka_go"
-	"goskeleton/app/utils/kafka_go/producer_kafka"
+	"goskeleton/app/service/agent/plug_service"
+	"goskeleton/app/utils/helpers/date_helper"
 )
 
 func CreateCmdFactory() *PlugCmd {
 	return &PlugCmd{
-		queryClient: producer_kafka.CreateProducerFactory(),
+		plugService: plug_service.CreatePolicyDynamicCurdFactory(),
 	}
+
 }
 
 type PlugCmd struct {
-	queryClient *producer_kafka.ProducerClient
+	plugService *plug_service.PolicyDynamicCurd
 }
 
 func (crd *PlugCmd) getOrgModels() []*organization_models.OrganizationModel {
@@ -39,11 +39,11 @@ func (crd *PlugCmd) DynamicExpired() {
 
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
-		variable.ZapLog.Info("HandleSafe orgModels empty")
+		variable.ZapLog.Info("DynamicExpired orgModels empty")
 		return
 	}
+	now := date_helper.CurDatetime()
 
-	ctx := context.Background()
 	for _, orgModel := range orgModels {
 		//获取全部终端
 		agentModels := crd.getAgentModels(orgModel.Id)
@@ -52,12 +52,9 @@ func (crd *PlugCmd) DynamicExpired() {
 		}
 
 		for _, agentModel := range agentModels {
-			//进入队列
-			crd.queryClient.ProduceCrontab(ctx, &kafka_go.MessageStruct{
-				Type:    kafka_go.TypeCrontabPlugDisable,
-				OrgId:   orgModel.Id,
-				AgentId: agentModel.AgentId,
-			})
+			if err := crd.plugService.AutoDisable(orgModel.Id, agentModel.AgentId, now); err != nil {
+				variable.ZapLog.Info("DynamicExpired end")
+			}
 		}
 
 	} //
