@@ -13,7 +13,7 @@ import (
 )
 
 func TestTaskFromProcess(t *testing.T) {
-	proc_job.TaskFromProcess(1, "f7f8a4cbcad0b9885c9186eb0fbfcf78", "2024-07-17 10:45:01")
+	proc_job.TaskFromProc(1, "f7f8a4cbcad0b9885c9186eb0fbfcf78", "2024-07-17 10:45:01", 1)
 }
 
 func TestDate(t *testing.T) {

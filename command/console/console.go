@@ -130,6 +130,6 @@ func start(action string) {
 }
 
 // 开始执行业务
-func TestStart(at string) {
-	start(at)
+func AppStart(action string) {
+	start(action)
 }

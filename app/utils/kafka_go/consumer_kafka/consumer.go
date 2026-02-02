@@ -177,11 +177,8 @@ func (k *ConsumerClient) consumeMessage(ctx context.Context, r *kafka.Reader) {
 		case kafka_go.TypeCrontabAlarmStat:
 			alarm_job.StatInStartAtAndEndAt(data.Data, data.AgentId, data.AgentOS)
 			break
-		case kafka_go.TypeCrontabTaskFormProcess:
-			proc_job.TaskFromProcess(data.OrgId, data.AgentId, data.Data)
-			break
-		case kafka_go.TypeCrontabTaskFormDll:
-			proc_job.TaskFromDll(data.OrgId, data.AgentId, data.Data)
+		case kafka_go.TypeCrontabTaskFormProc:
+			proc_job.TaskFromProc(data.OrgId, data.AgentId, data.Data, string_helper.ToInt(data.AgentOS))
 			break
 		case kafka_go.TypeCrontabThreatenRepairProc:
 			threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)

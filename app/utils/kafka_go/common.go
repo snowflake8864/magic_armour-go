@@ -46,7 +46,6 @@ const (
 	TypeThreatenImport      string = "threaten_import"       //类型：威胁情报导入
 
 	TypeCrontabAlarmStat          string = "crontab_alarm_stat"            //类型：定时任务-告警统计
-	TypeCrontabTaskFormProcess    string = "crontab_task_form_process"     //类型：定时任务-从进程新增任务
-	TypeCrontabTaskFormDll        string = "crontab_task_form_dll"         //类型：定时任务-从模块新增任务
+	TypeCrontabTaskFormProc       string = "crontab_task_form_proc"        //类型：定时任务-从进程或模块新增任务
 	TypeCrontabThreatenRepairProc string = "crontab_threaten_repair_proc " //类型：定时任务-威胁情报修复进程或模块
 )

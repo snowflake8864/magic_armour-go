@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
@@ -82,25 +83,26 @@ func (crd *ProcCmd) AddFromProcForTask() {
 		}
 
 		for _, agentModel := range agentModels {
+			//数据来源
+			dataFrom := 0
 
 			//进程
 			if agentModel.ProcessSwitch == enums.SwitchOn {
-				//进入队列
-				producerFact.ProduceCrontab(ctx, &kafka_go.MessageStruct{
-					Type:    kafka_go.TypeCrontabTaskFormProcess,
-					OrgId:   orgModel.Id,
-					AgentId: agentModel.AgentId,
-					Data:    preAt,
-				})
+				dataFrom += enum_process.DataFromProcess
 			}
 
 			//模块
 			if agentModel.DllSwitch == enums.SwitchOn {
+				dataFrom += enum_process.DataFromDll
+			}
+
+			if dataFrom > 0 {
 				//进入队列
 				producerFact.ProduceCrontab(ctx, &kafka_go.MessageStruct{
-					Type:    kafka_go.TypeCrontabTaskFormDll,
+					Type:    kafka_go.TypeCrontabTaskFormProc,
 					OrgId:   orgModel.Id,
 					AgentId: agentModel.AgentId,
+					AgentOS: int_helper.IntToStr(dataFrom),
 					Data:    preAt,
 				})
 			}
