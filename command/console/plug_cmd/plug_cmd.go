@@ -1,6 +1,7 @@
 package plug_cmd
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
@@ -48,12 +49,13 @@ func (crd *PlugCmd) DynamicExpired() {
 		//获取全部终端
 		agentModels := crd.getAgentModels(orgModel.Id)
 		if agentModels == nil || len(agentModels) == 0 {
+			variable.ZapLog.Info(fmt.Sprintf("DynamicExpired org(%d) no agents", orgModel.Id))
 			continue
 		}
 
 		for _, agentModel := range agentModels {
 			if err := crd.plugService.AutoDisable(orgModel.Id, agentModel.AgentId, now); err != nil {
-				variable.ZapLog.Info("DynamicExpired end")
+				variable.ZapLog.Info("DynamicExpired fail")
 			}
 		}
 
