@@ -24,7 +24,7 @@ const (
 	OsTypeLinuxAnolis       = 108 //系统类型: linux 阿里龙蜥
 	OsTypeLinuxOpenCloudOs  = 109 //系统类型: linux 腾讯云
 	OsTypeLinuxAlibabaCloud = 110 //系统类型: linux 阿里云
-	OsTypeLinuxAlmaLinux    = 111 //系统类型: linux AlmaLinux
+	OsTypeLinuxAlmaLinux    = 111 //系统类型: linux 艾玛（阿里支持）
 	OsTypeLinuxCentosStream = 112 //系统类型: linux Centos Stream
 	OsTypeLinuxFedora       = 113 //系统类型: linux Fedora
 	OsTypeLinuxEuler        = 114 //系统类型: linux Euler
