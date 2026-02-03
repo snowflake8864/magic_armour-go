@@ -16,7 +16,7 @@ const (
 	OsTypeLinuxUnknown      = 100 //系统类型: linux 未知
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
 	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
-	OsTypeLinuxNeokylin     = 103 //系统类型: linux 麒麟
+	OsTypeLinuxKylin        = 103 //系统类型: linux 麒麟(NEO开头的是中标麒麟)
 	OsTypeLinuxUos          = 104 //系统类型: linux 通信
 	OsTypeLinuxRedhat       = 105 //系统类型: linux 红帽
 	OsTypeLinuxDebian       = 106 //系统类型: linux Debian
@@ -27,7 +27,7 @@ const (
 	OsTypeLinuxAlmaLinux    = 111 //系统类型: linux AlmaLinux
 	OsTypeLinuxCentosStream = 112 //系统类型: linux Centos Stream
 	OsTypeLinuxFedora       = 113 //系统类型: linux Fedora
-	OsTypeLinuxOpenEuler    = 114 //系统类型: linux OpenEuler
+	OsTypeLinuxEuler        = 114 //系统类型: linux Euler
 	OsTypeLinuxSuse         = 115 //系统类型: linux SUSE
 
 	OsTypeWinSeven = 201 //系统类型: win7以上
@@ -54,7 +54,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeWinXp:             "Windows早期",
 		OsTypeLinuxUbuntu:       "Ubuntu",
 		OsTypeLinuxCentos:       "CentOS",
-		OsTypeLinuxNeokylin:     "Neokylin",
+		OsTypeLinuxKylin:        "Kylin",
 		OsTypeLinuxUos:          "Uos",
 		OsTypeLinuxRedhat:       "RedHat",
 		OsTypeLinuxDebian:       "Debian",
@@ -65,7 +65,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxAlmaLinux:    "AlmaLinux",
 		OsTypeLinuxCentosStream: "CentosStream",
 		OsTypeLinuxFedora:       "Fedora",
-		OsTypeLinuxOpenEuler:    "OpenEuler",
+		OsTypeLinuxEuler:        "Euler",
 		OsTypeLinuxSuse:         "SUSE",
 	},
 	"os_type_alias": {
@@ -73,7 +73,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeWinXp:             "windows xp-windows 2003",
 		OsTypeLinuxUbuntu:       "Ubuntu64位",
 		OsTypeLinuxCentos:       "CentOS64位",
-		OsTypeLinuxNeokylin:     "Neokylin64位",
+		OsTypeLinuxKylin:        "kylin64位",
 		OsTypeLinuxUos:          "Uos64位",
 		OsTypeLinuxRedhat:       "RedHat64位",
 		OsTypeLinuxDebian:       "Debian64位",
@@ -84,7 +84,7 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxAlmaLinux:    "AlmaLinux64位",
 		OsTypeLinuxCentosStream: "CentosStream64位",
 		OsTypeLinuxFedora:       "Fedora64位",
-		OsTypeLinuxOpenEuler:    "OpenEuler64位",
+		OsTypeLinuxEuler:        "Euler64位",
 		OsTypeLinuxSuse:         "SUSE64位",
 	},
 	"os_ver": {
@@ -114,7 +114,7 @@ var EnumMap = map[string]map[int]string{
 		1120: "64位(8-9)",
 		//Fedora
 		1130: "64位",
-		//OpenEuler
+		//Euler
 		1140: "64位",
 		//SUSE
 		1150: "64位",
@@ -134,7 +134,7 @@ var EnumSlice = map[string]map[int][]int{
 		PlatformTypeLinux: {
 			OsTypeLinuxUbuntu,
 			OsTypeLinuxCentos,
-			OsTypeLinuxNeokylin,
+			OsTypeLinuxKylin,
 			OsTypeLinuxUos,
 			OsTypeLinuxRedhat,
 			OsTypeLinuxDebian,
@@ -145,7 +145,7 @@ var EnumSlice = map[string]map[int][]int{
 			OsTypeLinuxAlmaLinux,
 			OsTypeLinuxCentosStream,
 			OsTypeLinuxFedora,
-			OsTypeLinuxOpenEuler,
+			OsTypeLinuxEuler,
 			OsTypeLinuxSuse,
 		},
 	},
@@ -162,7 +162,7 @@ var EnumSlice = map[string]map[int][]int{
 		OsTypeLinuxCentos: {
 			1020,
 		},
-		OsTypeLinuxNeokylin: {
+		OsTypeLinuxKylin: {
 			1030,
 		},
 		OsTypeLinuxUos: {
@@ -195,7 +195,7 @@ var EnumSlice = map[string]map[int][]int{
 		OsTypeLinuxFedora: {
 			1130,
 		},
-		OsTypeLinuxOpenEuler: {
+		OsTypeLinuxEuler: {
 			1140,
 		},
 		OsTypeLinuxSuse: {
@@ -228,8 +228,8 @@ func GetOsTypeByName(name string) int {
 		} else {
 			return OsTypeLinuxCentos
 		}
-	} else if strings.Contains(name, "neokylin") || strings.Contains(name, "麒麟") || strings.Contains(name, "kylin") {
-		return OsTypeLinuxNeokylin
+	} else if strings.Contains(name, "kylin") || strings.Contains(name, "麒麟") {
+		return OsTypeLinuxKylin
 	} else if strings.Contains(name, "uos") || strings.Contains(name, "统信") {
 		return OsTypeLinuxUos
 	} else if strings.Contains(name, "redhat") || strings.Contains(name, "red hat") {
@@ -248,8 +248,8 @@ func GetOsTypeByName(name string) int {
 		return OsTypeLinuxAlmaLinux
 	} else if strings.Contains(name, "fedora") {
 		return OsTypeLinuxFedora
-	} else if strings.Contains(name, "openeuler") {
-		return OsTypeLinuxOpenEuler
+	} else if strings.Contains(name, "euler") {
+		return OsTypeLinuxEuler
 	} else if strings.Contains(name, "suse") || strings.Contains(name, "sles") {
 		return OsTypeLinuxSuse
 	} else {
