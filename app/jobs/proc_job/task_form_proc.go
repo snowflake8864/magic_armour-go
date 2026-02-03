@@ -11,8 +11,7 @@ import (
 )
 
 func TaskFromProc(orgId int64, agentId string, at string, dataFrom int) {
-	variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s, at=%s, dataFrom=%d", orgId, agentId, at, dataFrom))
-
+	//variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s, at=%s, dataFrom=%d", orgId, agentId, at, dataFrom))
 	//任务
 	var taskTypes []int
 
@@ -38,6 +37,8 @@ func TaskFromProc(orgId int64, agentId string, at string, dataFrom int) {
 	}
 
 	if len(taskTypes) > 0 {
+		variable.ZapLog.Info(fmt.Sprintf("orgId=%d, agentId=%s, at=%s, dataFrom=%d", orgId, agentId, at, dataFrom))
+
 		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, taskTypes, "同步状态")
 	}
 }
