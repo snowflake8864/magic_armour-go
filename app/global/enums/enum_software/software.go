@@ -17,7 +17,7 @@ const (
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
 	OsTypeLinuxCentos       = 102 //系统类型: linux Centos
 	OsTypeLinuxKylin        = 103 //系统类型: linux 麒麟(NEO开头的是中标麒麟)
-	OsTypeLinuxUos          = 104 //系统类型: linux 通信
+	OsTypeLinuxUos          = 104 //系统类型: linux 统信
 	OsTypeLinuxRedhat       = 105 //系统类型: linux 红帽
 	OsTypeLinuxDebian       = 106 //系统类型: linux Debian
 	OsTypeLinuxRocky        = 107 //系统类型: linux Rocky
