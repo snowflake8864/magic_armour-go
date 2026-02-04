@@ -118,7 +118,7 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 
 	//以下建议特殊情况下执行
-	case "RepairProcByThreaten": //通过威胁情报修复进程状态
+	case "RepairProcByThreaten": //通过威胁情报修复进程或模块状态
 		proc_cmd.CreateCmdFactory().SyncStatusByThreaten()
 
 	default:
