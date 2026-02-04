@@ -267,9 +267,6 @@ func (k *ConsumerClient) handleData(msg []byte) error {
 	case kafka_go.TypeCrontabTaskFormProc:
 		proc_job.TaskFromProc(data.OrgId, data.AgentId, data.Data, string_helper.ToInt(data.AgentOS))
 		break
-	case kafka_go.TypeCrontabThreatenRepairProc:
-		threaten_job.RepairProc(string_helper.ToInt(data.AgentId), string_helper.ToInt(data.AgentOS), data.Data)
-		break
 	default:
 		variable.ZapLog.Info(fmt.Sprintf("handleData data.Type: %s", data.Type))
 	}

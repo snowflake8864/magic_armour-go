@@ -2,13 +2,16 @@ package proc_cmd
 
 import (
 	"context"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
+	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -122,8 +125,10 @@ func (crd *ProcCmd) ClearRunning() {
 }
 
 // RepairStatusByThreaten  通过威胁情报修复状态
+// 不在使用，改成SyncStatusByThreaten
 func (crd *ProcCmd) RepairStatusByThreaten() {
 	variable.ZapLog.Info("RepairStatusByThreaten start")
+
 	orgModels := crd.getOrgModels()
 	if orgModels == nil || len(orgModels) == 0 {
 		variable.ZapLog.Info("RepairStatusByThreaten orgModels empty")
@@ -139,4 +144,115 @@ func (crd *ProcCmd) RepairStatusByThreaten() {
 		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
 	}
 	variable.ZapLog.Info("RepairStatusByThreaten end")
+}
+
+// SyncStatusByThreaten  通过威胁情报修复状态
+func (crd *ProcCmd) SyncStatusByThreaten() {
+	variable.ZapLog.Info("SyncStatusByThreaten start")
+
+	threatenCacheFact := threaten_models.CreateCacheFactory()
+	page := 0
+	limit := 2000
+	conditions := threaten_models.SearchConditions{
+		LevelList: []int{enum_threaten.LevelWhite, enum_threaten.LevelBlack},
+	}
+
+	var processWhites, processBlacks, dllWhites, dllBlacks []string
+	for {
+		page++
+		offset := (page - 1) * limit
+		variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten query page=%d, offset=%d ", page, offset))
+		models := threatenCacheFact.GetItemsByConditions(conditions, offset, limit, "")
+		if models == nil || len(models) == 0 {
+			variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten break page=%d, offset=%d ", page, offset))
+			break
+		}
+
+		for _, model := range models {
+			if model.DataFrom == enum_threaten.DataFromProcess {
+				if model.Level == enum_threaten.LevelWhite {
+					processWhites = append(processWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					processBlacks = append(processBlacks, model.Id)
+				}
+			} else if model.DataFrom == enum_threaten.DataFromDll {
+				if model.Level == enum_threaten.LevelWhite {
+					dllWhites = append(dllWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					dllBlacks = append(dllBlacks, model.Id)
+				}
+			} else {
+				if model.Level == enum_threaten.LevelWhite {
+					processWhites = append(processWhites, model.Id)
+					dllWhites = append(dllWhites, model.Id)
+				} else if model.Level == enum_threaten.LevelBlack {
+					processBlacks = append(processBlacks, model.Id)
+					dllBlacks = append(dllBlacks, model.Id)
+				}
+			}
+		}
+
+	}
+
+	supportNumber := 50
+	variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten processWhites=%d, processBlacks=%d,dllWhites=%d, dllBlacks=%d",
+		len(processWhites), len(processBlacks), len(dllWhites), len(dllBlacks)))
+
+	//进程白名单
+	if tmpLen := len(processWhites); tmpLen > 0 {
+		variable.ZapLog.Info("SyncStatusByThreaten processWhites start")
+		for i := 0; i < tmpLen; i += supportNumber {
+			end := i + supportNumber
+			if end > tmpLen {
+				end = tmpLen
+			}
+
+			proc_service.CreateProcessCurdFactory().ThreatenCallbackByHashes(processWhites[i:end], enum_threaten.LevelWhite)
+		}
+		variable.ZapLog.Info("SyncStatusByThreaten processWhites end")
+	}
+
+	//进程黑名单
+	if tmpLen := len(processBlacks); tmpLen > 0 {
+		variable.ZapLog.Info("SyncStatusByThreaten processBlacks start")
+		for i := 0; i < tmpLen; i += supportNumber {
+			end := i + supportNumber
+			if end > tmpLen {
+				end = tmpLen
+			}
+
+			proc_service.CreateProcessCurdFactory().ThreatenCallbackByHashes(processBlacks[i:end], enum_threaten.LevelBlack)
+		}
+		variable.ZapLog.Info("SyncStatusByThreaten processBlacks end")
+	}
+
+	//模块白名单
+	if tmpLen := len(dllWhites); tmpLen > 0 {
+		variable.ZapLog.Info("SyncStatusByThreaten dllWhites start")
+		for i := 0; i < tmpLen; i += supportNumber {
+			end := i + supportNumber
+			if end > tmpLen {
+				end = tmpLen
+			}
+
+			proc_service.CreateDllCurdFactory().ThreatenCallbackByHashes(dllWhites[i:end], enum_threaten.LevelWhite)
+		}
+		variable.ZapLog.Info("SyncStatusByThreaten dllWhites end")
+	}
+
+	//模块黑名单
+	if tmpLen := len(dllBlacks); tmpLen > 0 {
+		variable.ZapLog.Info("SyncStatusByThreaten dllBlacks start")
+		for i := 0; i < tmpLen; i += supportNumber {
+			end := i + supportNumber
+			if end > tmpLen {
+				end = tmpLen
+			}
+
+			proc_service.CreateDllCurdFactory().ThreatenCallbackByHashes(dllBlacks[i:end], enum_threaten.LevelBlack)
+		}
+		variable.ZapLog.Info("SyncStatusByThreaten dllBlacks end")
+	}
+
+	variable.ZapLog.Info("SyncStatusByThreaten end")
 }

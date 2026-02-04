@@ -10,7 +10,7 @@ import (
 )
 
 func TestCrontabStart(t *testing.T) {
-	console.AppStart("PlugExpired")
+	console.HttpStart("FDS")
 }
 
 func TestCrontabStart1(t *testing.T) {
