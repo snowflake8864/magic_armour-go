@@ -29,6 +29,5 @@ func (u *CrontabController) Exec(ctx *gin.Context) {
 
 	console.HttpStart(action)
 
-	response.SuccessSimplify(ctx)
-
+	response.SuccessReturnData(ctx, action)
 }

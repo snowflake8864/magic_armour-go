@@ -1,54 +1,53 @@
 ##变量
 CURL_CMD=/usr/bin/curl
-API_URL="http://127.0.0.1:20191/crontab/exec?action="
-LOG_REDIRECT=">> /var/log/armour_crontab.log 2>&1"
+API_URL="http://127.0.0.1:20191/v5/api/crontab/exec?action="
 
 ## 清理磁盘日志G
-1 0 * * * /home/veda/clear_disk.sh >> /var/log/armour_disk_clear.log 2>&1
+1 0 * * * /home/veda/clear_disk.sh
 
 ## 每隔[2分钟]
 # 威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
-*/2 * * * * $CURL_CMD "${API_URL}ThreatenCacheDefaultSync" $LOG_REDIRECT
+*/2 * * * * $CURL_CMD "${API_URL}ThreatenCacheDefaultSync" >> /var/log/armour_crontab.log 2>&1
 # 终端离线
-*/2 * * * * $CURL_CMD "${API_URL}AgentOffline" $LOG_REDIRECT
+*/2 * * * * $CURL_CMD "${API_URL}AgentOffline" >> /var/log/armour_crontab.log 2>&1
 # 动态封堵已过期的自动解封
-*/2 * * * * $CURL_CMD "${API_URL}PlugExpired" $LOG_REDIRECT
+*/2 * * * * $CURL_CMD "${API_URL}PlugExpired" >> /var/log/armour_crontab.log 2>&1
 # 终端安全状态
-*/2 * * * * $CURL_CMD "${API_URL}AgentSafe" $LOG_REDIRECT
+*/2 * * * * $CURL_CMD "${API_URL}AgentSafe" >> /var/log/armour_crontab.log 2>&1
 
 ## 每隔[3分钟]
 # 同步推送数据到幻势
-*/3 * * * * $CURL_CMD "${API_URL}HuanshiPush" $LOG_REDIRECT
+*/3 * * * * $CURL_CMD "${API_URL}HuanshiPush" >> /var/log/armour_crontab.log 2>&1
 # 从进程或模块添加任务
-*/3 * * * * $CURL_CMD "${API_URL}TaskAddFromProc" $LOG_REDIRECT
+*/3 * * * * $CURL_CMD "${API_URL}TaskAddFromProc" >> /var/log/armour_crontab.log 2>&1
 # 威胁情报同步数据到威胁情报中心
-*/3 * * * * $CURL_CMD "${API_URL}ThreatenPushesSync" $LOG_REDIRECT
+*/3 * * * * $CURL_CMD "${API_URL}ThreatenPushesSync" >> /var/log/armour_crontab.log 2>&1
 # 服务器状态监控
-*/3 * * * * $CURL_CMD "${API_URL}ServiceMonitor" $LOG_REDIRECT
+*/3 * * * * $CURL_CMD "${API_URL}ServiceMonitor" >> /var/log/armour_crontab.log 2>&1
 
 ## 每隔[12分钟]
 # 统计企业今天相关数据
-*/12 * * * * $CURL_CMD "${API_URL}CollectOrgToday" $LOG_REDIRECT
+*/12 * * * * $CURL_CMD "${API_URL}CollectOrgToday" >> /var/log/armour_crontab.log 2>&1
 
 ## 每天一次
 # 每天清理一次数据
-7 0 * * * $CURL_CMD "${API_URL}Daily"  $LOG_REDIRECT
+7 0 * * * $CURL_CMD "${API_URL}Daily"  >> /var/log/armour_crontab.log 2>&1
 # 订单自动过期
-17 0 * * * $CURL_CMD "${API_URL}OrderExpired"  $LOG_REDIRECT
+17 0 * * * $CURL_CMD "${API_URL}OrderExpired"  >> /var/log/armour_crontab.log 2>&1
 # 终端授权自动过期
-27 0 * * * $CURL_CMD "${API_URL}GrantExpired"  $LOG_REDIRECT
+27 0 * * * $CURL_CMD "${API_URL}GrantExpired"  >> /var/log/armour_crontab.log 2>&1
 # 统计企业昨天相关数据
-37 0 * * * $CURL_CMD "${API_URL}CollectOrgYesterday"  $LOG_REDIRECT
+37 0 * * * $CURL_CMD "${API_URL}CollectOrgYesterday"  >> /var/log/armour_crontab.log 2>&1
 # 告警邮件通知
-47 0 * * * $CURL_CMD "${API_URL}AlarmEmailNotice"  $LOG_REDIRECT
+47 0 * * * $CURL_CMD "${API_URL}AlarmEmailNotice"  >> /var/log/armour_crontab.log 2>&1
 # 删除威胁情报缓存
-57 0 * * * $CURL_CMD "${API_URL}ThreatenCacheDelete"  $LOG_REDIRECT
+57 0 * * * $CURL_CMD "${API_URL}ThreatenCacheDelete"  >> /var/log/armour_crontab.log 2>&1
 # 威胁情报缓存同步未知状态数据到威胁情报中心
-17 1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheUnknownSync $LOG_REDIRECT
+17 1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheUnknownSync >> /var/log/armour_crontab.log 2>&1
 
 
 ##以下建议特殊情况下执行
 #从进程或模块添加到威胁情报缓存
-#17 2 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheAddFromProc $LOG_REDIRECT
+#17 2 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheAddFromProc >> /var/log/armour_crontab.log 2>&1
 #通过威胁情报修复进程或模块状态
-#17 3 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A RepairProcByThreaten $LOG_REDIRECT
+#17 3 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A RepairProcByThreaten >> /var/log/armour_crontab.log 2>&1
