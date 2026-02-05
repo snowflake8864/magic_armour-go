@@ -112,7 +112,7 @@ func start(action string) {
 		alarm_cmd.CreateCmdFactory().EmailNotice()
 	case "ThreatenCacheDelete": //删除威胁情报缓存
 		threaten_cmd.CreateCmdFactory().DeleteForCache()
-	case "ThreatenCacheUnknownSync": //威胁情报缓存同步未知状态数据到威胁情报中心
+	case "ThreatenCacheUnknownSync": //威胁情报缓存同步未知状态数据到威胁情报中心 - 需要优化
 		threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 	case "ThreatenCacheAddFromProc": //从进程或模块添加到威胁情报缓存
 		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
