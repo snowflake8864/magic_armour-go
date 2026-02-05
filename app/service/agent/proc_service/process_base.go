@@ -123,12 +123,12 @@ func (crd *ProcessBase) getUpdatesForThreatenCallback(threatenLevel int) map[str
 	switch threatenLevel {
 	case enum_threaten.LevelWhite:
 		updates["threaten_status"] = enum_process.RelyStatusWhite
-		statusStr = fmt.Sprintf(statusStr, enums.IsNot, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
+		statusStr = fmt.Sprintf(statusStr, enums.IsYes, enum_process.ProcStatusUnset, enum_process.ProcStatusWhite)
 		syncStatusAt = fmt.Sprintf(syncStatusAt, enums.IsYes, enum_process.ProcStatusUnset, date_helper.CurTimestamp())
 		break
 	case enum_threaten.LevelBlack:
 		updates["threaten_status"] = enum_process.RelyStatusBlack
-		statusStr = fmt.Sprintf(statusStr, enums.IsNot, enum_process.ProcStatusUnset, enum_process.ProcStatusBlack)
+		statusStr = fmt.Sprintf(statusStr, enums.IsYes, enum_process.ProcStatusUnset, enum_process.ProcStatusBlack)
 		syncStatusAt = fmt.Sprintf(syncStatusAt, enums.IsYes, enum_process.ProcStatusUnset, date_helper.CurTimestamp())
 		break
 	default:

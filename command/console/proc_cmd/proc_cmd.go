@@ -193,11 +193,11 @@ func (crd *ProcCmd) SyncStatusByThreaten() {
 		}
 
 	}
-
-	supportNumber := 50
 	variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten processWhites=%d, processBlacks=%d,dllWhites=%d, dllBlacks=%d",
 		len(processWhites), len(processBlacks), len(dllWhites), len(dllBlacks)))
 
+	//每次修改最大数
+	supportNumber := 50
 	//进程白名单
 	if tmpLen := len(processWhites); tmpLen > 0 {
 		variable.ZapLog.Info("SyncStatusByThreaten processWhites start")
