@@ -71,6 +71,12 @@ func InitApiRouter() *gin.Engine {
 			response.SuccessReturnData(ctx, variable.VersionNumber)
 		})
 
+		// 计划任务
+		crontab := vApi.Group("crontab/")
+		{
+			crontab.GET("exec", validatorFactory.Create(consts.ValidatorPrefixApi+"CrontabExec"))
+		}
+
 		// 软件版本相关
 		software := vApi.Group("software/")
 		{

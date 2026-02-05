@@ -3,6 +3,7 @@ package register_validator
 import (
 	"goskeleton/app/core/container"
 	"goskeleton/app/global/consts"
+	crontab2 "goskeleton/app/http/validator/api/crontab"
 	huanshi2 "goskeleton/app/http/validator/api/huanshi"
 	software2 "goskeleton/app/http/validator/api/software"
 )
@@ -14,6 +15,10 @@ func ApiRegisterValidator() {
 
 	//  key 按照前缀+模块+验证动作 格式，将各个模块验证注册在容器
 	var key string
+
+	//幻势
+	key = consts.ValidatorPrefixApi + "CrontabExec"
+	containers.Set(key, crontab2.Exec{})
 
 	//软件
 	key = consts.ValidatorPrefixApi + "SoftwareDownload"

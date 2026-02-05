@@ -111,10 +111,10 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().DeleteForCache()
 	case "ThreatenCacheUnknownSync": //威胁情报缓存同步未知状态数据到威胁情报中心 - 需要优化
 		threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
-	case "ThreatenCacheAddFromProc": //从进程或模块添加到威胁情报缓存
-		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 
 	//以下建议特殊情况下执行
+	case "ThreatenCacheAddFromProc": //从进程或模块添加到威胁情报缓存
+		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
 	case "RepairProcByThreaten": //通过威胁情报修复进程或模块状态
 		proc_cmd.CreateCmdFactory().SyncStatusByThreaten()
 		proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
