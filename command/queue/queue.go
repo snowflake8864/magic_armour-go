@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/kafka_go/consumer_kafka"
+	"goskeleton/app/utils/kafka_go/consumer_kafka_v2"
 	"goskeleton/app/utils/kafka_go/topic_kakfa"
 )
 
@@ -70,7 +71,11 @@ func start(action, topic string) {
 		case "crontab":
 			consumer_kafka.CreateConsumerFactory().ConsumeCrontab()
 			break
+		case "all":
+			consumer_kafka_v2.CreateConsumerFactory().Consume()
+			break
 		}
+
 		break
 	}
 
