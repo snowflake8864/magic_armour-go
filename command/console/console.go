@@ -47,13 +47,12 @@ func start(action string) {
 	variable.ZapLog.Info(fmt.Sprintf("action=%s start", action))
 
 	switch action {
-	//以下建议每1分钟执行一次
+
+	//以下建议每2分钟执行一次
 	case "AgentOffline": //终端离线
 		agent_cmd.CreateAgentFactory().Offline()
 	case "ThreatenCacheDefaultSync": //威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
 		threaten_cmd.CreateCmdFactory().SyncDefaultForCache()
-
-	//以下建议每2分钟执行一次
 	case "PlugExpired": //动态封堵已过期的自动解封
 		plug_cmd.CreateCmdFactory().DynamicExpired()
 	case "AgentSafe": //终端安全状态
@@ -69,9 +68,7 @@ func start(action string) {
 	case "ThreatenPushesSync": //威胁情报推送列表同步数据到威胁情报中心
 		threaten_cmd.CreateCmdFactory().SyncForPushes()
 
-	//以下建议每5分钟执行一次
-
-	//以下建议每12分钟执行一次
+		//以下建议每12分钟执行一次
 	case "CollectOrgToday": //统计企业今天相关数据
 		//统计企业今天数据
 		org_cmd.CreateCmdFactory().TodayStatistics()
