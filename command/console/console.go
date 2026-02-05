@@ -120,6 +120,7 @@ func start(action string) {
 	//以下建议特殊情况下执行
 	case "RepairProcByThreaten": //通过威胁情报修复进程或模块状态
 		proc_cmd.CreateCmdFactory().SyncStatusByThreaten()
+		proc_cmd.CreateCmdFactory().RepairStatusByThreaten()
 
 	default:
 		variable.ZapLog.Warn(fmt.Sprintf("action=%s fail", action))

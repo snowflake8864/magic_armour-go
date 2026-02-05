@@ -125,7 +125,6 @@ func (crd *ProcCmd) ClearRunning() {
 }
 
 // RepairStatusByThreaten  通过威胁情报修复状态
-// 不在使用，改成SyncStatusByThreaten
 func (crd *ProcCmd) RepairStatusByThreaten() {
 	variable.ZapLog.Info("RepairStatusByThreaten start")
 
