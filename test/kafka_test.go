@@ -16,6 +16,7 @@ func TestConfig(t *testing.T) {
 }
 
 func TestCreateTopic(t *testing.T) {
+	//topic_kakfa.CreateTopicFactory().Delete()
 	topic_kakfa.CreateTopicFactory().Init()
 }
 
