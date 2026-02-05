@@ -324,11 +324,7 @@ func (crd *ThreatenCmd) SyncDefaultForCache() {
 func (crd *ThreatenCmd) SyncUnknownForCache() {
 	variable.ZapLog.Info("SyncUnknownForCache start")
 	// 有等级的会影响列表获取， 重复3次
-	for n := 0; n <= 2; n++ {
-		crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
-
-		time.Sleep(2 * time.Minute)
-	}
+	crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
 	variable.ZapLog.Info("SyncUnknownForCache end")
 }
 
