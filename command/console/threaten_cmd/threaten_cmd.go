@@ -308,25 +308,9 @@ func (crd *ThreatenCmd) DeleteForCache() {
 	conditions := threaten_models.SearchConditions{
 		CreateAtLte: dayEnd,
 	}
-	cacheFact := threaten_models.CreateCacheFactory()
-	page := 0
-	limit := crd.getSupportNumber()
-	for {
-		page++
-		offset := (page - 1) * limit
-		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")
-		if models == nil || len(models) == 0 {
-			break
-		}
-		var ids []string
-		for _, model := range models {
-			ids = append(ids, model.Id)
-		}
+	threaten_models.CreateCacheFactory().DeleteByConditions(conditions)
 
-		threaten_service.CreateCacheFactory().BatchDelete(ids)
-	}
-
-	variable.ZapLog.Sugar().Info("DeleteForCache end page:", page)
+	variable.ZapLog.Sugar().Info("DeleteForCache end")
 }
 
 // SyncDefaultForCache  本地缓存：同步默认状态(未同步)数据到威胁情报中心

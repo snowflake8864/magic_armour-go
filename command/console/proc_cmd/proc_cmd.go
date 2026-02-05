@@ -137,10 +137,12 @@ func (crd *ProcCmd) RepairStatusByThreaten() {
 	processCurdFact := proc_service.CreateProcessCurdFactory()
 	dllCurdFact := proc_service.CreateDllCurdFactory()
 	for _, orgModel := range orgModels {
+		variable.ZapLog.Info(fmt.Sprintf("RepairStatusByThreaten orgId=%d start", orgModel.Id))
 		processCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusWhite)
 		processCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
 		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusWhite)
 		dllCurdFact.ThreatenRepairStatus(orgModel.Id, enum_process.RelyStatusBlack)
+		variable.ZapLog.Info(fmt.Sprintf("RepairStatusByThreaten orgId=%d end", orgModel.Id))
 	}
 	variable.ZapLog.Info("RepairStatusByThreaten end")
 }
@@ -160,10 +162,10 @@ func (crd *ProcCmd) SyncStatusByThreaten() {
 	for {
 		page++
 		offset := (page - 1) * limit
-		variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten query page=%d, offset=%d ", page, offset))
+		variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten query page=%d, offset=%d, limit=%d ", page, offset, limit))
 		models := threatenCacheFact.GetItemsByConditions(conditions, offset, limit, "")
 		if models == nil || len(models) == 0 {
-			variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten break page=%d, offset=%d ", page, offset))
+			variable.ZapLog.Info(fmt.Sprintf("SyncStatusByThreaten break page=%d, offset=%d, limit=%d ", page, offset, limit))
 			break
 		}
 
