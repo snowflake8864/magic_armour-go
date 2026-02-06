@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/response"
 	"goskeleton/command/console"
 )
@@ -29,5 +30,5 @@ func (u *CrontabController) Exec(ctx *gin.Context) {
 
 	console.HttpStart(action)
 
-	response.SuccessReturnData(ctx, action)
+	response.SuccessReturnData(ctx, gin.H{"action": action, "date": date_helper.CurDatetime()})
 }
