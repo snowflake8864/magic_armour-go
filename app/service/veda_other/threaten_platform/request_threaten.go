@@ -140,10 +140,11 @@ type CheckHashes struct {
 	Dir        string `json:"dir"`        //文件路径
 	Os         string `json:"os"`         //终端系统
 	ParentName string `json:"parentName"` //父文件路径
+	DataFrom   int    `json:"-"`          //数据来源(1未知 2进程 3模块)
 }
 
 // CheckHashes 验证hash集合,若存在返回
-func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseCheckHashes) {
+func (aa *RequestThreaten) CheckHashes(list []*CheckHashes) (error, []*ResponseCheckHashes) {
 	uri := aa.Config.Domain + "/center/threaten/checkthreaten"
 	params := map[string]interface{}{
 		"keys": json_helper.Encode(&list),
@@ -156,7 +157,7 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 		return err2, nil
 	}
 
-	var result []ResponseCheckHashes
+	var result []*ResponseCheckHashes
 	switch data := respComm.Data.(type) {
 	case []interface{}: //没有返回数据
 		return nil, nil
@@ -165,12 +166,12 @@ func (aa *RequestThreaten) CheckHashes(list *[]CheckHashes) (error, *[]ResponseC
 			tmp := ResponseCheckHashes{}
 			jsonStr := json_helper.Encode(mapStr)
 			if err1 := json_helper.ToStruct(jsonStr, &tmp); err1 == nil {
-				result = append(result, tmp)
+				result = append(result, &tmp)
 			}
 		}
 		break
 	}
-	return nil, &result
+	return nil, result
 }
 
 func (aa *RequestThreaten) TestCheckData(bodyContext string) *[]ResponseCheckHashes {

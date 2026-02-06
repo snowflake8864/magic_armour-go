@@ -32,7 +32,7 @@ func CreateCmdFactory() *ThreatenCmd {
 	return &ThreatenCmd{
 		redisClient: redis_factory.GetOneRedisClient(),
 		cachePrefix: "threaten_check_",
-		cacheExpire: 120,
+		cacheExpire: 300,
 		queryClient: producer_kafka.CreateProducerFactory(),
 	}
 }
@@ -316,75 +316,85 @@ func (crd *ThreatenCmd) DeleteForCache() {
 // SyncDefaultForCache  本地缓存：同步默认状态(未同步)数据到威胁情报中心
 func (crd *ThreatenCmd) SyncDefaultForCache() {
 	variable.ZapLog.Info("SyncDefaultForCache start")
-	crd.syncCacheToThreaten(enum_threaten.LevelDefault)
+	crd.syncCacheToThreaten(enum_threaten.LevelDefault, 600)
 	variable.ZapLog.Info("SyncDefaultForCache end")
 }
 
 // SyncUnknownForCache  本地缓存：同步未知状态数据到威胁情报中心
 func (crd *ThreatenCmd) SyncUnknownForCache() {
 	variable.ZapLog.Info("SyncUnknownForCache start")
-	// 有等级的会影响列表获取， 重复3次
-	crd.syncCacheToThreaten(enum_threaten.LevelUnknown)
+	crd.syncCacheToThreaten(enum_threaten.LevelUnknown, 2000)
 	variable.ZapLog.Info("SyncUnknownForCache end")
 }
 
 // 同步缓存到威胁情报
-func (crd *ThreatenCmd) syncCacheToThreaten(level int) {
-	variable.ZapLog.Sugar().Info("SyncCacheToThreaten level:", level)
+func (crd *ThreatenCmd) syncCacheToThreaten(queryLevel int, pageSize int) {
 
 	//获取客户端
 	err, threatenCli := crd.getThreatenCli(true, false)
 	if err != nil {
-		variable.ZapLog.Sugar().Warn("SyncCacheToThreaten ", err.Error())
+		variable.ZapLog.Sugar().Warn("SyncCacheToThreaten getThreatenCli:", err.Error())
 		return
 	}
 
+	//获取要校验的列表
 	conditions := threaten_models.SearchConditions{
-		Level: &level,
+		Level: &queryLevel,
 	}
-	cacheFact := threaten_models.CreateCacheFactory()
 	page := 0
-	limit := crd.getSupportNumber()
+	cacheFact := threaten_models.CreateCacheFactory()
+	var syncList []*threaten_platform.CheckHashes
 	for {
-		//未同步一次最多验证n回
-		if level == enum_threaten.LevelDefault && page >= 10 {
-			break
-		}
 		//每次获取固定条数
 		page++
-		offset := (page - 1) * limit
-		models := cacheFact.GetItemsByConditions(conditions, offset, limit, "")
+		offset := (page - 1) * pageSize
+		variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten query queryLevel=%d, page=%d, offset=%d, pageSize=%d ", queryLevel, page, offset, pageSize))
+		models := cacheFact.GetItemsByConditions(conditions, offset, pageSize, "")
 		if models == nil || len(models) == 0 {
+			variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten empty queryLevel=%d, page=%d, offset=%d, pageSize=%d ", queryLevel, page, offset, pageSize))
 			break
 		}
-
-		//同步列表
-		var syncList []threaten_platform.CheckHashes
-		var idAndDataFrom = make(map[string]int)
 		for _, model := range models {
 			//短时间不允许校验
 			if !crd.allowForCheck(model.Id) {
 				continue
 			}
 
-			idAndDataFrom[model.Id] = model.DataFrom
-
-			syncList = append(syncList, threaten_platform.CheckHashes{
+			syncList = append(syncList, &threaten_platform.CheckHashes{
 				ReqType:    threaten_platform.ReqType,
 				Key:        model.Id,
 				Filename:   path_helper.GetFileName(model.Dir),
 				Dir:        model.Dir,
 				Os:         model.Os,
 				ParentName: model.ParentDir,
+				DataFrom:   model.DataFrom,
 			})
 		}
 
-		if err1 := crd.checkCacheToThreaten(threatenCli, level, &syncList, idAndDataFrom); err1 != nil {
-			variable.ZapLog.Sugar().Warnln("SyncCacheToThreaten check: ", err1.Error())
+		//未同步一次最多验证1回
+		if queryLevel == enum_threaten.LevelDefault && page > 1 {
+			variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten break queryLevel=%d, page=%d, offset=%d, pageSize=%d ", queryLevel, page, offset, pageSize))
+			break
 		}
 	}
 
-	variable.ZapLog.Sugar().Info("SyncCacheToThreaten level:", level, ", page:", page)
+	if tmpLen := len(syncList); tmpLen > 0 {
+		variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten queryLevel=%d,len=%d start", queryLevel, tmpLen))
+		//认证最大数
+		supportNumber := crd.getSupportNumber()
+		for i := 0; i < tmpLen; i += supportNumber {
+			end := i + supportNumber
+			if end > tmpLen {
+				end = tmpLen
+			}
+
+			if err1 := crd.checkCacheToThreaten(threatenCli, queryLevel, syncList[i:end]); err1 != nil {
+				variable.ZapLog.Sugar().Warnln("SyncCacheToThreaten check: ", err1.Error())
+			}
+		}
+
+		variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten queryLevel=%d,len=%d end", queryLevel, tmpLen))
+	}
 }
 
 func (crd *ThreatenCmd) keyForCheck(id string) string {
@@ -405,25 +415,30 @@ func (crd *ThreatenCmd) addForCheck(id string, level int) {
 }
 
 // 同步缓存到威胁情报并进行处理
-func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, level int,
-	list *[]threaten_platform.CheckHashes, idAndDataFrom map[string]int) error {
+func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThreaten, preLevel int,
+	syncList []*threaten_platform.CheckHashes) error {
 
 	//没有需要校验数据
-	if list == nil || len(*list) == 0 {
-		variable.ZapLog.Info("list == nil")
+	if syncList == nil || len(syncList) == 0 {
+		variable.ZapLog.Info("syncList == nil")
 		return nil
+	}
+	//哈希和来源的映射
+	var idAndDataFrom = make(map[string]int)
+	for _, item := range syncList {
+		idAndDataFrom[item.Key] = item.DataFrom
 	}
 
 	//去校验
-	err, checkReps := cli.CheckHashes(list)
+	err, checkReps := cli.CheckHashes(syncList)
 	if err != nil {
 		variable.ZapLog.Warn(err.Error())
 		return nil
 	}
 	//没有返回数据
-	if checkReps == nil || len(*checkReps) == 0 {
+	if checkReps == nil || len(checkReps) == 0 {
 		//
-		crd.handleUnknown(level, idAndDataFrom)
+		crd.handleUnknown(preLevel, idAndDataFrom)
 		return nil
 	}
 	//有返回数据
@@ -431,13 +446,13 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	now := date_helper.CurDatetime()
 
 	//需要快速处理的数据, 减少时间差
-	processWhites := []string{}
-	processBlacks := []string{}
-	dllWhites := []string{}
-	dllBlacks := []string{}
+	var processWhites []string
+	var processBlacks []string
+	var dllWhites []string
+	var dllBlacks []string
 	hasLevelOnly := make(map[int][]string)
 
-	for _, item := range *checkReps {
+	for _, item := range checkReps {
 		hash := strings.ToLower(item.Hash)
 		dataFrom, isOk := idAndDataFrom[hash]
 		if !isOk {
@@ -494,7 +509,7 @@ func (crd *ThreatenCmd) checkCacheToThreaten(cli *threaten_platform.RequestThrea
 	crd.fastHandleHasLevelAndInfluenceProc(processBlacks, enum_threaten.LevelBlack, enum_threaten.DataFromProcess)
 	crd.fastHandleHasLevelAndInfluenceProc(dllWhites, enum_threaten.LevelWhite, enum_threaten.DataFromDll)
 	crd.fastHandleHasLevelAndInfluenceProc(dllBlacks, enum_threaten.LevelBlack, enum_threaten.DataFromDll)
-	crd.handleUnknown(level, idAndDataFrom)
+	crd.handleUnknown(preLevel, idAndDataFrom)
 	crd.fastHandleHasLevelOnly(hasLevelOnly)
 
 	return nil

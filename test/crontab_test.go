@@ -10,7 +10,7 @@ import (
 )
 
 func TestCrontabStart(t *testing.T) {
-	console.HttpStart("RepairProcByThreaten")
+	console.HttpStart("ThreatenCacheUnknownSync")
 }
 
 func TestCrontabStart1(t *testing.T) {
