@@ -2,6 +2,7 @@ package agent_post_service
 
 import (
 	"context"
+	"fmt"
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -11,18 +12,35 @@ import (
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
+	"goskeleton/app/utils/redis_factory"
 )
 
 func CreateAlarmFactory() *AlarmPost {
 	return &AlarmPost{
+		redisClient:   redis_factory.GetOneRedisClient(),
+		cachePrefix:   "lock_alarm_",
+		cacheExpire:   600,
 		queryClient:   producer_kafka.CreateProducerFactory(),
 		supportNumber: 100,
 	}
 }
 
 type AlarmPost struct {
+	redisClient   *redis_factory.RedisClient
+	cachePrefix   string
+	cacheExpire   int
 	queryClient   *producer_kafka.ProducerClient
 	supportNumber int
+}
+
+// 给hash加锁
+func (crd *AlarmPost) lockHash(agentId, hash string) bool {
+	key := crd.cachePrefix + md5_encrypt.MD5(agentId+"_"+hash)
+	if isOk, _ := crd.redisClient.Lock(key, "1", crd.cacheExpire); isOk {
+		return true
+	} else {
+		return false
+	}
 }
 
 // ToQueryBYComm 格式化参数后推送给队列
@@ -126,6 +144,10 @@ func (crd *AlarmPost) formatProcess(param *alarmComm, orgId int64, agentId strin
 		return nil
 	}
 
+	if !crd.lockHash(agentId, fmt.Sprintf("%d_%s", param.Type, param.Hash)) {
+		return nil
+	}
+
 	return &alarm_models.ProcessModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
@@ -165,6 +187,10 @@ func (crd *AlarmPost) sendProcess(models []*alarm_models.ProcessModel) {
 
 func (crd *AlarmPost) formatDll(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.DllModel {
 	if param.Level == 0 || string_helper.IsEmpty(param.Hash) {
+		return nil
+	}
+
+	if !crd.lockHash(agentId, fmt.Sprintf("%d_%s", param.Type, param.Hash)) {
 		return nil
 	}
 
@@ -209,6 +235,10 @@ func (crd *AlarmPost) formatTamper(param *alarmComm, orgId int64, agentId string
 		return nil
 	}
 
+	if !crd.lockHash(agentId, fmt.Sprintf("%d_%s_%s", param.Type, param.Hash, param.Dir)) {
+		return nil
+	}
+
 	return &alarm_models.TamperModel{
 		OrgId:        orgId,
 		AgentId:      agentId,
@@ -249,6 +279,10 @@ func (crd *AlarmPost) sendTamper(models []*alarm_models.TamperModel) {
 
 func (crd *AlarmPost) formatBlackmail(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.BlackmailModel {
 	if param.Level == 0 || string_helper.IsEmpty(param.Dir) {
+		return nil
+	}
+
+	if !crd.lockHash(agentId, fmt.Sprintf("%d_%s_%s", param.Type, param.Hash, param.Dir)) {
 		return nil
 	}
 
@@ -333,6 +367,10 @@ func (crd *AlarmPost) sendUsb(models []*alarm_models.UsbModel) {
 
 func (crd *AlarmPost) formatSelf(param *alarmComm, orgId int64, agentId string, now string) *alarm_models.SelfModel {
 	if param.Level == 0 {
+		return nil
+	}
+
+	if !crd.lockHash(agentId, fmt.Sprintf("%d_%s_%s_%s", param.Type, param.ProcHash, param.FileDir, param.TargetDir)) {
 		return nil
 	}
 
