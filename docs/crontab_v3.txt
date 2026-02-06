@@ -45,10 +45,10 @@ API_URL="http://127.0.0.1:20191/v5/api/crontab/exec?action="
 57 0 * * * $CURL_CMD $CURL_OPTS "${API_URL}ThreatenCacheDelete"  >> /var/log/armour_crontab.log 2>&1
 # 威胁情报缓存同步未知状态数据到威胁情报中心
 17 1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheUnknownSync >> /var/log/armour_crontab.log 2>&1
+#从进程或模块添加到威胁情报缓存
+27 1 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheAddFromProc >> /var/log/armour_crontab.log 2>&1
 
 
 ##以下建议特殊情况下执行
-#从进程或模块添加到威胁情报缓存
-#17 2 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A ThreatenCacheAddFromProc >> /var/log/armour_crontab.log 2>&1
 #通过威胁情报修复进程或模块状态
 #17 3 * * * cd /home/wwwroot/armour_go && ./app_cli.linux64 crontab -A RepairProcByThreaten >> /var/log/armour_crontab.log 2>&1
