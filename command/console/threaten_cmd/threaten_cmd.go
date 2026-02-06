@@ -372,7 +372,7 @@ func (crd *ThreatenCmd) syncCacheToThreaten(queryLevel int, pageSize int) {
 		}
 
 		//未同步一次最多验证1回
-		if queryLevel == enum_threaten.LevelDefault && page > 1 {
+		if queryLevel == enum_threaten.LevelDefault && page >= 1 {
 			variable.ZapLog.Info(fmt.Sprintf("SyncCacheToThreaten break queryLevel=%d, page=%d, offset=%d, pageSize=%d ", queryLevel, page, offset, pageSize))
 			break
 		}
