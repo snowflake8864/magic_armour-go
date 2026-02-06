@@ -24,7 +24,7 @@ func CreateProcFactory() *ProcPost {
 	return &ProcPost{
 		redisClient:   redis_factory.GetOneRedisClient(),
 		cachePrefix:   "lock_proc_upload_",
-		cacheExpire:   200,
+		cacheExpire:   1800,
 		queryClient:   producer_kafka.CreateProducerFactory(),
 		supportNumber: 30,
 	}
