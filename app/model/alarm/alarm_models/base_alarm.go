@@ -21,6 +21,7 @@ type SearchConditions struct {
 	Ip           string
 	UsbHash      string
 	FileDir      string
+	VirusType    string
 	HandleStatus int
 	Type         int
 	CreateAtGte  string
@@ -111,6 +112,12 @@ func (m *baseAlarm) conditions2Where(condition SearchConditions) (wheres []model
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "dll_hash",
 			Val: condition.DllHash,
+		})
+	}
+	if !string_helper.IsEmpty(condition.VirusType) {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "virus_type",
+			Val: condition.VirusType,
 		})
 	}
 	if !string_helper.IsEmpty(condition.FileDir) {

@@ -65,6 +65,10 @@ type StatDailyModel struct {
 	SelfHandled         int    `json:"self_handled"`
 	SelfAddTotal        int    `json:"self_add_total"`
 	SelfAddHandled      int    `json:"self_add_handled"`
+	VirusTotal          int    `json:"virus_total"`
+	VirusHandled        int    `json:"virus_handled"`
+	VirusAddTotal       int    `json:"virus_add_total"`
+	VirusAddHandled     int    `json:"virus_add_handled"`
 	CreatedAt           string `json:"created_at"`
 }
 
@@ -134,6 +138,28 @@ func (m *StatDailyModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *StatDailyModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "cgw_3.1.0_R1":
+		sql += `
+			ADD COLUMN virus_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:病毒-总数：' AFTER self_add_handled,
+			ADD COLUMN virus_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:病毒-已处理数：' AFTER virus_total,
+			ADD COLUMN virus_add_total int(11) NOT NULL DEFAULT '0' COMMENT '告警:病毒-新增-总数：' AFTER virus_handled,
+			ADD COLUMN virus_add_handled int(11) NOT NULL DEFAULT '0' COMMENT '告警:病毒-新增-已处理数：' AFTER virus_add_total;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
