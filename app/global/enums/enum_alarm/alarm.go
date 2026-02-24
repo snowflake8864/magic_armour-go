@@ -21,6 +21,7 @@ const (
 	ModuleOutreach   int = 17 //告警功能: 外联
 	ModuleLogin      int = 18 // 告警功能: 登录破解
 	ModuleSelf       int = 19 //告警功能: 自保
+	ModuleVirus      int = 20 //告警功能: 病毒查杀
 
 	/**   --------进程告警 S--------- */
 
@@ -130,6 +131,12 @@ const (
 	TypeUsbDisabledExtract       int = 9007 //禁止usb设备拔出
 	TypeUsbUnknownExtract        int = 9008 //未知usb设备拔出
 	/**   ---------外设告警 E--------- */
+
+	/**   ---------病毒查杀告警 S--------- */
+
+	TypeVirusScan int = 9100 //病毒查杀
+	/**   ---------病毒查杀告警 E--------- */
+
 )
 
 var EnumMapInt = map[string]map[int]string{
@@ -153,6 +160,7 @@ var EnumMapInt = map[string]map[int]string{
 		ModuleOutreach:  "外联告警",
 		ModuleLogin:     "口令破解告警",
 		ModuleSelf:      "自保告警",
+		ModuleVirus:     "病毒查杀",
 	},
 	"type": {
 		TypeProcessMonitorUnknownRun: "不明进程启动告警",
@@ -224,6 +232,8 @@ var EnumMapInt = map[string]map[int]string{
 		TypeUsbProtectDisabledAccess: "禁止usb设备接入阻断",
 		TypeUsbDisabledExtract:       "禁止usb设备拔出",
 		TypeUsbUnknownExtract:        "未知usb设备拔出",
+
+		TypeVirusScan: "病毒查杀",
 	},
 }
 
