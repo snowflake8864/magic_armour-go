@@ -45,7 +45,7 @@ func (m *VirusModel) CreateTable() bool {
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
-			proc_hash VARCHAR(64) NOT NULL DEFAULT '' COMMENT '进程:hash',
+			file_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '文件:路径',
 			virus_type VARCHAR(128) NOT NULL DEFAULT '' COMMENT '病毒:类型',
 			created_at DATETIME NULL,
 			agent_at DATETIME NULL COMMENT '终端时间',
@@ -56,10 +56,10 @@ func (m *VirusModel) CreateTable() bool {
 			handle_remark VARCHAR(512) NOT NULL DEFAULT '' COMMENT '处理备注',
 			handle_user VARCHAR(128) NOT NULL DEFAULT '' COMMENT '处理人(user.username)',
 			handle_at DATETIME NULL COMMENT '处理时间',
-			proc_dir VARCHAR(1024) NOT NULL DEFAULT '' COMMENT '进程:路径',
+			file_hash VARCHAR(64) NOT NULL DEFAULT '' COMMENT '文件:hash',
 			virus_desc text NULL COMMENT '病毒:描述'
 		)
-		UNIQUE KEY(org_id, agent_id,proc_hash,virus_type,created_at)
+		UNIQUE KEY(org_id, agent_id,file_dir,virus_type,created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO
 		PROPERTIES (
 			'enable_unique_key_merge_on_write' = 'true',
