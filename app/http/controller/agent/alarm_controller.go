@@ -37,3 +37,16 @@ func (u *AlarmController) PutPort(ctx *gin.Context) {
 	}
 	response.SuccessSimplify(ctx)
 }
+
+// PutVirus 上传病毒查杀告警
+func (u *AlarmController) PutVirus(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
+	err := agent_post_service.CreateAlarmFactory().ToQueryBYPort(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	if err != nil {
+		response.SuccessReturnData(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
+}
