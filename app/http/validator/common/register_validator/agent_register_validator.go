@@ -90,9 +90,13 @@ func AgentRegisterValidator() {
 	containers.Set(key, alarm1.MasterPut{})
 	key = consts.ValidatorPrefixAgent + "AlarmPortPut"
 	containers.Set(key, alarm1.PortPut{})
+	key = consts.ValidatorPrefixAgent + "AlarmVirusScan" //长城卫士-病毒查杀
+	containers.Set(key, alarm1.VirusPut{})
 
 	//通讯日志相关
 	key = consts.ValidatorPrefixAgent + "SyslogPut"
+	containers.Set(key, agentSyslog1.Put{})
+	key = consts.ValidatorPrefixAgent + "SyslogVulnScan" //长城卫士-漏洞检测
 	containers.Set(key, agentSyslog1.Put{})
 
 	//备份相关

@@ -65,6 +65,14 @@ type alarmPort struct {
 	RedirectPort  int    `json:"redirect_port"`
 }
 
+// 告警：病毒查杀
+type alarmVirus struct {
+	ProcHash  string `json:"proc_hash"`
+	ProcDir   string `json:"proc_dir"`
+	VirusType string `json:"virus_type"`
+	VirusDesc string `json:"virus_desc"`
+}
+
 // 通讯日志： 公共
 type syslogComm struct {
 	LogType       json.Number `json:"log_type"`

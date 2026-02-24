@@ -139,9 +139,11 @@ func InitAgentRouter() *gin.Engine {
 			//告警相关
 			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
 			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmPortPut"))    //上传端口虚开告警
+			vAgent.POST("upVirusScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmVirusScan")) //上传病毒查杀告警
 
 			//通讯日志相关
-			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogPut")) //上传通讯日志
+			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogPut"))        //上传通讯日志
+			vAgent.POST("putVulnScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogVulnScan")) //上传漏洞扫描日志
 
 			//策略跳变
 			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump)                               //
