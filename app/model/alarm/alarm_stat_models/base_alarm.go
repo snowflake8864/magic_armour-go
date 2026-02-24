@@ -28,6 +28,7 @@ const (
 	PrefixOutreach  string = "outreach"
 	PrefixLogin     string = "login"
 	PrefixSelf      string = "self"
+	PrefixVirus     string = "virus"
 )
 
 type baseAlarm struct {
@@ -128,6 +129,7 @@ func (crd *baseAlarm) StatColumnOfAllType(total, handled, addTotal, addHandled, 
 		PrefixOutreach,
 		PrefixLogin,
 		PrefixSelf,
+		PrefixVirus,
 	}
 
 	for _, val := range prefixes {
