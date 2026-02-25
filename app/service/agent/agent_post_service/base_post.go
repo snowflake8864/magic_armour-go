@@ -67,8 +67,9 @@ type alarmPort struct {
 
 // 告警：病毒查杀
 type alarmVirus struct {
-	ProcHash  string `json:"proc_hash"`
-	ProcDir   string `json:"proc_dir"`
+	Time      int64  `json:"time"`
+	FileHash  string `json:"file_hash"`
+	FileDir   string `json:"file_dir"`
 	VirusType string `json:"virus_type"`
 	VirusDesc string `json:"virus_desc"`
 }

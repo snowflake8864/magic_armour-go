@@ -28,8 +28,8 @@ type VirusModel struct {
 	HandleUser   string `json:"handle_user"`
 	HandleAt     string `json:"handle_at" gorm:"default:NULL"`
 	CreatedAt    string `json:"created_at"`
-	ProcHash     string `json:"proc_hash"`
-	ProcDir      string `json:"proc_dir"`
+	FileHash     string `json:"file_hash"`
+	FileDir      string `json:"file_dir"`
 	VirusType    string `json:"virus_type"`
 	VirusDesc    string `json:"virus_desc"`
 }
