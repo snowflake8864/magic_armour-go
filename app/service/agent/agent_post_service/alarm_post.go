@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
+	"goskeleton/app/service/agent/alarm_service/job_callback_alarm"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -530,4 +532,45 @@ func (crd *AlarmPost) uniqueBYPort(attackIp string, targetIp string, targetPort 
 	str += int_helper.IntToStr(weight)
 
 	return md5_encrypt.MD5(str)
+}
+
+// ToQueryBYVirus 格式化参数后推送给队列
+func (crd *AlarmPost) ToQueryBYVirus(orgId int64, agentId, inputJson string) error {
+	var params []alarmVirus
+	if err := json_helper.ToAny(inputJson, &params); err != nil {
+		return err
+	}
+	now := date_helper.CurDatetime()
+	//fmt.Println("params========================================")
+	//fmt.Println(json_helper.Encode(params))
+	var list []alarm_models.VirusModel
+	for _, item := range params {
+		if !string_helper.IsEmpty(item.FileDir) && !string_helper.IsEmpty(item.VirusType) {
+			list = append(list, crd.fillVirus(&item, orgId, agentId, now))
+		}
+
+	}
+	if err := job_callback_alarm.CreateVirusUploadFactory().BatchAdd(&list); err != nil {
+		variable.ZapLog.Warn(err.Error())
+	}
+	return nil
+}
+
+func (crd *AlarmPost) fillVirus(param *alarmVirus, orgId int64, agentId string, now string) alarm_models.VirusModel {
+
+	model := alarm_models.VirusModel{
+		OrgId:        orgId,
+		AgentId:      agentId,
+		Type:         enum_alarm.TypeVirusScan,
+		Level:        enum_alarm.LevelSerious,
+		AgentAt:      crd.getAgentAt(param.Time, now),
+		HandleStatus: enum_alarm.HandleStatusNot,
+		CreatedAt:    now,
+		FileDir:      param.FileDir,
+		FileHash:     param.FileHash,
+		VirusType:    param.VirusType,
+		VirusDesc:    param.VirusDesc,
+	}
+
+	return model
 }

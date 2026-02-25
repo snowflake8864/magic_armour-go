@@ -43,7 +43,7 @@ func (u *AlarmController) PutVirus(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	inputJson := ctx.GetString(consts.ValidatorPrefixAgent + "alert")
-	err := agent_post_service.CreateAlarmFactory().ToQueryBYPort(loginInfo.OrgId, loginInfo.AgentId, inputJson)
+	err := agent_post_service.CreateAlarmFactory().ToQueryBYVirus(loginInfo.OrgId, loginInfo.AgentId, inputJson)
 	if err != nil {
 		response.SuccessReturnData(ctx, err.Error())
 		return
