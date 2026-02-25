@@ -30,6 +30,7 @@ func (crd *SyslogCmd) Delete() {
 		syslog_models.CreateInnerFactory().TruncateTable()
 		syslog_models.CreateProcessFactory().TruncateTable()
 		syslog_models.CreateLoginFactory().TruncateTable()
+		syslog_models.CreateVulnFactory().TruncateTable()
 	} else {
 		_, _, dayEnd, _ := date_helper.CalcByDay(-expire)
 		syslog_models.CreateDnsFactory().DeleteByConditions(syslog_models.SearchConditions{
@@ -45,6 +46,9 @@ func (crd *SyslogCmd) Delete() {
 			CreateAtLte: dayEnd,
 		})
 		syslog_models.CreateLoginFactory().DeleteByConditions(syslog_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		syslog_models.CreateVulnFactory().DeleteByConditions(syslog_models.SearchConditions{
 			CreateAtLte: dayEnd,
 		})
 	}
