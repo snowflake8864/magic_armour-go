@@ -174,7 +174,7 @@ func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	model.Handled += calc1.HandledNumber
 	model.AddTotal += calc2.TotalNumber
 	model.AddHandled += calc2.HandledNumber
-
+	
 	if !alarm_service.CreateStatDailyFactory().Add(&model) {
 		variable.ZapLog.Warn("fail")
 		return
