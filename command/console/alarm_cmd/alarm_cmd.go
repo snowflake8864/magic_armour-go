@@ -109,6 +109,7 @@ func (crd *AlarmCmd) Delete() {
 		alarm_models.CreateOutreachFactory().TruncateTable()
 		alarm_models.CreateLoginFactory().TruncateTable()
 		alarm_models.CreateSelfFactory().TruncateTable()
+		alarm_models.CreateVirusFactory().TruncateTable()
 	} else {
 		_, _, dayEnd, _ := date_helper.CalcByDay(-expire)
 		alarm_models.CreateProcessFactory().DeleteByConditions(alarm_models.SearchConditions{
@@ -139,6 +140,9 @@ func (crd *AlarmCmd) Delete() {
 			CreateAtLte: dayEnd,
 		})
 		alarm_models.CreateSelfFactory().DeleteByConditions(alarm_models.SearchConditions{
+			CreateAtLte: dayEnd,
+		})
+		alarm_models.CreateVirusFactory().DeleteByConditions(alarm_models.SearchConditions{
 			CreateAtLte: dayEnd,
 		})
 

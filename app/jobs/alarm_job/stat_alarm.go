@@ -162,6 +162,19 @@ func StatInStartAtAndEndAt(jsonStr string, startAt, endAt string) {
 	model.AddTotal += calc2.TotalNumber
 	model.AddHandled += calc2.HandledNumber
 
+	//病毒查杀告警
+	VirusFact := alarm_models.CreateVirusFactory()
+	calc1 = VirusFact.CalcByConditions(conditions1, column1)
+	calc2 = VirusFact.CalcByConditions(conditions2, column1)
+	model.VirusTotal = calc1.TotalNumber
+	model.VirusHandled = calc1.HandledNumber
+	model.VirusAddTotal = calc2.TotalNumber
+	model.VirusAddHandled = calc2.HandledNumber
+	model.Total += calc1.TotalNumber
+	model.Handled += calc1.HandledNumber
+	model.AddTotal += calc2.TotalNumber
+	model.AddHandled += calc2.HandledNumber
+
 	if !alarm_service.CreateStatDailyFactory().Add(&model) {
 		variable.ZapLog.Warn("fail")
 		return
