@@ -27,6 +27,12 @@ type VulnModel struct {
 	VulnInfo    string `json:"vuln_info"`
 }
 
+type VulnInfo struct {
+	Title    string `json:"title"`    //标题
+	Severity string `json:"severity"` //安全等级
+	//Desc  string `json:"desc"`
+}
+
 // 表名
 func (m *VulnModel) TableName() string {
 	return "a_syslog_vuln"

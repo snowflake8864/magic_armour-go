@@ -97,7 +97,7 @@ func AgentRegisterValidator() {
 	key = consts.ValidatorPrefixAgent + "SyslogPut"
 	containers.Set(key, agentSyslog1.Put{})
 	key = consts.ValidatorPrefixAgent + "SyslogVulnScan" //长城卫士-漏洞检测
-	containers.Set(key, agentSyslog1.Put{})
+	containers.Set(key, agentSyslog1.VulnPut{})
 
 	//备份相关
 	key = consts.ValidatorPrefixAgent + "BackupPut"
