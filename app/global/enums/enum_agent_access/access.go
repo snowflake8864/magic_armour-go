@@ -49,8 +49,10 @@ var EnumStrMap = map[string]map[string]string{
 
 		"/v1/alertupload": "上传告警(除端口端口外)",
 		"/v1/upopenport":  "上传端口虚开告警",
+		"/v1/upVirusScan": "上传病毒查杀告警",
 
-		"/v1/putsyslog": "上传通信日志",
+		"/v1/putsyslog":   "上传通信日志",
+		"/v1/putVulnScan": "上传漏洞扫描日志",
 
 		"/v1/puthardwareinfo": "上传终端资源信息",
 		"/v1/uploadIp":        "上传终端IP信息",
@@ -117,6 +119,8 @@ var WebMapStr = map[string][]string{
 		"/v1/uploadBackup",
 		"/v1/getRollbacks",
 		"/v1/uploadRollback",
+		"/v1/upVirusScan",
+		"/v1/putVulnScan",
 	},
 }
 
