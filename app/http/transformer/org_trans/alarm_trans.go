@@ -401,3 +401,41 @@ func (t *AlarmTrans) TransSelfPage(total int64, models []*alarm_models.SelfModel
 		"items": items,
 	}
 }
+
+// TransVirusPage 转换成病毒告警分页需要的数据
+func (t *AlarmTrans) TransVirusPage(total int64, models []*alarm_models.VirusModel,
+	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			data := make(map[string]interface{})
+
+			data["id"] = fmt.Sprintf("%d", model.Id)
+			data["agent_id"] = model.AgentId
+			data["type"] = model.Type
+			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+			data["level"] = model.Level
+			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+			data["agent_at"] = model.AgentAt
+			data["handle_status"] = model.HandleStatus
+			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			data["handle_remark"] = model.HandleRemark
+			data["handle_user"] = model.HandleUser
+			data["handle_at"] = model.HandleAt
+			data["created_at"] = model.CreatedAt
+
+			data["file_hash"] = model.FileHash
+			data["file_dir"] = model.FileDir
+			data["virus_type"] = model.VirusType
+			data["virus_desc"] = model.VirusDesc
+
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}

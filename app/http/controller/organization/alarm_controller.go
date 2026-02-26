@@ -149,6 +149,10 @@ func (u *AlarmController) AgentStatForManage(ctx *gin.Context) {
 		fact := alarm_models.CreateSelfFactory()
 		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
 		break
+	case enum_alarm.ModuleVirus:
+		fact := alarm_models.CreateVirusFactory()
+		calcList = fact.CalcByConditionsGroupAgent(conditions, fact.ColumnCalc(false, true, true, false))
+		break
 	}
 
 	//填充数据
@@ -211,6 +215,11 @@ func (u *AlarmController) ClearForManage(ctx *gin.Context) {
 		AgentId: agentId,
 	})
 
+	_ = alarm_service.CreateVirusCurdFactory().ClearByAgent(&alarm_models.VirusModel{
+		OrgId:   loginInfo.OrgId,
+		AgentId: agentId,
+	})
+
 	response.SuccessSimplify(ctx)
 }
 
@@ -256,6 +265,10 @@ func (u *AlarmController) BatchClearForManage(ctx *gin.Context) {
 	}, agentIds)
 
 	_ = alarm_service.CreateSelfCurdFactory().ClearByAgents(&alarm_models.SelfModel{
+		OrgId: loginInfo.OrgId,
+	}, agentIds)
+
+	_ = alarm_service.CreateVirusCurdFactory().ClearByAgents(&alarm_models.VirusModel{
 		OrgId: loginInfo.OrgId,
 	}, agentIds)
 
@@ -456,6 +469,21 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
 		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransSelfPage(total, models, agentMap, nil))
+		break
+	case enum_alarm.ModuleVirus:
+		condition.VirusType = ctx.GetString(consts.ValidatorPrefixOrg + "virusType")
+		condition.FileDir = ctx.GetString(consts.ValidatorPrefixOrg + "fileDir")
+
+		fact := alarm_models.CreateVirusFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransVirusPage(total, models, agentMap, nil))
 		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
