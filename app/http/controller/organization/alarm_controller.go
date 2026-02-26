@@ -587,6 +587,15 @@ func (u *AlarmController) HandleForAlarm(ctx *gin.Context, module int) {
 			HandleUser:   loginInfo.Username,
 		})
 		break
+	case enum_alarm.ModuleVirus:
+		err = alarm_service.CreateVirusCurdFactory().Handle(&alarm_models.VirusModel{
+			OrgId:        loginInfo.OrgId,
+			AgentId:      agentId,
+			Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
+			HandleRemark: ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+			HandleUser:   loginInfo.Username,
+		})
+		break
 	}
 
 	if err != nil {
@@ -677,6 +686,13 @@ func (u *AlarmController) HandleAllForAlarm(ctx *gin.Context, module int) {
 			HandleUser:   loginInfo.Username,
 		}, userAgentIds)
 		break
+	case enum_alarm.ModuleVirus:
+		err = alarm_service.CreateVirusCurdFactory().HandleAll(&alarm_models.VirusModel{
+			OrgId:        loginInfo.OrgId,
+			HandleRemark: ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+			HandleUser:   loginInfo.Username,
+		}, userAgentIds)
+		break
 	}
 
 	if err != nil {
@@ -744,6 +760,11 @@ func (u *AlarmController) ClearForAlarm(ctx *gin.Context, module int) {
 		break
 	case enum_alarm.ModuleSelf:
 		err = alarm_service.CreateSelfCurdFactory().ClearByAgents(&alarm_models.SelfModel{
+			OrgId: loginInfo.OrgId,
+		}, userAgentIds)
+		break
+	case enum_alarm.ModuleVirus:
+		err = alarm_service.CreateVirusCurdFactory().ClearByAgents(&alarm_models.VirusModel{
 			OrgId: loginInfo.OrgId,
 		}, userAgentIds)
 		break

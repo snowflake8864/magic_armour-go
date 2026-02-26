@@ -160,7 +160,7 @@ var EnumMapInt = map[string]map[int]string{
 		ModuleOutreach:  "外联告警",
 		ModuleLogin:     "口令破解告警",
 		ModuleSelf:      "自保告警",
-		ModuleVirus:     "病毒查杀",
+		ModuleVirus:     "病毒查杀告警",
 	},
 	"type": {
 		TypeProcessMonitorUnknownRun: "不明进程启动告警",
