@@ -11,6 +11,7 @@ const (
 	LogTypeInner   int = 3 //日志类型：对内通讯
 	LogTypeProcess int = 4 //日志类型：进程启动
 	LogTypeLogin   int = 5 //日志类型：登录
+	LogTypeVuln    int = 6 //日志类型：漏洞扫描
 
 	LoginRdp string = "RDP" //登录类型： 远程桌面协议
 	LoginSmb string = "SMB" //登录类型： 一种局域网文件共享传输协议

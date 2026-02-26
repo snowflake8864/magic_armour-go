@@ -9,6 +9,8 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 )
 
 type SyslogTrans struct {
@@ -163,6 +165,39 @@ func (t *SyslogTrans) TransLoginPage(total int64, models []*syslog_models.LoginM
 			data["type"] = model.Type
 			data["status"] = model.Status
 			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("login_status", model.Status, enum_syslog.EnumMapInt)
+
+			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
+			items = append(items, data)
+		}
+	}
+
+	return gin.H{
+		"total": total,
+		"items": items,
+	}
+}
+
+// TransVulnPage 转换成漏洞分页需要的数据
+func (t *SyslogTrans) TransVulnPage(total int64, models []*syslog_models.VulnModel,
+	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+	var items []map[string]interface{}
+	if models != nil {
+		for _, model := range models {
+			data := make(map[string]interface{})
+			data["id"] = fmt.Sprintf("%d", model.Id)
+			data["agent_id"] = model.AgentId
+			data["created_at"] = model.CreatedAt
+			data["scan_start_at"] = model.ScanStartAt
+			data["scan_end_at"] = model.ScanEndAt
+
+			data["vuln_total"] = model.VulnTotal
+			data["vuln_info"] = nil
+			if !string_helper.IsEmpty(model.VulnInfo) {
+				var tmpList []syslog_models.VulnInfo
+				if err := json_helper.ToAny(model.VulnInfo, &tmpList); err == nil {
+					data["vuln_info"] = tmpList
+				}
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
