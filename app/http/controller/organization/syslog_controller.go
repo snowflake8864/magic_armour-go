@@ -149,6 +149,17 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 		}
 		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransLoginPage(total, models, agentMap, nil))
 		break
+	case enum_syslog.LogTypeVuln:
+		fact := syslog_models.CreateVulnFactory()
+		total, models := fact.Page(condition, offset, pageSize, order)
+		if models != nil || len(models) > 0 {
+			for _, model := range models {
+				agentIds = append(agentIds, model.AgentId)
+			}
+			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
+		}
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransVulnPage(total, models, agentMap, nil))
+		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
 	}
@@ -190,6 +201,9 @@ func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 	case enum_syslog.LogTypeLogin:
 		err = syslog_service.CreateLoginCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
 		break
+	case enum_syslog.LogTypeVuln:
+		err = syslog_service.CreateVulnCurdFactory().DeleteByIds(loginInfo.OrgId, ids, startTime, endTime)
+		break
 	}
 
 	if err != nil {
@@ -223,6 +237,9 @@ func (u *SyslogController) ClearForSyslog(ctx *gin.Context, module int) {
 		break
 	case enum_syslog.LogTypeLogin:
 		err = syslog_service.CreateLoginCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
+		break
+	case enum_syslog.LogTypeVuln:
+		err = syslog_service.CreateVulnCurdFactory().ClearByAgents(loginInfo.OrgId, userAgentIds)
 		break
 	}
 

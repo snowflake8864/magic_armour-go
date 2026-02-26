@@ -878,6 +878,12 @@ func InitOrganizationRouter() *gin.Engine {
 						login1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginBatchDelete"))
 						login1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogLoginClear"))
 					}
+					vuln1 := syslog.Group("vuln/")
+					{
+						vuln1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogVulnPage"))
+						vuln1.POST("batchDelete", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogVulnBatchDelete"))
+						vuln1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"SyslogVulnClear"))
+					}
 				} //通信日志
 
 				//订单授权

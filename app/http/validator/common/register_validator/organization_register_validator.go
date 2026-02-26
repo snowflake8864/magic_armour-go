@@ -797,6 +797,12 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, syslog3.LoginBatchDelete{})
 	key = consts.ValidatorPrefixOrg + "SyslogLoginClear"
 	containers.Set(key, syslog3.LoginClear{})
+	key = consts.ValidatorPrefixOrg + "SyslogVulnPage"
+	containers.Set(key, syslog3.VulnPage{})
+	key = consts.ValidatorPrefixOrg + "SyslogVulnBatchDelete"
+	containers.Set(key, syslog3.VulnBatchDelete{})
+	key = consts.ValidatorPrefixOrg + "SyslogVulnClear"
+	containers.Set(key, syslog3.VulnClear{})
 
 	//订单授权
 	key = consts.ValidatorPrefixOrg + "OrderPurchasePage"
