@@ -131,6 +131,7 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 		enum_alarm.ModuleOutreach:  calc.OutreachAddTotal,
 		enum_alarm.ModuleLogin:     calc.LoginAddTotal,
 		enum_alarm.ModuleSelf:      calc.SelfAddTotal,
+		enum_alarm.ModuleVirus:     calc.VirusAddTotal,
 	}
 	descSort := map_helper.SortDescIntAndInt(moduleMap)
 
