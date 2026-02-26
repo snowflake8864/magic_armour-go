@@ -831,6 +831,14 @@ func InitOrganizationRouter() *gin.Engine {
 						self1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfHandleAll"))
 						self1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmSelfClear"))
 					}
+
+					virus1 := alarm.Group("virus/")
+					{
+						virus1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmVirusPage"))
+						virus1.POST("handle", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmVirusHandle"))
+						virus1.POST("handleAll", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmVirusHandleAll"))
+						virus1.POST("clear", validatorFactory.Create(consts.ValidatorPrefixOrg+"AlarmVirusClear"))
+					}
 				} //告警
 
 				//通信日志

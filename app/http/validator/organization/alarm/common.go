@@ -60,6 +60,10 @@ type SearchType struct {
 	AlarmType int `form:"alarmType" json:"alarmType" binding:"required"`
 }
 
+type SearchVirusType struct {
+	VirusType string `form:"virusType" json:"virusType" binding:"omitempty,max=128"`
+}
+
 type SearchTime struct {
 	StartTime string `form:"startTime" json:"startTime" binding:"required,datetime=2006-01-02 15:04:05"`
 	EndTime   string `form:"endTime" json:"endTime" binding:"required,datetime=2006-01-02 15:04:05"`

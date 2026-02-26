@@ -758,7 +758,14 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, alarm3.SelfHandleAll{})
 	key = consts.ValidatorPrefixOrg + "AlarmSelfClear"
 	containers.Set(key, alarm3.SelfClear{})
-
+	key = consts.ValidatorPrefixOrg + "AlarmVirusPage" //
+	containers.Set(key, alarm3.VirusPage{})
+	key = consts.ValidatorPrefixOrg + "AlarmVirusHandle" //
+	containers.Set(key, alarm3.VirusHandle{})
+	key = consts.ValidatorPrefixOrg + "AlarmVirusHandleAll" //
+	containers.Set(key, alarm3.VirusHandleAll{})
+	key = consts.ValidatorPrefixOrg + "AlarmVirusClear" //
+	containers.Set(key, alarm3.VirusClear{})
 	//通讯日志
 	key = consts.ValidatorPrefixOrg + "SyslogDnsPage"
 	containers.Set(key, syslog3.DnsPage{})

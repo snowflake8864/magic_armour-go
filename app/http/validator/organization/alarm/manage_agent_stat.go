@@ -11,7 +11,7 @@ import (
 
 type ManageAgentStat struct {
 	data_type.AgentBatch
-	Module int `form:"module" json:"module" binding:"required,min=10,max=19"`
+	Module int `form:"module" json:"module" binding:"required,min=10,max=20"`
 }
 
 func (n ManageAgentStat) CheckParams(context *gin.Context) {
