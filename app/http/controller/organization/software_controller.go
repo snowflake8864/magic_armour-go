@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -53,17 +52,9 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 		return
 	}
 	verId := downloadFact.EncryptConfig(loginInfo.OrgId, loginInfo.UserId, softId)
-	api := "/v5/api/software/download?token="
-
-	url := ""
-	if model.PlatformType == enum_software.PlatformTypeLinux {
-		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s%s%s'"
-	} else {
-		url += "%s%s%s"
-	}
 
 	response.SuccessReturnData(ctx, gin.H{
-		"url": fmt.Sprintf(url, addr, api, verId),
+		"url": enum_software.GetOfflineDownload(model.PlatformType, addr, verId),
 	})
 }
 
