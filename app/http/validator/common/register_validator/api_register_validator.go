@@ -21,6 +21,10 @@ func ApiRegisterValidator() {
 	containers.Set(key, crontab2.Exec{})
 
 	//软件
+	key = consts.ValidatorPrefixApi + "SoftwareOfflineDownload"
+	containers.Set(key, software2.OfflineDownload{})
+	key = consts.ValidatorPrefixApi + "SoftwareOnlineDownload"
+	containers.Set(key, software2.OnlineDownload{})
 	key = consts.ValidatorPrefixApi + "SoftwareDownload"
 	containers.Set(key, software2.Download{})
 

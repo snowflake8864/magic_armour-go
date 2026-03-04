@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/http/controller/api"
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
@@ -80,6 +81,9 @@ func InitApiRouter() *gin.Engine {
 		// 软件版本相关
 		software := vApi.Group("software/")
 		{
+			software.POST("publishedList", (&api.SoftwareController{}).PublishedList)
+			software.POST("offlineDownload", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareOfflineDownload"))
+			software.POST("onlineDownload", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareOnlineDownload"))
 			software.GET("download", validatorFactory.Create(consts.ValidatorPrefixApi+"SoftwareDownload"))
 		}
 

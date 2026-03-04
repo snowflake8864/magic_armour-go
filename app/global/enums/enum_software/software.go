@@ -1,6 +1,7 @@
 package enum_software
 
 import (
+	"fmt"
 	"goskeleton/app/global/enums"
 	"strings"
 )
@@ -302,4 +303,17 @@ func ShowVer(platformType, agentOsType int, agentVer string) string {
 	name += "_"
 	name += agentVer
 	return name
+}
+
+func GetOfflineDownload(platformType int, addr, verId string) string {
+	url := ""
+	if platformType == PlatformTypeLinux {
+		url += "sudo wget --no-check-certificate -SO /opt/veda_armour.zip '%s%s%s'"
+	} else {
+		url += "%s%s%s"
+	}
+
+	api := "/v5/api/software/download?token="
+
+	return fmt.Sprintf(url, addr, api, verId)
 }
