@@ -117,7 +117,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.UserId = userInfo.UserId
 	isOk, data := agent_service.CreateOnlineFactory().RegisterOrLogin(&param)
 	if !isOk {
-		response.FailSimplify(ctx, data)
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, data)
 		return
 	}
 

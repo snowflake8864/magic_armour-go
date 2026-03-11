@@ -72,12 +72,12 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
 		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-			response.FailSimplify(ctx, "保存失败")
+			response.FailRoutine(ctx, consts.AgentParamErrorCode, "保存失败")
 			return
 		}
 
 		if err := proc_service.CreateSampleCurdFactory().UploadSuccess(loginInfo.OrgId, loginInfo.AgentId, id, &uploadParam); err != nil {
-			response.FailSimplify(ctx, err.Error())
+			response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
 			return
 		}
 		response.SuccessSimplify(ctx)
