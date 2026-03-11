@@ -98,7 +98,7 @@ func (u *BackupController) UploadBackup(ctx *gin.Context) {
 	param := u.getResp(ctx, true)
 
 	if err := backup_service.CreateCurdFactory().BackupComplete(param); err != nil {
-		response.FailData(ctx, "BackupComplete fail", err.Error())
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
 		return
 	}
 
@@ -158,7 +158,7 @@ func (u *BackupController) UploadRollback(ctx *gin.Context) {
 	param := u.getResp(ctx, false)
 
 	if err := backup_service.CreateCurdFactory().RollbackComplete(param); err != nil {
-		response.FailData(ctx, "RollbackComplete fail", err.Error())
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
 		return
 	}
 

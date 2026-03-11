@@ -90,7 +90,7 @@ func (u *PlugController) PutDynamic(ctx *gin.Context) {
 	Duration := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "duration"))
 
 	if err := plug_calc_service.CreatePlugCalcFactory().Add(loginInfo.OrgId, loginInfo.AgentId, Ip, Source, PlugType, Duration); err != nil {
-		response.FailSimplify(ctx, err.Error())
+		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
 	}
 
 	response.SuccessReturnData(ctx, "上传动态封堵(调试用)")
