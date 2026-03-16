@@ -23,6 +23,7 @@ const (
 	TypePlugIpBlackDownload       int = 15 //任务类型:下载封堵ip黑名单
 	TypeUsbUpload                 int = 16 //任务类型: 上传外设列表
 	TypeBlackmailPolicyDownload   int = 19 //任务类型:  下载勒索防护策略
+	TypeAgentDelete               int = 20 //任务类型:软件删除（不下发给agent端）
 	TypeProcessCollectDll         int = 21 //任务类型: 收集指定进程并相关模块
 	TypeDllRefresh                int = 22 //任务类型: 刷新模块
 	TypeDllWhiteDownload          int = 23 //任务类型: 下载模块白名单

@@ -24,8 +24,8 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 	//未完成的任务, 不支持的任务
 	var unfinishedTasks, notSupportTasks []int
-	//有获取配置任务, 有卸载任务, 需要开启保护模式前下发的任务, 有重置终端标识任务
-	var hasConfig, hasUninstall, hasProjectModeBefore, hashResetUuid bool
+	//有获取配置任务, 有卸载任务, 需要开启保护模式前下发的任务, 有重置终端标识任务, 有删除的任务
+	var hasConfig, hasUninstall, hasProjectModeBefore, hasResetUuid, hasDelete bool
 
 	taskCacheFact := task_service.CreateCacheFactory()
 	//缓存中的任务
@@ -44,7 +44,12 @@ func (u *TaskController) Get(ctx *gin.Context) {
 			}
 			//是否有重置终端标识任务
 			if val == enum_task.TypeResetUUid {
-				hashResetUuid = true
+				hasResetUuid = true
+				break
+			}
+			//是否有删除的任务
+			if val == enum_task.TypeAgentDelete {
+				hasDelete = true
 				break
 			}
 			//win xp 不支持的功能
@@ -74,10 +79,12 @@ func (u *TaskController) Get(ctx *gin.Context) {
 
 		//任务加入不支持列表，等待关闭
 		notSupportTasks = append(notSupportTasks, enum_task.TypeAgentUninstall)
-	} else if hashResetUuid { //重置终端标识任务
+	} else if hasResetUuid { //重置终端标识任务
 		//只下重置终端标识任务
 		unfinishedTasks = []int{enum_task.TypeResetUUid}
-
+	} else if hasDelete { // 删除的任务
+		response.ErrorTokenFail(ctx, consts.AgentLoginExpiredCode, "agent delete")
+		return
 	} else {
 		if taskCacheFact.LockAgentLive(loginInfo.OrgId, loginInfo.AgentId) {
 			//设置存活状态

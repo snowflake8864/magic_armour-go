@@ -173,6 +173,8 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (
 	if isUninstall {
 		//添加任务
 		task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentUninstall, "")
+	} else {
+		task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeAgentDelete, "")
 	}
 
 	//丢入队列
