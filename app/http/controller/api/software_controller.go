@@ -112,6 +112,9 @@ func (u *SoftwareController) OnlineDownload(ctx *gin.Context) {
 		response.FailSimplify(ctx, err.Error())
 		return
 	} else {
-		response.FileDownload(ctx, downloadModel.FullPath)
+		response.SuccessReturnData(ctx, gin.H{
+			"path": downloadModel.StoragePath,
+		})
+		//response.FileDownload(ctx, downloadModel.FullPath)
 	}
 }
