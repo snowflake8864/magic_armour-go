@@ -50,8 +50,18 @@ func (u *SoftwareController) PublishedList(ctx *gin.Context) {
 		IsPublish: &IsPublish,
 	}
 
-	models := software_models.CreateSoftwareFactory().GetItemsByConditions(condition, 0, 0, "")
-	response.SuccessReturnData(ctx, (&org_trans.Software{}).TransList(models))
+	//windows
+	condition.PlatformType = enum_software.PlatformTypeWindows
+	windowsModels := software_models.CreateSoftwareFactory().GetItemsByConditions(condition, 0, 0, "")
+
+	//windows
+	condition.PlatformType = enum_software.PlatformTypeLinux
+	linuxModels := software_models.CreateSoftwareFactory().GetItemsByConditions(condition, 0, 0, "")
+
+	response.SuccessReturnData(ctx, gin.H{
+		"windows": (&org_trans.Software{}).TransList(windowsModels),
+		"linux":   (&org_trans.Software{}).TransList(linuxModels),
+	})
 }
 
 func (u *SoftwareController) getUser() (int64, int64) {
