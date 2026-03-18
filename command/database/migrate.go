@@ -257,6 +257,9 @@ func appendTableAndData() {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = user_models.CreateUserFactory().AlterTable(ver)
 	}
+	if ver := "MA_3.1.0_R4_B8"; !existMigration(ver) {
+		_ = agent_online_models.CreateOnlineLogFactory().AlterTable(ver)
+	}
 
 	//保存迁移数据
 	saveMigrations()

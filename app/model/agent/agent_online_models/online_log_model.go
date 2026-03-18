@@ -57,8 +57,8 @@ func (m *OnlineLogModel) CreateTable() bool {
 			os_name varchar(128)  NOT NULL DEFAULT '' COMMENT '系统名称',
 			ver varchar(32)  NOT NULL DEFAULT '' COMMENT '终端版本号',
 			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
-			alias varchar(64)  NOT NULL DEFAULT '' COMMENT '别名',
-			contact_name varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
+			alias varchar(256)  NOT NULL DEFAULT '' COMMENT '别名',
+			contact_name varchar(256)  NOT NULL DEFAULT '' COMMENT '责任人:姓名',
 			contact_tel varchar(64)  NOT NULL DEFAULT '' COMMENT '责任人:电话',
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注'
 		)
@@ -68,6 +68,26 @@ func (m *OnlineLogModel) CreateTable() bool {
 			'replication_allocation' = 'tag.location.default: 1'
 		);
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *OnlineLogModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MA_3.1.0_R4_B8":
+		sql += `
+			MODIFY COLUMN alias varchar(256) NOT NULL DEFAULT '' COMMENT '别名' AFTER dept_id,
+			MODIFY COLUMN contact_name varchar(256) NOT NULL DEFAULT '' COMMENT '责任人:姓名' AFTER alias;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true
