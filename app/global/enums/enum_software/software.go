@@ -248,7 +248,7 @@ func GetOsTypeByName(name string) int {
 		return OsTypeLinuxAlmaLinux
 	} else if strings.Contains(name, "fedora") {
 		return OsTypeLinuxFedora
-	} else if strings.Contains(name, "euler") {
+	} else if strings.Contains(name, "euler") || strings.Contains(name, "fusionos") {
 		return OsTypeLinuxEuler
 	} else if strings.Contains(name, "suse") || strings.Contains(name, "sles") {
 		return OsTypeLinuxSuse
