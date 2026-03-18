@@ -47,8 +47,10 @@ func (crd *ProcCmd) getOrgModels() []*organization_models.OrganizationModel {
 
 func (crd *ProcCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 	agentFact := agent_models.CreateAgentFactory()
+	isOnline := enums.IsYes
 	return agentFact.GetListByConditions(agent_models.SearchConditions{
-		OrgId: orgId,
+		OrgId:    orgId,
+		IsOnline: &isOnline,
 	}, agentFact.ColumnProc(true))
 }
 
@@ -84,7 +86,7 @@ func (crd *ProcCmd) AddFromProcForTask() {
 		if agentModels == nil || len(agentModels) == 0 {
 			continue
 		}
-
+		
 		for _, agentModel := range agentModels {
 			//数据来源
 			dataFrom := 0
