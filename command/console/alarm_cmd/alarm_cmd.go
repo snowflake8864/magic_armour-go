@@ -71,7 +71,7 @@ func (crd *AlarmCmd) handleStat(sign string, statDay, startAt, endAt string, sta
 
 		var ceilTs int64
 		if sign == "today" {
-			ceilTs = date_helper.AddTimestampByDays(0, 0, -3)
+			ceilTs = date_helper.AddTimestampByDays(0, 0, -2)
 		} else {
 			ceilTs = date_helper.AddTimestampByDays(0, -1, 0)
 		}
