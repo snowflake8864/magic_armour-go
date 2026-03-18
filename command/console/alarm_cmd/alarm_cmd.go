@@ -3,6 +3,7 @@ package alarm_cmd
 import (
 	"context"
 	"fmt"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
@@ -46,7 +47,7 @@ func (crd *AlarmCmd) TodayStatistics() {
 	variable.ZapLog.Info("TodayStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(0)
-	crd.handleStat(statDay, startAt, endAt, statMonth)
+	crd.handleStat("today", statDay, startAt, endAt, statMonth)
 
 	variable.ZapLog.Info("TodayStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
@@ -56,20 +57,35 @@ func (crd *AlarmCmd) YesterdayStatistics() {
 	variable.ZapLog.Info("DailyStatistics start")
 
 	statDay, startAt, endAt, statMonth := date_helper.CalcByDay(-1)
-	crd.handleStat(statDay, startAt, endAt, statMonth)
+	crd.handleStat("yesterday", statDay, startAt, endAt, statMonth)
 
 	variable.ZapLog.Info("DailyStatistics end startAt:" + startAt + ", endAt:" + endAt)
 }
 
-func (crd *AlarmCmd) handleStat(statDay, startAt, endAt string, statMonth int) {
+func (crd *AlarmCmd) handleStat(sign string, statDay, startAt, endAt string, statMonth int) {
 	orgModels := crd.getOrgModels()
 
 	if len(orgModels) > 0 {
 		ctx := context.Background()
 		now := date_helper.CurDatetime()
+
+		var ceilTs int64
+		if sign == "today" {
+			ceilTs = date_helper.AddTimestampByDays(0, 0, -3)
+		} else {
+			ceilTs = date_helper.AddTimestampByDays(0, -1, 0)
+		}
+		variable.ZapLog.Info(fmt.Sprintf("ceilTs: %s", date_helper.TimestampToDatetime(ceilTs)))
+
 		for _, orgModel := range orgModels {
 			if agentModels := crd.getAgentModels(orgModel.Id); len(agentModels) > 0 {
 				for _, agentModel := range agentModels {
+
+					//如果终端离线x天不在统计
+					if agentModel.IsOnline == enums.IsNot && date_helper.DatetimeToTimestamp(agentModel.LiveAt, variable.DateFormatNow) <= ceilTs {
+						continue
+					}
+
 					param := alarm_stat_models.StatDailyModel{
 						OrgId:     orgModel.Id,
 						AgentId:   agentModel.AgentId,
