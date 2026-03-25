@@ -9,7 +9,7 @@ import (
 	"goskeleton/command/console"
 )
 
-// CrontabController 幻势相关
+// CrontabController 计划任务相关
 type CrontabController struct {
 }
 
