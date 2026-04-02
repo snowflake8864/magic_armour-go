@@ -39,6 +39,36 @@ func (crd *OrgCurd) makeCode() string {
 	return en1[0:8] + en2[1:9] + en3[2:10]
 }
 
+func (crd *OrgCurd) addDefaultOrg() error {
+	//企业信息
+	orgParam := organization_models.OrganizationModel{}
+	orgParam.Name = ""
+	orgParam.UserName = "admin"
+	orgParam.UserPhone = "13000000000"
+	orgParam.UserEmail = "dev@test.com"
+	orgParam.Remark = "默认企业"
+	orgParam.Type = enum_organization.TypePerson
+	orgParam.Source = enums.OperateSourcePlatform
+
+	//用户信息
+	userParam := user_models.UserModel{}
+	userParam.Username = orgParam.UserName
+	userParam.Phone = orgParam.UserPhone
+	userParam.Email = orgParam.UserEmail
+	userParam.Password = "Root@2026"
+	userParam.IsRoot = enums.IsYes
+
+	//用户已存在
+	if userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
+		return errors.New("用户名已存在")
+	}
+	if userExist := user_service.CreateCurdFactory().GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 {
+		return errors.New("手机号码已存在")
+	}
+
+	return nil
+}
+
 // Add 新增企业
 func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userParam *user_models.UserModel, netIp string) (errCode int, err error) {
 	if orgParam.Type == enum_organization.TypeOrg {
@@ -90,7 +120,9 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 		orgParam.TrusteeshipSwitch = enums.SwitchOff
 		orgParam.HuanshiSwitch = enums.SwitchOff
 	}
-	orgParam.Status = enum_organization.StatusVerifying
+	if orgParam.Status != enum_organization.StatusNormal {
+		orgParam.Status = enum_organization.StatusVerifying
+	}
 	orgParam.IsDel = enums.IsNot
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.SwitchOff

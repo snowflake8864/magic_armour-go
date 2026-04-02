@@ -1,7 +1,10 @@
 package database
 
 import (
+	"fmt"
 	"github.com/spf13/cobra"
+	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_access_models"
 	"goskeleton/app/model/agent/agent_error_models"
@@ -42,6 +45,7 @@ import (
 	"goskeleton/app/model/platform/server_monitor_models"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"time"
 )
@@ -89,6 +93,8 @@ func start(action string) {
 		_ = dictionary_service.CreateCacheFactory().Rebuild()
 	case "append":
 		appendTableAndData()
+	case "admini":
+		addDefaultOrg()
 	}
 
 }
@@ -267,4 +273,32 @@ func appendTableAndData() {
 
 	//保存迁移数据
 	saveMigrations()
+}
+
+// 添加默认企业
+func addDefaultOrg() {
+
+	//企业信息
+	orgParam := organization_models.OrganizationModel{}
+	orgParam.Name = ""
+	orgParam.UserName = "admin"
+	orgParam.UserPhone = "13000000000"
+	orgParam.UserEmail = "dev@test.com"
+	orgParam.Remark = "默认企业用户"
+	orgParam.Type = enum_organization.TypePerson
+	orgParam.Status = enum_organization.StatusNormal
+	orgParam.Source = enums.OperateSourcePlatform
+
+	//用户信息
+	userParam := user_models.UserModel{}
+	userParam.Username = orgParam.UserName
+	userParam.Phone = orgParam.UserPhone
+	userParam.Email = orgParam.UserEmail
+	userParam.Password = "Root@2026"
+	userParam.IsRoot = enums.IsYes
+
+	errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, "0.0.0.0")
+	fmt.Println("=================================")
+	fmt.Println(errCode)
+	fmt.Println(err)
 }
