@@ -28,7 +28,7 @@ API_URL="http://127.0.0.1:20191/v5/api/crontab/exec?action="
 
 ## 每隔[12分钟]
 # 统计企业今天相关数据
-*/12 * * * * $CURL_CMD $CURL_OPTS "${API_URL}CollectOrgToday" >> /var/log/armour_crontab.log 2>&1
+*/15 * * * * $CURL_CMD $CURL_OPTS "${API_URL}CollectOrgToday" >> /var/log/armour_crontab.log 2>&1
 
 ## 每天一次
 # 每天清理一次数据
