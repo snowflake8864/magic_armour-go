@@ -6,7 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
-	"goskeleton/app/http/transformer/org_trans"
+	"goskeleton/app/http/transformer/api_trans"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
@@ -59,8 +59,8 @@ func (u *SoftwareController) PublishedList(ctx *gin.Context) {
 	linuxModels := software_models.CreateSoftwareFactory().GetItemsByConditions(condition, 0, 0, "")
 
 	response.SuccessReturnData(ctx, gin.H{
-		"windows": (&org_trans.Software{}).TransList(windowsModels),
-		"linux":   (&org_trans.Software{}).TransList(linuxModels),
+		"windows": (&api_trans.Software{}).TransList(windowsModels),
+		"linux":   (&api_trans.Software{}).TransList(linuxModels),
 	})
 }
 
