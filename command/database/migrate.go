@@ -46,6 +46,7 @@ import (
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"time"
 )
@@ -297,8 +298,10 @@ func addDefaultOrg() {
 	userParam.Password = "Root@2026"
 	userParam.IsRoot = enums.IsYes
 
-	errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, "0.0.0.0")
-	fmt.Println("=================================")
-	fmt.Println(errCode)
-	fmt.Println(err)
+	if errCode, err := organize_service.CreateOrgCurdFactory().Add(&orgParam, &userParam, "0.0.0.0"); err != nil {
+		variable.ZapLog.Info(fmt.Sprintf("code=%d, msg=%s", errCode, err))
+	} else {
+		//默认企业角色
+		role_service.CreateCurdFactory().AddDefault(1)
+	}
 }
