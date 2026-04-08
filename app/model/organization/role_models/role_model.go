@@ -24,7 +24,7 @@ type RoleModel struct {
 	Menus      string `json:"menus"`
 	IsDefault  int    `json:"is_default"`
 	CreateId   int64  `json:"create_id"`
-	CreateName string `son:"create_name"`
+	CreateName string `json:"create_name"`
 	CreatedAt  string `json:"created_at"`
 }
 
