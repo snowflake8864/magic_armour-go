@@ -13,6 +13,7 @@ import (
 	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
+	"goskeleton/app/utils/response"
 )
 
 // 该路由主要设置终端路由
@@ -71,6 +72,36 @@ func InitAgentRouter() *gin.Engine {
 	{
 		vAgent.POST("auth", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthLogin"))
 		vAgent.POST("getuserid", validatorFactory.Create(consts.ValidatorPrefixAgent+"AuthMakeUserid"))
+		vAgent.POST("device/auth", func(context *gin.Context) {
+			response.SuccessReturnData(context, gin.H{
+				"remark": "认证是个假接口",
+				"token":  "sss",
+			})
+			return
+		})
+		vAgent.POST("device/heartbeat", func(context *gin.Context) {
+			response.SuccessReturnData(context, gin.H{
+				"remark": "心跳是个假接口",
+				"list":   []int{},
+			})
+			return
+		})
+		vAgent.POST("device/controlList", func(context *gin.Context) {
+			response.SuccessReturnData(context, gin.H{
+				"remark": "访问列表是个假接口",
+				"list": []map[string]string{
+					{
+						"uid": "id1",
+						"ip":  "192.168.0.1",
+					},
+					{
+						"uid": "id2",
+						"ip":  "192.168.0.2",
+					},
+				},
+			})
+			return
+		})
 
 		// 【需要token】中间件验证的路由
 		vAgent.Use(middleware_auth_agent.CheckToken())
