@@ -82,6 +82,8 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 			for _, val := range strings.Split(roleModel.Menus, ",") {
 				conditions.Ids = append(conditions.Ids, string_helper.ToInt64(val))
 			}
+		} else {
+			conditions.Ids = append(conditions.Ids, 0)
 		}
 	}
 
