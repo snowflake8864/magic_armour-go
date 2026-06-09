@@ -78,9 +78,12 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		conditions.IsRoot = &IsNot
 
 		//角色菜单
-		roleModel := role_service.CreateCurdFactory().HasId(loginInfo.RoleId, loginInfo.OrgId)
-		for _, val := range strings.Split(roleModel.Menus, ",") {
-			conditions.Ids = append(conditions.Ids, string_helper.ToInt64(val))
+		if roleModel := role_service.CreateCurdFactory().HasId(loginInfo.RoleId, loginInfo.OrgId); roleModel != nil {
+			for _, val := range strings.Split(roleModel.Menus, ",") {
+				conditions.Ids = append(conditions.Ids, string_helper.ToInt64(val))
+			}
+		} else {
+			conditions.Ids = append(conditions.Ids, 0)
 		}
 	}
 
