@@ -96,6 +96,7 @@ func (m *DictionaryModel) InitData() bool {
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentTypes + `', '` + json_helper.Encode(enum_agent.AgentTypeDefault()) + `','终端：终端类型'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentDebugIds + `', '','终端：调试集合(多个,隔开)'),
 			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentDebugPort + `', '19110','终端：调试端口'),
+			('` + enum_dictionary.ModuleAgent + `', '` + enum_dictionary.AgentThreatenUrl + `', 'http://10.32.1.52:13000','终端：威胁情报请求地址(有端口)'),
 
 
 			('` + enum_dictionary.ModuleThreaten + `', '` + enum_dictionary.ThreatenSwitch + `', '0','威胁情报:开关'),

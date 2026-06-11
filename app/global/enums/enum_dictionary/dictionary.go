@@ -36,6 +36,7 @@ const (
 
 	AgentHttpUrl               string = "agent_http_url"                //终端:http请求地址(无端口)
 	AgentHttpPort              string = "agent_http_port"               //终端:http请求端口
+	AgentThreatenUrl           string = "agent_threaten_url"            //终端:威胁情报请求地址(有端口)
 	AgentLogSendProto          string = "agent_log_send_proto"          //终端:日志发送协议(1udp 2tcp)
 	AgentSaveAccessLog         string = "agent_save_access_log"         //终端:是否保存访问记录(0|1)
 	AgentConfigExpire          string = "agent_config_expire"           //终端:配置文件有效期(小时)
@@ -129,6 +130,7 @@ var EnumSlice = map[string][]string{
 	ModuleAgent: {
 		AgentHttpUrl,
 		AgentHttpPort,
+		AgentThreatenUrl,
 		AgentLogSendProto,
 		AgentSaveAccessLog,
 		AgentConfigExpire,

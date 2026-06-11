@@ -154,11 +154,18 @@ func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadMode
 // 追加配置文件
 func (crd *SoftwareDownload) appendConfig(agentHttpUrl, agentHttpPort string, softModel *software_models.SoftwareModel, downloadModel *software_models.DownloadModel) bool {
 
+	//终端威胁情报访问地址-
+	agentThreatenUrl := "http://10.32.1.52:13000"
+	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentThreatenUrl); !string_helper.IsEmpty(val) {
+		agentThreatenUrl = val
+	}
+
 	var params []string
 	params = append(params, "[SERVER]")
 	params = append(params, "URL="+agentHttpUrl)
 	params = append(params, "PORT="+agentHttpPort)
 	params = append(params, "USER_ID="+crd.EncryptConfig(downloadModel.OrgId, downloadModel.CreateId, downloadModel.SoftwareId))
+	params = append(params, "webAddr="+agentThreatenUrl)
 
 	//Unix系统里，每行结尾只有“<换行>”，即"\n"；Windows系统里面，每行结尾是“<回车><换行>”，即“\r\n”；
 	glue := "\n"
