@@ -9,9 +9,10 @@ const (
 	PlatformTypeLinux   = 1 //平台类型: linux
 	PlatformTypeWindows = 2 //平台类型: windows
 
-	ArchAmd64  = 1 //CPU架构: amd64
-	ArchArm64  = 2 //CPU架构: arm64
-	ArchMips64 = 3 //CPU架构: mips64
+	ArchAmd64       = 1 //CPU架构: amd64(即x86_64)
+	ArchArm64       = 2 //CPU架构: aarch64
+	ArchMips64      = 3 //CPU架构: mips64
+	ArchLoongarch64 = 4 //CPU架构: loongarch64(即国产龙芯)
 
 	OsTypeLinuxUnknown      = 100 //系统类型: linux 未知
 	OsTypeLinuxUbuntu       = 101 //系统类型: linux Ubuntu
