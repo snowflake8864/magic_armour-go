@@ -105,7 +105,6 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 		newModel.Dir = path_helper.ToStandard(newModel.Dir)
 		//默认威胁情报开关
 		newModel.GrantThreatenSwitch = enums.SwitchOn
-
 		//冗余自动匹配白名单开关
 		newModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
 
