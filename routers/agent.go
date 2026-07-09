@@ -89,7 +89,7 @@ func InitAgentRouter() *gin.Engine {
 		vAgent.POST("device/controlList", func(context *gin.Context) {
 			response.SuccessReturnData(context, gin.H{
 				"remark": "访问列表是个假接口",
-				"list": []map[string]string{
+				/*"list": []map[string]string{
 					{
 						"uid": "id1",
 						"ip":  "192.168.0.1",
@@ -97,6 +97,22 @@ func InitAgentRouter() *gin.Engine {
 					{
 						"uid": "id2",
 						"ip":  "192.168.0.2",
+					},
+				},*/
+				"enabled":             true,
+				"client_download_url": "https://192.168.17.253/#/clientdownload",
+				"crontab_time":        30,
+				"policy": map[string]map[string][]string{
+					"external": {
+						"whitelist": {"210.1.2.1", "210.1.2.3"},
+						"blacklist": {"212.1.1.1", "212.1.1.2"},
+					},
+					"internal": {
+						"whitelist": {"192.168.0.10", "192.168.0.200"},
+						"blacklist": {"192.168.0.254", "192.168.0.253"},
+					},
+					"access_control": {
+						"allowed_ips": {"192.168.1.1", "192.168.1.2"},
 					},
 				},
 			})
