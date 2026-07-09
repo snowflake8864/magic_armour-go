@@ -135,7 +135,7 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 
 		//已存在
 		if existsProc, isOK := existsProcMap[newModel.ProcHash]; isOK {
-			//发生改变
+			//发生改变,利用doris主键模型特性
 			if crd.isChanged(existsProc, &newModel) {
 				insertProc = append(insertProc, newModel)
 			}
