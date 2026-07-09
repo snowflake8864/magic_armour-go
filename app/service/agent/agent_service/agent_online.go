@@ -107,6 +107,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			"is_online":      enums.IsYes,
 			"online_at":      nowDate,
 			"live_at":        nowDate,
+			"hardware_time":  enum_agent.HardwareTime,
 		}
 		isOk, _ := crd.masterModel.UpdateByOrgAndAgent(param.OrgId, param.AgentId, updates)
 		if !isOk {

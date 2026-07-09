@@ -33,6 +33,7 @@ const (
 	OrganizationPwCycleModifySwitch  string = "org_pw_cycle_modify_switch" //企业:密码周期修改开关
 	OrganizationPwlFirstModifySwitch string = "org_pw_first_modify_switch" //企业::密码首次登录修改开关
 	OrganizationSubUserLimit         string = "org_sub_user_limit"         //企业:子用户限制数目
+	OrganizationHardwareEmailIds     string = "org_hd_email_ids"           //企业:硬件允许发送邮件集合
 
 	AgentHttpUrl               string = "agent_http_url"                //终端:http请求地址(无端口)
 	AgentHttpPort              string = "agent_http_port"               //终端:http请求端口

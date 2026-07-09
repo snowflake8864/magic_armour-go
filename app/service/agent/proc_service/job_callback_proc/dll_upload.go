@@ -25,9 +25,9 @@ type DllUpload struct {
 	masterModel *proc_models.DllModel
 }
 
-// GetMaps 获取多条
-func (crd *DllUpload) GetMaps(orgId int64, agentId string, hashes []string) map[string]int {
-	result := make(map[string]int)
+// getProcMaps 获取多条
+func (crd *DllUpload) getProcMaps(orgId int64, agentId string, hashes []string) map[string]*proc_models.DllModel {
+	result := make(map[string]*proc_models.DllModel)
 
 	models := crd.masterModel.GetListByConditions(proc_models.SearchConditions{
 		OrgId:     orgId,
@@ -38,9 +38,29 @@ func (crd *DllUpload) GetMaps(orgId int64, agentId string, hashes []string) map[
 		return nil
 	}
 	for _, model := range models {
-		result[model.DllHash] = model.Status
+		result[model.DllHash] = model
 	}
 	return result
+}
+
+func (crd *DllUpload) isChanged(existModel, newestModel *proc_models.DllModel) bool {
+	if existModel.Status != newestModel.Status {
+		return true
+	}
+	if existModel.GlobalStatus != newestModel.GlobalStatus {
+		return true
+	}
+	if existModel.SelfStatus != newestModel.SelfStatus {
+		return true
+	}
+	if existModel.ThreatenStatus != newestModel.ThreatenStatus {
+		return true
+	}
+	if existModel.AutoWhiteSwitch != newestModel.AutoWhiteSwitch {
+		return true
+	}
+
+	return false
 }
 
 // BatchAdd 添加
@@ -65,63 +85,70 @@ func (crd *DllUpload) BatchAdd(orgId int64, agentId string, models *[]proc_model
 		return nil
 	}
 
-	//去掉已存在数据
-	if hasMap := crd.GetMaps(orgId, agentId, hashes); len(hasMap) > 0 {
-		hashes = nil
-		for hash := range hasMap {
-			delete(insertMap, hash)
-			hashes = append(hashes, hash)
-		}
-	}
-	if len(insertMap) == 0 {
-		return nil
-	}
-
 	//全局名单
 	globalMap := crd.getGlobalStatusByHashes(orgId, hashes)
 	//威胁情报
 	threatenMap := crd.getThreatenStatusByHashes(hashes)
+	//已存在的进程
+	existsProcMap := crd.getProcMaps(orgId, agentId, hashes)
 
 	//进程插入数据
 	var insertProc []proc_models.DllModel
 	//威胁情报插入数据
 	var insertThreaten []threaten_models.CacheModel
 	createdAt := date_helper.CurDatetime()
-	for _, procModel := range insertMap {
-		if string_helper.IsEmpty(procModel.CreatedAt) {
-			procModel.CreatedAt = createdAt
+	for _, newModel := range insertMap {
+		if string_helper.IsEmpty(newModel.CreatedAt) {
+			newModel.CreatedAt = createdAt
 		}
-		procModel.Dir = path_helper.ToStandard(procModel.Dir)
-		procModel.ProcDir = path_helper.ToStandard(procModel.ProcDir)
+		//路径标准化
+		newModel.Dir = path_helper.ToStandard(newModel.Dir)
+		newModel.ProcDir = path_helper.ToStandard(newModel.ProcDir)
+		//默认威胁情报开关
+		newModel.GrantThreatenSwitch = enums.SwitchOn
+		//冗余自动匹配白名单开关
+		newModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
 
 		//全局名单状态
-		procModel.GlobalStatus = enum_process.RelyStatusUnset
-		if val, isOK := globalMap[procModel.DllHash]; isOK {
-			procModel.GlobalStatus = val
+		newModel.GlobalStatus = enum_process.RelyStatusUnset
+		if val, isOK := globalMap[newModel.DllHash]; isOK {
+			newModel.GlobalStatus = val
 		}
-		//默认自身状态
-		procModel.SelfStatus = enum_process.RelyStatusUnset
-		//默认威胁情报开关
-		procModel.GrantThreatenSwitch = enums.SwitchOn
-		//冗余自动匹配白名单开关
-		procModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
+
+		//自身状态
+		newModel.SelfStatus = enum_process.RelyStatusUnset
+		if existsProc, isOK := existsProcMap[newModel.DllHash]; isOK {
+			newModel.SelfStatus = existsProc.SelfStatus
+		}
+
 		//威胁情报状态
-		procModel.ThreatenStatus = enum_process.RelyStatusUnset
-		if val, isOK := threatenMap[procModel.DllHash]; isOK {
-			procModel.ThreatenStatus = val
+		newModel.ThreatenStatus = enum_process.RelyStatusUnset
+		if val, isOK := threatenMap[newModel.DllHash]; isOK {
+			newModel.ThreatenStatus = val
 		} else {
 			//威胁情报插入数据
-			insertThreaten = append(insertThreaten, crd.initThreaten(&procModel, agentModel.OsName))
+			insertThreaten = append(insertThreaten, crd.initThreaten(&newModel, agentModel.OsName))
 		}
-		//最终呈现状态
-		procModel.Status, procModel.SyncStatusAt = crd.getProcStatus(procModel.GlobalStatus, procModel.SelfStatus, procModel.ThreatenStatus, procModel.AutoWhiteSwitch)
 
-		insertProc = append(insertProc, procModel)
+		//最终呈现状态
+		newModel.Status, newModel.SyncStatusAt = crd.getProcStatus(newModel.GlobalStatus, newModel.SelfStatus, newModel.ThreatenStatus, newModel.AutoWhiteSwitch)
+
+		//已存在
+		if existsProc, isOK := existsProcMap[newModel.DllHash]; isOK {
+			//发生改变,利用doris主键模型特性
+			if crd.isChanged(existsProc, &newModel) {
+				insertProc = append(insertProc, newModel)
+			}
+		} else {
+			insertProc = append(insertProc, newModel)
+		}
 	}
 
-	//保存
-	if !crd.masterModel.InsertBatch(&insertProc) {
-		return errors.New("保存失败")
+	//保存模块
+	if len(insertProc) > 0 {
+		if !crd.masterModel.InsertBatch(&insertProc) {
+			return errors.New("保存失败")
+		}
 	}
 
 	//保存威胁情报

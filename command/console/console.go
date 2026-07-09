@@ -48,7 +48,7 @@ func start(action string) {
 
 	switch action {
 
-	//以下建议每2分钟执行一次
+	//以下建议每x分钟执行一次
 	case "AgentOffline": //终端离线
 		agent_cmd.CreateAgentFactory().Offline()
 	case "ThreatenCacheDefaultSync": //威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
@@ -57,8 +57,6 @@ func start(action string) {
 		plug_cmd.CreateCmdFactory().DynamicExpired()
 	case "AgentSafe": //终端安全状态
 		agent_cmd.CreateAgentFactory().HandleSafe()
-
-	//以下建议每3分钟执行一次
 	case "HuanshiPush": //同步推送数据到幻势
 		huanshi_cmd.CreateCmdFactory().Push()
 	case "TaskAddFromProc": //从进程或模块添加任务
@@ -67,8 +65,6 @@ func start(action string) {
 		service_cmd.CreateCmdFactory().Monitor()
 	case "ThreatenPushesSync": //威胁情报推送列表同步数据到威胁情报中心
 		threaten_cmd.CreateCmdFactory().SyncForPushes()
-
-		//以下建议每12分钟执行一次
 	case "CollectOrgToday": //统计企业今天相关数据
 		//统计企业今天数据
 		org_cmd.CreateCmdFactory().TodayStatistics()
@@ -93,10 +89,8 @@ func start(action string) {
 		service_cmd.CreateCmdFactory().Delete()
 		//清理终端文件目录
 		agent_cmd.CreateDirFactory().Clear()
-
 		//SNTP同步时间
 		sntp_cmd.CreateCmdFactory().Sync()
-
 	case "OrderExpired": //未知支付订单自动过期
 		order_cmd.CreateCmdFactory().OrderExpired()
 	case "GrantExpired": //终端授权自动过期

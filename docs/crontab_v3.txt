@@ -6,7 +6,7 @@ API_URL="http://127.0.0.1:20191/v5/api/crontab/exec?action="
 ## 清理磁盘日志G
 1 0 * * * /home/veda/clear_disk.sh
 
-## 每隔[2分钟]
+## 每隔[x分钟]
 # 威胁情报缓存同步默认状态（未同步）数据到威胁情报中心
 */2 * * * * $CURL_CMD $CURL_OPTS "${API_URL}ThreatenCacheDefaultSync" >> /var/log/armour_crontab.log 2>&1
 # 终端离线
@@ -15,18 +15,14 @@ API_URL="http://127.0.0.1:20191/v5/api/crontab/exec?action="
 */2 * * * * $CURL_CMD $CURL_OPTS "${API_URL}PlugExpired" >> /var/log/armour_crontab.log 2>&1
 # 终端安全状态
 */2 * * * * $CURL_CMD $CURL_OPTS "${API_URL}AgentSafe" >> /var/log/armour_crontab.log 2>&1
-
-## 每隔[3分钟]
 # 同步推送数据到幻势
-*/3 * * * * $CURL_CMD $CURL_OPTS "${API_URL}HuanshiPush" >> /var/log/armour_crontab.log 2>&1
+*/4 * * * * $CURL_CMD $CURL_OPTS "${API_URL}HuanshiPush" >> /var/log/armour_crontab.log 2>&1
 # 从进程或模块添加任务
-*/3 * * * * $CURL_CMD $CURL_OPTS "${API_URL}TaskAddFromProc" >> /var/log/armour_crontab.log 2>&1
+*/4 * * * * $CURL_CMD $CURL_OPTS "${API_URL}TaskAddFromProc" >> /var/log/armour_crontab.log 2>&1
 # 威胁情报同步数据到威胁情报中心
-*/3 * * * * $CURL_CMD $CURL_OPTS "${API_URL}ThreatenPushesSync" >> /var/log/armour_crontab.log 2>&1
+*/5 * * * * $CURL_CMD $CURL_OPTS "${API_URL}ThreatenPushesSync" >> /var/log/armour_crontab.log 2>&1
 # 服务器状态监控
 */3 * * * * $CURL_CMD $CURL_OPTS "${API_URL}ServiceMonitor" >> /var/log/armour_crontab.log 2>&1
-
-## 每隔[12分钟]
 # 统计企业今天相关数据
 */15 * * * * $CURL_CMD $CURL_OPTS "${API_URL}CollectOrgToday" >> /var/log/armour_crontab.log 2>&1
 

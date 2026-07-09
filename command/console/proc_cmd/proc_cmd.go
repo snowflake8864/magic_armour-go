@@ -47,8 +47,10 @@ func (crd *ProcCmd) getOrgModels() []*organization_models.OrganizationModel {
 
 func (crd *ProcCmd) getAgentModels(orgId int64) []*agent_models.AgentModel {
 	agentFact := agent_models.CreateAgentFactory()
+	isOnline := enums.IsYes
 	return agentFact.GetListByConditions(agent_models.SearchConditions{
-		OrgId: orgId,
+		OrgId:    orgId,
+		IsOnline: &isOnline,
 	}, agentFact.ColumnProc(true))
 }
 
