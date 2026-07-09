@@ -2,14 +2,15 @@ package job_callback_proc
 
 import (
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"
-	"goskeleton/app/service/agent/threaten_service"
 	"goskeleton/app/utils/helpers/date_helper"
+	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/path_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -26,8 +27,8 @@ type ProcessUpload struct {
 }
 
 // GetMaps 获取多条
-func (crd *ProcessUpload) GetMaps(orgId int64, agentId string, hashes []string) map[string]int {
-	result := make(map[string]int)
+func (crd *ProcessUpload) GetMaps(orgId int64, agentId string, hashes []string) map[string]*proc_models.ProcessModel {
+	result := make(map[string]*proc_models.ProcessModel)
 
 	models := crd.masterModel.GetListByConditions(proc_models.SearchConditions{
 		OrgId:      orgId,
@@ -38,7 +39,7 @@ func (crd *ProcessUpload) GetMaps(orgId int64, agentId string, hashes []string) 
 		return nil
 	}
 	for _, model := range models {
-		result[model.ProcHash] = model.Status
+		result[model.ProcHash] = model
 	}
 	return result
 }
@@ -65,67 +66,61 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 		return nil
 	}
 
-	//去掉已存在数据
-	if hasMap := crd.GetMaps(orgId, agentId, hashes); len(hasMap) > 0 {
-		hashes = nil
-		for hash := range hasMap {
-			delete(insertMap, hash)
-			hashes = append(hashes, hash)
-		}
-	}
-	if len(insertMap) == 0 {
-		return nil
-	}
-
 	//全局名单
 	globalMap := crd.getGlobalStatusByHashes(orgId, hashes)
 	//威胁情报
 	threatenMap := crd.getThreatenStatusByHashes(hashes)
+	//已存在的进程
+	existsProcMap := crd.GetMaps(orgId, agentId, hashes)
 
 	//进程插入数据
 	var insertProc []proc_models.ProcessModel
 	//威胁情报插入数据
 	var insertThreaten []threaten_models.CacheModel
 	createdAt := date_helper.CurDatetime()
-	for _, procModel := range insertMap {
-		if string_helper.IsEmpty(procModel.CreatedAt) {
-			procModel.CreatedAt = createdAt
+	for _, newModel := range insertMap {
+		if string_helper.IsEmpty(newModel.CreatedAt) {
+			newModel.CreatedAt = createdAt
 		}
-		procModel.Dir = path_helper.ToStandard(procModel.Dir)
+		newModel.Dir = path_helper.ToStandard(newModel.Dir)
 
 		//全局名单状态
-		procModel.GlobalStatus = enum_process.RelyStatusUnset
-		if val, isOK := globalMap[procModel.ProcHash]; isOK {
-			procModel.GlobalStatus = val
+		newModel.GlobalStatus = enum_process.RelyStatusUnset
+		if val, isOK := globalMap[newModel.ProcHash]; isOK {
+			newModel.GlobalStatus = val
 		}
 		//默认自身状态
-		procModel.SelfStatus = enum_process.RelyStatusUnset
+		newModel.SelfStatus = enum_process.RelyStatusUnset
 		//默认威胁情报开关
-		procModel.GrantThreatenSwitch = enums.SwitchOn
+		newModel.GrantThreatenSwitch = enums.SwitchOn
 		//冗余自动匹配白名单开关
-		procModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
+		newModel.AutoWhiteSwitch = agentModel.AutoWhiteSwitch
 		//威胁情报状态
-		procModel.ThreatenStatus = enum_process.RelyStatusUnset
-		if val, isOK := threatenMap[procModel.ProcHash]; isOK {
-			procModel.ThreatenStatus = val
+		newModel.ThreatenStatus = enum_process.RelyStatusUnset
+		if val, isOK := threatenMap[newModel.ProcHash]; isOK {
+			newModel.ThreatenStatus = val
 		} else {
 			//威胁情报插入数据
-			insertThreaten = append(insertThreaten, crd.initThreaten(&procModel, agentModel.OsName))
+			insertThreaten = append(insertThreaten, crd.initThreaten(&newModel, agentModel.OsName))
 		}
 		//最终呈现状态
-		procModel.Status, procModel.SyncStatusAt = crd.getProcStatus(procModel.GlobalStatus, procModel.SelfStatus, procModel.ThreatenStatus, procModel.AutoWhiteSwitch)
+		fmt.Println("=============================")
+		fmt.Println(json_helper.Encode(newModel))
+		newModel.Status, newModel.SyncStatusAt = crd.getProcStatus(newModel.GlobalStatus, newModel.SelfStatus, newModel.ThreatenStatus, newModel.AutoWhiteSwitch)
+		fmt.Println("=============================")
+		fmt.Println("newModel.Status=", newModel.Status)
 
-		insertProc = append(insertProc, procModel)
+		insertProc = append(insertProc, newModel)
 	}
 
 	//保存
-	if !crd.masterModel.InsertBatch(&insertProc) {
+	/*if !crd.masterModel.InsertBatch(&insertProc) {
 		return errors.New("保存失败")
-	}
+	}*/
 
 	//保存威胁情报
 	if len(insertThreaten) > 0 {
-		threaten_service.CreateCacheFactory().BatchAdd(&insertThreaten, false)
+		//threaten_service.CreateCacheFactory().BatchAdd(&insertThreaten, false)
 	}
 	return nil
 }
