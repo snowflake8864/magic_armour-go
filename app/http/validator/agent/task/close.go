@@ -9,7 +9,7 @@ import (
 )
 
 type Close struct {
-	Tasklist int `form:"tasklist" json:"tasklist" binding:"required"`
+	Tasklist *int `form:"tasklist" json:"tasklist" binding:"required,min=0,max=99"`
 }
 
 func (n Close) CheckParams(context *gin.Context) {
