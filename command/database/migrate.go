@@ -265,11 +265,14 @@ func appendTableAndData() {
 		_ = user_models.CreateUserFactory().AlterTable(ver)
 	}
 
+	if ver := "MA_3.1.0_R4_B8"; !existMigration(ver) {
+		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+	}
+
 	//长城卫士
 	if ver := "cgw_3.1.0_R1"; !existMigration(ver) {
 		_ = alarm_models.CreateVirusFactory().CreateTable()
 		_ = alarm_stat_models.CreateStatDailyFactory().AlterTable(ver)
-		_ = syslog_models.CreateVulnFactory().CreateTable()
 	}
 
 	//保存迁移数据
