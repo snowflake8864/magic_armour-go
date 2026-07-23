@@ -193,6 +193,10 @@ func (m *AgentModel) AlterTable(ver string) bool {
 		sql += `
 			ADD COLUMN arch_type tinyint(1) NOT NULL DEFAULT '1' COMMENT 'CPU架构(参考amd64|arm64等,统一定义)' AFTER os_type;
 		`
+	case "MA_3.1.0_R4_B8":
+		sql += `
+			MODIFY COLUMN os_name varchar(128) NOT NULL DEFAULT '' COMMENT '系统名称' AFTER net_ip;
+		`
 	default:
 		return true
 	}
