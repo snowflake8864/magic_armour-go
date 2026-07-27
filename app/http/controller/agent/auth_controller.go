@@ -50,6 +50,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.NetIp = ctx.ClientIP()
 	userId := ctx.GetString(consts.ValidatorPrefixAgent + "userid")
 	param.ModVer = ctx.GetString(consts.ValidatorPrefixAgent + "mod_ver")
+	param.AntivirusEngineVer = ctx.GetString(consts.ValidatorPrefixAgent + "antivirus_engine_ver")
 	param.ArchType = int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "arch_type"))
 
 	if string_helper.IsEmpty(param.AgentIp) {
