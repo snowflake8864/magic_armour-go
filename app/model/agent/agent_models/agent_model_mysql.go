@@ -35,6 +35,7 @@ type AgentModel struct {
 	OsStartAt           string `json:"os_start_at"`
 	Ver                 string `json:"ver"`
 	ModVer              string `json:"mod_ver"`
+	AntivirusEngineVer  string `json:"antivirus_engine_ver"`
 	Auth                string `json:"auth"`
 	IsOnline            int    `json:"is_online"`
 	OnlineAt            string `json:"online_at"`
@@ -196,6 +197,10 @@ func (m *AgentModel) AlterTable(ver string) bool {
 	case "MA_3.1.0_R4_B8":
 		sql += `
 			MODIFY COLUMN os_name varchar(128) NOT NULL DEFAULT '' COMMENT '系统名称' AFTER net_ip;
+		`
+	case "cgw_3.1.0_R2":
+		sql += `
+			ADD COLUMN antivirus_engine_ver varchar(64) NOT NULL DEFAULT '' COMMENT '杀毒引擎版本' AFTER mod_ver;
 		`
 	default:
 		return true
