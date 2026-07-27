@@ -276,7 +276,7 @@ func appendTableAndData() {
 	}
 
 	//长城卫士
-	if ver := "cgw_3.1.0_R2"; !existMigration(ver) {
+	if ver := "cgw_3.1.0_R2_01"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 	}
 

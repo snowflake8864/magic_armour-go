@@ -198,9 +198,9 @@ func (m *AgentModel) AlterTable(ver string) bool {
 		sql += `
 			MODIFY COLUMN os_name varchar(128) NOT NULL DEFAULT '' COMMENT '系统名称' AFTER net_ip;
 		`
-	case "cgw_3.1.0_R2":
+	case "cgw_3.1.0_R2_01":
 		sql += `
-			ADD COLUMN antivirus_engine_ver varchar(64) NOT NULL DEFAULT '' COMMENT '杀毒引擎版本' AFTER mod_ver;
+			ADD COLUMN antivirus_engine_ver varchar(32) NOT NULL DEFAULT '' COMMENT '杀毒引擎版本' AFTER mod_ver;
 		`
 	default:
 		return true
