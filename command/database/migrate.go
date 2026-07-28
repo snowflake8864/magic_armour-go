@@ -37,6 +37,7 @@ import (
 	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/admin_models"
+	"goskeleton/app/model/platform/antivirus_engine_models"
 	"goskeleton/app/model/platform/dictionary_models"
 	"goskeleton/app/model/platform/migrate_models"
 	"goskeleton/app/model/platform/operate_models"
@@ -278,6 +279,7 @@ func appendTableAndData() {
 	//长城卫士
 	if ver := "cgw_3.1.0_R2_01"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+		_ = antivirus_engine_models.CreateEngineFactory().CreateTable()
 	}
 
 	//保存迁移数据
