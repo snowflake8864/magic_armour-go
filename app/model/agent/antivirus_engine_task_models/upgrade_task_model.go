@@ -10,13 +10,13 @@ import (
 
 // 杀毒引擎升级任务表
 
-func CreateUpgradeTaskFactory() *OnlineLogModel {
-	return &OnlineLogModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
+func CreateUpgradeTaskFactory() *UpgradeTaskModel {
+	return &UpgradeTaskModel{BaseModel: model.BaseModel{DB: model.UseDbConn(variable.DbNamePlatform)}}
 }
 
 //结构体
 
-type OnlineLogModel struct {
+type UpgradeTaskModel struct {
 	baseOnline
 	model.BaseModel
 	Id                  int64   `json:"id" gorm:"primaryKey"`
@@ -57,11 +57,11 @@ type OnlineLogModel struct {
 }
 
 // 表名
-func (m *OnlineLogModel) TableName() string {
+func (m *UpgradeTaskModel) TableName() string {
 	return "a_antivirus_engine_upgrade_tasks"
 }
 
-func (m *OnlineLogModel) CreateTable() bool {
+func (m *UpgradeTaskModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
@@ -116,7 +116,7 @@ func (m *OnlineLogModel) CreateTable() bool {
 	}
 }
 
-func (m *OnlineLogModel) AlterTable(ver string) bool {
+func (m *UpgradeTaskModel) AlterTable(ver string) bool {
 	sql := `ALTER TABLE ` + m.TableName()
 	switch ver {
 	default:
@@ -130,7 +130,7 @@ func (m *OnlineLogModel) AlterTable(ver string) bool {
 	}
 }
 
-func (m *OnlineLogModel) TruncateTable() bool {
+func (m *UpgradeTaskModel) TruncateTable() bool {
 	sql := "TRUNCATE TABLE " + m.TableName()
 	result := m.Exec(m.TrimSql(sql))
 	if result.Error == nil {
@@ -140,7 +140,7 @@ func (m *OnlineLogModel) TruncateTable() bool {
 	}
 }
 
-func (m *OnlineLogModel) InsertItem(s *OnlineLogModel) bool {
+func (m *UpgradeTaskModel) InsertItem(s *UpgradeTaskModel) bool {
 
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(s)
@@ -154,7 +154,7 @@ func (m *OnlineLogModel) InsertItem(s *OnlineLogModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *OnlineLogModel) InsertBatch(list *[]OnlineLogModel) bool {
+func (m *UpgradeTaskModel) InsertBatch(list *[]UpgradeTaskModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -167,7 +167,7 @@ func (m *OnlineLogModel) InsertBatch(list *[]OnlineLogModel) bool {
 	}
 }
 
-func (m *OnlineLogModel) conditions2OR(tx *gorm.DB, condition SearchConditions) {
+func (m *UpgradeTaskModel) conditions2OR(tx *gorm.DB, condition SearchConditions) {
 	if !string_helper.IsEmpty(condition.TargetAgentId) {
 		tx.Where("target_type=? OR (target_type=? AND target_ids=?", enums.IsYes, enums.IsNot, condition.TargetAgentId)
 	}
@@ -177,7 +177,7 @@ func (m *OnlineLogModel) conditions2OR(tx *gorm.DB, condition SearchConditions) 
 }
 
 // DeleteByOrg 通过企业i删除
-func (m *OnlineLogModel) DeleteByOrg(orgId int64) bool {
+func (m *UpgradeTaskModel) DeleteByOrg(orgId int64) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Where("org_id=?", orgId).Delete(m)
 	})
@@ -190,7 +190,7 @@ func (m *OnlineLogModel) DeleteByOrg(orgId int64) bool {
 }
 
 // DeleteByConditions 通过条件删除
-func (m *OnlineLogModel) DeleteByConditions(condition SearchConditions) bool {
+func (m *UpgradeTaskModel) DeleteByConditions(condition SearchConditions) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -207,7 +207,7 @@ func (m *OnlineLogModel) DeleteByConditions(condition SearchConditions) bool {
 }
 
 // GetItemsByConditions 通过条件获取多条记录
-func (m *OnlineLogModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*OnlineLogModel) {
+func (m *UpgradeTaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*UpgradeTaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m)
 		if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
@@ -236,7 +236,7 @@ func (m *OnlineLogModel) GetItemsByConditions(condition SearchConditions, offset
 }
 
 // Count 通过条件统计
-func (m *OnlineLogModel) Count(condition SearchConditions) int64 {
+func (m *UpgradeTaskModel) Count(condition SearchConditions) int64 {
 	var total int64
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		tmp := tx.Model(m).Select("id")
@@ -254,7 +254,7 @@ func (m *OnlineLogModel) Count(condition SearchConditions) int64 {
 }
 
 // Page 通过条件分页
-func (m *OnlineLogModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*OnlineLogModel) {
+func (m *UpgradeTaskModel) Page(condition SearchConditions, offset, limit int, order string) (total int64, items []*UpgradeTaskModel) {
 	if total = m.Count(condition); total == 0 {
 		return total, nil
 	}

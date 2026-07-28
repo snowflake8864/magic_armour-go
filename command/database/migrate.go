@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
 	"goskeleton/app/model/agent/agent_online_models"
+	"goskeleton/app/model/agent/antivirus_engine_task_models"
 	"goskeleton/app/model/agent/backup_models"
 	"goskeleton/app/model/agent/blackmail_models"
 	"goskeleton/app/model/agent/dir_models"
@@ -280,6 +281,8 @@ func appendTableAndData() {
 	if ver := "cgw_3.1.0_R2_01"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = antivirus_engine_models.CreateEngineFactory().CreateTable()
+		_ = antivirus_engine_task_models.CreateUpgradeTaskFactory().CreateTable()
+		_ = antivirus_engine_task_models.CreateUpgradeFailFactory().CreateTable()
 	}
 
 	//保存迁移数据
