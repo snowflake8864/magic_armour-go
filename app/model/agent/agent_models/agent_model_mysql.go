@@ -200,7 +200,8 @@ func (m *AgentModel) AlterTable(ver string) bool {
 		`
 	case "cgw_3.1.0_R2_01":
 		sql += `
-			ADD COLUMN antivirus_engine_ver varchar(32) NOT NULL DEFAULT '' COMMENT '杀毒引擎版本' AFTER mod_ver;
+			ADD COLUMN antivirus_engine_ver varchar(32) NOT NULL DEFAULT '' COMMENT '杀毒引擎:版本' AFTER mod_ver,
+			ADD COLUMN antivirus_engine_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '杀毒引擎:状态' AFTER antivirus_engine_ver;
 		`
 	default:
 		return true

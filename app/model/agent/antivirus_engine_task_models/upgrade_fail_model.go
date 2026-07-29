@@ -46,16 +46,16 @@ func (m *UpgradeFailModel) CreateTable() bool {
 	sql += `
 		(
 			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
-			task_id int(11) unsigned NOT NULL  COMMENT '任务ID',
-			exec_batch int(11) NOT NULL DEFAULT '0' COMMENT '执行批次',
+			task_id int NOT NULL  COMMENT '任务ID',
+			exec_batch int NOT NULL DEFAULT '0' COMMENT '执行批次',
 			agent_id varchar(128) NOT NULL DEFAULT '' COMMENT '终端(agent.id)',
+			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			created_at datetime NULL,
 			id BIGINT NOT NULL DEFAULT '0',
-			dept_id int NOT NULL DEFAULT '0' COMMENT '组织架构编号(department.id)',
 			reason tinyint(1) NOT NULL DEFAULT '0' COMMENT '原因',
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注'
 		)
-		DUPLICATE  KEY(org_id, task_id, exec_batch, agent_id, created_at)
+		DUPLICATE  KEY(org_id, task_id, exec_batch, agent_id,dept_id, created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'

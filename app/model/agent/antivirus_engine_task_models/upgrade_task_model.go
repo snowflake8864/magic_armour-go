@@ -24,8 +24,8 @@ type UpgradeTaskModel struct {
 	Title               string  `json:"title"`
 	TargetType          int     `json:"target_type"`
 	TargetIds           string  `json:"target_ids"`
-	WindowsVer          string  `json:"windows_ver"`
-	LinuxVer            string  `json:"linux_ver"`
+	EngineWindowsId     int64   `json:"engine_windows_id"`
+	EngineLinuxId       int64   `json:"engine_linux_id"`
 	UpgradeMode         int     `json:"upgrade_mode"`
 	TaskType            int     `json:"task_type"`
 	ExecStatus          int     `json:"exec_status"`
@@ -70,8 +70,8 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 			title varchar(128)  NOT NULL DEFAULT '' COMMENT '名称',
 			target_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '目标类型',
 			target_ids varchar(512) NOT NULL DEFAULT '0' COMMENT '目标ID集合',
-			windows_ver varchar(64)  NOT NULL DEFAULT '' COMMENT 'windows版本',
-			linux_ver varchar(64)  NOT NULL DEFAULT '' COMMENT 'linux版本',
+			engine_windows_id int(11) NOT NULL DEFAULT '0' COMMENT '引擎：windows',
+			engine_linux_id int(11) NOT NULL DEFAULT '0'  COMMENT '引擎：linux',
 			upgrade_mode tinyint(1) NOT NULL DEFAULT '0' COMMENT '升级模式',
 			task_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '任务类型',
 			exec_status tinyint(1) NOT NULL DEFAULT '0' COMMENT '执行状态',
