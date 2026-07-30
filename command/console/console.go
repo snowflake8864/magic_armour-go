@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/command/console/agent_cmd"
 	"goskeleton/command/console/alarm_cmd"
+	"goskeleton/command/console/antivirus_engine_task_cmd"
 	"goskeleton/command/console/huanshi_cmd"
 	"goskeleton/command/console/order_cmd"
 	"goskeleton/command/console/org_cmd"
@@ -70,6 +71,10 @@ func start(action string) {
 		org_cmd.CreateCmdFactory().TodayStatistics()
 		//统计告警今天数据
 		alarm_cmd.CreateCmdFactory().TodayStatistics()
+	case "DetectTaskOverdue": //杀毒引擎升级任务启动 - 未实现
+		antivirus_engine_task_cmd.CreateAntivirusEngineTaskFactory().Start()
+	case "AntivirusEngineTaskOverdue": //杀毒引擎升级任务逾期 - 未实现
+		antivirus_engine_task_cmd.CreateAntivirusEngineTaskFactory().Overdue()
 
 	//以下建议每天时执行一次
 	case "Daily": //每日定时清理数据
