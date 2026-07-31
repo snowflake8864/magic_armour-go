@@ -14,7 +14,7 @@ import (
 	"goskeleton/app/utils/response"
 )
 
-// SoftwareController 终端相关
+// SoftwareController 终端软件相关
 type SoftwareController struct {
 	ControllerBase
 }

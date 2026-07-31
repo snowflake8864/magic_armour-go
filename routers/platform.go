@@ -261,6 +261,18 @@ func InitPlatformRouter() *gin.Engine {
 						manage.POST("clear", (&platform.SoftwareController{}).ClearForManage)
 					}
 				}
+				//杀毒引擎
+				antivirusEngine := vPlatform.Group("antivirusEngine/")
+				{
+					manage := antivirusEngine.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AntivirusEngineManagePage"))
+						manage.POST("add", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AntivirusEngineManageAdd"))
+						manage.POST("publish", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AntivirusEngineManagePublish"))
+						manage.POST("newest", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AntivirusEngineManageNewest"))
+						manage.POST("delete", validatorFactory.Create(consts.ValidatorPrefixPlatform+"AntivirusEngineManageDelete"))
+					}
+				}
 
 				//威胁情报
 				threaten := vPlatform.Group("threaten/")

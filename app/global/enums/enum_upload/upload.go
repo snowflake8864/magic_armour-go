@@ -9,4 +9,5 @@ const (
 	TypeTamperPolicy    string = "tamper_policy"    //类型: 防篡改策略
 	TypeThreatenCaches  string = "threaten_caches"  //类型: 威胁情报缓存
 	TypeImportantBackup string = "important_backup" //类型: 重要数据备份
+	TypeAntivirusEngine string = "antivirus_engine" //类型: 杀毒引擎
 )

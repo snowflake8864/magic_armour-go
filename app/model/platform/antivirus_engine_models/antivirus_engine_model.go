@@ -19,13 +19,15 @@ type EngineModel struct {
 	model.BaseModel
 	Id           int64  `json:"id" gorm:"primaryKey"`
 	UploadId     int64  `json:"upload_id"`
-	Name         string `json:"name"`
-	Ver          string `json:"ver"`
 	PlatformType int    `json:"platform_type"`
 	ArchType     int    `json:"arch_type"`
+	EngineType   int    `json:"engine_type"`
+	Ver          string `json:"ver"`
 	IsPublish    int    `json:"is_publish"`
 	IsNewest     int    `json:"is_newest"`
 	Remark       string `json:"remark"`
+	FileHash     string `json:"file_hash"`
+	FileSize     int64  `json:"file_size"`
 	StoragePath  string `json:"storage_path"`
 	FullPath     string `json:"full_path"`
 	CreateId     int64  `json:"create_id"`
@@ -45,13 +47,15 @@ func (m *EngineModel) CreateTable() bool {
 		(
             id int(11) unsigned NOT NULL AUTO_INCREMENT,
 			upload_id int(11) NOT NULL DEFAULT '0' COMMENT '(upload.id)',
-			name varchar(64)  NOT NULL DEFAULT '' COMMENT '名称',
-            ver varchar(64)  NOT NULL DEFAULT '' COMMENT '版本号',
 			platform_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '平台类型(win|linux, 统一定义)',
 			arch_type tinyint(1) NOT NULL DEFAULT '1' COMMENT 'CPU架构(参考amd64|arm64等,统一定义)',
+			engine_type smallint(4)  unsigned NOT NULL DEFAULT '0' COMMENT '引擎类型',
+            ver varchar(64)  NOT NULL DEFAULT '' COMMENT '版本号',
 			is_publish tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否发布',
 			is_newest tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否最新',
             remark text  NOT NULL COMMENT '备注',
+			file_size int unsigned NOT NULL DEFAULT '0'  COMMENT '文件大小',
+  			file_hash varchar(32) NOT NULL DEFAULT ''  COMMENT '文件哈希值',
 			storage_path varchar(512)  NOT NULL DEFAULT '' COMMENT '存储相对路径(项目下)',
 			full_path varchar(1024)  NOT NULL DEFAULT '' COMMENT '完整路径',
             create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(admin.id)',

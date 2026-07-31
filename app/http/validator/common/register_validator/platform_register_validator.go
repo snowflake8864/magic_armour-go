@@ -6,6 +6,7 @@ import (
 	uploadFiles4 "goskeleton/app/http/validator/common/upload_files"
 	account4 "goskeleton/app/http/validator/platform/account"
 	agent4 "goskeleton/app/http/validator/platform/agent"
+	antivirusEngine4 "goskeleton/app/http/validator/platform/antivirus_engine"
 	auth4 "goskeleton/app/http/validator/platform/auth"
 	dictionary4 "goskeleton/app/http/validator/platform/dictionary"
 	home4 "goskeleton/app/http/validator/platform/home"
@@ -202,4 +203,16 @@ func PlatformRegisterValidator() {
 	containers.Set(key, system4.UpgradeRun{})
 	key = consts.ValidatorPrefixPlatform + "SystemSntpSet"
 	containers.Set(key, system4.SntpSet{})
+
+	//杀毒引擎
+	key = consts.ValidatorPrefixPlatform + "AntivirusEngineManagePage"
+	containers.Set(key, antivirusEngine4.ManagePage{})
+	key = consts.ValidatorPrefixPlatform + "AntivirusEngineManageAdd"
+	containers.Set(key, antivirusEngine4.ManageAdd{})
+	key = consts.ValidatorPrefixPlatform + "AntivirusEngineManageNewest"
+	containers.Set(key, antivirusEngine4.ManageNewest{})
+	key = consts.ValidatorPrefixPlatform + "AntivirusEngineManagePublish"
+	containers.Set(key, antivirusEngine4.ManagePublish{})
+	key = consts.ValidatorPrefixPlatform + "AntivirusEngineManageDelete"
+	containers.Set(key, antivirusEngine4.ManageDelete{})
 }

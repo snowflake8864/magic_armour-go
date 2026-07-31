@@ -5,6 +5,8 @@ import (
 )
 
 const (
+	EngineTypeClamav int = 1 //引擎类型: clamav
+
 	TargetTypeSingleAgent int = 1 //目标类型: 单个终端
 	TargetTypeAllAgent    int = 2 //目标类型: 全部终端
 	TargetTypeDepartments int = 3 //目标类型: 组织架构集合

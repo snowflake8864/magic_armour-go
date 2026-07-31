@@ -20,8 +20,9 @@ type Upload struct {
 func (u *Upload) StartUpload(context *gin.Context) {
 	fileType, _ := context.GetPostForm("type")
 	allowFileTypes := map[string]struct{}{
-		enum_upload.TypeSoftware: {},
-		enum_upload.TypeUpgrade:  {},
+		enum_upload.TypeSoftware:        {},
+		enum_upload.TypeUpgrade:         {},
+		enum_upload.TypeAntivirusEngine: {},
 	}
 	if _, isOK := allowFileTypes[fileType]; !isOK {
 		response.FailSimplify(context, "type fail:"+fileType)
