@@ -3,8 +3,8 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_antivirus_engine_task"
-	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/antivirus_engine_models"
 	"goskeleton/app/service/platform/antivirus_engine_service"
@@ -67,31 +67,28 @@ func (u *AntivirusEngineController) ClearForManage(ctx *gin.Context) {
 	response.SuccessSimplify(ctx)
 }
 
-// DownloadForManage 管理: 下载
-func (u *AntivirusEngineController) DownloadForManage(ctx *gin.Context) {
-	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
-	model := software_service.CreateCurdFactory().GetItemById(softId)
-	if model == nil || model.Id == 0 {
-		response.FailSimplify(ctx, "软件不存在")
-		return
-	}
-
-	response.FileDownloadAndRename(ctx, model.FullPath, enum_software.DownloadName(model.PlatformType, model.OsType, model.Ver))
-}
-
 // PublishForManage 管理: 发布
 func (u *AntivirusEngineController) PublishForManage(ctx *gin.Context) {
-	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
-	if errCode, err := software_service.CreateCurdFactory().PublishById(softId); err != nil {
-		response.FailRoutine(ctx, errCode, err.Error())
-		return
+	engineId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "engineId"))
+	isPublish := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "isPublish"))
+
+	if isPublish == enums.IsYes {
+		if errCode, err := antivirus_engine_service.CreateCurdFactory().PublishById(engineId); err != nil {
+			response.FailRoutine(ctx, errCode, err.Error())
+			return
+		}
+	} else {
+		if errCode, err := antivirus_engine_service.CreateCurdFactory().CancelById(engineId); err != nil {
+			response.FailRoutine(ctx, errCode, err.Error())
+			return
+		}
 	}
 
 	response.SuccessSimplify(ctx)
 }
 
-// CancelForManage 管理: 取消
-func (u *AntivirusEngineController) CancelForManage(ctx *gin.Context) {
+// NewestForManage 管理: 设置最新
+func (u *AntivirusEngineController) NewestForManage(ctx *gin.Context) {
 	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
 	if errCode, err := software_service.CreateCurdFactory().CancelById(softId); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())

@@ -88,24 +88,14 @@ func (crd *EngineCurd) DeleteById(id int64) (errCode int, err error) {
 func (crd *EngineCurd) PublishById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New("引擎不存在")
 	}
 	if model.IsPublish == enums.IsYes {
-		return -1, errors.New("软件已经发布过了")
+		return -1, errors.New("引擎已经发布过了")
 	}
-
-	//关闭同系统类型的
-	IsPublish := enums.IsYes
-	conditions := antivirus_engine_models.SearchConditions{
-		IsPublish: &IsPublish,
-	}
-	updates := map[string]interface{}{
-		"is_publish": enums.IsNot,
-	}
-	crd.masterModel.UpdateByConditions(conditions, updates)
 
 	//修改本身
-	updates = map[string]interface{}{
+	updates := map[string]interface{}{
 		"is_publish": enums.IsYes,
 	}
 	if !crd.masterModel.UpdateById(id, updates) {
@@ -114,11 +104,11 @@ func (crd *EngineCurd) PublishById(id int64) (errCode int, err error) {
 	return errCode, err
 }
 
-// CancelById  取消
+// CancelById  取消发布
 func (crd *EngineCurd) CancelById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New("引擎不存在")
 	}
 
 	//修改本身

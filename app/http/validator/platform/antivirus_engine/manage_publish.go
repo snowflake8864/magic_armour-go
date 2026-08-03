@@ -10,6 +10,7 @@ import (
 
 type ManagePublish struct {
 	EngineSingle
+	IsPublish *int `form:"isPublish" json:"isPublish" binding:"required,oneof=0 1"`
 }
 
 func (n ManagePublish) CheckParams(context *gin.Context) {
