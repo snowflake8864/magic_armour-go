@@ -38,10 +38,10 @@ func (crd *EngineCurd) GetItemsByPublished() (items []*antivirus_engine_models.E
 func (crd *EngineCurd) Add(param *antivirus_engine_models.EngineModel) (errCode int, err error) {
 	uploadModel := upload_models.CreateUploadFactory().GetItemById(param.UploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
-		return -1, errors.New("上传软件不存在")
+		return -1, errors.New("上传引擎不存在")
 	}
 	if !files.ExistsFile(uploadModel.FullPath) {
-		//return -1, errors.New("文件不存在")
+		return -1, errors.New("文件不存在")
 	}
 
 	//如是是最新的
@@ -74,7 +74,7 @@ func (crd *EngineCurd) Add(param *antivirus_engine_models.EngineModel) (errCode 
 func (crd *EngineCurd) DeleteById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New("引擎不存在")
 	}
 
 	if !crd.masterModel.DeleteById(id) {

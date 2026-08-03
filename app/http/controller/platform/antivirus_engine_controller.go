@@ -99,8 +99,8 @@ func (u *AntivirusEngineController) NewestForManage(ctx *gin.Context) {
 
 // DeleteForManage 管理: 删除
 func (u *AntivirusEngineController) DeleteForManage(ctx *gin.Context) {
-	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
-	if errCode, err := software_service.CreateCurdFactory().DeleteById(softId); err != nil {
+	engineId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "engineId"))
+	if errCode, err := antivirus_engine_service.CreateCurdFactory().DeleteById(engineId); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
