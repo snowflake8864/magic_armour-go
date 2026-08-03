@@ -120,3 +120,32 @@ func (crd *EngineCurd) CancelById(id int64) (errCode int, err error) {
 	}
 	return errCode, err
 }
+
+// NewestById 设置最新
+func (crd *EngineCurd) NewestById(id int64) (errCode int, err error) {
+	model := crd.GetItemById(id)
+	if model == nil || model.Id == 0 {
+		return -1, errors.New("引擎不存在")
+	}
+	if model.IsNewest == enums.IsYes {
+		return -1, errors.New("引擎已经发是最新版本了")
+	}
+
+	//关闭同系统类型的
+	conditions := antivirus_engine_models.SearchConditions{
+		PlatformType: model.PlatformType,
+	}
+	updates := map[string]interface{}{
+		"is_newest": enums.IsNot,
+	}
+	crd.masterModel.UpdateByConditions(conditions, updates)
+
+	//修改本身
+	updates = map[string]interface{}{
+		"is_newest": enums.IsYes,
+	}
+	if !crd.masterModel.UpdateById(id, updates) {
+		return -1, errors.New("保存失败")
+	}
+	return errCode, err
+}

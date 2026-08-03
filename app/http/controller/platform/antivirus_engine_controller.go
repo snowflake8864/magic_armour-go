@@ -89,8 +89,8 @@ func (u *AntivirusEngineController) PublishForManage(ctx *gin.Context) {
 
 // NewestForManage 管理: 设置最新
 func (u *AntivirusEngineController) NewestForManage(ctx *gin.Context) {
-	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
-	if errCode, err := software_service.CreateCurdFactory().CancelById(softId); err != nil {
+	engineId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "engineId"))
+	if errCode, err := antivirus_engine_service.CreateCurdFactory().NewestById(engineId); err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
 	}
