@@ -28,10 +28,10 @@ func (u *AntivirusEngineController) PageForManage(ctx *gin.Context) {
 	condition.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
 
 	//分页参数和排序参数
-	offset, pageSize, order := u.getPageAndSort(ctx, "")
+	offset, pageSize, _ := u.getPageAndSort(ctx, "")
 
 	//软件分页
-	total, models := antivirus_engine_models.CreateEngineFactory().Page(condition, offset, pageSize, order)
+	total, models := antivirus_engine_models.CreateEngineFactory().Page(condition, offset, pageSize, "")
 
 	response.SuccessReturnData(ctx, (&platform_trans.AntivirusEngine{}).TransPage(total, models))
 }

@@ -164,7 +164,7 @@ func (m *EngineModel) GetItemsByConditions(condition SearchConditions, offset, l
 	if !string_helper.IsEmpty(order) {
 		tmp = tmp.Order(order)
 	} else {
-		tmp = tmp.Order("created_at ASC")
+		tmp = tmp.Order("is_newest DESC, created_at ASC")
 	}
 	result := tmp.Find(&items)
 	if result.Error == nil {
