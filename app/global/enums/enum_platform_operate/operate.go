@@ -3,16 +3,17 @@ package enum_platform_operate
 // 任务
 
 const (
-	ModuleAuth       = "auth"
-	ModuleOrg        = "org"
-	ModuleProduct    = "product"
-	ModuleOrder      = "order"
-	ModuleAgent      = "agent"
-	ModuleSoftware   = "software"
-	ModuleThreaten   = "threaten"
-	ModuleAccount    = "account"
-	ModuleDictionary = "dictionary"
-	ModuleSystem     = "system"
+	ModuleAuth            = "auth"
+	ModuleOrg             = "org"
+	ModuleProduct         = "product"
+	ModuleOrder           = "order"
+	ModuleAgent           = "agent"
+	ModuleSoftware        = "software"
+	ModuleThreaten        = "threaten"
+	ModuleAccount         = "account"
+	ModuleDictionary      = "dictionary"
+	ModuleSystem          = "system"
+	ModuleAntivirusEngine = "antivirusEngine"
 
 	StatusSuccess int = 1
 	StatusFail    int = 2
@@ -20,16 +21,17 @@ const (
 
 var EnumMap = map[string]map[string]string{
 	"module": {
-		ModuleAuth:       "安全认证",
-		ModuleOrg:        "客户管理",
-		ModuleProduct:    "产品管理",
-		ModuleOrder:      "订单管理",
-		ModuleAgent:      " 终端管理",
-		ModuleSoftware:   " 软件管理",
-		ModuleThreaten:   "威胁情报",
-		ModuleAccount:    "账户管理",
-		ModuleDictionary: "数据字典",
-		ModuleSystem:     "系统管理",
+		ModuleAuth:            "安全认证",
+		ModuleOrg:             "客户管理",
+		ModuleProduct:         "产品管理",
+		ModuleOrder:           "订单管理",
+		ModuleAgent:           " 终端管理",
+		ModuleSoftware:        " 软件管理",
+		ModuleThreaten:        "威胁情报",
+		ModuleAccount:         "账户管理",
+		ModuleDictionary:      "数据字典",
+		ModuleSystem:          "系统管理",
+		ModuleAntivirusEngine: "杀毒引擎管理",
 	},
 }
 
@@ -45,6 +47,7 @@ var WebMapString = map[string][]string{
 		ModuleAccount,
 		ModuleDictionary,
 		ModuleSystem,
+		ModuleAntivirusEngine,
 	},
 }
 
@@ -86,17 +89,23 @@ var pathModuleLabel = map[string][]string{
 	"/v5/platform/threaten/cache/batchWhite":         {ModuleThreaten, "缓存-批量白名单"},
 	"/v5/platform/threaten/cache/batchBlack":         {ModuleThreaten, "缓存-批量黑名单"},
 	"/v5/platform/threaten/push/clear":               {ModuleThreaten, "推送-清空"},
-	"/v5/platform/account/modifyPw":                  {ModuleAccount, "修改密码"},
-	"/v5/platform/dictionary/save":                   {ModuleDictionary, "修改"},
-	"/v5/platform/system/agentLogConfig/set":         {ModuleSystem, "修改终端日志配置"},
-	"/v5/platform/system/network/set":                {ModuleSystem, "修改网络配置"},
-	"/v5/platform/system/ssh/set":                    {ModuleSystem, "修改SSH开关"},
-	"/v5/platform/system/sntp/set":                   {ModuleSystem, "设置SNTP服务"},
-	"/v5/platform/system/time/set":                   {ModuleSystem, "修改系统时间"},
-	"/v5/platform/system/upgrade/run":                {ModuleSystem, "系统升级"},
-	"/v5/platform/system/upgrade/saveLog":            {ModuleSystem, "系统升级"},
-	"/v5/platform/system/huanshi/setThird":           {ModuleSystem, "设置第三方日志平台"},
-	"/v5/platform/system/huanshi/set":                {ModuleSystem, "设置日志平台"},
+
+	"/v5/platform/antivirusEngine/manage/add":     {ModuleAntivirusEngine, "添加"},
+	"/v5/platform/antivirusEngine/manage/delete":  {ModuleSoftware, "删除"},
+	"/v5/platform/antivirusEngine/manage/publish": {ModuleSoftware, "发布"},
+	"/v5/platform/antivirusEngine/manage/newest":  {ModuleSoftware, "设置最新"},
+
+	"/v5/platform/account/modifyPw":          {ModuleAccount, "修改密码"},
+	"/v5/platform/dictionary/save":           {ModuleDictionary, "修改"},
+	"/v5/platform/system/agentLogConfig/set": {ModuleSystem, "修改终端日志配置"},
+	"/v5/platform/system/network/set":        {ModuleSystem, "修改网络配置"},
+	"/v5/platform/system/ssh/set":            {ModuleSystem, "修改SSH开关"},
+	"/v5/platform/system/sntp/set":           {ModuleSystem, "设置SNTP服务"},
+	"/v5/platform/system/time/set":           {ModuleSystem, "修改系统时间"},
+	"/v5/platform/system/upgrade/run":        {ModuleSystem, "系统升级"},
+	"/v5/platform/system/upgrade/saveLog":    {ModuleSystem, "系统升级"},
+	"/v5/platform/system/huanshi/setThird":   {ModuleSystem, "设置第三方日志平台"},
+	"/v5/platform/system/huanshi/set":        {ModuleSystem, "设置日志平台"},
 }
 
 func GetModuleAndLabelByPath(path string) (module string, label string) {

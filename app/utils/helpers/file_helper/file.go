@@ -4,7 +4,9 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"io"
+	"math"
 	"os"
 	"path/filepath"
 )
@@ -124,4 +126,44 @@ func GetAllFiles(dir string) ([]string, error) {
 	}
 
 	return files, nil
+}
+
+// FormatFileSize 将字节大小转为易读的字符串，单位只使用 KB、MB、GB
+// 参数: bytes - 字节大小
+// 返回: 格式化后的字符串，如 "1.2 MB"
+func FormatFileSize(bytes int64) string {
+	if bytes < 0 {
+		return "0 B"
+	}
+
+	const unit = 1024
+
+	// 小于 1KB 直接显示字节
+	if bytes < unit {
+		return fmt.Sprintf("%d B", bytes)
+	}
+
+	// 计算应该使用哪个单位
+	var size float64
+	var unitStr string
+
+	switch {
+	case bytes < unit*unit: // < 1MB，显示 KB
+		size = float64(bytes) / float64(unit)
+		unitStr = "KB"
+	case bytes < unit*unit*unit: // < 1GB，显示 MB
+		size = float64(bytes) / float64(unit*unit)
+		unitStr = "MB"
+	default: // >= 1GB，显示 GB
+		size = float64(bytes) / float64(unit*unit*unit)
+		unitStr = "GB"
+	}
+
+	// 智能显示小数位数
+	// 如果是整数，不显示小数点
+	if size == math.Trunc(size) {
+		return fmt.Sprintf("%d %s", int64(size), unitStr)
+	}
+	// 否则保留 1 位小数
+	return fmt.Sprintf("%.1f %s", size, unitStr)
 }

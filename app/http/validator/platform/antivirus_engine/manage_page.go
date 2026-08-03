@@ -12,6 +12,9 @@ import (
 type ManagePage struct {
 	data_type.Page
 	PlatformType
+	Ver       string `form:"ver" json:"ver" binding:"omitempty,max=16"`
+	StartTime string `form:"startTime" json:"startTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
+	EndTime   string `form:"endTime" json:"endTime" binding:"omitempty,datetime=2006-01-02 15:04:05"`
 }
 
 func (n ManagePage) CheckParams(context *gin.Context) {

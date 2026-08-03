@@ -3,12 +3,10 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
-	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_antivirus_engine_task"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/antivirus_engine_models"
-	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/antivirus_engine_service"
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/response"
@@ -22,26 +20,20 @@ type AntivirusEngineController struct {
 // PageForManage 管理: 分页
 func (u *AntivirusEngineController) PageForManage(ctx *gin.Context) {
 
-	//页面上传
-	PlatformType := int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
-	IsPublish := enums.IsNot
-	condition := software_models.SearchConditions{
-		PlatformType: PlatformType,
-		IsPublish:    &IsPublish,
-	}
-	if PlatformType == enum_software.PlatformTypeWindows || PlatformType == enum_software.PlatformTypeLinux {
-		condition.PlatformType = PlatformType
-		IsPublish = enums.IsYes
-		condition.IsPublish = &IsPublish
-	}
+	condition := antivirus_engine_models.SearchConditions{}
+
+	condition.Ver = ctx.GetString(consts.ValidatorPrefixPlatform + "ver")
+	condition.CreateAtGte = ctx.GetString(consts.ValidatorPrefixPlatform + "startTime")
+	condition.CreateAtLte = ctx.GetString(consts.ValidatorPrefixPlatform + "endTime")
+	condition.PlatformType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "platformType"))
 
 	//分页参数和排序参数
 	offset, pageSize, order := u.getPageAndSort(ctx, "")
 
 	//软件分页
-	total, models := software_models.CreateSoftwareFactory().Page(condition, offset, pageSize, order)
+	total, models := antivirus_engine_models.CreateEngineFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Software{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.AntivirusEngine{}).TransPage(total, models))
 }
 
 // AddForManage 管理:  添加
