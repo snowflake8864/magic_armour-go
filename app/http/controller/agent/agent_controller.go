@@ -300,3 +300,19 @@ func (u *AgentController) MonitorIP(ctx *gin.Context) {
 
 	response.SuccessSimplify(ctx)
 }
+
+// UploadAntivirusEngine 上报杀毒引擎信息
+func (u *AgentController) UploadAntivirusEngine(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	ip := ctx.GetString(consts.ValidatorPrefixAgent + "engine_type")
+	ip := ctx.GetString(consts.ValidatorPrefixAgent + "ip")
+	if !agent_service.CreateCurdFactory().SetIpByAgent(loginInfo.OrgId, loginInfo.AgentId, ip, ctx.ClientIP()) {
+		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify agent fail", loginInfo.OrgId, loginInfo.AgentId))
+	}
+	if err := agent_service.CreateCacheFactory().ModifyByLogin(loginInfo, ip, ctx.ClientIP()); err != nil {
+		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify  fail: %v", loginInfo.OrgId, loginInfo.AgentId, err))
+	}
+
+	response.SuccessSimplify(ctx)
+}

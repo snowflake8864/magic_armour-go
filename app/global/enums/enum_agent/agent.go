@@ -30,6 +30,11 @@ const (
 	GrantStatusExpired      int = 3 //授权状态: 已过期
 
 	AgentFieldDefault string = "id" //默认排序字段
+
+	AntivirusEngineStatusRunning      int = 1 //杀毒引擎状态: 运行中
+	AntivirusEngineStatusRunException int = 2 //杀毒引擎状态: 运行异常
+	AntivirusEngineStatusUpgrading    int = 3 //杀毒引擎状态: 升级中
+	AntivirusEngineStatusUpgradeFail  int = 4 //杀毒引擎状态: 升级失败
 )
 
 var EnumIntMap = map[string]map[int]string{
