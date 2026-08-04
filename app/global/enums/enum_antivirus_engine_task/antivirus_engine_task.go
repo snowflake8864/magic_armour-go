@@ -32,7 +32,9 @@ const (
 )
 
 var EnumMap = map[string]map[int]string{
-	"upgrade_mode": {
+	"engine_type": {
+		EngineTypeClamav: "clamav",
+	}, "upgrade_mode": {
 		UpgradeModeAuto:   "自动升级",
 		UpgradeModeManual: "人工升级",
 	},

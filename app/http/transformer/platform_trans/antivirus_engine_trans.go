@@ -3,6 +3,7 @@ package platform_trans
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_antivirus_engine_task"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/platform/antivirus_engine_models"
@@ -17,6 +18,7 @@ type AntivirusEngine struct {
 func (t *AntivirusEngine) pageGeneral(model *antivirus_engine_models.EngineModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	data["platform_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", model.PlatformType, enum_software.EnumMap)
+	data["engine_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("engine_type", model.EngineType, enum_antivirus_engine_task.EnumMap)
 
 	data["file_size_label"] = file_helper.FormatFileSize(model.FileSize)
 
