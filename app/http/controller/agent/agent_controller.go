@@ -305,13 +305,12 @@ func (u *AgentController) MonitorIP(ctx *gin.Context) {
 func (u *AgentController) UploadAntivirusEngine(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	ip := ctx.GetString(consts.ValidatorPrefixAgent + "engine_type")
-	ip := ctx.GetString(consts.ValidatorPrefixAgent + "ip")
-	if !agent_service.CreateCurdFactory().SetIpByAgent(loginInfo.OrgId, loginInfo.AgentId, ip, ctx.ClientIP()) {
+	engineType := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "engine_type"))
+	engineStatus := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "engine_status"))
+	engineVer := ctx.GetString(consts.ValidatorPrefixAgent + "engine_ver")
+
+	if !agent_service.CreateCurdFactory().SetAntivirusEngineByAgent(loginInfo.OrgId, loginInfo.AgentId, engineStatus, engineType, engineVer) {
 		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify agent fail", loginInfo.OrgId, loginInfo.AgentId))
-	}
-	if err := agent_service.CreateCacheFactory().ModifyByLogin(loginInfo, ip, ctx.ClientIP()); err != nil {
-		variable.ZapLog.Info(fmt.Sprintf("org=%d, agent=%s modify  fail: %v", loginInfo.OrgId, loginInfo.AgentId, err))
 	}
 
 	response.SuccessSimplify(ctx)

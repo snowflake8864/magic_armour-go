@@ -39,10 +39,12 @@ const (
 	TypeTrustDir                  int = 33 //任务类型:信任目录
 	TypeResetUUid                 int = 34 //任务类型: 重置终端ID
 	TypeOutreachDetectDownload    int = 35 //任务类型: 下载外联主动探测策略
-	TypePwJump                    int = 36 //任务类型: 密码跳变
-	TypeIpJump                    int = 37 //任务类型: IP跳变
-	TypeSystemBackup              int = 38 //任务类型: 系统备份
-	TypeSystemRollback            int = 39 //任务类型: 系统回滚
+	TypePwJump                    int = 36 //任务类型: 密码跳变【804】
+	TypeIpJump                    int = 37 //任务类型: IP跳变【804】
+	TypeSystemBackup              int = 38 //任务类型: 系统备份【804】
+	TypeSystemRollback            int = 39 //任务类型: 系统回滚【804】
+	TypeSyncAt                    int = 40 //任务类型: 同步时间【804】
+	TypeAntivirusEngineUpgrade    int = 41 //任务类型: 杀毒引擎升级【长城端盾】
 
 )
 

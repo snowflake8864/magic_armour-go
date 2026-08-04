@@ -3,6 +3,7 @@ package agent_service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
@@ -14,6 +15,7 @@ import (
 	"goskeleton/app/service/platform/software_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/kafka_go"
 	"goskeleton/app/utils/kafka_go/producer_kafka"
 	"goskeleton/app/utils/md5_encrypt"
@@ -138,6 +140,23 @@ func (crd *AgentCurd) SetIpByAgent(orgId int64, id string, agentIp, netIp string
 		"net_ip":   netIp,
 		"agent_ip": agentIp,
 	}
+	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
+	return isOk
+}
+
+// SetAntivirusEngineByAgent 设置终端杀毒引擎信息
+func (crd *AgentCurd) SetAntivirusEngineByAgent(orgId int64, id string, engineStatus, engineType int, engineVer string) bool {
+	updates := map[string]interface{}{
+		"antivirus_engine_status": engineStatus,
+	}
+
+	if engineType > 0 {
+		updates["antivirus_engine_type"] = engineType
+	}
+	if !string_helper.IsEmpty(engineVer) {
+		updates["antivirus_engine_ver"] = engineVer
+	}
+	fmt.Println(updates)
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, id, updates)
 	return isOk
 }

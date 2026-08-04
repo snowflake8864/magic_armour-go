@@ -123,15 +123,16 @@ func InitAgentRouter() *gin.Engine {
 		vAgent.Use(middleware_auth_agent.CheckToken())
 		{
 			//终端相关
-			vAgent.Any("getconf", (&agent.AgentController{}).GetConfig)                                            // 获取配置信息
-			vAgent.POST("getinfo", (&agent.AgentController{}).GetInfo)                                             //获取终端信息(调试用)
-			vAgent.POST("getSyslogConf", (&agent.AgentController{}).GetConfig)                                     //获取syslog配置(不在使用)
-			vAgent.Any("download", (&agent.AgentController{}).Upgrade)                                             //升级
-			vAgent.Any("uninstall", (&agent.AgentController{}).Uninstall)                                          //卸载
-			vAgent.Any("gettrustdir", (&agent.AgentController{}).GetTrustDir)                                      //获取信任目录
-			vAgent.POST("error/upload", validatorFactory.Create(consts.ValidatorPrefixAgent+"ErrorFileUpload"))    //上传转储(错误) 文件
-			vAgent.POST("puthardwareinfo", validatorFactory.Create(consts.ValidatorPrefixAgent+"HardwareMonitor")) //硬件资源监控
-			vAgent.POST("uploadIp", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpMonitor"))              //Ip监控
+			vAgent.Any("getconf", (&agent.AgentController{}).GetConfig)                                                        // 获取配置信息
+			vAgent.POST("getinfo", (&agent.AgentController{}).GetInfo)                                                         //获取终端信息(调试用)
+			vAgent.POST("getSyslogConf", (&agent.AgentController{}).GetConfig)                                                 //获取syslog配置(不在使用)
+			vAgent.Any("download", (&agent.AgentController{}).Upgrade)                                                         //升级
+			vAgent.Any("uninstall", (&agent.AgentController{}).Uninstall)                                                      //卸载
+			vAgent.Any("gettrustdir", (&agent.AgentController{}).GetTrustDir)                                                  //获取信任目录
+			vAgent.POST("error/upload", validatorFactory.Create(consts.ValidatorPrefixAgent+"ErrorFileUpload"))                //上传转储(错误) 文件
+			vAgent.POST("puthardwareinfo", validatorFactory.Create(consts.ValidatorPrefixAgent+"HardwareMonitor"))             //硬件资源监控
+			vAgent.POST("uploadIp", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpMonitor"))                          //Ip监控
+			vAgent.POST("uploadAntivirusEngine", validatorFactory.Create(consts.ValidatorPrefixAgent+"UploadAntivirusEngine")) //上报杀毒引擎信息(长城端盾项目)
 
 			//任务相关
 			vAgent.Any("gettask", (&agent.TaskController{}).Get)
@@ -186,19 +187,19 @@ func InitAgentRouter() *gin.Engine {
 			//告警相关
 			vAgent.POST("alertupload", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmMasterPut")) //上传报警信息(除端口虚开外)
 			vAgent.POST("upOpenPort", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmPortPut"))    //上传端口虚开告警
-			vAgent.POST("upVirusScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmVirusScan")) //上传病毒查杀告警
+			vAgent.POST("upVirusScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"AlarmVirusScan")) //上传病毒查杀告警(长城端盾项目)
 
 			//通讯日志相关
 			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogPut"))        //上传通讯日志
-			vAgent.POST("putVulnScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogVulnScan")) //上传漏洞扫描日志
+			vAgent.POST("putVulnScan", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogVulnScan")) //上传漏洞扫描日志(长城端盾项目)
 
-			//策略跳变
+			//策略跳变(804项目)
 			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump)                               //
 			vAgent.POST("putIpJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpJumpPut")) //
 			vAgent.Any("getPwJump", (&agent.JumpController{}).GetPwJump)                               //
 			vAgent.POST("putPwJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"PwJumpPut")) //
 
-			//备份回滚
+			//备份回滚(804项目)
 			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)                                  //
 			vAgent.POST("uploadBackup", validatorFactory.Create(consts.ValidatorPrefixAgent+"BackupPut"))     //上传备份结果
 			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks)                              //

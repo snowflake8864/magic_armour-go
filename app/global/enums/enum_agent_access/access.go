@@ -54,12 +54,13 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/putsyslog":   "上传通信日志",
 		"/v1/putVulnScan": "上传漏洞扫描日志",
 
-		"/v1/puthardwareinfo": "上传终端资源信息",
-		"/v1/uploadIp":        "上传终端IP信息",
-		"/v1/download":        "升级",
-		"/v1/uninstall":       "卸载",
-		"/v1/error/upload":    "上传错误文件",
-		"/v1/gettrustdir":     "获取信任目录",
+		"/v1/puthardwareinfo":       "上传终端资源信息",
+		"/v1/uploadIp":              "上传终端IP信息",
+		"/v1/download":              "升级",
+		"/v1/uninstall":             "卸载",
+		"/v1/error/upload":          "上传错误文件",
+		"/v1/gettrustdir":           "获取信任目录",
+		"/v1/uploadAntivirusEngine": "上报杀毒引擎信息",
 
 		"/v1/getPwJump":      "获取口令跳变",
 		"/v1/putPwJump":      "上报口令跳变结果",
@@ -121,6 +122,7 @@ var WebMapStr = map[string][]string{
 		"/v1/uploadRollback",
 		"/v1/upVirusScan",
 		"/v1/putVulnScan",
+		"/v1/uploadAntivirusEngine",
 	},
 }
 

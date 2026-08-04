@@ -40,6 +40,8 @@ func AgentRegisterValidator() {
 	containers.Set(key, agent1.MonitorHardware{})
 	key = consts.ValidatorPrefixAgent + "IpMonitor"
 	containers.Set(key, agent1.MonitorIp{})
+	key = consts.ValidatorPrefixAgent + "UploadAntivirusEngine" //上报杀毒引擎信息(长城端盾项目)
+	containers.Set(key, agent1.UploadAntivirusEngine{})
 
 	//任务相关
 	key = consts.ValidatorPrefixAgent + "TaskClose"
