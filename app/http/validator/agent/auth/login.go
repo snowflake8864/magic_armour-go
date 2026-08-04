@@ -12,23 +12,22 @@ import (
 )
 
 type Login struct {
-	Uuid               string `form:"uid" json:"uid"`
-	HostName           string `form:"host_name" json:"host_name"`
-	MacId              string `form:"macid" json:"macid"`
-	AgentIp            string `form:"ip" json:"ip"`
-	Ver                string `form:"ver" json:"ver"`
-	PlatformType       int    `form:"type" json:"type"`
-	OsName             string `form:"os" json:"os"`
-	MemSize            string `form:"memsize" json:"memsize"`
-	Cpu                string `form:"cpu" json:"cpu"`
-	HdSize             string `form:"hdsize" json:"hdsize"`
-	AsStartTime        string `form:"asstarttime" json:"asstarttime"`
-	OsStartTime        string `form:"osstarttime" json:"osstarttime"`
-	Auth               string `form:"auth" json:"auth"`
-	UserId             string `form:"userid" json:"userid"`
-	ModVer             string `form:"mod_ver" json:"mod_ver"`
-	AntivirusEngineVer string `form:"antivirus_engine_ver" json:"antivirus_engine_ver"`
-	ArchType           int    `form:"arch_type" json:"arch_type"`
+	Uuid         string `form:"uid" json:"uid"`
+	HostName     string `form:"host_name" json:"host_name"`
+	MacId        string `form:"macid" json:"macid"`
+	AgentIp      string `form:"ip" json:"ip"`
+	Ver          string `form:"ver" json:"ver"`
+	PlatformType int    `form:"type" json:"type"`
+	OsName       string `form:"os" json:"os"`
+	MemSize      string `form:"memsize" json:"memsize"`
+	Cpu          string `form:"cpu" json:"cpu"`
+	HdSize       string `form:"hdsize" json:"hdsize"`
+	AsStartTime  string `form:"asstarttime" json:"asstarttime"`
+	OsStartTime  string `form:"osstarttime" json:"osstarttime"`
+	Auth         string `form:"auth" json:"auth"`
+	UserId       string `form:"userid" json:"userid"`
+	ModVer       string `form:"mod_ver" json:"mod_ver"`
+	ArchType     int    `form:"arch_type" json:"arch_type"`
 }
 
 func (n Login) CheckParams(context *gin.Context) {
