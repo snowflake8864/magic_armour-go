@@ -204,6 +204,8 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.POST("uploadBackup", validatorFactory.Create(consts.ValidatorPrefixAgent+"BackupPut"))     //上传备份结果
 			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks)                              //
 			vAgent.POST("uploadRollback", validatorFactory.Create(consts.ValidatorPrefixAgent+"RollbackPut")) //上传回滚结果
+
+			//杀毒引擎升级(长城端盾项目)
 		}
 	}
 	return router
