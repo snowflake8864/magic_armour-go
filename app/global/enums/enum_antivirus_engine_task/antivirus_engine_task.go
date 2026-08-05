@@ -27,8 +27,9 @@ const (
 	ProgressStatusFinished   int = 1 //进度状态： 已完成
 	ProgressStatusFail       int = 2 //进度状态： 失败
 
-	FailReasonNetwork int = 1 //错误原因：网络
-	FailReasonEngine  int = 2 //错误原因:引擎
+	FailReasonOffline  int = 1 //错误原因：终端离线
+	FailReasonUnneeded int = 2 //错误原因: 无需升级
+	FailReasonEngine   int = 3 //错误原因: 引擎升级不成功（接到任务开始，包括下载失败、升级失败等）
 )
 
 var EnumMap = map[string]map[int]string{
