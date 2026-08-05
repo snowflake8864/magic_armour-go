@@ -275,7 +275,8 @@ func (m *baseAgent) ColumnBasic(needId, grant bool) string {
 	}
 	column = column +
 		"platform_type, os_type, host_name, mac_id, agent_ip, net_ip, os_name, mem_desc, arch_type, " +
-		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver,mod_ver,antivirus_engine_ver," +
+		"hd_desc, cpu_desc, network_card, agent_start_at, os_start_at, ver,mod_ver," +
+		"antivirus_engine_ver,antivirus_engine_status,antivirus_engine_type," +
 		"is_online, online_at, live_at, is_safe, dept_id,user_id," +
 		"agent_type,alias,contact_name,contact_tel, position, remark, created_at"
 	return column

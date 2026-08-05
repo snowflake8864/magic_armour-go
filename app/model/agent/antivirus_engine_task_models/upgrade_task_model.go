@@ -2,7 +2,7 @@ package antivirus_engine_task_models
 
 import (
 	"gorm.io/gorm"
-	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_antivirus_engine_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -168,18 +168,19 @@ func (m *UpgradeTaskModel) InsertBatch(list *[]UpgradeTaskModel) bool {
 }
 
 func (m *UpgradeTaskModel) conditions2OR(tx *gorm.DB, condition SearchConditions) {
-	if !string_helper.IsEmpty(condition.TargetAgentId) || condition.TargetDeptId > 0 {
-
-	}
-	if condition.TargetDeptId > 0 {
-
-	}
-
-	if !string_helper.IsEmpty(condition.TargetAgentId) {
-		tx.Where("target_type=? OR (target_type=? AND target_ids=?", enums.IsYes, enums.IsNot, condition.TargetAgentId)
-	}
-	if condition.TargetDeptId > 0 {
-		tx.Or("(target_type=? AND FIND_IN_SET(?, target_ids)", enums.IsYes, enums.IsNot, condition.TargetDeptId)
+	if !string_helper.IsEmpty(condition.TargetAgentId) && condition.TargetDeptId > 0 {
+		tx.Where("(target_type=?) OR (target_type=? AND target_ids=?) OR (target_type=? AND FIND_IN_SET(?, target_ids))",
+			enum_antivirus_engine_task.TargetTypeAllAgent,
+			enum_antivirus_engine_task.TargetTypeSingleAgent, condition.TargetAgentId,
+			enum_antivirus_engine_task.TargetTypeDepartments, condition.TargetDeptId)
+	} else if !string_helper.IsEmpty(condition.TargetAgentId) {
+		tx.Where("target_type=? OR (target_type=? AND target_ids1=?)",
+			enum_antivirus_engine_task.TargetTypeAllAgent,
+			enum_antivirus_engine_task.TargetTypeSingleAgent, condition.TargetAgentId)
+	} else if condition.TargetDeptId > 0 {
+		tx.Or("(target_type=? AND FIND_IN_SET(?, target_ids)",
+			enum_antivirus_engine_task.TargetTypeAllAgent,
+			enum_antivirus_engine_task.TargetTypeSingleAgent, condition.TargetDeptId)
 	}
 }
 

@@ -11,13 +11,13 @@ const (
 	TargetTypeAllAgent    int = 2 //目标类型: 全部终端
 	TargetTypeDepartments int = 3 //目标类型: 组织架构集合
 
-	UpgradeModeAuto   int = 1 //升级模式: 自动
-	UpgradeModeManual int = 2 //升级模式: 人工
+	UpgradeModeManual int = 1 //升级模式: 人工
+	UpgradeModeAuto   int = 2 //升级模式: 自动
 
-	TaskTypeCycleWeekly     int = 10 //任务类型: 每周
-	TaskTypeCycleMonth      int = 11 //任务类型: 每月
-	TaskTypeManualInstantly int = 20 //任务类型: 立即
-	TaskTypeManualCrontab   int = 21 //任务类型: 定时
+	TaskTypeManualInstantly int = 10 //任务类型: 立即
+	TaskTypeManualCrontab   int = 11 //任务类型: 定时
+	TaskTypeCycleWeekly     int = 20 //任务类型: 每周
+	TaskTypeCycleMonth      int = 21 //任务类型: 每月
 
 	ExecStatusWaiting  int = 1 //执行方式: 任务等待中（默认）
 	ExecStatusStarting int = 2 //执行方式: 任务开始
@@ -55,14 +55,14 @@ var EnumMap = map[string]map[int]string{
 
 var WebMapInt = map[string][]int{
 	"upgrade_mode": {
-		UpgradeModeAuto,
 		UpgradeModeManual,
+		UpgradeModeAuto,
 	},
 	"task_type": {
-		TaskTypeCycleWeekly,
-		TaskTypeCycleMonth,
 		TaskTypeManualInstantly,
 		TaskTypeManualCrontab,
+		TaskTypeCycleWeekly,
+		TaskTypeCycleMonth,
 	},
 }
 

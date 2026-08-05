@@ -206,6 +206,7 @@ func InitAgentRouter() *gin.Engine {
 			vAgent.POST("uploadRollback", validatorFactory.Create(consts.ValidatorPrefixAgent+"RollbackPut")) //上传回滚结果
 
 			//杀毒引擎升级(长城端盾项目)
+			vAgent.Any("antiEngine/download", (&agent.AntivirusEngineController{}).Upgrade)
 		}
 	}
 	return router
