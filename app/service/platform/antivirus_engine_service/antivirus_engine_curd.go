@@ -61,6 +61,9 @@ func (crd *EngineCurd) Add(param *antivirus_engine_models.EngineModel) (errCode 
 	param.StoragePath = path_helper.ToStandard(uploadModel.StoragePath)
 	param.FullPath = path_helper.ToStandard(uploadModel.FullPath)
 	param.IsPublish = enums.IsNot
+	if param.IsNewest == enums.IsYes {
+		param.IsPublish = enums.IsYes
+	}
 	param.CreatedAt = date_helper.CurDatetime()
 
 	if !crd.masterModel.InsertItem(param) {
@@ -109,6 +112,8 @@ func (crd *EngineCurd) CancelById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
 		return -1, errors.New("引擎不存在")
+	} else if model.IsNewest == enums.IsYes {
+		return -1, errors.New("引擎已经设置成最新，不容许取消发布")
 	}
 
 	//修改本身
