@@ -168,11 +168,18 @@ func (m *UpgradeTaskModel) InsertBatch(list *[]UpgradeTaskModel) bool {
 }
 
 func (m *UpgradeTaskModel) conditions2OR(tx *gorm.DB, condition SearchConditions) {
+	if !string_helper.IsEmpty(condition.TargetAgentId) || condition.TargetDeptId > 0 {
+
+	}
+	if condition.TargetDeptId > 0 {
+
+	}
+
 	if !string_helper.IsEmpty(condition.TargetAgentId) {
 		tx.Where("target_type=? OR (target_type=? AND target_ids=?", enums.IsYes, enums.IsNot, condition.TargetAgentId)
 	}
 	if condition.TargetDeptId > 0 {
-		tx.Where("target_type=? OR (target_type=? AND FIND_IN_SET(?, target_ids)", enums.IsYes, enums.IsNot, condition.TargetDeptId)
+		tx.Or("(target_type=? AND FIND_IN_SET(?, target_ids)", enums.IsYes, enums.IsNot, condition.TargetDeptId)
 	}
 }
 
