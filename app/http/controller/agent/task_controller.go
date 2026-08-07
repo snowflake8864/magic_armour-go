@@ -83,6 +83,9 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		//只下重置终端标识任务
 		unfinishedTasks = []int{enum_task.TypeResetUUid}
 	} else if hasDelete { // 删除的任务
+		//删除所有任务相关数据，保证下次正常登录后没有遗留任务
+		task_service.CreateCurdFactory().DeleteForAgent(loginInfo.OrgId, loginInfo.AgentId)
+
 		response.ErrorTokenFail(ctx, consts.AgentLoginExpiredCode, "agent delete")
 		return
 	} else {

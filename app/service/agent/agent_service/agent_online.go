@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/service/agent/online_log_service"
+	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -83,6 +84,8 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		//添加扩展数据
 		CreateExtendFactory().AddDefault(param.OrgId, param.AgentId)
 
+		//删除所有任务相关数据(终端卸载后不删除uid，时间内再次登录可能有上次遗留任务)
+		task_service.CreateCurdFactory().DeleteForAgent(param.OrgId, param.AgentId)
 		//添加任务
 		crd.addTask(param, nil, true, true, "终端第一次上线")
 
