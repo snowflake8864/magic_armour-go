@@ -993,10 +993,31 @@ func InitOrganizationRouter() *gin.Engine {
 					}
 					hardwareNotice := safetyReport.Group("hardwareNotice/")
 					{
+
 						hardwareNotice.POST("get", (&organization.SafetyReportController{}).GetForHardwareNotice)
 						hardwareNotice.POST("save", validatorFactory.Create(consts.ValidatorPrefixOrg+"SafetyReportHardwareNoticeSave"))
 					}
 				} //安全报告
+
+				//杀毒引擎升级相关
+				antiEngine := vOrg.Group("antiEngine/")
+				{
+					manage := antiEngine.Group("manage/")
+					{
+						manage.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineManagePage"))
+						manage.POST("upgrade", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineManageUpgrade"))
+					}
+					task1 := antiEngine.Group("task/")
+					{
+						task1.POST("page", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskPage"))
+						task1.POST("add", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskAdd"))
+						task1.POST("edit", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskEdit"))
+						task1.POST("cancel", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskCancel"))
+						task1.POST("Retry", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskRetry"))
+						task1.POST("delete", validatorFactory.Create(consts.ValidatorPrefixOrg+"AntiEngineTaskDelete"))
+					}
+				} //杀毒引擎升级相关
+
 			}
 
 		}

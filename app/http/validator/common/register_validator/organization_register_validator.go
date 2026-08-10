@@ -860,4 +860,22 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "SafetyReportHardwareNoticeSave" //
 	containers.Set(key, safetyReport3.HardwareNoticeSave{})
 
+	//杀毒引擎升级相关
+	key = consts.ValidatorPrefixOrg + "AntiEngineManagePage" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineManageUpgrade" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskPage" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskAdd" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskEdit" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskCancel" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskRetry" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	key = consts.ValidatorPrefixOrg + "AntiEngineTaskDelete" //
+	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+
 }

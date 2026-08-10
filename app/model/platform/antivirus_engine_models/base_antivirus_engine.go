@@ -9,6 +9,7 @@ import (
 type SearchConditions struct {
 	Id           int64
 	PlatformType int
+	IsNewest     *int
 	IsPublish    *int
 	Ver          string
 	CreateAtGte  string
@@ -54,6 +55,12 @@ func (crd *baseEngine) conditions2Where(condition SearchConditions) (wheres []mo
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "is_publish",
 			Val: *condition.IsPublish,
+		})
+	}
+	if condition.IsNewest != nil && *condition.IsPublish != enums.AllDefaultInt {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "is_newest",
+			Val: *condition.IsNewest,
 		})
 	}
 	return wheres

@@ -24,7 +24,7 @@ func (crd *EngineCurd) GetItemById(id int64) (model *antivirus_engine_models.Eng
 	return model
 }
 
-// GetItemsByPublished 最新发布数据
+// GetItemsByPublished 已发布的
 func (crd *EngineCurd) GetItemsByPublished() (items []*antivirus_engine_models.EngineModel) {
 	IsPublish := enums.IsYes
 	condition := antivirus_engine_models.SearchConditions{
@@ -32,6 +32,26 @@ func (crd *EngineCurd) GetItemsByPublished() (items []*antivirus_engine_models.E
 	}
 	items = crd.masterModel.GetItemsByConditions(condition, 0, 0, "")
 	return items
+}
+
+// GetMapsByNewest 最新的, 按照平台返回
+func (crd *EngineCurd) GetMapsByNewest() map[int]*antivirus_engine_models.EngineModel {
+	isPublish := enums.IsYes
+	isNewest := enums.IsYes
+	condition := antivirus_engine_models.SearchConditions{
+		IsNewest:  &isNewest,
+		IsPublish: &isPublish,
+	}
+	models := crd.masterModel.GetItemsByConditions(condition, 0, 0, "")
+
+	if models == nil {
+		return nil
+	}
+	result := make(map[int]*antivirus_engine_models.EngineModel)
+	for _, item := range models {
+		result[item.PlatformType] = item
+	}
+	return result
 }
 
 // Add 新增
