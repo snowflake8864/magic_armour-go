@@ -7,6 +7,7 @@ import (
 	agent3 "goskeleton/app/http/validator/organization/agent"
 	agentAccessLog3 "goskeleton/app/http/validator/organization/agent_access_log"
 	alarm3 "goskeleton/app/http/validator/organization/alarm"
+	antiEngine3 "goskeleton/app/http/validator/organization/anti_engine"
 	auth3 "goskeleton/app/http/validator/organization/auth"
 	backup3 "goskeleton/app/http/validator/organization/backup"
 	blackmail3 "goskeleton/app/http/validator/organization/blackmail"
@@ -862,7 +863,7 @@ func OrganizationRegisterValidator() {
 
 	//杀毒引擎升级相关
 	key = consts.ValidatorPrefixOrg + "AntiEngineManagePage" //
-	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	containers.Set(key, antiEngine3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "AntiEngineManageUpgrade" //
 	containers.Set(key, safetyReport3.AlarmNoticeSave{})
 	key = consts.ValidatorPrefixOrg + "AntiEngineTaskPage" //
