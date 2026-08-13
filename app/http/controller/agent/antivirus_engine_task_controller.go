@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums/enum_antivirus_engine_task"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/antivirus_engine_task_models"
 	"goskeleton/app/model/platform/antivirus_engine_models"
@@ -22,17 +23,21 @@ type AntivirusEngineController struct {
 	ControllerBase
 }
 
+// 终端获取到优先级最高的升级任务，并处理其它任务
+//
 // 任务类型优先级：立即 > 周期（默认最新）> 定时
 //
 // 注意：相同任务会被获取到多次，使用redis锁（保留24小时），24小时后批次会更新
 //
+// return: err 错误描述
+//
 // return: highestTaskModel 优先级最高的升级任务
 //
 // return:  engineModel 引擎信息
-func (u *AntivirusEngineController) getTask(orgId int64, agentId string, deptId int64, usedVer string) (highestTaskModel *antivirus_engine_task_models.UpgradeTaskModel, engineModel *antivirus_engine_models.EngineModel) {
+func (u *AntivirusEngineController) getTask(orgId int64, agentId string, deptId int64, usedVer string) (err error, highestTaskModel *antivirus_engine_task_models.UpgradeTaskModel, engineModel *antivirus_engine_models.EngineModel) {
 
 	//无需升级任务
-	var unneededModels []*antivirus_engine_task_models.UpgradeTaskModel
+	var upgradeFailModelModels []*antivirus_engine_task_models.UpgradeFailModel
 
 	//获取任务
 	conditions := antivirus_engine_task_models.SearchConditions{
@@ -42,28 +47,37 @@ func (u *AntivirusEngineController) getTask(orgId int64, agentId string, deptId 
 		ExecStatusList: []int{enum_antivirus_engine_task.ExecStatusStarting, enum_antivirus_engine_task.ExecStatusHandling},
 		ExecNextTsLte:  date_helper.CurTimestamp(),
 	}
+	currAt := date_helper.CurDatetime()
 	//利用task_type字段, 按照立即、周期、定时排序
 	if engineTaskModels := antivirus_engine_task_models.CreateUpgradeTaskFactory().GetItemsByConditions(
 		conditions, 0, 0, "task_type ASC,id DESC"); len(engineTaskModels) > 0 {
-		for key, taskModel := range engineTaskModels {
-			if key == 0 {
-				highestTaskModel = taskModel
-			} else {
-				unneededModels = append(unneededModels, taskModel)
+		for _, taskModel := range engineTaskModels {
+			//升级任务批次是否短时间没有重复执行过
+			if antivirus_engine_task_service.CreateLockFactory().UpgradeTask(orgId, agentId, highestTaskModel.Id, highestTaskModel.ExecBatch) {
+				//没有优先级最高任务
+				if highestTaskModel == nil {
+					highestTaskModel = taskModel
+				} else {
+					//进入无需处理任务列表
+					upgradeFailModelModels = append(upgradeFailModelModels, &antivirus_engine_task_models.UpgradeFailModel{
+						OrgId:     orgId,
+						TaskId:    taskModel.Id,
+						ExecBatch: taskModel.ExecBatch,
+						AgentId:   agentId,
+						DeptId:    deptId,
+						CreatedAt: currAt,
+						Id:        variable.SnowFlake.GetId(),
+						Reason:    enum_antivirus_engine_task.FailReasonUnneeded,
+						Remark:    fmt.Sprintf("优先级没有任务[%d]高", highestTaskModel.Id),
+					})
+				}
 			}
 		}
 	} else {
-		return nil, nil
+		return fmt.Errorf("no upgrade task"), nil, nil
 	}
 
-	//判断是高优先级任务是否出处理过
-	if antivirus_engine_task_service.CreateLockFactory().UpgradeTask(orgId, agentId, highestTaskModel.Id, highestTaskModel.ExecBatch) {
-		//获取引擎信息
-	} else {
-		//
-	}
-
-	return highestTaskModel, engineModel
+	return nil, highestTaskModel, engineModel
 }
 
 // Upgrade 升级
@@ -88,22 +102,19 @@ func (u *AntivirusEngineController) Upgrade(ctx *gin.Context) {
 	}
 
 	result := map[string]interface{}{} //需初始化
-
 	//获取到引擎任务
-	highestTaskModel, engineModel := u.getTask(loginInfo.OrgId, loginInfo.AgentId, agentModel.DeptId, agentModel.AntivirusEngineVer)
-	if highestTaskModel == nil || highestTaskModel.Id == 0 || engineModel == nil && engineModel.Id == 0 {
-		response.FailSimplify(ctx, "No upgrade task")
+	if err, highestTaskModel, engineModel := u.getTask(loginInfo.OrgId, loginInfo.AgentId, agentModel.DeptId, agentModel.AntivirusEngineVer); err != nil {
+		response.FailSimplify(ctx, err.Error())
 		return
+	} else {
+		//返回信息
+		result["taskId"] = highestTaskModel.Id
+		result["batchId"] = highestTaskModel.ExecBatch
+		result["ver"] = engineModel.Ver
+		result["size"] = engineModel.FileSize
+		result["hash"] = engineModel.FileHash
+		result["download"] = serverAddr + "/" + strings.TrimLeft(engineModel.StoragePath, "/")
 	}
-
-	//返回信息
-	result["taskId"] = highestTaskModel.Id
-	result["batchId"] = highestTaskModel.ExecBatch
-	result["ver"] = engineModel.Ver
-	result["size"] = engineModel.FileSize
-	result["hash"] = engineModel.FileHash
-	result["download"] = serverAddr + "/" + strings.TrimLeft(engineModel.StoragePath, "/")
-
 	response.SuccessReturnData(ctx, result)
 }
 
