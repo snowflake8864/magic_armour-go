@@ -180,9 +180,9 @@ func (u *AntivirusEngineController) Progress(ctx *gin.Context) {
 
 	param := antivirus_engine_task_models.UpgradeFailModel{
 		OrgId:     loginInfo.OrgId,
+		AgentId:   loginInfo.AgentId,
 		TaskId:    int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "taskId")),
 		ExecBatch: int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "batchId")),
-		AgentId:   loginInfo.AgentId,
 		DeptId:    int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "deptId")),
 		Remark:    ctx.GetString(consts.ValidatorPrefixAgent + "reason"),
 	}
