@@ -3,12 +3,15 @@ package agent
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_antivirus_engine_task"
+	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/antivirus_engine_task_models"
 	"goskeleton/app/model/platform/antivirus_engine_models"
+	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/antivirus_engine_task_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/software_service"
@@ -23,6 +26,22 @@ type AntivirusEngineController struct {
 	ControllerBase
 }
 
+func (u *AntivirusEngineController) formatFailModel(taskModel *antivirus_engine_task_models.UpgradeTaskModel, agentId string, deptId int64,
+	remark, currAt string) *antivirus_engine_task_models.UpgradeFailModel {
+
+	return &antivirus_engine_task_models.UpgradeFailModel{
+		OrgId:     taskModel.OrgId,
+		TaskId:    taskModel.Id,
+		ExecBatch: taskModel.ExecBatch,
+		AgentId:   agentId,
+		DeptId:    deptId,
+		CreatedAt: currAt,
+		Id:        variable.SnowFlake.GetId(),
+		Reason:    enum_antivirus_engine_task.FailReasonUnneeded,
+		Remark:    remark,
+	}
+}
+
 // 终端获取到优先级最高的升级任务，并处理其它任务
 //
 // 任务类型优先级：立即 > 周期（默认最新）> 定时
@@ -34,15 +53,16 @@ type AntivirusEngineController struct {
 // return: highestTaskModel 优先级最高的升级任务
 //
 // return:  engineModel 引擎信息
-func (u *AntivirusEngineController) getTask(orgId int64, agentId string, deptId int64, usedVer string) (err error, highestTaskModel *antivirus_engine_task_models.UpgradeTaskModel, engineModel *antivirus_engine_models.EngineModel) {
+func (u *AntivirusEngineController) getTask(loginInfo *agent_service.AgentCacheLogin, deptId int64, usedVer string) (err error,
+	highestTaskModel *antivirus_engine_task_models.UpgradeTaskModel, engineModel *antivirus_engine_models.EngineModel) {
 
 	//无需升级任务
-	var upgradeFailModelModels []*antivirus_engine_task_models.UpgradeFailModel
+	var unneededModels []*antivirus_engine_task_models.UpgradeFailModel
 
 	//获取任务
 	conditions := antivirus_engine_task_models.SearchConditions{
-		OrgId:          orgId,
-		TargetAgentId:  agentId,
+		OrgId:          loginInfo.OrgId,
+		TargetAgentId:  loginInfo.AgentId,
 		TargetDeptId:   deptId,
 		ExecStatusList: []int{enum_antivirus_engine_task.ExecStatusStarting, enum_antivirus_engine_task.ExecStatusHandling},
 		ExecNextTsLte:  date_helper.CurTimestamp(),
@@ -52,32 +72,64 @@ func (u *AntivirusEngineController) getTask(orgId int64, agentId string, deptId 
 	if engineTaskModels := antivirus_engine_task_models.CreateUpgradeTaskFactory().GetItemsByConditions(
 		conditions, 0, 0, "task_type ASC,id DESC"); len(engineTaskModels) > 0 {
 		for _, taskModel := range engineTaskModels {
-			//升级任务批次是否短时间没有重复执行过
-			if antivirus_engine_task_service.CreateLockFactory().UpgradeTask(orgId, agentId, highestTaskModel.Id, highestTaskModel.ExecBatch) {
+			//升级任务批次短时间没有重复执行过
+			if antivirus_engine_task_service.CreateLockFactory().UpgradeTask(loginInfo.OrgId, loginInfo.AgentId, highestTaskModel.Id, highestTaskModel.ExecBatch) {
 				//没有优先级最高任务
 				if highestTaskModel == nil {
+					//默认第一个优先级最高
 					highestTaskModel = taskModel
 				} else {
-					//进入无需处理任务列表
-					upgradeFailModelModels = append(upgradeFailModelModels, &antivirus_engine_task_models.UpgradeFailModel{
-						OrgId:     orgId,
-						TaskId:    taskModel.Id,
-						ExecBatch: taskModel.ExecBatch,
-						AgentId:   agentId,
-						DeptId:    deptId,
-						CreatedAt: currAt,
-						Id:        variable.SnowFlake.GetId(),
-						Reason:    enum_antivirus_engine_task.FailReasonUnneeded,
-						Remark:    fmt.Sprintf("优先级没有任务[%d]高", highestTaskModel.Id),
-					})
+					//追加无需升级任务列表
+					unneededModels = append(unneededModels, u.formatFailModel(taskModel, loginInfo.AgentId, deptId,
+						fmt.Sprintf("优先级小于任务[%d]、批次[%d]", highestTaskModel.Id, highestTaskModel.ExecBatch), currAt))
 				}
 			}
 		}
+		if highestTaskModel == nil {
+			return fmt.Errorf("tasks repeatedly executed"), nil, nil
+		}
 	} else {
-		return fmt.Errorf("no upgrade task"), nil, nil
+		return fmt.Errorf("no eligible upgrade task"), nil, nil
 	}
 
-	return nil, highestTaskModel, engineModel
+	//获取引擎信息
+	isPublish := enums.IsYes
+	engineConditions := antivirus_engine_models.SearchConditions{
+		PlatformType: enum_software.PlatformTypeWindows,
+		IsPublish:    &isPublish,
+	}
+	if loginInfo.PlatformType == enum_software.PlatformTypeWindows && highestTaskModel.EngineWindowsId > 0 {
+		engineConditions.Id = highestTaskModel.EngineWindowsId
+	} else if loginInfo.PlatformType == enum_software.PlatformTypeLinux && highestTaskModel.EngineLinuxId > 0 {
+		engineConditions.Id = highestTaskModel.EngineLinuxId
+	} else {
+		isNewest := enums.IsYes
+		engineConditions.IsNewest = &isNewest
+	}
+	engineModel = antivirus_engine_models.CreateEngineFactory().GetItemByConditions(engineConditions)
+	if engineModel == nil || engineModel.Id == 0 {
+		//记录错误原因
+		err = fmt.Errorf("task[%d], batch[%d] no eligible upgrade", highestTaskModel.Id, highestTaskModel.ExecBatch)
+
+		//追加无需升级任务列表
+		unneededModels = append(unneededModels, u.formatFailModel(highestTaskModel, loginInfo.AgentId, deptId,
+			"no engine that can be upgraded", currAt))
+
+	} else if engineModel.Ver == usedVer {
+		//记录错误原因
+		err = fmt.Errorf("task[%d], batch[%d] same version[%s]", highestTaskModel.Id, highestTaskModel.ExecBatch, usedVer)
+
+		//追加无需升级任务列表
+		unneededModels = append(unneededModels, u.formatFailModel(highestTaskModel, loginInfo.AgentId, deptId,
+			fmt.Sprintf("same version[%s]", usedVer), currAt))
+	}
+
+	//处理无需任务列表
+	if len(unneededModels) > 0 {
+
+	}
+
+	return err, highestTaskModel, engineModel
 }
 
 // Upgrade 升级
@@ -103,7 +155,7 @@ func (u *AntivirusEngineController) Upgrade(ctx *gin.Context) {
 
 	result := map[string]interface{}{} //需初始化
 	//获取到引擎任务
-	if err, highestTaskModel, engineModel := u.getTask(loginInfo.OrgId, loginInfo.AgentId, agentModel.DeptId, agentModel.AntivirusEngineVer); err != nil {
+	if err, highestTaskModel, engineModel := u.getTask(loginInfo, agentModel.DeptId, agentModel.AntivirusEngineVer); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	} else {
