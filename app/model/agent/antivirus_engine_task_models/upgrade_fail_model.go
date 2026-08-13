@@ -100,7 +100,7 @@ func (m *UpgradeFailModel) InsertItem(s *UpgradeFailModel) bool {
 }
 
 // InsertBatch 插入多条
-func (m *UpgradeFailModel) InsertBatch(list *[]UpgradeFailModel) bool {
+func (m *UpgradeFailModel) InsertBatch(list []*UpgradeFailModel) bool {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
 		return tx.Model(m).Create(list)
 	})
@@ -196,5 +196,18 @@ func (m *UpgradeFailModel) Page(condition SearchConditions, offset, limit int, o
 		return total, items
 	} else {
 		return 0, nil
+	}
+}
+
+func (m *UpgradeFailModel) UpdateByConditions(condition SearchConditions, updates map[string]interface{}) bool {
+	tmp := m.Model(m)
+	if whereSQL, vals, _ := m.WhereBuild(m.conditions2Where(condition)); !string_helper.IsEmpty(whereSQL) {
+		tmp = tmp.Where(whereSQL, vals...)
+	}
+	result := tmp.Updates(updates)
+	if result.Error == nil {
+		return true
+	} else {
+		return false
 	}
 }

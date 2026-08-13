@@ -207,6 +207,7 @@ func InitAgentRouter() *gin.Engine {
 
 			//杀毒引擎升级(长城端盾项目)
 			vAgent.Any("antiEngine/download", (&agent.AntivirusEngineController{}).Upgrade)
+			vAgent.Any("antiEngine/progress", validatorFactory.Create(consts.ValidatorPrefixAgent+"AntiEngineProgress"))
 		}
 	}
 	return router

@@ -3,6 +3,7 @@ package agent
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_antivirus_engine_task"
 	"goskeleton/app/global/enums/enum_software"
@@ -126,7 +127,9 @@ func (u *AntivirusEngineController) getTask(loginInfo *agent_service.AgentCacheL
 
 	//处理无需任务列表
 	if len(unneededModels) > 0 {
-
+		if err1 := antivirus_engine_task_service.CreatRespFactory().HandleUnneeded(unneededModels); err1 != nil {
+			variable.ZapLog.Info(fmt.Sprintf("org[%d], agent[%s] HandleUnneeded fail: %v", loginInfo.OrgId, loginInfo.AgentId, err1))
+		}
 	}
 
 	return err, highestTaskModel, engineModel
@@ -162,6 +165,7 @@ func (u *AntivirusEngineController) Upgrade(ctx *gin.Context) {
 		//返回信息
 		result["taskId"] = highestTaskModel.Id
 		result["batchId"] = highestTaskModel.ExecBatch
+		result["deptId"] = agentModel.DeptId
 		result["ver"] = engineModel.Ver
 		result["size"] = engineModel.FileSize
 		result["hash"] = engineModel.FileHash
@@ -170,22 +174,29 @@ func (u *AntivirusEngineController) Upgrade(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, result)
 }
 
-// UploadProgress 上报进度
-func (u *AntivirusEngineController) UploadProgress(ctx *gin.Context) {
-	/*loginInfo := u.getLogin(ctx)
-	param := engine_upload_data.DetectTaskProgress{
-		TaskId:   int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "taskId")),
-		BatchId:  int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "batchId")),
-		Status:   int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "status")),
-		Progress: ctx.GetFloat64(consts.ValidatorPrefixAgent + "progress"),
-		Reason:   ctx.GetString(consts.ValidatorPrefixAgent + "reason"),
+// Progress 进度
+func (u *AntivirusEngineController) Progress(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+
+	param := antivirus_engine_task_models.UpgradeFailModel{
+		OrgId:     loginInfo.OrgId,
+		TaskId:    int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "taskId")),
+		ExecBatch: int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "batchId")),
+		AgentId:   loginInfo.AgentId,
+		DeptId:    int64(ctx.GetFloat64(consts.ValidatorPrefixAgent + "deptId")),
+		Remark:    ctx.GetString(consts.ValidatorPrefixAgent + "reason"),
 	}
-	err := detect_resp_service.CreateRespFactory().HandleDetectTaskProgress(loginInfo.AgentId, &param)
-	if err != nil {
-		msg := fmt.Sprintf("agentId=%s, param=%s fail: %v", loginInfo.AgentId, json_helper.Encode(param), err)
-		variable.ZapLog.Debug(msg)
+	if int(ctx.GetFloat64(consts.ValidatorPrefixAgent+"status")) == enum_antivirus_engine_task.ProgressStatusFail {
+		param.Reason = enum_antivirus_engine_task.FailReasonEngine
+	} else {
+		param.Remark = ""
+	}
+
+	if err := antivirus_engine_task_service.CreatRespFactory().HandleSingleAgentProgress(&param); err != nil {
+		variable.ZapLog.Info(fmt.Sprintf("org[%d], agent[%s] HandleSingleAgentProgress fail: %v", loginInfo.OrgId, loginInfo.AgentId, err))
+
 		response.FailSimplify(ctx, err.Error())
 		return
-	}*/
+	}
 	response.SuccessSimplify(ctx)
 }

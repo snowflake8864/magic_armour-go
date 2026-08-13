@@ -23,9 +23,9 @@ const (
 	ExecStatusStarting int = 2 //执行方式: 任务开始
 	ExecStatusHandling int = 3 //执行方式: 任务进行中
 
-	ProgressStatusUnfinished int = 0 //进度状态： 未完成
-	ProgressStatusFinished   int = 1 //进度状态： 已完成
-	ProgressStatusFail       int = 2 //进度状态： 失败
+	ProgressStatusUnfinished int = 1 //进度状态： 未完成
+	ProgressStatusFinished   int = 2 //进度状态： 已完成
+	ProgressStatusFail       int = 3 //进度状态： 失败
 
 	FailReasonOffline  int = 1 //错误原因：终端离线
 	FailReasonUnneeded int = 2 //错误原因: 无需升级

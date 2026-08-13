@@ -16,7 +16,7 @@ type Curd struct {
 	failModel *antivirus_engine_task_models.UpgradeFailModel
 }
 
-// Add 锁：升级任务
+// Add 添加
 func (crd *Curd) Add(param *antivirus_engine_task_models.UpgradeTaskModel) error {
 
 	return nil

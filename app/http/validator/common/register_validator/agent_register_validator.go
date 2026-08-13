@@ -101,15 +101,19 @@ func AgentRegisterValidator() {
 	key = consts.ValidatorPrefixAgent + "SyslogVulnScan" //长城卫士-漏洞检测
 	containers.Set(key, agentSyslog1.VulnPut{})
 
-	//备份相关
+	//备份相关(804)
 	key = consts.ValidatorPrefixAgent + "BackupPut"
 	containers.Set(key, backup1.PutBackup{})
 	key = consts.ValidatorPrefixAgent + "RollbackPut"
 	containers.Set(key, backup1.PutRollback{})
 
-	//跳变
+	//跳变(804)
 	key = consts.ValidatorPrefixAgent + "PwJumpPut"
 	containers.Set(key, jump1.PwJumpPut{})
 	key = consts.ValidatorPrefixAgent + "IpJumpPut"
+	containers.Set(key, jump1.IpJumpPut{})
+
+	//杀毒引擎(长城卫士)
+	key = consts.ValidatorPrefixAgent + "AntiEngineProgress"
 	containers.Set(key, jump1.IpJumpPut{})
 }
