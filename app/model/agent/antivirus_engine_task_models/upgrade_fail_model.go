@@ -18,22 +18,15 @@ func CreateUpgradeFailFactory() *UpgradeFailModel {
 type UpgradeFailModel struct {
 	baseOnline
 	model.BaseModel
-	Id          int64  `json:"id" gorm:"primaryKey"`
-	OrgId       int64  `json:"org_id"`
-	AgentId     string `json:"agent_id"`
-	HostName    string `json:"host_name"`
-	MacId       string `json:"mac_id"`
-	AgentIp     string `json:"agent_ip"`
-	NetIp       string `json:"net_ip"`
-	OsName      string `json:"os_name"`
-	IsOnline    int    `json:"is_online"`
-	DeptId      int64  `json:"dept_id"`
-	Ver         string `json:"ver"`
-	Alias       string `json:"alias"`
-	ContactName string `json:"contact_name"`
-	ContactTel  string `json:"contact_tel"`
-	Remark      string `json:"remark"`
-	CreatedAt   string `json:"created_at"`
+	OrgId     int64  `json:"org_id"`     // 企业(organization.id)
+	TaskId    int64  `json:"task_id"`    // 任务ID
+	ExecBatch int    `json:"exec_batch"` // 执行批次
+	AgentId   string `json:"agent_id"`   // 终端(agent.id)
+	DeptId    int64  `json:"dept_id"`    // 组织架构编号(department.id)
+	CreatedAt string `json:"created_at"` // 创建时间
+	Id        int64  `json:"id"`         // ID
+	Reason    int    `json:"reason"`     // 原因
+	Remark    string `json:"remark"`     // 备注
 }
 
 // 表名
@@ -55,7 +48,7 @@ func (m *UpgradeFailModel) CreateTable() bool {
 			reason tinyint(1) NOT NULL DEFAULT '0' COMMENT '原因',
 			remark varchar(128)  NOT NULL DEFAULT '' COMMENT '备注'
 		)
-		DUPLICATE  KEY(org_id, task_id, exec_batch, agent_id,dept_id, created_at)
+		DUPLICATE KEY(org_id, task_id, exec_batch, agent_id,dept_id, created_at)
 		DISTRIBUTED BY HASH(org_id) BUCKETS AUTO 
 		PROPERTIES (
 			'replication_allocation' = 'tag.location.default: 1'

@@ -25,6 +25,8 @@ const (
 	ModuleSecurityReport        = "securityReport"
 	ModuleOther                 = "other"
 
+	ModuleAntiEngine = "antiEngine"
+
 	StatusSuccess int = 1
 	StatusFail    int = 2
 
@@ -52,6 +54,7 @@ var EnumMap = map[string]map[string]string{
 		ModuleOrg:            "企业管理",
 		ModuleSyslog:         "通信日志",
 		ModuleSecurityReport: "安全报告",
+		ModuleAntiEngine:     "杀毒引擎",
 		ModuleOther:          "其他",
 	},
 }
@@ -75,6 +78,7 @@ var WebMapString = map[string][]string{
 		ModuleOrg,
 		ModuleSyslog,
 		ModuleSecurityReport,
+		ModuleAntiEngine,
 		ModuleOther,
 	},
 }
@@ -340,6 +344,8 @@ var pathModuleLabel = map[string][]string{
 	"/v5/organization/safetyManage/user/save":     {ModuleOrg, "安全管理：保存用户配置"},
 	"/v5/organization/safetyManage/backup/export": {ModuleOrg, "安全管理：数据备份导出"},
 	"/v5/organization/safetyManage/backup/import": {ModuleOrg, "安全管理：数据备份导入"},
+
+	"/v5/organization/antiEngine/manage/upgrade": {ModuleAntiEngine, "引擎管理：升级"},
 
 	"/v5/organization/task/history/clear": {ModuleOther, "终端任务：清空"},
 	"/v5/organization/fileDir/refresh":    {ModuleOther, "终端目录结构：刷新"},

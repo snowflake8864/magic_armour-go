@@ -865,7 +865,7 @@ func OrganizationRegisterValidator() {
 	key = consts.ValidatorPrefixOrg + "AntiEngineManagePage" //
 	containers.Set(key, antiEngine3.ManagePage{})
 	key = consts.ValidatorPrefixOrg + "AntiEngineManageUpgrade" //
-	containers.Set(key, safetyReport3.AlarmNoticeSave{})
+	containers.Set(key, antiEngine3.ManageUpgrade{})
 	key = consts.ValidatorPrefixOrg + "AntiEngineTaskPage" //
 	containers.Set(key, safetyReport3.AlarmNoticeSave{})
 	key = consts.ValidatorPrefixOrg + "AntiEngineTaskAdd" //

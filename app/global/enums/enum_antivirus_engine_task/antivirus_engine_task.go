@@ -29,7 +29,7 @@ const (
 
 	FailReasonOffline  int = 1 //错误原因：终端离线
 	FailReasonUnneeded int = 2 //错误原因: 无需升级
-	FailReasonEngine   int = 3 //错误原因: 引擎问题（接到任务开始，包括下载失败、升级失败等）
+	FailReasonEngine   int = 3 //错误原因: 引擎问题（agent成功接到任务开始计算，包括下载失败、升级失败等）
 )
 
 var EnumMap = map[string]map[int]string{

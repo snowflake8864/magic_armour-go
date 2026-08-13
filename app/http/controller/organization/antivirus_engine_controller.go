@@ -1,11 +1,17 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/enums/enum_agent"
+	"goskeleton/app/global/enums/enum_antivirus_engine_task"
+	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/model/agent/antivirus_engine_task_models"
+	"goskeleton/app/service/agent/antivirus_engine_task_service"
 	"goskeleton/app/service/platform/antivirus_engine_service"
+	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/response"
 )
 
@@ -35,7 +41,6 @@ func (u *AntivirusEngineController) PageForManage(ctx *gin.Context) {
 	if len(agentIds) > 0 {
 		//最新引擎
 		newestEngineModels := antivirus_engine_service.CreateCurdFactory().GetMapsByNewest()
-
 		for _, agentModel := range agentModels {
 			gg := map[string]interface{}{
 				"can_upgrade_engine": 0,
@@ -49,4 +54,27 @@ func (u *AntivirusEngineController) PageForManage(ctx *gin.Context) {
 		}
 	}
 	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
+}
+
+// UpgradeForManage 管理: 单终端升级
+func (u *AntivirusEngineController) UpgradeForManage(ctx *gin.Context) {
+	loginInfo := u.getLogin(ctx)
+	agentId := u.getAgentIdFromGin(ctx)
+
+	param := &antivirus_engine_task_models.UpgradeTaskModel{
+		OrgId:       loginInfo.OrgId,
+		Title:       fmt.Sprintf("终端[%s]的升级任务", agentId),
+		TargetType:  enum_antivirus_engine_task.TargetTypeSingleAgent,
+		TargetIds:   agentId,
+		UpgradeMode: enum_antivirus_engine_task.UpgradeModeManual,
+		TaskType:    enum_antivirus_engine_task.TaskTypeManualInstantly,
+		ExecDate:    date_helper.SpecialDatetime(variable.DateFormatToday),
+		ExecHis:     date_helper.SpecialDatetime("15:04:00"),
+	}
+
+	if err := antivirus_engine_task_service.CreatCurdFactory().Add(param); err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	response.SuccessSimplify(ctx)
 }
