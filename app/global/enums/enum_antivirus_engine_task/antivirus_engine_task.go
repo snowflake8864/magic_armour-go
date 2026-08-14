@@ -2,6 +2,9 @@ package enum_antivirus_engine_task
 
 import (
 	"fmt"
+	"goskeleton/app/global/variable"
+	"goskeleton/app/utils/helpers/date_helper"
+	"time"
 )
 
 const (
@@ -15,7 +18,7 @@ const (
 	UpgradeModeAuto   int = 2 //升级模式: 自动
 
 	TaskTypeManualInstantly int = 10 //任务类型: 立即
-	TaskTypeManualCrontab   int = 11 //任务类型: 定时
+	TaskTypeManualFixed     int = 11 //任务类型: 指定
 	TaskTypeCycleWeekly     int = 20 //任务类型: 每周
 	TaskTypeCycleMonth      int = 21 //任务类型: 每月
 
@@ -43,7 +46,7 @@ var EnumMap = map[string]map[int]string{
 		TaskTypeCycleWeekly:     "每周执行",
 		TaskTypeCycleMonth:      "每月执行",
 		TaskTypeManualInstantly: "立即执行",
-		TaskTypeManualCrontab:   "定时执行",
+		TaskTypeManualFixed:     "定时执行",
 	},
 
 	"exec_status": {
@@ -60,7 +63,7 @@ var WebMapInt = map[string][]int{
 	},
 	"task_type": {
 		TaskTypeManualInstantly,
-		TaskTypeManualCrontab,
+		TaskTypeManualFixed,
 		TaskTypeCycleWeekly,
 		TaskTypeCycleMonth,
 	},
@@ -110,4 +113,95 @@ func GetTimingLabel(cycle, timing int) string {
 	}
 
 	return data
+}
+
+// GetExecNextTs 计算下一次执行时间戳
+func GetExecNextTs(taskType int, execDate, execHis string, execWeekly, execDaily int) (execNextTs int64) {
+	if taskType == TaskTypeManualInstantly {
+		return execNextTs
+	}
+	//标准的时分秒
+	var standardHis string
+	if c := len(execHis); c == 5 {
+		standardHis = fmt.Sprintf("%s:00", execHis)
+	} else if c == 8 {
+		standardHis = execHis
+	}
+
+	if taskType == TaskTypeManualFixed {
+		execNextTs = date_helper.DatetimeToTimestamp(fmt.Sprintf("%s %s", execDate, standardHis), variable.DateFormatNow)
+	} else if taskType == TaskTypeCycleWeekly {
+		//映射自定义当前周几
+		var customizeCurrWeek int
+		if currWeekday := date_helper.WeekdayCurr(); currWeekday == time.Sunday {
+			customizeCurrWeek = 7
+		} else {
+			customizeCurrWeek = int(currWeekday)
+		}
+
+		//相同是当天
+		if customizeCurrWeek == execWeekly {
+			//现在时间戳
+			nowTs := date_helper.CurTimestamp()
+			//今天日期
+			todayAt := date_helper.SpecialDatetime(variable.DateFormatToday) + " " + standardHis
+			//今天时间戳
+			todayTs := date_helper.DatetimeToTimestamp(todayAt, variable.DateFormatNow)
+			//还没到今天的执行时间
+			if todayTs > nowTs {
+				execNextTs = todayTs
+			} else {
+				execNextTs = todayTs + (7 * 86400)
+			}
+		} else {
+			var diff int
+			//本周不到
+			if execWeekly > customizeCurrWeek {
+				diff = execWeekly - customizeCurrWeek
+			} else {
+				diff = 7 - (customizeCurrWeek - execWeekly)
+			}
+			//今天日期
+			todayAt := date_helper.SpecialDatetime(variable.DateFormatToday) + " " + standardHis
+			//今天时间戳
+			todayTs := date_helper.DatetimeToTimestamp(todayAt, variable.DateFormatNow)
+
+			execNextTs = todayTs + (int64(diff) * 86400)
+		}
+	} else if taskType == TaskTypeCycleMonth {
+		//当前月的第几天
+		currDaily := date_helper.DayInCurrMonth()
+
+		//相同是当天
+		if currDaily == execDaily {
+			//现在时间戳
+			nowTs := date_helper.CurTimestamp()
+			//今天日期
+			todayAt := date_helper.SpecialDatetime(variable.DateFormatToday) + " " + standardHis
+			//今天时间戳
+			todayTs := date_helper.DatetimeToTimestamp(todayAt, variable.DateFormatNow)
+			//还没到今天的执行时间
+			if todayTs > nowTs {
+				execNextTs = todayTs
+			} else {
+				execNextTs = date_helper.AddTimestampByTimestamp(todayTs, 0, 1, 0)
+			}
+		} else {
+			//今天日期
+			todayAt := date_helper.SpecialDatetime(variable.DateFormatToday) + " " + standardHis
+			//今天时间戳
+			todayTs := date_helper.DatetimeToTimestamp(todayAt, variable.DateFormatNow)
+
+			var diff int
+			//本月不到
+			if execDaily > currDaily {
+				execNextTs = date_helper.AddTimestampByTimestamp(todayTs, 0, 0, execDaily-currDaily)
+			} else {
+				diff = date_helper.LastDayInMonthByTimestamp(todayTs) - currDaily + execDaily
+			}
+			execNextTs = date_helper.AddTimestampByTimestamp(todayTs, 0, 0, diff)
+		}
+	}
+
+	return execNextTs
 }

@@ -66,6 +66,13 @@ func AddTimestampByDays(years, months, days int) int64 {
 	return now.AddDate(years, months, days).Unix()
 }
 
+// AddTimestampByTimestamp 给时间戳按照年月日时增加
+func AddTimestampByTimestamp(timestamp int64, years, months, days int) int64 {
+	t := time.Unix(timestamp, 0)
+	result := t.AddDate(years, months, days)
+	return result.Unix()
+}
+
 // AddTimestampByHour 时间戳按照小时增加
 func AddTimestampByHour(h int64) int64 {
 	now := time.Now()
@@ -118,4 +125,10 @@ func DatetimeToTimestamp(datetime, layout string) int64 {
 // DaysInMonthByTimestamp 时间戳现在是月的第几天
 func DaysInMonthByTimestamp(timestamp int64) int {
 	return time.Unix(timestamp, 0).Local().Day()
+}
+
+// LastDayInMonthByTimestamp 时间戳最后一天
+func LastDayInMonthByTimestamp(timestamp int64) int {
+	t := time.Unix(timestamp, 0)
+	return time.Date(t.Year(), t.Month()+1, 0, 0, 0, 0, 0, time.UTC).Day()
 }

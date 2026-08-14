@@ -227,6 +227,16 @@ func (m *UpgradeTaskModel) UpdateByConditions(condition SearchConditions, update
 	}
 }
 
+// GetItemById 通过id获取一条记录
+func (m *UpgradeTaskModel) GetItemById(id int64) (item *UpgradeTaskModel) {
+	result := m.Model(m).Where("id=?", id).Take(&item)
+	if result.Error == nil {
+		return item
+	} else {
+		return nil
+	}
+}
+
 // GetItemsByConditions 通过条件获取多条记录
 func (m *UpgradeTaskModel) GetItemsByConditions(condition SearchConditions, offset, limit int, order string) (items []*UpgradeTaskModel) {
 	sql := m.ToSQL(func(tx *gorm.DB) *gorm.DB {
