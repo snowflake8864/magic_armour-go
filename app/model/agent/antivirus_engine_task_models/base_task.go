@@ -15,10 +15,10 @@ type SearchConditions struct {
 	TargetAgentId string
 	TargetDeptId  int64
 
-	ExecStatus     int
-	ExecStatusList []int
-	ExecNextTsLte  int64
-	ExecLiveTsLte  int64
+	ExecStatus      int
+	ExecStatusList  []int
+	ExecNextTsLte   int64
+	ExecHandleAtLte int64
 
 	TaskId       int64
 	CreateAtGte  string
@@ -83,10 +83,10 @@ func (m *baseOnline) conditions2Where(condition SearchConditions) (wheres []mode
 		})
 	}
 
-	if condition.ExecLiveTsLte > 0 {
+	if condition.ExecHandleAtLte > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "exec_live_ts <=",
-			Val: condition.ExecLiveTsLte,
+			Key: "exec_handle_at <=",
+			Val: condition.ExecHandleAtLte,
 		})
 	}
 

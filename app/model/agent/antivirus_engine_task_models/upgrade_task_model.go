@@ -103,8 +103,7 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 			KEY index_org (org_id),
 			KEY index_title (title),
 			KEY index_target (target_type),
-			KEY index_exec_status (exec_status,exec_next_ts),
-			KEY index_exec_live_ts (exec_live_ts),
+			KEY index_exec_status (exec_status,exec_next_ts,exec_handle_at),
 			KEY index_created_at (created_at)
 		) ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='杀毒引擎:升级任务表';
 		`
