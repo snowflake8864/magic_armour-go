@@ -10,13 +10,13 @@ import (
 
 func CreateTemplateFactory() *Template {
 	return &Template{
-		ImgHead:      variable.ConfigYml.GetString("AppCustomConfig.Email.ImgHead"),
-		ImgFoot:      variable.ConfigYml.GetString("AppCustomConfig.Email.ImgFoot"),
-		ImgWechat:    variable.ConfigYml.GetString("AppCustomConfig.Email.ImgWechat"),
-		FootAbout:    variable.ConfigYml.GetString("AppCustomConfig.Email.FootAbout"),
-		FootInfo:     variable.ConfigYml.GetString("AppCustomConfig.Email.FootInfo"),
-		FootLinkHref: variable.ConfigYml.GetString("AppCustomConfig.Email.FootLinkHref"),
-		FootLinkTxt:  variable.ConfigYml.GetString("AppCustomConfig.Email.FootLinkTxt"),
+		ImgHead:      variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.ImgHead"),
+		ImgFoot:      variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.ImgFoot"),
+		ImgWechat:    variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.ImgWechat"),
+		FootAbout:    variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.FootAbout"),
+		FootInfo:     variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.FootInfo"),
+		FootLinkHref: variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.FootLinkHref"),
+		FootLinkTxt:  variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.FootLinkTxt"),
 	}
 }
 
@@ -45,9 +45,9 @@ type AlarmCycleInfo struct {
 
 // GetAlarmCycle 告警: 周期性
 func (k *Template) GetAlarmCycle(param *AlarmCycle) (subject, context string) {
-	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.Subject")
-	titleNoData := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.TitleNoData")
-	titleHaveData := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmCycle.TitleHaveData")
+	subject = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.AlarmCycle.Subject")
+	titleNoData := variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.AlarmCycle.TitleNoData")
+	titleHaveData := variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.AlarmCycle.TitleHaveData")
 
 	//head + <body><div class="center">
 	context = `
@@ -272,8 +272,8 @@ type AlarmTimely struct {
 
 // GetAlarmTimely 告警: 立即发送
 func (k *Template) GetAlarmTimely(param *AlarmTimely) (subject, context string) {
-	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmTimely.Subject")
-	title := variable.ConfigYml.GetString("AppCustomConfig.Email.AlarmTimely.Title")
+	subject = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.AlarmTimely.Subject")
+	title := variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.AlarmTimely.Title")
 
 	//head + <body><div class="center">
 	context = `
@@ -509,8 +509,8 @@ type HardwareTimelyInfo struct {
 
 // GetHardwareTimely 资源: 立即发送
 func (k *Template) GetHardwareTimely(param *HardwareTimely) (subject, context string) {
-	subject = variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Subject")
-	title := variable.ConfigYml.GetString("AppCustomConfig.Email.HardwareTimely.Title")
+	subject = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.HardwareTimely.Subject")
+	title := variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Email.HardwareTimely.Title")
 
 	//head + <body><div class="center">
 	context = `

@@ -12,7 +12,7 @@ func GetAppUsageVersion() int {
 
 // GetCustomVersionNumber 获取自定义版本号
 func GetCustomVersionNumber() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.VersionNumber")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.VersionNumber")
 }
 
 // GetPlatformConfig  获取平台自定义配置
@@ -23,15 +23,15 @@ func GetPlatformConfig() map[string]interface{} {
 	if ver := GetCustomVersionNumber(); !string_helper.IsEmpty(ver) {
 		data["ver_number"] = ver
 	}
-	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Title")
+	data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.IconShow")
-	data["projectName"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.ProjectName")
-	data["loginTip"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.LoginTip")
+	data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.ProjectName")
+	data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.LoginTip")
 	data["qrShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.QrShow")
-	data["orgAddr"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Address")
-	data["website"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Website")
-	data["tel"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Tel")
-	data["copyright"] = variable.ConfigYml.GetString("AppCustomConfig.Platform.Copyright")
+	data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Address")
+	data["website"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Website")
+	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Tel")
+	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Copyright")
 	data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Platform.License")
 
 	return data
@@ -46,15 +46,15 @@ func GetOrganizationConfig() map[string]interface{} {
 		data["ver_number"] = ver
 	}
 
-	data["title"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Title")
+	data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Title")
 	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.IconShow")
-	data["projectName"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.ProjectName")
-	data["loginTip"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.LoginTip")
+	data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.ProjectName")
+	data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.LoginTip")
 	data["qrShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.QrShow")
-	data["orgAddr"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Address")
-	data["website"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Website")
-	data["tel"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Tel")
-	data["copyright"] = variable.ConfigYml.GetString("AppCustomConfig.Organization.Copyright")
+	data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Address")
+	data["website"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Website")
+	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Tel")
+	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Copyright")
 	data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Organization.License")
 
 	return data
@@ -77,35 +77,35 @@ func GetAgentTokenExpire() int {
 
 // GetServiceCode 获取服务器编号：
 func GetServiceCode() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.ServiceMonitor")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.ServiceMonitor")
 }
 
 // ShellNetworkGet 网络配置脚本： 获取
 func ShellNetworkGet() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkGet")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.NetworkGet")
 }
 
 // ShellNetworkSet 网络配置脚本： 设置
 func ShellNetworkSet() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.NetworkSet")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.NetworkSet")
 }
 
 // ShellServiceMonitor 服务器监控脚本：
 func ShellServiceMonitor() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.ServiceMonitor")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.ServiceMonitor")
 }
 
 // ShellUpgrade 升级脚本：
 func ShellUpgrade() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.Upgrade")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.Upgrade")
 }
 
 // ShellInit 脚本初始化命令：
 func ShellInit() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.Init")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.Init")
 }
 
 // ShellVedaLicence 卫达授权证书解析：
 func ShellVedaLicence() string {
-	return variable.ConfigYml.GetString("AppCustomConfig.Shell.VedaLicence")
+	return variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Shell.VedaLicence")
 }

@@ -1,0 +1,59 @@
+AppCustomConfig:
+  ServiceCode:   "s0001" #服务器编号，每一台机器设置不同的ID
+  Version: 2  #版本: 1=离线版本, 2=云版本
+  VersionNumber: ""  #版本号， 替换应用中的真正版本号并展示给前端
+  Platform:
+    TokenExpire: 86400
+    Title: "幻甲 - 平台管理"
+    IconShow: 1
+    ProjectName : "幻甲-终端动态防御系统"
+    LoginTip: "欢迎使用幻甲"
+    QrShow: 1
+    Website: "www.veda.com"
+    Address: "北京市朝阳区将台路14号898创新空间园区B03栋"
+    Tel: "400-097-0097"
+    Copyright: "北京卫达信息技术有限公司"
+    License:
+      - "京ICP备16005435号-1"
+      - "京公网安备 42018502001134号"
+  Organization:
+    TokenExpire: 86400
+    Title: "幻甲 - 企业管理"
+    IconShow: 1
+    ProjectName: "幻甲-终端动态防御系统"
+    LoginTip: "登录幻甲控制台"
+    QrShow: 1
+    Website: "www.veda.com"
+    Address: "北京市朝阳区将台路14号898创新空间园区B03栋"
+    Tel: "400-097-0097"
+    Copyright: "北京卫达信息技术有限公司"
+    License:
+      - "京ICP备16005435号-1"
+      - "京公网安备 42018502001134号"
+  Agent:
+    TokenExpire: 7200
+  Shell:
+    Init: "/bin/sh"
+    NetworkGet: "/home/veda/net_manage_get.sh"
+    NetworkSet: "/home/veda/net_manage_set.sh"
+    ServiceMonitor: "/home/veda/service_monitor.sh"
+    VedaLicence: "/home/veda/veda_load_licence"
+    Upgrade: "veda_software_install.sh"
+  Email:
+    ImgHead: "https://hj.veda.com/static/img/email_head.png" #720px, 可以为空
+    ImgFoot: "https://hj.veda.com/static/img/email_foot.png" #720px, 可以为空
+    ImgWechat: "https://hj.veda.com/static/img/email_wx.png" #160px, 可以为空
+    FootAbout: "关于卫达"
+    FootInfo: "北京卫达信息技术有限公司以创新技术和卓越实力助力国家战略，是专注于网络安全的高科技企业，卫达信息致力于引领下一代网络安全技术发展方向，成为全球网络安全技术领导者。"
+    FootLinkHref: "https://www.veda.com/"
+    FootLinkTxt: "了解卫达"
+    AlarmCycle:
+      Subject: "幻甲终端动态防御系统-安全告警通知"
+      TitleNoData: "您的幻甲终端动态防御系统暂无安全问题"
+      TitleHaveData: "您的幻甲终端动态防御系统出现以下安全问题"
+    AlarmTimely:
+      Subject: "幻甲终端动态防御系统-安全告警及时通知"
+      Title: "您的幻甲终端动态防御系统出现以下安全问题"
+    HardwareTimely:
+      Subject: "幻甲终端动态防御系统-状态告警通知"
+      Title: "您的幻甲终端动态防御系统出现以下安全问题"
