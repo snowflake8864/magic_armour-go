@@ -53,3 +53,22 @@ func GetCurrentUser(context *gin.Context) *user_service.UserCacheLogin {
 	}
 
 }
+
+// GetLocales 获取当前语言
+//
+// @context 请求上下文
+//
+// @return zh en
+func GetLocales(context *gin.Context) string {
+	requestParams := context.GetStringMap("RequestParams")
+	if value, isOk := requestParams["X-Language"]; isOk {
+		if current, ok := value.(string); ok {
+			return current
+		} else {
+			return "zh"
+		}
+	} else {
+		return "zh"
+	}
+
+}

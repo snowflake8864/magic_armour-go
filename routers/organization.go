@@ -70,12 +70,12 @@ func InitOrganizationRouter() *gin.Engine {
 	//  创建一个接口路由组
 	vOrg := router.Group("/v5/organization/")
 	{
-		vOrg.GET("customConfig", func(context *gin.Context) {
-			context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
-		})
-
 		vOrg.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOperate())
 		{
+			vOrg.GET("customConfig", func(context *gin.Context) {
+				context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
+			})
+
 			//登录认证
 			auth := vOrg.Group("auth/")
 			{
