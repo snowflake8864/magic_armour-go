@@ -65,8 +65,8 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 	sql := `CREATE TABLE IF NOT EXISTS ` + m.TableName()
 	sql += `
 		(
-			id BIGINT NOT NULL DEFAULT '0',
-			org_id int NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
+			id BIGINT(16) unsigned NOT NULL AUTO_INCREMENT,
+			org_id int(11) NOT NULL DEFAULT '0' COMMENT '企业(organization.id)',
 			title varchar(128)  NOT NULL DEFAULT '' COMMENT '名称',
 			target_type tinyint(1) NOT NULL DEFAULT '0' COMMENT '目标类型',
 			target_ids varchar(512) NOT NULL DEFAULT '0' COMMENT '目标ID集合',
@@ -80,7 +80,7 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 			exec_daily smallint(4) NOT NULL DEFAULT '0' COMMENT '几号执行',
 			exec_his varchar(16)  NOT NULL DEFAULT '' COMMENT '执行时分秒',
 			exec_next_ts bigint(16) NOT NULL DEFAULT '0' COMMENT '下一次执行时间戳',
-			exec_batch int(11) NOT NULL DEFAULT '0' COMMENT '执行批次',
+			exec_batch int(11) unsigned NOT NULL DEFAULT '0' COMMENT '执行批次',
 			exec_is_complete smallint(4) NOT NULL DEFAULT '0' COMMENT '执行是否完成',
 			exec_progress decimal(5, 2) NOT NULL DEFAULT '0.00' COMMENT '执行进度',
 			exec_agent_total int(11) NOT NULL DEFAULT '0' COMMENT '执行终端总数',
@@ -88,7 +88,7 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 			exec_fail_total int(11) NOT NULL DEFAULT '0' COMMENT '执行失败终端总数',
 			exec_unneeded_total int(11) NOT NULL DEFAULT '0' COMMENT '执行无需终端总数',
 			exec_offline_total int(11) NOT NULL DEFAULT '0' COMMENT '执行离线终端总数',
-			exec_live_ts bigint(16) NOT NULL DEFAULT '0' COMMENT '执行活跃时间戳',
+			exec_live_ts bigint(16) unsigned NOT NULL DEFAULT '0' COMMENT '执行活跃时间戳',
 			exec_start_at datetime DEFAULT NULL COMMENT '执行开始时间',
 			exec_handle_at datetime DEFAULT NULL COMMENT '执行处理时间',
 			exec_complete_at datetime DEFAULT NULL COMMENT '执行结束时间',
@@ -97,7 +97,7 @@ func (m *UpgradeTaskModel) CreateTable() bool {
 			create_id int(11) NOT NULL DEFAULT '0' COMMENT '创建人(user.id)',
 			create_name varchar(128)  NOT NULL DEFAULT '' COMMENT '创建人(user.username)',
 			created_at datetime NOT NULL,
-			update_id int NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
+			update_id int(11) NOT NULL DEFAULT '0' COMMENT '上一次编辑用户(user.id)',
 			update_name varchar(128)  NOT NULL DEFAULT '' COMMENT '上一次编辑用户(user.username)',
 			updated_at datetime NOT NULL,PRIMARY KEY (id),
 			KEY index_org (org_id),

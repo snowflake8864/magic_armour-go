@@ -70,6 +70,10 @@ func (u *AntivirusEngineController) UpgradeForManage(ctx *gin.Context) {
 		TaskType:    enum_antivirus_engine_task.TaskTypeManualInstantly,
 		ExecDate:    date_helper.SpecialDatetime(variable.DateFormatToday),
 		ExecHis:     date_helper.SpecialDatetime("15:04:00"),
+		CreateId:    loginInfo.UserId,
+		CreateName:  loginInfo.Username,
+		UpdateId:    loginInfo.UserId,
+		UpdateName:  loginInfo.Username,
 	}
 
 	if err := antivirus_engine_task_service.CreatCurdFactory().Add(param); err != nil {
