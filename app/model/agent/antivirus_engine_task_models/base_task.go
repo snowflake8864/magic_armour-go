@@ -18,6 +18,7 @@ type SearchConditions struct {
 	ExecStatus      int
 	ExecStatusList  []int
 	ExecNextTsLte   int64
+	ExecStartAtLte  int64
 	ExecHandleAtLte int64
 
 	TaskId       int64
@@ -83,10 +84,10 @@ func (m *baseOnline) conditions2Where(condition SearchConditions) (wheres []mode
 		})
 	}
 
-	if condition.ExecHandleAtLte > 0 {
+	if condition.ExecStartAtLte > 0 {
 		wheres = append(wheres, model_comm.Conditions{
-			Key: "exec_handle_at <=",
-			Val: condition.ExecHandleAtLte,
+			Key: "exec_start_at <=",
+			Val: condition.ExecStartAtLte,
 		})
 	}
 

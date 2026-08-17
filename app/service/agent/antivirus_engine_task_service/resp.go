@@ -122,6 +122,33 @@ func (crd *Resp) HandleSingleAgentProgress(failModel *antivirus_engine_task_mode
 //
 // 注意： 终端任务过期时间24小时，要保存升级任务过期时间一致
 func (crd *Resp) HandleOverdue(floorTs int64) error {
+	conditions := antivirus_engine_task_models.SearchConditions{
+		ExecStartAtLte: floorTs,
+		ExecStatusList: []int{enum_antivirus_engine_task.ExecStatusStarting, enum_antivirus_engine_task.ExecStatusHandling},
+	}
+	models := crd.taskModel.GetListByConditions(conditions)
+	if len(models) == 0 {
+		return nil
+	}
 
+	//修改任务数据
+	now := date_helper.CurDatetime()
+	for _, model := range models {
+		updates := map[string]interface{}{}
+		updates["exec_status"] = enum_antivirus_engine_task.ExecStatusWaiting
+		updates["exec_next_ts"] = enum_antivirus_engine_task.GetExecNextTs(model.TaskType, model.ExecDate,
+			model.ExecHis, model.ExecWeekly, model.ExecDaily)
+		updates["exec_is_complete"] = enums.IsYes
+		updates["exec_complete_at"] = now
+		updates["exec_completed_source"] = enums.OperateSourceAi
+		updates["exec_live_ts"] = 0
+
+		if !crd.taskModel.UpdateByConditions(antivirus_engine_task_models.SearchConditions{
+			Id:             model.Id,
+			ExecStatusList: []int{enum_antivirus_engine_task.ExecStatusStarting, enum_antivirus_engine_task.ExecStatusHandling},
+		}, updates) {
+			return errors.New("保存失败")
+		}
+	}
 	return nil
 }
