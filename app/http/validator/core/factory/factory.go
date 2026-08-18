@@ -16,6 +16,6 @@ func Create(key string) func(context *gin.Context) {
 			return val.CheckParams
 		}
 	}
-	variable.ZapLog.Error(my_errors.ErrorsValidatorNotExists + ", 验证器模块：" + key)
+	variable.ZapLog.Error(my_errors.ValidatorNotExists + ", 验证器模块：" + key)
 	return nil
 }
