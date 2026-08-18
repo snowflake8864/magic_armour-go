@@ -78,6 +78,12 @@ var Messages = map[string]map[string]string{
 		CurdOrgNameAlreadyExists:    "企业名称已存在",
 		CurdUsernameAlreadyExists:   "用户名已存在",
 		CurdPhoneAlreadyExists:      "手机号码已存在",
+		CurdPasswordFormatIncorrect: "密码格式不正确",
+		CurdOrgNameFormatIncorrect:  "企业名称格式不正确",
+		CurdUsernameFormatIncorrect: "用户名格式不正确",
+		CurdPhoneFormatIncorrect:    "手机号码格式不正确",
+		CurdEmailFormatIncorrect:    "邮箱格式不正确",
+		CurdIpFormatIncorrect:       "IP地址格式不正确",
 
 		CurdEnableProcessProtectMode: "开启进程保护模式, 不能存在未设置的进程",
 		CurdEnableDllProtectMode:     "开启模块保护模式, 不能存在未设置的模块",

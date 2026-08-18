@@ -102,6 +102,12 @@ const (
 	CurdOrgNameAlreadyExists    string = " CurdOrgNameAlreadyExists"
 	CurdUsernameAlreadyExists   string = " CurdUsernameAlreadyExists"
 	CurdPhoneAlreadyExists      string = " CurdPhoneAlreadyExists"
+	CurdPasswordFormatIncorrect string = " CurdPasswordFormatIncorrect"
+	CurdOrgNameFormatIncorrect  string = " CurdOrgNameFormatIncorrect"
+	CurdUsernameFormatIncorrect string = " CurdUsernameFormatIncorrect"
+	CurdPhoneFormatIncorrect    string = " CurdPhoneFormatIncorrect"
+	CurdEmailFormatIncorrect    string = " CurdEmailFormatIncorrect"
+	CurdIpFormatIncorrect       string = " CurdIpFormatIncorrect"
 
 	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
 	CurdEnableDllProtectMode     string = " CurdEnableDllProtectMode"
