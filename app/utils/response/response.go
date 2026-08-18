@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"goskeleton/app/global/my_errors"
+	"goskeleton/app/utils/cur_userinfo"
+	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/validator_translation"
 	"net/http"
 	"net/url"
@@ -14,6 +16,10 @@ import (
 )
 
 func ReturnJson(Context *gin.Context, httpCode int, dataCode interface{}, msg string, data interface{}) {
+	realMsg := my_errors.GetMessage(cur_userinfo.GetLocales(Context), msg)
+	if string_helper.IsEmpty(realMsg) {
+		realMsg = msg
+	}
 
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	Context.JSON(httpCode, gin.H{
