@@ -35,7 +35,7 @@ func (u *RegistryController) Types(ctx *gin.Context) {
 func (u *RegistryController) CheckOrgName(ctx *gin.Context) {
 	orgName := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "orgName"))
 	if string_helper.IsEmpty(orgName) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -51,7 +51,7 @@ func (u *RegistryController) CheckOrgName(ctx *gin.Context) {
 func (u *RegistryController) CheckUserName(ctx *gin.Context) {
 	userName := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userName"))
 	if string_helper.IsEmpty(userName) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -67,7 +67,7 @@ func (u *RegistryController) CheckUserName(ctx *gin.Context) {
 func (u *RegistryController) CheckUserPhone(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	if string_helper.IsEmpty(userPhone) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -84,7 +84,7 @@ func (u *RegistryController) GetSliderCode(ctx *gin.Context) {
 	userName := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userName"))
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	if string_helper.IsEmpty(userName) || string_helper.IsEmpty(userPhone) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -108,7 +108,7 @@ func (u *RegistryController) SendSms(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 	if string_helper.IsEmpty(userName) || string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -137,12 +137,12 @@ func (u *RegistryController) Signup(ctx *gin.Context) {
 	if string_helper.IsEmpty(orgName) || string_helper.IsEmpty(userName) || string_helper.IsEmpty(userPhone) ||
 		string_helper.IsEmpty(userEmail) || string_helper.IsEmpty(userPw) ||
 		string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
 	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonReg, userPhone, smsCode) {
-		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		response.FailRoutine(ctx, -99, my_errors.CurdSmsVerifyCodeNotMatch)
 		return
 	} else {
 		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonReg, userPhone)

@@ -3,6 +3,7 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -23,7 +24,7 @@ func (u *FindPwController) decrypt(data string) (result string) {
 func (u *FindPwController) GetSliderCode(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	if string_helper.IsEmpty(userPhone) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -41,18 +42,18 @@ func (u *FindPwController) SendSms(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
 	authFact := user_service.CreateAuthFactory()
 	if !authFact.CheckBySlider(user_service.ActonFindPw, userPhone, sliderCode) {
-		response.FailRoutine(ctx, -88, "滑块不正确")
+		response.FailRoutine(ctx, -88, my_errors.CurdSliderIncorrect)
 		return
 	}
 
 	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model == nil || model.Id == 0 {
-		response.FailSimplify(ctx, "用户不存在")
+		response.FailSimplify(ctx, my_errors.CurdUserNotExist)
 		return
 	}
 
@@ -69,12 +70,12 @@ func (u *FindPwController) CheckSms(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
 	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonFindPw, userPhone, smsCode) {
-		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		response.FailRoutine(ctx, -99, my_errors.CurdSmsVerifyCodeNotMatch)
 		return
 	}
 
@@ -90,12 +91,12 @@ func (u *FindPwController) ModifyPw(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(userPw) || string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
 	if !user_service.CreateAuthFactory().CheckBySms(user_service.ActonFindPw, userPhone, smsCode) {
-		response.FailRoutine(ctx, -99, "短信验证码不一致")
+		response.FailRoutine(ctx, -99, my_errors.CurdSmsVerifyCodeNotMatch)
 		return
 	} else {
 		user_service.CreateAuthFactory().DeleteBySms(user_service.ActonFindPw, userPhone)

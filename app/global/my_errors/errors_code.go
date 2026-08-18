@@ -73,23 +73,28 @@ const (
 	FilesUploadIsEmpty             string = "FilesUploadIsEmpty"
 
 	// CURD 常用业务状态码
-	CurdStatusOkCode             string = "000000"
-	CurdStatusOkMsg              string = "OK"
-	CurdBaseCode                 int    = -1
-	PlatformLoginExpiredCode     int    = 500003    //平台:登录过期
-	OrgLoginExpiredCode          int    = 500003    //平台:登录过期
-	AgentParamErrorCode          string = "1000002" //终端：参数错误
-	AgentINSTALLCode             string = "410"     //终端：卸载
-	AgentLoginExpiredCode        string = "401"     //终端：登录过期
-	CurdDataIsEmpty              string = " CurdDataIsEmpty"
-	CurdDataCannotEmpty          string = " CurdDataCannotEmpty"
-	CurdInvalidParameter         string = " CurdInvalidParameter"
-	CurdAddFailed                string = " CurdAddFailed"
-	CurdModifyFailed             string = " CurdModifyFailed"
-	CurdClearFailed              string = " CurdClearFailed"
+	CurdStatusOkCode         string = "000000"
+	CurdStatusOkMsg          string = "OK"
+	CurdBaseCode             int    = -1
+	PlatformLoginExpiredCode int    = 500003    //平台:登录过期
+	OrgLoginExpiredCode      int    = 500003    //平台:登录过期
+	AgentParamErrorCode      string = "1000002" //终端：参数错误
+	AgentINSTALLCode         string = "410"     //终端：卸载
+	AgentLoginExpiredCode    string = "401"     //终端：登录过期
+	CurdDataIsEmpty          string = " CurdDataIsEmpty"
+	CurdDataCannotEmpty      string = " CurdDataCannotEmpty"
+	CurdInvalidParameter     string = " CurdInvalidParameter"
+	CurdAddFailed            string = " CurdAddFailed"
+	CurdModifyFailed         string = " CurdModifyFailed"
+	CurdClearFailed          string = " CurdClearFailed"
+
+	CurdSliderIncorrect         string = " CurdSliderIncorrect"
+	CurdTwoFactorAuthNotEnabled string = " CurdTwoFactorAuthNotEnabled"
+	CurdUserNotExist            string = " CurdUserNotExist"
+	CurdSmsVerifyCodeNotMatch   string = " CurdSmsVerifyCodeNotMatch"
+
 	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
 	CurdEnableDllProtectMode     string = " CurdEnableDllProtectMode"
-	CurdTwoFactorAuthNotEnabled  string = " CurdTwoFactorAuthNotEnabled"
 	CurdTrustProcessDataError    string = " TrustProcessDataError"
 	CurdDepartmentNotExist       string = " CurdDepartmentNotExist"
 	CurdDepartmentNoToManage     string = " CurdDepartmentNoToManage"

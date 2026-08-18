@@ -25,7 +25,7 @@ func (u *AuthController) decrypt(data string) (result string) {
 func (u *AuthController) CheckUser(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -56,7 +56,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 func (u *AuthController) SendSms(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 	authFact := user_service.CreateAuthFactory()
