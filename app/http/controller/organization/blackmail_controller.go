@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_blackmail"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -169,7 +170,7 @@ func (u *BlackmailController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		BlackmailSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "勒索防护管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -186,7 +187,7 @@ func (u *BlackmailController) SetModeForManage(ctx *gin.Context) {
 		BlackmailMode: Mode,
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "勒索防护管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Mode")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -205,7 +206,7 @@ func (u *BlackmailController) BatchSetConfigForManage(ctx *gin.Context) {
 		BlackmailSwitch: &Switch,
 		BlackmailMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "勒索防护管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -255,7 +256,7 @@ func (u *BlackmailController) getProcesses(ctx *gin.Context) (error, string) {
 	var processes []tamper_models.Process
 	err := json_helper.ToAny(jsonStr, &processes)
 	if err != nil {
-		return errors.New("信任进程数据数据错误"), ""
+		return errors.New(my_errors.CurdTrustProcessDataError), ""
 	}
 	return nil, json_helper.Encode(processes)
 }

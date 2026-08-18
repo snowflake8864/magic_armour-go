@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
@@ -91,7 +92,7 @@ func (u *DllController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		DllSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "模块管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -116,12 +117,12 @@ func (u *DllController) SetModeForManage(ctx *gin.Context) {
 		}
 		DllFact := proc_models.CreateDllFactory()
 		if DllFact.Count(condition) > 0 {
-			response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的模块")
+			response.FailSimplify(ctx, my_errors.CurdEnableDllProtectMode)
 			return
 		}
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "模块管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Mode")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -149,7 +150,7 @@ func (u *DllController) BatchSetConfigForManage(ctx *gin.Context) {
 			validIds = agentIds
 		} else {
 			if len(calcList) == len(agentIds) {
-				response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的模块")
+				response.FailSimplify(ctx, my_errors.CurdEnableDllProtectMode)
 				return
 			} else {
 				for _, calc := range calcList {
@@ -165,7 +166,7 @@ func (u *DllController) BatchSetConfigForManage(ctx *gin.Context) {
 		DllSwitch: &Switch,
 		DllMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, validIds, &param, "模块管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, validIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -195,7 +196,7 @@ func (u *DllController) BatchRefreshForManage(ctx *gin.Context) {
 	}
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeDllRefresh, "批量刷新")
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeDllRefresh, "Manage Page Batch Refresh")
 	//删除运行数据
 	//proc_service.CreateDllRunningFactory().DeleteByAgents(orgId, validIds)
 	//修改刷新时间
@@ -215,7 +216,7 @@ func (u *DllController) dllSwitchOnByAgents(orgId int64, agentIds []string) (err
 	AgentFact := agent_models.CreateAgentFactory()
 	agentModels := AgentFact.GetListByConditions(condition, AgentFact.ColumnSimplify())
 	if agentModels == nil || len(agentModels) == 0 {
-		return errors.New("需要终端模块开关全部开启"), nil
+		return errors.New(my_errors.CurdAgentSwitchMustOn), nil
 	} else {
 		if len(agentModels) == len(agentIds) {
 			return nil, agentIds
@@ -240,7 +241,7 @@ func (u *DllController) BatchCollectForManage(ctx *gin.Context) {
 	}
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeDllSuffixIsDll, "批量获取全部模块")
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeDllSuffixIsDll, "Manage Page Batch Get All")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().BatchSetFlushAt(orgId, validIds, false)
 
@@ -352,7 +353,7 @@ func (u *DllController) BatchWhiteForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 
@@ -371,7 +372,7 @@ func (u *DllController) BatchDeleteForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 
@@ -402,7 +403,7 @@ func (u *DllController) ClearRunningForAgent(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	if !proc_service.CreateProcessRunningFactory().DeleteByAgent(orgId, agentId) {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -414,7 +415,7 @@ func (u *DllController) RefreshForAgent(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeDllRefresh, "刷新")
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeDllRefresh, "Refresh")
 	//删除运行数据
 	proc_service.CreateDllRunningFactory().DeleteByAgent(orgId, agentId)
 	//修改刷新时间
@@ -428,7 +429,7 @@ func (u *DllController) CollectForAgent(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeDllSuffixIsDll, "获取全部模块")
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeDllSuffixIsDll, "Get All")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, false)
 
@@ -441,7 +442,7 @@ func (u *DllController) RepeatStatForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 	conditions := proc_models.SearchConditions{

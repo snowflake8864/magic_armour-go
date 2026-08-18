@@ -433,7 +433,7 @@ func (u *ProcessController) BatchWhiteForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 
@@ -452,7 +452,7 @@ func (u *ProcessController) BatchDeleteForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 
@@ -483,7 +483,7 @@ func (u *ProcessController) ClearRunningForAgent(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	if !proc_service.CreateProcessRunningFactory().DeleteByAgent(orgId, agentId) {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -522,7 +522,7 @@ func (u *ProcessController) RepeatStatForAgent(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if len(hashes) == 0 {
-		response.FailSimplify(ctx, "数据不能为空")
+		response.FailSimplify(ctx, my_errors.CurdDataCannotEmpty)
 		return
 	}
 	conditions := proc_models.SearchConditions{

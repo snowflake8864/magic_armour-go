@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/organization/department_service"
@@ -51,12 +52,12 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 		reqDeptIds = department_service.CreateCurdFactory().GetIdsSelfWithChildById(loginInfo.OrgId, deptId)
 		//没有查询组织架构
 		if len(reqDeptIds) == 0 {
-			return conditions, errors.New("组织架构不存在")
+			return conditions, errors.New(my_errors.CurdDepartmentNotExist)
 		}
 	}
 	if loginInfo.IsRoot == enums.IsNot {
 		if loginInfo.DeptIds == nil || len(loginInfo.DeptIds) == 0 {
-			return conditions, errors.New("没有需要管理的组织架构")
+			return conditions, errors.New(my_errors.CurdDepartmentNoToManage)
 		}
 		//没有查询组织架构
 		if len(reqDeptIds) == 0 {
@@ -65,7 +66,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 			//用户管理组织架构与查询组织架构交集
 			intersection := slice_helper.Int64Intersect(reqDeptIds, loginInfo.DeptWithChild)
 			if intersection == nil || len(intersection) == 0 {
-				return conditions, errors.New("暂无数据")
+				return conditions, errors.New(my_errors.CurdDataIsEmpty)
 			} else {
 				conditions.DeptIds = intersection
 			}
@@ -84,7 +85,7 @@ func (u *ControllerBase) getCurrUserAgentIds(loginInfo *user_service.UserCacheLo
 		return nil, nil
 	}
 	if loginInfo.DeptIds == nil || len(loginInfo.DeptIds) == 0 {
-		return errors.New("没有需要管理的组织架构"), nil
+		return errors.New(my_errors.CurdDepartmentNoToManage), nil
 	}
 	conditions := agent_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
@@ -92,7 +93,7 @@ func (u *ControllerBase) getCurrUserAgentIds(loginInfo *user_service.UserCacheLo
 	AgentFact := agent_models.CreateAgentFactory()
 	agentIds := AgentFact.GetIdsByByConditions(conditions)
 	if agentIds == nil || len(agentIds) == 0 {
-		return errors.New("没有需要管理的终端"), nil
+		return errors.New(my_errors.CurdAgentNoToManage), nil
 	}
 	return nil, agentIds
 }
@@ -189,10 +190,10 @@ func (u *ControllerBase) isBelongUserDepartment(isRoot int, manageDeptIds *[]int
 		return nil
 	}
 	if deptId <= 0 {
-		return errors.New("必须选择一个组织组织架构")
+		return errors.New(my_errors.CurdDepartmentMustSelect)
 	}
 	if manageDeptIds == nil || len(*manageDeptIds) == 0 {
-		return errors.New("没有需要管理的组织架构")
+		return errors.New(my_errors.CurdDepartmentNoToManage)
 	}
 
 	var exists bool
@@ -203,7 +204,7 @@ func (u *ControllerBase) isBelongUserDepartment(isRoot int, manageDeptIds *[]int
 		}
 	}
 	if !exists {
-		return errors.New("只能选择属于自己的组织架构")
+		return errors.New(my_errors.CurdDepartmentOnlyChooseYour)
 	}
 	return nil
 }

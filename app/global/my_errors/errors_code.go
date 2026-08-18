@@ -81,11 +81,20 @@ const (
 	AgentParamErrorCode          string = "1000002" //终端：参数错误
 	AgentINSTALLCode             string = "410"     //终端：卸载
 	AgentLoginExpiredCode        string = "401"     //终端：登录过期
-	CurdDataIsEmpty              string = " DataIsEmpty"
+	CurdDataIsEmpty              string = " CurdDataIsEmpty"
+	CurdDataCannotEmpty          string = " CurdDataCannotEmpty"
 	CurdInvalidParameter         string = " CurdInvalidParameter"
 	CurdAddFailed                string = " CurdAddFailed"
 	CurdModifyFailed             string = " CurdModifyFailed"
 	CurdClearFailed              string = " CurdClearFailed"
 	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
-	CurdTwoFactorAuthNotEnabled  string = " TwoFactorAuthNotEnabled"
+	CurdEnableDllProtectMode     string = " CurdEnableDllProtectMode"
+	CurdTwoFactorAuthNotEnabled  string = " CurdTwoFactorAuthNotEnabled"
+	CurdTrustProcessDataError    string = " TrustProcessDataError"
+	CurdDepartmentNotExist       string = " CurdDepartmentNotExist"
+	CurdDepartmentNoToManage     string = " CurdDepartmentNoToManage"
+	CurdDepartmentMustSelect     string = " CurdDepartmentMustSelect"
+	CurdDepartmentOnlyChooseYour string = " CurdDepartmentOnlyChooseYour"
+	CurdAgentNoToManage          string = " CurdAgentNoToManage"
+	CurdAgentSwitchMustOn        string = " CurdAgentSwitchMustOn"
 )
