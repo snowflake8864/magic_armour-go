@@ -81,22 +81,26 @@ const (
 	AgentParamErrorCode      string = "1000002" //终端：参数错误
 	AgentINSTALLCode         string = "410"     //终端：卸载
 	AgentLoginExpiredCode    string = "401"     //终端：登录过期
-	CurdPleaseWaitPatiently  string = " CurdPleaseWaitPatiently"
-	CurdDataIsEmpty          string = " CurdDataIsEmpty"
-	CurdDataCannotEmpty      string = " CurdDataCannotEmpty"
-	CurdDataNotExist         string = " CurdDataNotExist"
-	CurdInvalidParameter     string = " CurdInvalidParameter"
-	CurdAddFailed            string = " CurdAddFailed"
-	CurdSaveFailed           string = " CurdSaveFailed"
-	CurdModifyFailed         string = " CurdModifyFailed"
-	CurdDeleteFailed         string = " CurdDeleteFailed"
-	CurdRefreshFailed        string = " CurdRefreshFailed"
-	CurdClearFailed          string = " CurdClearFailed"
+
+	CurdPleaseWaitPatiently string = " CurdPleaseWaitPatiently"
+	CurdDataIsEmpty         string = " CurdDataIsEmpty"
+	CurdDataCannotEmpty     string = " CurdDataCannotEmpty"
+	CurdDataNotExist        string = " CurdDataNotExist"
+	CurdInvalidParameter    string = " CurdInvalidParameter"
+	CurdAddFailed           string = " CurdAddFailed"
+	CurdSaveFailed          string = " CurdSaveFailed"
+	CurdModifyFailed        string = " CurdModifyFailed"
+	CurdDeleteFailed        string = " CurdDeleteFailed"
+	CurdRefreshFailed       string = " CurdRefreshFailed"
+	CurdClearFailed         string = " CurdClearFailed"
 
 	CurdSliderIncorrect         string = " CurdSliderIncorrect"
 	CurdTwoFactorAuthNotEnabled string = " CurdTwoFactorAuthNotEnabled"
 	CurdUserNotExist            string = " CurdUserNotExist"
 	CurdSmsVerifyCodeNotMatch   string = " CurdSmsVerifyCodeNotMatch"
+	CurdOrgNameAlreadyExists    string = " CurdOrgNameAlreadyExists"
+	CurdUsernameAlreadyExists   string = " CurdUsernameAlreadyExists"
+	CurdPhoneAlreadyExists      string = " CurdPhoneAlreadyExists"
 
 	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
 	CurdEnableDllProtectMode     string = " CurdEnableDllProtectMode"

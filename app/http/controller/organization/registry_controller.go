@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
@@ -40,7 +41,7 @@ func (u *RegistryController) CheckOrgName(ctx *gin.Context) {
 	}
 
 	if model := organize_service.CreateOrgCurdFactory().GetItemByName(orgName); model != nil && model.Id > 0 {
-		response.FailSimplify(ctx, "企业名称已存在")
+		response.FailSimplify(ctx, my_errors.CurdOrgNameAlreadyExists)
 		return
 	}
 
@@ -56,7 +57,7 @@ func (u *RegistryController) CheckUserName(ctx *gin.Context) {
 	}
 
 	if model := user_service.CreateCurdFactory().GetItemByName(userName); model != nil && model.Id > 0 {
-		response.FailSimplify(ctx, "用户名已存在")
+		response.FailSimplify(ctx, my_errors.CurdUsernameAlreadyExists)
 		return
 	}
 
@@ -72,7 +73,7 @@ func (u *RegistryController) CheckUserPhone(ctx *gin.Context) {
 	}
 
 	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model != nil && model.Id > 0 {
-		response.FailSimplify(ctx, "手机号码已存在")
+		response.FailSimplify(ctx, my_errors.CurdPhoneAlreadyExists)
 		return
 	}
 
@@ -89,12 +90,12 @@ func (u *RegistryController) GetSliderCode(ctx *gin.Context) {
 	}
 
 	if model := user_service.CreateCurdFactory().GetItemByName(userName); model != nil && model.Id > 0 {
-		response.FailSimplify(ctx, "用户名已存在")
+		response.FailSimplify(ctx, my_errors.CurdUsernameAlreadyExists)
 		return
 	}
 
 	if model := user_service.CreateCurdFactory().GetItemByPhone(userPhone); model != nil && model.Id > 0 {
-		response.FailSimplify(ctx, "手机号码已存在")
+		response.FailSimplify(ctx, my_errors.CurdPhoneAlreadyExists)
 		return
 	}
 
@@ -114,7 +115,7 @@ func (u *RegistryController) SendSms(ctx *gin.Context) {
 
 	authFact := user_service.CreateAuthFactory()
 	if !authFact.CheckBySlider(user_service.ActonReg, userName, sliderCode) {
-		response.FailRoutine(ctx, -88, "滑块不正确")
+		response.FailRoutine(ctx, -88, my_errors.CurdSliderIncorrect)
 		return
 	}
 

@@ -219,7 +219,7 @@ func (u *PwJumpController) ExecuteForGlobalConfig(ctx *gin.Context) {
 
 	// 下发任务
 	if agentIds := agentFact.GetIdsByByConditions(conditions); len(agentIds) > 0 {
-		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypePwJump, "全局策略")
+		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypePwJump, "Global Policy")
 	}
 
 	response.SuccessSimplify(ctx)
