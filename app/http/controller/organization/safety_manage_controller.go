@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/agent/safety_manage"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/upload_service"
@@ -48,7 +49,7 @@ func (u *SafetyManageController) SaveForUser(ctx *gin.Context) {
 	idAndVal[enum_dictionary.OrganizationPwlFirstModifySwitch] = ctx.GetFloat64(consts.ValidatorPrefixOrg + "pw_first_modify_switch")
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保存失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -73,7 +74,7 @@ func (u *SafetyManageController) ImportForBackup(ctx *gin.Context) {
 	//上传文件
 	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xlsx"})
 	if !isOk {
-		response.FailSimplify(ctx, "上传文件失败")
+		response.FailSimplify(ctx, my_errors.FilesUploadFailMsg)
 		return
 	}
 	uploadParam.Type = enum_upload.TypeImportantBackup
@@ -82,7 +83,7 @@ func (u *SafetyManageController) ImportForBackup(ctx *gin.Context) {
 	uploadParam.OperateId = loginInfo.UserId
 	uploadParam.OperateName = loginInfo.Username
 	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-		response.FailSimplify(ctx, "保存文件失败")
+		response.FailSimplify(ctx, my_errors.FilesSaveFail)
 		return
 	}
 

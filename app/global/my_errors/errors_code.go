@@ -71,6 +71,7 @@ const (
 	FilesUploadMimeTypeFailCode    int    = -400252
 	FilesUploadMimeTypeFailMsg     string = "FilesUploadMimeTypeFailMsg"
 	FilesUploadIsEmpty             string = "FilesUploadIsEmpty"
+	FilesSaveFail                  string = "FilesSaveFail"
 
 	// CURD 常用业务状态码
 	CurdStatusOkCode         string = "000000"
