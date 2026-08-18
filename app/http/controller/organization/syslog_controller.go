@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_syslog"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -164,7 +165,7 @@ func (u *SyslogController) BatchDeleteForSyslog(ctx *gin.Context, module int) {
 	idList := json_helper.ToSliceString(jsonStr)
 	ids := []int64{}
 	if len(idList) == 0 {
-		response.FailSimplify(ctx, "参数错误")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	} else {
 		for _, id := range idList {

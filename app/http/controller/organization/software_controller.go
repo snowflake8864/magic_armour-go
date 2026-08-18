@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/platform/software_models"
@@ -42,7 +43,7 @@ func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
 	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "softId"))
 	model := software_service.CreateCurdFactory().GetItemById(softId)
 	if model == nil || model.Id == 0 {
-		response.FailSimplify(ctx, "软件不存在")
+		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
 
@@ -73,7 +74,7 @@ func (u *SoftwareController) OnlineDownload(ctx *gin.Context) {
 	param := software_models.DownloadModel{
 		OrgId:      loginInfo.OrgId,
 		SoftwareId: int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "softId")),
-		Remark:     "立即下载",
+		Remark:     "Online",
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 	}
