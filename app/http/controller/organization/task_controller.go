@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/task_models"
@@ -57,7 +58,7 @@ func (u *TaskController) ClearForHistory(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	if !task_service.CreateCurdFactory().DeleteForAgent(loginInfo.OrgId, agentId) {
-		response.FailSimplify(ctx, "清空任务失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)

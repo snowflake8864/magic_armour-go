@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/enums/enum_usb"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -84,7 +85,7 @@ func (u *UsbController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		UsbSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "外设管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -101,7 +102,7 @@ func (u *UsbController) SetModeForManage(ctx *gin.Context) {
 		UsbMode: Mode,
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "外设管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Mode")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -120,7 +121,7 @@ func (u *UsbController) BatchSetConfigForManage(ctx *gin.Context) {
 		UsbSwitch: &Switch,
 		UsbMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "外设管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -151,7 +152,7 @@ func (u *UsbController) HasUploadForPolicy(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	if task_service.CreateCacheFactory().ExistUnfinished(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload) {
-		response.FailSimplify(ctx, "请继续等待")
+		response.FailSimplify(ctx, my_errors.CurdPleaseWaitPatiently)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -162,7 +163,7 @@ func (u *UsbController) RefreshForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
-	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload, "刷新")
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeUsbUpload, "Refresh")
 	response.SuccessSimplify(ctx)
 }
 

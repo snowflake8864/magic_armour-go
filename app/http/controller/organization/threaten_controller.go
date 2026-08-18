@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -23,7 +24,7 @@ func (u *ThreatenController) GetLevels(ctx *gin.Context) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "hashes")
 	hashes := json_helper.ToSliceString(jsonStr)
 	if hashes == nil || len(hashes) == 0 {
-		response.FailSimplify(ctx, "参数错误")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
@@ -49,7 +50,7 @@ func (u *ThreatenController) GetAttr(ctx *gin.Context) {
 
 	model := threaten_models.CreateCacheFactory().GetItemById(hash, "*")
 	if model == nil || string_helper.IsEmpty(model.Id) {
-		response.FailSimplify(ctx, "数据不存在")
+		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
 	response.SuccessReturnData(ctx, (&transformer.Common{}).TransThreatenInfo(model))
