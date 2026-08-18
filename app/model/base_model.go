@@ -27,26 +27,26 @@ func UseDbConn(selectDb string) *gorm.DB {
 	switch selectDb {
 	case variable.DbNamePlatform:
 		if variable.GormDbPlatform == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
+			variable.ZapLog.Fatal(my_errors.GetMessagef(my_errors.GormNotInitGlobalPointer, selectDb, selectDb))
 		}
 		db = variable.GormDbPlatform
 	case variable.DbNameAlarm:
 		if variable.GormDbAlarm == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
+			variable.ZapLog.Fatal(my_errors.GetMessagef(my_errors.GormNotInitGlobalPointer, selectDb, selectDb))
 		}
 		db = variable.GormDbAlarm
 	case variable.DbNameAgent:
 		if variable.GormDbAgent == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
+			variable.ZapLog.Fatal(my_errors.GetMessagef(my_errors.GormNotInitGlobalPointer, selectDb, selectDb))
 		}
 		db = variable.GormDbAgent
 	case variable.DbNameSyslog:
 		if variable.GormDbSyslog == nil {
-			variable.ZapLog.Fatal(fmt.Sprintf(my_errors.ErrorsGormNotInitGlobalPointer, selectDb, selectDb))
+			variable.ZapLog.Fatal(my_errors.GetMessagef(my_errors.GormNotInitGlobalPointer, selectDb, selectDb))
 		}
 		db = variable.GormDbSyslog
 	default:
-		variable.ZapLog.Error(my_errors.ErrorsDbDriverNotExists + selectDb)
+		variable.ZapLog.Error(my_errors.DbDriverNotExists + selectDb)
 	}
 	return db
 }

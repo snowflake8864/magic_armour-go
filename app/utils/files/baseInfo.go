@@ -23,14 +23,14 @@ import (
 func GetFilesMimeByFileName(filepath string) string {
 	f, err := os.Open(filepath)
 	if err != nil {
-		variable.ZapLog.Error(my_errors.ErrorsFilesUploadOpenFail + err.Error())
+		variable.ZapLog.Error(my_errors.FilesUploadOpenFail + err.Error())
 	}
 	defer f.Close()
 
 	// 只需要前 32 个字节就可以了
 	buffer := make([]byte, 32)
 	if _, err := f.Read(buffer); err != nil {
-		variable.ZapLog.Error(my_errors.ErrorsFilesUploadReadFail + err.Error())
+		variable.ZapLog.Error(my_errors.FilesUploadReadFail + err.Error())
 		return ""
 	}
 
@@ -42,7 +42,7 @@ func GetFilesMimeByFp(fp multipart.File) string {
 
 	buffer := make([]byte, 32)
 	if _, err := fp.Read(buffer); err != nil {
-		variable.ZapLog.Error(my_errors.ErrorsFilesUploadReadFail + err.Error())
+		variable.ZapLog.Error(my_errors.FilesUploadReadFail + err.Error())
 		return ""
 	}
 

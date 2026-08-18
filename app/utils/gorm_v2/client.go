@@ -26,7 +26,7 @@ func GetSqlDriver(selectDb string, readDbIsOpen int, dbConf ...ConfigParams) (*g
 	driveType := variable.ConfigGormv2Yml.GetString("Gormv2." + selectDb + ".DriveType")
 	var dbDialector gorm.Dialector
 	if val, err := getDbDialector(selectDb, driveType, "Write", dbConf...); err != nil {
-		variable.ZapLog.Error(my_errors.ErrorsDialectorDbInitFail+selectDb, zap.Error(err))
+		variable.ZapLog.Error(my_errors.DialectorDbInitFail+selectDb, zap.Error(err))
 	} else {
 		dbDialector = val
 	}
@@ -46,7 +46,7 @@ func GetSqlDriver(selectDb string, readDbIsOpen int, dbConf ...ConfigParams) (*g
 	// 读写分离配置只
 	if readDbIsOpen == 1 {
 		if val, err := getDbDialector(selectDb, driveType, "Read", dbConf...); err != nil {
-			variable.ZapLog.Error(my_errors.ErrorsDialectorDbInitFail+selectDb, zap.Error(err))
+			variable.ZapLog.Error(my_errors.DialectorDbInitFail+selectDb, zap.Error(err))
 		} else {
 			dbDialector = val
 		}
@@ -92,7 +92,7 @@ func getDbDialector(selectDb, driveType, readWrite string, dbConf ...ConfigParam
 	case "mysql":
 		dbDialector = mysql.Open(dsn)
 	default:
-		return nil, errors.New(my_errors.ErrorsDbDriverNotExists + driveType)
+		return nil, errors.New(my_errors.DbDriverNotExists + driveType)
 	}
 	return dbDialector, nil
 }

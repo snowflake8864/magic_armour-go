@@ -20,14 +20,14 @@ func CreateEventManageFactory() *eventManage {
 type eventManage struct {
 }
 
-//  1.注册事件
+// 1.注册事件
 func (e *eventManage) Set(key string, keyFunc func(args ...interface{})) bool {
 	//判断key下是否已有事件
 	if _, exists := e.Get(key); exists == false {
 		sMap.Store(key, keyFunc)
 		return true
 	} else {
-		variable.ZapLog.Info(my_errors.ErrorsFuncEventAlreadyExists + " , 相关键名：" + key)
+		variable.ZapLog.Info(my_errors.FuncEventAlreadyExists + " , KeyName：" + key)
 	}
 	return false
 }
@@ -40,26 +40,26 @@ func (e *eventManage) Get(key string) (interface{}, bool) {
 	return nil, false
 }
 
-//  3.执行事件
+// 3.执行事件
 func (e *eventManage) Call(key string, args ...interface{}) {
 	if valueInterface, exists := e.Get(key); exists {
 		if fn, ok := valueInterface.(func(args ...interface{})); ok {
 			fn(args...)
 		} else {
-			variable.ZapLog.Error(my_errors.ErrorsFuncEventNotCall + ", 键名：" + key + ", 相关函数无法调用")
+			variable.ZapLog.Error(my_errors.FuncEventNotCall + ", KeyName：" + key + ", related function cannot be called")
 		}
 
 	} else {
-		variable.ZapLog.Error(my_errors.ErrorsFuncEventNotRegister + ", 键名：" + key)
+		variable.ZapLog.Error(my_errors.FuncEventNotRegister + ", KeyName：" + key)
 	}
 }
 
-//  4.删除事件
+// 4.删除事件
 func (e *eventManage) Delete(key string) {
 	sMap.Delete(key)
 }
 
-//  5.根据键的前缀，模糊调用. 使用请谨慎.
+// 5.根据键的前缀，模糊调用. 使用请谨慎.
 func (e *eventManage) FuzzyCall(keyPre string) {
 
 	sMap.Range(func(key, value interface{}) bool {

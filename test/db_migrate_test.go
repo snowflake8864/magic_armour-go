@@ -42,9 +42,9 @@ func TestDbMigrateType(t *testing.T) {
 func TestDbMigrate(t *testing.T) {
 
 	//database.TestStart("init")
-	//database.TestStart("menu")
+	database.TestStart("menu")
 	//database.TestStart("dictionary")
-	database.TestStart("append")
+	//database.TestStart("append")
 }
 
 func TestInsertMany(t *testing.T) {
