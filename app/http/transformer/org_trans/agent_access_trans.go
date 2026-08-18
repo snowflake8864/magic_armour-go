@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/model/agent/agent_access_models"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type AgentAccess struct {
@@ -15,22 +16,10 @@ type AgentAccess struct {
 }
 
 func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["agent_id"] = model.AgentId
-	data["path"] = model.Path
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+
 	data["path_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("path", model.Path, enum_agent_access.EnumStrMap)
-	data["status"] = model.Status
 	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_agent_access.EnumMapInt)
-
-	data["net_ip"] = model.NetIp
-	data["input"] = model.Input
-	data["method"] = model.Method
-	data["http_code"] = model.HttpCode
-	data["resp"] = model.Resp
-	data["delay_time"] = model.DelayTime
-
-	data["created_at"] = model.CreatedAt
 
 	return data
 }

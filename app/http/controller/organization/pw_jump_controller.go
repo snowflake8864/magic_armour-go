@@ -84,7 +84,7 @@ func (u *PwJumpController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PwJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(u.getLogin(ctx).OrgId, agentId, &param, "口令跳变管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(u.getLogin(ctx).OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -101,7 +101,7 @@ func (u *PwJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PwJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "口令跳变管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -173,7 +173,7 @@ func (u *PwJumpController) ExecuteForAgentConfig(ctx *gin.Context) {
 	}
 
 	// 下发任务
-	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePwJump, "终端策略")
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePwJump, "Agent Policy")
 
 	response.SuccessSimplify(ctx)
 }
