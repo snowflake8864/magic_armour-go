@@ -2,12 +2,12 @@ package agent
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
@@ -72,12 +72,12 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
 		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-			response.FailRoutine(ctx, consts.AgentParamErrorCode, "保存失败")
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "保存失败")
 			return
 		}
 
 		if err := proc_service.CreateSampleCurdFactory().UploadSuccess(loginInfo.OrgId, loginInfo.AgentId, id, &uploadParam); err != nil {
-			response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 			return
 		}
 		response.SuccessSimplify(ctx)
@@ -85,6 +85,6 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 		//修改状态
 		_ = proc_service.CreateSampleCurdFactory().UploadFail(loginInfo.OrgId, loginInfo.AgentId, id)
 
-		response.Success(ctx, consts.FilesUploadFailMsg, consts.FilesUploadFailCode)
+		response.Success(ctx, my_errors.FilesUploadFailMsg, my_errors.FilesUploadFailCode)
 	}
 }

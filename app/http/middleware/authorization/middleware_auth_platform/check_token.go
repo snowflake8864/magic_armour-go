@@ -2,7 +2,7 @@ package middleware_auth_platform
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/response"
@@ -19,7 +19,7 @@ func CheckToken() gin.HandlerFunc {
 		headerParams := Params{}
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
+			response.ErrorTokenFail(context, my_errors.PlatformLoginExpiredCode, my_errors.JwtTokenMustValid+err.Error())
 			return
 		}
 		//variable.ZapLog.Info("Authorization:" + headerParams.Authorization)
@@ -29,7 +29,7 @@ func CheckToken() gin.HandlerFunc {
 		context.Set(key, loginInfo)
 
 		if err != nil {
-			response.ErrorTokenFail(context, consts.PlatformLoginExpiredCode, err.Error())
+			response.ErrorTokenFail(context, my_errors.PlatformLoginExpiredCode, err.Error())
 			return
 		}
 		//variable.ZapLog.Info("loginInfo:" + loginInfo.Username)

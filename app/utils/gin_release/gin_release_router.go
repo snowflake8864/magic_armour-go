@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/response"
 	"io/ioutil"
@@ -41,6 +41,6 @@ type PanicExceptionRecord struct{}
 func (p *PanicExceptionRecord) Write(b []byte) (n int, err error) {
 	errStr := string(b)
 	err = errors.New(errStr)
-	variable.ZapLog.Error(consts.ServerOccurredErrorMsg, zap.String("errStrace", errStr))
+	variable.ZapLog.Error(my_errors.ServerOccurredErrorMsg, zap.String("errStrace", errStr))
 	return len(errStr), err
 }

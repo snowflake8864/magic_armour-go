@@ -59,6 +59,6 @@ func init() {
 			BasePath = curPath
 		}
 	} else {
-		log.Fatal(my_errors.ErrorsBasePath)
+		log.Fatal(my_errors.GetMessage("en", my_errors.BasePath))
 	}
 }

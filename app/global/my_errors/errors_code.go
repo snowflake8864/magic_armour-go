@@ -24,6 +24,10 @@ const (
 	CasbinNoAuthorization    string = "CasbinNoAuthorization"
 	GormNotInitGlobalPointer string = "GormNotInitGlobalPointer"
 
+	ServerOccurredErrorCode int    = -500100
+	ServerOccurredErrorMsg  string = "服务器内部发生代码执行错误, "
+	GinSetTrustProxyError   string = "Gin 设置信任代理服务器出错"
+
 	// 数据库部分
 	DbDriverNotExists        string = "DbDriverNotExists"
 	DialectorDbInitFail      string = "DialectorDbInitFail"
@@ -36,15 +40,23 @@ const (
 	RedisGetConnFail  string = "RedisGetConnFail"
 
 	// 表单参数验证器
-	ValidatorNotExists       string = "ValidatorNotExists"
-	ValidatorTransInitFail   string = "ValidatorTransInitFail"
-	ErrorNotAllParamsIsBlank string = "ErrorNotAllParamsIsBlank"
-	ValidatorBindParamsFail  string = "ValidatorBindParamsFail"
+	ValidatorNotExists           string = "ValidatorNotExists"
+	ValidatorTransInitFail       string = "ValidatorTransInitFail"
+	ErrorNotAllParamsIsBlank     string = "ErrorNotAllParamsIsBlank"
+	ValidatorBindParamsFail      string = "ValidatorBindParamsFail"
+	ValidatorParamsCheckFailCode int    = -400300
+	ValidatorParamsCheckFailMsg  string = "ValidatorParamsCheckFailMsg"
 
 	// Token部分
-	TokenInvalid      string = "TokenInvalid"
-	TokenNotActiveYet string = "TokenNotActiveYet"
-	TokenMalFormed    string = "TokenMalFormed"
+	TokenInvalid          string = "TokenInvalid"
+	TokenNotActiveYet     string = "TokenNotActiveYet"
+	TokenMalFormed        string = "TokenMalFormed"
+	JwtTokenOK            int    = 200100                      //token有效
+	JwtTokenInvalid       int    = -400100                     //无效的token
+	JwtTokenExpired       int    = -400101                     //过期的token
+	JwtTokenFormatErrCode int    = -400102                     //提交的 token 格式错误
+	JwtTokenFormatErrMsg  string = "提交的 token 格式错误"            //提交的 token 格式错误
+	JwtTokenMustValid     string = "token为必填项,请在请求header部分提交!" //提交的 token 格式错误
 
 	// Snowflake
 	SnowflakeGetIdFail string = "SnowflakeGetIdFail"
@@ -53,10 +65,20 @@ const (
 	FilesUploadOpenFail            string = "FilesUploadOpenFail"
 	FilesUploadReadFail            string = "FilesUploadReadFail"
 	FilesUploadFailCode            int    = -400250
-	FilesUploadFailMsg             string = "文件上传失败, 获取上传文件发生错误!"
+	FilesUploadFailMsg             string = "FilesUploadFailMsg"
 	FilesUploadMoreThanMaxSizeCode int    = -400251
-	FilesUploadMoreThanMaxSizeMsg  string = "长传文件超过系统设定的最大值,系统允许的最大值："
+	FilesUploadMoreThanMaxSizeMsg  string = "FilesUploadMoreThanMaxSizeMsg"
 	FilesUploadMimeTypeFailCode    int    = -400252
-	FilesUploadMimeTypeFailMsg     string = "文件mime类型不允许"
-	FilesUploadIsEmpty             string = "不允许上传空文件"
+	FilesUploadMimeTypeFailMsg     string = "FilesUploadMimeTypeFailMsg"
+	FilesUploadIsEmpty             string = "FilesUploadIsEmpty"
+
+	// CURD 常用业务状态码
+	CurdStatusOkCode         string = "000000"
+	CurdStatusOkMsg          string = "OK"
+	CurdBaseCode             int    = -1
+	PlatformLoginExpiredCode int    = 500003    //平台:登录过期
+	OrgLoginExpiredCode      int    = 500003    //平台:登录过期
+	AgentParamErrorCode      string = "1000002" //终端：参数错误
+	AgentINSTALLCode         string = "410"     //终端：卸载
+	AgentLoginExpiredCode    string = "401"     //终端：登录过期
 )

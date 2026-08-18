@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_backup"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/backup_models"
 	"goskeleton/app/service/agent/backup_service"
 	"goskeleton/app/service/agent/task_service"
@@ -98,7 +99,7 @@ func (u *BackupController) UploadBackup(ctx *gin.Context) {
 	param := u.getResp(ctx, true)
 
 	if err := backup_service.CreateCurdFactory().BackupComplete(param); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 		return
 	}
 
@@ -158,7 +159,7 @@ func (u *BackupController) UploadRollback(ctx *gin.Context) {
 	param := u.getResp(ctx, false)
 
 	if err := backup_service.CreateCurdFactory().RollbackComplete(param); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 		return
 	}
 

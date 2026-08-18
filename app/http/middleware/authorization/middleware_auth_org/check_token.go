@@ -2,8 +2,8 @@ package middleware_auth_org
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_org_operate"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -21,7 +21,7 @@ func CheckToken() gin.HandlerFunc {
 		headerParams := Params{}
 		//  推荐使用 ShouldBindHeader 方式获取头参数
 		if err := context.ShouldBindHeader(&headerParams); err != nil {
-			response.ErrorTokenFail(context, consts.OrgLoginExpiredCode, consts.JwtTokenMustValid+err.Error())
+			response.ErrorTokenFail(context, my_errors.OrgLoginExpiredCode, my_errors.JwtTokenMustValid+err.Error())
 			return
 		}
 
@@ -44,7 +44,7 @@ func CheckToken() gin.HandlerFunc {
 		context.Set(key, loginInfo)
 
 		if err != nil {
-			response.ErrorTokenFail(context, consts.OrgLoginExpiredCode, err.Error())
+			response.ErrorTokenFail(context, my_errors.OrgLoginExpiredCode, err.Error())
 			return
 		}
 		//variable.ZapLog.Info("loginInfo:" + loginInfo.Username)

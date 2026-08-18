@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/jobs/agent_job"
 	"goskeleton/app/model/agent/agent_models"
@@ -171,18 +172,18 @@ func (u *AgentController) Upgrade(ctx *gin.Context) {
 	}
 	model := software_models.CreateSoftwareFactory().GetItemByConditions(Conditions)
 	if model == nil || model.Id == 0 {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "对应版本已下架:"+model.Ver)
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "对应版本已下架:"+model.Ver)
 		return
 	}
 	if !enum_software.CanUpgradeDirect(model.Ver, loginInfo.Ver) {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "已经是最新版本,无需升级")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "已经是最新版本,无需升级")
 		return
 	}
 
 	downloadFact := software_service.CreateDownloadFactory()
 	err, addr, _, _ := downloadFact.GetServiceAddr()
 	if err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 		return
 	}
 
@@ -192,7 +193,7 @@ func (u *AgentController) Upgrade(ctx *gin.Context) {
 		Remark:     "升级",
 	}
 	if err1, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err1.Error())
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err1.Error())
 		return
 	} else {
 		response.SuccessReturnData(ctx, gin.H{
@@ -259,17 +260,17 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
 		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-			response.FailRoutine(ctx, consts.AgentParamErrorCode, "保存失败")
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "保存失败")
 			return
 		}
 
 		if err := agent_err_service.CreateErrorCurdFactory().Add(loginInfo, remark, &uploadParam); err != nil {
-			response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 			return
 		}
 		response.SuccessSimplify(ctx)
 	} else {
-		response.Fail(ctx, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+		response.Fail(ctx, my_errors.FilesUploadFailCode, my_errors.FilesUploadFailMsg, "")
 	}
 }
 

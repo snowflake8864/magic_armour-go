@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
@@ -86,13 +87,13 @@ func (u *TaskController) Get(ctx *gin.Context) {
 		//删除所有任务相关数据，保证下次正常登录后没有遗留任务
 		task_service.CreateCurdFactory().DeleteForAgent(loginInfo.OrgId, loginInfo.AgentId)
 
-		response.ErrorTokenFail(ctx, consts.AgentLoginExpiredCode, "agent delete")
+		response.ErrorTokenFail(ctx, my_errors.AgentLoginExpiredCode, "agent delete")
 		return
 	} else {
 		if taskCacheFact.LockAgentLive(loginInfo.OrgId, loginInfo.AgentId) {
 			//设置存活状态
 			if isExist, _ := agent_service.CreateCurdFactory().SetLivingByAgent(loginInfo.OrgId, loginInfo.AgentId); !isExist {
-				response.ErrorTokenFail(ctx, consts.AgentLoginExpiredCode, "agent not exist")
+				response.ErrorTokenFail(ctx, my_errors.AgentLoginExpiredCode, "agent not exist")
 				return
 			}
 		}

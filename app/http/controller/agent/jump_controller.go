@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/ip_jump_service"
 	"goskeleton/app/service/agent/task_service"
@@ -33,7 +34,7 @@ func (u *JumpController) GetPwJump(ctx *gin.Context) {
 		OrgExtendFact := organize_service.CreateOrgExtendFactory()
 		config = OrgExtendFact.FormatPwJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).PwJumpConfig)
 		if config.Switch == enums.SwitchOff {
-			response.FailRoutine(ctx, consts.AgentParamErrorCode, "Switch Off")
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "Switch Off")
 			return
 		}
 		scheme = 2
@@ -60,7 +61,7 @@ func (u *JumpController) PutPwJump(ctx *gin.Context) {
 
 	//保存密码
 	if err := agent_service.CreateExtendFactory().SetPwJumpNewest(loginInfo.OrgId, loginInfo.AgentId, newest); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "save pw fail")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "save pw fail")
 		return
 	}
 
@@ -77,7 +78,7 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()
 	config := OrgExtendFact.FormatIpJumpConfig(OrgExtendFact.GetItemByOrg(loginInfo.OrgId).IpJumpConfig)
 	if config.Switch == enums.SwitchOff {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "Switch Off")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "Switch Off")
 		return
 	}
 	sourceIp := ctx.ClientIP()
@@ -91,7 +92,7 @@ func (u *JumpController) GetIpJump(ctx *gin.Context) {
 
 	//生成IP跳变池
 	if err, targetIp := ip_jump_service.CreatCurdFactory(loginInfo.OrgId, &config).NewestIp(sourceIp); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "Switch Off")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "Switch Off")
 		return
 	} else {
 		response.SuccessReturnData(ctx, gin.H{
@@ -120,7 +121,7 @@ func (u *JumpController) PutIpJump(ctx *gin.Context) {
 
 	//保存密码
 	if err := agent_service.CreateExtendFactory().SetIpJumpNewest(loginInfo.OrgId, loginInfo.AgentId, newest); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, "save ip fail")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "save ip fail")
 		return
 	}
 

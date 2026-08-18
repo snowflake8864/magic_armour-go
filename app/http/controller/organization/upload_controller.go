@@ -2,7 +2,7 @@ package organization
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/response"
 )
@@ -15,8 +15,8 @@ type Upload struct {
 // 开始上传
 func (u *Upload) StartUpload(context *gin.Context) {
 	if r, finnalSavePath := upload_file.Upload(context, upload_file.GetDefaultPath(), []string{}); r == true {
-		response.Success(context, consts.CurdStatusOkMsg, finnalSavePath)
+		response.Success(context, my_errors.CurdStatusOkMsg, finnalSavePath)
 	} else {
-		response.Fail(context, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+		response.Fail(context, my_errors.FilesUploadFailCode, my_errors.FilesUploadFailMsg, "")
 	}
 }

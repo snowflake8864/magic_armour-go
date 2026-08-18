@@ -2,7 +2,7 @@ package upload_files
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/files"
 	"strconv"
@@ -18,16 +18,16 @@ func (u UploadBase) CommCheck(context *gin.Context) (errCode int, errMsg string,
 	var isPass bool
 	//获取文件发生错误，可能上传了空文件等
 	if err != nil {
-		return consts.FilesUploadFailCode, consts.FilesUploadFailMsg, err.Error()
+		return my_errors.FilesUploadFailCode, my_errors.FilesUploadFailMsg, err.Error()
 	}
 	if tmpFile.Size == 0 {
-		return consts.FilesUploadMoreThanMaxSizeCode, consts.FilesUploadIsEmpty, ""
+		return my_errors.FilesUploadMoreThanMaxSizeCode, my_errors.FilesUploadIsEmpty, ""
 	}
 
 	//超过系统设定的最大值：32M，tmpFile.Size 的单位是 bytes 和我们定义的文件单位M 比较，就需要将我们的单位*1024*1024(即2的20次方)，一步到位就是 << 20
 	sizeLimit := variable.ConfigYml.GetInt64("FileUploadSetting.Size")
 	if tmpFile.Size > sizeLimit<<20 {
-		return consts.FilesUploadMoreThanMaxSizeCode, consts.FilesUploadMoreThanMaxSizeMsg + strconv.FormatInt(sizeLimit, 10) + "M", ""
+		return my_errors.FilesUploadMoreThanMaxSizeCode, my_errors.FilesUploadMoreThanMaxSizeMsg + strconv.FormatInt(sizeLimit, 10) + "M", ""
 	}
 
 	//不允许的文件mime类型
@@ -41,12 +41,12 @@ func (u UploadBase) CommCheck(context *gin.Context) (errCode int, errMsg string,
 		}
 		_ = fp.Close()
 	} else {
-		return consts.ServerOccurredErrorCode, consts.ServerOccurredErrorMsg, ""
+		return my_errors.ServerOccurredErrorCode, my_errors.ServerOccurredErrorMsg, ""
 	}
 
 	//凡是存在相等的类型，通过验证，调用控制器
 	if !isPass {
-		return consts.FilesUploadMimeTypeFailCode, consts.FilesUploadMimeTypeFailMsg, ""
+		return my_errors.FilesUploadMimeTypeFailCode, my_errors.FilesUploadMimeTypeFailMsg, ""
 	} else {
 		return 0, "", ""
 	}

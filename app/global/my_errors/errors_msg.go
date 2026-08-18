@@ -24,7 +24,10 @@ var Messages = map[string]map[string]string{
 		GormInitFail:             "Gorm 数据库驱动、连接初始化失败",
 		KafkaProducerInitFail:    "Kafka生产者驱动、连接初始化失败",
 		CasbinNoAuthorization:    "Casbin 鉴权未通过，请在后台检查 casbin 设置参数",
-		GormNotInitGlobalPointer: "%s 数据库全局变量指针没有初始化，请在配置文件 config/gorm_v2.yml 设置 Gormv2.%s.IsInitGlobalGormMysql = 1, 并且保证数据库配置正确 \n",
+		GormNotInitGlobalPointer: "%s 数据库全局变量指针没有初始化，请在配置文件 config/gorm_v2.yml 设置 Gormv2.%s.IsInitGlobalGormMysql = 1, 并且保证数据库配置正确",
+
+		ServerOccurredErrorMsg: "服务器内部发生代码执行错误, ",
+		GinSetTrustProxyError:  "Gin 设置信任代理服务器出错",
 
 		DbDriverNotExists:        "数据库驱动类型不存在,目前支持的数据库类型：mysql、sqlserver、postgresql，您提交数据库类型：",
 		DialectorDbInitFail:      "gorm dialector 初始化失败,dbType:",
@@ -35,14 +38,17 @@ var Messages = map[string]map[string]string{
 		RedisAuthFail:     "Redis Auth 鉴权失败，密码错误",
 		RedisGetConnFail:  "Redis 从连接池获取一个连接失败，超过最大重试次数",
 
-		ValidatorNotExists:       "不存在的验证器",
-		ValidatorTransInitFail:   "validator的翻译器初始化错误",
-		ErrorNotAllParamsIsBlank: "该接口不允许所有参数都为空,请按照接口要求提交必填参数",
-		ValidatorBindParamsFail:  "验证器绑定参数失败",
+		ValidatorNotExists:          "不存在的验证器",
+		ValidatorTransInitFail:      "validator的翻译器初始化错误",
+		ErrorNotAllParamsIsBlank:    "该接口不允许所有参数都为空,请按照接口要求提交必填参数",
+		ValidatorBindParamsFail:     "验证器绑定参数失败",
+		ValidatorParamsCheckFailMsg: "参数校验失败",
 
-		TokenInvalid:      "无效的token",
-		TokenNotActiveYet: "token 尚未激活",
-		TokenMalFormed:    "token 格式不正确",
+		TokenInvalid:         "无效的token",
+		TokenNotActiveYet:    "token 尚未激活",
+		TokenMalFormed:       "token 格式不正确",
+		JwtTokenFormatErrMsg: "提交的 token 格式错误",
+		JwtTokenMustValid:    "token为必填项,请在请求header部分提交!",
 
 		SnowflakeGetIdFail: "获取snowflake唯一ID过程发生错误",
 

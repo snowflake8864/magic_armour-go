@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -71,7 +72,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	//系统类型
 	param.OsType = enum_software.GetOsTypeByName(param.OsName)
 	if param.OsType == 0 {
-		response.FailRoutine(ctx, consts.AgentINSTALLCode, "os unknown: "+param.OsName)
+		response.FailRoutine(ctx, my_errors.AgentINSTALLCode, "os unknown: "+param.OsName)
 		return
 	}
 
@@ -86,28 +87,28 @@ func (u *AuthController) Login(ctx *gin.Context) {
 			}
 			mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 			if val, isOk := mapDict[enum_dictionary.AgentCompatibleDefaultOrg]; !isOk || string_helper.IsEmpty(val) {
-				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				response.FailRoutine(ctx, my_errors.AgentINSTALLCode, err.Error())
 				return
 			}
 			if val, isOk := mapDict[enum_dictionary.AgentCompatibleDefaultUser]; !isOk || string_helper.IsEmpty(val) {
-				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				response.FailRoutine(ctx, my_errors.AgentINSTALLCode, err.Error())
 				return
 			}
 			userInfo.OrgId = string_helper.ToInt64(mapDict[enum_dictionary.AgentCompatibleDefaultOrg])
 			userInfo.UserId = string_helper.ToInt64(mapDict[enum_dictionary.AgentCompatibleDefaultUser])
 			if userInfo.OrgId == 0 || userInfo.UserId == 0 {
-				response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+				response.FailRoutine(ctx, my_errors.AgentINSTALLCode, err.Error())
 				return
 			}
 		} else {
-			response.FailRoutine(ctx, consts.AgentINSTALLCode, err.Error())
+			response.FailRoutine(ctx, my_errors.AgentINSTALLCode, err.Error())
 			return
 		}
 	} else {
 		//验证用户
 		userModel := user_service.CreateCurdFactory().GetItemByOrgAndUser(userInfo.OrgId, userInfo.UserId)
 		if userModel.Id == 0 {
-			response.FailRoutine(ctx, consts.AgentINSTALLCode, fmt.Sprintf("user not exist: orgId=%d, userId=%d", userInfo.OrgId, userInfo.UserId))
+			response.FailRoutine(ctx, my_errors.AgentINSTALLCode, fmt.Sprintf("user not exist: orgId=%d, userId=%d", userInfo.OrgId, userInfo.UserId))
 			return
 		}
 	}
@@ -117,7 +118,7 @@ func (u *AuthController) Login(ctx *gin.Context) {
 	param.UserId = userInfo.UserId
 	isOk, data := agent_service.CreateOnlineFactory().RegisterOrLogin(&param)
 	if !isOk {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, data)
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, data)
 		return
 	}
 

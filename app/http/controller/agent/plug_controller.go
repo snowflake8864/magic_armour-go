@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/service/agent/plug_service/plug_calc_service"
 	"goskeleton/app/service/agent/task_service"
@@ -90,7 +91,7 @@ func (u *PlugController) PutDynamic(ctx *gin.Context) {
 	Duration := int(ctx.GetFloat64(consts.ValidatorPrefixAgent + "duration"))
 
 	if err := plug_calc_service.CreatePlugCalcFactory().Add(loginInfo.OrgId, loginInfo.AgentId, Ip, Source, PlugType, Duration); err != nil {
-		response.FailRoutine(ctx, consts.AgentParamErrorCode, err.Error())
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, err.Error())
 	}
 
 	response.SuccessReturnData(ctx, "上传动态封堵(调试用)")

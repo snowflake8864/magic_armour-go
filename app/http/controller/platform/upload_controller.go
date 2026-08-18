@@ -2,9 +2,9 @@ package platform
 
 import (
 	"github.com/gin-gonic/gin"
-	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/utils/response"
@@ -45,6 +45,6 @@ func (u *Upload) StartUpload(context *gin.Context) {
 		}
 		response.SuccessReturnData(context, data)
 	} else {
-		response.Fail(context, consts.FilesUploadFailCode, consts.FilesUploadFailMsg, "")
+		response.Fail(context, my_errors.FilesUploadFailCode, my_errors.FilesUploadFailMsg, "")
 	}
 }
