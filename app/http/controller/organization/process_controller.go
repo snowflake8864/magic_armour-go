@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -109,7 +110,7 @@ func (u *ProcessController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		ProcessSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "进程管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -139,7 +140,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 		}
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "进程管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Mode")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -167,7 +168,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 			validIds = agentIds
 		} else {
 			if len(calcList) == len(agentIds) {
-				response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的进程")
+				response.FailSimplify(ctx, my_errors.CurdEnableProcessProtectMode)
 				return
 			} else {
 				for _, calc := range calcList {
@@ -183,7 +184,7 @@ func (u *ProcessController) BatchSetConfigForManage(ctx *gin.Context) {
 		ProcessSwitch: &Switch,
 		ProcessMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, validIds, &param, "进程管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, validIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -213,7 +214,7 @@ func (u *ProcessController) BatchRefreshForManage(ctx *gin.Context) {
 	}
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessRefresh, "批量刷新")
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessRefresh, "Manage Page Batch Refresh")
 	//删除运行数据
 	//proc_service.CreateProcessRunningFactory().DeleteByAgents(orgId, validIds)
 	//修改刷新时间
@@ -233,7 +234,7 @@ func (u *ProcessController) processSwitchOnByAgents(orgId int64, agentIds []stri
 	AgentFact := agent_models.CreateAgentFactory()
 	agentModels := AgentFact.GetListByConditions(condition, AgentFact.ColumnSimplify())
 	if agentModels == nil || len(agentModels) == 0 {
-		return errors.New("需要终端进程开关全部开启"), nil
+		return errors.New(my_errors.CurdAgentSwitchMustOn), nil
 	} else {
 		if len(agentModels) == len(agentIds) {
 			return nil, agentIds
@@ -258,7 +259,7 @@ func (u *ProcessController) BatchCollectForManage(ctx *gin.Context) {
 	}
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessSuffixIsExe, "批量获取全部进程")
+	task_service.CreateCurdFactory().AddTaskForAgents(orgId, validIds, enum_task.TypeProcessSuffixIsExe, "Manage Page Batch Get All")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().BatchSetFlushAt(orgId, validIds, true)
 
@@ -495,7 +496,7 @@ func (u *ProcessController) RefreshForAgent(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessRefresh, "刷新")
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessRefresh, "Refresh")
 	//删除运行数据
 	proc_service.CreateProcessRunningFactory().DeleteByAgent(orgId, agentId)
 	//修改刷新时间
@@ -509,7 +510,7 @@ func (u *ProcessController) CollectForAgent(ctx *gin.Context) {
 	orgId := u.getLogin(ctx).OrgId
 	agentId := u.getAgentIdFromGin(ctx)
 	//添加任务
-	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessSuffixIsExe, "获取全部进程")
+	task_service.CreateCurdFactory().AddTaskForAgent(orgId, agentId, enum_task.TypeProcessSuffixIsExe, "Get All")
 	//修改刷新时间
 	agent_service.CreateExtendFactory().SetFlushAt(orgId, agentId, true)
 
@@ -572,15 +573,15 @@ func (u *ProcessController) RunningDllExtractForAgent(ctx *gin.Context) {
 	AgentFact := agent_models.CreateAgentFactory()
 	agentModel := AgentFact.GetItemByOrgAndAgent(orgId, agentId, AgentFact.ColumnProc(true))
 	if agentModel == nil || agentModel.OrgId == 0 {
-		response.FailSimplify(ctx, "终端不存在")
+		response.FailSimplify(ctx, my_errors.CurdAgentNotExist)
 		return
 	}
 	if agentModel.PlatformType == enum_software.PlatformTypeLinux {
-		response.FailSimplify(ctx, "Linux暂不支持功能")
+		response.FailSimplify(ctx, my_errors.CurdAgentLinuxNotSupported)
 		return
 	}
 	if agentModel.DllSwitch == enums.SwitchOff {
-		response.FailSimplify(ctx, "模块功能没有开启")
+		response.FailSimplify(ctx, my_errors.CurdDllNotEnabled)
 		return
 	}
 
@@ -604,7 +605,7 @@ func (u *ProcessController) RunningDllShowForAgent(ctx *gin.Context) {
 		return
 	}
 	if hasModel.DllStatus != enum_process.CollectDllStatusFinish {
-		response.FailRoutine(ctx, 100, "请耐心等待")
+		response.FailRoutine(ctx, 100, my_errors.CurdPleaseWaitPatiently)
 		return
 	}
 

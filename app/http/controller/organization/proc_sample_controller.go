@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
@@ -49,7 +50,7 @@ func (u *ProcSampleController) Delete(ctx *gin.Context) {
 	Id := ctx.GetString(consts.ValidatorPrefixOrg + "id")
 	agentId := u.getAgentIdFromGin(ctx)
 	if !proc_service.CreateSampleCurdFactory().DeleteById(loginInfo.OrgId, agentId, Id) {
-		response.FailSimplify(ctx, "删除失败")
+		response.FailSimplify(ctx, my_errors.CurdDeleteFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -59,7 +60,7 @@ func (u *ProcSampleController) Delete(ctx *gin.Context) {
 func (u *ProcSampleController) Clear(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	if !proc_service.CreateSampleCurdFactory().DelByOrg(loginInfo.OrgId) {
-		response.FailSimplify(ctx, "删除失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -73,11 +74,11 @@ func (u *ProcSampleController) Download(ctx *gin.Context) {
 
 	model := proc_models.CreateProcSampleFactory().GetItemByOrgAndAgentAndHash(loginInfo.OrgId, agentId, Id)
 	if model == nil || model.OrgId == 0 {
-		response.FailSimplify(ctx, "数据不存在")
+		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
 	if model.Status != enum_process.SampleStatusFinished {
-		response.FailSimplify(ctx, "样本没有上传")
+		response.FailSimplify(ctx, my_errors.CurdProcSampleNotUpload)
 		return
 	}
 

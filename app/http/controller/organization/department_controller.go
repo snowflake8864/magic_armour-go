@@ -102,7 +102,7 @@ func (u *DepartmentController) Delete(ctx *gin.Context) {
 	id := int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "id"))
 
 	if !department_service.CreateCurdFactory().DelSelfWithChildById(loginInfo.OrgId, id) {
-		response.FailSimplify(ctx, "删除失败")
+		response.FailSimplify(ctx, my_errors.CurdDeleteFailed)
 		return
 	}
 

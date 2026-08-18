@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_port"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -105,7 +106,7 @@ func (u *PortController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PortSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "端口虚开管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -122,7 +123,7 @@ func (u *PortController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PortSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "端口虚开管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -153,11 +154,11 @@ func (u *PortController) RefreshForWorking(ctx *gin.Context) {
 	agentId := u.getAgentIdFromGin(ctx)
 
 	if !port_service.CreateWorkingFactory().DelByOrgAndAgent(loginInfo.OrgId, agentId) {
-		response.FailSimplify(ctx, "刷新失败")
+		response.FailSimplify(ctx, my_errors.CurdRefreshFailed)
 		return
 	}
 
-	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePortWorkingUpload, "刷新")
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypePortWorkingUpload, "Refresh")
 
 	response.SuccessSimplify(ctx)
 }

@@ -81,12 +81,16 @@ const (
 	AgentParamErrorCode      string = "1000002" //终端：参数错误
 	AgentINSTALLCode         string = "410"     //终端：卸载
 	AgentLoginExpiredCode    string = "401"     //终端：登录过期
+	CurdPleaseWaitPatiently  string = " CurdPleaseWaitPatiently"
 	CurdDataIsEmpty          string = " CurdDataIsEmpty"
 	CurdDataCannotEmpty      string = " CurdDataCannotEmpty"
+	CurdDataNotExist         string = " CurdDataNotExist"
 	CurdInvalidParameter     string = " CurdInvalidParameter"
 	CurdAddFailed            string = " CurdAddFailed"
 	CurdSaveFailed           string = " CurdSaveFailed"
 	CurdModifyFailed         string = " CurdModifyFailed"
+	CurdDeleteFailed         string = " CurdDeleteFailed"
+	CurdRefreshFailed        string = " CurdRefreshFailed"
 	CurdClearFailed          string = " CurdClearFailed"
 
 	CurdSliderIncorrect         string = " CurdSliderIncorrect"
@@ -96,6 +100,8 @@ const (
 
 	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
 	CurdEnableDllProtectMode     string = " CurdEnableDllProtectMode"
+	CurdProcSampleNotUpload      string = " CurdProcSampleNotUpload"
+	CurdDllNotEnabled            string = " CurdDllNotEnabled"
 	CurdTrustProcessDataError    string = " TrustProcessDataError"
 	CurdDepartmentNotExist       string = " CurdDepartmentNotExist"
 	CurdDepartmentNoToManage     string = " CurdDepartmentNoToManage"
@@ -103,4 +109,6 @@ const (
 	CurdDepartmentOnlyChooseYour string = " CurdDepartmentOnlyChooseYour"
 	CurdAgentNoToManage          string = " CurdAgentNoToManage"
 	CurdAgentSwitchMustOn        string = " CurdAgentSwitchMustOn"
+	CurdAgentNotExist            string = " CurdAgentNotExist"
+	CurdAgentLinuxNotSupported   string = " CurdAgentLinuxNotSupported"
 )
