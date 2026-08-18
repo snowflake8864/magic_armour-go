@@ -116,4 +116,5 @@ const (
 	CurdAgentSwitchMustOn        string = " CurdAgentSwitchMustOn"
 	CurdAgentNotExist            string = " CurdAgentNotExist"
 	CurdAgentLinuxNotSupported   string = " CurdAgentLinuxNotSupported"
+	CurdDirPermissionCannotEmpty string = " CurdDirPermissionCannotEmpty"
 )

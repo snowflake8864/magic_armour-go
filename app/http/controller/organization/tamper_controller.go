@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -93,7 +94,7 @@ func (u *TamperController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		TamperSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "防篡改管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -110,7 +111,7 @@ func (u *TamperController) SetModeForManage(ctx *gin.Context) {
 		TamperMode: Mode,
 	}
 
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "防篡改管理-模式")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Manage Page Mode")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -129,7 +130,7 @@ func (u *TamperController) BatchSetConfigForManage(ctx *gin.Context) {
 		TamperSwitch: &Switch,
 		TamperMode:   Mode,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "防篡改管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -177,7 +178,7 @@ func (u *TamperController) getProtectRw(ctx *gin.Context) (error, int) {
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "protectRw")
 	protectRw := json_helper.ToSliceInt(jsonStr)
 	if protectRw == nil || len(protectRw) == 0 {
-		return errors.New("禁止目录权限不能为空"), 0
+		return errors.New(my_errors.CurdDirPermissionCannotEmpty), 0
 	}
 	var result int
 	for _, val := range protectRw {
@@ -196,7 +197,7 @@ func (u *TamperController) getProcesses(ctx *gin.Context) (error, string) {
 	var processes []tamper_models.Process
 	err := json_helper.ToAny(jsonStr, &processes)
 	if err != nil {
-		return errors.New("信任进程数据数据错误"), ""
+		return errors.New(my_errors.CurdTrustProcessDataError), ""
 	}
 	return nil, json_helper.Encode(processes)
 }
@@ -337,7 +338,7 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 	//上传文件
 	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".xlsx"})
 	if !isOk {
-		response.FailSimplify(ctx, "上传文件失败")
+		response.FailSimplify(ctx, my_errors.FilesUploadFailMsg)
 		return
 	}
 	uploadParam.Type = enum_upload.TypeTamperPolicy
@@ -346,7 +347,7 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 	uploadParam.OperateId = loginInfo.UserId
 	uploadParam.OperateName = loginInfo.Username
 	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-		response.FailSimplify(ctx, "保存文件失败")
+		response.FailSimplify(ctx, my_errors.FilesSaveFail)
 		return
 	}
 

@@ -92,6 +92,7 @@ var Messages = map[string]map[string]string{
 		CurdAgentSwitchMustOn:        "终端开关需要全部开启",
 		CurdAgentNotExist:            "终端不存在",
 		CurdAgentLinuxNotSupported:   "Linux暂不支持功能",
+		CurdDirPermissionCannotEmpty: "禁止目录权限不能为空",
 	},
 	"en": {},
 }
