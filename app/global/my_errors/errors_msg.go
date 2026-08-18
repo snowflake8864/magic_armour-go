@@ -59,11 +59,13 @@ var Messages = map[string]map[string]string{
 		FilesUploadMimeTypeFailMsg:    "文件mime类型不允许",
 		FilesUploadIsEmpty:            "不允许上传空文件",
 
+		CurdDataIsEmpty:              "数据为空",
 		CurdInvalidParameter:         "参数不正确",
 		CurdAddFailed:                "新增失败",
 		CurdModifyFailed:             "修改失败",
 		CurdClearFailed:              "清空失败",
 		CurdEnableProcessProtectMode: "开启进程保护模式, 不能存在未设置的进程",
+		CurdTwoFactorAuthNotEnabled:  "没有开启双因子验证",
 	},
 	"en": {},
 }

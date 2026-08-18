@@ -3,6 +3,7 @@ package organization
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -70,14 +71,14 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		return
 	}
 	if string_helper.IsEmpty(userModel.Phone) {
-		response.FailRoutine(ctx, -97, "没有开启双因子验证")
+		response.FailRoutine(ctx, -97, my_errors.CurdTwoFactorAuthNotEnabled)
 		return
 	}
 	if err, smsSwitch := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	} else if !smsSwitch {
-		response.FailRoutine(ctx, -98, "没有开启双因子验证")
+		response.FailRoutine(ctx, -98, my_errors.CurdTwoFactorAuthNotEnabled)
 		return
 	}
 	authFact.GenerateBySms(user_service.ActonLogin, userModel.Phone)
@@ -89,7 +90,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 	authFact := user_service.CreateAuthFactory()
@@ -109,7 +110,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 	smsCode := ctx.GetString(consts.ValidatorPrefixOrg + "smsCode")
 	if string_helper.IsEmpty(name) || string_helper.IsEmpty(pw) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 

@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -284,7 +285,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			if slice_helper.StringIn(agentId, userAgentIds) { // 查询终端在管理终端列表下
 				condition.AgentId = agentId
 			} else {
-				response.FailSimplify(ctx, "数据为空")
+				response.FailSimplify(ctx, my_errors.CurdDataIsEmpty)
 				return
 			}
 		} else { //是管理员

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/controller/organization"
 	"goskeleton/app/http/middleware/authorization"
