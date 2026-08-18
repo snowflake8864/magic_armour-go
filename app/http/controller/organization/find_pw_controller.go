@@ -23,7 +23,7 @@ func (u *FindPwController) decrypt(data string) (result string) {
 func (u *FindPwController) GetSliderCode(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	if string_helper.IsEmpty(userPhone) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 
@@ -41,7 +41,7 @@ func (u *FindPwController) SendSms(ctx *gin.Context) {
 	userPhone := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "userPhone"))
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 
@@ -69,7 +69,7 @@ func (u *FindPwController) CheckSms(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 
@@ -90,7 +90,7 @@ func (u *FindPwController) ModifyPw(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 
 	if string_helper.IsEmpty(userPhone) || string_helper.IsEmpty(userPw) || string_helper.IsEmpty(smsCode) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 

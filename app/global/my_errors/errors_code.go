@@ -25,8 +25,8 @@ const (
 	GormNotInitGlobalPointer string = "GormNotInitGlobalPointer"
 
 	ServerOccurredErrorCode int    = -500100
-	ServerOccurredErrorMsg  string = "服务器内部发生代码执行错误, "
-	GinSetTrustProxyError   string = "Gin 设置信任代理服务器出错"
+	ServerOccurredErrorMsg  string = "ServerOccurredErrorMsg"
+	GinSetTrustProxyError   string = "GinSetTrustProxyError"
 
 	// 数据库部分
 	DbDriverNotExists        string = "DbDriverNotExists"
@@ -51,12 +51,12 @@ const (
 	TokenInvalid          string = "TokenInvalid"
 	TokenNotActiveYet     string = "TokenNotActiveYet"
 	TokenMalFormed        string = "TokenMalFormed"
-	JwtTokenOK            int    = 200100                      //token有效
-	JwtTokenInvalid       int    = -400100                     //无效的token
-	JwtTokenExpired       int    = -400101                     //过期的token
-	JwtTokenFormatErrCode int    = -400102                     //提交的 token 格式错误
-	JwtTokenFormatErrMsg  string = "提交的 token 格式错误"            //提交的 token 格式错误
-	JwtTokenMustValid     string = "token为必填项,请在请求header部分提交!" //提交的 token 格式错误
+	JwtTokenOK            int    = 200100                 //token有效
+	JwtTokenInvalid       int    = -400100                //无效的token
+	JwtTokenExpired       int    = -400101                //过期的token
+	JwtTokenFormatErrCode int    = -400102                //提交的 token 格式错误
+	JwtTokenFormatErrMsg  string = "JwtTokenFormatErrMsg" //提交的 token 格式错误
+	JwtTokenMustValid     string = "JwtTokenMustValid"    //提交的 token 格式错误
 
 	// Snowflake
 	SnowflakeGetIdFail string = "SnowflakeGetIdFail"
@@ -73,12 +73,17 @@ const (
 	FilesUploadIsEmpty             string = "FilesUploadIsEmpty"
 
 	// CURD 常用业务状态码
-	CurdStatusOkCode         string = "000000"
-	CurdStatusOkMsg          string = "OK"
-	CurdBaseCode             int    = -1
-	PlatformLoginExpiredCode int    = 500003    //平台:登录过期
-	OrgLoginExpiredCode      int    = 500003    //平台:登录过期
-	AgentParamErrorCode      string = "1000002" //终端：参数错误
-	AgentINSTALLCode         string = "410"     //终端：卸载
-	AgentLoginExpiredCode    string = "401"     //终端：登录过期
+	CurdStatusOkCode             string = "000000"
+	CurdStatusOkMsg              string = "OK"
+	CurdBaseCode                 int    = -1
+	PlatformLoginExpiredCode     int    = 500003    //平台:登录过期
+	OrgLoginExpiredCode          int    = 500003    //平台:登录过期
+	AgentParamErrorCode          string = "1000002" //终端：参数错误
+	AgentINSTALLCode             string = "410"     //终端：卸载
+	AgentLoginExpiredCode        string = "401"     //终端：登录过期
+	CurdInvalidParameter         string = " CurdInvalidParameter"
+	CurdAddFailed                string = " CurdAddFailed"
+	CurdModifyFailed             string = " CurdModifyFailed"
+	CurdClearFailed              string = " CurdClearFailed"
+	CurdEnableProcessProtectMode string = " CurdEnableProcessProtectMode"
 )

@@ -75,7 +75,7 @@ func (u *UserController) Add(ctx *gin.Context) {
 		CreateName: loginInfo.Username,
 	}
 	if string_helper.IsEmpty(param.Password) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 	if err := user_service.CreateCurdFactory().AddForSub(&param, ctx.ClientIP()); err != nil {
@@ -143,7 +143,7 @@ func (u *UserController) ModifyPw(ctx *gin.Context) {
 		CreateName: loginInfo.Username,
 	}
 	if string_helper.IsEmpty(param.Password) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 

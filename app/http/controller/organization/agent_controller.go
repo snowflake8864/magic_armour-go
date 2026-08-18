@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -192,7 +193,7 @@ func (u *AgentController) BatchModifyForManage(ctx *gin.Context) {
 		InternetSwitch:      &InternetSwitch,
 		AutoWhiteSwitch:     &AutoWhiteSwitch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "批量修改")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(u.getLogin(ctx).OrgId, agentIds, &param, "batch modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -232,7 +233,7 @@ func (u *AgentController) SaveForBasic(ctx *gin.Context) {
 		Position:    &position,
 		Remark:      &remark,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "保存基本信息")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(loginInfo.OrgId, agentId, &param, "Save basic info")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -297,7 +298,7 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		}
 		ProcessFact := proc_models.CreateProcessFactory()
 		if ProcessFact.Count(condition) > 0 {
-			response.FailSimplify(ctx, "开启进程保护模式, 不能存在未设置的进程")
+			response.FailSimplify(ctx, my_errors.CurdEnableProcessProtectMode)
 			return
 		}
 	}
@@ -328,7 +329,7 @@ func (u *AgentController) SaveForConfig(ctx *gin.Context) {
 		CommonTime:          commonTime,
 		FastTime:            fastTime,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "保存配置信息")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Save config info")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -404,7 +405,7 @@ func (u *AgentController) ClearForOnlineLog(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
 	if !online_log_service.CreateCurdFactory().DeleteByOrg(loginInfo.OrgId) {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 

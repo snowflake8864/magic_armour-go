@@ -58,6 +58,12 @@ var Messages = map[string]map[string]string{
 		FilesUploadMoreThanMaxSizeMsg: "长传文件超过系统设定的最大值,系统允许的最大值：",
 		FilesUploadMimeTypeFailMsg:    "文件mime类型不允许",
 		FilesUploadIsEmpty:            "不允许上传空文件",
+
+		CurdInvalidParameter:         "参数不正确",
+		CurdAddFailed:                "新增失败",
+		CurdModifyFailed:             "修改失败",
+		CurdClearFailed:              "清空失败",
+		CurdEnableProcessProtectMode: "开启进程保护模式, 不能存在未设置的进程",
 	},
 	"en": {},
 }

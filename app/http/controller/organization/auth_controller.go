@@ -24,7 +24,7 @@ func (u *AuthController) decrypt(data string) (result string) {
 func (u *AuthController) CheckUser(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 
@@ -55,7 +55,7 @@ func (u *AuthController) CheckUser(ctx *gin.Context) {
 func (u *AuthController) SendSms(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 	authFact := user_service.CreateAuthFactory()
@@ -89,7 +89,7 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 func (u *AuthController) GetSliderCode(ctx *gin.Context) {
 	name := u.decrypt(ctx.GetString(consts.ValidatorPrefixOrg + "name"))
 	if string_helper.IsEmpty(name) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 	authFact := user_service.CreateAuthFactory()
@@ -109,7 +109,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 	sliderCode := ctx.GetString(consts.ValidatorPrefixOrg + "sliderCode")
 	smsCode := ctx.GetString(consts.ValidatorPrefixOrg + "smsCode")
 	if string_helper.IsEmpty(name) || string_helper.IsEmpty(pw) || string_helper.IsEmpty(sliderCode) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, "my_errors.CurdInvalidParameter")
 		return
 	}
 
