@@ -47,7 +47,7 @@ func (u *OutreachController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		OutreachAlarmSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "外联管控管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -64,7 +64,7 @@ func (u *OutreachController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		OutreachAlarmSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "外联管控管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

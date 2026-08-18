@@ -62,7 +62,7 @@ var Messages = map[string]map[string]string{
 		CurdDataIsEmpty:      "数据为空",
 		CurdDataCannotEmpty:  "数据不能为空",
 		CurdInvalidParameter: "参数不正确",
-		CurdAddFailed:        "新增失败",
+		CurdSaveFailed:       "保存失败",
 		CurdModifyFailed:     "修改失败",
 		CurdClearFailed:      "清空失败",
 

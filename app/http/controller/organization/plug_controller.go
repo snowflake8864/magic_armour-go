@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -114,7 +115,7 @@ func (u *PlugController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PlugSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "动态封堵管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -131,7 +132,7 @@ func (u *PlugController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		PlugSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "动态封堵管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -604,7 +605,7 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 			if slice_helper.StringIn(agentId, userAgentIds) { // 查询终端在管理终端列表下
 				condition.AgentId = agentId
 			} else {
-				response.FailSimplify(ctx, "数据为空")
+				response.FailSimplify(ctx, my_errors.CurdDataIsEmpty)
 				return
 			}
 		} else { //是管理员

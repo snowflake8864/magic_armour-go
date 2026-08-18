@@ -90,7 +90,7 @@ func (u *IpJumpController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		IpJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(u.getLogin(ctx).OrgId, agentId, &param, "IP跳变管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(u.getLogin(ctx).OrgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -107,7 +107,7 @@ func (u *IpJumpController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		IpJumpSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "IP跳变管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -175,7 +175,7 @@ func (u *IpJumpController) ExecuteForAgentConfig(ctx *gin.Context) {
 	}
 
 	// 下发任务
-	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeIpJump, "终端策略")
+	task_service.CreateCurdFactory().AddTaskForAgent(loginInfo.OrgId, agentId, enum_task.TypeIpJump, "Agent Policy")
 
 	response.SuccessSimplify(ctx)
 }
@@ -232,7 +232,7 @@ func (u *IpJumpController) ExecuteForGlobalConfig(ctx *gin.Context) {
 	}
 	// 下发任务
 	if agentIds := agentFact.GetIdsByByConditions(conditions); len(agentIds) > 0 {
-		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypeIpJump, "全局策略")
+		task_service.CreateCurdFactory().AddTaskForAgents(loginInfo.OrgId, agentIds, enum_task.TypeIpJump, "Global Policy")
 	}
 
 	response.SuccessSimplify(ctx)

@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_models"
@@ -260,7 +261,7 @@ func (u *OrderController) ImportForLicense(ctx *gin.Context) {
 	//上传文件
 	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".lic"})
 	if !isOk {
-		response.FailSimplify(ctx, "上传证书失败")
+		response.FailSimplify(ctx, my_errors.FilesUploadFailMsg)
 		return
 	}
 	uploadParam.Type = enum_upload.TypeLicense
@@ -269,7 +270,7 @@ func (u *OrderController) ImportForLicense(ctx *gin.Context) {
 	uploadParam.OperateId = loginInfo.UserId
 	uploadParam.OperateName = loginInfo.Username
 	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-		response.FailSimplify(ctx, "保存证书记录失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 

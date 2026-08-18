@@ -46,7 +46,7 @@ func (u *LoginSolveController) SetSwitchForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		LoginSolveSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "口令破解管理-开关")
+	errCode, err := agent_service.CreateCurdFactory().UpdateByAgent(orgId, agentId, &param, "Manage Page Switch")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return
@@ -63,7 +63,7 @@ func (u *LoginSolveController) BatchSetConfigForManage(ctx *gin.Context) {
 	var param = agent_service.ManualColumn{
 		LoginSolveSwitch: &Switch,
 	}
-	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "口令破解管理-批量")
+	errCode, err := agent_service.CreateCurdFactory().BatchUpdate(orgId, agentIds, &param, "Manage Page Batch Modify")
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

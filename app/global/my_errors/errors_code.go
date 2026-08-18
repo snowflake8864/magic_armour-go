@@ -85,6 +85,7 @@ const (
 	CurdDataCannotEmpty      string = " CurdDataCannotEmpty"
 	CurdInvalidParameter     string = " CurdInvalidParameter"
 	CurdAddFailed            string = " CurdAddFailed"
+	CurdSaveFailed           string = " CurdSaveFailed"
 	CurdModifyFailed         string = " CurdModifyFailed"
 	CurdClearFailed          string = " CurdClearFailed"
 
