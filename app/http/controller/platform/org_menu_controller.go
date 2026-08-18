@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/service/platform/org_menu_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -42,7 +43,7 @@ func (u *OrgMenuController) Tree(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil))
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil, cur_userinfo.GetLocales(ctx)))
 }
 
 // Add 添加

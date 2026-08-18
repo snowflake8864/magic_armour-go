@@ -2,6 +2,7 @@ package org_menu_service
 
 import (
 	"errors"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/tree"
@@ -68,7 +69,7 @@ func (crd *MenuCurd) DeleteById(id int64) (errCode int, err error) {
 	return errCode, err
 }
 
-func (crd *MenuCurd) ToTree(models []*org_menu_models.OrgMenuModel, selectedMap map[int64]struct{}) []*tree.Node {
+func (crd *MenuCurd) ToTree(models []*org_menu_models.OrgMenuModel, selectedMap map[int64]struct{}, lang string) []*tree.Node {
 
 	var nodes []*tree.Node
 	for _, model := range models {
@@ -78,11 +79,16 @@ func (crd *MenuCurd) ToTree(models []*org_menu_models.OrgMenuModel, selectedMap 
 			isSelect = 1
 		}
 
+		name := model.Name
+		if lang == consts.LanguageEn {
+			name = model.EnName
+		}
+
 		nodes = append(nodes, &tree.Node{
 			ID:       model.Id,
 			ParentId: model.ParentId,
 			Data: map[string]interface{}{
-				"name":        model.Name,
+				"name":        name,
 				"type":        model.Type,
 				"code":        model.Code,
 				"sort":        model.Sort,

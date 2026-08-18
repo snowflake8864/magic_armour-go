@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -65,9 +64,6 @@ func (u *AccountController) ModifyUser(ctx *gin.Context) {
 func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 
-	fmt.Println("==================cur_userinfo.GetLocales(ctx)")
-	fmt.Println(cur_userinfo.GetLocales(ctx))
-
 	IsYes := enums.IsYes
 	conditions := org_menu_models.SearchConditions{
 		UsageVerList: []int{
@@ -99,7 +95,7 @@ func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 		return
 	}
 
-	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil))
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(models, nil, cur_userinfo.GetLocales(ctx)))
 }
 
 // ModifyPw 修改密码

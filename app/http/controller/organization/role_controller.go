@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/service/organization/role_service"
 	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 	"strings"
@@ -110,7 +111,7 @@ func (u *RoleController) GetTreeForMenu(ctx *gin.Context) {
 	}
 
 	menuModels := org_menu_models.CreateOrgMenuFactory().GetListByConditions(conditions)
-	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(menuModels, roleMenus))
+	response.SuccessReturnData(ctx, org_menu_service.CreateCurdFactory().ToTree(menuModels, roleMenus, cur_userinfo.GetLocales(ctx)))
 
 }
 
