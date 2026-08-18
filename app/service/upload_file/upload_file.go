@@ -60,7 +60,7 @@ func Upload(context *gin.Context, savePath string, allowExt []string) (r bool, u
 			return true, upload
 		}
 	} else {
-		saveErr = errors.New(my_errors.ErrorsSnowflakeGetIdFail)
+		saveErr = errors.New(my_errors.SnowflakeGetIdFail)
 		variable.ZapLog.Error("文件保存出错：" + saveErr.Error())
 	}
 	return false, upload

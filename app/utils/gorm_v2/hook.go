@@ -20,7 +20,7 @@ func MaskNotDataError(gormDB *gorm.DB) {
 
 func CreateBeforeHook(gormDB *gorm.DB) {
 	if reflect.TypeOf(gormDB.Statement.Dest).Kind() != reflect.Ptr {
-		variable.ZapLog.Warn(my_errors.ErrorsGormDBCreateParamsNotPtr)
+		variable.ZapLog.Warn(my_errors.GormDBCreateParamsNotPtr)
 	} else {
 		destValueOf := reflect.ValueOf(gormDB.Statement.Dest).Elem()
 		if destValueOf.Type().Kind() == reflect.Slice || destValueOf.Type().Kind() == reflect.Array {
@@ -71,8 +71,8 @@ func CreateBeforeHook(gormDB *gorm.DB) {
 // 但是如果是指定字段更新，例如： UpdateColumn 函数则只传递值即可，不需要做校验
 func UpdateBeforeHook(gormDB *gorm.DB) {
 	if reflect.TypeOf(gormDB.Statement.Dest).Kind() == reflect.Struct {
-		//_ = gormDB.AddError(errors.New(my_errors.ErrorsGormDBUpdateParamsNotPtr))
-		variable.ZapLog.Warn(my_errors.ErrorsGormDBUpdateParamsNotPtr)
+		//_ = gormDB.AddError(errors.New(my_errors.GormDBUpdateParamsNotPtr))
+		variable.ZapLog.Warn(my_errors.GormDBUpdateParamsNotPtr)
 	} else if reflect.TypeOf(gormDB.Statement.Dest).Kind() == reflect.Map {
 		// 如果是调用了 gorm.Update 、updates 函数 , 在参数没有传递指针的情况下，无法触发回调函数
 

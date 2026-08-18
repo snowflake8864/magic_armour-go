@@ -42,7 +42,7 @@ func CreateYamlFactory(fileName ...string) ymlconfig_interf.YmlConfigInterf {
 	yamlConfig.SetConfigType("yml")
 
 	if err := yamlConfig.ReadInConfig(); err != nil {
-		log.Fatal(my_errors.ErrorsConfigInitFail + err.Error())
+		log.Fatal(my_errors.ConfigInitFail + err.Error())
 	}
 
 	return &ymlConfig{
@@ -56,7 +56,7 @@ type ymlConfig struct {
 	mu    *sync.Mutex
 }
 
-//ConfigFileChangeListen 监听文件变化
+// ConfigFileChangeListen 监听文件变化
 func (y *ymlConfig) ConfigFileChangeListen() {
 	y.viper.OnConfigChange(func(changeEvent fsnotify.Event) {
 		if time.Now().Sub(lastChangeTime).Seconds() >= 1 {
@@ -108,7 +108,7 @@ func (y *ymlConfig) Clone(fileName string) ymlconfig_interf.YmlConfigInterf {
 
 	(&ymlC).viper.SetConfigName(fileName)
 	if err := (&ymlC).viper.ReadInConfig(); err != nil {
-		variable.ZapLog.Error(my_errors.ErrorsConfigInitFail, zap.Error(err))
+		variable.ZapLog.Error(my_errors.ConfigInitFail, zap.Error(err))
 	}
 	return &ymlC
 }

@@ -20,27 +20,27 @@ import (
 func checkRequiredFolders() {
 	//1.检查配置文件是否存在
 	if _, err := os.Stat(variable.BasePath + "/config/config.yml"); err != nil {
-		log.Fatal(my_errors.ErrorsConfigYamlNotExists + err.Error())
+		log.Fatal(my_errors.ConfigYamlNotExists + err.Error())
 	}
 	if _, err := os.Stat(variable.BasePath + "/config/gorm_v2.yml"); err != nil {
-		log.Fatal(my_errors.ErrorsConfigGormNotExists + err.Error())
+		log.Fatal(my_errors.ConfigGormNotExists + err.Error())
 	}
 	//2.检查public目录是否存在
 	if _, err := os.Stat(variable.BasePath + "/public/"); err != nil {
-		log.Fatal(my_errors.ErrorsPublicNotExists + err.Error())
+		log.Fatal(my_errors.PublicNotExists + err.Error())
 	}
 	//3.检查storage/logs 目录是否存在
 	if _, err := os.Stat(variable.BasePath + "/storage/logs/"); err != nil {
-		log.Fatal(my_errors.ErrorsStorageLogsNotExists + err.Error())
+		log.Fatal(my_errors.StorageLogsNotExists + err.Error())
 	}
 	// 4.自动创建软连接、更好的管理静态资源
 	if _, err := os.Stat(variable.BasePath + "/public/storage"); err == nil {
 		if err = os.RemoveAll(variable.BasePath + "/public/storage"); err != nil {
-			log.Fatal(my_errors.ErrorsSoftLinkDeleteFail + err.Error())
+			log.Fatal(my_errors.SoftLinkDeleteFail + err.Error())
 		}
 	}
 	if err := os.Symlink(variable.BasePath+"/storage/app", variable.BasePath+"/public/storage"); err != nil {
-		log.Fatal(my_errors.ErrorsSoftLinkCreateFail + err.Error())
+		log.Fatal(my_errors.SoftLinkCreateFail + err.Error())
 	}
 }
 
@@ -72,28 +72,28 @@ func init() {
 	// 6.根据配置初始化 gorm mysql 全局 *gorm.Db
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbPlatform.IsInitGlobalGormMysql") == 1 {
 		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNamePlatform); err != nil {
-			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
+			log.Fatal(my_errors.GormInitFail + err.Error())
 		} else {
 			variable.GormDbPlatform = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbAgent.IsInitGlobalGormMysql") == 1 {
 		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameAgent); err != nil {
-			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
+			log.Fatal(my_errors.GormInitFail + err.Error())
 		} else {
 			variable.GormDbAgent = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbAlarm.IsInitGlobalGormMysql") == 1 {
 		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameAlarm); err != nil {
-			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
+			log.Fatal(my_errors.GormInitFail + err.Error())
 		} else {
 			variable.GormDbAlarm = conn
 		}
 	}
 	if variable.ConfigGormv2Yml.GetInt("Gormv2.DbSyslog.IsInitGlobalGormMysql") == 1 {
 		if conn, err := gorm_v2.GetOneMysqlClient(variable.DbNameSyslog); err != nil {
-			log.Fatal(my_errors.ErrorsGormInitFail + err.Error())
+			log.Fatal(my_errors.GormInitFail + err.Error())
 		} else {
 			variable.GormDbSyslog = conn
 		}
@@ -107,6 +107,6 @@ func init() {
 
 	//10.全局注册 validator 错误翻译器,zh 代表中文，en 代表英语
 	if err := validator_translation.InitTrans("zh"); err != nil {
-		log.Fatal(my_errors.ErrorsValidatorTransInitFail + err.Error())
+		log.Fatal(my_errors.ValidatorTransInitFail + err.Error())
 	}
 }

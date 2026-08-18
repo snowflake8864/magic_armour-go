@@ -110,7 +110,7 @@ func (m *OrgMenuModel) InitData() bool {
 		(80, 10, 1, 1, '备份回滚', '', 'agent_01_03', 3, 0, 0, 0, '', '', 2, '2025-03-12 00:00:00'),
 	*/
 
-	sql := `INSERT INTO ` + m.TableName() + `id, parent_id, position, type, name, en_name, code, sort, is_show, is_root, usage_ver, remark, api, level, created_at`
+	sql := `INSERT INTO ` + m.TableName() + ` (id, parent_id, position, type, name, en_name, code, sort, is_show, is_root, usage_ver, remark, api, level, created_at)`
 	sql += ` VALUES `
 	sql += `
 		(1, 0, 1, 1, '首页', 'Dashboard', 'home_01', 100, 1, 0, 0, '', '', 1, '2023-07-01 00:00:00'),

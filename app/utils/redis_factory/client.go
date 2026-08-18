@@ -28,14 +28,14 @@ func initRedisClientPool() *redis.Pool {
 			//此处对应redis ip及端口号
 			conn, err := redis.Dial("tcp", configYml.GetString("Redis.Host")+":"+configYml.GetString("Redis.Port"))
 			if err != nil {
-				variable.ZapLog.Error(my_errors.ErrorsRedisInitConnFail + err.Error())
+				variable.ZapLog.Error(my_errors.RedisInitConnFail + err.Error())
 				return nil, err
 			}
 			auth := configYml.GetString("Redis.Auth") //通过配置项设置redis密码
 			if len(auth) >= 1 {
 				if _, err := conn.Do("AUTH", auth); err != nil {
 					_ = conn.Close()
-					variable.ZapLog.Error(my_errors.ErrorsRedisAuthFail + err.Error())
+					variable.ZapLog.Error(my_errors.RedisAuthFail + err.Error())
 				}
 			}
 			_, _ = conn.Do("select", configYml.GetInt("Redis.IndexDb"))
@@ -70,7 +70,7 @@ func GetOneRedisClient() *RedisClient {
 		if err := oneConn.Err(); err != nil {
 			//variable.ZapLog.Error("Redis：网络中断,开始重连进行中..." , zap.Error(oneConn.Err()))
 			if i == maxRetryTimes {
-				variable.ZapLog.Error(my_errors.ErrorsRedisGetConnFail, zap.Error(oneConn.Err()))
+				variable.ZapLog.Error(my_errors.RedisGetConnFail, zap.Error(oneConn.Err()))
 				return nil
 			}
 			//如果出现网络短暂的抖动，短暂休眠后，支持自动重连

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/utils/response"
