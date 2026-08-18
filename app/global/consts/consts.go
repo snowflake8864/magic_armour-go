@@ -20,4 +20,7 @@ const (
 	MachineIdShift = SequenceBits                     //机器id左移位数
 	TimestampShift = SequenceBits + MachineIdBits     //时间戳左移位数
 
+	LanguageField string = "X-Language" //支持语言
+	LanguageZH    string = "zh"         //支持语言
+	LanguageEn    string = "en"         //支持语言
 )

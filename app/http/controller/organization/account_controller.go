@@ -1,6 +1,7 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
@@ -12,6 +13,7 @@ import (
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/org_menu_service"
 	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -62,6 +64,9 @@ func (u *AccountController) ModifyUser(ctx *gin.Context) {
 // GetMenuTree 获取菜单菜单树
 func (u *AccountController) GetMenuTree(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+
+	fmt.Println("==================cur_userinfo.GetLocales(ctx)")
+	fmt.Println(cur_userinfo.GetLocales(ctx))
 
 	IsYes := enums.IsYes
 	conditions := org_menu_models.SearchConditions{

@@ -2,6 +2,7 @@ package cur_userinfo
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/organization/user_service"
@@ -60,15 +61,6 @@ func GetCurrentUser(context *gin.Context) *user_service.UserCacheLogin {
 //
 // @return zh en
 func GetLocales(context *gin.Context) string {
-	requestParams := context.GetStringMap("RequestParams")
-	if value, isOk := requestParams["X-Language"]; isOk {
-		if current, ok := value.(string); ok {
-			return current
-		} else {
-			return "zh"
-		}
-	} else {
-		return "zh"
-	}
+	return context.GetString(consts.LanguageField)
 
 }

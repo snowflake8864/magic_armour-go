@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/json_helper"
 	"io"
@@ -46,6 +47,13 @@ func RequestParams(ctx *gin.Context) {
 		}
 	}
 	ctx.Set("RequestParams", bindParams)
+
+	//多语言支持
+	requestLanguage := consts.LanguageZH
+	if val := strings.ToLower(strings.TrimSpace(ctx.Request.Header.Get(consts.LanguageField))); val == consts.LanguageZH || val == consts.LanguageEn {
+		requestLanguage = val
+	}
+	ctx.Set(consts.LanguageField, requestLanguage)
 }
 
 // JoinParamsStr 获取请求参数,返回 key=val格式
