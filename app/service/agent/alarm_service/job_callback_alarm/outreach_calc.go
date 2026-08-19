@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_outreach"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/outreach_models"
@@ -90,7 +91,7 @@ func (crd *AlarmOutreachCalc) Calc(dnsModel *syslog_models.DnsModel) error {
 
 	//保存
 	if !crd.masterModel.InsertItem(&model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,
@@ -119,7 +120,7 @@ func (crd *AlarmOutreachCalc) BatchAdd(list *[]alarm_models.OutreachModel) error
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势

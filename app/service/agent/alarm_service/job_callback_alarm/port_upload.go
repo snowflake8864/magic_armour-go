@@ -3,6 +3,7 @@ package job_callback_alarm
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/plug_service/plug_calc_service"
@@ -31,7 +32,7 @@ func (crd *AlarmPortUpload) Add(model *alarm_models.PortModel) error {
 
 	//保存
 	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,

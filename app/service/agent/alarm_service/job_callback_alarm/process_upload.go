@@ -3,6 +3,7 @@ package job_callback_alarm
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
@@ -44,7 +45,7 @@ func (crd *AlarmProcessUpload) BatchAdd(list *[]alarm_models.ProcessModel) error
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势
