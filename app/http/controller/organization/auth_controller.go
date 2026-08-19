@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
+	"net/http"
 )
 
 // AuthController 安全验证相关
@@ -156,6 +157,5 @@ func (u *AuthController) Logout(ctx *gin.Context) {
 }
 
 func (u *AuthController) GetCustomConfig(ctx *gin.Context) {
-
-	response.SuccessReturnData(ctx, cur_app.GetOrganizationConfig(cur_userinfo.GetLocales(ctx)))
+	ctx.JSON(http.StatusOK, cur_app.GetOrganizationConfig(cur_userinfo.GetLocales(ctx)))
 }
