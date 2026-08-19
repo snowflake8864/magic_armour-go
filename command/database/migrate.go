@@ -245,12 +245,14 @@ func appendTableAndData() {
 		_ = org_operate_models.CreateLogFactory().AlterTable(ver)
 	}
 	if ver := "MAT_3.1.0_R1"; !existMigration(ver) {
+		//804相关
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
 		_ = agent_models.CreateExtendFactory().AlterTable(ver)
 		_ = organization_models.CreateExtendFactory().AlterTable(ver)
 		_ = backup_models.CreateBackupFactory().CreateTable()
 	}
 	if ver := "MAT_3.1.0_R2"; !existMigration(ver) {
+		//804相关
 		_ = agent_models.CreateExtendFactory().AlterTable(ver)
 	}
 	if ver := "MA_3.1.0_R4_B5"; !existMigration(ver) {
