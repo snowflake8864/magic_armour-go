@@ -5,31 +5,47 @@ AppCustomConfig:
   Platform:
     TokenExpire: 86400
     Title: "幻甲 - 平台管理"
+    TitleEn: "Platform Management"
     IconShow: 1
     ProjectName : "幻甲-终端动态防御系统"
+    ProjectNameEn : "Endpoint Dynamic Defense System"
     LoginTip: "欢迎使用幻甲"
+    LoginTipEn: "Welcome to use"
     QrShow: 1
     Website: "www.veda.com"
     Address: "北京市朝阳区将台路14号898创新空间园区B03栋"
+    AddressEn: "Building B03, 898 Innovation Space Park, No. 14 Jiangtai Road, Chaoyang District, Beijing"
     Tel: "400-097-0097"
     Copyright: "北京卫达信息技术有限公司"
+    CopyrightEn: "Beijing Veda Information&Technology Co.,Ltd"
     License:
       - "京ICP备16005435号-1"
       - "京公网安备 42018502001134号"
+    LicenseEn:
+      - "Beijing ICP Registration No. 16005435-1"
+      - "Beijing Public Security Network Registration No. 42018502001134"
   Organization:
     TokenExpire: 86400
     Title: "幻甲 - 企业管理"
+    TitleEn: "Organization Management"
     IconShow: 1
     ProjectName: "幻甲-终端动态防御系统"
+    ProjectNameEn : "Endpoint Dynamic Defense System"
     LoginTip: "登录幻甲控制台"
+    LoginTipEn: "Login to the console"
     QrShow: 1
     Website: "www.veda.com"
     Address: "北京市朝阳区将台路14号898创新空间园区B03栋"
+    AddressEn: "Building B03, 898 Innovation Space Park, No. 14 Jiangtai Road, Chaoyang District, Beijing"
     Tel: "400-097-0097"
     Copyright: "北京卫达信息技术有限公司"
+    CopyrightEn: "Beijing Veda Information&Technology Co.,Ltd"
     License:
       - "京ICP备16005435号-1"
       - "京公网安备 42018502001134号"
+    LicenseEn:
+      - "Beijing ICP Registration No. 16005435-1"
+      - "Beijing Public Security Network Registration No. 42018502001134"
   Agent:
     TokenExpire: 7200
   Shell:

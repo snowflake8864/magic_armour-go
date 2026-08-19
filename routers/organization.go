@@ -13,9 +13,7 @@ import (
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
-	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/gin_release"
-	"net/http"
 )
 
 // 该路由主要设置平台路由
@@ -73,9 +71,7 @@ func InitOrganizationRouter() *gin.Engine {
 	{
 		vOrg.Use(authorization.RequestParams).Use(middleware_auth_org.SaveOperate())
 		{
-			vOrg.GET("customConfig", func(context *gin.Context) {
-				context.JSON(http.StatusOK, cur_app.GetOrganizationConfig())
-			})
+			vOrg.GET("customConfig", (&organization.AuthController{}).GetCustomConfig)
 
 			//登录认证
 			auth := vOrg.Group("auth/")

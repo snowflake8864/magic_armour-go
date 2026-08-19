@@ -1,6 +1,7 @@
 package cur_app
 
 import (
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/string_helper"
 )
@@ -38,7 +39,7 @@ func GetPlatformConfig() map[string]interface{} {
 }
 
 // GetOrganizationConfig  获取企业自定义配置
-func GetOrganizationConfig() map[string]interface{} {
+func GetOrganizationConfig(lang string) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
@@ -56,6 +57,15 @@ func GetOrganizationConfig() map[string]interface{} {
 	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Tel")
 	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Copyright")
 	data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Organization.License")
+
+	if lang == consts.LanguageEn {
+		data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.TitleEn")
+		data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.ProjectNameEn")
+		data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.LoginTipEn")
+		data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.AddressEn")
+		data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.CopyrightEn")
+		data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Organization.LicenseEn")
+	}
 
 	return data
 }

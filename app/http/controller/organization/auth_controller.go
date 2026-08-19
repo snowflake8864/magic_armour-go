@@ -7,6 +7,8 @@ import (
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
+	"goskeleton/app/utils/cur_app"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -151,4 +153,9 @@ func (u *AuthController) Logout(ctx *gin.Context) {
 	user_service.CreateAuthFactory().Logout(headerParams.Authorization)
 
 	response.SuccessSimplify(ctx)
+}
+
+func (u *AuthController) GetCustomConfig(ctx *gin.Context) {
+
+	response.SuccessReturnData(ctx, cur_app.GetOrganizationConfig(cur_userinfo.GetLocales(ctx)))
 }
