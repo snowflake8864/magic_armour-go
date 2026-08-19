@@ -8,7 +8,7 @@ import (
 
 // GetAppUsageVersion 获取当前程序使用版本(离线|云版)
 func GetAppUsageVersion() int {
-	return variable.ConfigYml.GetInt("AppCustomConfig.Version")
+	return variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Version")
 }
 
 // GetCustomVersionNumber 获取自定义版本号
@@ -25,15 +25,15 @@ func GetPlatformConfig() map[string]interface{} {
 		data["ver_number"] = ver
 	}
 	data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Title")
-	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.IconShow")
+	data["iconShow"] = variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Platform.IconShow")
 	data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.ProjectName")
 	data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.LoginTip")
-	data["qrShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Platform.QrShow")
+	data["qrShow"] = variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Platform.QrShow")
 	data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Address")
 	data["website"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Website")
 	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Tel")
 	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Copyright")
-	data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Platform.License")
+	data["license"] = variable.ConfigCustomV2Yml.GetStringSlice("AppCustomConfig.Platform.License")
 
 	return data
 }
@@ -48,15 +48,15 @@ func GetOrganizationConfig(lang string) map[string]interface{} {
 	}
 
 	data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Title")
-	data["iconShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.IconShow")
+	data["iconShow"] = variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Organization.IconShow")
 	data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.ProjectName")
 	data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.LoginTip")
-	data["qrShow"] = variable.ConfigYml.GetInt("AppCustomConfig.Organization.QrShow")
+	data["qrShow"] = variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Organization.QrShow")
 	data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Address")
 	data["website"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Website")
 	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Tel")
 	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.Copyright")
-	data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Organization.License")
+	data["license"] = variable.ConfigCustomV2Yml.GetStringSlice("AppCustomConfig.Organization.License")
 
 	if lang == consts.LanguageEn {
 		data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.TitleEn")
@@ -64,7 +64,7 @@ func GetOrganizationConfig(lang string) map[string]interface{} {
 		data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.LoginTipEn")
 		data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.AddressEn")
 		data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Organization.CopyrightEn")
-		data["license"] = variable.ConfigYml.GetStringSlice("AppCustomConfig.Organization.LicenseEn")
+		data["license"] = variable.ConfigCustomV2Yml.GetStringSlice("AppCustomConfig.Organization.LicenseEn")
 	}
 
 	return data
@@ -72,17 +72,17 @@ func GetOrganizationConfig(lang string) map[string]interface{} {
 
 // GetPlatformTokenExpire  获取平台口令过期时间
 func GetPlatformTokenExpire() int {
-	return variable.ConfigYml.GetInt("AppCustomConfig.Platform.TokenExpire")
+	return variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Platform.TokenExpire")
 }
 
 // GetOrganizationTokenExpire  获取企业口令过期时间
 func GetOrganizationTokenExpire() int {
-	return variable.ConfigYml.GetInt("AppCustomConfig.Organization.TokenExpire")
+	return variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Organization.TokenExpire")
 }
 
 // GetAgentTokenExpire  获取终端口令过期时间
 func GetAgentTokenExpire() int {
-	return variable.ConfigYml.GetInt("AppCustomConfig.Agent.TokenExpire")
+	return variable.ConfigCustomV2Yml.GetInt("AppCustomConfig.Agent.TokenExpire")
 }
 
 // GetServiceCode 获取服务器编号：
