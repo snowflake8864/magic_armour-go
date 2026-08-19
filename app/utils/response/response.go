@@ -16,6 +16,8 @@ import (
 )
 
 func ReturnJson(Context *gin.Context, httpCode int, dataCode interface{}, msg string, data interface{}) {
+	//fmt.Println("GetLocales==================", cur_userinfo.GetLocales(Context))
+	//fmt.Println("msg==================", msg)
 	realMsg := my_errors.GetMessage(cur_userinfo.GetLocales(Context), msg)
 	if string_helper.IsEmpty(realMsg) {
 		realMsg = msg
@@ -24,7 +26,7 @@ func ReturnJson(Context *gin.Context, httpCode int, dataCode interface{}, msg st
 	//Context.Header("key2020","value2020")  	//可以根据实际情况在头部添加额外的其他信息
 	Context.JSON(httpCode, gin.H{
 		"code": dataCode,
-		"msg":  msg,
+		"msg":  realMsg,
 		"data": data,
 	})
 }

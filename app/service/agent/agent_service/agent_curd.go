@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/service/agent/online_log_service"
@@ -45,7 +46,7 @@ func (crd *AgentCurd) SetOffline(floorAt string) bool {
 		for _, model := range models {
 			agentIds = append(agentIds, model.AgentId)
 
-			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate, "自动离线"))
+			onlineLogList = append(onlineLogList, *crd.initOnlineLog(model, enums.IsNot, nowDate, "Automatic Offline"))
 		}
 		_ = online_log_service.CreateCurdFactory().BatchAdd(&onlineLogList)
 	}
@@ -100,7 +101,7 @@ func (crd *AgentCurd) SetLivingByAgent(orgId int64, id string) (bool, error) {
 
 	//记录上线日志
 	if model.IsOnline == enums.IsNot {
-		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "心跳"))
+		_ = online_log_service.CreateCurdFactory().Add(crd.initOnlineLog(model, enums.IsYes, nowDate, "Heartbeat"))
 	}
 
 	return true, nil
@@ -162,11 +163,11 @@ func (crd *AgentCurd) BatchDelete(orgId int64, ids []string, isUninstall bool) (
 		}
 	}
 	if len(validIds) == 0 {
-		return -1, errors.New("没有符合条件的终端")
+		return -1, errors.New(my_errors.CurdAgentNotMatch)
 	}
 
 	if isOK := crd.masterModel.DeleteByOrgAndAgents(orgId, validIds); !isOK {
-		return -1, errors.New("删除失败")
+		return -1, errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//如是是卸载
@@ -219,7 +220,7 @@ func (crd *AgentCurd) BatchUpgrade(orgId int64, ids []string) (errCode int, err 
 func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualColumn, remark string) (errCode int, err error) {
 	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, crd.masterModel.ColumnConfig(true, true))
 	if model == nil || model.OrgId == 0 {
-		return -1, errors.New("终端不存在")
+		return -1, errors.New(my_errors.CurdAgentNotExist)
 	}
 
 	err1, hasTask, hasConfigTask, updates, openAutoWhite := crd.getUpdates(model, param)
@@ -232,7 +233,7 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 
 	//修改
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, model.AgentId, updates); !isOk {
-		return -1, errors.New("修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 
 	//需要下发任务
@@ -251,7 +252,7 @@ func (crd *AgentCurd) UpdateByAgent(orgId int64, agentId string, param *ManualCo
 func (crd *AgentCurd) BatchUpdate(orgId int64, ids []string, param *ManualColumn, remark string) (errCode int, err error) {
 	models := crd.masterModel.GetItemsByOrgAndAgents(orgId, ids, crd.masterModel.ColumnConfig(true, true))
 	if models == nil || len(models) == 0 {
-		return -1, errors.New("终端不存在")
+		return -1, errors.New(my_errors.CurdAgentNotExist)
 	}
 
 	//修改的数据

@@ -4,6 +4,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/service/agent/online_log_service"
@@ -78,7 +79,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 
 		isOk := crd.masterModel.InsertItem(param)
 		if !isOk {
-			return false, "新建数据失败"
+			return false, my_errors.CurdAddFailed
 		}
 
 		//添加扩展数据
@@ -87,7 +88,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		//删除所有任务相关数据(终端卸载后不删除uid，时间内再次登录可能有上次遗留任务)
 		task_service.CreateCurdFactory().DeleteForAgent(param.OrgId, param.AgentId)
 		//添加任务
-		crd.addTask(param, nil, true, true, "终端第一次上线")
+		crd.addTask(param, nil, true, true, "Agent First Online")
 
 	} else {
 		updates := map[string]interface{}{
@@ -114,7 +115,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 		}
 		isOk, _ := crd.masterModel.UpdateByOrgAndAgent(param.OrgId, param.AgentId, updates)
 		if !isOk {
-			return false, "更新数据失败"
+			return false, my_errors.CurdModifyFailed
 		}
 
 		//有任务内容的
@@ -129,7 +130,7 @@ func (crd *AgentOnline) RegisterOrLogin(param *agent_models.AgentModel) (bool, s
 			OutreachAlarmSwitch: &agentModel.OutreachAlarmSwitch,
 		}
 		//添加任务
-		crd.addTask(agentModel, manual, true, true, "终端上线")
+		crd.addTask(agentModel, manual, true, true, "Agent Online")
 	}
 
 	//记录上线日志
@@ -153,7 +154,7 @@ func (crd *AgentOnline) saveOnlineLog(param *agent_models.AgentModel, agentModel
 		OsName:    param.OsName,
 		Ver:       param.Ver,
 		IsOnline:  enums.IsYes,
-		Remark:    "认证",
+		Remark:    "Auth",
 		CreatedAt: nowDate,
 	}
 

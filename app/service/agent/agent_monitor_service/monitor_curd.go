@@ -3,6 +3,7 @@ package agent_monitor_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/agent_monitor_models"
@@ -51,12 +52,12 @@ func (crd *MonitorCurd) cacheNewest(param *agent_monitor_models.MonitorModel) er
 func (crd *MonitorCurd) GetNewest(orgId int64, agentId string) (err error, data *agent_monitor_models.MonitorModel) {
 	jsonStr := crd.redisClient.Get(crd.keyBynNewest(orgId, agentId))
 	if string_helper.IsEmpty(jsonStr) {
-		return errors.New("缓存数据不存在"), data
+		return errors.New(my_errors.CurdCacheNotExist), data
 	}
 
 	err = json_helper.ToStruct(jsonStr, &data)
 	if err != nil {
-		return errors.New("缓存数据错误"), data
+		return errors.New(my_errors.CurdCacheFailed), data
 	}
 	return nil, data
 }
@@ -66,7 +67,7 @@ func (crd *MonitorCurd) Add(param *agent_monitor_models.MonitorModel) error {
 
 	//入库
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//缓存数据

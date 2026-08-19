@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_pw_jump"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -60,7 +61,7 @@ func (crd *AgentExtend) SetLoginSolve(orgId int64, agentId string, config enum_l
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -78,7 +79,7 @@ func (crd *AgentExtend) BatchSetLoginSolve(orgId int64, agentIds []string, confi
 	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -113,7 +114,7 @@ func (crd *AgentExtend) SetPlugOfPort(orgId int64, agentId string, config enum_p
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -131,7 +132,7 @@ func (crd *AgentExtend) BatchSetPlugOfPort(orgId int64, agentIds []string, confi
 	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -144,7 +145,7 @@ func (crd *AgentExtend) SetPlugOfLogin(orgId int64, agentId string, config enum_
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -162,7 +163,7 @@ func (crd *AgentExtend) BatchSetPlugOfLogin(orgId int64, agentIds []string, conf
 	if isOK, _ := crd.masterModel.UpdateByConditions(conditions, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -211,7 +212,7 @@ func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -240,7 +241,7 @@ func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, newest enum
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -264,7 +265,7 @@ func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -295,6 +296,6 @@ func (crd *AgentExtend) SetIpJumpNewest(orgId int64, agentId string, newest enum
 	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }

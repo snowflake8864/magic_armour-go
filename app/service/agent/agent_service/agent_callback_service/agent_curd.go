@@ -109,7 +109,7 @@ func (crd *AgentCurd) doGrantAutoExpire(orgId int64, expireAt string, grantType 
 
 	if isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates); isOk {
 		if grantType != enum_product.TypeGold {
-			task_service.CreateCurdFactory().AddTaskForAgents(orgId, agentIds, enum_task.TypeAgentConfigDownload, "授权到期")
+			task_service.CreateCurdFactory().AddTaskForAgents(orgId, agentIds, enum_task.TypeAgentConfigDownload, "Grant Expiration")
 		}
 	}
 

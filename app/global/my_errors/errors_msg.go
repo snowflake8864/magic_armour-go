@@ -65,6 +65,9 @@ var Messages = map[string]map[string]string{
 		CurdDataCannotEmpty:     "数据不能为空",
 		CurdDataNotExist:        "数据不存在",
 		CurdInvalidParameter:    "参数不正确",
+		CurdCacheNotExist:       "缓存数据不存在",
+		CurdCacheFailed:         "缓存数据错误",
+		CurdAddFailed:           "新增失败",
 		CurdSaveFailed:          "保存失败",
 		CurdModifyFailed:        "修改失败",
 		CurdDeleteFailed:        "删除失败",
@@ -95,6 +98,7 @@ var Messages = map[string]map[string]string{
 		CurdDepartmentMustSelect:     "必须选择一个组织架构",
 		CurdDepartmentOnlyChooseYour: "只能选择属于自己的组织架构",
 		CurdAgentNoToManage:          "没有需要管理的终端",
+		CurdAgentNotMatch:            "没有符合条件的终端",
 		CurdAgentSwitchMustOn:        "终端开关需要全部开启",
 		CurdAgentNotExist:            "终端不存在",
 		CurdAgentLinuxNotSupported:   "Linux暂不支持功能",
@@ -105,13 +109,13 @@ var Messages = map[string]map[string]string{
 
 // GetMessage 获取指定语言的提示信息
 func GetMessage(lang, key string) string {
-	if msgs, ok := Messages[lang]; ok {
+	if msgs, exist := Messages[lang]; exist {
 		if msg, ok := msgs[key]; ok {
 			return msg
 		}
 	}
 	// 降级到中文
-	if msgs, ok := Messages["zh"]; ok {
+	if msgs, exist := Messages["zh"]; exist {
 		if msg, ok := msgs[key]; ok {
 			return msg
 		}
