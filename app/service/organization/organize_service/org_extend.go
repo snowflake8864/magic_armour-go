@@ -2,10 +2,8 @@ package organize_service
 
 import (
 	"errors"
-	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
-	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/enums/enum_safety_report"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -103,24 +101,6 @@ func (crd *OrgExtend) FormatHardwareNoticeConfig(configJson string) (data enum_s
 	return data
 }
 
-// FormatPwJumpConfig 格式化： 密码跳变配置
-func (crd *OrgExtend) FormatPwJumpConfig(configJson string) (data enum_pw_jump.PwJumpConfig) {
-	err := json_helper.ToStruct(configJson, &data)
-	if err != nil {
-		data.Format()
-	}
-	return data
-}
-
-// FormatIpJumpConfig 格式化： IP跳变配置
-func (crd *OrgExtend) FormatIpJumpConfig(configJson string) (data enum_ip_jump.IpJumpConfig) {
-	err := json_helper.ToStruct(configJson, &data)
-	if err != nil {
-		data.Format()
-	}
-	return data
-}
-
 // SetPlugOfPort 设置封堵配置： 端口虚开
 func (crd *OrgExtend) SetPlugOfPort(orgId int64, config enum_plug.PlugPortConfig) error {
 	config.Format()
@@ -178,32 +158,6 @@ func (crd *OrgExtend) SetHardwareNoticeConfig(orgId int64, config enum_safety_re
 	config.Format()
 	updates := make(map[string]interface{})
 	updates["hardware_notice_config"] = json_helper.Encode(config)
-
-	if crd.masterModel.UpdateById(orgId, updates) {
-		return nil
-	} else {
-		return errors.New("保存失败")
-	}
-}
-
-// SetPwJumpConfig 设置密码跳变
-func (crd *OrgExtend) SetPwJumpConfig(orgId int64, config enum_pw_jump.PwJumpConfig) error {
-	config.Format()
-	updates := make(map[string]interface{})
-	updates["pw_jump_config"] = json_helper.Encode(config)
-
-	if crd.masterModel.UpdateById(orgId, updates) {
-		return nil
-	} else {
-		return errors.New("保存失败")
-	}
-}
-
-// SetIpJumpConfig 设置IP跳变
-func (crd *OrgExtend) SetIpJumpConfig(orgId int64, config enum_ip_jump.IpJumpConfig) error {
-	config.Format()
-	updates := make(map[string]interface{})
-	updates["ip_jump_config"] = json_helper.Encode(config)
 
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil

@@ -7,9 +7,7 @@ import (
 	agentSyslog1 "goskeleton/app/http/validator/agent/agent_syslog"
 	alarm1 "goskeleton/app/http/validator/agent/alarm"
 	auth1 "goskeleton/app/http/validator/agent/auth"
-	backup1 "goskeleton/app/http/validator/agent/backup"
 	dll1 "goskeleton/app/http/validator/agent/dll"
-	jump1 "goskeleton/app/http/validator/agent/jump"
 	plug1 "goskeleton/app/http/validator/agent/plug"
 	port1 "goskeleton/app/http/validator/agent/port"
 	procSample1 "goskeleton/app/http/validator/agent/proc_sample"
@@ -94,16 +92,4 @@ func AgentRegisterValidator() {
 	//通讯日志相关
 	key = consts.ValidatorPrefixAgent + "SyslogPut"
 	containers.Set(key, agentSyslog1.Put{})
-
-	//备份相关
-	key = consts.ValidatorPrefixAgent + "BackupPut"
-	containers.Set(key, backup1.PutBackup{})
-	key = consts.ValidatorPrefixAgent + "RollbackPut"
-	containers.Set(key, backup1.PutRollback{})
-
-	//跳变
-	key = consts.ValidatorPrefixAgent + "PwJumpPut"
-	containers.Set(key, jump1.PwJumpPut{})
-	key = consts.ValidatorPrefixAgent + "IpJumpPut"
-	containers.Set(key, jump1.IpJumpPut{})
 }

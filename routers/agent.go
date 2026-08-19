@@ -143,18 +143,6 @@ func InitAgentRouter() *gin.Engine {
 
 			//通讯日志相关
 			vAgent.POST("putsyslog", validatorFactory.Create(consts.ValidatorPrefixAgent+"SyslogPut")) //上传通讯日志
-
-			//策略跳变
-			vAgent.Any("getIpJump", (&agent.JumpController{}).GetIpJump)                               //
-			vAgent.POST("putIpJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"IpJumpPut")) //
-			vAgent.Any("getPwJump", (&agent.JumpController{}).GetPwJump)                               //
-			vAgent.POST("putPwJump", validatorFactory.Create(consts.ValidatorPrefixAgent+"PwJumpPut")) //
-
-			//备份回滚
-			vAgent.Any("getBackups", (&agent.BackupController{}).GetBackups)                                  //
-			vAgent.POST("uploadBackup", validatorFactory.Create(consts.ValidatorPrefixAgent+"BackupPut"))     //上传备份结果
-			vAgent.Any("getRollbacks", (&agent.BackupController{}).GetRollbacks)                              //
-			vAgent.POST("uploadRollback", validatorFactory.Create(consts.ValidatorPrefixAgent+"RollbackPut")) //上传回滚结果
 		}
 	}
 	return router

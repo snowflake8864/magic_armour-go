@@ -2,10 +2,8 @@ package agent_service
 
 import (
 	"errors"
-	"goskeleton/app/global/enums/enum_ip_jump"
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
-	"goskeleton/app/global/enums/enum_pw_jump"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/organization/organize_service"
@@ -190,112 +188,4 @@ func (crd *AgentExtend) BatchSetFlushAt(orgId int64, agentIds []string, process 
 	}
 	isOk, _ := crd.masterModel.UpdateByOrgAndAgents(orgId, agentIds, updates)
 	return isOk
-}
-
-// GetPwJumpConfig 获取密码跳变
-func (crd *AgentExtend) GetPwJumpConfig(orgId int64, agentId string) (config enum_pw_jump.PwJumpConfig) {
-	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_config")
-	if model != nil && !string_helper.IsEmpty(model.PwJumpConfig) {
-		_ = json_helper.ToStruct(model.PwJumpConfig, &config)
-	}
-
-	config.Format()
-	return config
-}
-
-// SetPwJumpConfig 设置密码跳变
-func (crd *AgentExtend) SetPwJumpConfig(orgId int64, agentId string, config enum_pw_jump.PwJumpConfig) error {
-	config.Format()
-	updates := make(map[string]interface{})
-	updates["pw_jump_config"] = json_helper.Encode(config)
-
-	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
-		return nil
-	} else {
-		return errors.New(my_errors.CurdSaveFailed)
-	}
-}
-
-// GetPwJumpNewest 获取密码跳变最新结果
-func (crd *AgentExtend) GetPwJumpNewest(orgId int64, agentId string) (newest enum_pw_jump.PwJumpNewest) {
-	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "pw_jump_newest")
-	if model != nil && !string_helper.IsEmpty(model.PwJumpNewest) {
-		_ = json_helper.ToStruct(model.PwJumpNewest, &newest)
-	}
-	newest.Format()
-	return newest
-}
-
-// SetPwJumpNewest 设置密码跳变最新结果
-func (crd *AgentExtend) SetPwJumpNewest(orgId int64, agentId string, newest enum_pw_jump.PwJumpNewest) error {
-	updates := make(map[string]interface{})
-	if newest.Status == enum_pw_jump.NewestStatusFail {
-		prefix := crd.GetPwJumpNewest(orgId, agentId)
-		newest.User = prefix.User
-		newest.Pw = prefix.Pw
-	} else {
-		newest.Reason = ""
-	}
-
-	updates["pw_jump_newest"] = json_helper.Encode(newest)
-	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
-		return nil
-	} else {
-		return errors.New(my_errors.CurdSaveFailed)
-	}
-}
-
-// GetIpJumpConfig 获取IP跳变
-func (crd *AgentExtend) GetIpJumpConfig(orgId int64, agentId string) (config enum_ip_jump.IpJumpConfig) {
-	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_config")
-	if model != nil && !string_helper.IsEmpty(model.IpJumpConfig) {
-		_ = json_helper.ToStruct(model.IpJumpConfig, &config)
-	}
-
-	config.Format()
-	return config
-}
-
-// SetIpJumpConfig 设置IP跳变
-func (crd *AgentExtend) SetIpJumpConfig(orgId int64, agentId string, config enum_ip_jump.IpJumpConfig) error {
-	config.Format()
-	updates := make(map[string]interface{})
-	updates["ip_jump_config"] = json_helper.Encode(config)
-
-	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
-		return nil
-	} else {
-		return errors.New(my_errors.CurdSaveFailed)
-	}
-}
-
-// GetIpJumpNewest 获取地址跳变最新结果
-func (crd *AgentExtend) GetIpJumpNewest(orgId int64, agentId string) (newest enum_ip_jump.IpJumpNewest) {
-	model := crd.masterModel.GetItemByOrgAndAgent(orgId, agentId, "ip_jump_newest")
-	if model != nil && !string_helper.IsEmpty(model.IpJumpNewest) {
-		_ = json_helper.ToStruct(model.IpJumpNewest, &newest)
-	}
-	newest.Format()
-	return newest
-}
-
-// SetIpJumpNewest 设置地址码跳变最新结果
-func (crd *AgentExtend) SetIpJumpNewest(orgId int64, agentId string, newest enum_ip_jump.IpJumpNewest) error {
-	updates := make(map[string]interface{})
-	if newest.Status == enum_ip_jump.NewestStatusFail {
-		prefix := crd.GetIpJumpNewest(orgId, agentId)
-		newest.SourceIp = prefix.SourceIp
-		newest.TargetIp = prefix.TargetIp
-		newest.Gateway = prefix.Gateway
-		newest.AgentIp = prefix.AgentIp
-	} else {
-		newest.Reason = ""
-	}
-
-	updates["ip_jump_newest"] = json_helper.Encode(newest)
-	if isOK, _ := crd.masterModel.UpdateByOrgAndAgent(orgId, agentId, updates); isOK {
-		return nil
-	} else {
-		return errors.New(my_errors.CurdSaveFailed)
-	}
 }
