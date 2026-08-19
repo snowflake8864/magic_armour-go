@@ -36,7 +36,7 @@ func SaveOperate() gin.HandlerFunc {
 			param.NetIp = c.ClientIP()
 			param.Method = c.Request.Method
 			//是否需要记录
-			param.Module, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
+			param.Module, _, _ = enum_org_operate.GetModuleAndLabelByPath(param.Path)
 			if string_helper.IsEmpty(param.Module) {
 				//variable.ZapLog.Debug("SaveOrgOperate path error: " + param.Path)
 				return

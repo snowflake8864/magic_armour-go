@@ -33,7 +33,7 @@ func CheckToken() gin.HandlerFunc {
 		if _, exist := ignoreDelay[context.Request.RequestURI]; exist {
 			isDelay = false
 		}*/
-		if module, _ := enum_org_operate.GetModuleAndLabelByPath(context.Request.RequestURI); string_helper.IsEmpty(module) {
+		if module, _, _ := enum_org_operate.GetModuleAndLabelByPath(context.Request.RequestURI); string_helper.IsEmpty(module) {
 			isDelay = false
 		}
 

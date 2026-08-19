@@ -49,8 +49,8 @@ func RequestParams(ctx *gin.Context) {
 	ctx.Set("RequestParams", bindParams)
 
 	//多语言支持
-	requestLanguage := consts.LanguageZH
-	if val := strings.ToLower(strings.TrimSpace(ctx.Request.Header.Get(consts.LanguageField))); val == consts.LanguageZH || val == consts.LanguageEn {
+	requestLanguage := consts.LanguageZh
+	if val := strings.ToLower(strings.TrimSpace(ctx.Request.Header.Get(consts.LanguageField))); val == consts.LanguageZh || val == consts.LanguageEn {
 		requestLanguage = val
 	}
 	ctx.Set(consts.LanguageField, requestLanguage)

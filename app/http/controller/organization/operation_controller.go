@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/organization/org_operate_models"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -38,5 +39,5 @@ func (u *OperationController) PageForLog(ctx *gin.Context) {
 
 	total, models := org_operate_models.CreateLogFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Operation{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.Operation{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
 }
