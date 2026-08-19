@@ -3,6 +3,7 @@ package alarm_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 

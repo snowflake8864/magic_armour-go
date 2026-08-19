@@ -2,6 +2,7 @@ package syslog_service
 
 import (
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/utils/helpers/date_helper"
 )

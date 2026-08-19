@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_outreach"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/outreach_models"
 	"goskeleton/app/utils/helpers/date_helper"

@@ -2,6 +2,7 @@ package online_log_service
 
 import (
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_online_models"
 	"goskeleton/app/utils/helpers/date_helper"

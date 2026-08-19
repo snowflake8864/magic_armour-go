@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/date_helper"
