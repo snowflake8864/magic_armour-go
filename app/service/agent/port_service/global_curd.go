@@ -104,7 +104,7 @@ func (crd *GlobalCurd) Add(param *port_models.VirtualGlobalModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -172,7 +172,7 @@ func (crd *GlobalCurd) Edit(param *port_models.VirtualGlobalModel, isRoot int) e
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
@@ -207,7 +207,7 @@ func (crd *GlobalCurd) SetSwitch(param *port_models.VirtualGlobalModel, isRoot i
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//组织架构

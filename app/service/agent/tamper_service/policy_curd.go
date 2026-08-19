@@ -43,7 +43,7 @@ func (crd *PolicyCurd) Add(param *tamper_models.PolicyModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -94,7 +94,7 @@ func (crd *PolicyCurd) Edit(param *tamper_models.PolicyModel, isRoot int) error 
 		Id:      hashModel.Id,
 		AgentId: hashModel.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
@@ -131,7 +131,7 @@ func (crd *PolicyCurd) SetSwitch(param *tamper_models.PolicyModel, isRoot int) e
 		Id:      hashModel.Id,
 		AgentId: param.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

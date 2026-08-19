@@ -248,7 +248,7 @@ func (crd *UsbCurd) Edit(param *usb_models.UsbModel) error {
 		AgentId: param.AgentId,
 		Id:      hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -278,7 +278,7 @@ func (crd *UsbCurd) SetStatus(param *usb_models.UsbModel) error {
 		AgentId: param.AgentId,
 		Id:      hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

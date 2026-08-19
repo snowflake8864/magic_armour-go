@@ -56,7 +56,7 @@ func (crd *GlobalIpCurd) Add(param *plug_models.IpGlobalModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
@@ -111,7 +111,7 @@ func (crd *GlobalIpCurd) Edit(param *plug_models.IpGlobalModel, isRoot int) erro
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.Type == enum_plug.IpTypeBlack && hashModel.OpenSwitch == enums.SwitchOn {
@@ -146,7 +146,7 @@ func (crd *GlobalIpCurd) SetSwitch(param *plug_models.IpGlobalModel, isRoot int)
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

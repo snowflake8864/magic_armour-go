@@ -3,6 +3,7 @@ package alarm_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_alarm"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/alarm/alarm_models"
 )
 
@@ -26,7 +27,7 @@ func (crd *SelfCurd) Handle(param *alarm_models.SelfModel) error {
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -41,7 +42,7 @@ func (crd *SelfCurd) HandleAll(param *alarm_models.SelfModel, agentIds []string)
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -54,7 +55,7 @@ func (crd *SelfCurd) ClearByAgent(param *alarm_models.SelfModel) error {
 		HandleStatus: enum_alarm.HandleStatusNot,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }
@@ -66,7 +67,7 @@ func (crd *SelfCurd) ClearByAgents(param *alarm_models.SelfModel, agentIds []str
 		AgentIds: agentIds,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }

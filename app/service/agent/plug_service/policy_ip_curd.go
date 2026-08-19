@@ -43,7 +43,7 @@ func (crd *PolicyIpCurd) Add(param *plug_models.IpPolicyModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
@@ -92,7 +92,7 @@ func (crd *PolicyIpCurd) Edit(param *plug_models.IpPolicyModel, isRoot int) erro
 		Id:      hashModel.Id,
 		AgentId: hashModel.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.Type == enum_plug.IpTypeBlack && hashModel.OpenSwitch == enums.SwitchOn {
@@ -129,7 +129,7 @@ func (crd *PolicyIpCurd) SetSwitch(param *plug_models.IpPolicyModel, isRoot int)
 		Id:      hashModel.Id,
 		AgentId: param.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

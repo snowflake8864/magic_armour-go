@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_plug"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/alarm/alarm_models"
@@ -47,7 +48,7 @@ func (crd *AlarmPlugSave) Add(plugModel *plug_models.DynamicModel) error {
 		EndTime:      plugModel.EndAt,
 	}
 	if !crd.masterModel.InsertItem(&modelAlarm) {
-		return errors.New("保存告警失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_backup"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/backup_models"
 	"goskeleton/app/service/agent/task_service"
@@ -46,7 +47,7 @@ func (crd *BackupCurd) Add(param *backup_models.BackupModel) error {
 		}*/
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	///新增任务
@@ -67,7 +68,7 @@ func (crd *BackupCurd) BackupRunning(orgId int64, agentId string, ids []string) 
 	updates["backup_status"] = enum_backup.BackupStatusRunning
 	updates["backup_start_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -90,7 +91,7 @@ func (crd *BackupCurd) BackupComplete(param *backup_models.BackupModel) error {
 	updates["backup_param"] = param.BackupParam
 	updates["backup_end_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -122,7 +123,7 @@ func (crd *BackupCurd) RollbackStart(param *backup_models.BackupModel) error {
 		AgentId: param.AgentId,
 		Id:      param.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -142,7 +143,7 @@ func (crd *BackupCurd) RollbackRunning(orgId int64, agentId string, ids []string
 	updates["rollback_status"] = enum_backup.RollbackStatusRunning
 	updates["rollback_start_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -161,7 +162,7 @@ func (crd *BackupCurd) RollbackComplete(param *backup_models.BackupModel) error 
 	updates["rollback_fail_reason"] = param.RollbackFailReason
 	updates["rollback_end_at"] = date_helper.CurDatetime()
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }

@@ -65,7 +65,7 @@ func (crd *DetectCurd) Add(param *outreach_models.DetectModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -108,7 +108,7 @@ func (crd *DetectCurd) Edit(param *outreach_models.DetectModel, isRoot int) erro
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -141,7 +141,7 @@ func (crd *DetectCurd) SetSwitch(param *outreach_models.DetectModel, isRoot int)
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	crd.addTask(hashModel.OrgId, "开关")

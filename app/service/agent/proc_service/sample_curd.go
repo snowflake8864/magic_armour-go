@@ -38,7 +38,7 @@ func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
 	model.UpdatedAt = model.CreatedAt
 
 	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//

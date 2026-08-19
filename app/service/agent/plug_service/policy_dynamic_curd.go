@@ -42,7 +42,7 @@ func (crd *PolicyDynamicCurd) AutoDisable(orgId int64, agentId string, at string
 	updates["updated_at"] = at
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
 	if !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if rows > 0 {
@@ -81,7 +81,7 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 		Id:      hashModel.Id,
 		AgentId: param.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -107,7 +107,7 @@ func (crd *PolicyDynamicCurd) DisableByAgentAndIds(param *plug_models.DynamicMod
 		Ids:        ids,
 		OpenSwitch: &OpenSwitch,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -133,7 +133,7 @@ func (crd *PolicyDynamicCurd) DisableByAgentsAndIds(param *plug_models.DynamicMo
 		Ids:        ids,
 		OpenSwitch: &OpenSwitch,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//任务

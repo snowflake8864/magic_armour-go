@@ -67,7 +67,7 @@ func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 	param.UpdatedAt = param.CreatedAt
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//
@@ -136,7 +136,7 @@ func (crd *GlobalCurd) BatchAdd(param *proc_models.ProcGlobalModel, list *[]proc
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if param.DataFrom == enum_process.DataFromProcess {

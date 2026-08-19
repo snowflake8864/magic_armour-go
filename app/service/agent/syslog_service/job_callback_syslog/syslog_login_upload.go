@@ -32,7 +32,7 @@ func (crd *SyslogLoginUpload) Add(model *syslog_models.LoginModel) error {
 
 	//保存
 	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,
@@ -69,7 +69,7 @@ func (crd *SyslogLoginUpload) BatchAddSuccess(list *[]syslog_models.LoginModel) 
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,

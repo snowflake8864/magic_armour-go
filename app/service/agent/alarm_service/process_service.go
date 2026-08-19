@@ -27,7 +27,7 @@ func (crd *ProcessCurd) Handle(param *alarm_models.ProcessModel) error {
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -42,7 +42,7 @@ func (crd *ProcessCurd) HandleAll(param *alarm_models.ProcessModel, agentIds []s
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -54,7 +54,7 @@ func (crd *ProcessCurd) ClearByAgent(param *alarm_models.ProcessModel) error {
 		AgentId: param.AgentId,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }
@@ -66,7 +66,7 @@ func (crd *ProcessCurd) ClearByAgents(param *alarm_models.ProcessModel, agentIds
 		AgentIds: agentIds,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }

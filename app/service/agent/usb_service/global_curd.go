@@ -51,7 +51,7 @@ func (crd *GlobalCurd) Add(param *usb_models.GlobalModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务
@@ -84,7 +84,7 @@ func (crd *GlobalCurd) Edit(param *usb_models.GlobalModel) error {
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -114,7 +114,7 @@ func (crd *GlobalCurd) SetStatus(param *usb_models.GlobalModel, isRoot int) erro
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

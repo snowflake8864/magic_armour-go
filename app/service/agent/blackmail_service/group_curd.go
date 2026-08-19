@@ -23,7 +23,7 @@ func (crd *GroupCurd) Add(param *blackmail_models.GroupModel) error {
 	param.UpdatedAt = param.CreatedAt
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -55,7 +55,7 @@ func (crd *GroupCurd) Edit(param *blackmail_models.GroupModel, isRoot int) error
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil

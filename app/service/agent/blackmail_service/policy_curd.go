@@ -47,7 +47,7 @@ func (crd *PolicyCurd) Add(param *blackmail_models.PolicyModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -98,7 +98,7 @@ func (crd *PolicyCurd) Edit(param *blackmail_models.PolicyModel, isRoot int) err
 		Id:      hashModel.Id,
 		AgentId: hashModel.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
@@ -135,7 +135,7 @@ func (crd *PolicyCurd) SetSwitch(param *blackmail_models.PolicyModel, isRoot int
 		Id:      hashModel.Id,
 		AgentId: param.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

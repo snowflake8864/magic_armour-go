@@ -79,7 +79,7 @@ func (crd *GlobalCurd) Add(param *tamper_models.GlobalModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -141,7 +141,7 @@ func (crd *GlobalCurd) Edit(param *tamper_models.GlobalModel, isRoot int) error 
 		Id:           hashModel.Id,
 		PlatformType: hashModel.PlatformType,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
@@ -178,7 +178,7 @@ func (crd *GlobalCurd) SetSwitch(param *tamper_models.GlobalModel, isRoot int) e
 		Id:           hashModel.Id,
 		PlatformType: hashModel.PlatformType,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//组织架构

@@ -147,7 +147,7 @@ func (crd *DllUpload) BatchAdd(orgId int64, agentId string, models *[]proc_model
 	//保存模块
 	if len(insertProc) > 0 {
 		if !crd.masterModel.InsertBatch(&insertProc) {
-			return errors.New("保存失败")
+			return errors.New(my_errors.CurdSaveFailed)
 		}
 	}
 

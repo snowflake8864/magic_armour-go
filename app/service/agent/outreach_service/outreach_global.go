@@ -57,7 +57,7 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 	}
 	if len(inserts) > 0 {
 		if !crd.masterModel.InsertBatch(&inserts) {
-			return errors.New("保存失败")
+			return errors.New(my_errors.CurdSaveFailed)
 		}
 	}
 
@@ -83,7 +83,7 @@ func (crd *GlobalCurd) Add(param *outreach_models.GlobalModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -123,7 +123,7 @@ func (crd *GlobalCurd) Edit(param *outreach_models.GlobalModel, isRoot int) erro
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -153,7 +153,7 @@ func (crd *GlobalCurd) SetSwitch(param *outreach_models.GlobalModel, isRoot int)
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil

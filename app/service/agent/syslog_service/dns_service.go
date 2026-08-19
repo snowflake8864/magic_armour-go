@@ -38,7 +38,7 @@ func (crd *DnsCurd) ClearByAgents(orgId int64, agentIds []string) error {
 		CreateAtLte: date_helper.CurDatetime(),
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }

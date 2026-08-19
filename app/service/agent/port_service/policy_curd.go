@@ -70,7 +70,7 @@ func (crd *PolicyCurd) Add(param *port_models.VirtualPolicyModel) error {
 	}
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -126,7 +126,7 @@ func (crd *PolicyCurd) Edit(param *port_models.VirtualPolicyModel, isRoot int) e
 		Id:      hashModel.Id,
 		AgentId: hashModel.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
@@ -163,7 +163,7 @@ func (crd *PolicyCurd) SetSwitch(param *port_models.VirtualPolicyModel, isRoot i
 		Id:      hashModel.Id,
 		AgentId: param.AgentId,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增任务

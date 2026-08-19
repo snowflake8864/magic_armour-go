@@ -23,7 +23,7 @@ func (crd *OnlineLogCurd) Add(param *agent_online_models.OnlineLogModel) error {
 		param.CreatedAt = date_helper.CurDatetime()
 	}
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -45,7 +45,7 @@ func (crd *OnlineLogCurd) BatchAdd(list *[]agent_online_models.OnlineLogModel) e
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil

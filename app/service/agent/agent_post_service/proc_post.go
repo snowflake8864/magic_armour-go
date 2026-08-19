@@ -341,7 +341,7 @@ func (crd *ProcPost) batchSendProcessRunning(source int, task string, models *[]
 	}
 
 	if !job_callback_proc.CreateProcessRunningUploadFactory().BatchAdd(models) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -360,7 +360,7 @@ func (crd *ProcPost) batchSendDllRunning(source int, task string, models *[]proc
 	}
 
 	if !job_callback_proc.CreateDllRunningUploadFactory().BatchAdd(models) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }

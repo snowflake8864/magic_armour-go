@@ -38,7 +38,7 @@ func (crd *SyslogProcessUpload) Add(model *syslog_models.ProcessModel) error {
 
 	//保存
 	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,
@@ -90,7 +90,7 @@ func (crd *SyslogProcessUpload) BatchAdd(list *[]syslog_models.ProcessModel) err
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,

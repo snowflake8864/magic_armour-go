@@ -27,7 +27,7 @@ func (crd *PortCurd) Handle(param *alarm_models.PortModel) error {
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil
@@ -42,7 +42,7 @@ func (crd *PortCurd) HandleAll(param *alarm_models.PortModel, agentIds []string)
 	}
 	updates := crd.getUpdateForHandle(param.HandleRemark, param.HandleUser)
 	if !crd.masterModel.UpdateByConditions(conditions, updates) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -54,7 +54,7 @@ func (crd *PortCurd) ClearByAgent(param *alarm_models.PortModel) error {
 		AgentId: param.AgentId,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("清空失败")
+		return errors.New(my_errors.CurdClearFailed)
 	}
 	return nil
 }

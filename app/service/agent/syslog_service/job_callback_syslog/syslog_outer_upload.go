@@ -36,7 +36,7 @@ func (crd *SyslogOuterUpload) Add(model *syslog_models.OuterModel) error {
 
 	//保存
 	if !crd.masterModel.InsertItem(model) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,
@@ -85,7 +85,7 @@ func (crd *SyslogOuterUpload) BatchAdd(list *[]syslog_models.OuterModel) error {
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//推送到幻势,

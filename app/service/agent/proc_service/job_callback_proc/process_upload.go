@@ -146,7 +146,7 @@ func (crd *ProcessUpload) BatchAdd(orgId int64, agentId string, models *[]proc_m
 	//保存进程
 	if len(insertProc) > 0 {
 		if !crd.masterModel.InsertBatch(&insertProc) {
-			return errors.New("保存失败")
+			return errors.New(my_errors.CurdSaveFailed)
 		}
 	}
 
