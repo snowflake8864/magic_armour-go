@@ -2,6 +2,7 @@ package port_service
 
 import (
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/port_whether_occupy"
 	"regexp"
@@ -9,6 +10,7 @@ import (
 )
 
 type PortBase struct {
+	Lang string
 }
 
 // 校验虚开端口
@@ -20,27 +22,27 @@ func (crd *PortBase) checkSourcePort(portStr string) error {
 		if strings.Contains(portRange, "-") {
 			currPort := strings.Split(portRange, "-")
 			if !crd.checkPortRange(currPort[0]) || !crd.checkPortRange(currPort[1]) {
-				return errors.New("无效的端口【" + portRange + "】")
+				return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortInvalid, portRange))
 			}
 			minPort := string_helper.ToInt64(currPort[0])
 			maxPort := string_helper.ToInt64(currPort[1])
 			if minPort >= maxPort {
-				return errors.New("端口范围无效【" + portRange + "】")
+				return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortRangeInvalid, portRange))
 			}
 			for i := minPort; i <= maxPort; i++ {
 				if !occupyFact.CheckPort(i) {
-					return errors.New("本次端口有重复添加【" + portRange + "】")
+					return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortRepeatedAdd, portRange))
 				}
 				occupyFact.SetPort(i)
 			}
 		} else {
 			if !crd.checkPortRange(portRange) {
-				return errors.New("端口无效【" + portRange + "】")
+				return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortInvalid, portRange))
 			}
 			intPort := string_helper.ToInt64(portRange)
 
 			if !occupyFact.CheckPort(intPort) {
-				return errors.New("本次端口有重复添加【" + portRange + "】")
+				return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortRepeatedAdd, portRange))
 			}
 			occupyFact.SetPort(intPort)
 		}
@@ -97,13 +99,13 @@ func (crd *PortBase) checkPortUnique(portStr string, existsList []string) error 
 			maxPort := string_helper.ToInt64(currPort[1])
 			for i := minPort; i <= maxPort; i++ {
 				if !occupyFact.CheckPort(i) {
-					return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
+					return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortRepeatedWithExistPolicy, portRange))
 				}
 			}
 		} else {
 			intPort := string_helper.ToInt64(portRange)
 			if !occupyFact.CheckPort(intPort) {
-				return errors.New("本次添加的端口与现有策略中的重复了【" + portRange + "】")
+				return errors.New(my_errors.GetMessagef(crd.Lang, my_errors.CurdPortRepeatedWithExistPolicy, portRange))
 			}
 		}
 	}

@@ -12,8 +12,11 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 )
 
-func CreatePolicyCurdFactory() *PolicyCurd {
-	return &PolicyCurd{masterModel: port_models.CreateVirtualPolicyFactory()}
+func CreatePolicyCurdFactory(lang string) *PolicyCurd {
+	return &PolicyCurd{
+		PortBase:    PortBase{Lang: lang},
+		masterModel: port_models.CreateVirtualPolicyFactory(),
+	}
 }
 
 type PolicyCurd struct {

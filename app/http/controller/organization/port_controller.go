@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/port_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -192,7 +193,7 @@ func (u *PortController) SetSwitchForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory(cur_userinfo.GetLocales(ctx)).SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -218,7 +219,7 @@ func (u *PortController) AddForPolicy(ctx *gin.Context) {
 		UpdateName:  loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().Add(&param); err != nil {
+	if err := port_service.CreatePolicyCurdFactory(cur_userinfo.GetLocales(ctx)).Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -243,7 +244,7 @@ func (u *PortController) EditForPolicy(ctx *gin.Context) {
 		UpdateName:  loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory(cur_userinfo.GetLocales(ctx)).Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -262,7 +263,7 @@ func (u *PortController) DeleteForPolicy(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreatePolicyCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreatePolicyCurdFactory(cur_userinfo.GetLocales(ctx)).DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -307,7 +308,7 @@ func (u *PortController) SetSwitchForGlobal(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreateGlobalCurdFactory().SetSwitch(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreateGlobalCurdFactory(cur_userinfo.GetLocales(ctx)).SetSwitch(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -332,7 +333,7 @@ func (u *PortController) AddForGlobal(ctx *gin.Context) {
 		UpdateId:    loginInfo.UserId,
 		UpdateName:  loginInfo.Username,
 	}
-	if err := port_service.CreateGlobalCurdFactory().Add(&param); err != nil {
+	if err := port_service.CreateGlobalCurdFactory(cur_userinfo.GetLocales(ctx)).Add(&param); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -357,7 +358,7 @@ func (u *PortController) EditForGlobal(ctx *gin.Context) {
 		UpdateName:  loginInfo.Username,
 	}
 
-	if err := port_service.CreateGlobalCurdFactory().Edit(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreateGlobalCurdFactory(cur_userinfo.GetLocales(ctx)).Edit(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -375,7 +376,7 @@ func (u *PortController) DeleteForGlobal(ctx *gin.Context) {
 		UpdateName: loginInfo.Username,
 	}
 
-	if err := port_service.CreateGlobalCurdFactory().DeleteById(&param, loginInfo.IsRoot); err != nil {
+	if err := port_service.CreateGlobalCurdFactory(cur_userinfo.GetLocales(ctx)).DeleteById(&param, loginInfo.IsRoot); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}

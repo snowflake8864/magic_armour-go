@@ -14,8 +14,11 @@ import (
 	"goskeleton/app/utils/helpers/date_helper"
 )
 
-func CreateGlobalCurdFactory() *GlobalCurd {
-	return &GlobalCurd{masterModel: port_models.CreateVirtualGlobalFactory()}
+func CreateGlobalCurdFactory(lang string) *GlobalCurd {
+	return &GlobalCurd{
+		PortBase:    PortBase{Lang: lang},
+		masterModel: port_models.CreateVirtualGlobalFactory(),
+	}
 }
 
 type GlobalCurd struct {
