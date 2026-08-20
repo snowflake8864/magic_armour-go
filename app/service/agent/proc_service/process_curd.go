@@ -63,7 +63,7 @@ func (crd *ProcessCurd) BatchUnsetToWhiteByAgents(orgId int64, agentIds []string
 func (crd *ProcessCurd) SetStatus(orgId int64, agentId string, hash string, status int) error {
 	hasModel := crd.getOne(orgId, agentId, hash)
 	if hasModel == nil {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 	if isOk := enum_process.BtnChangeEnable(hasModel.GlobalStatus); isOk == 0 {
 		return errors.New("当前数据不允许修改状态")
@@ -93,7 +93,7 @@ func (crd *ProcessCurd) SetStatus(orgId int64, agentId string, hash string, stat
 func (crd *ProcessCurd) Cancel(orgId int64, agentId string, hash string) error {
 	hasModel := crd.getOne(orgId, agentId, hash)
 	if hasModel == nil {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 	if isOk := enum_process.BtnCancelEnable(hasModel.SelfStatus); isOk == 0 {
 		return errors.New("当前数据不允许取消")
@@ -158,7 +158,7 @@ func (crd *ProcessCurd) BatchDeleteByHashes(orgId int64, agentId string, hashes 
 		ProcHashes: hashes,
 	}
 	if !crd.masterModel.DeleteByConditions(condition) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	types := []int{
@@ -179,7 +179,7 @@ func (crd *ProcessCurd) DeleteByAgent(orgId int64, agentId string, task bool) er
 	}
 	isOk := crd.masterModel.DeleteByConditions(condition)
 	if !isOk {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	if task {
@@ -200,7 +200,7 @@ func (crd *ProcessCurd) DeleteByOrg(orgId int64) error {
 	}
 	isOk := crd.masterModel.DeleteByConditions(condition)
 	if !isOk {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil

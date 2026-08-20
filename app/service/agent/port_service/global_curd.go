@@ -45,7 +45,7 @@ func (crd *GlobalCurd) getDeptIds(orgId int64, deptId int64) (error, []int64) {
 		//获取组织架构
 		ids = department_service.CreateCurdFactory().GetIdsSelfWithChildById(orgId, deptId)
 		if ids == nil || len(ids) == 0 {
-			return errors.New("组织架构不存在"), ids
+			return errors.New(my_errors.CurdDepartmentNotExist), ids
 		}
 	}
 	return nil, ids
@@ -137,9 +137,9 @@ func (crd *GlobalCurd) Edit(param *port_models.VirtualGlobalModel, isRoot int) e
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	}
 
 	//组织架构
@@ -178,7 +178,7 @@ func (crd *GlobalCurd) Edit(param *port_models.VirtualGlobalModel, isRoot int) e
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(hashModel.OrgId, deptIds, "全局：编辑")
+		crd.addTask(hashModel.OrgId, deptIds, "Global Edit")
 	}
 
 	return nil
@@ -193,9 +193,9 @@ func (crd *GlobalCurd) SetSwitch(param *port_models.VirtualGlobalModel, isRoot i
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	}
 
 	//修改
@@ -218,7 +218,7 @@ func (crd *GlobalCurd) SetSwitch(param *port_models.VirtualGlobalModel, isRoot i
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, deptIds, "全局：开关")
+	crd.addTask(hashModel.OrgId, deptIds, "Global Switch")
 
 	return nil
 }
@@ -232,9 +232,9 @@ func (crd *GlobalCurd) DeleteById(param *port_models.VirtualGlobalModel, isRoot 
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
-		return errors.New("只能删除自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyDeleteOneselfAdded)
 	}
 
 	//删除
@@ -242,7 +242,7 @@ func (crd *GlobalCurd) DeleteById(param *port_models.VirtualGlobalModel, isRoot 
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//组织架构
@@ -252,7 +252,7 @@ func (crd *GlobalCurd) DeleteById(param *port_models.VirtualGlobalModel, isRoot 
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, deptIds, "全局：删除")
+	crd.addTask(hashModel.OrgId, deptIds, "Global Delete")
 
 	return nil
 }

@@ -234,7 +234,7 @@ func (crd *UsbCurd) Edit(param *usb_models.UsbModel) error {
 		Id:      param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	//修改
@@ -265,7 +265,7 @@ func (crd *UsbCurd) SetStatus(param *usb_models.UsbModel) error {
 		Id:      param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	//修改

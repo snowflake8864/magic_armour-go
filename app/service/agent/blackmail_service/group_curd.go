@@ -40,9 +40,9 @@ func (crd *GroupCurd) Edit(param *blackmail_models.GroupModel, isRoot int) error
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	}
 
 	//修改
@@ -71,9 +71,9 @@ func (crd *GroupCurd) DeleteById(param *blackmail_models.GroupModel, isRoot int)
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.CreateId {
-		return errors.New("只能删除自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyDeleteOneselfAdded)
 	}
 
 	//删除
@@ -81,7 +81,7 @@ func (crd *GroupCurd) DeleteById(param *blackmail_models.GroupModel, isRoot int)
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil

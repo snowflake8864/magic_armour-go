@@ -66,7 +66,7 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 		OpenSwitch: &OpenSwitch,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	//修改
@@ -155,7 +155,7 @@ func (crd *PolicyDynamicCurd) DeleteById(param *plug_models.DynamicModel) error 
 		OpenSwitch: &OpenSwitch,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	//删除
@@ -164,7 +164,7 @@ func (crd *PolicyDynamicCurd) DeleteById(param *plug_models.DynamicModel) error 
 		Id:      hashModel.Id,
 		AgentId: hashModel.AgentId,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil
@@ -179,7 +179,7 @@ func (crd *PolicyDynamicCurd) DeleteByAgentAndIds(param *plug_models.DynamicMode
 		AgentId: param.AgentId,
 		Ids:     ids,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil
@@ -196,7 +196,7 @@ func (crd *PolicyDynamicCurd) DeleteByAgentsAndIds(param *plug_models.DynamicMod
 
 	//删除
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil

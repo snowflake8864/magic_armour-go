@@ -67,7 +67,7 @@ func (crd *PortCurd) ClearByAgents(param *alarm_models.PortModel, agentIds []str
 		AgentIds: agentIds,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 	return nil
 }

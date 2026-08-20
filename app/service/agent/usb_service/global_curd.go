@@ -48,7 +48,7 @@ func (crd *GlobalCurd) Add(param *usb_models.GlobalModel) error {
 		Id:    param.Id,
 	}
 	if total := crd.masterModel.Count(conditions); total > 0 {
-		return errors.New("已存在相同策略，不能重复添加")
+		return errors.New(my_errors.CurdSamePolicyExistCannotAdd)
 	}
 
 	if !crd.masterModel.InsertItem(param) {
@@ -71,7 +71,7 @@ func (crd *GlobalCurd) Edit(param *usb_models.GlobalModel) error {
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	//修改
@@ -100,9 +100,9 @@ func (crd *GlobalCurd) SetStatus(param *usb_models.GlobalModel, isRoot int) erro
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	}
 
 	//修改
@@ -133,9 +133,9 @@ func (crd *GlobalCurd) DeleteById(param *usb_models.GlobalModel, isRoot int) err
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
-		return errors.New("只能删除自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyDeleteOneselfAdded)
 	}
 
 	//修改
@@ -143,7 +143,7 @@ func (crd *GlobalCurd) DeleteById(param *usb_models.GlobalModel, isRoot int) err
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//新增任务

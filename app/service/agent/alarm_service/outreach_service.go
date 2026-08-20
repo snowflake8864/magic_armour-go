@@ -67,7 +67,7 @@ func (crd *OutreachCurd) ClearByAgents(param *alarm_models.OutreachModel, agentI
 		AgentIds: agentIds,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 	return nil
 }

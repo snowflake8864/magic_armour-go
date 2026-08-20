@@ -43,7 +43,7 @@ func (crd *ProcessRunning) ExtractDlls(orgId int64, agentId string, procHash str
 
 	hasModel := crd.masterModel.GetItemByOrgAndAgentAndHashAndProcId(orgId, agentId, procHash, procId)
 	if hasModel == nil || hasModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 
 	updates := map[string]interface{}{

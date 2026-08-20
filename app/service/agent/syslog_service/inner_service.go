@@ -26,7 +26,7 @@ func (crd *InnerCurd) DeleteByIds(orgId int64, ids []int64, startTime, endTime s
 		CreateAtLte: endTime,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 	return nil
 }

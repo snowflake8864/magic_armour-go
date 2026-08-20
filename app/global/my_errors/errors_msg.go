@@ -103,6 +103,9 @@ var Messages = map[string]map[string]string{
 		CurdAgentNotExist:            "终端不存在",
 		CurdAgentLinuxNotSupported:   "Linux暂不支持功能",
 		CurdDirPermissionCannotEmpty: "禁止目录权限不能为空",
+		CurdSamePolicyExistCannotAdd: "已存在相同策略，不能重复添加",
+		CurdOnlyModifyOneselfAdded:   "只能修改自己添加的策略(管理员除外)",
+		CurdOnlyDeleteOneselfAdded:   "只能删除自己添加的策略(管理员除外)",
 	},
 	"en": {},
 }

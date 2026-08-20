@@ -53,7 +53,7 @@ func (crd *GlobalIpCurd) Add(param *plug_models.IpGlobalModel) error {
 		Ip:    param.Ip,
 	}
 	if total := crd.masterModel.Count(conditions); total > 0 {
-		return errors.New("已存在相同策略，不能重复添加")
+		return errors.New(my_errors.CurdSamePolicyExistCannotAdd)
 	}
 
 	if !crd.masterModel.InsertItem(param) {
@@ -78,16 +78,16 @@ func (crd *GlobalIpCurd) Edit(param *plug_models.IpGlobalModel, isRoot int) erro
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	} else if hashModel.Ip != param.Ip {
 		conditions := plug_models.SearchConditions{
 			OrgId: hashModel.OrgId,
 			Ip:    param.Ip,
 		}
 		if total := crd.masterModel.Count(conditions); total > 0 {
-			return errors.New("已存在相同策略，不能重复添加")
+			return errors.New(my_errors.CurdSamePolicyExistCannotAdd)
 		}
 	}
 
@@ -117,7 +117,7 @@ func (crd *GlobalIpCurd) Edit(param *plug_models.IpGlobalModel, isRoot int) erro
 
 	if hashModel.Type == enum_plug.IpTypeBlack && hashModel.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(hashModel.OrgId, "编辑")
+		crd.addTask(hashModel.OrgId, "Edit")
 	}
 
 	return nil
@@ -132,9 +132,9 @@ func (crd *GlobalIpCurd) SetSwitch(param *plug_models.IpGlobalModel, isRoot int)
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
-		return errors.New("只能修改自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyModifyOneselfAdded)
 	}
 
 	//修改
@@ -152,7 +152,7 @@ func (crd *GlobalIpCurd) SetSwitch(param *plug_models.IpGlobalModel, isRoot int)
 
 	//新增任务
 	if hashModel.Type == enum_plug.IpTypeBlack {
-		crd.addTask(hashModel.OrgId, "开关")
+		crd.addTask(hashModel.OrgId, "Switch")
 	}
 
 	return nil
@@ -167,9 +167,9 @@ func (crd *GlobalIpCurd) DeleteById(param *plug_models.IpGlobalModel, isRoot int
 		Id:    param.Id,
 	})
 	if hashModel == nil || hashModel.OrgId == 0 {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if isRoot == enums.IsNot && hashModel.CreateId != param.UpdateId {
-		return errors.New("只能删除自己添加的策略(管理员除外)")
+		return errors.New(my_errors.CurdOnlyDeleteOneselfAdded)
 	}
 
 	//删除
@@ -177,12 +177,12 @@ func (crd *GlobalIpCurd) DeleteById(param *plug_models.IpGlobalModel, isRoot int
 		OrgId: hashModel.OrgId,
 		Id:    hashModel.Id,
 	}) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//新增任务
 	if hashModel.Type == enum_plug.IpTypeBlack {
-		crd.addTask(hashModel.OrgId, "删除")
+		crd.addTask(hashModel.OrgId, "Delete")
 	}
 
 	return nil
@@ -201,7 +201,7 @@ func (crd *GlobalIpCurd) DeleteByAgentAndType(param *plug_models.IpPolicyModel, 
 	}
 
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//新增任务

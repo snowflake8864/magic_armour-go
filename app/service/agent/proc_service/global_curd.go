@@ -185,7 +185,7 @@ func (crd *GlobalCurd) SetSwitch(orgId int64, id string, openSwitch int, dataFro
 // DeleteById 通过hash删除
 func (crd *GlobalCurd) DeleteById(orgId int64, id string, dataFrom int) error {
 	if !crd.masterModel.DeleteByOrgAndId(orgId, id) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	if dataFrom == enum_process.DataFromProcess {
@@ -204,7 +204,7 @@ func (crd *GlobalCurd) DeleteByDataFrom(orgId int64, dataFrom int) error {
 		DataFrom: dataFrom,
 	}
 	if !crd.masterModel.DeleteByConditions(condition) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 	if dataFrom == enum_process.DataFromProcess {
 		CreateProcessCurdFactory().GlobalCallbackDeleteAll(orgId)

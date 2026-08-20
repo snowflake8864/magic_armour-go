@@ -67,7 +67,7 @@ func (crd *PlugCurd) ClearByAgents(param *alarm_models.PlugModel, agentIds []str
 		AgentIds: agentIds,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("删除失败")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 	return nil
 }
