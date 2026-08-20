@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_order"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/order_models"
@@ -39,6 +40,8 @@ type OrderCurd struct {
 	redisClient       *redis_factory.RedisClient
 	redisNumberPrefix string
 	redisNumberExpire int
+
+	lang string
 }
 
 func (crd *OrderCurd) makerOrderNo(grantType int) string {
@@ -76,7 +79,7 @@ func (crd *OrderCurd) getExpireAt(grantDuration int) string {
 }
 
 func (crd *OrderCurd) getLicenseDefaultName() string {
-	str := "导入授权"
+	str := "import license"
 	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.OrderLicenseName); !string_helper.IsEmpty(val) {
 		str = val
 	}
@@ -88,16 +91,16 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
 	if orgModel == nil || orgModel.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	//产品信息
 	productModel := product_service.CreateCurdFactory().GetItemById(orderParam.ProductId)
 	if productModel == nil || productModel.Id == 0 {
-		return -1, errors.New("产品不存在")
+		return -1, errors.New(my_errors.CurdProductNotExist)
 	}
 	if productModel.GrantType == enum_product.TypeTest {
 		if orderParam.GrantDuration > 1 {
-			return -1, errors.New("购买测试授权类型的产品不能超过一个月")
+			return -1, errors.New(my_errors.CurdProductTestTypeNotGtMonth)
 		}
 
 		search := order_models.SearchConditions{
@@ -105,7 +108,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 			GrantType: enum_product.TypeTest,
 		}
 		if total := crd.masterModel.Count(search); total > 0 {
-			return -1, errors.New("不能重复购买测试授权类型的产品")
+			return -1, errors.New(my_errors.CurdProductTestTypeCannotRepeated)
 		}
 	}
 
@@ -115,12 +118,12 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 		StatusList: []int{enum_order.OrderStatusUnpaid, enum_order.OrderStatusPaid},
 	}
 	if total := crd.masterModel.Count(search); total > 0 {
-		return -1, errors.New("存在未完成的订单")
+		return -1, errors.New(my_errors.CurdOrderHasUnfinished)
 	}
 
 	tx := crd.masterModel.Begin()
 	if tx.Error != nil {
-		return -10, errors.New("保存订单失败")
+		return -10, errors.New(my_errors.CurdAddFailed)
 	}
 
 	//新增订单
@@ -152,7 +155,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	orderParam.ExpireAt = crd.getExpireAt(orderParam.GrantDuration)
 	if err = tx.Create(orderParam).Error; err != nil {
 		tx.Rollback()
-		return -1, errors.New("保存订单失败")
+		return -1, errors.New(my_errors.CurdAddFailed)
 	}
 
 	//订单日志
@@ -169,7 +172,7 @@ func (crd *OrderCurd) Add(orderParam *order_models.OrderModel, operateId int64, 
 	}
 	if err = tx.Create(&logParam).Error; err != nil {
 		tx.Rollback()
-		return -1, errors.New("保存日志失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 	tx.Commit()
 	return errCode, err
@@ -203,7 +206,6 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 			Login:     100,
 			Threaten:  100,
 		},
-		ModuleLabel: nil,
 	}*/
 
 	if licenseResp.Type == enum_product.TypeTest {
@@ -215,17 +217,17 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 			IsExpire:    &IsExpire,
 		}
 		if total := crd.masterModel.Count(search); total > 0 {
-			return -1, errors.New("存在使用中的测试授权证书，不能重复导入")
+			return -1, errors.New(my_errors.CurdGrantLicTestTypeCannotRepeated)
 		}
 	}
 
 	//企业信息
 	orgModel := organize_service.CreateOrgCurdFactory().GetItemByOrg(orderParam.OrgId)
 	if orgModel == nil || orgModel.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if licenseResp.Serial != orgModel.Code {
-		return -1, errors.New("授权证书不属于这个企业")
+		return -1, errors.New(my_errors.CurdGrantLicUnbelongOrg)
 	}
 
 	// 已经导入过
@@ -234,7 +236,7 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		PayOrderNo: orderParam.PayOrderNo,
 	}
 	if total := crd.masterModel.Count(search); total > 0 {
-		return -1, errors.New("请勿重复导入相同的授权证书")
+		return -1, errors.New(my_errors.CurdGrantLicRepeatedImport)
 	}
 
 	//补充订单信息
@@ -292,20 +294,20 @@ func (crd *OrderCurd) ImportLicense(orderParam *order_models.OrderModel, license
 		})
 	}
 	if len(insertOrders) == 0 {
-		return -10, errors.New("授权模块数据错误")
+		return -10, errors.New(my_errors.CurdGrantModuleNumberFail)
 	}
 
 	tx := crd.masterModel.Begin()
 	if tx.Error != nil {
-		return -10, errors.New("保存订单失败")
+		return -10, errors.New(my_errors.CurdAddFailed)
 	}
 	if err = tx.Create(&insertOrders).Error; err != nil {
 		tx.Rollback()
-		return -1, errors.New("保存订单失败")
+		return -1, errors.New(my_errors.CurdAddFailed)
 	}
 	if err = tx.Create(&insertLogs).Error; err != nil {
 		tx.Rollback()
-		return -1, errors.New("保存日志失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 	tx.Commit()
 
@@ -360,10 +362,10 @@ func (crd *OrderCurd) GetValidItemsByOrgs(orgIds []int64) (items []*order_models
 func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	now := date_helper.CurDatetime()
@@ -373,7 +375,7 @@ func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateNam
 		"cancel_at":    now,
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("取消订单失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//订单日志
@@ -396,13 +398,13 @@ func (crd *OrderCurd) PlatformCancel(orderNo string, operateId int64, operateNam
 func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrgId != orgId {
-		return -1, errors.New("订单错误")
+		return -1, errors.New(my_errors.CurdOrderOrgNotMatch)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	now := date_helper.CurDatetime()
@@ -412,7 +414,7 @@ func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateN
 		"cancel_at":    now,
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("取消订单失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//订单日志
@@ -435,13 +437,13 @@ func (crd *OrderCurd) OrgCancel(orderNo string, orgId, operateId int64, operateN
 func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrgId != orgId {
-		return -1, errors.New("订单错误")
+		return -1, errors.New(my_errors.CurdOrderOrgNotMatch)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	payInfo := enum_order.FormatPayBankcard(dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrder))
@@ -455,7 +457,7 @@ func (crd *OrderCurd) PayByBankcard(orderNo string, orgId int64, operateId int64
 		"pay_at":       now,
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("取消订单失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//订单日志
@@ -479,13 +481,13 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusUnpaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 	if orderModel.TotalAmount < realAmount {
-		return -1, errors.New("支付金额不能大于原始金额")
+		return -1, errors.New(my_errors.CurdOrderPayLetOriginal)
 	}
 
 	now := date_helper.CurDatetime()
@@ -497,7 +499,7 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 		"decline_at":     now,
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("订单修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 
 	//订单日志
@@ -521,10 +523,10 @@ func (crd *OrderCurd) Decline(orderNo, remark string, realAmount float64, operat
 func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	now := date_helper.CurDatetime()
@@ -535,7 +537,7 @@ func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName s
 		"expire_at":    crd.getExpireAt(orderModel.GrantDuration),
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("订单修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 
 	//订单日志
@@ -558,10 +560,10 @@ func (crd *OrderCurd) ConfirmPaid(orderNo string, operateId int64, operateName s
 func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName string) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusPaid {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	now := date_helper.CurDatetime()
@@ -570,7 +572,7 @@ func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName
 		"order_status": enum_order.OrderStatusUnpaid,
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return -1, errors.New("订单修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 
 	//订单日志
@@ -593,17 +595,17 @@ func (crd *OrderCurd) ConfirmUnpaid(orderNo string, operateId int64, operateName
 func (crd *OrderCurd) OrgDelete(orderNo string, orgId int64) (errCode int, err error) {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return -1, errors.New("订单不存在")
+		return -1, errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrgId != orgId {
-		return -1, errors.New("订单错误")
+		return -1, errors.New(my_errors.CurdOrderOrgNotMatch)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusCancel {
-		return -1, errors.New("订单状态不正确")
+		return -1, errors.New(my_errors.CurdOrderStatusFail)
 	}
 
 	if !crd.masterModel.DeleteById(orderNo) {
-		return -1, errors.New("订单删除失败")
+		return -1, errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	//订单日志
@@ -652,19 +654,19 @@ func (crd *OrderCurd) AutoExpire(orgId int64, expireDate string) bool {
 func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []string, operateId int64, operateName string) error {
 	orderModel := crd.GetItemByOrderNo(orderNo)
 	if orderModel == nil || string_helper.IsEmpty(orderModel.OrderNo) {
-		return errors.New("订单不存在")
+		return errors.New(my_errors.CurdOrderNotExist)
 	}
 	if orderModel.OrgId != orgId {
-		return errors.New("订单错误")
+		return errors.New(my_errors.CurdOrderOrgNotMatch)
 	}
 	if orderModel.OrderStatus != enum_order.OrderStatusCompleted {
-		return errors.New("订单状态不正确")
+		return errors.New(my_errors.CurdOrderStatusFail)
 	}
 	if orderModel.IsExpire == enums.IsYes {
-		return errors.New("订单已过期")
+		return errors.New(my_errors.CurdOrderExpired)
 	}
 	if orderModel.BuyNumber <= orderModel.UsageNumber {
-		return errors.New("订单可使用数目为零")
+		return errors.New(my_errors.CurdOrderUsageNumberEqZero)
 	}
 
 	//有效终端集合
@@ -672,7 +674,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 	agentFact := agent_models.CreateAgentFactory()
 	agentModels := agentFact.GetItemsByOrgAndAgents(orgId, agentIds, agentFact.ColumnGrant())
 	if agentModels == nil || len(agentModels) == 0 {
-		return errors.New("终端不存在")
+		return errors.New(my_errors.CurdAgentNotExist)
 	}
 	for _, model := range agentModels {
 		// 订单编号一致 & 授权状态是已授权
@@ -687,13 +689,13 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 		return nil
 	}
 	if (orderModel.BuyNumber - orderModel.UsageNumber - agentCnt) < 0 {
-		return errors.New("订单可用数目不足")
+		return errors.New(my_errors.CurdOrderAvailableNumberLack)
 	}
 
 	//修改终端
 	if !agent_callback_service.CreateCurdFactory().BatchGrant(orgId, validIds, orderNo, orderModel.GrantType,
 		orderModel.GrantModule, orderModel.ProductTitle, orderModel.ExpireAt, orderModel.GrantDuration) {
-		return errors.New("终端授权失败")
+		return errors.New(my_errors.CurdOrderGrantAgentFail)
 	}
 
 	//修改订单
@@ -701,7 +703,7 @@ func (crd *OrderCurd) GrantToAgents(orgId int64, orderNo string, agentIds []stri
 		"usage_number": gorm.Expr(fmt.Sprintf("usage_number+%d", agentCnt)),
 	}
 	if !crd.masterModel.UpdateById(orderNo, updates) {
-		return errors.New("订单授权失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//订单日志
@@ -741,16 +743,16 @@ func (crd *OrderCurd) ExpiredRemindForOrg(orgId int64) (int, int, string) {
 	if respRemind.GoldNumber > 0 {
 		//全部过期 & 有正式授权： 提示
 		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
-			return 1, version, "订单授权已到期，请联系供应商，获取最新授权!"
+			return 1, version, my_errors.CurdOrderExpiredToGet
 		} else {
-			return 1, version, "订单授权已到期，请购买授权!"
+			return 1, version, my_errors.CurdOrderExpiredToBuy
 		}
 	} else {
 		//全部过期 & 有正式授权： 提示, 根据不同版本跳转到不同页面
 		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
-			return 2, version, "订单授权已到期，请联系供应商，获取最新授权!"
+			return 2, version, my_errors.CurdOrderExpiredToGet
 		} else {
-			return 2, version, "订单授权已到期，请购买授权!"
+			return 2, version, my_errors.CurdOrderExpiredToBuy
 		}
 
 	}

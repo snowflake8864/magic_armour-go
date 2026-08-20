@@ -18,6 +18,7 @@ import (
 	"goskeleton/app/service/platform/product_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -79,7 +80,7 @@ func (u *OrderController) ExpiredRemind(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, gin.H{
 		"status":  status,
 		"version": version,
-		"message": message,
+		"message": my_errors.GetMessage(cur_userinfo.GetLocales(ctx), message),
 	})
 }
 

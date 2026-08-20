@@ -5,6 +5,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/helpers/date_helper"
@@ -22,21 +23,20 @@ type License struct {
 }
 
 type LicenseResp struct {
-	Serial      string                          `json:"serial"`
-	Type        int                             `json:"type"`
-	TypeLabel   string                          `json:"typeLabel"`
-	StartAt     string                          `json:"startAt"`
-	ExpireAt    string                          `json:"expireAt"`
-	Duration    int                             `json:"duration"`
-	Number      int                             `json:"number"`
-	Modules     enum_product.ProductGrantConfig `json:"modules"`
-	ModuleLabel []map[string]string             `json:"moduleLabel"`
+	Serial    string                          `json:"serial"`
+	Type      int                             `json:"type"`
+	TypeLabel string                          `json:"typeLabel"`
+	StartAt   string                          `json:"startAt"`
+	ExpireAt  string                          `json:"expireAt"`
+	Duration  int                             `json:"duration"`
+	Number    int                             `json:"number"`
+	Modules   enum_product.ProductGrantConfig `json:"modules"`
 }
 
 // Parse 解析
 func (crd *License) Parse(path string) (error, *LicenseResp) {
 	if !file_helper.ExistsFile(path) {
-		return errors.New("授权文件不存在"), nil
+		return errors.New(my_errors.CurdGrantFileNotExist), nil
 	}
 
 	shellVedaLicence := cur_app.ShellVedaLicence()
@@ -93,55 +93,55 @@ func (crd *License) Parse(path string) (error, *LicenseResp) {
 	if val, isOK := parseRes["serial"]; isOK && !string_helper.IsEmpty(val) {
 		licenseResp.Serial = val
 	} else {
-		return errors.New("授权文件缺少设备标识码"), nil
+		return errors.New(my_errors.CurdGrantFileLackSerial), nil
 	}
 
 	if val, isOK := parseRes["auth_type"]; isOK && !string_helper.IsEmpty(val) {
 		//0:正式, 1:测试, 2样本
 		licenseResp.Type = string_helper.ToInt(val) + 1
 		if licenseResp.TypeLabel = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", licenseResp.Type, enum_product.EnumIntMap); string_helper.IsEmpty(licenseResp.TypeLabel) {
-			return errors.New("未知的授权类型: " + val), nil
+			return errors.New(my_errors.CurdGrantTypeUnknown), nil
 		}
 	} else {
-		return errors.New("授权文件缺少授权类型"), nil
+		return errors.New(my_errors.CurdGrantFileLackType), nil
 	}
 
 	if val, isOK := parseRes["host_num"]; isOK && !string_helper.IsEmpty(val) {
 		licenseResp.Number = string_helper.ToInt(val)
 		if licenseResp.Number <= 0 {
-			return errors.New("授权文件终端数目不正确"), nil
+			return errors.New(my_errors.CurdGrantFileNumberFail), nil
 		}
 	} else {
-		return errors.New("授权文件缺少终端数目"), nil
+		return errors.New(my_errors.CurdGrantFileLackAgentNumber), nil
 	}
 
 	if val, isOK := parseRes["alive_time"]; isOK && !string_helper.IsEmpty(val) {
 		timestamp := string_helper.ToInt64(val)
 		if timestamp <= 0 {
-			return errors.New("授权文件已过期"), nil
+			return errors.New(my_errors.CurdGrantFileExpired), nil
 		}
 	} else {
-		return errors.New("授权文件缺少有效时间"), nil
+		return errors.New(my_errors.CurdGrantFileLackAliveAt), nil
 	}
 
 	if val, isOK := parseRes["auth_time"]; isOK && !string_helper.IsEmpty(val) {
 		timestamp := string_helper.ToInt64(val)
 		if timestamp == 0 {
-			return errors.New("授权开始时间错误"), nil
+			return errors.New(my_errors.CurdGrantStartAtFail), nil
 		}
 		licenseResp.StartAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DateFormatToday)
 	} else {
-		return errors.New("授权文件缺少开始时间"), nil
+		return errors.New(my_errors.CurdGrantFileLackStartAt), nil
 	}
 
 	if val, isOK := parseRes["expire_date"]; isOK && !string_helper.IsEmpty(val) {
 		timestamp := string_helper.ToInt64(val)
 		if timestamp == 0 {
-			return errors.New("授权过期时间错误"), nil
+			return errors.New(my_errors.CurdGrantExpireAtFail), nil
 		}
 		licenseResp.ExpireAt = date_helper.TimestampToDatetimeByFormat(timestamp, variable.DateFormatToday)
 	} else {
-		return errors.New("授权文件缺少过期时间"), nil
+		return errors.New(my_errors.CurdGrantFileLackExpireAt), nil
 	}
 
 	//计算授权时长
@@ -178,30 +178,8 @@ func (crd *License) Parse(path string) (error, *LicenseResp) {
 		licenseResp.Modules.Outreach = licenseResp.Modules.Process
 		licenseResp.Modules.Login = licenseResp.Modules.Process
 		licenseResp.Modules.Threaten = licenseResp.Modules.Process
-		//展示
-		licenseResp.ModuleLabel = append(licenseResp.ModuleLabel,
-			map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModuleProcess, enum_product.EnumStrMap),
-				"val":   moduleList[0],
-			}, map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModuleBlackmail, enum_product.EnumStrMap),
-				"val":   moduleList[1],
-			}, map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModuleTamper, enum_product.EnumStrMap),
-				"val":   moduleList[2],
-			}, map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModulePort, enum_product.EnumStrMap),
-				"val":   moduleList[3],
-			}, map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModulePlug, enum_product.EnumStrMap),
-				"val":   moduleList[4],
-			}, map[string]string{
-				"label": enums.Get1stIsStrAnd2ndIsStrReturnStr("module", enum_product.ModuleUsb, enum_product.EnumStrMap),
-				"val":   moduleList[5],
-			})
-
 	} else {
-		return errors.New("授权文件缺少模块数量"), nil
+		return errors.New(my_errors.CurdGrantModuleNumberFail), nil
 	}
 
 	return nil, licenseResp
