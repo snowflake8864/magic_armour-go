@@ -3,9 +3,11 @@ package tamper_service
 import (
 	"errors"
 	"fmt"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_tamper"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/tamper_models"
@@ -20,7 +22,7 @@ import (
 	"strings"
 )
 
-func CreatePolicyExcelFactory(orgId int64, agentId string) *PolicyExcel {
+func CreatePolicyExcelFactory(orgId int64, agentId string, lang string) *PolicyExcel {
 	return &PolicyExcel{
 		masterModel: tamper_models.CreatePolicyFactory(),
 		orgId:       orgId,
@@ -29,6 +31,7 @@ func CreatePolicyExcelFactory(orgId int64, agentId string) *PolicyExcel {
 		sep:         "|",
 		colsLen:     9,
 		processMap:  make(map[string]string),
+		lang:        lang,
 	}
 }
 
@@ -40,6 +43,8 @@ type PolicyExcel struct {
 	sep         string
 	colsLen     int
 	processMap  map[string]string
+
+	lang string //多语言支持
 }
 
 func (crd *PolicyExcel) generateExportPath() string {
@@ -58,6 +63,58 @@ func (crd *PolicyExcel) getPolicies() []*tamper_models.PolicyModel {
 	return tamper_models.CreatePolicyFactory().GetListByConditions(condition)
 }
 
+func (crd *PolicyExcel) getTop() string {
+	if crd.lang == consts.LanguageZh {
+		return "" +
+			"类型：单个文件或文件夹 如：文件夹\n" +
+			"名称：当前文件或文件夹路径 如：D:\\Backup\\Downloads\n" +
+			"保护中：读取|写入|删除|重命名|新建 如：读取|写入\n" +
+			"包含文件类型：多个以竖线隔开 如: gif|jpg\n" +
+			"排除文件类型：多个以竖线隔开 如: gif|jpg\n" +
+			"排除文件夹：多个以竖线隔开 如: www|test\n" +
+			"继承关系：0否 1是 如：是\n" +
+			"信任进程：多个hash以竖线隔开如: aa|bb"
+	} else {
+		return "" +
+			"Type: Single file or folder e.g., Folder\n" +
+			"Name: Current file or folder path e.g., D:\\Backup\\Downloads\n" +
+			"Protected Operations: Read|Write|Delete|Rename|Create e.g., Read|Write\n" +
+			"Included File Types: Multiple separated by | e.g., gif|jpg\n" +
+			"Excluded File Types: Multiple separated by | e.g., gif|jpg\n" +
+			"Excluded Folders: Multiple separated by | e.g., www|test\n" +
+			"Inheritance: 0=No 1=Yes e.g., Yes\n" +
+			"Trusted Processes: Multiple hashes separated by | e.g., aa|bb"
+	}
+}
+
+func (crd *PolicyExcel) getHeader() []interface{} {
+	if crd.lang == consts.LanguageZh {
+		return []interface{}{
+			"类型",
+			"名称",
+			"保护中",
+			"包含文件类型",
+			"排除文件类型",
+			"排除文件夹",
+			"继承关系",
+			"信任进程",
+			"备注",
+		}
+	} else {
+		return []interface{}{
+			"Type",
+			"Name",
+			"Protected Operations",
+			"Included File Types",
+			"Excluded File Types",
+			"Excluded Folders",
+			"Inheritance",
+			"Trusted Processes",
+			"Remarks",
+		}
+	}
+}
+
 // Export 导出
 func (crd *PolicyExcel) Export() (string, error) {
 	//创建新 Excel 文件
@@ -67,15 +124,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 	_ = excelHandler.InitDefaultStyles()
 
 	//顶部
-	top := "" +
-		"类型：单个文件或文件夹 如：文件夹\n" +
-		"名称：当前文件或文件夹路径 如：D:\\Backup\\Downloads\n" +
-		"保护中：读取|写入|删除|重命名|新建 如：读取|写入\n" +
-		"包含文件类型：多个以竖线隔开 如: gif|jpg\n" +
-		"排除文件类型：多个以竖线隔开 如: gif|jpg\n" +
-		"排除文件夹：多个以竖线隔开 如: www|test\n" +
-		"继承关系：0否 1是 如：是\n" +
-		"信任进程：多个hash以竖线隔开如: aa|bb"
+	top := crd.getTop()
 	if err := excelHandler.MergeCells(crd.sheetName, 1, 1, 1, crd.colsLen); err != nil {
 		return "", fmt.Errorf("merge cells fail: %v", err)
 	}
@@ -85,17 +134,7 @@ func (crd *PolicyExcel) Export() (string, error) {
 	_ = excelHandler.SetRowHeight(crd.sheetName, 1, 160)
 
 	//头部
-	header := []interface{}{
-		"类型",
-		"名称",
-		"保护中",
-		"包含文件类型",
-		"排除文件类型",
-		"排除文件夹",
-		"继承关系",
-		"信任进程",
-		"备注",
-	}
+	header := crd.getHeader()
 	if err := excelHandler.SetHeader(crd.sheetName, "A2", "I2", header); err != nil {
 		return "", fmt.Errorf("set header fail: %v", err)
 	}
@@ -207,8 +246,8 @@ func (crd *PolicyExcel) Import(fullPath string, userId int64, userName string) e
 	// 获取工作表中指定单元格的值
 	if cellVal, err1 := excelHandler.GetCellValue(crd.sheetName, "A2"); err1 != nil {
 		return fmt.Errorf("read file: %v", err1)
-	} else if cellVal != "类型" {
-		return errors.New("文件格式不正确，不能导入")
+	} else if cellVal != "类型" || cellVal != "Type" {
+		return errors.New(my_errors.FilesFormatIncorrect)
 	}
 
 	//获取所有行数据

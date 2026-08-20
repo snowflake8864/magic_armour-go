@@ -18,6 +18,7 @@ import (
 	"goskeleton/app/service/agent/tamper_service"
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -351,7 +352,7 @@ func (u *TamperController) ImportForPolicy(ctx *gin.Context) {
 		return
 	}
 
-	if err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId).Import(uploadParam.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
+	if err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId, cur_userinfo.GetLocales(ctx)).Import(uploadParam.FullPath, loginInfo.UserId, loginInfo.Username); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
@@ -364,7 +365,7 @@ func (u *TamperController) ExportForPolicy(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	agentId := u.getAgentIdFromGin(ctx)
 
-	if fullPath, err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId).Export(); err != nil {
+	if fullPath, err := tamper_service.CreatePolicyExcelFactory(loginInfo.OrgId, agentId, cur_userinfo.GetLocales(ctx)).Export(); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	} else {

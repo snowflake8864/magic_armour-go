@@ -59,6 +59,7 @@ var Messages = map[string]map[string]string{
 		FilesUploadMimeTypeFailMsg:    "文件mime类型不允许",
 		FilesUploadIsEmpty:            "不允许上传空文件",
 		FilesSaveFail:                 "保存文件失败",
+		FilesFormatIncorrect:          "文件格式不正确",
 
 		CurdPleaseWaitPatiently: "请耐心等待",
 		CurdDataIsEmpty:         "数据为空",
