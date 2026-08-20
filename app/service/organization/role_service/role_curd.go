@@ -3,6 +3,7 @@ package role_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -88,7 +89,7 @@ func (crd *RoleCurd) Add(param *role_models.RoleModel) error {
 	param.IsDefault = enums.IsNot
 
 	if !crd.masterModel.InsertItem(param) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -142,7 +143,7 @@ func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 	if isOk, _ := crd.masterModel.UpdateByConditions(role_models.SearchConditions{
 		Id: param.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }
@@ -175,7 +176,7 @@ func (crd *RoleCurd) SaveMenus(param *role_models.RoleModel) error {
 	if isOk, _ := crd.masterModel.UpdateByConditions(role_models.SearchConditions{
 		Id: param.Id,
 	}, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	return nil
 }

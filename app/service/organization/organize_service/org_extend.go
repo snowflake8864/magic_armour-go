@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums/enum_login_solve"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/global/enums/enum_safety_report"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -110,7 +111,7 @@ func (crd *OrgExtend) SetPlugOfPort(orgId int64, config enum_plug.PlugPortConfig
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -123,7 +124,7 @@ func (crd *OrgExtend) SetPlugOfLogin(orgId int64, config enum_plug.PlugLoginConf
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -136,7 +137,7 @@ func (crd *OrgExtend) SetLoginSolve(orgId int64, config enum_login_solve.LoginSo
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -149,7 +150,7 @@ func (crd *OrgExtend) SetAlarmNoticeConfig(orgId int64, config enum_safety_repor
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }
 
@@ -162,6 +163,6 @@ func (crd *OrgExtend) SetHardwareNoticeConfig(orgId int64, config enum_safety_re
 	if crd.masterModel.UpdateById(orgId, updates) {
 		return nil
 	} else {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 }

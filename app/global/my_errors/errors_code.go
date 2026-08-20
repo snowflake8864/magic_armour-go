@@ -119,6 +119,7 @@ const (
 	CurdDllNotEnabled               string = "CurdDllNotEnabled"
 	CurdTrustProcessDataError       string = " TrustProcessDataError"
 	CurdDepartmentNotExist          string = "CurdDepartmentNotExist"
+	CurdDepartmentParentNotExist    string = "CurdDepartmentParentNotExist"
 	CurdDepartmentNoToManage        string = "CurdDepartmentNoToManage"
 	CurdDepartmentMustSelect        string = "CurdDepartmentMustSelect"
 	CurdDepartmentOnlyChooseYour    string = "CurdDepartmentOnlyChooseYour"

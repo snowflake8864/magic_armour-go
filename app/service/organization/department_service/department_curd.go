@@ -3,6 +3,7 @@ package department_service
 import (
 	"errors"
 	"gorm.io/gorm"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/int_helper"
@@ -110,7 +111,7 @@ func (crd *DepartmentCurd) Add(param *department_models.DepartmentModel) error {
 			fullName = json_helper.ToSliceString(parentModel.FullName)
 			param.FullCode = parentModel.FullCode
 		} else {
-			return errors.New("父级菜单不存在")
+			return errors.New(my_errors.CurdDepartmentParentNotExist)
 		}
 	}
 	fullName = append(fullName, param.Name)
@@ -118,7 +119,7 @@ func (crd *DepartmentCurd) Add(param *department_models.DepartmentModel) error {
 
 	err := crd.masterModel.Transaction(func(tx *gorm.DB) error {
 		if !crd.masterModel.InsertItem(param) {
-			return errors.New("添加失败")
+			return errors.New(my_errors.CurdAddFailed)
 		}
 
 		//修改
@@ -130,7 +131,7 @@ func (crd *DepartmentCurd) Add(param *department_models.DepartmentModel) error {
 			"full_code": strings.Trim(param.FullCode+SEPARATOR+int_helper.Int64ToStr(param.Id), SEPARATOR),
 		}
 		if !crd.masterModel.UpdateByConditions(conditions, updates) {
-			return errors.New("保存失败")
+			return errors.New(my_errors.CurdSaveFailed)
 		}
 
 		return nil
@@ -150,7 +151,7 @@ func (crd *DepartmentCurd) UpdateById(param *department_models.DepartmentModel) 
 	}
 	models, err := crd.masterModel.GetListByConditions(conditions)
 	if err != nil || models == nil || len(models) == 0 {
-		return errors.New("菜单不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 	err = crd.masterModel.Transaction(func(tx *gorm.DB) error {
 		for _, model := range models {
@@ -180,7 +181,7 @@ func (crd *DepartmentCurd) UpdateById(param *department_models.DepartmentModel) 
 				}
 
 				if !crd.masterModel.UpdateByConditions(conditions, updates) {
-					return errors.New("保存失败")
+					return errors.New(my_errors.CurdSaveFailed)
 				}
 
 			}

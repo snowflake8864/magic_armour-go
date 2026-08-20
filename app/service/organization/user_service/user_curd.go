@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
@@ -129,7 +130,7 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 		"role_id":  userParam.RoleId,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()
@@ -167,7 +168,7 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()
@@ -201,7 +202,7 @@ func (crd *UserCurd) DeleteForSub(userParam *user_models.UserModel, netIp string
 		Id:    userParam.Id,
 	}
 	if !crd.masterModel.DeleteByConditions(conditions) {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()
@@ -447,7 +448,7 @@ func (crd *UserCurd) ModifyInfoById(userParam *user_models.UserModel, netIp stri
 		"intro":    userParam.Intro,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
-		return errors.New("保存失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 	//新增企业日志
 	logFact := org_log_service.CreateOrgLogFactory()

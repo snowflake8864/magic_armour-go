@@ -96,6 +96,7 @@ var Messages = map[string]map[string]string{
 		CurdDllNotEnabled:               "模块功能没有开启",
 		CurdTrustProcessDataError:       "信任进程数据数据错误",
 		CurdDepartmentNotExist:          "组织架构不存在",
+		CurdDepartmentParentNotExist:    "父级不存在",
 		CurdDepartmentNoToManage:        "没有需要管理的组织架构",
 		CurdDepartmentMustSelect:        "必须选择一个组织架构",
 		CurdDepartmentOnlyChooseYour:    "只能选择属于自己的组织架构",
