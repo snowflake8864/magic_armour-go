@@ -397,7 +397,7 @@ func (crd *BackupExcel) Export() (string, error) {
 	defer excelHandler.Close()
 
 	//行数据
-	headerData := []interface{}{"类型", "数据"}
+	headerData := []interface{}{"Type", "Data"}
 
 	//信任目录
 	crd.fillTrustDirGlobal()
