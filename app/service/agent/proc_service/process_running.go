@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/task_service"
 )
