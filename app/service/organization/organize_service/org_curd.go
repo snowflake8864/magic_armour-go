@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/validator/common/common_regexp"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
@@ -61,10 +62,10 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 
 	//用户已存在
 	if userExist := user_service.CreateCurdFactory().GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
-		return -1, errors.New("用户名已存在")
+		return -1, errors.New(my_errors.CurdUsernameAlreadyExists)
 	}
 	if userExist := user_service.CreateCurdFactory().GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 {
-		return -1, errors.New("手机号码已存在")
+		return -1, errors.New(my_errors.CurdPhoneAlreadyExists)
 	}
 
 	//企业已存在
@@ -73,13 +74,13 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	} else {
 		orgExist := crd.GetItemByName(orgParam.Name)
 		if orgExist.Id > 0 {
-			return -1, errors.New("企业名称已存在")
+			return -1, errors.New(my_errors.CurdOrgNameAlreadyExists)
 		}
 	}
 
 	tx := crd.masterModel.Begin()
 	if tx.Error != nil {
-		return -10, errors.New("保存企业失败")
+		return -10, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业
@@ -98,14 +99,14 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	orgParam.Code = crd.makeCode()
 	if err = tx.Create(orgParam).Error; err != nil {
 		tx.Rollback()
-		return -1, errors.New("保存企业失败")
+		return -1, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业扩展
 	OrgExtendParam := CreateOrgExtendFactory().InitDefault(orgParam.Id)
 	if err = tx.Create(&OrgExtendParam).Error; err != nil {
 		tx.Rollback()
-		return -2, errors.New("保存企业配置失败")
+		return -2, errors.New(my_errors.CurdOrgConfigSaveFailed)
 	}
 
 	//新增企业用户
@@ -115,7 +116,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	userParam.CreatedAt = orgParam.CreatedAt
 	if err = tx.Create(&userParam).Error; err != nil {
 		tx.Rollback()
-		return -3, errors.New("注册企业用户失败")
+		return -3, errors.New(my_errors.CurdOrgUserSaveFailed)
 	}
 
 	//新增企业日志
@@ -137,7 +138,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	}
 	if err = tx.Create(&orgLogParam).Error; err != nil {
 		tx.Rollback()
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	tx.Commit()
@@ -149,10 +150,10 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo *admin
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgExist.Status != enum_organization.StatusVerifying {
-		return -1, errors.New("企业状态异常，不能进行审核操作")
+		return -1, errors.New(my_errors.CurdOrgStatusException)
 	}
 
 	//修改
@@ -160,7 +161,7 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo *admin
 		"status": enum_organization.StatusNormal,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("企业账户审核失败")
+		return -1, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业日志
@@ -171,7 +172,7 @@ func (crd *OrgCurd) Approved(orgId int64, reason, netIp string, loginInfo *admin
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	//默认企业角色
@@ -185,10 +186,10 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo *admin_ser
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgExist.Status != enum_organization.StatusNormal {
-		return -1, errors.New("企业状态异常，不能进行锁定操作")
+		return -1, errors.New(my_errors.CurdOrgStatusException)
 	}
 
 	//修改
@@ -196,7 +197,7 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo *admin_ser
 		"status": enum_organization.StatusLocking,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("企业账户锁定失败")
+		return -1, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业日志
@@ -207,7 +208,7 @@ func (crd *OrgCurd) Lock(orgId int64, reason, netIp string, loginInfo *admin_ser
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return errCode, err
@@ -218,10 +219,10 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo *admin_s
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgExist.Status != enum_organization.StatusLocking {
-		return -1, errors.New("企业状态异常，不能进行解锁操作")
+		return -1, errors.New(my_errors.CurdOrgStatusException)
 	}
 
 	//修改
@@ -230,7 +231,7 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo *admin_s
 		"is_clean": enums.IsNot,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("企业账户解锁失败")
+		return -1, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业日志
@@ -241,7 +242,7 @@ func (crd *OrgCurd) Unlock(orgId int64, reason, netIp string, loginInfo *admin_s
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return errCode, err
@@ -252,13 +253,13 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo *admin_se
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgExist.Status != enum_organization.StatusLocking {
-		return -1, errors.New("企业状态不是锁定中，不能进行清理操作")
+		return -1, errors.New(my_errors.CurdOrgStatusException)
 	}
 	if orgExist.IsClean == enums.IsYes {
-		return -1, errors.New("企业不能重复清理数据")
+		return -1, errors.New(my_errors.CurdOrgCannotRepeatClear)
 	}
 
 	//修改
@@ -267,7 +268,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo *admin_se
 		"is_clean": enums.IsYes,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("企业清理业务数据失败")
+		return -1, errors.New(my_errors.CurdOrgSaveFailed)
 	}
 
 	//新增企业日志
@@ -278,7 +279,7 @@ func (crd *OrgCurd) Clean(orgId int64, reason, netIp string, loginInfo *admin_se
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	//企业级卸载终端任务
@@ -299,7 +300,7 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改
@@ -307,7 +308,7 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 		"huanshi_switch": openSwitch,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("保存数据失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增企业日志
@@ -317,12 +318,12 @@ func (crd *OrgCurd) SetHsSwitch(orgId int64, openSwitch int, netIp string, login
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	if openSwitch == enums.IsYes {
-		orgLogParam.Content = "开启"
+		orgLogParam.Content = "Enable"
 	} else {
-		orgLogParam.Content = "关闭"
+		orgLogParam.Content = "Disable"
 	}
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return errCode, err
@@ -333,7 +334,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改
@@ -341,7 +342,7 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 		"login_phone_check": openSwitch,
 	}
 	if !crd.masterModel.UpdateById(orgId, updates) {
-		return -1, errors.New("保存数据失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增企业日志
@@ -351,12 +352,12 @@ func (crd *OrgCurd) SetLoginSmsSwitch(orgId int64, openSwitch int, netIp string,
 	orgLogParam.OperateId = loginInfo.AdminId
 	orgLogParam.OperateName = loginInfo.Username
 	if openSwitch == enums.SwitchOn {
-		orgLogParam.Content = "开启"
+		orgLogParam.Content = "Enable"
 	} else {
-		orgLogParam.Content = "关闭"
+		orgLogParam.Content = "Disable"
 	}
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return errCode, err
@@ -367,25 +368,25 @@ func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo *admin_
 	//验证企业
 	orgExist := crd.GetItemByOrg(orgId)
 	if orgExist.Id == 0 {
-		return -1, errors.New("企业不存在")
+		return -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgExist.Status != enum_organization.StatusVerifying {
-		return -1, errors.New("企业状态异常，不能进行审核操作")
+		return -1, errors.New(my_errors.CurdOrgStatusException)
 	}
 
 	//删除企业
 	if !crd.masterModel.DeleteById(orgId) {
-		return -1, errors.New("企业账户删除失败")
+		return -1, errors.New(my_errors.CurdOrgDelete)
 	}
 
 	//删除企业扩展
 	if !CreateOrgExtendFactory().DeleteByOrg(orgId) {
-		return -1, errors.New("企业配置删除失败")
+		return -1, errors.New(my_errors.CurdOrgConfigDelete)
 	}
 
 	//删除企业用户
 	if !user_service.CreateCurdFactory().DeleteByOrg(orgId) {
-		return -1, errors.New("企业用户删除失败")
+		return -1, errors.New(my_errors.CurdOrgUserDelete)
 	}
 
 	//新增企业日志
@@ -396,7 +397,7 @@ func (crd *OrgCurd) Refused(orgId int64, reason, netIp string, loginInfo *admin_
 	orgLogParam.OperateName = loginInfo.Username
 	orgLogParam.Content = reason
 	if !logFact.Add(&orgLogParam) {
-		return -3, errors.New("保存企业日志失败")
+		return -3, errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return errCode, err
