@@ -129,4 +129,5 @@ const (
 	CurdSamePolicyExistCannotAdd string = "CurdSamePolicyExistCannotAdd"
 	CurdOnlyModifyOneselfAdded   string = "CurdOnlyModifyOneselfAdded"
 	CurdOnlyDeleteOneselfAdded   string = "CurdOnlyDeleteOneselfAdded"
+	CurdDetectListMaxLimit       string = "CurdDetectListMaxLimit"
 )

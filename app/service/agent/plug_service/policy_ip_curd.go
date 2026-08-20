@@ -49,7 +49,7 @@ func (crd *PolicyIpCurd) Add(param *plug_models.IpPolicyModel) error {
 
 	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(param.OrgId, param.AgentId, "添加")
+		crd.addTask(param.OrgId, param.AgentId, "Add")
 	}
 
 	return nil

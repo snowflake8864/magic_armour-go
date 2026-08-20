@@ -62,7 +62,7 @@ func (crd *GlobalIpCurd) Add(param *plug_models.IpGlobalModel) error {
 
 	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(param.OrgId, "添加")
+		crd.addTask(param.OrgId, "Add")
 	}
 
 	return nil

@@ -45,7 +45,7 @@ func (crd *DetectCurd) Add(param *outreach_models.DetectModel) error {
 	limit := string_helper.ToInt64(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentOutreachDetectMax))
 	if limit > 0 {
 		if crd.masterModel.Count(outreach_models.SearchConditions{OrgId: param.OrgId}) > limit {
-			return errors.New("探测名单已达到最大限制")
+			return errors.New(my_errors.CurdDetectListMaxLimit)
 		}
 	}
 
@@ -70,7 +70,7 @@ func (crd *DetectCurd) Add(param *outreach_models.DetectModel) error {
 	}
 
 	//新增任务
-	crd.addTask(param.OrgId, "添加")
+	crd.addTask(param.OrgId, "Add")
 
 	return nil
 }

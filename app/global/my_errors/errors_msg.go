@@ -106,6 +106,7 @@ var Messages = map[string]map[string]string{
 		CurdSamePolicyExistCannotAdd: "已存在相同策略，不能重复添加",
 		CurdOnlyModifyOneselfAdded:   "只能修改自己添加的策略(管理员除外)",
 		CurdOnlyDeleteOneselfAdded:   "只能删除自己添加的策略(管理员除外)",
+		CurdDetectListMaxLimit:       "探测名单已达到最大限制",
 	},
 	"en": {},
 }
