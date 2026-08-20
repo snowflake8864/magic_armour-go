@@ -191,7 +191,7 @@ func (crd *PolicyIpCurd) DeleteByAgentAndType(param *plug_models.IpPolicyModel, 
 
 	//新增任务
 	if param.Type == enum_plug.IpTypeBlack {
-		crd.addTask(param.OrgId, param.AgentId, "删除全部")
+		crd.addTask(param.OrgId, param.AgentId, "Clear")
 	}
 
 	return nil

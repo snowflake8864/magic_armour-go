@@ -48,7 +48,7 @@ func (crd *PolicyDynamicCurd) AutoDisable(orgId int64, agentId string, at string
 
 	if rows > 0 {
 		//新增任务
-		crd.addTask(orgId, agentId, "到期自动解封")
+		crd.addTask(orgId, agentId, "expired Auto Disabled")
 	}
 
 	return nil
@@ -86,7 +86,7 @@ func (crd *PolicyDynamicCurd) DisableById(param *plug_models.DynamicModel) error
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.AgentId, "解封")
+	crd.addTask(hashModel.OrgId, hashModel.AgentId, "Disabled")
 
 	return nil
 }
@@ -112,7 +112,7 @@ func (crd *PolicyDynamicCurd) DisableByAgentAndIds(param *plug_models.DynamicMod
 	}
 
 	//新增任务
-	crd.addTask(param.OrgId, param.AgentId, "终端批量解封")
+	crd.addTask(param.OrgId, param.AgentId, "Agents Disabled")
 
 	return nil
 }
@@ -138,7 +138,7 @@ func (crd *PolicyDynamicCurd) DisableByAgentsAndIds(param *plug_models.DynamicMo
 	}
 
 	//任务
-	task_service.CreateCurdFactory().AddTaskForAgents(param.OrgId, agentIds, enum_task.TypePluggingDownload, "批量解封")
+	task_service.CreateCurdFactory().AddTaskForAgents(param.OrgId, agentIds, enum_task.TypePluggingDownload, "Batch Disabled")
 
 	return nil
 }

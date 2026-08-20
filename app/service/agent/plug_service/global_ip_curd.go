@@ -62,7 +62,7 @@ func (crd *GlobalIpCurd) Add(param *plug_models.IpGlobalModel) error {
 
 	if param.Type == enum_plug.IpTypeBlack && param.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(param.OrgId, "Add")
+		crd.addTask(param.OrgId, "Global Add")
 	}
 
 	return nil
@@ -117,7 +117,7 @@ func (crd *GlobalIpCurd) Edit(param *plug_models.IpGlobalModel, isRoot int) erro
 
 	if hashModel.Type == enum_plug.IpTypeBlack && hashModel.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(hashModel.OrgId, "Edit")
+		crd.addTask(hashModel.OrgId, "Global Edit")
 	}
 
 	return nil
@@ -152,7 +152,7 @@ func (crd *GlobalIpCurd) SetSwitch(param *plug_models.IpGlobalModel, isRoot int)
 
 	//新增任务
 	if hashModel.Type == enum_plug.IpTypeBlack {
-		crd.addTask(hashModel.OrgId, "Switch")
+		crd.addTask(hashModel.OrgId, "Global Switch")
 	}
 
 	return nil
@@ -182,7 +182,7 @@ func (crd *GlobalIpCurd) DeleteById(param *plug_models.IpGlobalModel, isRoot int
 
 	//新增任务
 	if hashModel.Type == enum_plug.IpTypeBlack {
-		crd.addTask(hashModel.OrgId, "Delete")
+		crd.addTask(hashModel.OrgId, "Global Delete")
 	}
 
 	return nil
@@ -206,7 +206,7 @@ func (crd *GlobalIpCurd) DeleteByAgentAndType(param *plug_models.IpPolicyModel, 
 
 	//新增任务
 	if param.Type == enum_plug.IpTypeBlack {
-		crd.addTask(param.OrgId, "删除全部")
+		crd.addTask(param.OrgId, "Global Clear")
 	}
 
 	return nil
