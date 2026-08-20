@@ -87,6 +87,7 @@ const (
 	CurdDataIsEmpty         string = "CurdDataIsEmpty"
 	CurdDataCannotEmpty     string = "CurdDataCannotEmpty"
 	CurdDataNotExist        string = "CurdDataNotExist"
+	CurdDataExists          string = "CurdDataExists"
 	CurdInvalidParameter    string = "CurdInvalidParameter"
 	CurdCacheNotExist       string = "CurdCacheNotExist"
 	CurdCacheFailed         string = "CurdCacheFailed"
@@ -134,4 +135,9 @@ const (
 	CurdPortRangeInvalid            string = "CurdPortRangeInvalid"
 	CurdPortRepeatedAdd             string = "CurdPortRepeatedAdd"
 	CurdPortRepeatedWithExistPolicy string = "CurdPortRepeatedWithExistPolicy"
+	CurdDataCannotModifyStatus      string = "CurdDataCannotModifyStatus"
+	CurdDataCannotCancel            string = "CurdDataCannotCancel"
+	CurdGlobalListMaxLimit          string = "CurdGlobalListMaxLimit"
+	CurdDataExistsAndSampleOK       string = "CurdDataExistsAndSampleOK"
+	CurdDataExistsAndSampleGetting  string = "CurdDataExistsAndSampleGetting"
 )

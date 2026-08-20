@@ -46,7 +46,7 @@ func (crd *DllCurd) BatchUnsetToWhiteByAgents(orgId int64, agentIds []string) er
 
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
 	if !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 
 	if rows > 0 {
@@ -54,7 +54,7 @@ func (crd *DllCurd) BatchUnsetToWhiteByAgents(orgId int64, agentIds []string) er
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
 		}
-		task_service.CreateCurdFactory().AddTasksForAgents(orgId, agentIds, types, "批量把终端下未设置变成白名单")
+		task_service.CreateCurdFactory().AddTasksForAgents(orgId, agentIds, types, "Batch White On Agents Unset")
 	}
 
 	return nil
@@ -67,7 +67,7 @@ func (crd *DllCurd) SetStatus(orgId int64, agentId string, hash string, status i
 		return errors.New(my_errors.CurdDataNotExist)
 	}
 	if isOk := enum_process.BtnChangeEnable(hasModel.GlobalStatus); isOk == 0 {
-		return errors.New("当前数据不允许修改状态")
+		return errors.New(my_errors.CurdDataCannotModifyStatus)
 	}
 	condition := proc_models.SearchConditions{
 		OrgId:   orgId,
@@ -77,14 +77,14 @@ func (crd *DllCurd) SetStatus(orgId int64, agentId string, hash string, status i
 	updates := crd.getUpdatesForSetStatus(status)
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
 	if !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 	if rows > 0 {
 		types := []int{
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
 		}
-		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "设置状态")
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "Set Status")
 	}
 
 	return nil
@@ -97,7 +97,7 @@ func (crd *DllCurd) Cancel(orgId int64, agentId string, hash string) error {
 		return errors.New(my_errors.CurdDataNotExist)
 	}
 	if isOk := enum_process.BtnCancelEnable(hasModel.SelfStatus); isOk == 0 {
-		return errors.New("当前数据不允许取消")
+		return errors.New(my_errors.CurdDataCannotCancel)
 	}
 	condition := proc_models.SearchConditions{
 		OrgId:   orgId,
@@ -107,14 +107,14 @@ func (crd *DllCurd) Cancel(orgId int64, agentId string, hash string) error {
 	updates := crd.getUpdatesForCancel()
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
 	if !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 	if rows > 0 {
 		types := []int{
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
 		}
-		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "取消")
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "Cancel")
 	}
 
 	return nil
@@ -137,14 +137,14 @@ func (crd *DllCurd) BatchWhiteByHashes(orgId int64, agentId string, hashes []str
 	updates := crd.getUpdatesForBatchWhite()
 	isOk, rows := crd.masterModel.UpdateByConditions(condition, updates)
 	if !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 	if rows > 0 {
 		types := []int{
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
 		}
-		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "批量白名单")
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "Batch Whitelist")
 	}
 
 	return nil
@@ -166,7 +166,7 @@ func (crd *DllCurd) BatchDeleteByHashes(orgId int64, agentId string, hashes []st
 		enum_task.TypeDllWhiteDownload,
 		enum_task.TypeDllBlackDownload,
 	}
-	task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "批量删除")
+	task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "Batch Delete")
 
 	return nil
 }
@@ -188,7 +188,7 @@ func (crd *DllCurd) DeleteByAgent(orgId int64, agentId string, task bool) error 
 			enum_task.TypeDllWhiteDownload,
 			enum_task.TypeDllBlackDownload,
 		}
-		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "清空")
+		task_service.CreateCurdFactory().AddTasksForAgent(orgId, agentId, types, "Clear")
 	}
 	return nil
 }

@@ -45,7 +45,7 @@ func (crd *GlobalCurd) isMaxLimit(orgId int64, dataFrom int, number int) error {
 	total := crd.masterModel.Count(condition)
 
 	if (limit - total - int64(number)) < 0 {
-		return errors.New("全局名单库已达到最大限制条目")
+		return errors.New(my_errors.CurdGlobalListMaxLimit)
 	}
 	return nil
 }
@@ -57,7 +57,7 @@ func (crd *GlobalCurd) Add(param *proc_models.ProcGlobalModel) error {
 
 	hasModel := crd.masterModel.GetItemByOrgAndId(param.OrgId, param.Id)
 	if hasModel != nil && hasModel.OrgId != 0 {
-		return errors.New("数据已存在")
+		return errors.New(my_errors.CurdDataExists)
 	}
 	if err := crd.isMaxLimit(param.OrgId, param.DataFrom, 1); err != nil {
 		return err

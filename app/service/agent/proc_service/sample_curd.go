@@ -27,10 +27,10 @@ func (crd *SampleCurd) Add(model *proc_models.ProcSampleModel) error {
 	hasModel := crd.masterModel.GetItemByOrgAndAgentAndHash(model.OrgId, model.AgentId, model.Id)
 	if hasModel != nil {
 		if hasModel.Status == enum_process.SampleStatusFinished {
-			return errors.New("数据已存在且提取样本成功")
+			return errors.New(my_errors.CurdDataExistsAndSampleOK)
 		}
 		if hasModel.Status == enum_process.SampleStatusGetting {
-			return errors.New("数据已存在且正在提取中")
+			return errors.New(my_errors.CurdDataExistsAndSampleGetting)
 		}
 	}
 
@@ -63,7 +63,7 @@ func (crd *SampleCurd) UploadSuccess(orgId int64, agentId string, id string, upl
 		"full_path":     path_helper.ToStandard(uploadModel.FullPath),
 	}
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 	return nil
 }
@@ -80,7 +80,7 @@ func (crd *SampleCurd) UploadFail(orgId int64, agentId string, id string) error 
 		"status": enum_process.SampleStatusFail,
 	}
 	if isOk, _ := crd.masterModel.UpdateByConditions(conditions, updates); !isOk {
-		return errors.New("修改失败")
+		return errors.New(my_errors.CurdModifyFailed)
 	}
 	return nil
 }
