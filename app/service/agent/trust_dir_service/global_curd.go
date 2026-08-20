@@ -142,7 +142,7 @@ func (crd *GlobalCurd) Edit(param *trust_dir_models.GlobalModel, isRoot int) err
 
 	if hashModel.OpenSwitch == enums.SwitchOn {
 		//新增任务
-		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局:修改")
+		crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "Global Modify")
 	}
 	return nil
 }
@@ -183,7 +183,7 @@ func (crd *GlobalCurd) SetSwitch(param *trust_dir_models.GlobalModel, isRoot int
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局:开关")
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "Global Switch")
 
 	return nil
 }
@@ -219,7 +219,7 @@ func (crd *GlobalCurd) DeleteById(param *trust_dir_models.GlobalModel, isRoot in
 	}
 
 	//新增任务
-	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "全局:删除")
+	crd.addTask(hashModel.OrgId, hashModel.PlatformType, deptIds, "Global Delete")
 
 	return nil
 }
