@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/excel_helper"
@@ -44,12 +45,12 @@ func (crd *ThreatenImport) ParseExcel(filename string) error {
 	if cellVal, err1 := excelHandler.GetCellValue(crd.sheetName, "A1"); err1 != nil {
 		return fmt.Errorf("read file: %v", err1)
 	} else if cellVal != "HASH" {
-		return errors.New("文件格式不正确，不能导入")
+		return errors.New(my_errors.FilesFormatIncorrect)
 	}
 	if cellVal, err1 := excelHandler.GetCellValue(crd.sheetName, "B1"); err1 != nil {
 		return fmt.Errorf("read file: %v", err1)
 	} else if cellVal != "类型" {
-		return errors.New("文件格式不正确，不能导入")
+		return errors.New(my_errors.FilesFormatIncorrect)
 	}
 
 	//获取所有行数据

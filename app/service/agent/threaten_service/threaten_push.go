@@ -3,6 +3,7 @@ package threaten_service
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/threaten_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/path_helper"
@@ -85,7 +86,7 @@ func (crd *ThreatenPush) BatchAdd(list []threaten_models.PushModel, level int, o
 	}
 
 	if !crd.masterModel.InsertBatch(&inserts) {
-		return -3, errors.New("保数据失败")
+		return -3, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return errCode, err
