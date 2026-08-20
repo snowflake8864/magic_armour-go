@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/global/enums/enum_threaten"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/agent/threaten_models"

@@ -3,6 +3,7 @@ package job_callback_syslog
 import (
 	"errors"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"

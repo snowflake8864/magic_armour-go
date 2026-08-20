@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model"
 	"goskeleton/app/model/agent/proc_models"
