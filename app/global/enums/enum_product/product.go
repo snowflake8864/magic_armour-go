@@ -197,6 +197,41 @@ func (c *ProductGrantConfig) SelectedTxt() (txtList []string) {
 	return txtList
 }
 
+// SelectedTxtEn 选中模块文案
+func (c *ProductGrantConfig) SelectedTxtEn() (txtList []string) {
+	if c.Process != enums.IsNot {
+		txtList = append(txtList, "Trusted Protection")
+	}
+	if c.Tamper != enums.IsNot {
+		txtList = append(txtList, "Anti-Tampering")
+	}
+	if c.Blackmail != enums.IsNot {
+		txtList = append(txtList, "Blackmail Protection")
+	}
+	if c.Port != enums.IsNot {
+		txtList = append(txtList, "Port Deception")
+	}
+	if c.Plug != enums.IsNot {
+		txtList = append(txtList, "Dynamic Blocking")
+	}
+	if c.Usb != enums.IsNot {
+		txtList = append(txtList, "Peripheral Management")
+	}
+	if c.Syslog != enums.IsNot {
+		txtList = append(txtList, "Communication Log")
+	}
+	if c.Outreach != enums.IsNot {
+		txtList = append(txtList, "Outreach Control")
+	}
+	if c.Login != enums.IsNot {
+		txtList = append(txtList, "Password Cracking Protection")
+	}
+	if c.Threaten != enums.IsNot {
+		//txtList = append(txtList, "Threat Intelligence")
+	}
+	return txtList
+}
+
 // Num2Config 数字转成标准配置
 func (c *ProductGrantConfig) Num2Config() (r ProductGrantConfig) {
 	if c.Process == 0 {

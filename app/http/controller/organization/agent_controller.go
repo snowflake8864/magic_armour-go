@@ -103,7 +103,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 	//软件最新发布
 	softwareNewest := software_service.CreateCurdFactory().GetMapsByPublished()
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransManagePage(total, agentModels, departmentMaps, softwareNewest))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransManagePage(total, agentModels, departmentMaps, softwareNewest))
 }
 
 // DeleteForManage 管理: 删除
@@ -218,7 +218,7 @@ func (u *AgentController) GetForBasic(ctx *gin.Context) {
 	curdFact := agent_models.CreateAgentFactory()
 	model := curdFact.GetItemByOrgAndAgent(u.getLogin(ctx).OrgId, agentId, curdFact.ColumnBasic(true, false))
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransSingle(model))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransSingle(model))
 }
 
 // SaveForBasic 基本信息：保存
@@ -267,7 +267,7 @@ func (u *AgentController) GetForConfig(ctx *gin.Context) {
 	curdFact := agent_models.CreateAgentFactory()
 	model := curdFact.GetItemByOrgAndAgent(u.getLogin(ctx).OrgId, agentId, curdFact.ColumnConfig(true, true))
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransSingle(model))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransSingle(model))
 }
 
 // SaveForConfig 配置信息：保存
