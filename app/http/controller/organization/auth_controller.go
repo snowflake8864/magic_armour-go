@@ -74,14 +74,14 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 		return
 	}
 	if string_helper.IsEmpty(userModel.Phone) {
-		response.FailRoutine(ctx, -97, my_errors.CurdTwoFactorAuthNotEnabled)
+		response.FailRoutine(ctx, -97, my_errors.CurdTwoFactorAuthDisabled)
 		return
 	}
 	if err, smsSwitch := authFact.IsPhoneCheck(userModel.Phone, userModel.OrgId); err != nil {
 		response.FailSimplify(ctx, err.Error())
 		return
 	} else if !smsSwitch {
-		response.FailRoutine(ctx, -98, my_errors.CurdTwoFactorAuthNotEnabled)
+		response.FailRoutine(ctx, -98, my_errors.CurdTwoFactorAuthDisabled)
 		return
 	}
 	authFact.GenerateBySms(user_service.ActonLogin, userModel.Phone)
@@ -117,7 +117,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 		return
 	}
 
-	result, errCode, err := user_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP())
+	result, errCode, err := user_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP(), cur_userinfo.GetLocales(ctx))
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

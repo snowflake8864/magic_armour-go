@@ -36,12 +36,12 @@ func (crd *RoleCurd) defaultAdministratorMenus() string {
 // AddDefault 新增默认
 func (crd *RoleCurd) AddDefault(orgId int64) bool {
 	now := date_helper.CurDatetime()
-	remark := "默认"
+	remark := "Default"
 
 	params := []role_models.RoleModel{
 		{
 			OrgId:      orgId,
-			Name:       "管理员",
+			Name:       "Administrator",
 			Remark:     remark,
 			Menus:      crd.defaultAdministratorMenus(),
 			IsDefault:  enums.IsYes,
@@ -51,7 +51,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 		},
 		{
 			OrgId:      orgId,
-			Name:       "操作员",
+			Name:       "Operator",
 			Remark:     remark,
 			Menus:      crd.defaultOperatorMenus(),
 			IsDefault:  enums.IsYes,
@@ -61,7 +61,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 		},
 		{
 			OrgId:      orgId,
-			Name:       "审计员",
+			Name:       "Auditor",
 			Remark:     remark,
 			Menus:      crd.defaultAuditorMenus() + ",53,54",
 			IsDefault:  enums.IsYes,
@@ -77,7 +77,7 @@ func (crd *RoleCurd) AddDefault(orgId int64) bool {
 // Add 新增
 func (crd *RoleCurd) Add(param *role_models.RoleModel) error {
 	if crd.existsName(param.Name, param.OrgId, 0) {
-		return errors.New("名称已存在")
+		return errors.New(my_errors.CurdNameAlreadyExists)
 	}
 
 	if string_helper.IsEmpty(param.CreatedAt) {
@@ -125,13 +125,13 @@ func (crd *RoleCurd) HasId(id int64, orgId int64) *role_models.RoleModel {
 // UpdateById 删除
 func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 	if existsModel := crd.HasId(param.Id, param.OrgId); existsModel == nil {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if existsModel.IsDefault == enums.IsYes {
-		return errors.New("默认数据不让修改")
+		return errors.New(my_errors.CurdDataDefaultNotModify)
 	}
 
 	if crd.existsName(param.Name, param.OrgId, param.Id) {
-		return errors.New("名称已存在")
+		return errors.New(my_errors.CurdNameAlreadyExists)
 	}
 
 	//修改
@@ -151,13 +151,13 @@ func (crd *RoleCurd) UpdateById(param *role_models.RoleModel) error {
 // DeleteById 删除
 func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
 	if existsModel := crd.HasId(id, orgId); existsModel == nil {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	} else if existsModel.IsDefault == enums.IsYes {
-		return errors.New("默认数据不让删除")
+		return errors.New(my_errors.CurdDataDefaultNotDelete)
 	}
 
 	if !crd.masterModel.DeleteByConditions(role_models.SearchConditions{Id: id}) {
-		return errors.New("删除")
+		return errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return nil
@@ -166,7 +166,7 @@ func (crd *RoleCurd) DeleteById(id int64, orgId int64) error {
 // SaveMenus 保存菜单
 func (crd *RoleCurd) SaveMenus(param *role_models.RoleModel) error {
 	if existsModel := crd.HasId(param.Id, param.OrgId); existsModel == nil {
-		return errors.New("数据不存在")
+		return errors.New(my_errors.CurdDataNotExist)
 	}
 	//修改
 	updates := map[string]interface{}{

@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/global/enums/enum_org_operate"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_user"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/department_service"
@@ -191,7 +192,7 @@ func (crd *UserAuth) IsPhoneCheck(userPhone string, orgId int64) (err error, isP
 	//企业开关
 	orgModel, _ := organization_models.CreateOrganizationFactory().GetItemById(orgId)
 	if orgModel == nil || orgModel.Id == 0 {
-		return errors.New("用户名或密码错误"), false
+		return errors.New(my_errors.CurdUsernameOrPwFail), false
 	} else if orgModel.LoginPhoneCheck == enums.SwitchOn {
 		return nil, true
 	} else {
@@ -206,9 +207,9 @@ func (crd *UserAuth) EncryptPw(pw string) string {
 }
 
 // LoginByPw 密码登录
-func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
+func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string, lang string) (backInfo *UserBackLogin, errCode int, err error) {
 	if !crd.CheckBySlider(ActonLogin, username, slider) {
-		return nil, -88, errors.New("滑块不正确")
+		return nil, -88, errors.New(my_errors.CurdSliderIncorrect)
 	}
 	if err = crd.IsLocking(username); err != nil {
 		return nil, -1, err
@@ -220,10 +221,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		return nil, -1, err
 	}
 	if userModel.Status == enum_user.StatusLocking {
-		return nil, -99, errors.New("用户已锁定，请联系管理员")
+		return nil, -99, errors.New(my_errors.CurdUserLocking)
 	}
 	if userModel.Status == enum_user.StatusVerifying {
-		return nil, -99, errors.New("用户审核中，请联系管理员")
+		return nil, -99, errors.New(my_errors.CurdUserVerifying)
 	}
 
 	//短信验证
@@ -231,10 +232,10 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		return nil, -99, err1
 	} else if smsSwitch {
 		if string_helper.IsEmpty(sms) {
-			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
+			return nil, -99, errors.New(my_errors.CurdTwoFactorAutEnabled)
 		}
 		if !crd.CheckBySms(ActonLogin, userModel.Phone, sms) {
-			return nil, -99, errors.New("短信验证码不一致")
+			return nil, -99, errors.New(my_errors.CurdSmsVerifyCodeNotMatch)
 		}
 		crd.DeleteBySms(ActonLogin, userModel.Phone)
 	}
@@ -242,13 +243,13 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userModel.OrgId)
 	if err != nil || orgModel.Id == 0 {
-		return nil, -1, errors.New("企业不存在")
+		return nil, -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgModel.Status == enum_organization.StatusVerifying {
-		return nil, -1, errors.New("账户审核中，请联系管理员")
+		return nil, -1, errors.New(my_errors.CurdOrgVerifying)
 	}
 	if orgModel.Status == enum_organization.StatusLocking {
-		return nil, -1, errors.New("账户已锁定，请联系管理员")
+		return nil, -1, errors.New(my_errors.CurdOrgLocking)
 	}
 	//数据字典
 	mapDict := dictionary_service.CreateCurdFactory().GetMapByModule(enum_dictionary.ModuleOrganization)
@@ -268,15 +269,16 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 		if diff <= 0 {
 			//设置锁定
 			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginLockDuration])*60)
+
 			return nil, -2,
-				errors.New(fmt.Sprintf("用户名或密码错误, 已被锁定%s分钟，请稍后在试", mapDict[enum_dictionary.OrganizationLoginLockDuration]))
+				errors.New(my_errors.GetMessagef(lang, my_errors.CurdUsernameOrPwFailLocking, mapDict[enum_dictionary.OrganizationLoginLockDuration]))
 
 		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.OrganizationLoginErrorRemind]) {
 			return nil, -2,
-				errors.New(fmt.Sprintf("用户名或密码错误, 还有%d次即将被锁定%s分钟", diff, mapDict[enum_dictionary.OrganizationLoginLockDuration]))
+				errors.New(my_errors.GetMessagef(lang, my_errors.CurdUsernameOrPwFailWillLock, diff, mapDict[enum_dictionary.OrganizationLoginLockDuration]))
 
 		} else {
-			return nil, -2, errors.New("用户名或密码错误")
+			return nil, -2, errors.New(my_errors.CurdUsernameOrPwFail)
 		}
 	}
 
@@ -292,13 +294,13 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemByCode(orgCode)
 	if err != nil || orgModel.Id == 0 {
-		return nil, -1, errors.New("企业不存在")
+		return nil, -1, errors.New(my_errors.CurdOrgNotExists)
 	}
 	if orgModel.Status == enum_organization.StatusVerifying {
-		return nil, -1, errors.New("账户审核中，请联系管理员")
+		return nil, -1, errors.New(my_errors.CurdOrgVerifying)
 	}
 	if orgModel.Status == enum_organization.StatusLocking {
-		return nil, -1, errors.New("账户已锁定，请联系管理员")
+		return nil, -1, errors.New(my_errors.CurdOrgLocking)
 	}
 
 	//获取用户
@@ -307,10 +309,10 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 		return nil, -1, err
 	}
 	if userModel.Status == enum_user.StatusLocking {
-		return nil, -99, errors.New("用户已锁定，请联系管理员")
+		return nil, -99, errors.New(my_errors.CurdUserLocking)
 	}
 	if userModel.Status == enum_user.StatusVerifying {
-		return nil, -99, errors.New("用户审核中，请联系管理员")
+		return nil, -99, errors.New(my_errors.CurdUserVerifying)
 	}
 
 	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceHs, nil)
