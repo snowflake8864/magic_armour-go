@@ -34,14 +34,14 @@ type TamperController struct {
 func (u *TamperController) FilePower(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("power_file", enum_tamper.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // FolderPower 文件夹权限
 func (u *TamperController) FolderPower(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("power_folder", enum_tamper.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PageForManage 分页

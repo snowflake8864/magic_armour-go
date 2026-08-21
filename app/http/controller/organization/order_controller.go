@@ -32,28 +32,28 @@ func (u *OrderController) OrderStatus(ctx *gin.Context) {
 
 	keys := enums.Get1stIsStrReturnSliceOfInt("order_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("order_status", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // ExpireStatus 过期状态
 func (u *OrderController) ExpireStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("expire_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("expire_status", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // GrantDuration 授权时长
 func (u *OrderController) GrantDuration(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_duration", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_duration", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PayMethod 支付方式
 func (u *OrderController) PayMethod(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("pay_method", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("pay_method", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PayBankcard 支付银行卡信息

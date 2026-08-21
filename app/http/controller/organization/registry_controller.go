@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -29,7 +30,7 @@ func (u *RegistryController) decrypt(data string) (result string) {
 func (u *RegistryController) Types(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_organization.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_organization.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // CheckOrgName 验证企业名称

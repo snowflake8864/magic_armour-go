@@ -18,6 +18,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/proc_service"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -32,14 +33,14 @@ type ProcessController struct {
 func (u *ProcessController) SearchStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("proc_status", enum_process.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // ChangeStatus 可改变状态
 func (u *ProcessController) ChangeStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("change_status", enum_process.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // PageForManage 管理页: 分页

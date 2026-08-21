@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/dir_models"
 	"goskeleton/app/service/agent/dir_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
 )
@@ -22,7 +23,7 @@ type FileDirController struct {
 func (u *FileDirController) GetTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("search_type", enum_tamper.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("search_type", enum_tamper.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // Page 分页

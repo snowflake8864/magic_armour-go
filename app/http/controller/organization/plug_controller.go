@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/plug_service"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -28,14 +29,14 @@ type PlugController struct {
 func (u *PlugController) PlugTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("plug_type", enum_plug.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("plug_type", enum_plug.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // EffectModes 有效模式
 func (u *PlugController) EffectModes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("effect_mode", enum_plug.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("effect_mode", enum_plug.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PageForManage 分页

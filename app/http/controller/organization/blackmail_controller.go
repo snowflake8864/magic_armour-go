@@ -16,6 +16,7 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/blackmail_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -31,7 +32,7 @@ type BlackmailController struct {
 func (u *BlackmailController) Types(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_blackmail.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_blackmail.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PageForGroup 文件类型组: 分页

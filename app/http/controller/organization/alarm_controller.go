@@ -14,6 +14,7 @@ import (
 	"goskeleton/app/model/agent/usb_models"
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/service/agent/alarm_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -28,55 +29,55 @@ type AlarmController struct {
 func (u *AlarmController) HandleStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("handle_status", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("handle_status", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // Levels 告警等级
 func (u *AlarmController) Levels(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("level", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("level", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeProcess  进程告警类型
 func (u *AlarmController) TypeProcess(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_process", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeDll  模块告警类型
 func (u *AlarmController) TypeDll(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_dll", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeBlackmail  勒索告警类型
 func (u *AlarmController) TypeBlackmail(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_blackmail", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeTamper  防篡改告警类型
 func (u *AlarmController) TypeTamper(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_tamper", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeUsb  外设告警类型
 func (u *AlarmController) TypeUsb(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_usb", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 func (u *AlarmController) TypeSelf(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type_self", enum_alarm.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_alarm.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // PageForManage 分页

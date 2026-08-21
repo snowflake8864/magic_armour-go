@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -53,5 +54,5 @@ func (u *ThreatenController) GetAttr(ctx *gin.Context) {
 		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
-	response.SuccessReturnData(ctx, (&transformer.Common{}).TransThreatenInfo(model))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).TransThreatenInfo(model))
 }

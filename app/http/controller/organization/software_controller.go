@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -24,7 +25,7 @@ func (u *SoftwareController) PlatformTypes(ctx *gin.Context) {
 
 	keys := enums.Get1stIsStrReturnSliceOfInt("platform_type", enum_software.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("platform_type", enum_software.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // PublishedList 已发布列表

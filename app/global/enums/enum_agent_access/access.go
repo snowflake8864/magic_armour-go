@@ -180,13 +180,15 @@ var WebMapStr = map[string][]string{
 }
 
 var EnumMapInt = map[string]map[int]string{
-
 	"status": {
 		StatusSuccess: "成功",
 		StatusFail:    "异常",
 	},
+	"status_en": {
+		StatusSuccess: "Success",
+		StatusFail:    "Abnormal",
+	},
 }
-
 var WebMapInt = map[string][]int{
 	"status": {
 		StatusSuccess,

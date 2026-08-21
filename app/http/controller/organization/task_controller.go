@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/task_models"
 	"goskeleton/app/service/agent/task_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -23,14 +24,14 @@ func (u *TaskController) TaskTypes(ctx *gin.Context) {
 
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_task.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_task.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TaskStatus 任务状态
 func (u *TaskController) TaskStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("status", enum_task.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_task.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // PageForHistory 历史：分页

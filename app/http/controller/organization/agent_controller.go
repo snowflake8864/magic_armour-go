@@ -21,6 +21,7 @@ import (
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/service/platform/software_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/response"
 	"sort"
@@ -35,21 +36,21 @@ type AgentController struct {
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_online", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_safe", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // GrantStatus 授权状态
 func (u *AgentController) GrantStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_status", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_status", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // CountOnline 统计在线和离线数量
@@ -71,7 +72,7 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 	}
 	sort.Ints(typeVals)
 
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(typeVals, typeMap, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(typeVals, typeMap, false))
 }
 
 // PageForManage 管理: 分页

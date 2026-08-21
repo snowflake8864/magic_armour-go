@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/service/agent/agent_service"
 	"goskeleton/app/service/agent/task_service"
 	"goskeleton/app/service/agent/usb_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -27,7 +28,7 @@ type UsbController struct {
 func (u *UsbController) EditStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("edit_status", enum_usb.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_usb.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PageForManage 分页

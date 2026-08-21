@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/model/agent/agent_models"
@@ -12,6 +13,15 @@ import (
 )
 
 type Common struct {
+	Lang string
+}
+
+func (t *Common) getAllLabel() string {
+	if t.Lang == consts.LanguageZh {
+		return "全部"
+	} else {
+		return "All"
+	}
 }
 
 // FormatIntList 格式成标准前端数据格式：val是int
@@ -22,7 +32,7 @@ func (t *Common) FormatIntList(keys []int, labels map[int]string, appendAll bool
 	if appendAll {
 		result = append(result, map[string]interface{}{
 			"val":   enums.AllDefaultInt,
-			"label": "全部",
+			"label": t.getAllLabel(),
 		})
 	}
 	for _, val := range keys {
@@ -45,7 +55,7 @@ func (t *Common) FormatStringList(keys []string, labels map[string]string, appen
 	if appendAll {
 		result = append(result, map[string]interface{}{
 			"val":   enums.AllDefaultStr,
-			"label": "全部",
+			"label": t.getAllLabel(),
 		})
 	}
 	for _, val := range keys {
@@ -121,7 +131,7 @@ func (t *Common) TransThreatenInfo(model *threaten_models.CacheModel) map[string
 func (t *Common) GetDeptFullname(id int64, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var result []interface{}
 	if id == 0 {
-		result = append(result, "全部")
+		result = append(result, t.getAllLabel())
 		return result
 	}
 	if departments == nil && len(departments) == 0 {

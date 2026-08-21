@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/agent_access_models"
 	"goskeleton/app/model/agent/agent_models"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -21,14 +22,17 @@ type AgentAccessController struct {
 func (u *AgentAccessController) Status(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("status", enum_agent_access.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_agent_access.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("status_en", enum_agent_access.EnumMapInt)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // Urls  路径
 func (u *AgentAccessController) Urls(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("path", enum_agent_access.WebMapStr)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("path", enum_agent_access.EnumStrMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatStringList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, true))
 }
 
 // PageForLog 日志：分页

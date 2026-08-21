@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/agent/syslog_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -27,7 +28,7 @@ type SyslogController struct {
 func (u *SyslogController) LoginStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("login_status", enum_syslog.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("login_status", enum_syslog.EnumMapInt)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // PageForSyslog 日志: 分页
