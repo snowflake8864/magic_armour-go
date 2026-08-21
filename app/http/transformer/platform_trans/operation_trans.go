@@ -11,6 +11,7 @@ import (
 
 type Operation struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Operation) pageGeneral(model *operate_models.LogModel) map[string]interface{} {

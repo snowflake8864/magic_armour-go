@@ -9,6 +9,7 @@ import (
 
 type Role struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Role) pageGeneral(model *role_models.RoleModel) map[string]interface{} {

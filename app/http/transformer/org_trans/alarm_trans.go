@@ -15,6 +15,7 @@ import (
 
 type AlarmTrans struct {
 	transformer.Common
+	Lang string
 }
 
 // TransProcessPage 转换成进程告警分页需要的数据

@@ -11,6 +11,7 @@ import (
 
 type FileDirTrans struct {
 	transformer.Common
+	Lang string
 }
 
 // TranslPage 转换成名单分页需要的数据

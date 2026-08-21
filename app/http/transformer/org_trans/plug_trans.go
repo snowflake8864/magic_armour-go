@@ -13,6 +13,7 @@ import (
 
 type PlugTrans struct {
 	transformer.Common
+	Lang string
 }
 
 // TranIpPolicyPage 转换成终端ip名单分页需要的数据

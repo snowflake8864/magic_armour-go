@@ -11,6 +11,7 @@ import (
 
 type AgentOnline struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *AgentOnline) pageGeneral(model *agent_online_models.OnlineLogModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {

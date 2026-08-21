@@ -10,6 +10,7 @@ import (
 
 type User struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *User) pageGeneral(model *user_models.UserModel) map[string]interface{} {

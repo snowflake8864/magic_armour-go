@@ -11,6 +11,7 @@ import (
 
 type Task struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Task) pageGeneral(model *task_models.TaskModel) map[string]interface{} {

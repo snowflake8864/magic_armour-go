@@ -13,6 +13,7 @@ import (
 
 type Dll struct {
 	transformer.Common
+	Lang string
 }
 
 // TransMasterPage 转换成全部进程分页需要的数据

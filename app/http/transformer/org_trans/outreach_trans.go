@@ -9,6 +9,7 @@ import (
 
 type OutreachTrans struct {
 	transformer.Common
+	Lang string
 }
 
 // TransGlobalPage 转换成全局名单分页需要的数据

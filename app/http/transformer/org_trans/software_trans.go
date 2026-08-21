@@ -10,6 +10,7 @@ import (
 
 type Software struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]interface{} {

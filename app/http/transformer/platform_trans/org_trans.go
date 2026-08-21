@@ -10,6 +10,7 @@ import (
 
 type Org struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Org) pageGeneral(model *organization_models.OrganizationModel) map[string]interface{} {

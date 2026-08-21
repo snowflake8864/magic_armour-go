@@ -11,6 +11,7 @@ import (
 
 type Product struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]interface{} {

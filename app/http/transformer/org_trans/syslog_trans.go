@@ -13,6 +13,7 @@ import (
 
 type SyslogTrans struct {
 	transformer.Common
+	Lang string
 }
 
 // TransDnsPage 转换成DNS分页需要的数据

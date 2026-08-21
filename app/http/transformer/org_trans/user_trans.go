@@ -15,6 +15,7 @@ import (
 
 type User struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *User) pageGeneral(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) map[string]interface{} {

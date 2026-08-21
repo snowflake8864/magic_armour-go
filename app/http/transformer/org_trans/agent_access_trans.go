@@ -13,6 +13,7 @@ import (
 
 type AgentAccess struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map[string]interface{} {

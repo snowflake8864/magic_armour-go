@@ -12,6 +12,7 @@ import (
 
 type ProcSample struct {
 	transformer.Common
+	Lang string
 }
 
 // TransPage 转换成样本分页需要的数据

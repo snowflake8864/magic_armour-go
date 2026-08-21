@@ -10,6 +10,7 @@ import (
 
 type Threaten struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Threaten) pageCacheGeneral(model *threaten_models.CacheModel) map[string]interface{} {

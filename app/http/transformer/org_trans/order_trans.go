@@ -12,6 +12,7 @@ import (
 
 type Order struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface{} {

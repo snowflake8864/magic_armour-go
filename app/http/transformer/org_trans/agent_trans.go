@@ -18,6 +18,7 @@ import (
 
 type Agent struct {
 	transformer.Common
+	Lang string
 }
 
 func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, agentExtend map[string]interface{}) map[string]interface{} {
