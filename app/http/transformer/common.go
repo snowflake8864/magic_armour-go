@@ -130,20 +130,12 @@ func (t *Common) TransThreatenInfo(model *threaten_models.CacheModel) map[string
 
 func (t *Common) GetDeptFullname(id int64, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var result []interface{}
-	if id == 0 {
-		result = append(result, t.getAllLabel())
-		return result
+	if id > 0 && len(departments) == 0 {
+		if deptModel, ok := departments[id]; ok && !string_helper.IsEmpty(deptModel.FullName) {
+			return json_helper.ToSliceString(deptModel.FullName)
+		}
 	}
-	if departments == nil && len(departments) == 0 {
-		result = append(result, "组织架构为空")
-		return result
-	}
-	if deptModel, ok := departments[id]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-		return json_helper.ToSliceString(deptModel.FullName)
-	} else {
-		result = append(result, "组织架构已删除")
-		return result
-	}
+	return result
 }
 
 // AppendAgentInfo 追加终端信息
@@ -191,7 +183,11 @@ func (t *Common) AppendThreatenInfo(hash string, threatenMaps map[string]*threat
 
 	if model, isOK := threatenMaps[hash]; isOK {
 		data["threaten_level"] = model.Level
-		data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
+		if t.Lang == consts.LanguageZh {
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
+		} else {
+			data["threaten_level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_threaten.EnumMap)
+		}
 		if model.CheckSource == enum_threaten.CheckSourceInternet {
 			data["threaten_is_sync"] = enums.IsYes
 		}

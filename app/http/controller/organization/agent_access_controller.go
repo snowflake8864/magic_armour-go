@@ -32,6 +32,9 @@ func (u *AgentAccessController) Status(ctx *gin.Context) {
 func (u *AgentAccessController) Urls(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("path", enum_agent_access.WebMapStr)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("path", enum_agent_access.EnumStrMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("path_en", enum_agent_access.EnumStrMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, true))
 }
 
