@@ -89,6 +89,7 @@ var Messages = map[string]map[string]string{
 		CurdPhoneAlreadyExists:       "手机号码已存在",
 		CurdEmailAlreadyExists:       "邮箱已存在",
 		CurdPasswordFormatIncorrect:  "密码格式不正确",
+		CurdOldPasswordIncorrect:     "旧密码不正确",
 		CurdOrgNameFormatIncorrect:   "企业名称格式不正确",
 		CurdUsernameFormatIncorrect:  "用户名格式不正确",
 		CurdPhoneFormatIncorrect:     "手机号码格式不正确",
@@ -111,6 +112,9 @@ var Messages = map[string]map[string]string{
 		CurdUserVerifying:            "用户审核中，请联系管理员",
 		CurdOrgLocking:               "账户已锁定，请联系管理员",
 		CurdOrgVerifying:             "账户审核中，请联系管理员",
+		CurdOUserMaxLimit:            "子用户已达到最大限制",
+		CurdOUserAdminNotModify:      "管理员用户不能修改",
+		CurdOUserAdminNotDelete:      "管理员用户不能删除",
 
 		CurdEnableProcessProtectMode:    "开启进程保护模式, 不能存在未设置的进程",
 		CurdEnableDllProtectMode:        "开启模块保护模式, 不能存在未设置的模块",

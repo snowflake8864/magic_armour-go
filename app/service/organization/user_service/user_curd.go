@@ -50,15 +50,15 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 	}
 	//用户已存在
 	if userExist := crd.GetItemByName(userParam.Username); userExist != nil && userExist.Id > 0 {
-		return errors.New("用户名已存在")
+		return errors.New(my_errors.CurdUsernameAlreadyExists)
 	}
 	if userExist := crd.GetItemByPhone(userParam.Phone); userExist != nil && userExist.Id > 0 {
-		return errors.New("手机号码已存在")
+		return errors.New(my_errors.CurdPhoneAlreadyExists)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//是否超过限制
@@ -66,7 +66,7 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 	if subUserLimit > 0 {
 		condition := user_models.SearchConditions{OrgId: userParam.OrgId}
 		if crd.masterModel.Count(condition) > subUserLimit {
-			return errors.New("子用户已达到最大限制")
+			return errors.New(my_errors.CurdOUserMaxLimit)
 		}
 	}
 
@@ -77,7 +77,7 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 	userParam.PwErrorNum = 0
 	userParam.CreatedAt = now
 	if !crd.masterModel.InsertItem(userParam) {
-		return errors.New("添加子户失败")
+		return errors.New(my_errors.CurdOrgUserSaveFailed)
 	}
 
 	//新增企业日志
@@ -88,7 +88,7 @@ func (crd *UserCurd) AddForSub(userParam *user_models.UserModel, netIp string) e
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -104,19 +104,19 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 
 	//验证用户
 	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	} else if userExist.IsRoot == enums.IsYes {
-		return errors.New("管理员用户不能修改")
+		return errors.New(my_errors.CurdOUserAdminNotModify)
 	} else if userExist.Phone != userParam.Phone {
 		if userPhone := crd.GetItemByPhone(userParam.Phone); userPhone != nil && userPhone.Id > 0 {
-			return errors.New("手机号码已存在")
+			return errors.New(my_errors.CurdPhoneAlreadyExists)
 		}
 	}
 
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改
@@ -140,7 +140,7 @@ func (crd *UserCurd) UpdateForSub(userParam *user_models.UserModel, netIp string
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -152,14 +152,14 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 	}
 	//验证用户
 	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	} else if userExist.IsRoot == enums.IsYes {
-		return errors.New("管理员用户不能修改")
+		return errors.New(my_errors.CurdPhoneAlreadyExists)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改
@@ -178,7 +178,7 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -187,14 +187,14 @@ func (crd *UserCurd) ModifyPwForSub(userParam *user_models.UserModel, netIp stri
 func (crd *UserCurd) DeleteForSub(userParam *user_models.UserModel, netIp string) error {
 	//验证用户
 	if userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id); userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	} else if userExist.IsRoot == enums.IsYes {
-		return errors.New("管理员用户不能删除")
+		return errors.New(my_errors.CurdOUserAdminNotDelete)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	conditions := user_models.SearchConditions{
@@ -212,7 +212,7 @@ func (crd *UserCurd) DeleteForSub(userParam *user_models.UserModel, netIp string
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -284,12 +284,12 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//加密
@@ -297,7 +297,7 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 	oldPw := AuthFact.EncryptPw(userParam.Password)
 	newPw = AuthFact.EncryptPw(newPw)
 	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
-		return errors.New("旧密码不正确")
+		return errors.New(my_errors.CurdOldPasswordIncorrect)
 	}
 
 	//修改密码
@@ -306,7 +306,7 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
-		return errors.New("修改密码失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增企业日志
@@ -317,7 +317,7 @@ func (crd *UserCurd) ModifyPwById(userParam *user_models.UserModel, newPw string
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -330,23 +330,23 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	}
 	if userModel := crd.GetItemByPhone(userParam.Phone); userExist != nil && userModel.Id > 0 && userModel.Id != userExist.Id {
-		return errors.New("手机号码已存在")
+		return errors.New(my_errors.CurdPhoneAlreadyExists)
 	}
 
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//加密
 	AuthFact := CreateAuthFactory()
 	oldPw := AuthFact.EncryptPw(userParam.Password)
 	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
-		return errors.New("旧密码不正确")
+		return errors.New(my_errors.CurdOldPasswordIncorrect)
 	}
 
 	//修改手机
@@ -354,7 +354,7 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 		"phone": userParam.Phone,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
-		return errors.New("修改手机号码失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//同步修改企业
@@ -372,7 +372,7 @@ func (crd *UserCurd) ModifyPhoneById(userParam *user_models.UserModel, netIp str
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 
 	return nil
@@ -386,19 +386,19 @@ func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp str
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//加密
 	AuthFact := CreateAuthFactory()
 	oldPw := AuthFact.EncryptPw(userParam.Password)
 	if !crd.HasByUsernameAndPw(userExist.Username, oldPw) {
-		return errors.New("旧密码不正确")
+		return errors.New(my_errors.CurdOldPasswordIncorrect)
 	}
 
 	//修改邮箱失
@@ -406,7 +406,7 @@ func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp str
 		"email": userParam.Email,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userParam.Id, updates); !isOk {
-		return errors.New("修改邮箱失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//同步修改企业
@@ -424,7 +424,7 @@ func (crd *UserCurd) ModifyEmailById(userParam *user_models.UserModel, netIp str
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -434,12 +434,12 @@ func (crd *UserCurd) ModifyInfoById(userParam *user_models.UserModel, netIp stri
 	//用户已存在
 	userExist := crd.GetItemByOrgAndUser(userParam.OrgId, userParam.Id)
 	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	}
 	//
 	orgModel := crd.getOrg(userParam.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改
@@ -458,7 +458,7 @@ func (crd *UserCurd) ModifyInfoById(userParam *user_models.UserModel, netIp stri
 	orgLogParam.OperateId = userParam.CreateId
 	orgLogParam.OperateName = userParam.CreateName
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }
@@ -471,12 +471,12 @@ func (crd *UserCurd) FindPwByPhone(userPhone, newPw string, netIp string) error 
 	//用户已存在
 	userExist := crd.GetItemByPhone(userPhone)
 	if userExist == nil || userExist.Id == 0 {
-		return errors.New("用户不存在")
+		return errors.New(my_errors.CurdUserNotExist)
 	}
 	//
 	orgModel := crd.getOrg(userExist.OrgId)
 	if orgModel == nil {
-		return errors.New("企业数据错误")
+		return errors.New(my_errors.CurdOrgNotExists)
 	}
 
 	//修改密码
@@ -485,7 +485,7 @@ func (crd *UserCurd) FindPwByPhone(userPhone, newPw string, netIp string) error 
 		"pw_modify_at": date_helper.CurTimestamp(),
 	}
 	if isOk, _ := crd.masterModel.UpdateById(userExist.Id, updates); !isOk {
-		return errors.New("修改密码失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	//新增企业日志
@@ -496,7 +496,7 @@ func (crd *UserCurd) FindPwByPhone(userPhone, newPw string, netIp string) error 
 	orgLogParam.OperateId = userExist.Id
 	orgLogParam.OperateName = userExist.Username
 	if !logFact.Add(&orgLogParam) {
-		return errors.New("保存企业日志失败")
+		return errors.New(my_errors.CurdOrgLogSaveFailed)
 	}
 	return nil
 }

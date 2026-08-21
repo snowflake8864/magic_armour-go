@@ -112,6 +112,7 @@ const (
 	CurdPhoneAlreadyExists       string = "CurdPhoneAlreadyExists"
 	CurdEmailAlreadyExists       string = "CurdEmailAlreadyExists"
 	CurdPasswordFormatIncorrect  string = "CurdPasswordFormatIncorrect"
+	CurdOldPasswordIncorrect     string = "CurdOldPasswordIncorrect"
 	CurdOrgNameFormatIncorrect   string = "CurdOrgNameFormatIncorrect"
 	CurdUsernameFormatIncorrect  string = "CurdUsernameFormatIncorrect"
 	CurdPhoneFormatIncorrect     string = "CurdPhoneFormatIncorrect"
@@ -134,6 +135,9 @@ const (
 	CurdUserVerifying            string = "CurdUserVerifying"
 	CurdOrgLocking               string = "CurdOrgLocking"
 	CurdOrgVerifying             string = "CurdOrgVerifying"
+	CurdOUserMaxLimit            string = "CurdOUserMaxLimit"
+	CurdOUserAdminNotModify      string = "CurdOUserAdminNotModify"
+	CurdOUserAdminNotDelete      string = "CurdOUserAdminNotDelete"
 
 	CurdEnableProcessProtectMode       string = "CurdEnableProcessProtectMode"
 	CurdEnableDllProtectMode           string = "CurdEnableDllProtectMode"
