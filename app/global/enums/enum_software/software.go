@@ -52,7 +52,7 @@ var EnumMap = map[string]map[int]string{
 	},
 	"os_type": {
 		OsTypeWinSeven:          "Windows",
-		OsTypeWinXp:             "Windows早期",
+		OsTypeWinXp:             "Windows Early",
 		OsTypeLinuxUbuntu:       "Ubuntu",
 		OsTypeLinuxCentos:       "CentOS",
 		OsTypeLinuxKylin:        "Kylin",
@@ -70,58 +70,58 @@ var EnumMap = map[string]map[int]string{
 		OsTypeLinuxSuse:         "SUSE",
 	},
 	"os_type_alias": {
-		OsTypeWinSeven:          "windows7-至今",
+		OsTypeWinSeven:          "windows7 and later versions",
 		OsTypeWinXp:             "windows xp-windows 2003",
-		OsTypeLinuxUbuntu:       "Ubuntu64位",
-		OsTypeLinuxCentos:       "CentOS64位",
-		OsTypeLinuxKylin:        "kylin64位",
-		OsTypeLinuxUos:          "Uos64位",
-		OsTypeLinuxRedhat:       "RedHat64位",
-		OsTypeLinuxDebian:       "Debian64位",
-		OsTypeLinuxRocky:        "Rocky64位",
-		OsTypeLinuxAnolis:       "Anolis64位",
-		OsTypeLinuxOpenCloudOs:  "OpenCloudOs64位",
-		OsTypeLinuxAlibabaCloud: "AlibabaCloud64位",
-		OsTypeLinuxAlmaLinux:    "AlmaLinux64位",
-		OsTypeLinuxCentosStream: "CentosStream64位",
-		OsTypeLinuxFedora:       "Fedora64位",
-		OsTypeLinuxEuler:        "Euler64位",
-		OsTypeLinuxSuse:         "SUSE64位",
+		OsTypeLinuxUbuntu:       "Ubuntu 64bit",
+		OsTypeLinuxCentos:       "CentOS 64bit",
+		OsTypeLinuxKylin:        "kylin 64bit",
+		OsTypeLinuxUos:          "Uos 64bit",
+		OsTypeLinuxRedhat:       "RedHat 64bit",
+		OsTypeLinuxDebian:       "Debian 64bit",
+		OsTypeLinuxRocky:        "Rocky 64bit",
+		OsTypeLinuxAnolis:       "Anolis 64bit",
+		OsTypeLinuxOpenCloudOs:  "OpenCloudOs 64bit",
+		OsTypeLinuxAlibabaCloud: "AlibabaCloud 64bit",
+		OsTypeLinuxAlmaLinux:    "AlmaLinux 64bit",
+		OsTypeLinuxCentosStream: "CentosStream 64bit",
+		OsTypeLinuxFedora:       "Fedora 64bit",
+		OsTypeLinuxEuler:        "Euler 64bit",
+		OsTypeLinuxSuse:         "SUSE 64bit",
 	},
 	"os_ver": {
 		//Ubuntu
-		1010: "64位(14.04-22.04)",
+		1010: "64bit(14.04-22.04)",
 		//CentOS
-		1020: "64位(6.5 - 8.5)",
+		1020: "64bit(6.5 - 8.5)",
 		//麒麟
-		1030: "64位 中标麒麟(V7)",
+		1030: "64bit NeoKylin(V7)",
 		//统信
-		1040: "64位 (20)",
+		1040: "64bit (20)",
 		//RedHat
-		1050: "64位(6.5 - 7.9)",
+		1050: "64bit(6.5 - 7.9)",
 		//Debian
-		1060: "64位(14.04 - 22.04)",
+		1060: "64bit(14.04 - 22.04)",
 		//Rocky
-		1070: "64位(8.4 - 9.1)",
+		1070: "64bit(8.4 - 9.1)",
 		//ANOLIS
-		1080: "64位(7.7 - 8.8)",
+		1080: "64bit(7.7 - 8.8)",
 		//OpenCloudos
-		1090: "64位(8.6-9.0)",
+		1090: "64bit(8.6-9.0)",
 		//AlibabaCloud
-		1100: "64位",
+		1100: "64bit",
 		//AlmaLinux
-		1110: "64位",
+		1110: "64bit",
 		//CentosStream
-		1120: "64位(8-9)",
+		1120: "64bit(8-9)",
 		//Fedora
-		1130: "64位",
+		1130: "64bit",
 		//Euler
-		1140: "64位",
+		1140: "64bit",
 		//SUSE
-		1150: "64位",
+		1150: "64bit",
 
 		//windows
-		2010: "windows7-至今",
+		2010: "windows7 and later versions",
 		//Windows其它
 		2020: "windows xp-windows 2003",
 	},

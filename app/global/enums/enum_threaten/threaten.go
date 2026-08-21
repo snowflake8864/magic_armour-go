@@ -49,18 +49,46 @@ var EnumMap = map[string]map[int]string{
 		LevelBlack:        "黑名单",
 		LevelDefault:      "未同步",
 	},
+	"level_en": {
+		LevelUnknown:      "Unknown",
+		LevelWhite:        "Whitelist",
+		LevelDefaultOne:   "Level 1",
+		LevelDefaultTwo:   "Level 2",
+		LevelDefaultThree: "Level 3",
+		LevelDefaultFour:  "Level 4",
+		LevelDefaultFive:  "Level 5",
+		LevelDefaultSix:   "Level 6",
+		LevelDefaultSeven: "Level 7",
+		LevelDefaultEight: "Level 8",
+		LevelDefaultNine:  "Level 9",
+		LevelBlack:        "Blacklist",
+		LevelDefault:      "Not Synced",
+	},
 	"source": {
 		SourceThreatenCenter: "威胁情报",
 		SourceImport:         "人工导入",
 		SourceAgentUpload:    "终端上传",
 	},
+	"source_en": {
+		SourceThreatenCenter: "Threat Intelligence",
+		SourceImport:         "Manual Import",
+		SourceAgentUpload:    "Agent Upload",
+	},
 	"push_status": {
 		PushStatusNot: "未推送",
 		PushStatusYes: "已推送",
 	},
+	"push_status_en": {
+		PushStatusNot: "Not Pushed",
+		PushStatusYes: "Pushed",
+	},
 	"check_source": {
 		CheckSourceVeda:     "威胁情报",
 		CheckSourceInternet: "云查杀",
+	},
+	"check_source_en": {
+		CheckSourceVeda:     "Threat Intelligence",
+		CheckSourceInternet: "Cloud Scan",
 	},
 }
 

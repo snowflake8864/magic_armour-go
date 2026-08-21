@@ -32,6 +32,15 @@ var EnumMapInt = map[string]map[int]string{
 		TypeLinkFile: "软连接",
 		TypeMount:    "硬链接",
 	},
+	"type_en": {
+		TypeUnknown:  "Unknown",
+		TypeFolder:   "Folder",
+		TypeFile:     "File",
+		TypeVolume:   "Volume",
+		TypeShortcut: "Shortcut",
+		TypeLinkFile: "Symbolic Link",
+		TypeMount:    "Hard Link",
+	},
 	"power_folder": {
 		PowerRead:   "读取",
 		PowerWrite:  "写入",
@@ -39,13 +48,28 @@ var EnumMapInt = map[string]map[int]string{
 		PowerRename: "重命名",
 		PowerCreate: "新建",
 	},
+	"power_folder_en": {
+		PowerRead:   "Read",
+		PowerWrite:  "Write",
+		PowerDelete: "Delete",
+		PowerRename: "Rename",
+		PowerCreate: "Create",
+	},
 	"is_extend": {
 		ExtendYes: "是",
 		ExtendNot: "否",
 	},
+	"is_extend_en": {
+		ExtendYes: "Yes",
+		ExtendNot: "No",
+	},
 	"search_type": {
 		TypeFolder: "文件夹",
 		TypeFile:   "单个文件",
+	},
+	"search_type_en": {
+		TypeFolder: "Folder",
+		TypeFile:   "File",
 	},
 }
 

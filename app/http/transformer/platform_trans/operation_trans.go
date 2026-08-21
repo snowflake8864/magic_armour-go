@@ -18,7 +18,7 @@ func (t *Operation) pageGeneral(model *operate_models.LogModel) map[string]inter
 	data := make(map[string]interface{})
 	data["id"] = fmt.Sprintf("%d", model.Id)
 	data["path"] = model.Path
-	_, pathLabel := enum_platform_operate.GetModuleAndLabelByPath(model.Path)
+	_, pathLabel, _ := enum_platform_operate.GetModuleAndLabelByPath(model.Path)
 	data["path_label"] = pathLabel
 	data["module"] = model.Module
 	data["module_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module", model.Module, enum_platform_operate.EnumMap)

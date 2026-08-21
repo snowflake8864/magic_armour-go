@@ -52,15 +52,35 @@ var EnumIntMap = map[string]map[int]string{
 		AllStatusThreatenWhite: "威胁情报白名单",
 		AllStatusThreatenBlack: "威胁情报黑名单",
 	},
+	"all_status_en": {
+		AllStatusUnset:         "Unset",
+		AllStatusUnknown:       "Unknown",
+		AllStatusWhite:         "Whitelist",
+		AllStatusBlack:         "Blacklist",
+		AllStatusGlobalWhite:   "Global Whitelist",
+		AllStatusGlobalBlack:   "Global Blacklist",
+		AllStatusThreatenWhite: "Threat Intel Whitelist",
+		AllStatusThreatenBlack: "Threat Intel Blacklist",
+	},
 	"sample_status": {
 		SampleStatusDefault:  "未开始",
 		SampleStatusGetting:  "提取中",
 		SampleStatusFinished: "完成",
 		SampleStatusFail:     "失败",
 	},
+	"sample_status_en": {
+		SampleStatusDefault:  "Not Started",
+		SampleStatusGetting:  "Extracting",
+		SampleStatusFinished: "Completed",
+		SampleStatusFail:     "Failed",
+	},
 	"rely_status": {
 		RelyStatusWhite: "白名单",
 		RelyStatusBlack: "黑名单",
+	},
+	"rely_status_en": {
+		RelyStatusWhite: "Whitelist",
+		RelyStatusBlack: "Blacklist",
 	},
 }
 

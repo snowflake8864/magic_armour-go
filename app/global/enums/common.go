@@ -22,6 +22,12 @@ var EnumMapInt = map[string]map[int]string{
 		OperateSourceAi:       "系统AI",
 		OperateSourceAgent:    "终端",
 	},
+	"operate_source_en": {
+		OperateSourceOrganize: "Organization",
+		OperateSourcePlatform: "Platform",
+		OperateSourceAi:       "System AI",
+		OperateSourceAgent:    "Agent",
+	},
 }
 
 // Get1stIsStrReturnSliceOfStr 如是第一级是string,返回相应[]string

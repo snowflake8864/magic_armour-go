@@ -40,9 +40,19 @@ var EnumMap = map[string]map[int]string{
 		OrderStatusCompleted: "已完成",
 		OrderStatusCancel:    "已取消",
 	},
+	"order_status_en": {
+		OrderStatusUnpaid:    "Pending Payment",
+		OrderStatusPaid:      "Paid",
+		OrderStatusCompleted: "Completed",
+		OrderStatusCancel:    "Cancelled",
+	},
 	"pay_method": {
 		PayMethodBankcard: "对公转账",
 		PayMethodLicense:  "授权许可",
+	},
+	"pay_method_en": {
+		PayMethodBankcard: "Bank Transfer",
+		PayMethodLicense:  "License",
 	},
 	"grant_duration": {
 		1:   "1个月",
@@ -56,6 +66,18 @@ var EnumMap = map[string]map[int]string{
 		36:  "3年",
 		120: "10年",
 	},
+	"grant_duration_en": {
+		1:   "1 Month",
+		2:   "2 Months",
+		3:   "3 Months",
+		4:   "4 Months",
+		5:   "5 Months",
+		6:   "6 Months",
+		12:  "1 Year",
+		24:  "2 Years",
+		36:  "3 Years",
+		120: "10 Years",
+	},
 	"action": {
 		ActionAdd:           "购买授权",
 		ActionPayBankcard:   "对公转账方式付款",
@@ -67,9 +89,24 @@ var EnumMap = map[string]map[int]string{
 		ActionGrant2Agent:   "授权给终端",
 		ActionImportLicense: "导入授权证书",
 	},
+	"action_en": {
+		ActionAdd:           "Purchase License",
+		ActionPayBankcard:   "Pay by Bank Transfer",
+		ActionCancel:        "Cancel License",
+		ActionDecline:       "Modify Payment Amount",
+		ActionConfirmPaid:   "Confirm Payment Success",
+		ActionConfirmUnpaid: "Confirm Unpaid",
+		ActionAutoExpire:    "Auto Expired",
+		ActionGrant2Agent:   "Grant to Agent",
+		ActionImportLicense: "Import License Certificate",
+	},
 	"expire_status": {
 		enums.IsNot: "有效",
 		enums.IsYes: "无效",
+	},
+	"expire_status_en": {
+		enums.IsNot: "Valid",
+		enums.IsYes: "Invalid",
 	},
 }
 

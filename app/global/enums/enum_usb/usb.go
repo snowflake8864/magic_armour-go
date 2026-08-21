@@ -15,12 +15,20 @@ var EnumMapInt = map[string]map[int]string{
 		StatusWhite:   "信任",
 		StatusBlack:   "禁止",
 	},
+	"status_en": {
+		StatusDefault: "Unconfirmed",
+		StatusWhite:   "Trust",
+		StatusBlack:   "Block",
+	},
 	"plug_status": {
 		PlugStatusOut: "拔出",
 		PlugStatusIn:  "插入",
 	},
+	"plug_status_en": {
+		PlugStatusOut: "Removed",
+		PlugStatusIn:  "Inserted",
+	},
 }
-
 var WebMapInt = map[string][]int{
 	"edit_status": {
 		StatusWhite,

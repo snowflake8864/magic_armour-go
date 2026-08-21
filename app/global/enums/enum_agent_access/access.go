@@ -67,6 +67,65 @@ var EnumStrMap = map[string]map[string]string{
 		"/v1/getRollbacks":   "获取回滚策略",
 		"/v1/uploadRollback": "上传回滚结果",
 	},
+	"path_en": {
+		"/v1/auth":      "Login",
+		"/v1/getconf":   "Download Config",
+		"/v1/gettask":   "Get Task (Heartbeat)",
+		"/v1/closetask": "Close Task",
+
+		"/v1/upload/suffix/exe":    "Upload All Programs",
+		"/v1/uploadproc":           "Upload Running Processes",
+		"/v1/autouploadprocess":    "Auto Upload Processes",
+		"/v1/getprocwl":            "Download Process Whitelist",
+		"/v1/getprocbl":            "Download Process Blacklist",
+		"/v1/module/process":       "Process Modules: Download Specified Process",
+		"/v1/upload/proc/module":   "Process Modules: Upload Modules for Specified Process",
+		"/v1/getdraw":              "Query Un-extracted Samples",
+		"/v1/uploaddraw":           "Upload Sample",
+		"/v1/upload/suffix/dll":    "Upload All Dlls",
+		"/v1/pload/allproc/module": "Upload Running Dlls",
+		"/v1/auto/upload/module":   "Auto Upload Dlls",
+		"/v1/module/white/list":    "Download Dll Whitelist",
+		"/v1/module/black/list":    "Download Dll Blacklist",
+
+		"/v1/getdirinfo":   "Get Directory Info",
+		"/v1/putdir":       "Upload Directory Info",
+		"/v1/getdirpolicy": "Download Anti-Tampering Policy",
+
+		"/v1/getprotect": "Download Ransomware Protection Policy",
+
+		"/v1/upserviceport":  "Upload Service Ports",
+		"/v1/getvirtualport": "Download Virtual Ports",
+
+		"/v1/getplugging":    "Download Dynamic Blocking Policy",
+		"/v1/getipblacklist": "Download IP Blacklist",
+
+		"/v1/getOutreachDetect": "Download Outreach Detection List",
+
+		"/v1/addperipherals":      "Upload Peripheral List",
+		"/v1/getwhiteperipherals": "Get Peripheral Whitelist",
+		"/v1/getblackperipherals": "Get Peripheral Blacklist",
+
+		"/v1/alertupload": "Upload Alert (except Port)",
+		"/v1/upopenport":  "Upload Port Deception Alert",
+
+		"/v1/putsyslog": "Upload Communication Log",
+
+		"/v1/puthardwareinfo": "Upload Agent Resource Info",
+		"/v1/uploadIp":        "Upload Agent IP Info",
+		"/v1/download":        "Upgrade",
+		"/v1/uninstall":       "Uninstall",
+		"/v1/error/upload":    "Upload Error File",
+		"/v1/gettrustdir":     "Get Trust Directory",
+
+		"/v1/getPwJump":      "Get Password Hopping",
+		"/v1/putPwJump":      "Report Password Hopping Result",
+		"/v1/getIpJump":      "Get IP Hopping",
+		"/v1/getBackups":     "Get Backup Policy",
+		"/v1/uploadBackup":   "Upload Backup Result",
+		"/v1/getRollbacks":   "Get Rollback Policy",
+		"/v1/uploadRollback": "Upload Rollback Result",
+	},
 }
 
 var WebMapStr = map[string][]string{

@@ -27,17 +27,33 @@ var EnumMap = map[string]map[int]string{
 		IpTypeWhite: "白名单",
 		IpTypeBlack: "黑名单",
 	},
+	"ip_type_en": {
+		IpTypeWhite: "Whitelist",
+		IpTypeBlack: "Blacklist",
+	},
 	"plug_type": {
 		PlugTypeTemporary: "临时",
 		PlugTypePermanent: "永久",
+	},
+	"plug_type_en": {
+		PlugTypeTemporary: "Temporary",
+		PlugTypePermanent: "Permanent",
 	},
 	"source": {
 		SourcePortVirtual: "端口虚开",
 		SourceLoginSolve:  "口令暴力破解",
 	},
+	"source_en": {
+		SourcePortVirtual: "Port Deception",
+		SourceLoginSolve:  "Password Brute Force",
+	},
 	"effect_mode": {
 		EffectModeAlways: "长期有效",
 		EffectModeRange:  "区间有效",
+	},
+	"effect_mode_en": {
+		EffectModeAlways: "Permanent",
+		EffectModeRange:  "Date Range",
 	},
 }
 

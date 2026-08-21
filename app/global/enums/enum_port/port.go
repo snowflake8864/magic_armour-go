@@ -30,9 +30,20 @@ var EnumMapInt = map[string]map[int]string{
 		AlarmLevel4: "4级",
 		AlarmLevel5: "5级",
 	},
+	"alarm_level_en": {
+		AlarmLevel1: "Level 1",
+		AlarmLevel2: "Level 2",
+		AlarmLevel3: "Level 3",
+		AlarmLevel4: "Level 4",
+		AlarmLevel5: "Level 5",
+	},
 	"forward_type": {
 		ForwardTypeFixed:    "指定端口",
 		ForwardTypeOriginal: "原端口转发",
+	},
+	"forward_type_en": {
+		ForwardTypeFixed:    "Fixed Port",
+		ForwardTypeOriginal: "Original Port Forwarding",
 	},
 }
 

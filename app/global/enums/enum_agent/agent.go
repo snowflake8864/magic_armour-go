@@ -37,18 +37,35 @@ var EnumIntMap = map[string]map[int]string{
 		enums.IsYes: "在线",
 		enums.IsNot: "离线",
 	},
+	"is_online_en": {
+		enums.IsYes: "Online",
+		enums.IsNot: "Offline",
+	},
 	"is_safe": {
 		enums.IsYes: "正常",
 		enums.IsNot: "异常",
+	},
+	"is_safe_en": {
+		enums.IsYes: "Normal",
+		enums.IsNot: "Abnormal",
 	},
 	"mode": {
 		ModeMonitor: "监控",
 		ModeProject: "保护",
 	},
+	"mode_en": {
+		ModeMonitor: "Monitor",
+		ModeProject: "Protect",
+	},
 	"grant_status": {
 		GrantStatusUnauthorized: "未授权",
 		GrantStatusAuthorized:   "已授权",
 		GrantStatusExpired:      "已过期",
+	},
+	"grant_status_en": {
+		GrantStatusUnauthorized: "Unauthorized",
+		GrantStatusAuthorized:   "Authorized",
+		GrantStatusExpired:      "Expired",
 	},
 }
 
@@ -70,11 +87,11 @@ var WebMapInt = map[string][]int{
 // AgentTypeDefault 终端类型： 默认
 func AgentTypeDefault() map[int]string {
 	return map[int]string{
-		1: "服务器",
-		2: "业务系统",
-		3: "办公台式机",
-		4: "办公笔记本",
-		5: "其它",
+		1: "Server",
+		2: "Business System",
+		3: "Office Desktop",
+		4: "Office Laptop",
+		5: "Other",
 	}
 }
 

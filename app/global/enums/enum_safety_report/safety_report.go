@@ -18,6 +18,11 @@ var EnumIntMap = map[string]map[int]string{
 		AlarmNoticeCycleWeek:  "每周",
 		AlarmNoticeCycleMonth: "每月",
 	},
+	"notice_cycle_en": {
+		AlarmNoticeCycleDay:   "Daily",
+		AlarmNoticeCycleWeek:  "Weekly",
+		AlarmNoticeCycleMonth: "Monthly",
+	},
 }
 var WebMapInt = map[string][]int{
 	"notice_cycle": {

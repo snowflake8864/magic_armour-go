@@ -22,9 +22,17 @@ var EnumMapInt = map[string]map[int]string{
 		enums.IsYes: "成功",
 		enums.IsNot: "失败",
 	},
+	"login_status_en": {
+		enums.IsYes: "Success",
+		enums.IsNot: "Failed",
+	},
 	"port_status": {
 		enums.IsYes: "是",
 		enums.IsNot: "否",
+	},
+	"port_status_en": {
+		enums.IsYes: "Yes",
+		enums.IsNot: "No",
 	},
 	"proto": {
 		0:   "ANY",

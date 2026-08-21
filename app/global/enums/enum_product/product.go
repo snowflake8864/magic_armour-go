@@ -30,10 +30,19 @@ var EnumIntMap = map[string]map[int]string{
 		StatusNot: "无效",
 		StatusYes: "有效",
 	},
+	"status_en": {
+		StatusNot: "Invalid",
+		StatusYes: "Valid",
+	},
 	"type": {
 		TypeGold:   "正式",
 		TypeTest:   "测试",
 		TypeSample: "样本",
+	},
+	"type_en": {
+		TypeGold:   "Formal",
+		TypeTest:   "Test",
+		TypeSample: "Sample",
 	},
 }
 
@@ -49,6 +58,18 @@ var EnumStrMap = map[string]map[string]string{
 		ModuleOutreach:  "外联管控",
 		ModuleLogin:     "口令破解",
 		ModuleThreaten:  "威胁情报",
+	},
+	"module_en": {
+		ModuleProcess:   "Trusted Protection",
+		ModuleTamper:    "Anti-Tampering",
+		ModuleBlackmail: "Ransomware Protection",
+		ModulePort:      "Port Deception",
+		ModulePlug:      "Dynamic Blocking",
+		ModuleUsb:       "Peripheral Management",
+		ModuleSyslog:    "Communication Log",
+		ModuleOutreach:  "Outreach Control",
+		ModuleLogin:     "Password Cracking Protection",
+		ModuleThreaten:  "Threat Intelligence",
 	},
 }
 

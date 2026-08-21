@@ -34,10 +34,19 @@ var EnumMap = map[string]map[int]string{
 		TypeOrg:    "企业",
 		TypePerson: "个人",
 	},
+	"type_en": {
+		TypeOrg:    "Enterprise",
+		TypePerson: "Individual",
+	},
 	"status": {
 		StatusVerifying: "审核中",
 		StatusNormal:    "正常",
 		StatusLocking:   "锁定",
+	},
+	"status_en": {
+		StatusVerifying: "Verifying",
+		StatusNormal:    "Normal",
+		StatusLocking:   "Locked",
 	},
 	"log_action": {
 		LogActionPlatformAdd:            "平台添加",
@@ -58,6 +67,26 @@ var EnumMap = map[string]map[int]string{
 		LogActionOrgSelfModifyPhone:     "修改手机",
 		LogActionOrgSelfModifyInfo:      "修改基本信息",
 		LogActionOrgSelfFindPw:          "找回密码",
+	},
+	"log_action_en": {
+		LogActionPlatformAdd:            "Platform Added",
+		LogActionPlatformApprove:        "Approved",
+		LogActionPlatformRefuse:         "Rejected",
+		LogActionPlatformLock:           "Enterprise Account Locked",
+		LogActionPlatformUnlock:         "Enterprise Account Unlocked",
+		LogActionPlatformClean:          "Clear Business Data",
+		LogActionPlatformHuanshiSwitch:  "Set Huanshi Switch",
+		LogActionPlatformLoginSmsSwitch: "Set Enterprise Login SMS Verification Switch",
+		LogActionOrgRegister:            "User Registration",
+		LogActionOrgAddSubUser:          "Add Sub-user",
+		LogActionOrgDelSubUser:          "Delete Sub-user",
+		LogActionOrgEditSubUser:         "Edit Sub-user",
+		LogActionOrgModifyPwSubUser:     "Modify Sub-user Password",
+		LogActionOrgSelfModifyPw:        "Modify Password",
+		LogActionOrgSelfModifyEmail:     "Modify Email",
+		LogActionOrgSelfModifyPhone:     "Modify Phone",
+		LogActionOrgSelfModifyInfo:      "Modify Basic Info",
+		LogActionOrgSelfFindPw:          "Forgot Password",
 	},
 }
 

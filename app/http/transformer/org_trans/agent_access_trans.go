@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent_access"
 	"goskeleton/app/http/transformer"
@@ -19,8 +20,12 @@ type AgentAccess struct {
 func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
-	data["path_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("path", model.Path, enum_agent_access.EnumStrMap)
-	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_agent_access.EnumMapInt)
+	if t.Lang == consts.LanguageZh {
+		data["path_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("path", model.Path, enum_agent_access.EnumStrMap)
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_agent_access.EnumMapInt)
+	} else {
+
+	}
 
 	return data
 }

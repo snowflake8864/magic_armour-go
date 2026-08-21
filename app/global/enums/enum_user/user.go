@@ -14,4 +14,9 @@ var EnumMap = map[string]map[int]string{
 		StatusNormal:    "正常",
 		StatusLocking:   "锁定",
 	},
+	"status_en": {
+		StatusVerifying: "Verifying",
+		StatusNormal:    "Normal",
+		StatusLocking:   "Locked",
+	},
 }
