@@ -24,7 +24,8 @@ func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map
 		data["path_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("path", model.Path, enum_agent_access.EnumStrMap)
 		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_agent_access.EnumMapInt)
 	} else {
-
+		data["path_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("path_en", model.Path, enum_agent_access.EnumStrMap)
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_agent_access.EnumMapInt)
 	}
 
 	return data

@@ -36,6 +36,9 @@ type AgentController struct {
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_online", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("is_online_en", enum_agent.EnumIntMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -43,6 +46,9 @@ func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_safe", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("is_safe_en", enum_agent.EnumIntMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -50,6 +56,9 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 func (u *AgentController) GrantStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_status", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_status", enum_agent.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("grant_status_en", enum_agent.EnumIntMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
