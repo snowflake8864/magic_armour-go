@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/ali_sms"
@@ -136,7 +137,7 @@ func (crd *AdminAuth) setLocking(username string, second int) (isOk bool) {
 func (crd *AdminAuth) HasUser(username string) (err error, model *admin_models.AdminModel) {
 	model = CreateCurdFactory().GetItemByUsername(username)
 	if model == nil || model.Id == 0 {
-		return errors.New("用户名或密码错误"), nil
+		return errors.New(my_errors.CurdUsernameOrPwFail), nil
 	} else {
 		return nil, model
 	}
@@ -149,9 +150,9 @@ func (crd *AdminAuth) EncryptPw(pw string) string {
 }
 
 // LoginByPw 密码登录
-func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp string) (result map[string]interface{}, errCode int, err error) {
+func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp, lang string) (result map[string]interface{}, errCode int, err error) {
 	if !crd.checkBySlider(username, slider) {
-		return nil, -88, errors.New("滑块不正确")
+		return nil, -88, errors.New(my_errors.CurdSliderIncorrect)
 	}
 	if err = crd.IsLocking(username); err != nil {
 		return nil, -1, err
@@ -165,10 +166,10 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp string) 
 	//短信验证
 	if !string_helper.IsEmpty(adminModel.Phone) && adminModel.LoginPhoneCheck == enums.IsYes {
 		if string_helper.IsEmpty(sms) {
-			return nil, -99, errors.New("已启用双因子认证时，短信验证码不能为空")
+			return nil, -99, errors.New(my_errors.CurdTwoFactorAutEnabled)
 		}
 		if !crd.checkBySms(adminModel.Phone, sms) {
-			return nil, -99, errors.New("短信验证码不一致")
+			return nil, -99, errors.New(my_errors.CurdSmsVerifyCodeNotMatch)
 		}
 		crd.deleteBySms(adminModel.Phone)
 	}
@@ -193,15 +194,15 @@ func (crd *AdminAuth) LoginByPw(username, pw, slider, sms string, netIp string) 
 			crd.setLocking(username, string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginLockDuration])*60)
 
 			return nil, -2,
-				errors.New(fmt.Sprintf("用户名或密码错误, 已被锁定%s分钟，请稍后在试", mapDict[enum_dictionary.PlatformLoginLockDuration]))
+				errors.New(my_errors.GetMessagef(lang, my_errors.CurdUsernameOrPwFailLocking, mapDict[enum_dictionary.PlatformLoginLockDuration]))
 
 		} else if diff < string_helper.ToInt(mapDict[enum_dictionary.PlatformLoginErrorRemind]) {
 
 			return nil, -2,
-				errors.New(fmt.Sprintf("用户名或密码错误, 还有%d次即将被锁定%s分钟", diff, mapDict[enum_dictionary.PlatformLoginLockDuration]))
+				errors.New(my_errors.GetMessagef(lang, my_errors.CurdUsernameOrPwFailWillLock, diff, mapDict[enum_dictionary.PlatformLoginLockDuration]))
 
 		} else {
-			return nil, -2, errors.New("用户名或密码错误")
+			return nil, -2, errors.New(my_errors.CurdUsernameOrPwFail)
 		}
 	}
 

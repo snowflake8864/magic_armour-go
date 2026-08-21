@@ -3,6 +3,7 @@ package admin_service
 import (
 	"errors"
 	"gorm.io/gorm"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/platform/admin_models"
 	"goskeleton/app/utils/helpers/date_helper"
 )
@@ -57,7 +58,7 @@ func (crd *AdminCurd) loginSuccess(id int64) bool {
 func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, err error) {
 	adminModel := crd.masterModel.GetItemById(id)
 	if adminModel.Id == 0 {
-		return -1, errors.New("用户不存在")
+		return -1, errors.New(my_errors.CurdUserNotExist)
 	}
 
 	//加密
@@ -67,7 +68,7 @@ func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, 
 
 	//
 	if !crd.HasByUsernameAndPw(adminModel.Username, oldPw) {
-		return -1, errors.New("旧密码不正确")
+		return -1, errors.New(my_errors.CurdOldPasswordIncorrect)
 	}
 
 	//修改密码
@@ -75,7 +76,7 @@ func (crd *AdminCurd) ModifyPwById(id int64, oldPw, newPw string) (errCode int, 
 		"pw": newPw,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(id, updates); !isOk {
-		return -1, errors.New("修改密码失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 	return errCode, err
 }
