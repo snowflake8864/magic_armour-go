@@ -3,6 +3,7 @@ package org_menu_service
 import (
 	"errors"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/platform/org_menu_models"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/tree"
@@ -23,7 +24,7 @@ func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err 
 		if hasModel, _ := crd.masterModel.GetItemById(param.ParentId); hasModel != nil && hasModel.Id > 0 {
 			param.Level = hasModel.Level + 1
 		} else {
-			return -1, errors.New("父级菜单不存在")
+			return -1, errors.New(my_errors.CurdMenuParentNotExist)
 		}
 	} else {
 		//等级从1开始
@@ -33,7 +34,7 @@ func (crd *MenuCurd) Add(param *org_menu_models.OrgMenuModel) (errCode int, err 
 
 	isOk := crd.masterModel.InsertItem(param)
 	if !isOk {
-		return -1, errors.New("添加失败")
+		return -1, errors.New(my_errors.CurdAddFailed)
 	}
 	return errCode, err
 }
@@ -52,7 +53,7 @@ func (crd *MenuCurd) UpdateById(param *org_menu_models.OrgMenuModel) (errCode in
 
 	isOk := crd.masterModel.UpdateById(param.Id, updates)
 	if !isOk {
-		return -1, errors.New("修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 	return errCode, err
 }
@@ -60,11 +61,11 @@ func (crd *MenuCurd) UpdateById(param *org_menu_models.OrgMenuModel) (errCode in
 // DeleteById 删除
 func (crd *MenuCurd) DeleteById(id int64) (errCode int, err error) {
 	if hasModel, _ := crd.masterModel.GetItemByParent(id); hasModel != nil && hasModel.Id > 0 {
-		return -1, errors.New("有子菜单或按钮，不能被删除")
+		return -1, errors.New(my_errors.CurdMenuHasSub)
 	}
 	isOk := crd.masterModel.DeleteById(id)
 	if !isOk {
-		return -1, errors.New("删除失败")
+		return -1, errors.New(my_errors.CurdDeleteFailed)
 	}
 	return errCode, err
 }

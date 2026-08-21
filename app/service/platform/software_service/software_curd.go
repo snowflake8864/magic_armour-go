@@ -4,6 +4,7 @@ import (
 	"errors"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -53,15 +54,15 @@ func (crd *SoftwareCurd) GetItemsByPublished() (items []*software_models.Softwar
 // Add 新增
 func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int, err error) {
 	if string_helper.IsEmpty(dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.AgentHttpUrl)) {
-		return -1, errors.New("上传软件前需要配置终端访问地址")
+		return -1, errors.New(my_errors.CurdSoftwareUploadNeedConfig)
 	}
 
 	uploadModel := upload_models.CreateUploadFactory().GetItemById(param.UploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
-		return -1, errors.New("上传软件不存在")
+		return -1, errors.New(my_errors.CurdSoftwareNotExist)
 	}
 	if !files.ExistsFile(uploadModel.FullPath) {
-		return -1, errors.New("文件不存在")
+		return -1, errors.New(my_errors.FilesUploadFailMsg)
 	}
 	param.StoragePath = path_helper.ToStandard(uploadModel.StoragePath)
 	param.FullPath = path_helper.ToStandard(uploadModel.FullPath)
@@ -69,7 +70,7 @@ func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int,
 	param.CreatedAt = date_helper.CurDatetime()
 
 	if !crd.masterModel.InsertItem(param) {
-		return -1, errors.New("保存失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return errCode, err
@@ -79,11 +80,11 @@ func (crd *SoftwareCurd) Add(param *software_models.SoftwareModel) (errCode int,
 func (crd *SoftwareCurd) DeleteById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New(my_errors.CurdSoftwareNotExist)
 	}
 
 	if !crd.masterModel.DeleteById(id) {
-		return -1, errors.New("删除失败")
+		return -1, errors.New(my_errors.CurdDeleteFailed)
 	}
 
 	return errCode, err
@@ -93,10 +94,10 @@ func (crd *SoftwareCurd) DeleteById(id int64) (errCode int, err error) {
 func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New(my_errors.CurdSoftwareNotExist)
 	}
 	if model.IsPublish == enums.IsYes {
-		return -1, errors.New("软件已经发布过了")
+		return -1, errors.New(my_errors.CurdSoftwarePublished)
 	}
 
 	//关闭同系统类型的
@@ -115,7 +116,7 @@ func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
 		"is_publish": enums.IsYes,
 	}
 	if !crd.masterModel.UpdateById(id, updates) {
-		return -1, errors.New("保存失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 	return errCode, err
 }
@@ -124,7 +125,7 @@ func (crd *SoftwareCurd) PublishById(id int64) (errCode int, err error) {
 func (crd *SoftwareCurd) CancelById(id int64) (errCode int, err error) {
 	model := crd.GetItemById(id)
 	if model == nil || model.Id == 0 {
-		return -1, errors.New("软件不存在")
+		return -1, errors.New(my_errors.CurdSoftwareNotExist)
 	}
 
 	//修改本身
@@ -132,7 +133,7 @@ func (crd *SoftwareCurd) CancelById(id int64) (errCode int, err error) {
 		"is_publish": enums.IsNot,
 	}
 	if !crd.masterModel.UpdateById(id, updates) {
-		return -1, errors.New("保存失败")
+		return -1, errors.New(my_errors.CurdSaveFailed)
 	}
 	return errCode, err
 }

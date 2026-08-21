@@ -73,6 +73,7 @@ const (
 	FilesUploadIsEmpty             string = "FilesUploadIsEmpty"
 	FilesSaveFail                  string = "FilesSaveFail"
 	FilesFormatIncorrect           string = "FilesFormatIncorrect"
+	FilesNotExist                  string = "FilesNotExist"
 
 	// CURD 常用业务状态码
 	CurdStatusOkCode         string = "000000"
@@ -198,4 +199,11 @@ const (
 	CurdOrderGrantAgentFail            string = "CurdOrderGrantAgentFail"
 	CurdOrderExpiredToGet              string = "CurdOrderExpiredToGet"
 	CurdOrderExpiredToBuy              string = "CurdOrderExpiredToBuy"
+	CurdMenuParentNotExist             string = "CurdMenuParentNotExist"
+	CurdMenuHasSub                     string = "CurdMenuHasSub"
+	CurdSoftwareUploadNeedConfig       string = "CurdSoftwareUploadNeedConfig"
+	CurdSoftwareNotExist               string = "CurdSoftwareNotExist"
+	CurdSoftwarePublished              string = "CurdSoftwarePublished"
+	CurdSoftwareDownloadCopyFail       string = "CurdSoftwareDownloadCopyFail"
+	CurdSoftwareDownloadAppendFail     string = "CurdSoftwareDownloadAppendFail"
 )

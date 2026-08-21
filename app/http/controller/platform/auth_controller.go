@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_platform"
 	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -108,7 +109,7 @@ func (u *AuthController) NormalLogin(ctx *gin.Context) {
 		return
 	}
 
-	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP())
+	result, errCode, err := admin_service.CreateAuthFactory().LoginByPw(name, pw, sliderCode, smsCode, ctx.ClientIP(), cur_userinfo.GetLocales(ctx))
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -88,7 +89,7 @@ func (crd *SoftwareDownload) GetServiceAddr() (err error, addr, url, port string
 	}
 	mapDict := dictionary_service.CreateCacheFactory().GetMapByIds(dictIds)
 	if string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpUrl]) || string_helper.IsEmpty(mapDict[enum_dictionary.AgentHttpPort]) {
-		return errors.New("没有配置终端访问地址"), addr, url, port
+		return errors.New(my_errors.CurdSoftwareUploadNeedConfig), addr, url, port
 	}
 
 	url = strings.Trim(mapDict[enum_dictionary.AgentHttpUrl], "/")
@@ -114,10 +115,10 @@ func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadMode
 	//验证软件
 	softModel := CreateCurdFactory().GetItemById(param.SoftwareId)
 	if softModel == nil || softModel.Id == 0 {
-		return errors.New("数据不存在"), nil
+		return errors.New(my_errors.CurdDataNotExist), nil
 	}
 	if !file_helper.ExistsFile(softModel.FullPath) {
-		return errors.New("文件不存在"), nil
+		return errors.New(my_errors.FilesNotExist), nil
 	}
 
 	//新文件名称
@@ -129,12 +130,12 @@ func (crd *SoftwareDownload) GetDownloadInfo(param *software_models.DownloadMode
 
 	//复制到新路径
 	if err = file_helper.CopyFile(softModel.FullPath, param.FullPath); err != nil {
-		return errors.New("复制ZIP失败"), nil
+		return errors.New(my_errors.CurdSoftwareDownloadCopyFail), nil
 	}
 
 	//追加配置文件
 	if !crd.appendConfig(agentHttpUrl, agentHttpPort, softModel, param) {
-		return errors.New("追加INI失败"), nil
+		return errors.New(my_errors.CurdSoftwareDownloadAppendFail), nil
 	}
 
 	//新文件属性

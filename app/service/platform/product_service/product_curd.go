@@ -3,6 +3,7 @@ package product_service
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/platform/prodcut_models"
 )
 
@@ -33,7 +34,7 @@ func (crd *ProductCurd) UpdateById(param *prodcut_models.ProductModel) (errCode 
 	updates["create_name"] = param.CreateName
 	isOk := crd.masterModel.UpdateById(param.Id, updates)
 	if !isOk {
-		return -1, errors.New("修改失败")
+		return -1, errors.New(my_errors.CurdModifyFailed)
 	}
 	return errCode, err
 }

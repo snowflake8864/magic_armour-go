@@ -60,6 +60,7 @@ var Messages = map[string]map[string]string{
 		FilesUploadIsEmpty:            "不允许上传空文件",
 		FilesSaveFail:                 "保存文件失败",
 		FilesFormatIncorrect:          "文件格式不正确",
+		FilesNotExist:                 "文件不存在",
 
 		CurdPleaseWaitPatiently:  "请耐心等待",
 		CurdDataIsEmpty:          "数据为空",
@@ -176,6 +177,13 @@ var Messages = map[string]map[string]string{
 		CurdOrderGrantAgentFail:            "终端授权失败",
 		CurdOrderExpiredToGet:              "订单授权已到期，请联系供应商，获取最新授权!",
 		CurdOrderExpiredToBuy:              "订单授权已到期，请购买授权!",
+		CurdMenuParentNotExist:             "父级不存在",
+		CurdMenuHasSub:                     "有子菜单或按钮，不能被删除",
+		CurdSoftwareUploadNeedConfig:       "上传软件需要配置终端访问地址",
+		CurdSoftwareNotExist:               "上传软件不存在",
+		CurdSoftwarePublished:              "软件已经发布过了",
+		CurdSoftwareDownloadCopyFail:       "复制ZIP失败",
+		CurdSoftwareDownloadAppendFail:     "追加INI失败",
 	},
 	"en": {},
 }
