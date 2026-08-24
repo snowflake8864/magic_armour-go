@@ -6,6 +6,7 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_software"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/service/platform/dictionary_service"
@@ -81,7 +82,7 @@ func (u *SoftwareController) AgentConfigSet(ctx *gin.Context) {
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保持失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
@@ -138,7 +139,7 @@ func (u *SoftwareController) AddForManage(ctx *gin.Context) {
 // ClearForManage 管理: 清空
 func (u *SoftwareController) ClearForManage(ctx *gin.Context) {
 	if !software_service.CreateCurdFactory().Clear() {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -149,7 +150,7 @@ func (u *SoftwareController) DownloadForManage(ctx *gin.Context) {
 	softId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "softId"))
 	model := software_service.CreateCurdFactory().GetItemById(softId)
 	if model == nil || model.Id == 0 {
-		response.FailSimplify(ctx, "软件不存在")
+		response.FailSimplify(ctx, my_errors.CurdSoftwareNotExist)
 		return
 	}
 

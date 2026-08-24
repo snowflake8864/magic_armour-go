@@ -74,6 +74,8 @@ const (
 	FilesSaveFail                  string = "FilesSaveFail"
 	FilesFormatIncorrect           string = "FilesFormatIncorrect"
 	FilesNotExist                  string = "FilesNotExist"
+	FilesUnzipFail                 string = "FilesUnzipFail"
+	FilesGetFail                   string = "FilesGetFail"
 
 	// CURD 常用业务状态码
 	CurdStatusOkCode         string = "000000"
@@ -95,6 +97,8 @@ const (
 	CurdInvalidParameter     string = "CurdInvalidParameter"
 	CurdCacheNotExist        string = "CurdCacheNotExist"
 	CurdCacheFailed          string = "CurdCacheFailed"
+	CurdNetworkConnFail      string = "CurdNetworkConnFail"
+	CurdConfigFail           string = "CurdConfigFail"
 	CurdAddFailed            string = "CurdAddFailed"
 	CurdSaveFailed           string = "CurdSaveFailed"
 	CurdModifyFailed         string = "CurdModifyFailed"
@@ -207,4 +211,5 @@ const (
 	CurdSoftwarePublished              string = "CurdSoftwarePublished"
 	CurdSoftwareDownloadCopyFail       string = "CurdSoftwareDownloadCopyFail"
 	CurdSoftwareDownloadAppendFail     string = "CurdSoftwareDownloadAppendFail"
+	CurdThreatEnabledAndNotImport      string = "CurdThreatEnabledAndNotImport"
 )

@@ -5,10 +5,12 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_product"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/service/platform/product_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/response"
 )
@@ -22,14 +24,20 @@ type ProductController struct {
 func (u *ProductController) GrantTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_product.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_product.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("type_en", enum_product.EnumIntMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // GrantModules 授权模块
 func (u *ProductController) GrantModules(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("module", enum_product.WebMapStr)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("module", enum_product.EnumStrMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatStringList(keys, labels, false))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("module_en", enum_product.EnumStrMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, false))
 }
 
 // AllPublished 全部已发布的产品
@@ -83,7 +91,7 @@ func (u *ProductController) EditForManage(ctx *gin.Context) {
 func (u *ProductController) DeleteForManage(ctx *gin.Context) {
 	id := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "id"))
 	if !product_service.CreateCurdFactory().DeleteById(id) {
-		response.FailSimplify(ctx, "删除失败")
+		response.FailSimplify(ctx, my_errors.CurdDeleteFailed)
 		return
 	}
 

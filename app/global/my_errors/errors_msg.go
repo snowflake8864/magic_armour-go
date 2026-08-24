@@ -61,6 +61,8 @@ var Messages = map[string]map[string]string{
 		FilesSaveFail:                 "保存文件失败",
 		FilesFormatIncorrect:          "文件格式不正确",
 		FilesNotExist:                 "文件不存在",
+		FilesUnzipFail:                "解压失败",
+		FilesGetFail:                  "获取文件失败",
 
 		CurdPleaseWaitPatiently:  "请耐心等待",
 		CurdDataIsEmpty:          "数据为空",
@@ -72,6 +74,8 @@ var Messages = map[string]map[string]string{
 		CurdInvalidParameter:     "参数不正确",
 		CurdCacheNotExist:        "缓存数据不存在",
 		CurdCacheFailed:          "缓存数据错误",
+		CurdNetworkConnFail:      "网络连接失败",
+		CurdConfigFail:           "配置不正确",
 		CurdAddFailed:            "新增失败",
 		CurdSaveFailed:           "保存失败",
 		CurdModifyFailed:         "修改失败",
@@ -185,6 +189,7 @@ var Messages = map[string]map[string]string{
 		CurdSoftwarePublished:              "软件已经发布过了",
 		CurdSoftwareDownloadCopyFail:       "复制ZIP失败",
 		CurdSoftwareDownloadAppendFail:     "追加INI失败",
+		CurdThreatEnabledAndNotImport:      "威胁情报功能已开启，不需要人工导入",
 	},
 	"en": {},
 }

@@ -22,13 +22,13 @@ func (u *OrgMenuController) AppVers(ctx *gin.Context) {
 
 	list = append(list, map[string]interface{}{
 		"val":   0,
-		"label": "全部",
+		"label": "All",
 	}, map[string]interface{}{
 		"val":   variable.AppUsageVersionCloud,
-		"label": "云版本",
+		"label": "SAAS Version",
 	}, map[string]interface{}{
 		"val":   variable.AppUsageVersionOffline,
-		"label": "离线版本",
+		"label": "Offline Version",
 	})
 
 	response.SuccessReturnData(ctx, list)

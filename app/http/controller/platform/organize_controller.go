@@ -38,7 +38,7 @@ func (u *OrganizeController) Detail(ctx *gin.Context) {
 	orgId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgId"))
 	model := organize_service.CreateOrgCurdFactory().GetItemByOrg(orgId)
 	if model == nil || model.Id == 0 {
-		response.FailSimplify(ctx, "企业不存在")
+		response.FailSimplify(ctx, my_errors.CurdOrgNotExists)
 		return
 	}
 	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransDetail(model))

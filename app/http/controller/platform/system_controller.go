@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_dictionary"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/common/upload_models"
@@ -232,7 +233,7 @@ func (u *SystemController) AgentLogConfigSet(ctx *gin.Context) {
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保持失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
@@ -270,11 +271,11 @@ func (u *SystemController) HuanshiOnline(ctx *gin.Context) {
 	}
 	threatenPlatform := huanshi_platform.CreateRequestFactory(config)
 	if err := threatenPlatform.Online(); err != nil {
-		response.FailData(ctx, "网络连接失败", err.Error())
+		response.FailData(ctx, my_errors.CurdNetworkConnFail, err.Error())
 		return
 	}
 	if err := threatenPlatform.GenerateToken(); err != nil {
-		response.FailData(ctx, "配置不正确", err.Error())
+		response.FailData(ctx, my_errors.CurdConfigFail, err.Error())
 		return
 	}
 
@@ -297,7 +298,7 @@ func (u *SystemController) HuanshiSet(ctx *gin.Context) {
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保持失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
@@ -313,7 +314,7 @@ func (u *SystemController) HuanshiSetThird(ctx *gin.Context) {
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保持失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
@@ -325,18 +326,18 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	uploadId := int64(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "uploadId"))
 	uploadModel := upload_models.CreateUploadFactory().GetItemById(uploadId)
 	if uploadModel == nil || uploadModel.Id == 0 {
-		response.FailSimplify(ctx, "上传升级包不存在")
+		response.FailSimplify(ctx, my_errors.FilesUploadFailMsg)
 		return
 	}
 	if !files.ExistsFile(uploadModel.FullPath) {
-		response.FailSimplify(ctx, "文件不存在误")
+		response.FailSimplify(ctx, my_errors.FilesNotExist)
 		return
 	}
 	//解压
 	fileNameArr := strings.Split(uploadModel.StorageName, ".")
 	unzipDir := path.Dir(uploadModel.FullPath) + "/" + fileNameArr[0] + "_unzip"
 	if err := zip_factory.UnzipFile(uploadModel.FullPath, unzipDir); err != nil {
-		response.FailData(ctx, "解压失败", err.Error())
+		response.FailData(ctx, my_errors.FilesUnzipFail, err.Error())
 		return
 	}
 
@@ -345,7 +346,7 @@ func (u *SystemController) UpgradeRun(ctx *gin.Context) {
 	//脚本路径
 	shellPath := shellDir + "/" + cur_app.ShellUpgrade()
 	if !files.ExistsFile(shellPath) {
-		response.FailData(ctx, "升级脚本不存在", shellPath)
+		response.FailData(ctx, "exec shell not exist", shellPath)
 		return
 	}
 

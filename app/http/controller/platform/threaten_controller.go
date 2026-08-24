@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/global/enums/enum_dictionary"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/global/enums/enum_upload"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/agent/threaten_models"
@@ -16,6 +17,7 @@ import (
 	"goskeleton/app/service/platform/upload_service"
 	"goskeleton/app/service/upload_file"
 	"goskeleton/app/service/veda_other/threaten_platform"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/file_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -34,10 +36,12 @@ type ThreatenController struct {
 
 // Levels 等级
 func (u *ThreatenController) Levels(ctx *gin.Context) {
-
 	keys := enums.Get1stIsStrReturnSliceOfInt("level", enum_threaten.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("level", enum_threaten.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("level_en", enum_threaten.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // GetForConfig 配置: 获取
@@ -65,7 +69,7 @@ func (u *ThreatenController) SaveForConfig(ctx *gin.Context) {
 	}
 
 	if !dictionary_service.CreateCurdFactory().BatchUpdate(idAndVal) {
-		response.FailSimplify(ctx, "保持失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
@@ -81,11 +85,11 @@ func (u *ThreatenController) OnlineForConfig(ctx *gin.Context) {
 	}
 	threatenPlatform := threaten_platform.CreateRequestFactory(config)
 	if err := threatenPlatform.Online(); err != nil {
-		response.FailData(ctx, "网络连接失败", err.Error())
+		response.FailData(ctx, my_errors.CurdNetworkConnFail, err.Error())
 		return
 	}
 	if err := threatenPlatform.GenerateToken(); err != nil {
-		response.FailData(ctx, "配置不正确", err.Error())
+		response.FailData(ctx, my_errors.CurdConfigFail, err.Error())
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -111,7 +115,7 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 // ClearForCache 缓存: 清空
 func (u *ThreatenController) ClearForCache(ctx *gin.Context) {
 	if !threaten_service.CreateCacheFactory().Clear() {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -120,7 +124,7 @@ func (u *ThreatenController) ClearForCache(ctx *gin.Context) {
 // RefreshForCache 缓存: 刷新
 func (u *ThreatenController) RefreshForCache(ctx *gin.Context) {
 	if !threaten_service.CreateCacheFactory().Refresh() {
-		response.FailSimplify(ctx, "刷新失败")
+		response.FailSimplify(ctx, my_errors.CurdRefreshFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -131,7 +135,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 
 	if !threaten_service.CreateCacheFactory().DeleteById(id) {
-		response.FailSimplify(ctx, "删除失败")
+		response.FailSimplify(ctx, my_errors.CurdDeleteFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
@@ -140,7 +144,7 @@ func (u *ThreatenController) DeleteForCache(ctx *gin.Context) {
 // ImportForCache 缓存: 导入
 func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	if val := dictionary_service.CreateCacheFactory().GetValById(enum_dictionary.ThreatenSwitch); string_helper.ToInt(val) == enums.SwitchOn {
-		response.FailSimplify(ctx, "威胁情报功能已开启，不需要人工导入")
+		response.FailSimplify(ctx, my_errors.CurdThreatEnabledAndNotImport)
 		return
 	}
 
@@ -148,7 +152,7 @@ func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	//上传文件
 	isOk, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"})
 	if !isOk {
-		response.FailSimplify(ctx, "上传文件失败")
+		response.FailSimplify(ctx, my_errors.FilesUploadFailMsg)
 		return
 	}
 	uploadParam.Type = enum_upload.TypeThreatenCaches
@@ -156,7 +160,7 @@ func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	uploadParam.OperateId = loginInfo.AdminId
 	uploadParam.OperateName = loginInfo.Username
 	if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-		response.FailSimplify(ctx, "保存文件失败")
+		response.FailSimplify(ctx, my_errors.FilesSaveFail)
 		return
 	}
 
@@ -164,13 +168,13 @@ func (u *ThreatenController) ImportForCache(ctx *gin.Context) {
 	fileNameArr := strings.Split(uploadParam.StorageName, ".")
 	unzipDir := path.Dir(uploadParam.FullPath) + "/" + fileNameArr[0] + "_unzip"
 	if err := zip_factory.UnzipFile(uploadParam.FullPath, unzipDir); err != nil {
-		response.FailData(ctx, "解压失败", err.Error())
+		response.FailData(ctx, my_errors.FilesUnzipFail, err.Error())
 		return
 	}
 
 	//获取列表
 	if fileList, err := file_helper.ListDir(unzipDir); err != nil {
-		response.FailData(ctx, "获取文件失败", err.Error())
+		response.FailData(ctx, my_errors.FilesGetFail, err.Error())
 		return
 	} else {
 		producerFact := producer_kafka.CreateProducerFactory()
@@ -194,7 +198,7 @@ func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 	id := ctx.GetString(consts.ValidatorPrefixPlatform + "id")
 	model := threaten_models.CreateCacheFactory().GetItemById(id, "*")
 	if model == nil || string_helper.IsEmpty(model.Id) {
-		response.FailSimplify(ctx, "数据不存在")
+		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
 	response.SuccessReturnData(ctx, (&transformer.Common{}).TransThreatenInfo(model))
@@ -244,7 +248,7 @@ func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (er
 	var params []threaten_models.PushModel
 	err = json_helper.ToAny(list, &params)
 	if err != nil {
-		return -1, errors.New("参数格式错误")
+		return -1, errors.New(my_errors.CurdInvalidParameter)
 	}
 	loginInfo := u.getLogin(ctx)
 	return threaten_service.CreatePushFactory().BatchAdd(params, level, loginInfo.AdminId, loginInfo.Username)
@@ -253,7 +257,7 @@ func (u *ThreatenController) handelBatchForPush(ctx *gin.Context, level int) (er
 // ClearForPush 推送: 清空
 func (u *ThreatenController) ClearForPush(ctx *gin.Context) {
 	if !threaten_service.CreatePushFactory().Clear() {
-		response.FailSimplify(ctx, "清空失败")
+		response.FailSimplify(ctx, my_errors.CurdClearFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)
