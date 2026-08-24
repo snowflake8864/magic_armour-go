@@ -32,6 +32,9 @@ type PortController struct {
 func (u *PortController) Protocols(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("protocol", enum_port.WebMapStr)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("protocol", enum_port.EnumMapStr)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("protocol_en", enum_port.EnumMapStr)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, false))
 }
 
@@ -39,6 +42,9 @@ func (u *PortController) Protocols(ctx *gin.Context) {
 func (u *PortController) IpTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("ip_type", enum_port.WebMapStr)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("ip_type", enum_port.EnumMapStr)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("ip_type_en", enum_port.EnumMapStr)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, false))
 }
 
@@ -46,6 +52,9 @@ func (u *PortController) IpTypes(ctx *gin.Context) {
 func (u *PortController) AlarmLevels(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("alarm_level", enum_port.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("alarm_level", enum_port.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("alarm_level_en", enum_port.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
@@ -53,6 +62,9 @@ func (u *PortController) AlarmLevels(ctx *gin.Context) {
 func (u *PortController) ForwardTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("forward_type", enum_port.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("forward_type", enum_port.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("forward_type_en", enum_port.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 

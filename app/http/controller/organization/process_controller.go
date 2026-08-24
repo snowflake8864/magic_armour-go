@@ -33,6 +33,9 @@ type ProcessController struct {
 func (u *ProcessController) SearchStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("proc_status", enum_process.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("all_status_en", enum_process.EnumIntMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -40,6 +43,9 @@ func (u *ProcessController) SearchStatus(ctx *gin.Context) {
 func (u *ProcessController) ChangeStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("change_status", enum_process.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("all_status", enum_process.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("all_status_en", enum_process.EnumIntMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 

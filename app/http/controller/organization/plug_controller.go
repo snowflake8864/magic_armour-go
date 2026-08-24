@@ -29,6 +29,9 @@ type PlugController struct {
 func (u *PlugController) PlugTypes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("plug_type", enum_plug.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("plug_type", enum_plug.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("plug_type_en", enum_plug.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
@@ -36,6 +39,9 @@ func (u *PlugController) PlugTypes(ctx *gin.Context) {
 func (u *PlugController) EffectModes(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("effect_mode", enum_plug.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("effect_mode", enum_plug.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("effect_mode_en", enum_plug.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
