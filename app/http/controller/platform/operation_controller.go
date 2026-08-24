@@ -8,6 +8,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/platform/operate_models"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -20,7 +21,10 @@ type OperationController struct {
 func (u *OperationController) Modules(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfStr("module", enum_platform_operate.WebMapString)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("module", enum_platform_operate.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatStringList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("module_en", enum_platform_operate.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, true))
 }
 
 // Page  分页

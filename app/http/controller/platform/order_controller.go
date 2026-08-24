@@ -9,6 +9,7 @@ import (
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/organization/order_models"
 	"goskeleton/app/service/organization/order_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 )
 
@@ -19,31 +20,42 @@ type OrderController struct {
 
 // OrderStatus  订单状态
 func (u *OrderController) OrderStatus(ctx *gin.Context) {
-
 	keys := enums.Get1stIsStrReturnSliceOfInt("order_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("order_status", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("order_status_en", enum_order.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // ExpireStatus 过期状态
 func (u *OrderController) ExpireStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("expire_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("expire_status", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("expire_status_en", enum_order.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // GrantDuration 授权时长
 func (u *OrderController) GrantDuration(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_duration", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_duration", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("grant_duration_en", enum_order.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // PayMethod 支付方式
 func (u *OrderController) PayMethod(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("pay_method", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("pay_method", enum_order.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, false))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("pay_method_en", enum_order.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
 // AddForOrg  为企业添加订单
