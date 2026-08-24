@@ -16,12 +16,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type Agent struct {
+type AgentTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, agentExtend map[string]interface{}) map[string]interface{} {
+func (t *AgentTrans) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, agentExtend map[string]interface{}) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	delete(data, "id")
 	data["agent_id"] = model.AgentId
@@ -61,7 +61,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 }
 
 // TransManagePage 转换成管理分页需要的数据
-func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
+func (t *AgentTrans) TransManagePage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, softwareNewest map[int]string) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		//终端类型
@@ -90,7 +90,7 @@ func (t *Agent) TransManagePage(total int64, models []*agent_models.AgentModel, 
 }
 
 // TransOtherPage 转换成其他分页需要的数据
-func (t *Agent) TransOtherPage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
+func (t *AgentTrans) TransOtherPage(total int64, models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -107,7 +107,7 @@ func (t *Agent) TransOtherPage(total int64, models []*agent_models.AgentModel, d
 }
 
 // TransList 转换列表需要的数据l
-func (t *Agent) TransList(models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
+func (t *AgentTrans) TransList(models []*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel, extendInfo map[string]interface{}) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -121,6 +121,6 @@ func (t *Agent) TransList(models []*agent_models.AgentModel, departments map[int
 }
 
 // TransSingle 转换单个需要的数据
-func (t *Agent) TransSingle(model *agent_models.AgentModel) interface{} {
+func (t *AgentTrans) TransSingle(model *agent_models.AgentModel) interface{} {
 	return t.pageGeneral(model, nil, nil)
 }

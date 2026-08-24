@@ -96,7 +96,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 		}
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransList(list, nil, extendInfo))
+	response.SuccessReturnData(ctx, (&org_trans.AgentTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransList(list, nil, extendInfo))
 }
 
 // AlarmTodayStat 告警： 今天统计
@@ -199,5 +199,5 @@ func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
 	orderFact := order_models.CreateOrderFactory()
 	models := orderFact.GetItemsByConditions(conditions, 0, 2, "")
 
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(models))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransList(models))
 }

@@ -29,7 +29,7 @@ func (u *RoleController) AllForManage(ctx *gin.Context) {
 		OrgId: loginInfo.OrgId,
 	}
 	models := role_models.CreateRoleFactory().GetListByConditions(condition)
-	response.SuccessReturnData(ctx, (&org_trans.Role{}).TransList(models))
+	response.SuccessReturnData(ctx, (&org_trans.RoleTrans{}).TransList(models))
 }
 
 // AddForManage 管理页：添加

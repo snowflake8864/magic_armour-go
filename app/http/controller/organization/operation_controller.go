@@ -39,5 +39,5 @@ func (u *OperationController) PageForLog(ctx *gin.Context) {
 
 	total, models := org_operate_models.CreateLogFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Operation{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.OperationTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
 }

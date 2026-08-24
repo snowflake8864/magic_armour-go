@@ -50,7 +50,7 @@ func (u *TaskController) PageForHistory(ctx *gin.Context) {
 
 	total, models := task_models.CreateTaskFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Task{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.TaskTrans{}).TransPage(total, models))
 }
 
 // ClearForHistory 历史：清空

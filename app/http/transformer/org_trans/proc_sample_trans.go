@@ -10,13 +10,13 @@ import (
 	"goskeleton/app/model/organization/department_models"
 )
 
-type ProcSample struct {
+type ProcSampleTrans struct {
 	transformer.Common
 	Lang string
 }
 
 // TransPage 转换成样本分页需要的数据
-func (t *ProcSample) TransPage(total int64, models []*proc_models.ProcSampleModel,
+func (t *ProcSampleTrans) TransPage(total int64, models []*proc_models.ProcSampleModel,
 	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {

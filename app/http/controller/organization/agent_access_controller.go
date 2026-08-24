@@ -63,5 +63,5 @@ func (u *AgentAccessController) PageForLog(ctx *gin.Context) {
 		agentMap = AgentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.AgentAccess{}).TransPage(total, models, agentMap, nil))
+	response.SuccessReturnData(ctx, (&org_trans.AgentAccessTrans{}).TransPage(total, models, agentMap, nil))
 }

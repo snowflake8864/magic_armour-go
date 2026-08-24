@@ -9,12 +9,12 @@ import (
 	"goskeleton/app/utils/helpers/json_helper"
 )
 
-type Product struct {
+type ProductTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]interface{} {
+func (t *ProductTrans) pageGeneral(model *prodcut_models.ProductModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["title"] = model.Title
@@ -34,7 +34,7 @@ func (t *Product) pageGeneral(model *prodcut_models.ProductModel) map[string]int
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Product) TransPage(total int64, models []*prodcut_models.ProductModel) interface{} {
+func (t *ProductTrans) TransPage(total int64, models []*prodcut_models.ProductModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -50,7 +50,7 @@ func (t *Product) TransPage(total int64, models []*prodcut_models.ProductModel) 
 }
 
 // TransList 转换列表页需要的数据
-func (t *Product) TransList(models []*prodcut_models.ProductModel) (items []map[string]interface{}) {
+func (t *ProductTrans) TransList(models []*prodcut_models.ProductModel) (items []map[string]interface{}) {
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model)

@@ -84,7 +84,7 @@ func (u *TamperController) PageForManage(ctx *gin.Context) {
 			extendInfo[agentModel.AgentId] = gg
 		}
 	}
-	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
+	response.SuccessReturnData(ctx, (&org_trans.AgentTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
 
 // SetSwitchForManage 管理页: 设置开关

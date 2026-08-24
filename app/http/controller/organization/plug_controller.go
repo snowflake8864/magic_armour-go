@@ -105,7 +105,7 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
+	response.SuccessReturnData(ctx, (&org_trans.AgentTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
 
 // SetSwitchForManage 管理页: 设置开关
@@ -210,7 +210,7 @@ func (u *PlugController) IpPageForPolicy(ctx *gin.Context, ipType int) {
 
 	total, models := plug_models.CreateIpPolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranIpPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{Lang: cur_userinfo.GetLocales(ctx)}).TranIpPolicyPage(total, models))
 }
 
 // IpSetSwitchForPolicy 终端策略 - ip名单库: 设置开关
@@ -329,7 +329,7 @@ func (u *PlugController) DynamicPageForPolicy(ctx *gin.Context, openSwitch int) 
 
 	total, models := plug_models.CreateDynamicFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{Lang: cur_userinfo.GetLocales(ctx)}).TranDynamicPolicyPage(total, models))
 }
 
 // DynamicDisableForPolicy 终端策略 - 动态封堵: 解封
@@ -481,7 +481,7 @@ func (u *PlugController) IpPageForGlobal(ctx *gin.Context, ipType int) {
 
 	total, models := plug_models.CreateIpGlobalFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranIpGlobalPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{Lang: cur_userinfo.GetLocales(ctx)}).TranIpGlobalPage(total, models))
 }
 
 // IpSetSwitchForGlobal 全局策略 - ip名单库: 设置开关
@@ -631,7 +631,7 @@ func (u *PlugController) DynamicPageForGlobal(ctx *gin.Context, openSwitch int) 
 		agentMap = AgentFact.GetMapsByOrgAndAgents(loginInfo.OrgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{}).TranDynamicGlobalPage(total, models, agentMap, nil))
+	response.SuccessReturnData(ctx, (&org_trans.PlugTrans{Lang: cur_userinfo.GetLocales(ctx)}).TranDynamicGlobalPage(total, models, agentMap, nil))
 }
 
 // DynamicDisableForGlobal 全局策略 - 动态封堵: 解封

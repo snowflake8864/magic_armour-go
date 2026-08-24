@@ -12,12 +12,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type Order struct {
+type OrderTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface{} {
+func (t *OrderTrans) pageGeneral(model *order_models.OrderModel) map[string]interface{} {
 
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	productGrantConfig := enum_product.ProductGrantConfig{}
@@ -47,7 +47,7 @@ func (t *Order) pageGeneral(model *order_models.OrderModel) map[string]interface
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Order) TransPage(total int64, models []*order_models.OrderModel) interface{} {
+func (t *OrderTrans) TransPage(total int64, models []*order_models.OrderModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -63,7 +63,7 @@ func (t *Order) TransPage(total int64, models []*order_models.OrderModel) interf
 }
 
 // TransList 转换列表页需要的数据
-func (t *Order) TransList(models []*order_models.OrderModel) (items []map[string]interface{}) {
+func (t *OrderTrans) TransList(models []*order_models.OrderModel) (items []map[string]interface{}) {
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model)
@@ -74,7 +74,7 @@ func (t *Order) TransList(models []*order_models.OrderModel) (items []map[string
 }
 
 // TransDetail 转换详情页需要的数据
-func (t *Order) TransDetail(model *order_models.OrderModel) (item map[string]interface{}) {
+func (t *OrderTrans) TransDetail(model *order_models.OrderModel) (item map[string]interface{}) {
 	if model != nil {
 		item = t.pageGeneral(model)
 	}
@@ -82,7 +82,7 @@ func (t *Order) TransDetail(model *order_models.OrderModel) (item map[string]int
 }
 
 // TransLogsPage 转换成日志页需要的数据
-func (t *Order) TransLogsPage(total int64, models []*order_models.OrderLogModel) interface{} {
+func (t *OrderTrans) TransLogsPage(total int64, models []*order_models.OrderLogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

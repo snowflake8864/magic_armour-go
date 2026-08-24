@@ -9,12 +9,12 @@ import (
 	"goskeleton/app/model/agent/task_models"
 )
 
-type Task struct {
+type TaskTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Task) pageGeneral(model *task_models.TaskModel) map[string]interface{} {
+func (t *TaskTrans) pageGeneral(model *task_models.TaskModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = fmt.Sprintf("%d", model.Id)
 	data["agent_id"] = model.AgentId
@@ -31,7 +31,7 @@ func (t *Task) pageGeneral(model *task_models.TaskModel) map[string]interface{} 
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Task) TransPage(total int64, models []*task_models.TaskModel) interface{} {
+func (t *TaskTrans) TransPage(total int64, models []*task_models.TaskModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

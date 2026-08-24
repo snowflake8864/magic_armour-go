@@ -12,12 +12,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type AgentAccess struct {
+type AgentAccessTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map[string]interface{} {
+func (t *AgentAccessTrans) pageGeneral(model *agent_access_models.AccessLogModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	if t.Lang == consts.LanguageZh {
@@ -32,7 +32,7 @@ func (t *AgentAccess) pageGeneral(model *agent_access_models.AccessLogModel) map
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *AgentAccess) TransPage(total int64, models []*agent_access_models.AccessLogModel,
+func (t *AgentAccessTrans) TransPage(total int64, models []*agent_access_models.AccessLogModel,
 	agentModels map[string]*agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {

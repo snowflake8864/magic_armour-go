@@ -54,7 +54,7 @@ func (u *UserController) Page(ctx *gin.Context) {
 		roleMaps = role_models.CreateRoleFactory().GetMapsByOrgAndIds(loginInfo.OrgId, roleIds)
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.User{}).TransPage(total, userModels, departmentMaps, roleMaps))
+	response.SuccessReturnData(ctx, (&org_trans.UserTrans{}).TransPage(total, userModels, departmentMaps, roleMaps))
 }
 
 // Add 添加

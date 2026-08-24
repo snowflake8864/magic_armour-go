@@ -13,12 +13,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type User struct {
+type UserTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *User) pageGeneral(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) map[string]interface{} {
+func (t *UserTrans) pageGeneral(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	depts := json_helper.ToSliceInt64(model.Depts)
@@ -45,7 +45,7 @@ func (t *User) pageGeneral(model *user_models.UserModel, departments map[int64]*
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *User) TransPage(total int64, models []*user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) interface{} {
+func (t *UserTrans) TransPage(total int64, models []*user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -62,6 +62,6 @@ func (t *User) TransPage(total int64, models []*user_models.UserModel, departmen
 }
 
 // TransInfo 转换成管理页需要的数据
-func (t *User) TransInfo(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) map[string]interface{} {
+func (t *UserTrans) TransInfo(model *user_models.UserModel, departments map[int64]*department_models.DepartmentModel, roleMaps map[int64]*role_models.RoleModel) map[string]interface{} {
 	return t.pageGeneral(model, departments, roleMaps)
 }

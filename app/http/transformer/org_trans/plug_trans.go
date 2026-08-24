@@ -3,12 +3,14 @@ package org_trans
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_plug"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/plug_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type PlugTrans struct {
@@ -22,21 +24,9 @@ func (t *PlugTrans) TranIpPolicyPage(total int64, models []*plug_models.IpPolicy
 	if models != nil {
 
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["ip"] = model.Ip
-			data["remark"] = model.Remark
-			data["direction"] = model.Direction
 			data["direction_label"] = enum_plug.GetDirectionLabel(model.Direction)
-			data["open_switch"] = model.OpenSwitch
-			data["create_id"] = model.CreateId
-			data["create_name"] = model.CreateName
-			data["created_at"] = model.CreatedAt
-			data["update_id"] = model.UpdateId
-			data["update_name"] = model.UpdateName
-			data["updated_at"] = model.UpdatedAt
 
 			items = append(items, data)
 		}
@@ -49,24 +39,17 @@ func (t *PlugTrans) TranIpPolicyPage(total int64, models []*plug_models.IpPolicy
 }
 
 func (t *PlugTrans) dynamicGeneral(model *plug_models.DynamicModel) map[string]interface{} {
-	data := make(map[string]interface{})
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	data["id"] = fmt.Sprintf("%d", model.Id)
-	data["agent_id"] = model.AgentId
-	data["plug_type"] = model.PlugType
-	data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
-	data["source"] = model.Source
-	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_plug.EnumMap)
-	data["duration"] = model.Duration
-	data["start_at"] = model.StartAt
-	data["end_at"] = model.EndAt
-	data["ip"] = model.Ip
-	data["direction"] = model.Direction
 	data["direction_label"] = enum_plug.GetDirectionLabel(model.Direction)
-	data["open_switch"] = model.OpenSwitch
-	data["created_at"] = model.CreatedAt
-	data["update_id"] = model.UpdateId
-	data["update_name"] = model.UpdateName
-	data["updated_at"] = model.UpdatedAt
+
+	if t.Lang == consts.LanguageZh {
+		data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_plug.EnumMap)
+	} else {
+		data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_plug.EnumMap)
+	}
 
 	return data
 }
@@ -113,24 +96,15 @@ func (t *PlugTrans) TranIpGlobalPage(total int64, models []*plug_models.IpGlobal
 	if models != nil {
 
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["type"] = model.Type
-			data["ip"] = model.Ip
-			data["effect_mode"] = model.EffectMode
-			data["effect_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("effect_mode", model.EffectMode, enum_plug.EnumMap)
-			data["effect_start_at"] = model.EffectStartAt
-			data["effect_end_at"] = model.EffectEndAt
-			data["remark"] = model.Remark
-			data["direction"] = model.Direction
 			data["direction_label"] = enum_plug.GetDirectionLabel(model.Direction)
-			data["open_switch"] = model.OpenSwitch
-			data["create_id"] = model.CreateId
-			data["create_name"] = model.CreateName
-			data["created_at"] = model.CreatedAt
-			data["update_id"] = model.UpdateId
-			data["update_name"] = model.UpdateName
-			data["updated_at"] = model.UpdatedAt
+
+			if t.Lang == consts.LanguageZh {
+				data["effect_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("effect_mode", model.EffectMode, enum_plug.EnumMap)
+			} else {
+				data["effect_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("effect_mode_en", model.EffectMode, enum_plug.EnumMap)
+			}
 
 			items = append(items, data)
 		}

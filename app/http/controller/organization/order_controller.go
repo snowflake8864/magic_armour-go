@@ -68,7 +68,7 @@ func (u *OrderController) PayBankcard(ctx *gin.Context) {
 func (u *OrderController) PublishedForProduct(ctx *gin.Context) {
 	models := product_service.CreateCurdFactory().GetPublished()
 
-	response.SuccessReturnData(ctx, (&org_trans.Product{}).TransList(models))
+	response.SuccessReturnData(ctx, (&org_trans.ProductTrans{}).TransList(models))
 }
 
 // ExpiredRemind 到期提醒
@@ -94,7 +94,7 @@ func (u *OrderController) ValidList(ctx *gin.Context) {
 	conditions.IsExpire = &isExpire
 	conditions.OrderStatus = enum_order.OrderStatusCompleted
 	orderModels := order_models.CreateOrderFactory().GetListByConditions(conditions)
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransList(orderModels))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransList(orderModels))
 }
 
 func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
@@ -124,7 +124,7 @@ func (u *OrderController) PageForPurchase(ctx *gin.Context) {
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orderModels))
 }
 
 // InfoForPurchase 购买：信息
@@ -133,7 +133,7 @@ func (u *OrderController) InfoForPurchase(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixOrg + "orderNo")
 
 	model := order_models.CreateOrderFactory().GetItemByOrgAndId(loginInfo.OrgId, orderNo)
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransDetail(model))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransDetail(model))
 }
 
 // LogsForPurchase 购买：日志
@@ -149,7 +149,7 @@ func (u *OrderController) LogsForPurchase(ctx *gin.Context) {
 	//日志分页
 	total, logModels := order_models.CreateLogFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransLogsPage(total, logModels))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransLogsPage(total, logModels))
 }
 
 // AddForPurchase 购买：添加
@@ -224,7 +224,7 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, nil))
+	response.SuccessReturnData(ctx, (&org_trans.AgentTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, nil))
 }
 
 // SaveForGrant 终端授权：保存
@@ -252,7 +252,7 @@ func (u *OrderController) PageForUsed(ctx *gin.Context) {
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.Order{}).TransPage(total, orderModels))
+	response.SuccessReturnData(ctx, (&org_trans.OrderTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orderModels))
 }
 
 // ImportForLicense  授权许可:导入

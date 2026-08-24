@@ -11,12 +11,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type Operation struct {
+type OperationTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Operation) pageGeneral(model *org_operate_models.LogModel) map[string]interface{} {
+func (t *OperationTrans) pageGeneral(model *org_operate_models.LogModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	data["id"] = fmt.Sprintf("%d", model.Id)
@@ -33,7 +33,7 @@ func (t *Operation) pageGeneral(model *org_operate_models.LogModel) map[string]i
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Operation) TransPage(total int64, models []*org_operate_models.LogModel) interface{} {
+func (t *OperationTrans) TransPage(total int64, models []*org_operate_models.LogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

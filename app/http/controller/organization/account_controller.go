@@ -35,7 +35,7 @@ func (u *AccountController) GetUser(ctx *gin.Context) {
 
 	model := user_service.CreateCurdFactory().GetItemByOrgAndUser(loginInfo.OrgId, loginInfo.UserId)
 
-	info := (&org_trans.User{}).TransInfo(model, nil, nil)
+	info := (&org_trans.UserTrans{}).TransInfo(model, nil, nil)
 	info["org_name"] = loginInfo.OrgName
 	info["org_code"] = loginInfo.OrgCode
 	response.SuccessReturnData(ctx, info)

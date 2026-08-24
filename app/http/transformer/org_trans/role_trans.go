@@ -7,19 +7,19 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type Role struct {
+type RoleTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Role) pageGeneral(model *role_models.RoleModel) map[string]interface{} {
+func (t *RoleTrans) pageGeneral(model *role_models.RoleModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	return data
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Role) TransPage(total int64, models []*role_models.RoleModel) interface{} {
+func (t *RoleTrans) TransPage(total int64, models []*role_models.RoleModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -35,7 +35,7 @@ func (t *Role) TransPage(total int64, models []*role_models.RoleModel) interface
 }
 
 // TransList 转换成管理页需要的数据
-func (t *Role) TransList(models []*role_models.RoleModel) interface{} {
+func (t *RoleTrans) TransList(models []*role_models.RoleModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

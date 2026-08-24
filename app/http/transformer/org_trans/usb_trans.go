@@ -8,13 +8,13 @@ import (
 	"goskeleton/app/model/agent/usb_models"
 )
 
-type Usb struct {
+type UsbTrans struct {
 	transformer.Common
 	Lang string
 }
 
 // TransGlobalPage 转换成全局名单分页需要的数据
-func (t *Usb) TransGlobalPage(total int64, models []*usb_models.GlobalModel) interface{} {
+func (t *UsbTrans) TransGlobalPage(total int64, models []*usb_models.GlobalModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -46,7 +46,7 @@ func (t *Usb) TransGlobalPage(total int64, models []*usb_models.GlobalModel) int
 }
 
 // TransPolicyPage 转换成策略页需要的数据
-func (t *Usb) TransPolicyPage(total int64, models []*usb_models.UsbModel) interface{} {
+func (t *UsbTrans) TransPolicyPage(total int64, models []*usb_models.UsbModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -77,7 +77,7 @@ func (t *Usb) TransPolicyPage(total int64, models []*usb_models.UsbModel) interf
 }
 
 // TransLogPage 转换成日志页需要的数据
-func (t *Usb) TransLogPage(total int64, models []*usb_models.LogModel) interface{} {
+func (t *UsbTrans) TransLogPage(total int64, models []*usb_models.LogModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 

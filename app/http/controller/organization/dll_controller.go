@@ -43,7 +43,7 @@ func (u *DllController) PageForManage(ctx *gin.Context) {
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, nil))
+	response.SuccessReturnData(ctx, (&org_trans.AgentTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, nil))
 }
 
 // AgentProcStatForManage 管理页: 终端进程统计
@@ -280,7 +280,7 @@ func (u *DllController) PageAllForAgent(ctx *gin.Context) {
 		}
 		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
 	}
-	response.SuccessReturnData(ctx, (&org_trans.Dll{Lang: cur_userinfo.GetLocales(ctx)}).TransMasterPage(total, models, threatenMaps))
+	response.SuccessReturnData(ctx, (&org_trans.DllTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransMasterPage(total, models, threatenMaps))
 }
 
 // PageRunningForAgent 单终端: 运行中进程
@@ -315,7 +315,7 @@ func (u *DllController) PageRunningForAgent(ctx *gin.Context) {
 		}
 		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
 	}
-	response.SuccessReturnData(ctx, (&org_trans.Dll{Lang: cur_userinfo.GetLocales(ctx)}).TransRunningPage(total, models, threatenMaps))
+	response.SuccessReturnData(ctx, (&org_trans.DllTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransRunningPage(total, models, threatenMaps))
 }
 
 // SetStatusForAgent 单终端: 设置状态
@@ -480,5 +480,5 @@ func (u *DllController) RepeatPageForAgent(ctx *gin.Context) {
 		agentMap = AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.Dll{Lang: cur_userinfo.GetLocales(ctx)}).TransRepeatPage(total, models, agentMap))
+	response.SuccessReturnData(ctx, (&org_trans.DllTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransRepeatPage(total, models, agentMap))
 }

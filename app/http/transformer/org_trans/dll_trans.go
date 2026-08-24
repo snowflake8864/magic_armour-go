@@ -12,13 +12,13 @@ import (
 	"goskeleton/app/utils/helpers/map_helper"
 )
 
-type Dll struct {
+type DllTrans struct {
 	transformer.Common
 	Lang string
 }
 
 // TransMasterPage 转换成全部进程分页需要的数据
-func (t *Dll) TransMasterPage(total int64, models []*proc_models.DllModel, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
+func (t *DllTrans) TransMasterPage(total int64, models []*proc_models.DllModel, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -65,7 +65,7 @@ func (t *Dll) TransMasterPage(total int64, models []*proc_models.DllModel, threa
 }
 
 // TransRunningPage 转换成运行中进程分页需要的数据
-func (t *Dll) TransRunningPage(total int64, models []*proc_models.DllAndRunning, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
+func (t *DllTrans) TransRunningPage(total int64, models []*proc_models.DllAndRunning, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -114,7 +114,7 @@ func (t *Dll) TransRunningPage(total int64, models []*proc_models.DllAndRunning,
 }
 
 // TransRepeatPage 转换成运行中进程分页需要的数据
-func (t *Dll) TransRepeatPage(total int64, models []*proc_models.DllModel, agentModels map[string]*agent_models.AgentModel) interface{} {
+func (t *DllTrans) TransRepeatPage(total int64, models []*proc_models.DllModel, agentModels map[string]*agent_models.AgentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 

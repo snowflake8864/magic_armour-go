@@ -41,7 +41,7 @@ func (u *ProcSampleController) Page(ctx *gin.Context) {
 		agentMap = AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.ProcSample{}).TransPage(total, models, agentMap, nil))
+	response.SuccessReturnData(ctx, (&org_trans.ProcSampleTrans{}).TransPage(total, models, agentMap, nil))
 }
 
 // Delete 删除

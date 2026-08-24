@@ -8,12 +8,12 @@ import (
 	"goskeleton/app/model/platform/software_models"
 )
 
-type Software struct {
+type SoftwareTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]interface{} {
+func (t *SoftwareTrans) pageGeneral(model *software_models.SoftwareModel) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["id"] = model.Id
 	data["ver"] = model.Ver
@@ -31,7 +31,7 @@ func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]
 }
 
 // TransPage 转换成管理页需要的数据
-func (t *Software) TransPage(total int64, models []*software_models.SoftwareModel) interface{} {
+func (t *SoftwareTrans) TransPage(total int64, models []*software_models.SoftwareModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
@@ -47,7 +47,7 @@ func (t *Software) TransPage(total int64, models []*software_models.SoftwareMode
 }
 
 // TransList 转换列表页需要的数据
-func (t *Software) TransList(models []*software_models.SoftwareModel) (items []map[string]interface{}) {
+func (t *SoftwareTrans) TransList(models []*software_models.SoftwareModel) (items []map[string]interface{}) {
 	if models != nil {
 		for _, model := range models {
 			tmp := t.pageGeneral(model)

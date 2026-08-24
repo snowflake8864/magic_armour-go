@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-type Monitor struct {
+type MonitorTrans struct {
 }
 
 // TransList 转换成列表
-func (t *Monitor) TransList(models []*agent_monitor_models.MonitorModel) interface{} {
+func (t *MonitorTrans) TransList(models []*agent_monitor_models.MonitorModel) interface{} {
 	result := make(map[string][]interface{})
 
 	if models != nil {

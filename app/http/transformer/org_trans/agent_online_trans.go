@@ -8,12 +8,12 @@ import (
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
-type AgentOnline struct {
+type AgentOnlineTrans struct {
 	transformer.Common
 	Lang string
 }
 
-func (t *AgentOnline) pageGeneral(model *agent_online_models.OnlineLogModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
+func (t *AgentOnlineTrans) pageGeneral(model *agent_online_models.OnlineLogModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
@@ -22,7 +22,7 @@ func (t *AgentOnline) pageGeneral(model *agent_online_models.OnlineLogModel, dep
 }
 
 // TransPage 转换成需要的数据
-func (t *AgentOnline) TransPage(total int64, models []*agent_online_models.OnlineLogModel, departments map[int64]*department_models.DepartmentModel) interface{} {
+func (t *AgentOnlineTrans) TransPage(total int64, models []*agent_online_models.OnlineLogModel, departments map[int64]*department_models.DepartmentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {

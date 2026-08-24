@@ -11,13 +11,13 @@ import (
 	"goskeleton/app/utils/helpers/map_helper"
 )
 
-type Process struct {
+type ProcessTrans struct {
 	transformer.Common
 	Lang string
 }
 
 // TransMasterPage 转换成全部进程分页需要的数据
-func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessModel, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
+func (t *ProcessTrans) TransMasterPage(total int64, models []*proc_models.ProcessModel, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -57,7 +57,7 @@ func (t *Process) TransMasterPage(total int64, models []*proc_models.ProcessMode
 }
 
 // TransRunningPage 转换成运行中进程分页需要的数据
-func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAndRunning, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
+func (t *ProcessTrans) TransRunningPage(total int64, models []*proc_models.ProcessAndRunning, threatenMaps map[string]*threaten_models.CacheModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
@@ -101,7 +101,7 @@ func (t *Process) TransRunningPage(total int64, models []*proc_models.ProcessAnd
 }
 
 // TransRepeatPage 转换成运行中进程分页需要的数据
-func (t *Process) TransRepeatPage(total int64, models []*proc_models.ProcessModel, agentModels map[string]*agent_models.AgentModel) interface{} {
+func (t *ProcessTrans) TransRepeatPage(total int64, models []*proc_models.ProcessModel, agentModels map[string]*agent_models.AgentModel) interface{} {
 	var items []map[string]interface{}
 	if models != nil {
 
