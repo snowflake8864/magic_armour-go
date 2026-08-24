@@ -15,6 +15,7 @@ import (
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/order_service"
 	"goskeleton/app/service/platform/dictionary_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/response"
 	"sort"
 )
@@ -28,14 +29,20 @@ type AgentController struct {
 func (u *AgentController) OnlineStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_online", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_online", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("is_online_en", enum_agent.EnumIntMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // SafeStatus 安全状态
 func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("is_safe", enum_agent.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("is_safe", enum_agent.EnumIntMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("is_safe_en", enum_agent.EnumIntMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // TypeList 类型列表

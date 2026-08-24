@@ -70,11 +70,11 @@ func (u *AuthController) SendSms(ctx *gin.Context) {
 	}
 
 	if string_helper.IsEmpty(adminModel.Phone) {
-		response.FailRoutine(ctx, -97, "没有添加手机号码")
+		response.FailRoutine(ctx, -97, my_errors.CurdPhoneNotExist)
 		return
 	}
 	if adminModel.LoginPhoneCheck == enums.IsNot {
-		response.FailRoutine(ctx, -98, "没有开启双因子验证")
+		response.FailRoutine(ctx, -98, my_errors.CurdTwoFactorAuthDisabled)
 		return
 	}
 	authFact.GenerateBySms(adminModel.Phone)

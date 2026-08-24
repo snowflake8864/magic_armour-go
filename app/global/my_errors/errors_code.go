@@ -111,6 +111,7 @@ const (
 	CurdOrgNotExists             string = "CurdOrgNotExists"
 	CurdUsernameAlreadyExists    string = "CurdUsernameAlreadyExists"
 	CurdPhoneAlreadyExists       string = "CurdPhoneAlreadyExists"
+	CurdPhoneNotExist            string = "CurdPhoneNotExist"
 	CurdEmailAlreadyExists       string = "CurdEmailAlreadyExists"
 	CurdPasswordFormatIncorrect  string = "CurdPasswordFormatIncorrect"
 	CurdOldPasswordIncorrect     string = "CurdOldPasswordIncorrect"

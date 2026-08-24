@@ -88,6 +88,7 @@ var Messages = map[string]map[string]string{
 		CurdOrgNotExists:             "企业不存在",
 		CurdUsernameAlreadyExists:    "用户名已存在",
 		CurdPhoneAlreadyExists:       "手机号码已存在",
+		CurdPhoneNotExist:            "用户不存在",
 		CurdEmailAlreadyExists:       "邮箱已存在",
 		CurdPasswordFormatIncorrect:  "密码格式不正确",
 		CurdOldPasswordIncorrect:     "旧密码不正确",
