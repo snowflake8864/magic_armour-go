@@ -33,11 +33,18 @@ func (u *ThreatenController) GetLevels(ctx *gin.Context) {
 	maps := CacheFact.GetLevelsByIds(slice_helper.StringRemoveRepeatByMap(hashes))
 	var result []map[string]interface{}
 	if maps != nil && len(maps) > 0 {
+		lang := cur_userinfo.GetLocales(ctx)
+
 		for id, level := range maps {
+			label := enums.Get1stIsStrAnd2ndIsIntReturnStr("level", level, enum_threaten.EnumMap)
+			if lang == consts.LanguageEn {
+				label = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", level, enum_threaten.EnumMap)
+			}
+
 			result = append(result, map[string]interface{}{
 				"id":    id,
 				"level": level,
-				"label": enums.Get1stIsStrAnd2ndIsIntReturnStr("level", level, enum_threaten.EnumMap),
+				"label": label,
 			})
 		}
 	}

@@ -21,9 +21,11 @@ type TaskController struct {
 
 // TaskTypes  订单状态
 func (u *TaskController) TaskTypes(ctx *gin.Context) {
-
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_task.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_task.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("type_en", enum_task.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -31,6 +33,9 @@ func (u *TaskController) TaskTypes(ctx *gin.Context) {
 func (u *TaskController) TaskStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("status", enum_task.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_task.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("status_en", enum_task.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 

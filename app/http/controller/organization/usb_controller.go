@@ -28,6 +28,9 @@ type UsbController struct {
 func (u *UsbController) EditStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("edit_status", enum_usb.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("status", enum_usb.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("status_en", enum_usb.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
