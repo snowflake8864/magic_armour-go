@@ -144,7 +144,7 @@ func (u *UsbController) PageForLog(ctx *gin.Context) {
 
 	total, models := usb_models.CreateLogFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{}).TransLogPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransLogPage(total, models))
 }
 
 // HasUploadForPolicy 终端策略: 是否上传
@@ -182,7 +182,7 @@ func (u *UsbController) PageForPolicy(ctx *gin.Context, isOnline int) {
 
 	total, models := usb_models.CreateUsbFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPolicyPage(total, models))
 }
 
 // SetStatusForPolicy 终端策略: 设置状态
@@ -240,7 +240,7 @@ func (u *UsbController) PageForGlobal(ctx *gin.Context) {
 
 	total, models := usb_models.CreateGlobalFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{}).TransGlobalPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.UsbTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGlobalPage(total, models))
 }
 
 // AddForGlobal 全局策略: 添加
