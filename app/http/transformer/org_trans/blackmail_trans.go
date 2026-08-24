@@ -3,6 +3,7 @@ package org_trans
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_blackmail"
 	"goskeleton/app/global/enums/enum_software"
@@ -11,6 +12,7 @@ import (
 	"goskeleton/app/model/agent/tamper_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type BlackmailTrans struct {
@@ -24,28 +26,22 @@ func (t *BlackmailTrans) TransGlobalPage(total int64, models []*blackmail_models
 	if models != nil {
 
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
-			data["type_val"] = model.TypeVal
 			data["group_id"] = fmt.Sprintf("%d", model.GroupId)
-			data["platform_type"] = model.PlatformType
+			data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
 			data["platform_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", model.PlatformType, enum_software.EnumMap)
+
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
+
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_blackmail.EnumMapInt)
+			}
+
 			var processes []tamper_models.Process
 			_ = json_helper.ToAny(model.Processes, &processes)
 			data["processes"] = processes
-			data["dept_id"] = model.DeptId
-			data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
-
-			data["open_switch"] = model.OpenSwitch
-			data["remark"] = model.Remark
-			data["create_id"] = model.CreateId
-			data["create_name"] = model.CreateName
-			data["created_at"] = model.CreatedAt
-			data["update_id"] = model.UpdateId
-			data["update_name"] = model.UpdateName
-			data["updated_at"] = model.UpdatedAt
 
 			items = append(items, data)
 		}
@@ -65,23 +61,18 @@ func (t *BlackmailTrans) TransPolicyPage(total int64, models []*blackmail_models
 		for _, model := range models {
 			data := make(map[string]interface{})
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
-			data["type_val"] = model.TypeVal
 			data["group_id"] = fmt.Sprintf("%d", model.GroupId)
+
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
+
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_blackmail.EnumMapInt)
+			}
+
 			var processes []tamper_models.Process
 			_ = json_helper.ToAny(model.Processes, &processes)
 			data["processes"] = processes
-
-			data["open_switch"] = model.OpenSwitch
-			data["remark"] = model.Remark
-			data["create_id"] = model.CreateId
-			data["create_name"] = model.CreateName
-			data["created_at"] = model.CreatedAt
-			data["update_id"] = model.UpdateId
-			data["update_name"] = model.UpdateName
-			data["updated_at"] = model.UpdatedAt
 
 			items = append(items, data)
 		}

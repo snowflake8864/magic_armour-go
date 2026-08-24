@@ -13,7 +13,6 @@ import (
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/helpers/json_helper"
-	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/helpers/struct_helper"
 )
 
@@ -27,13 +26,7 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	delete(data, "id")
 	data["agent_id"] = model.AgentId
 	data["ver"] = enum_software.ShowVer(model.PlatformType, model.OsType, model.Ver)
-
-	data["dept_fullname"] = []interface{}{}
-	if departments != nil && len(departments) > 0 {
-		if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-			data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
-		}
-	}
+	data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
 
 	productGrantConfig := enum_product.ProductGrantConfig{}
 	_ = json_helper.ToStruct(model.GrantConfig, &productGrantConfig)

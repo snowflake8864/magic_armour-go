@@ -130,6 +130,36 @@ func GetProcStatusReason(GlobalStatus, SelfStatus, ThreatenStatus, AutoWhiteSwit
 	return "未设置"
 }
 
+// GetProcStatusReasonEn 获取状态原因(英文)
+func GetProcStatusReasonEn(GlobalStatus, SelfStatus, ThreatenStatus, AutoWhiteSwitch int) string {
+	if GlobalStatus == RelyStatusWhite {
+		return "Global Whitelist"
+	}
+	if GlobalStatus == RelyStatusBlack {
+		return "Global Blacklist"
+	}
+	if SelfStatus == RelyStatusWhite {
+		return "Whitelist"
+	}
+	if SelfStatus == RelyStatusBlack {
+		return "Blacklist"
+	}
+	if SelfStatus == RelyStatusUnknown {
+		return "Unknown"
+	}
+
+	if AutoWhiteSwitch == enums.SwitchOn {
+		if ThreatenStatus == RelyStatusWhite {
+			return "Threat Intel Whitelist"
+		}
+		if ThreatenStatus == RelyStatusBlack {
+			return "Threat Intel Blacklist"
+		}
+	}
+
+	return "Unset"
+}
+
 // BtnChangeEnable 选择按钮是否开启
 func BtnChangeEnable(GlobalStatus int) int {
 	if GlobalStatus == RelyStatusWhite || GlobalStatus == RelyStatusBlack {

@@ -47,7 +47,7 @@ func (u *BlackmailController) PageForGroup(ctx *gin.Context) {
 
 	total, models := blackmail_models.CreateGroupFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGroupPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGroupPage(total, models))
 }
 
 // GetAllForGroup 文件类型组: 全部
@@ -60,7 +60,7 @@ func (u *BlackmailController) GetAllForGroup(ctx *gin.Context) {
 
 	models := blackmail_models.CreateGroupFactory().GetListByConditions(condition)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGroupList(models))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGroupList(models))
 }
 
 // AddForGroup 文件类型组: 添加
@@ -228,7 +228,7 @@ func (u *BlackmailController) PageForPolicy(ctx *gin.Context) {
 
 	total, models := blackmail_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPolicyPage(total, models))
 }
 
 // SetSwitchForPolicy 终端策略: 设置开关
@@ -361,7 +361,7 @@ func (u *BlackmailController) PageForGlobal(ctx *gin.Context) {
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.BlackmailTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // SetSwitchForGlobal 全局策略: 设置开关
