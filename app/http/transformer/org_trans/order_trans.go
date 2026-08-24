@@ -22,7 +22,7 @@ func (t *OrderTrans) pageGeneral(model *order_models.OrderModel) map[string]inte
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	productGrantConfig := enum_product.ProductGrantConfig{}
 	_ = json_helper.ToStruct(model.GrantModule, &productGrantConfig)
-
+	data["grant_module"] = productGrantConfig
 	data["pay_info"] = json_helper.ToMap(model.PayInfo)
 
 	if t.Lang == consts.LanguageZh {

@@ -36,7 +36,7 @@ func (u *SoftwareController) PublishedList(ctx *gin.Context) {
 	}
 
 	models := software_models.CreateSoftwareFactory().GetItemsByConditions(condition, 0, 0, "")
-	response.SuccessReturnData(ctx, (&org_trans.SoftwareTrans{}).TransList(models))
+	response.SuccessReturnData(ctx, (&org_trans.SoftwareTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransList(models))
 }
 
 func (u *SoftwareController) OfflineDownload(ctx *gin.Context) {
