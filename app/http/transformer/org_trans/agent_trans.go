@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_dictionary"
@@ -37,13 +38,22 @@ func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int6
 	productGrantConfig := enum_product.ProductGrantConfig{}
 	_ = json_helper.ToStruct(model.GrantConfig, &productGrantConfig)
 	data["grant_config"] = productGrantConfig
-	data["grant_config_txt"] = productGrantConfig.SelectedTxt()
 
-	data["process_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.ProcessMode, enum_agent.EnumIntMap)
-	data["dll_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.DllMode, enum_agent.EnumIntMap)
-	data["tamper_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.TamperMode, enum_agent.EnumIntMap)
-	data["blackmail_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.BlackmailMode, enum_agent.EnumIntMap)
-	data["usb_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.UsbMode, enum_agent.EnumIntMap)
+	if t.Lang == consts.LanguageZh {
+		data["grant_config_txt"] = productGrantConfig.SelectedTxt()
+		data["process_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.ProcessMode, enum_agent.EnumIntMap)
+		data["dll_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.DllMode, enum_agent.EnumIntMap)
+		data["tamper_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.TamperMode, enum_agent.EnumIntMap)
+		data["blackmail_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.BlackmailMode, enum_agent.EnumIntMap)
+		data["usb_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode", model.UsbMode, enum_agent.EnumIntMap)
+	} else {
+		data["grant_config_txt"] = productGrantConfig.SelectedTxtEn()
+		data["process_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode_en", model.ProcessMode, enum_agent.EnumIntMap)
+		data["dll_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode_en", model.DllMode, enum_agent.EnumIntMap)
+		data["tamper_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode_en", model.TamperMode, enum_agent.EnumIntMap)
+		data["blackmail_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode_en", model.BlackmailMode, enum_agent.EnumIntMap)
+		data["usb_mode_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("mode_en", model.UsbMode, enum_agent.EnumIntMap)
+	}
 
 	//扩展信息
 	var tmp interface{}

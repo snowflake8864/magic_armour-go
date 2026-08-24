@@ -314,7 +314,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransProcessPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransProcessPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleDll:
 		condition.DllHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
@@ -328,7 +328,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransDllPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransDllPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleTamper:
 		condition.FileDir = ctx.GetString(consts.ValidatorPrefixOrg + "fileDir")
@@ -342,7 +342,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransTamperPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransTamperPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleBlackmail:
 		condition.FileDir = ctx.GetString(consts.ValidatorPrefixOrg + "fileDir")
@@ -356,7 +356,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransBlackmailPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransBlackmailPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModulePort:
 		condition.AttackIp = ctx.GetString(consts.ValidatorPrefixOrg + "attackIp")
@@ -369,7 +369,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransPortPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPortPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModulePlug:
 		condition.Ip = ctx.GetString(consts.ValidatorPrefixOrg + "plugIp")
@@ -382,7 +382,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransPlugPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPlugPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleUsb:
 		condition.UsbHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
@@ -416,7 +416,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 				agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 			}
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransUsbPage(total, models, agentMap, nil, agentUsbAlias))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransUsbPage(total, models, agentMap, nil, agentUsbAlias))
 		break
 	case enum_alarm.ModuleOutreach:
 		condition.TargetIp = ctx.GetString(consts.ValidatorPrefixOrg + "targetIp")
@@ -429,7 +429,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransOutreachPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOutreachPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleLogin:
 		condition.SourceIp = ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp")
@@ -442,7 +442,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransLoginPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransLoginPage(total, models, agentMap, nil))
 		break
 	case enum_alarm.ModuleSelf:
 		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "hash")
@@ -457,7 +457,7 @@ func (u *AlarmController) PageForAlarm(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{}).TransSelfPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.AlarmTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransSelfPage(total, models, agentMap, nil))
 		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))

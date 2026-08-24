@@ -3,6 +3,7 @@ package org_trans
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_alarm"
 	"goskeleton/app/global/enums/enum_plug"
@@ -11,6 +12,7 @@ import (
 	"goskeleton/app/model/alarm/alarm_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/utils/helpers/int_helper"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type AlarmTrans struct {
@@ -24,25 +26,18 @@ func (t *AlarmTrans) TransProcessPage(total int64, models []*alarm_models.Proces
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
-			data["proc_dir"] = model.ProcDir
-			data["proc_param"] = model.ProcParam
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -61,24 +56,18 @@ func (t *AlarmTrans) TransDllPage(total int64, models []*alarm_models.DllModel,
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["dll_hash"] = model.DllHash
-			data["dll_dir"] = model.DllDir
-			data["proc_dir"] = model.ProcDir
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -97,24 +86,17 @@ func (t *AlarmTrans) TransBlackmailPage(total int64, models []*alarm_models.Blac
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
-
-			data["proc_hash"] = model.ProcHash
-			data["proc_dir"] = model.ProcDir
-			data["file_dir"] = model.FileDir
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -133,24 +115,17 @@ func (t *AlarmTrans) TransTamperPage(total int64, models []*alarm_models.TamperM
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
-
-			data["proc_hash"] = model.ProcHash
-			data["proc_dir"] = model.ProcDir
-			data["file_dir"] = model.FileDir
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -169,32 +144,22 @@ func (t *AlarmTrans) TransPortPage(total int64, models []*alarm_models.PortModel
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
-
-			data["weight"] = model.Weight
-			data["attack_ip"] = model.AttackIp
-			data["target_ip"] = model.TargetIp
-			data["target_port"] = model.TargetPort
-			data["redirect_ip"] = model.RedirectIp
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 			redirectPort := ""
 			if model.RedirectPort > 0 {
 				redirectPort = int_helper.IntToStr(model.RedirectPort)
 			}
 			data["redirect_port"] = redirectPort
-			data["attack_total"] = model.AttackTotal
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -213,28 +178,20 @@ func (t *AlarmTrans) TransPlugPage(total int64, models []*alarm_models.PlugModel
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["ip"] = model.Ip
-			data["plug_type"] = model.PlugType
-			data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
-			data["direction"] = model.Direction
-			data["duration"] = model.Duration
-			data["start_time"] = model.StartTime
-			data["end_time"] = model.EndTime
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+				data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type", model.PlugType, enum_plug.EnumMap)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+				data["plug_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("plug_type_en", model.PlugType, enum_plug.EnumMap)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -254,24 +211,19 @@ func (t *AlarmTrans) TransUsbPage(total int64, models []*alarm_models.UsbModel,
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["usb_hash"] = model.UsbHash
-			data["usb_name"] = model.UsbName
-			data["usb_intro"] = model.UsbIntro
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
+
 			data["usb_alias"] = ""
 			if hashAlias, isHash := agentUsbAlias[model.AgentId][model.UsbHash]; isHash {
 				data["usb_alias"] = hashAlias
@@ -294,20 +246,18 @@ func (t *AlarmTrans) TransOutreachPage(total int64, models []*alarm_models.Outre
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
+
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["proc_hash"] = model.ProcHash
 			if model.ProcId > 0 {
@@ -315,9 +265,6 @@ func (t *AlarmTrans) TransOutreachPage(total int64, models []*alarm_models.Outre
 			} else {
 				data["proc_id"] = ""
 			}
-			data["proc_dir"] = model.ProcDir
-			data["domain_name"] = model.DomainName
-			data["target_ip"] = model.TargetIp
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -336,23 +283,18 @@ func (t *AlarmTrans) TransLoginPage(total int64, models []*alarm_models.LoginMod
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["source_ip"] = model.SourceIp
-			data["solve_total"] = model.SolveTotal
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -371,26 +313,18 @@ func (t *AlarmTrans) TransSelfPage(total int64, models []*alarm_models.SelfModel
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["type"] = model.Type
-			data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
-			data["level"] = model.Level
-			data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
-			data["agent_at"] = model.AgentAt
-			data["handle_status"] = model.HandleStatus
-			data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
-			data["handle_remark"] = model.HandleRemark
-			data["handle_user"] = model.HandleUser
-			data["handle_at"] = model.HandleAt
-			data["created_at"] = model.CreatedAt
 
-			data["proc_hash"] = model.ProcHash
-			data["proc_dir"] = model.ProcDir
-			data["proc_param"] = model.ProcParam
-			data["file_dir"] = model.FileDir
-			data["target_dir"] = model.TargetDir
+			if t.Lang == consts.LanguageZh {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status", model.HandleStatus, enum_alarm.EnumMapInt)
+			} else {
+				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_alarm.EnumMapInt)
+				data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_alarm.EnumMapInt)
+				data["handle_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("handle_status_en", model.HandleStatus, enum_alarm.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
