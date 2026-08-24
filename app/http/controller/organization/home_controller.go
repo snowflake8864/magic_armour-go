@@ -102,6 +102,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 // AlarmTodayStat 告警： 今天统计
 func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
+
 	conditions := alarm_stat_models.SearchConditions{}
 	conditions.OrgId = loginInfo.OrgId
 	conditions.StatDay = date_helper.SpecialDatetime(variable.DateFormatToday)
@@ -135,12 +136,19 @@ func (u *HomeController) AlarmTodayStat(ctx *gin.Context) {
 	}
 	descSort := map_helper.SortDescIntAndInt(moduleMap)
 
+	lang := cur_userinfo.GetLocales(ctx)
 	var moduleList []map[string]interface{}
 	for _, item := range descSort {
+
+		label := enums.Get1stIsStrAnd2ndIsIntReturnStr("module", item[0], enum_alarm.EnumMapInt)
+		if lang == consts.LanguageEn {
+			label = enums.Get1stIsStrAnd2ndIsIntReturnStr("module_en", item[0], enum_alarm.EnumMapInt)
+		}
+
 		moduleList = append(moduleList, map[string]interface{}{
 			"key":          item[0],
 			"number_total": item[1],
-			"label":        enums.Get1stIsStrAnd2ndIsIntReturnStr("module", item[0], enum_alarm.EnumMapInt),
+			"label":        label,
 		})
 	}
 

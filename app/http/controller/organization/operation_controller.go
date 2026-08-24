@@ -22,6 +22,9 @@ func (u *OperationController) Modules(ctx *gin.Context) {
 
 	keys := enums.Get1stIsStrReturnSliceOfStr("module", enum_org_operate.WebMapString)
 	labels := enums.Get1stIsStrReturnMapStrOfStr("module", enum_org_operate.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapStrOfStr("module_en", enum_org_operate.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatStringList(keys, labels, true))
 }
 
