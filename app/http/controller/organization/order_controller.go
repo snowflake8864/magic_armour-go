@@ -29,9 +29,11 @@ type OrderController struct {
 
 // OrderStatus  订单状态
 func (u *OrderController) OrderStatus(ctx *gin.Context) {
-
 	keys := enums.Get1stIsStrReturnSliceOfInt("order_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("order_status", enum_order.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("order_status_en", enum_order.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -39,6 +41,9 @@ func (u *OrderController) OrderStatus(ctx *gin.Context) {
 func (u *OrderController) ExpireStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("expire_status", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("expire_status", enum_order.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("expire_status_en", enum_order.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
@@ -46,6 +51,9 @@ func (u *OrderController) ExpireStatus(ctx *gin.Context) {
 func (u *OrderController) GrantDuration(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_duration", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("grant_duration", enum_order.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("grant_duration_en", enum_order.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
@@ -53,6 +61,9 @@ func (u *OrderController) GrantDuration(ctx *gin.Context) {
 func (u *OrderController) PayMethod(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("pay_method", enum_order.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("pay_method", enum_order.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("pay_method_en", enum_order.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
