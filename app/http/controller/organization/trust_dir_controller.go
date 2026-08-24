@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/model/agent/trust_dir_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/service/agent/trust_dir_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/slice_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/response"
@@ -42,7 +43,7 @@ func (u *TrustDirController) PageForGlobal(ctx *gin.Context) {
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.TrustDirTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.TrustDirTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // AddForGlobal 全局： 添加
