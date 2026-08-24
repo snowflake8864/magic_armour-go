@@ -28,6 +28,9 @@ type SyslogController struct {
 func (u *SyslogController) LoginStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("login_status", enum_syslog.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("login_status", enum_syslog.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("login_status_en", enum_syslog.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 

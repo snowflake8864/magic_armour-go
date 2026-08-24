@@ -30,6 +30,9 @@ func (u *RegistryController) decrypt(data string) (result string) {
 func (u *RegistryController) Types(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_organization.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_organization.EnumMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("type_en", enum_organization.EnumMap)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 

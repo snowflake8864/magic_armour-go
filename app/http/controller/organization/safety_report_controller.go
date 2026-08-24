@@ -20,20 +20,32 @@ type SafetyReportController struct {
 
 // GetForAlarmNotice 告警通知: 获取
 func (u *SafetyReportController) GetForAlarmNotice(ctx *gin.Context) {
+	lang := cur_userinfo.GetLocales(ctx)
+	isEn := lang == consts.LanguageEn
+
 	//通知周期
 	keys1 := enums.Get1stIsStrReturnSliceOfInt("notice_cycle", enum_safety_report.WebMapInt)
 	labels1 := enums.Get1stIsStrReturnMapIntOfStr("notice_cycle", enum_safety_report.EnumIntMap)
-	noticeCycleList := (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys1, labels1, false)
+	if isEn {
+		labels1 = enums.Get1stIsStrReturnMapIntOfStr("notice_cycle_en", enum_safety_report.EnumIntMap)
+	}
+	noticeCycleList := (&transformer.Common{Lang: lang}).FormatIntList(keys1, labels1, false)
 
 	//周期发送模块
 	keys2 := enums.Get1stIsStrReturnSliceOfInt("alarm_cycle_mod", enum_safety_report.WebMapInt)
 	labels2 := enums.Get1stIsStrReturnMapIntOfStr("module", enum_alarm.EnumMapInt)
-	cycleModList := (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys2, labels2, false)
+	if isEn {
+		labels2 = enums.Get1stIsStrReturnMapIntOfStr("module_en", enum_alarm.EnumMapInt)
+	}
+	cycleModList := (&transformer.Common{Lang: lang}).FormatIntList(keys2, labels2, false)
 
 	//立即发送模块
 	keys3 := enums.Get1stIsStrReturnSliceOfInt("alarm_timely_mod", enum_safety_report.WebMapInt)
-	labels4 := enums.Get1stIsStrReturnMapIntOfStr("module", enum_alarm.EnumMapInt)
-	timelyModList := (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys3, labels4, false)
+	labels3 := enums.Get1stIsStrReturnMapIntOfStr("module", enum_alarm.EnumMapInt)
+	if isEn {
+		labels3 = enums.Get1stIsStrReturnMapIntOfStr("module_en", enum_alarm.EnumMapInt)
+	}
+	timelyModList := (&transformer.Common{Lang: lang}).FormatIntList(keys3, labels3, false)
 
 	//配置
 	OrgExtendFact := organize_service.CreateOrgExtendFactory()

@@ -34,6 +34,9 @@ type TamperController struct {
 func (u *TamperController) FilePower(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("power_file", enum_tamper.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("power_folder_en", enum_tamper.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
@@ -41,6 +44,9 @@ func (u *TamperController) FilePower(ctx *gin.Context) {
 func (u *TamperController) FolderPower(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("power_folder", enum_tamper.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("power_folder", enum_tamper.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("power_folder_en", enum_tamper.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
