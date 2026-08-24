@@ -146,7 +146,7 @@ func (u *PortController) PageForWorking(ctx *gin.Context) {
 
 	total, models := port_models.CreateWorkingFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransWorkingPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransWorkingPage(total, models))
 }
 
 // RefreshForWorking 正常端口: 刷新
@@ -177,7 +177,7 @@ func (u *PortController) PageForPolicy(ctx *gin.Context) {
 
 	total, models := port_models.CreateVirtualPolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPolicyPage(total, models))
 }
 
 // SetSwitchForPolicy 终端策略: 设置开关
@@ -294,7 +294,7 @@ func (u *PortController) PageForGlobal(ctx *gin.Context) {
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.PortTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.PortTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // SetSwitchForGlobal 全局策略: 设置开关
