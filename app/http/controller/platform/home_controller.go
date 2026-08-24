@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/organization/org_stat_models"
 	"goskeleton/app/service/agent/alarm_service"
 	"goskeleton/app/service/organization/org_log_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
 	"goskeleton/app/utils/response"
@@ -211,13 +212,25 @@ func (u *HomeController) GrantUsedStat(ctx *gin.Context) {
 	column := CurdFact.ColumnCalcOfUsage()
 	model := CurdFact.CalcByConditions(searchConditions, column)
 	var result []map[string]interface{}
-	result = append(result,
-		map[string]interface{}{
-			"name":  "已使用",
-			"value": model.UsageNumber,
-		}, map[string]interface{}{
-			"name":  "未使用",
-			"value": model.BuyNumber - model.UsageNumber,
-		})
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageZh {
+		result = append(result,
+			map[string]interface{}{
+				"name":  "已使用",
+				"value": model.UsageNumber,
+			}, map[string]interface{}{
+				"name":  "未使用",
+				"value": model.BuyNumber - model.UsageNumber,
+			})
+	} else {
+		result = append(result,
+			map[string]interface{}{
+				"name":  "Used",
+				"value": model.UsageNumber,
+			}, map[string]interface{}{
+				"name":  "Unused",
+				"value": model.BuyNumber - model.UsageNumber,
+			})
+	}
+
 	response.SuccessReturnData(ctx, result)
 }
