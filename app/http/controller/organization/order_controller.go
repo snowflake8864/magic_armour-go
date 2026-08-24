@@ -68,7 +68,7 @@ func (u *OrderController) PayBankcard(ctx *gin.Context) {
 func (u *OrderController) PublishedForProduct(ctx *gin.Context) {
 	models := product_service.CreateCurdFactory().GetPublished()
 
-	response.SuccessReturnData(ctx, (&org_trans.ProductTrans{}).TransList(models))
+	response.SuccessReturnData(ctx, (&org_trans.ProductTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransList(models))
 }
 
 // ExpiredRemind 到期提醒
