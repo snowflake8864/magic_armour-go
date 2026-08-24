@@ -3,6 +3,7 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/platform/dictionary_service"
 	"goskeleton/app/utils/response"
 )
@@ -24,7 +25,7 @@ func (u *DictionaryController) Save(ctx *gin.Context) {
 	val := ctx.GetString(consts.ValidatorPrefixPlatform + "val")
 
 	if !dictionary_service.CreateCurdFactory().UpdateValById(id, val) {
-		response.FailSimplify(ctx, "保存失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 	response.SuccessSimplify(ctx)

@@ -35,7 +35,7 @@ func (u *Upload) StartUpload(context *gin.Context) {
 		uploadParam.OperateId = loginInfo.AdminId
 		uploadParam.OperateName = loginInfo.Username
 		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-			response.FailSimplify(context, "保存失败")
+			response.FailSimplify(context, my_errors.CurdSaveFailed)
 			return
 		}
 
