@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_tamper"
 	"goskeleton/app/http/transformer"
@@ -22,7 +23,13 @@ func (t *FileDirTrans) TranslPage(total int64, models []*dir_models.DirModel) in
 		for _, model := range models {
 			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
-			data["file_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.FileType, enum_tamper.EnumMapInt)
+			if t.Lang == consts.LanguageZh {
+				data["file_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.FileType, enum_tamper.EnumMapInt)
+
+			} else {
+				data["file_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.FileType, enum_tamper.EnumMapInt)
+
+			}
 
 			items = append(items, data)
 		}

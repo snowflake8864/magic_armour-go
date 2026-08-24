@@ -46,7 +46,7 @@ func (u *FileDirController) Page(ctx *gin.Context) {
 
 	total, models := dir_models.CreateDirFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.FileDirTrans{}).TranslPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.FileDirTrans{Lang: cur_userinfo.GetLocales(ctx)}).TranslPage(total, models))
 }
 
 // HasUpload 判断是否上传
