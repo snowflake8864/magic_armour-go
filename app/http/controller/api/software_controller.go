@@ -26,7 +26,7 @@ func (u *SoftwareController) Download(ctx *gin.Context) {
 	param := software_models.DownloadModel{
 		OrgId:      loginInfo.OrgId,
 		SoftwareId: loginInfo.SoftId,
-		Remark:     "离线下载",
+		Remark:     "Offline",
 		CreateId:   loginInfo.UserId,
 	}
 	err, downloadModel := software_service.CreateDownloadFactory().GetDownloadInfo(&param)
