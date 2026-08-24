@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/http/transformer"
@@ -33,7 +34,12 @@ func (t *UserTrans) pageGeneral(model *user_models.UserModel, departments map[in
 	}
 	data["dept_fullname"] = deptNames
 
-	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_user.EnumMap)
+	if t.Lang == consts.LanguageZh {
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_user.EnumMap)
+	} else {
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_user.EnumMap)
+
+	}
 
 	roleName := ""
 	if roleModel, ok := roleMaps[model.RoleId]; ok && roleModel != nil {

@@ -10,6 +10,7 @@ import (
 	"goskeleton/app/model/organization/role_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -54,7 +55,7 @@ func (u *UserController) Page(ctx *gin.Context) {
 		roleMaps = role_models.CreateRoleFactory().GetMapsByOrgAndIds(loginInfo.OrgId, roleIds)
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.UserTrans{}).TransPage(total, userModels, departmentMaps, roleMaps))
+	response.SuccessReturnData(ctx, (&org_trans.UserTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, userModels, departmentMaps, roleMaps))
 }
 
 // Add 添加
