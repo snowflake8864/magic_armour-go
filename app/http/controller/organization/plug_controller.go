@@ -105,7 +105,7 @@ func (u *PlugController) PageForManage(ctx *gin.Context) {
 
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, agentModels, departmentMaps, extendInfo))
 }
 
 // SetSwitchForManage 管理页: 设置开关

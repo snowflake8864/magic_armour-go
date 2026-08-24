@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/alarm/alarm_stat_models"
 	"goskeleton/app/model/organization/order_models"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/map_helper"
 	"goskeleton/app/utils/response"
@@ -95,7 +96,7 @@ func (u *HomeController) AlarmAgentTops(ctx *gin.Context) {
 		}
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.Agent{}).TransList(list, nil, extendInfo))
+	response.SuccessReturnData(ctx, (&org_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransList(list, nil, extendInfo))
 }
 
 // AlarmTodayStat 告警： 今天统计
