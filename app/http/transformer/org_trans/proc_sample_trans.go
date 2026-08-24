@@ -2,12 +2,14 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type ProcSampleTrans struct {
@@ -22,17 +24,14 @@ func (t *ProcSampleTrans) TransPage(total int64, models []*proc_models.ProcSampl
 	if models != nil {
 
 		for _, model := range models {
-			data := make(map[string]interface{})
-			data["id"] = model.Id
-			data["agent_id"] = model.AgentId
-			data["dir"] = model.Dir
-			data["original_name"] = model.OriginalName
-			data["data_from"] = model.DataFrom
-			data["status"] = model.Status
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("sample_status", model.Status, enum_process.EnumIntMap)
-			data["create_id"] = model.CreateId
-			data["create_name"] = model.CreateName
-			data["created_at"] = model.CreatedAt
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
+			if t.Lang == consts.LanguageZh {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("sample_status", model.Status, enum_process.EnumIntMap)
+
+			} else {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("sample_status_en", model.Status, enum_process.EnumIntMap)
+
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)

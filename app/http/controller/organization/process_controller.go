@@ -300,7 +300,7 @@ func (u *ProcessController) PageAllForAgent(ctx *gin.Context) {
 		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{}).TransMasterPage(total, models, threatenMaps))
+	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransMasterPage(total, models, threatenMaps))
 }
 
 // PageRunningForAgent 单终端: 运行中进程
@@ -334,7 +334,7 @@ func (u *ProcessController) PageRunningForAgent(ctx *gin.Context) {
 		}
 		threatenMaps = threaten_models.CreateCacheFactory().GetMapsByIds(hashArr)
 	}
-	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{}).TransRunningPage(total, models, threatenMaps))
+	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransRunningPage(total, models, threatenMaps))
 }
 
 // SearchWhileForAgent 单终端: 查询白名单
@@ -561,7 +561,7 @@ func (u *ProcessController) RepeatPageForAgent(ctx *gin.Context) {
 		agentMap = AgentFact.GetMapsByOrgAndAgents(orgId, agentIds, AgentFact.ColumnBasic(true, false))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{}).TransRepeatPage(total, models, agentMap))
+	response.SuccessReturnData(ctx, (&org_trans.ProcessTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransRepeatPage(total, models, agentMap))
 }
 
 // RunningDllExtractForAgent 单终端: 提取运行中模块

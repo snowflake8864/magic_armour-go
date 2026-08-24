@@ -2,6 +2,7 @@ package org_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_process"
 	"goskeleton/app/http/transformer"
@@ -32,17 +33,25 @@ func (t *ProcessTrans) TransMasterPage(total int64, models []*proc_models.Proces
 			data["global_status"] = model.GlobalStatus
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
-			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright
 			data["signature"] = model.Signature
 			data["created_at"] = model.CreatedAt
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
-			data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
+
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
+
+			if t.Lang == consts.LanguageZh {
+				data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
+				data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
+			} else {
+				data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status_en", model.ThreatenStatus, enum_process.EnumIntMap)
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status_en", model.Status, enum_process.EnumIntMap)
+				data["status_reason"] = enum_process.GetProcStatusReasonEn(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
+			}
 
 			//合并威胁情报数据
 			data = map_helper.MergeStringAndInterface(data, t.AppendThreatenInfo(model.ProcHash, threatenMaps))
@@ -71,23 +80,28 @@ func (t *ProcessTrans) TransRunningPage(total int64, models []*proc_models.Proce
 			data["procUser"] = model.ProcUser
 			data["dll_number"] = model.DllNumber
 			data["status"] = model.Status
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
 			data["sync_status_at"] = model.SyncStatusAt
 			data["global_status"] = model.GlobalStatus
 			data["self_status"] = model.SelfStatus
 			data["threaten_status"] = model.ThreatenStatus
-			data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
 			data["auto_white_switch"] = model.AutoWhiteSwitch
 			data["grant_threaten_switch"] = model.GrantThreatenSwitch
 			data["introduce"] = model.Introduce
 			data["copyright"] = model.Copyright
 			data["signature"] = model.Signature
 			data["created_at"] = model.CreatedAt
-
-			data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
 			data["btn_change_enable"] = enum_process.BtnChangeEnable(model.GlobalStatus)
 			data["btn_cancel_enable"] = enum_process.BtnCancelEnable(model.SelfStatus)
 
+			if t.Lang == consts.LanguageZh {
+				data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status", model.ThreatenStatus, enum_process.EnumIntMap)
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
+				data["status_reason"] = enum_process.GetProcStatusReason(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
+			} else {
+				data["threaten_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("rely_status_en", model.ThreatenStatus, enum_process.EnumIntMap)
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status_en", model.Status, enum_process.EnumIntMap)
+				data["status_reason"] = enum_process.GetProcStatusReasonEn(model.GlobalStatus, model.SelfStatus, model.ThreatenStatus, model.AutoWhiteSwitch)
+			}
 			//合并威胁情报数据
 			data = map_helper.MergeStringAndInterface(data, t.AppendThreatenInfo(model.ProcHash, threatenMaps))
 			items = append(items, data)
@@ -112,7 +126,13 @@ func (t *ProcessTrans) TransRepeatPage(total int64, models []*proc_models.Proces
 			data["proc_dir"] = model.Dir
 			data["created_at"] = model.CreatedAt
 			data["status"] = model.Status
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
+
+			if t.Lang == consts.LanguageZh {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status", model.Status, enum_process.EnumIntMap)
+			} else {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("all_status_en", model.Status, enum_process.EnumIntMap)
+			}
+
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, nil)
 			items = append(items, data)
 		}

@@ -34,7 +34,6 @@ func (t *BlackmailTrans) TransGlobalPage(total int64, models []*blackmail_models
 
 			if t.Lang == consts.LanguageZh {
 				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_blackmail.EnumMapInt)
-
 			} else {
 				data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_blackmail.EnumMapInt)
 			}
