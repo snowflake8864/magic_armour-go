@@ -160,7 +160,7 @@ func (u *AgentController) PageForOwn(ctx *gin.Context) {
 	//转化数据
 	_, departmentMaps := u.parseAgentModels(agentModels, true)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Agent{}).TransAgentManagePage(total, agentModels, departmentMaps))
+	response.SuccessReturnData(ctx, (&platform_trans.Agent{Lang: cur_userinfo.GetLocales(ctx)}).TransAgentManagePage(total, agentModels, departmentMaps))
 }
 
 // parseAgentModels 解析终端集合并拿到相关数据

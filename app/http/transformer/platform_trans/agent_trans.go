@@ -6,8 +6,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
-	"goskeleton/app/utils/helpers/json_helper"
-	"goskeleton/app/utils/helpers/string_helper"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Agent struct {
@@ -16,47 +15,11 @@ type Agent struct {
 }
 
 func (t *Agent) pageGeneral(model *agent_models.AgentModel, departments map[int64]*department_models.DepartmentModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["agent_id"] = model.AgentId
-	data["host_name"] = model.HostName
-	data["mac_id"] = model.MacId
-	data["agent_ip"] = model.AgentIp
-	data["net_ip"] = model.NetIp
-	data["os_name"] = model.OsName
-	data["platform_type"] = model.PlatformType
-	data["os_type"] = model.OsType
-	data["is_online"] = model.IsOnline
-	data["online_at"] = model.OnlineAt
-	data["is_safe"] = model.IsSafe
-	data["ver"] = model.Ver
-	data["mem_desc"] = model.MemDesc
-	data["hd_desc"] = model.HdDesc
-	data["cpu_desc"] = model.CpuDesc
-	data["network_card"] = model.CpuDesc
-	data["agent_start_at"] = model.AgentStartAt
-	data["os_start_at"] = model.OsStartAt
-
-	data["contact_name"] = model.ContactName
-	data["contact_tel"] = model.ContactTel
-	data["alias"] = model.Alias
-	data["position"] = model.Position
-	data["remark"] = model.Remark
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 
 	data["grant_config"] = enum_product.Json2Config(model.GrantConfig)
-	data["grant_order_no"] = model.GrantOrderNo
-	data["grant_expire_at"] = model.GrantExpireAt
-	data["grant_status"] = model.GrantStatus
-	data["grant_product_title"] = model.GrantProductTitle
+	data["dept_fullname"] = t.GetDeptFullname(model.DeptId, departments)
 
-	data["dept_id"] = model.DeptId
-	data["dept_fullname"] = []string{}
-	if departments != nil && len(departments) > 0 {
-		if deptModel, ok := departments[model.DeptId]; ok && !string_helper.IsEmpty(deptModel.FullName) {
-			data["dept_fullname"] = json_helper.ToSliceString(deptModel.FullName)
-		}
-	}
-
-	data["created_at"] = model.CreatedAt
 	return data
 }
 
