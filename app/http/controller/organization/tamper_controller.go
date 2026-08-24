@@ -152,7 +152,7 @@ func (u *TamperController) PageForPolicy(ctx *gin.Context) {
 
 	total, models := tamper_models.CreatePolicyFactory().Page(condition, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransPolicyPage(total, models))
+	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransPolicyPage(total, models))
 }
 
 // SetSwitchForPolicy 终端策略: 设置开关
@@ -397,7 +397,7 @@ func (u *TamperController) PageForGlobal(ctx *gin.Context) {
 		departmentMaps = u.getDepartmentMap(loginInfo.OrgId, slice_helper.Int64RemoveRepeatByMap(deptIds))
 	}
 
-	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{}).TransGlobalPage(total, models, departmentMaps))
+	response.SuccessReturnData(ctx, (&org_trans.TamperTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransGlobalPage(total, models, departmentMaps))
 }
 
 // SetSwitchForGlobal 全局策略: 设置开关

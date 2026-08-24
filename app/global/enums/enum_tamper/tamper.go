@@ -108,3 +108,15 @@ func GetPowerLabels(rw int) []string {
 
 	return labels
 }
+
+func GetPowerEnLabels(rw int) []string {
+	var labels []string
+
+	for _, val := range WebMapInt["power_folder"] {
+		if (rw & val) > 0 {
+			labels = append(labels, EnumMapInt["power_folder_en"][val])
+		}
+	}
+
+	return labels
+}
