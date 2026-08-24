@@ -3,6 +3,7 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
@@ -24,7 +25,7 @@ func (u *AccountController) ModifyPw(ctx *gin.Context) {
 	oldPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "oldPw"))
 	newPw := u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "newPw"))
 	if string_helper.IsEmpty(oldPw) || string_helper.IsEmpty(newPw) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 

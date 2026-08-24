@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/http/transformer/platform_trans"
 	"goskeleton/app/model/organization/organization_models"
@@ -182,7 +183,7 @@ func (u *OrganizeController) AddForVerify(ctx *gin.Context) {
 	userParam.Password = u.decrypt(ctx.GetString(consts.ValidatorPrefixPlatform + "userPw"))
 	userParam.IsRoot = enums.IsYes
 	if string_helper.IsEmpty(userParam.Password) {
-		response.FailSimplify(ctx, "参数不正确")
+		response.FailSimplify(ctx, my_errors.CurdInvalidParameter)
 		return
 	}
 
