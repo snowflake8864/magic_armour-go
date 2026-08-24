@@ -32,6 +32,9 @@ type BlackmailController struct {
 func (u *BlackmailController) Types(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_blackmail.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_blackmail.EnumMapInt)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("type_en", enum_blackmail.EnumMapInt)
+	}
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, false))
 }
 
