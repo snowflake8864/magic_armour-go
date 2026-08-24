@@ -3,12 +3,14 @@ package org_trans
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_syslog"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/syslog/syslog_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type SyslogTrans struct {
@@ -22,17 +24,8 @@ func (t *SyslogTrans) TransDnsPage(total int64, models []*syslog_models.DnsModel
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["agent_at"] = model.AgentAt
-			data["created_at"] = model.CreatedAt
-
-			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
-			data["proc_dir"] = model.ProcDir
-			data["domain_name"] = model.DomainName
-			data["target_ip"] = model.TargetIp
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -51,23 +44,16 @@ func (t *SyslogTrans) TransInnerPage(total int64, models []*syslog_models.InnerM
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["agent_at"] = model.AgentAt
-			data["created_at"] = model.CreatedAt
-
-			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
-			data["proc_dir"] = model.ProcDir
-			data["target_ip"] = model.TargetIp
-			data["target_port"] = model.TargetPort
-			data["target_port_status"] = model.TargetPortStatus
-			data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.TargetPortStatus, enum_syslog.EnumMapInt)
-			data["source_ip"] = model.SourceIp
-			data["source_port"] = model.SourcePort
-			data["proto"] = model.Proto
 			data["proto_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.Proto, enum_syslog.EnumMapInt)
+
+			if t.Lang == consts.LanguageZh {
+				data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.TargetPortStatus, enum_syslog.EnumMapInt)
+			} else {
+				data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status_en", model.TargetPortStatus, enum_syslog.EnumMapInt)
+
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -86,23 +72,15 @@ func (t *SyslogTrans) TransOuterPage(total int64, models []*syslog_models.OuterM
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["agent_at"] = model.AgentAt
-			data["created_at"] = model.CreatedAt
 
-			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
-			data["proc_dir"] = model.ProcDir
-			data["target_ip"] = model.TargetIp
-			data["target_port"] = model.TargetPort
-			data["target_port_status"] = model.TargetPortStatus
-			data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.TargetPortStatus, enum_syslog.EnumMapInt)
-			data["source_ip"] = model.SourceIp
-			data["source_port"] = model.SourcePort
-			data["proto"] = model.Proto
-			data["proto_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.Proto, enum_syslog.EnumMapInt)
+			if t.Lang == consts.LanguageZh {
+				data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status", model.TargetPortStatus, enum_syslog.EnumMapInt)
+			} else {
+				data["target_port_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("port_status_en", model.TargetPortStatus, enum_syslog.EnumMapInt)
+
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -121,20 +99,8 @@ func (t *SyslogTrans) TransProcessPage(total int64, models []*syslog_models.Proc
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["agent_at"] = model.AgentAt
-			data["created_at"] = model.CreatedAt
-
-			data["proc_hash"] = model.ProcHash
-			data["proc_id"] = model.ProcId
-			data["proc_dir"] = model.ProcDir
-			data["proc_param"] = model.ProcParam
-			data["parent_hash"] = model.ParentHash
-			data["parent_id"] = model.ParentId
-			data["parent_dir"] = model.ParentDir
-			data["parent_param"] = model.ParentParam
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)
@@ -153,17 +119,14 @@ func (t *SyslogTrans) TransLoginPage(total int64, models []*syslog_models.LoginM
 	var items []map[string]interface{}
 	if models != nil {
 		for _, model := range models {
-			data := make(map[string]interface{})
+			data := struct_helper.SimpleStructToMapWithJsonTags(model)
 			data["id"] = fmt.Sprintf("%d", model.Id)
-			data["agent_id"] = model.AgentId
-			data["agent_at"] = model.AgentAt
-			data["created_at"] = model.CreatedAt
 
-			data["source_ip"] = model.SourceIp
-			data["username"] = model.Username
-			data["type"] = model.Type
-			data["status"] = model.Status
-			data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("login_status", model.Status, enum_syslog.EnumMapInt)
+			if t.Lang == consts.LanguageZh {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("login_status", model.Status, enum_syslog.EnumMapInt)
+			} else {
+				data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("login_status_en", model.Status, enum_syslog.EnumMapInt)
+			}
 
 			data["agent_info"] = t.AppendAgentInfo(model.AgentId, agentModels, departments)
 			items = append(items, data)

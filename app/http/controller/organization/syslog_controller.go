@@ -80,7 +80,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransDnsPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransDnsPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeInner:
 		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
@@ -97,7 +97,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransInnerPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransInnerPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeOuter:
 		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
@@ -114,7 +114,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransOuterPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransOuterPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeProcess:
 		condition.ProcHash = ctx.GetString(consts.ValidatorPrefixOrg + "procHash")
@@ -134,7 +134,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransProcessPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransProcessPage(total, models, agentMap, nil))
 		break
 	case enum_syslog.LogTypeLogin:
 		condition.SourceIp = ctx.GetString(consts.ValidatorPrefixOrg + "sourceIp")
@@ -149,7 +149,7 @@ func (u *SyslogController) PageForSyslog(ctx *gin.Context, module int) {
 			}
 			agentMap = u.getAgentMap(loginInfo.OrgId, agentIds)
 		}
-		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{}).TransLoginPage(total, models, agentMap, nil))
+		response.SuccessReturnData(ctx, (&org_trans.SyslogTrans{Lang: cur_userinfo.GetLocales(ctx)}).TransLoginPage(total, models, agentMap, nil))
 		break
 	default:
 		response.FailSimplify(ctx, fmt.Sprintf("module(%d) not exists", module))
