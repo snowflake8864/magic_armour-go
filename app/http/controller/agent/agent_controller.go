@@ -172,11 +172,11 @@ func (u *AgentController) Upgrade(ctx *gin.Context) {
 	}
 	model := software_models.CreateSoftwareFactory().GetItemByConditions(Conditions)
 	if model == nil || model.Id == 0 {
-		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "对应版本已下架:"+model.Ver)
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "No matches found")
 		return
 	}
 	if !enum_software.CanUpgradeDirect(model.Ver, loginInfo.Ver) {
-		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "已经是最新版本,无需升级")
+		response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "the latest version no upgrade is needed")
 		return
 	}
 
@@ -260,7 +260,7 @@ func (u *AgentController) UploadErrorFile(ctx *gin.Context) {
 		uploadParam.OperateId = loginInfo.OrgId
 		uploadParam.OperateName = loginInfo.AgentId
 		if !upload_service.CreateCurdFactory().Add(&uploadParam) {
-			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, "保存失败")
+			response.FailRoutine(ctx, my_errors.AgentParamErrorCode, my_errors.CurdSaveFailed)
 			return
 		}
 
