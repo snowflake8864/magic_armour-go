@@ -45,7 +45,7 @@ func (u *OrganizeController) Detail(ctx *gin.Context) {
 		response.FailSimplify(ctx, my_errors.CurdOrgNotExists)
 		return
 	}
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransDetail(model))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransDetail(model))
 }
 
 // PageForManage 管理: 分页
@@ -68,7 +68,7 @@ func (u *OrganizeController) PageForManage(ctx *gin.Context) {
 	//终端分页
 	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orgModels))
 }
 
 // LockForManage 管理：锁定
@@ -160,7 +160,7 @@ func (u *OrganizeController) PageForVerify(ctx *gin.Context) {
 	//终端分页
 	total, orgModels := organization_models.CreateOrganizationFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransPage(total, orgModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orgModels))
 }
 
 // AddForVerify 审核: 添加
@@ -252,5 +252,5 @@ func (u *OrganizeController) PageForLog(ctx *gin.Context) {
 
 	//用户分页
 	total, models := organization_models.CreateLogFactory().Page(searchConditions, offset, pageSize, order)
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransLogPage(total, models))
 }

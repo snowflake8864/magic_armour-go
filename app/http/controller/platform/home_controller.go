@@ -200,7 +200,7 @@ func (u *HomeController) UserDailyOnline(ctx *gin.Context) {
 func (u *HomeController) UserNewestLogs(ctx *gin.Context) {
 	models := org_log_service.CreateOrgLogFactory().NewestList(10)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransLogList(models))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransLogList(models))
 }
 
 // GrantUsedStat 授权: 使用统计

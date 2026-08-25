@@ -132,7 +132,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 		}
 	}
 
-	response.SuccessReturnData(ctx, (&platform_trans.Org{}).TransOtherPage(total, orgModels, agentExtend, orderExtend))
+	response.SuccessReturnData(ctx, (&platform_trans.Org{Lang: cur_userinfo.GetLocales(ctx)}).TransOtherPage(total, orgModels, agentExtend, orderExtend))
 }
 
 // PageForOwn 终端本身: 分页

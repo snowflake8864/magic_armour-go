@@ -2,10 +2,12 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Org struct {
@@ -14,26 +16,16 @@ type Org struct {
 }
 
 func (t *Org) pageGeneral(model *organization_models.OrganizationModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["code"] = model.Code
-	data["name"] = model.Name
-	data["type"] = model.Type
-	data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_organization.EnumMap)
-	data["user_name"] = model.UserName
-	data["user_email"] = model.UserEmail
-	data["user_phone"] = model.UserPhone
-	data["status"] = model.Status
-	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_organization.EnumMap)
-	data["is_clean"] = model.IsClean
-	data["is_del"] = model.IsDel
-	data["huanshi_switch"] = model.HuanshiSwitch
-	data["trusteeship_switch"] = model.TrusteeshipSwitch
-	data["login_phone_check"] = model.LoginPhoneCheck
-	data["remark"] = model.Remark
-	data["source"] = model.Source
-	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.Source, enums.EnumMapInt)
-	data["created_at"] = model.CreatedAt
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+	if t.Lang == consts.LanguageZh {
+		data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_organization.EnumMap)
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_organization.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.Source, enums.EnumMapInt)
+	} else {
+		data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_organization.EnumMap)
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_organization.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source_en", model.Source, enums.EnumMapInt)
+	}
 	return data
 }
 
@@ -91,22 +83,14 @@ func (t *Org) TransDetail(model *organization_models.OrganizationModel) map[stri
 }
 
 func (t *Org) pageLogGeneral(model *organization_models.LogModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["module"] = model.Module
-	data["module_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("log_action", model.Module, enum_organization.EnumMap)
-	data["org_id"] = model.OrgId
-	data["org_name"] = model.OrgName
-	data["user_name"] = model.UserName
-	data["user_email"] = model.UserEmail
-	data["user_phone"] = model.UserPhone
-	data["net_ip"] = model.NetIp
-	data["content"] = model.Content
-	data["operate_source"] = model.OperateSource
-	data["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.OperateSource, enums.EnumMapInt)
-	data["operate_id"] = model.OperateId
-	data["operate_name"] = model.OperateName
-	data["created_at"] = model.CreatedAt
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+	if t.Lang == consts.LanguageZh {
+		data["module_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("log_action", model.Module, enum_organization.EnumMap)
+		data["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source", model.OperateSource, enums.EnumMapInt)
+	} else {
+		data["module_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("log_action_en", model.Module, enum_organization.EnumMap)
+		data["operate_source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("operate_source_en", model.OperateSource, enums.EnumMapInt)
+	}
 	return data
 }
 
