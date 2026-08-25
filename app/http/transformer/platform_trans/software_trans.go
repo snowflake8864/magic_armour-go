@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/platform/software_models"
 	"goskeleton/app/utils/helpers/json_helper"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Software struct {
@@ -15,27 +16,20 @@ type Software struct {
 }
 
 func (t *Software) pageGeneral(model *software_models.SoftwareModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["ver"] = model.Ver
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+
 	data["version_number_label"] = enum_software.ShowVer(model.PlatformType, model.OsType, model.Ver)
-	data["platform_type"] = model.PlatformType
 	data["platform_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("platform_type", model.PlatformType, enum_software.EnumMap)
-	data["os_type"] = model.OsType
 	data["os_type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("os_type", model.OsType, enum_software.EnumMap)
-	data["os_ver"] = model.OsVer
+
 	osVer := json_helper.ToSliceInt(model.OsVer)
 	var osTypeTxt []string
 	for _, val := range osVer {
 		osTypeTxt = append(osTypeTxt, enums.Get1stIsStrAnd2ndIsIntReturnStr("os_ver", val, enum_software.EnumMap))
 	}
 	data["os_type_txt"] = osTypeTxt
-	data["remark"] = model.Remark
-	data["is_publish"] = model.IsPublish
+
 	data["download_name"] = enum_software.DownloadName(model.PlatformType, model.OsType, model.Ver)
-	data["create_id"] = model.CreateId
-	data["create_name"] = model.CreateName
-	data["created_at"] = model.CreatedAt
 	return data
 }
 
