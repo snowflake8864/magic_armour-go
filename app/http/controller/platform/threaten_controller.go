@@ -109,7 +109,7 @@ func (u *ThreatenController) PageForCache(ctx *gin.Context) {
 	//分页
 	total, models := threaten_models.CreateCacheFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransCachePage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{Lang: cur_userinfo.GetLocales(ctx)}).TransCachePage(total, models))
 }
 
 // ClearForCache 缓存: 清空
@@ -216,7 +216,7 @@ func (u *ThreatenController) PageForPush(ctx *gin.Context) {
 	//分页
 	total, models := threaten_models.CreatePushFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Threaten{}).TransPushPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Threaten{Lang: cur_userinfo.GetLocales(ctx)}).TransPushPage(total, models))
 }
 
 // AllWhiteForPush 推送: 全部白

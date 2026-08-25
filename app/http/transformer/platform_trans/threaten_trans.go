@@ -2,10 +2,12 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_threaten"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/agent/threaten_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Threaten struct {
@@ -14,23 +16,14 @@ type Threaten struct {
 }
 
 func (t *Threaten) pageCacheGeneral(model *threaten_models.CacheModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["level"] = model.Level
-	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
-	data["source"] = model.Source
-	data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_threaten.EnumMap)
-	data["dir"] = model.Dir
-	data["parent_dir"] = model.ParentDir
-	data["os"] = model.Os
-	data["introduce"] = model.Introduce
-	data["copyright"] = model.Copyright
-	data["signature"] = model.Signature
-	data["attribute"] = model.Attribute
-	data["data_from"] = model.DataFrom
-	data["check_at"] = model.CheckAt
-	data["check_source"] = model.CheckSource
-	data["created_at"] = model.CreatedAt
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+	if t.Lang == consts.LanguageZh {
+		data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source", model.Source, enum_threaten.EnumMap)
+	} else {
+		data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_threaten.EnumMap)
+		data["source_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("source_en", model.Source, enum_threaten.EnumMap)
+	}
 	return data
 }
 
@@ -51,25 +44,14 @@ func (t *Threaten) TransCachePage(total int64, models []*threaten_models.CacheMo
 }
 
 func (t *Threaten) pagePushGeneral(model *threaten_models.PushModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["level"] = model.Level
-	data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
-
-	data["dir"] = model.Dir
-	data["parent_dir"] = model.ParentDir
-	data["os"] = model.Os
-	data["data_from"] = model.DataFrom
-	data["push_at"] = model.PushAt
-	data["push_status"] = model.PushStatus
-	data["push_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
-	data["introduce"] = model.Introduce
-	data["copyright"] = model.Copyright
-	data["signature"] = model.Signature
-	data["attribute"] = model.Attribute
-	data["create_id"] = model.CreateId
-	data["create_name"] = model.CreateName
-	data["created_at"] = model.CreatedAt
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+	if t.Lang == consts.LanguageZh {
+		data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level", model.Level, enum_threaten.EnumMap)
+		data["push_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status", model.PushStatus, enum_threaten.EnumMap)
+	} else {
+		data["level_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("level_en", model.Level, enum_threaten.EnumMap)
+		data["push_status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("push_status_en", model.PushStatus, enum_threaten.EnumMap)
+	}
 	return data
 }
 
