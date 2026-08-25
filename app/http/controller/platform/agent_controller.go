@@ -124,7 +124,7 @@ func (u *AgentController) PageForManage(ctx *gin.Context) {
 		if orderModels != nil && len(orderModels) > 0 {
 			var orgOrders = make(map[int64][]map[string]interface{})
 			for _, model := range orderModels {
-				orgOrders[model.OrgId] = append(orgOrders[model.OrgId], (&platform_trans.Order{}).TransDetail(model))
+				orgOrders[model.OrgId] = append(orgOrders[model.OrgId], (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransDetail(model))
 			}
 			for orgId, list := range orgOrders {
 				orderExtend[orgId] = list

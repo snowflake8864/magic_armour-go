@@ -85,7 +85,7 @@ func (u *OrderController) ValidByOrg(ctx *gin.Context) {
 
 	models := order_service.CreateCurdFactory().GetValidItemsByOrg(OrgId)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransList(models))
+	response.SuccessReturnData(ctx, (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransList(models))
 }
 
 // PageForGrant 授权管理: 分页
@@ -102,7 +102,7 @@ func (u *OrderController) PageForGrant(ctx *gin.Context) {
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orderModels))
 }
 
 func (u *OrderController) getOrderSearchConditions(ctx *gin.Context) order_models.SearchConditions {
@@ -130,7 +130,7 @@ func (u *OrderController) PageForManage(ctx *gin.Context) {
 	//终端分页
 	total, orderModels := order_models.CreateOrderFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransPage(total, orderModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, orderModels))
 }
 
 // CancelForManage 订单管理: 取消
@@ -192,7 +192,7 @@ func (u *OrderController) DetailForManage(ctx *gin.Context) {
 	orderNo := ctx.GetString(consts.ValidatorPrefixPlatform + "orderNo")
 
 	model := order_service.CreateCurdFactory().GetItemByOrderNo(orderNo)
-	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransDetail(model))
+	response.SuccessReturnData(ctx, (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransDetail(model))
 }
 
 // LogsForManage 订单管理:  日志列表
@@ -206,5 +206,5 @@ func (u *OrderController) LogsForManage(ctx *gin.Context) {
 	//日志分页
 	total, logModels := order_models.CreateLogFactory().Page(searchConditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Order{}).TransLogsPage(total, logModels))
+	response.SuccessReturnData(ctx, (&platform_trans.Order{Lang: cur_userinfo.GetLocales(ctx)}).TransLogsPage(total, logModels))
 }
