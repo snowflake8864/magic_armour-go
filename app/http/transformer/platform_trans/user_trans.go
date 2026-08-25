@@ -2,10 +2,12 @@ package platform_trans
 
 import (
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/organization/user_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type User struct {
@@ -14,21 +16,12 @@ type User struct {
 }
 
 func (t *User) pageGeneral(model *user_models.UserModel) map[string]interface{} {
-	data := make(map[string]interface{})
-	data["id"] = model.Id
-	data["username"] = model.Username
-	data["email"] = model.Email
-	data["phone"] = model.Phone
-	data["realname"] = model.Realname
-	data["position"] = model.Position
-	data["intro"] = model.Intro
-	data["last_login_at"] = model.LastLoginAt
-	data["status"] = model.Status
-	data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_user.EnumMap)
-	data["is_root"] = model.IsRoot
-	data["create_id"] = model.CreateId
-	data["create_name"] = model.CreateName
-	data["created_at"] = model.CreatedAt
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
+	if t.Lang == consts.LanguageZh {
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_user.EnumMap)
+	} else {
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_user.EnumMap)
+	}
 	return data
 }
 

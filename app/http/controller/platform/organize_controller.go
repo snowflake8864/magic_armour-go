@@ -238,7 +238,7 @@ func (u *OrganizeController) PageForUser(ctx *gin.Context) {
 	//用户分页
 	total, models := user_models.CreateUserFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.User{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.User{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
 }
 
 // PageForLog 日志: 分页
