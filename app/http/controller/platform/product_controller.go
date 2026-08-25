@@ -44,7 +44,7 @@ func (u *ProductController) GrantModules(ctx *gin.Context) {
 func (u *ProductController) AllPublished(ctx *gin.Context) {
 	models := product_service.CreateCurdFactory().GetPublished()
 
-	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransList(models))
+	response.SuccessReturnData(ctx, (&platform_trans.Product{Lang: cur_userinfo.GetLocales(ctx)}).TransList(models))
 }
 
 // PageForManage 管理: 分页
@@ -60,7 +60,7 @@ func (u *ProductController) PageForManage(ctx *gin.Context) {
 	//产品分页
 	total, models := prodcut_models.CreateProductFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Product{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Product{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
 }
 
 // AddForManage 管理: 添加
@@ -68,7 +68,7 @@ func (u *ProductController) AddForManage(ctx *gin.Context) {
 	param := u.addParam(ctx)
 
 	if !product_service.CreateCurdFactory().Add(&param) {
-		response.FailSimplify(ctx, "新增失败")
+		response.FailSimplify(ctx, my_errors.CurdSaveFailed)
 		return
 	}
 
