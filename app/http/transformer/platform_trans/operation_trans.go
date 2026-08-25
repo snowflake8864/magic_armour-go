@@ -3,10 +3,12 @@ package platform_trans
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_platform_operate"
 	"goskeleton/app/http/transformer"
 	"goskeleton/app/model/platform/operate_models"
+	"goskeleton/app/utils/helpers/struct_helper"
 )
 
 type Operation struct {
@@ -15,23 +17,17 @@ type Operation struct {
 }
 
 func (t *Operation) pageGeneral(model *operate_models.LogModel) map[string]interface{} {
-	data := make(map[string]interface{})
+	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	data["id"] = fmt.Sprintf("%d", model.Id)
-	data["path"] = model.Path
-	_, pathLabel, _ := enum_platform_operate.GetModuleAndLabelByPath(model.Path)
-	data["path_label"] = pathLabel
-	data["module"] = model.Module
-	data["module_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module", model.Module, enum_platform_operate.EnumMap)
-	data["net_ip"] = model.NetIp
-	data["input"] = model.Input
-	data["method"] = model.Method
-	data["status"] = model.Status
-	data["http_code"] = model.HttpCode
-	data["delay_time"] = model.DelayTime
-	data["resp"] = model.Resp
-	data["create_id"] = model.CreateId
-	data["create_name"] = model.CreateName
-	data["created_at"] = model.CreatedAt
+
+	if t.Lang == consts.LanguageZh {
+		_, data["path_label"], _ = enum_platform_operate.GetModuleAndLabelByPath(model.Path)
+		data["module_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module", model.Module, enum_platform_operate.EnumMap)
+	} else {
+		_, _, data["path_label"] = enum_platform_operate.GetModuleAndLabelByPath(model.Path)
+		data["module_label"] = enums.Get1stIsStrAnd2ndIsStrReturnStr("module_en", model.Module, enum_platform_operate.EnumMap)
+	}
+
 	return data
 }
 

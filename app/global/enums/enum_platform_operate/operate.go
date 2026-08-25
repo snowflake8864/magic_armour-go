@@ -116,5 +116,5 @@ func GetModuleAndLabelByPath(path string) (module string, label, labelEn string)
 	if ok == false {
 		return module, label, labelEn
 	}
-	return val[0], val[1], val[1]
+	return val[0], val[1], val[2]
 }

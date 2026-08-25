@@ -41,5 +41,5 @@ func (u *OperationController) Page(ctx *gin.Context) {
 	//产品分页
 	total, models := operate_models.CreateLogFactory().Page(conditions, offset, pageSize, order)
 
-	response.SuccessReturnData(ctx, (&platform_trans.Operation{}).TransPage(total, models))
+	response.SuccessReturnData(ctx, (&platform_trans.Operation{Lang: cur_userinfo.GetLocales(ctx)}).TransPage(total, models))
 }
