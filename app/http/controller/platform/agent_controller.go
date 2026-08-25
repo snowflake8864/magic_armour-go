@@ -60,7 +60,7 @@ func (u *AgentController) TypeList(ctx *gin.Context) {
 	}
 	sort.Ints(typeVals)
 
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(typeVals, typeMap, false))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(typeVals, typeMap, false))
 }
 
 // StatByOrg 按企业统计终端

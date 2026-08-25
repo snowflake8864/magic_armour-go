@@ -201,7 +201,7 @@ func (u *ThreatenController) GetAttrForCache(ctx *gin.Context) {
 		response.FailSimplify(ctx, my_errors.CurdDataNotExist)
 		return
 	}
-	response.SuccessReturnData(ctx, (&transformer.Common{}).TransThreatenInfo(model))
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).TransThreatenInfo(model))
 }
 
 // PageForPush 推送: 分页

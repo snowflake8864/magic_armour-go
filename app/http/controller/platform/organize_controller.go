@@ -11,6 +11,7 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
@@ -30,7 +31,10 @@ func (u *OrganizeController) decrypt(data string) (result string) {
 func (u *OrganizeController) Types(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("type", enum_organization.WebMapInt)
 	labels := enums.Get1stIsStrReturnMapIntOfStr("type", enum_organization.EnumMap)
-	response.SuccessReturnData(ctx, (&transformer.Common{}).FormatIntList(keys, labels, true))
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("type_en", enum_organization.EnumMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
 // Detail 企业详情
