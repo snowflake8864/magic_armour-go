@@ -748,7 +748,7 @@ func (crd *OrderCurd) ExpiredRemindForOrg(orgId int64) (int, int, string) {
 			return 1, version, my_errors.CurdOrderExpiredToBuy
 		}
 	} else {
-		//全部过期 & 有正式授权： 提示, 根据不同版本跳转到不同页面
+		//全部过期 & 没正式授权： 提示, 根据不同版本跳转到不同页面
 		if cur_app.GetAppUsageVersion() == variable.AppUsageVersionOffline {
 			return 2, version, my_errors.CurdOrderExpiredToGet
 		} else {
