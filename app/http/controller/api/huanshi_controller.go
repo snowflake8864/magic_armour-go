@@ -1,12 +1,14 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/response"
+
+	"github.com/gin-gonic/gin"
 )
 
 // HuanshiController 幻势相关
@@ -28,10 +30,10 @@ func (u *HuanshiController) Auth(ctx *gin.Context) {
 
 	//验证企业
 	if model, err := organization_models.CreateOrganizationFactory().GetItemByCode(deviceId); err != nil {
-		response.FailRoutine(ctx, 10003, "数据错误")
+		response.FailRoutine(ctx, 10003, my_errors.CurdDataFailed)
 		return
 	} else if model.Id == 0 {
-		response.FailRoutine(ctx, 10003, "数据不存在")
+		response.FailRoutine(ctx, 10003, my_errors.CurdDataNotExist)
 		return
 	} else {
 		variable.ZapLog.Sugar().Info("幻势回调企业编号: ", model.Id)

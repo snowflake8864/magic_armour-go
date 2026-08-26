@@ -56,7 +56,7 @@ func (crd *GlobalCurd) Add(param *usb_models.GlobalModel) error {
 	}
 
 	//新增任务
-	crd.addTask(param.OrgId, "全局:新增")
+	crd.addTask(param.OrgId, "global add")
 
 	return nil
 }

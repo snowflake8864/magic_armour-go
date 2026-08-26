@@ -105,6 +105,7 @@ const (
 	CurdDeleteFailed         string = "CurdDeleteFailed"
 	CurdRefreshFailed        string = "CurdRefreshFailed"
 	CurdClearFailed          string = "CurdClearFailed"
+	CurdDataFailed           string = "CurdDataFailed"
 
 	CurdSliderIncorrect          string = "CurdSliderIncorrect"
 	CurdTwoFactorAuthDisabled    string = "CurdTwoFactorAuthDisabled"
