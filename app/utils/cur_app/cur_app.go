@@ -17,7 +17,7 @@ func GetCustomVersionNumber() string {
 }
 
 // GetPlatformConfig  获取平台自定义配置
-func GetPlatformConfig() map[string]interface{} {
+func GetPlatformConfig(lang string) map[string]interface{} {
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber
@@ -34,6 +34,15 @@ func GetPlatformConfig() map[string]interface{} {
 	data["tel"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Tel")
 	data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.Copyright")
 	data["license"] = variable.ConfigCustomV2Yml.GetStringSlice("AppCustomConfig.Platform.License")
+
+	if lang == consts.LanguageEn {
+		data["title"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.TitleEn")
+		data["projectName"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.ProjectNameEn")
+		data["loginTip"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.LoginTipEn")
+		data["orgAddr"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.AddressEn")
+		data["copyright"] = variable.ConfigCustomV2Yml.GetString("AppCustomConfig.Platform.CopyrightEn")
+		data["license"] = variable.ConfigCustomV2Yml.GetStringSlice("AppCustomConfig.Platform.LicenseEn")
+	}
 
 	return data
 }

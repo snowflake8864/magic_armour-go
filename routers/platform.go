@@ -1,9 +1,6 @@
 package routers
 
 import (
-	"github.com/gin-contrib/pprof"
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
@@ -13,9 +10,12 @@ import (
 	"goskeleton/app/http/middleware/cors"
 	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
-	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/gin_release"
 	"net/http"
+
+	"github.com/gin-contrib/pprof"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 // 该路由主要设置平台路由
@@ -73,7 +73,7 @@ func InitPlatformRouter() *gin.Engine {
 	vPlatform := router.Group("v5/platform/")
 	{
 		vPlatform.GET("customConfig", func(context *gin.Context) {
-			context.JSON(http.StatusOK, cur_app.GetPlatformConfig())
+			context.JSON(http.StatusOK, (&platform.AuthController{}).GetCustomConfig)
 		})
 
 		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SaveOperate())

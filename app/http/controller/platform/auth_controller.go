@@ -1,16 +1,19 @@
 package platform
 
 import (
-	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_platform"
 	"goskeleton/app/service/platform/admin_service"
+	"goskeleton/app/utils/cur_app"
 	"goskeleton/app/utils/cur_userinfo"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AuthController 安全验证相关
@@ -129,4 +132,8 @@ func (u *AuthController) Logout(ctx *gin.Context) {
 	admin_service.CreateAuthFactory().Logout(headerParams.Authorization)
 
 	response.SuccessSimplify(ctx)
+}
+
+func (u *AuthController) GetCustomConfig(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, cur_app.GetPlatformConfig(cur_userinfo.GetLocales(ctx)))
 }
