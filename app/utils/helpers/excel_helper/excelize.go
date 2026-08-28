@@ -28,7 +28,7 @@ func NewExcelHandler() *ExcelHandler {
 func NewExcelHandlerFromFile(filename string) (*ExcelHandler, error) {
 	f, err := excelize.OpenFile(filename)
 	if err != nil {
-		return nil, fmt.Errorf("打开文件失败: %v", err)
+		return nil, fmt.Errorf("Failed to open the file: %v", err)
 	}
 	return &ExcelHandler{
 		File:   f,
@@ -91,13 +91,13 @@ func (h *ExcelHandler) SetRowValues(sheet, startCell string, values []interface{
 		// 写入当前单元格
 		err := h.File.SetCellValue(sheet, axis, value)
 		if err != nil {
-			return fmt.Errorf("写入当前单元格失败: %v", err)
+			return fmt.Errorf("Failed to write to the current cell: %v", err)
 		}
 
 		// 生成新坐标
 		axis, err = h.GetNextCell(axis)
 		if err != nil {
-			return fmt.Errorf("生成新坐标失败: %v", err)
+			return fmt.Errorf("Failed to generate new coordinates: %v", err)
 		}
 
 		if i >= 1000 { // 安全保护
@@ -132,7 +132,7 @@ func (h *ExcelHandler) SetRowsValues(sheet string, startCol, startRow int, rowsD
 func (h *ExcelHandler) StreamSetHeader(sw *excelize.StreamWriter, values []interface{}, startCol, startRow int) error {
 	startCell, err := excelize.CoordinatesToCellName(startCol, startRow)
 	if err != nil {
-		return fmt.Errorf("生成坐标失败: %v", err)
+		return fmt.Errorf("Failed to generate coordinates: %v", err)
 	}
 
 	//样式
@@ -150,7 +150,7 @@ func (h *ExcelHandler) StreamSetHeader(sw *excelize.StreamWriter, values []inter
 	// 流式写入标题（需直接操作原始接口）
 	err = sw.SetRow(startCell, cells)
 	if err != nil {
-		return fmt.Errorf("流式写入标题失败: %v", err)
+		return fmt.Errorf("Failed to write the title in streaming mode: %v", err)
 	}
 
 	return nil
@@ -189,7 +189,7 @@ func (h *ExcelHandler) StreamWriteRows(sheet string, headerData []interface{}, r
 		// 写入行数据
 		//if err1 := streamWriter.SetRow(startCell, rowData); err1 != nil {
 		if err1 := streamWriter.SetRow(startCell, cells); err1 != nil {
-			return fmt.Errorf("写入第(%d)行失败: %v", i, err1)
+			return fmt.Errorf("Failed to write to line (%d): %v", i, err1)
 		}
 
 	}
@@ -223,7 +223,7 @@ func (h *ExcelHandler) GetStyleID(styleName string) int {
 func (h *ExcelHandler) ApplyStyle(sheet, topLeftCell, bottomRightCell, styleName string) error {
 	styleID := h.GetStyleID(styleName)
 	if styleID <= 0 {
-		return fmt.Errorf("样式未定义: %s", styleName)
+		return fmt.Errorf("Style not defined: %s", styleName)
 	}
 	return h.File.SetCellStyle(sheet, topLeftCell, bottomRightCell, styleID)
 }
@@ -270,7 +270,7 @@ func (h *ExcelHandler) GetNextCell(cell string) (string, error) {
 	// 生成新坐标
 	cell, err = excelize.CoordinatesToCellName(nextCol, nextRow)
 	if err != nil {
-		return "", fmt.Errorf("生成坐标失败: %v", err)
+		return "", fmt.Errorf("Failed to generate coordinates: %v", err)
 	}
 	return cell, nil
 }
@@ -287,7 +287,7 @@ func (h *ExcelHandler) MergeCells(sheet string, startRow, startCol, endRow, endC
 // SaveAs 保存文件
 func (h *ExcelHandler) SaveAs(filename string) error {
 	if err := h.File.SaveAs(filename); err != nil {
-		return fmt.Errorf("保存文件失败: %v", err)
+		return fmt.Errorf("Failed to save the file: %v", err)
 	}
 	return nil
 }

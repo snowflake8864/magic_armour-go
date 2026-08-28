@@ -1,6 +1,7 @@
 package cur_app
 
 import (
+	"fmt"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -18,6 +19,7 @@ func GetCustomVersionNumber() string {
 
 // GetPlatformConfig  获取平台自定义配置
 func GetPlatformConfig(lang string) map[string]interface{} {
+	fmt.Println(lang)
 	data := make(map[string]interface{})
 	data["version"] = GetAppUsageVersion()
 	data["ver_number"] = variable.VersionNumber

@@ -7,6 +7,7 @@ import (
 	"goskeleton/app/global/enums/enum_product"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/global/enums/enum_task"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_models"
 	"goskeleton/app/service/agent/task_service"
 )
@@ -60,7 +61,7 @@ type AgentBase struct {
 func (crd *AgentBase) getUpdates(model *agent_models.AgentModel, param *ManualColumn) (err error, hasTask, hasConfigTask bool,
 	updates map[string]interface{}, openAutoWhite bool) {
 	if model == nil {
-		return errors.New("终端不存在"), hasTask, hasConfigTask, updates, openAutoWhite
+		return errors.New(my_errors.CurdAgentNotExist), hasTask, hasConfigTask, updates, openAutoWhite
 	}
 	updates = make(map[string]interface{})
 	if param.DeptId != nil {

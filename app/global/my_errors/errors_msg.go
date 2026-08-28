@@ -191,6 +191,16 @@ var Messages = map[string]map[string]string{
 		CurdSoftwareDownloadCopyFail:       "复制ZIP失败",
 		CurdSoftwareDownloadAppendFail:     "追加INI失败",
 		CurdThreatEnabledAndNotImport:      "威胁情报功能已开启，不需要人工导入",
+
+		CurdCloseTask:           "关闭任务",
+		CurdFileTypeConcurrence: "包含文件类型和排除文件类型不能同时存在",
+		CPUThreshold:            "CPU阈值",
+		MemoryThreshold:         "内存阈值",
+		DiskThreshold:           "磁盘阈值",
+		QuicklyAdd:              "快速添加",
+		CorrectDataErrors:       "修改数据错误",
+		CurdCertInvalid:         "秘钥已无效",
+		CurdCertError:           "秘钥错误",
 	},
 	"en": {
 		ContainerKeyAlreadyExists: "The key has already been registered in the container",
@@ -380,6 +390,16 @@ var Messages = map[string]map[string]string{
 		CurdSoftwareDownloadCopyFail:       "Failed to copy ZIP file",
 		CurdSoftwareDownloadAppendFail:     "Failed to append INI file",
 		CurdThreatEnabledAndNotImport:      "Threat intelligence is enabled, manual import is not required",
+
+		CurdCloseTask:           "Close the task",
+		CurdFileTypeConcurrence: "The included file types and excluded file types cannot both exist simultaneously",
+		CPUThreshold:            "CPU threshold",
+		MemoryThreshold:         "Memory threshold",
+		DiskThreshold:           "Disk threshold",
+		QuicklyAdd:              "Quickly add",
+		CorrectDataErrors:       "Correct data errors",
+		CurdCertInvalid:         "The key has become invalid.",
+		CurdCertError:           "Key error",
 	},
 }
 

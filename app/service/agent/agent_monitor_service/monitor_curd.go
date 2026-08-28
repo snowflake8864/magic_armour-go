@@ -110,21 +110,21 @@ func (crd *MonitorCurd) sendEmail(model *agent_monitor_models.MonitorModel) {
 
 	if noticeConfig.CpuSwitch == enums.SwitchOn && float_helper.Float64(noticeConfig.CpuThreshold) <= model.CpuUsage {
 		mailParam.UsageList = append(mailParam.UsageList, &gomail_factory.HardwareTimelyInfo{
-			Name:      "CPU阈值",
+			Name:      my_errors.CPUThreshold,
 			Threshold: noticeConfig.CpuThreshold,
 			Usage:     model.CpuUsage,
 		})
 	}
 	if noticeConfig.MemSwitch == enums.SwitchOn && float_helper.Float64(noticeConfig.MemThreshold) <= model.MemUsage {
 		mailParam.UsageList = append(mailParam.UsageList, &gomail_factory.HardwareTimelyInfo{
-			Name:      "内存阈值",
+			Name:      my_errors.MemoryThreshold,
 			Threshold: noticeConfig.MemThreshold,
 			Usage:     model.MemUsage,
 		})
 	}
 	if noticeConfig.HdSwitch == enums.SwitchOn && float_helper.Float64(noticeConfig.HdThreshold) <= model.HdUsage {
 		mailParam.UsageList = append(mailParam.UsageList, &gomail_factory.HardwareTimelyInfo{
-			Name:      "硬盘阈值",
+			Name:      my_errors.DiskThreshold,
 			Threshold: noticeConfig.HdThreshold,
 			Usage:     model.HdUsage,
 		})

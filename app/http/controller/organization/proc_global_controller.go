@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/global/enums/enum_process"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/http/transformer/org_trans"
 	"goskeleton/app/model/agent/proc_models"
 	"goskeleton/app/service/agent/proc_service"
@@ -96,7 +97,7 @@ func (u *ProcessGlobalController) batchAdd(ctx *gin.Context, dataFrom int, globa
 	jsonStr := ctx.GetString(consts.ValidatorPrefixOrg + "list")
 	var list []proc_models.ProcGlobalModel
 	if err := json_helper.ToAny(jsonStr, &list); err != nil {
-		return errors.New("参数错误")
+		return errors.New(my_errors.CurdInvalidParameter)
 	}
 
 	loginInfo := u.getLogin(ctx)

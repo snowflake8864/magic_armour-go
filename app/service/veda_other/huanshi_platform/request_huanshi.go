@@ -3,6 +3,7 @@ package huanshi_platform
 import (
 	"errors"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/float_helper"
@@ -196,10 +197,10 @@ func (aa *RequestHuanshi) SyncDevices(params *[]DeviceData) error {
 		return nil
 	}
 	if err := aa.Online(); err != nil {
-		return errors.New("网络连接： " + err.Error())
+		return errors.New("Network connections： " + err.Error())
 	}
 	if err := aa.GenerateToken(); err != nil {
-		return errors.New("生成口令： " + err.Error())
+		return errors.New("Generate password： " + err.Error())
 	}
 
 	uri := aa.Config.HuanshiUrl + "/web/device/add"
@@ -212,7 +213,7 @@ func (aa *RequestHuanshi) SyncDevices(params *[]DeviceData) error {
 		param.ApiVer = ApiVer
 		bodyContext, err := http_request.PostWithJson(uri, aa.GetHeaders(), param)
 		if err1 := aa.checkCode(bodyContext, err); err1 != nil {
-			return errors.New("同步设备： " + err1.Error())
+			return errors.New("Synchronizer： " + err1.Error())
 		}
 	}
 
@@ -630,12 +631,12 @@ func (aa *RequestHuanshi) GetAgent(orgId int64, agentId string) (err error, data
 
 	jsonStr := aa.redisClient.Get(aa.cacheAgentKey(orgId, agentId))
 	if string_helper.IsEmpty(jsonStr) {
-		return errors.New("缓存数据不存在"), data
+		return errors.New(my_errors.CurdCacheNotExist), data
 	}
 
 	err = json_helper.ToStruct(jsonStr, &data)
 	if err != nil {
-		return errors.New("缓存数据错误"), data
+		return errors.New(my_errors.CurdCacheFailed), data
 	}
 	return nil, data
 }

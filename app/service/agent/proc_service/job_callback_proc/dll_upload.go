@@ -70,7 +70,7 @@ func (crd *DllUpload) BatchAdd(orgId int64, agentId string, models *[]proc_model
 	agentFact := agent_models.CreateAgentFactory()
 	agentModel := agentFact.GetItemByOrgAndAgent(orgId, agentId, agentFact.ColumnProc(true))
 	if agentModel == nil || string_helper.IsEmpty(agentModel.AgentId) {
-		return errors.New("终端不存在")
+		return errors.New(my_errors.CurdAgentNotExist)
 	}
 
 	//整理相关数据

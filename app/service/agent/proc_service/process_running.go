@@ -54,7 +54,7 @@ func (crd *ProcessRunning) ExtractDlls(orgId int64, agentId string, procHash str
 	}
 	isOk, rows := crd.masterModel.UpdateByOrgAndAgentAndHashAndProcId(orgId, agentId, procHash, procId, updates)
 	if !isOk {
-		return errors.New("修改数据错误")
+		return errors.New(my_errors.CorrectDataErrors)
 	}
 
 	if rows > 0 {

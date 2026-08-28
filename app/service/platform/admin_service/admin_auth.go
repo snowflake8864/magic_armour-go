@@ -123,7 +123,7 @@ func (crd *AdminAuth) IsLocking(username string) error {
 	if !isOK {
 		return nil
 	} else {
-		return errors.New("用户已经被锁定，请稍后在试")
+		return errors.New(my_errors.CurdUserLocking)
 	}
 }
 

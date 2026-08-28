@@ -3,6 +3,7 @@ package huanshi_platform
 import (
 	"errors"
 	"github.com/gin-gonic/gin"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/utils/helpers/int_helper"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -40,10 +41,10 @@ func (aa *CallbackArmour) CheckSecret(deviceId string, timestamp int64, secret s
 	currentTime := time.Now()
 
 	if diff := int(currentTime.Unix() - timestamp); diff > aa.timeDiffMax {
-		return false, "秘钥已无效"
+		return false, my_errors.CurdCertInvalid
 	}
 	if aa.GenerateSecret(deviceId, timestamp) != secret {
-		return false, "秘钥不正确"
+		return false, my_errors.CurdCertError
 	}
 
 	return true, ""

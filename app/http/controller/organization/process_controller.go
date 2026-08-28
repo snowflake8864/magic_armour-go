@@ -142,7 +142,7 @@ func (u *ProcessController) SetModeForManage(ctx *gin.Context) {
 		}
 		ProcessFact := proc_models.CreateProcessFactory()
 		if ProcessFact.Count(condition) > 0 {
-			response.FailSimplify(ctx, "开启保护模式, 不能存在未设置的进程")
+			response.FailSimplify(ctx, my_errors.CurdEnableProcessProtectMode)
 			return
 		}
 	}

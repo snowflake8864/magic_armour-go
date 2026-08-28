@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	modelStructMustPtr = "modelStruct 必须传递一个指针"
+	modelStructMustPtr = "The modelStruct must be passed a pointer"
 )
 
 // 绑定form表单验证器已经验证完成的参数到 model 结构体,

@@ -156,7 +156,7 @@ func (crd *UserAuth) IsLocking(username string) error {
 	if !isOK {
 		return nil
 	} else {
-		return errors.New("用户已经被锁定，请稍后在试")
+		return errors.New(my_errors.CurdUserLocking)
 	}
 }
 
@@ -173,7 +173,7 @@ func (crd *UserAuth) HasUser(username string) (err error, model *user_models.Use
 	} else if model = CreateCurdFactory().GetItemByPhone(username); model != nil && model.Id > 0 {
 		return nil, model
 	} else {
-		return errors.New("用户名或密码错误"), nil
+		return errors.New(my_errors.CurdUsernameOrPwFail), nil
 	}
 
 }

@@ -47,8 +47,8 @@ type logOutPut struct{}
 
 func (l logOutPut) Printf(strFormat string, args ...interface{}) {
 	logRes := fmt.Sprintf(strFormat, args...)
-	logFlag := "gorm_v2 日志:"
-	detailFlag := "详情："
+	logFlag := "gorm_v2 log:"
+	detailFlag := "particulars："
 	if strings.HasPrefix(strFormat, "[info]") || strings.HasPrefix(strFormat, "[traceStr]") {
 		variable.ZapLog.Info(logFlag, zap.String(detailFlag, logRes))
 	} else if strings.HasPrefix(strFormat, "[error]") || strings.HasPrefix(strFormat, "[traceErr]") {

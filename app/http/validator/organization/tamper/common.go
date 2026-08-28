@@ -2,6 +2,7 @@ package tamper
 
 import (
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/utils/helpers/string_helper"
 )
 
@@ -50,7 +51,7 @@ type DeptId struct {
 
 func checkSuffix(include, exclude string) error {
 	if !string_helper.IsEmpty(include) && !string_helper.IsEmpty(exclude) {
-		return errors.New("包含文件类型和排除文件类型不能同时存在")
+		return errors.New(my_errors.CurdFileTypeConcurrence)
 	}
 
 	return nil

@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"io"
 	"os"
 	"path/filepath"
@@ -14,7 +15,7 @@ func Md5sum(dir string) (error, string) {
 	// 打开文件
 	file, err := os.Open(dir)
 	if err != nil {
-		return errors.New("文件不存在：" + err.Error()), ""
+		return errors.New(my_errors.FilesNotExist + "：" + err.Error()), ""
 	}
 	defer file.Close()
 
@@ -23,7 +24,7 @@ func Md5sum(dir string) (error, string) {
 
 	// 将文件内容拷贝给哈希对象
 	if _, err := io.Copy(hash, file); err != nil {
-		return errors.New("文件不存在：" + err.Error()), ""
+		return errors.New(my_errors.FilesNotExist + "：" + err.Error()), ""
 	}
 
 	// 计算MD5值

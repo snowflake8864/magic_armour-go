@@ -11,7 +11,6 @@ import (
 	"goskeleton/app/http/middleware/rate_limit"
 	validatorFactory "goskeleton/app/http/validator/core/factory"
 	"goskeleton/app/utils/gin_release"
-	"net/http"
 
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -72,12 +71,9 @@ func InitPlatformRouter() *gin.Engine {
 	//  创建一个接口路由组
 	vPlatform := router.Group("v5/platform/")
 	{
-		vPlatform.GET("customConfig", func(context *gin.Context) {
-			context.JSON(http.StatusOK, (&platform.AuthController{}).GetCustomConfig)
-		})
-
 		vPlatform.Use(authorization.RequestParams).Use(middleware_auth_platform.SaveOperate())
 		{
+			vPlatform.GET("customConfig", (&platform.AuthController{}).GetCustomConfig)
 			//登录认证
 			auth := vPlatform.Group("auth/")
 			{

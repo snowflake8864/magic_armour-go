@@ -2,6 +2,7 @@ package agent_err_service
 
 import (
 	"errors"
+	"goskeleton/app/global/my_errors"
 	"goskeleton/app/model/agent/agent_error_models"
 	"goskeleton/app/model/common/upload_models"
 	"goskeleton/app/service/agent/agent_service"
@@ -34,7 +35,7 @@ func (crd *ErrorCurd) Add(loginInfo *agent_service.AgentCacheLogin, remark strin
 	}
 
 	if !crd.masterModel.InsertItem(&masterModel) {
-		return errors.New("入库失败")
+		return errors.New(my_errors.CurdSaveFailed)
 	}
 
 	return nil

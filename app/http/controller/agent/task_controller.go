@@ -208,6 +208,6 @@ func (u *TaskController) Close(ctx *gin.Context) {
 	loginInfo := u.getLogin(ctx)
 	task_service.CreateCurdFactory().CloseTasks(loginInfo.OrgId, loginInfo.AgentId, types, ctx.ClientIP())
 
-	response.SuccessReturnData(ctx, "关闭任务")
+	response.SuccessReturnData(ctx, my_errors.CurdCloseTask)
 
 }

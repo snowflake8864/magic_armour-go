@@ -44,7 +44,7 @@ func (crd *GlobalCurd) AddDefault(orgId int64, createId int64, createName string
 			OrgId:      orgId,
 			Ip:         ip,
 			Type:       enum_outreach.IpTypeWhite,
-			Title:      "快速添加",
+			Title:      my_errors.QuicklyAdd,
 			IsDefault:  enums.IsYes,
 			OpenSwitch: enums.SwitchOn,
 			CreateId:   createId,

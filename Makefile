@@ -1,10 +1,10 @@
 # Variables
 GO := go
-AGENT_BINARY := hj.agent
-API_BINARY := hj.api
-CLI_BINARY := hj.cli
-ORGANIZATION_BINARY := hj.organization
-PLATFORM_BINARY := hj.platform
+AGENT_BINARY := app_agent.linux64
+API_BINARY := app_api.linux64
+CLI_BINARY := app_cli.linux64
+ORGANIZATION_BINARY := app_org.linux64
+PLATFORM_BINARY := app_platform.linux64
 VERSION := v1.0.0
 BUILD_TIME := $(shell date -u +'%Y-%m-%d %H:%M:%S')
 LDFLAGS := -ldflags="-s -w\

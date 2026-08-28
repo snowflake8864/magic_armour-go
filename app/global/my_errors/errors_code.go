@@ -213,4 +213,14 @@ const (
 	CurdSoftwareDownloadCopyFail       string = "CurdSoftwareDownloadCopyFail"
 	CurdSoftwareDownloadAppendFail     string = "CurdSoftwareDownloadAppendFail"
 	CurdThreatEnabledAndNotImport      string = "CurdThreatEnabledAndNotImport"
+
+	CurdCloseTask           = "CurdCloseTask"
+	CurdFileTypeConcurrence = "CurdFileTypeConcurrence"
+	CPUThreshold            = "CPUThreshold"
+	MemoryThreshold         = "MemoryThreshold"
+	DiskThreshold           = "DiskThreshold"
+	QuicklyAdd              = "QuicklyAdd"
+	CorrectDataErrors       = "CorrectDataErrors"
+	CurdCertInvalid         = "CurdCertInvalid"
+	CurdCertError           = "CurdCertError"
 )
