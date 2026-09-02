@@ -224,8 +224,8 @@ func (u *TamperController) addForPolicy(ctx *gin.Context, Type int) error {
 		OrgId:      loginInfo.OrgId,
 		AgentId:    u.getAgentIdFromGin(ctx),
 		Type:       Type,
-		Dir:        ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Remark:     ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		Dir:        string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "dir")),
+		Remark:     string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "remark")),
 		CreateId:   loginInfo.UserId,
 		CreateName: loginInfo.Username,
 		UpdateId:   loginInfo.UserId,
@@ -243,9 +243,9 @@ func (u *TamperController) addForPolicy(ctx *gin.Context, Type int) error {
 	}
 
 	if Type == enum_tamper.TypeFolder {
-		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
-		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
-		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IncludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix"))
+		param.ExcludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix"))
+		param.ExcludeFolder = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder"))
 		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
 	}
 
@@ -297,9 +297,9 @@ func (u *TamperController) editForPolicy(ctx *gin.Context, Type int) error {
 	}
 
 	if Type == enum_tamper.TypeFolder {
-		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
-		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
-		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IncludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix"))
+		param.ExcludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix"))
+		param.ExcludeFolder = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder"))
 		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
 	}
 
@@ -461,9 +461,9 @@ func (u *TamperController) addForGlobal(ctx *gin.Context, Type int) error {
 	}
 
 	if Type == enum_tamper.TypeFolder {
-		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
-		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
-		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IncludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix"))
+		param.ExcludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix"))
+		param.ExcludeFolder = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder"))
 		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
 	}
 
@@ -499,8 +499,8 @@ func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
 		Id:           string_helper.ToInt64(ctx.GetString(consts.ValidatorPrefixOrg + "id")),
 		Type:         Type,
 		DeptId:       int64(ctx.GetFloat64(consts.ValidatorPrefixOrg + "deptId")),
-		Dir:          ctx.GetString(consts.ValidatorPrefixOrg + "dir"),
-		Remark:       ctx.GetString(consts.ValidatorPrefixOrg + "remark"),
+		Dir:          string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "dir")),
+		Remark:       string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "remark")),
 		UpdateId:     loginInfo.UserId,
 		UpdateName:   loginInfo.Username,
 	}
@@ -516,9 +516,9 @@ func (u *TamperController) editForGlobal(ctx *gin.Context, Type int) error {
 	}
 
 	if Type == enum_tamper.TypeFolder {
-		param.IncludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix")
-		param.ExcludeSuffix = ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix")
-		param.ExcludeFolder = ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder")
+		param.IncludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "includeSuffix"))
+		param.ExcludeSuffix = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeSuffix"))
+		param.ExcludeFolder = string_helper.TrimSpace(ctx.GetString(consts.ValidatorPrefixOrg + "excludeFolder"))
 		param.IsExtend = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isExtend"))
 	}
 
