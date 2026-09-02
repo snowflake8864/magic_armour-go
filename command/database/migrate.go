@@ -269,6 +269,7 @@ func appendTableAndData() {
 
 	if ver := "MA_3.1.0_R4_B8"; !existMigration(ver) {
 		_ = agent_models.CreateAgentFactory().AlterTable(ver)
+		_ = org_menu_models.CreateOrgMenuFactory().AlterTable(ver)
 	}
 
 	//长城卫士
@@ -284,7 +285,7 @@ func appendTableAndData() {
 		_ = antivirus_engine_task_models.CreateUpgradeTaskFactory().CreateTable()
 		_ = antivirus_engine_task_models.CreateUpgradeFailFactory().CreateTable()
 	}
-
+	
 	//保存迁移数据
 	saveMigrations()
 }

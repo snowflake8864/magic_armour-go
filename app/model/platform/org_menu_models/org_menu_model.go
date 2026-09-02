@@ -21,6 +21,7 @@ type OrgMenuModel struct {
 	Position  int    `json:"position"`
 	Type      int    `json:"type"`
 	Name      string `json:"name"`
+	EnName    string `json:"en_name"`
 	Code      string `json:"code"`
 	Sort      int    `json:"sort"`
 	IsShow    int    `json:"is_show"`
@@ -61,6 +62,25 @@ func (m *OrgMenuModel) CreateTable() bool {
 			KEY index_level (level)
 		)ENGINE=INNODB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='菜单表';
 		`
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
+func (m *OrgMenuModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "MA_3.1.0_R4_B8":
+		sql += `
+			ADD COLUMN en_name varchar(256) NOT NULL DEFAULT '' COMMENT '英文名' AFTER name;
+		`
+		break
+	default:
+		return true
+	}
 	result := m.Exec(m.TrimSql(sql))
 	if result.RowsAffected > 0 {
 		return true

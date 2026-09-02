@@ -12,6 +12,11 @@ func IsEmpty(s string) bool {
 	return len(strings.TrimSpace(s)) == 0
 }
 
+// TrimSpace 字符串去掉空格
+func TrimSpace(s string) string {
+	return strings.TrimSpace(s)
+}
+
 // ConvertCoder	 字符串转码
 func ConvertCoder(src string, srcCode string, tagCode string) string {
 	srcCoder := mahonia.NewDecoder(srcCode)
