@@ -20,8 +20,8 @@ func (t *TaskTrans) pageGeneral(model *task_models.TaskModel) map[string]interfa
 	data := struct_helper.SimpleStructToMapWithJsonTags(model)
 	data["id"] = fmt.Sprintf("%d", model.Id)
 	if t.Lang == consts.LanguageZh {
-		data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_task.EnumMap)
-		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_task.EnumMap)
+		data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type", model.Type, enum_task.EnumMap)
+		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status", model.Status, enum_task.EnumMap)
 	} else {
 		data["type_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("type_en", model.Type, enum_task.EnumMap)
 		data["status_label"] = enums.Get1stIsStrAnd2ndIsIntReturnStr("status_en", model.Status, enum_task.EnumMap)
