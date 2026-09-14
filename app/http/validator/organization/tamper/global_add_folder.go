@@ -29,6 +29,12 @@ func (n GlobalAddFolder) CheckParams(context *gin.Context) {
 		return
 	}
 
+	if err := checkSuffix(n.IncludeSuffix.IncludeSuffix, n.ExcludeSuffix.ExcludeSuffix); err != nil {
+		// 将表单参数验证器出现的错误直接交给错误翻译器统一处理即可
+		response.ValidatorError(context, err)
+		return
+	}
+
 	//  该函数主要是将绑定的数据以 键=>值 形式直接传递给下一步（控制器）
 	extraAddBindDataContext := data_transfer.DataAddContext(n, consts.ValidatorPrefixOrg, context)
 	if extraAddBindDataContext == nil {
