@@ -285,7 +285,12 @@ func appendTableAndData() {
 		_ = antivirus_engine_task_models.CreateUpgradeTaskFactory().CreateTable()
 		_ = antivirus_engine_task_models.CreateUpgradeFailFactory().CreateTable()
 	}
-	
+
+	if ver := "third_user_auth"; !existMigration(ver) {
+		//third_user_auth_models.CreateAuthFactory().CreateTable()
+		//third_user_auth_models.CreateAuthFactory().InitData()
+	}
+
 	//保存迁移数据
 	saveMigrations()
 }
