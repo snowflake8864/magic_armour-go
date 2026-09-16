@@ -92,6 +92,12 @@ func InitApiRouter() *gin.Engine {
 		{
 			hs.POST("auth", validatorFactory.Create(consts.ValidatorPrefixApi+"HuanshiAuth"))
 		}
+
+		// 格尔身份认证系统
+		koal := vApi.Group("koal/")
+		{
+			koal.POST("sub/notice", validatorFactory.Create(consts.ValidatorPrefixApi+"KoalSubNotice"))
+		}
 	}
 	return router
 }

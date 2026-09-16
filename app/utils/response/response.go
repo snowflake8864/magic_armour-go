@@ -207,3 +207,12 @@ func CheckIsSuccess(httpCode int, resp *string) bool {
 
 	return false
 }
+
+func Returnkoal(Context *gin.Context, dataCode interface{}, msg string, data interface{}) {
+
+	Context.JSON(http.StatusOK, gin.H{
+		"resultCode":    dataCode,
+		"resultMessage": msg,
+		"resultData":    data,
+	})
+}

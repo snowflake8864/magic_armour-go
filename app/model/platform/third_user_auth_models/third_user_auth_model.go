@@ -23,9 +23,9 @@ type AuthModel struct {
 	AppSecret string `json:"app_secret"`
 	IsInit    int    `json:"is_init"`
 
-	OrgSeq  string  `json:"org_seq"`
+	OrgSeq  int64   `json:"org_seq"`
 	OrgAt   *string `json:"org_at" gorm:"default:NULL"`
-	UserSeq string  `json:"user_seq" gorm:"default:NULL"`
+	UserSeq int64   `json:"user_seq" gorm:"default:NULL"`
 	UserAt  *string `json:"user_at"`
 
 	NoticeSync int     `json:"notice_sync"`
@@ -51,9 +51,9 @@ func (m *AuthModel) CreateTable() bool {
 			app_key varchar(128) NOT NULL DEFAULT '' COMMENT '应用相关',
 			app_secret varchar(128) NOT NULL DEFAULT '' COMMENT '应用相关',
 			is_init tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否初始化',
-			org_seq varchar(32) NOT NULL DEFAULT '' COMMENT '组织用户已同步序列',
+			org_seq int(11) unsigned NOT NULL DEFAULT '0' COMMENT '组织用户已同步序列',
 			org_at datetime NULL COMMENT '组织上次同步时间',
-			user_seq varchar(32) NOT NULL DEFAULT '' COMMENT '用户已同步序列',
+			user_seq int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户已同步序列',
 			user_at datetime NULL COMMENT '用户上次同步时间',
 			notice_sync tinyint(1) NOT NULL DEFAULT '0' COMMENT '通知同步的数据',
 			notice_at datetime NULL COMMENT '通知同步的时间',

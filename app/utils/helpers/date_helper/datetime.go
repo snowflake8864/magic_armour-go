@@ -60,6 +60,11 @@ func CurTimestamp() int64 {
 	return time.Now().Unix()
 }
 
+// CurTimestampMilli 获取当前时间戳
+func CurTimestampMilli() int64 {
+	return time.Now().UnixMilli()
+}
+
 // AddTimestampByDays 时间戳按照年月日时增加
 func AddTimestampByDays(years, months, days int) int64 {
 	now := time.Now()

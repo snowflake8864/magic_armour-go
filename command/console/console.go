@@ -15,6 +15,7 @@ import (
 	"goskeleton/command/console/service_cmd"
 	"goskeleton/command/console/sntp_cmd"
 	"goskeleton/command/console/syslog_cmd"
+	"goskeleton/command/console/third_user_auth_cmd"
 	"goskeleton/command/console/threaten_cmd"
 )
 
@@ -75,6 +76,8 @@ func start(action string) {
 		antivirus_engine_task_cmd.CreateAntivirusEngineTaskFactory().Start()
 	case "AntivirusEngineTaskOverdue": //杀毒引擎升级任务逾期 - 未实现
 		antivirus_engine_task_cmd.CreateAntivirusEngineTaskFactory().Overdue()
+	case "ThirdUserAuthNotice": //第三方用户认证:通知
+		third_user_auth_cmd.CreateCmdFactory().Sync(true)
 
 	//以下建议每天时执行一次
 	case "Daily": //每日定时清理数据
@@ -113,7 +116,8 @@ func start(action string) {
 		threaten_cmd.CreateCmdFactory().SyncUnknownForCache()
 	case "ThreatenCacheAddFromProc": //从进程或模块添加到威胁情报缓存
 		threaten_cmd.CreateCmdFactory().AddFromProcForCache()
-
+	case "ThirdUserAuthAll": //第三方用户认证:全部
+		third_user_auth_cmd.CreateCmdFactory().Sync(false)
 	//以下建议特殊情况下执行
 	case "RepairProcByThreaten": //通过威胁情报修复进程或模块状态
 		proc_cmd.CreateCmdFactory().SyncStatusByThreaten()

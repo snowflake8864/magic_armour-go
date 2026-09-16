@@ -5,6 +5,7 @@ import (
 	"goskeleton/app/global/consts"
 	crontab2 "goskeleton/app/http/validator/api/crontab"
 	huanshi2 "goskeleton/app/http/validator/api/huanshi"
+	koal2 "goskeleton/app/http/validator/api/koal"
 	software2 "goskeleton/app/http/validator/api/software"
 )
 
@@ -31,4 +32,8 @@ func ApiRegisterValidator() {
 	//幻势
 	key = consts.ValidatorPrefixApi + "HuanshiAuth"
 	containers.Set(key, huanshi2.Auth{})
+
+	//格尔身份认证系统
+	key = consts.ValidatorPrefixApi + "KoalSubNotice"
+	containers.Set(key, koal2.SubNotice{})
 }
