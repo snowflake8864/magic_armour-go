@@ -46,6 +46,7 @@ import (
 	"goskeleton/app/model/platform/prodcut_models"
 	"goskeleton/app/model/platform/server_monitor_models"
 	"goskeleton/app/model/platform/software_models"
+	"goskeleton/app/model/platform/third_user_auth_models"
 	"goskeleton/app/model/syslog/syslog_models"
 	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/organization/role_service"
@@ -287,8 +288,8 @@ func appendTableAndData() {
 	}
 
 	if ver := "third_user_auth"; !existMigration(ver) {
-		//third_user_auth_models.CreateAuthFactory().CreateTable()
-		//third_user_auth_models.CreateAuthFactory().InitData()
+		third_user_auth_models.CreateAuthFactory().CreateTable()
+		third_user_auth_models.CreateAuthFactory().InitData()
 	}
 
 	//保存迁移数据
