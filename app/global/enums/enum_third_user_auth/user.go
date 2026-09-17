@@ -33,7 +33,7 @@ type SyncSequence struct {
 	NoticeAt   string `json:"notice_at"`   //通知同步的时间
 }*/
 
-func FormatNoticeSync(val int) int {
+func SumNoticeSync(val int) int {
 	if max1 := NoticeSyncOrg + NoticeSyncUser; val > max1 {
 		return max1
 	} else {
