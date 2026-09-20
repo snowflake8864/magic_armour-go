@@ -64,11 +64,12 @@ func (crd *Config) ModifySyncById(param *third_user_auth_models.AuthModel) error
 
 	now := date_helper.CurDatetime()
 	updates := map[string]interface{}{
-		"is_init":  enums.IsYes,
-		"org_seq":  param.OrgSeq,
-		"org_at":   now,
-		"user_seq": param.OrgSeq,
-		"user_at":  now,
+		"is_init":     enums.IsYes,
+		"notice_sync": 0,
+		"org_seq":     param.OrgSeq,
+		"org_at":      now,
+		"user_seq":    param.OrgSeq,
+		"user_at":     now,
 	}
 	if isOk, _ := crd.masterModel.UpdateById(param.Id, updates); !isOk {
 		return fmt.Errorf("save fail")

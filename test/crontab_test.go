@@ -13,7 +13,7 @@ import (
 )
 
 func TestCrontabStart(t *testing.T) {
-	console.HttpStart("ThreatenCacheUnknownSync")
+	console.HttpStart("ThirdUserAuthAll")
 }
 
 func TestCrontabStart1(t *testing.T) {
