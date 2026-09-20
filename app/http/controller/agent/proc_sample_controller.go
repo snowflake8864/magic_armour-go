@@ -63,7 +63,11 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 
 	id, _ := ctx.GetPostForm("p_hash")
 	if string_helper.IsEmpty(id) {
-		response.SuccessSimplify(ctx)
+		id, _ = ctx.GetPostForm("hash")
+		if string_helper.IsEmpty(id) {
+			response.SuccessSimplify(ctx)
+			return
+		}
 	}
 
 	if r, uploadParam := upload_file.Upload(ctx, upload_file.GetDefaultPath(), []string{".zip"}); r == true {
@@ -81,10 +85,12 @@ func (u *ProcSampleController) Upload(ctx *gin.Context) {
 			return
 		}
 		response.SuccessSimplify(ctx)
+		return
 	} else {
 		//修改状态
 		_ = proc_service.CreateSampleCurdFactory().UploadFail(loginInfo.OrgId, loginInfo.AgentId, id)
 
 		response.Success(ctx, consts.FilesUploadFailMsg, consts.FilesUploadFailCode)
+		return
 	}
 }
