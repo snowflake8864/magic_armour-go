@@ -128,11 +128,44 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 	}
 
 	//三方数据
-	thirdMaps := make(map[string]*third_user_auth_service.ResponseOrg)
+	thirdMaps := make(map[string]*third_user_auth_service.ResponseOrg, len(thirdList))
 	for _, item := range thirdList {
 		thirdMaps[item.OrgId] = item
 	}
 
+}
+
+// FindAllParentOrgIds 从 orgId 开始，向上查找所有父级 orgId，直到没有父级
+// 返回：从自己开始，到最顶层父级的 orgId 列表
+func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg, orgId string) []string {
+
+	var result []string
+	currentId := orgId
+
+	// 用 visited 防止环
+	visited := make(map[string]bool)
+
+	for currentId != "" && currentId != "0" {
+		if visited[currentId] {
+			break // 出现环
+		}
+		visited[currentId] = true
+
+		org, ok := orgMaps[currentId]
+		if !ok {
+			break
+		}
+
+		result = append(result, org.OrgId)
+
+		parentId := org.ParentId
+		if parentId == "" || parentId == "0" {
+			break
+		}
+		currentId = parentId
+	}
+
+	return result
 }
 
 // 处理用户
