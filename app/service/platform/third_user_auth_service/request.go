@@ -248,8 +248,12 @@ func (aa *RequestThird) GenerateLoginUrl(callback string) string {
 }
 
 type ResponseTicket struct {
-	AuthenticationSuccess *ResponseTicketSuccess `json:"authenticationSuccess"`
-	AuthenticationFailure *ResponseTicketFailure `json:"authenticationFailure"`
+	ServiceResponse ResponseTicketResult `json:"serviceResponse"`
+}
+
+type ResponseTicketResult struct {
+	AuthenticationSuccess *ResponseTicketSuccess `json:"authenticationSuccess,omitempty"`
+	AuthenticationFailure *ResponseTicketFailure `json:"authenticationFailure,omitempty"`
 }
 
 type ResponseTicketSuccess struct {
@@ -271,12 +275,6 @@ type ResponseTicketFailure struct {
 // ValidateTicket 验证票据
 func (aa *RequestThird) ValidateTicket(ticket, callback string) (error, *ResponseTicketSuccessAttributes) {
 	//拼接地址
-	/*uri := fmt.Sprintf("%s/authn-api/v5/cas/%s/p3/serviceValidate?ticket=%s&format=json&service=%s/#/login",
-		aa.Config.Addr,
-		aa.Config.AppId,
-		ticket,
-		callback,
-	)*/
 	uri := fmt.Sprintf("%s/authn-api/v5/cas/%s/p3/serviceValidate",
 		aa.Config.Addr,
 		aa.Config.AppId,
@@ -286,21 +284,19 @@ func (aa *RequestThird) ValidateTicket(ticket, callback string) (error, *Respons
 		"format":  "json",
 		"service": callback,
 	}
-	fmt.Println("uri--------------:")
-	fmt.Println(uri)
-	fmt.Println("uri--------------:")
+
 	bodyContext, err := http_request.GetWithQuery(uri, map[string]interface{}{}, params)
 	if err != nil {
 		return errors.New("body_error: " + err.Error()), nil
 	}
 	resp := ResponseTicket{}
-	err = json_helper.ToStruct(bodyContext, &resp)
+	err = json_helper.ToAny(bodyContext, &resp)
 	if err != nil {
 		return errors.New("json_error: " + err.Error()), nil
 	}
-	if resp.AuthenticationFailure != nil {
-		return fmt.Errorf("code: %s, desc: %s", resp.AuthenticationFailure.Code, resp.AuthenticationFailure.Desc), nil
+	if resp.ServiceResponse.AuthenticationFailure != nil {
+		return fmt.Errorf("code: %s, desc: %s", resp.ServiceResponse.AuthenticationFailure.Code, resp.ServiceResponse.AuthenticationFailure.Desc), nil
 	}
 
-	return nil, &resp.AuthenticationSuccess.Attributes
+	return nil, &resp.ServiceResponse.AuthenticationSuccess.Attributes
 }

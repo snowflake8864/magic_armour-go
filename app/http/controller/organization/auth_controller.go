@@ -187,11 +187,11 @@ func (u *AuthController) KoalValidate(ctx *gin.Context) {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
-	fmt.Println("uri--------------:")
+	fmt.Println("ticketAttr--------------:")
 	fmt.Println(ticketAttr)
-	fmt.Println("uri--------------:")
+	fmt.Println("ticketAttr--------------:")
 
-	backInfo, errCode, err := user_service.CreateAuthFactory().LoginByHs(ticketAttr.Account, ctx.ClientIP())
+	backInfo, errCode, err := user_service.CreateAuthFactory().LoginByKoal(string_helper.ToInt64(ticketAttr.Id), ctx.ClientIP())
 	if err != nil {
 		response.FailRoutine(ctx, errCode, err.Error())
 		return

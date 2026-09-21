@@ -320,11 +320,11 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 }
 
 // LoginByKoal 格尔登录
-func (crd *UserAuth) LoginByKoal(username string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
+func (crd *UserAuth) LoginByKoal(userID int64, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
 	//获取用户
-	err, userModel := crd.HasUser(username)
-	if err != nil {
-		return nil, -1, err
+	userModel, err := user_models.CreateUserFactory().GetItemById(userID)
+	if err != nil || userModel.Id == 0 {
+		return nil, -1, errors.New("用户不存在，请联系管理员")
 	}
 	if userModel.Status == enum_user.StatusLocking {
 		return nil, -99, errors.New("用户已锁定，请联系管理员")
