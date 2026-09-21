@@ -85,6 +85,11 @@ func InitOrganizationRouter() *gin.Engine {
 				auth.POST("normalLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthNormalLogin"))
 				auth.POST("logout", (&organization.AuthController{}).Logout)
 				auth.POST("hsLogin", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthHsLogin"))
+				koal := auth.Group("koal/")
+				{
+					koal.POST("addr", (&organization.AuthController{}).KoalAddr)
+					koal.POST("validate", validatorFactory.Create(consts.ValidatorPrefixOrg+"AuthKoalValidate"))
+				}
 			}
 
 			registry := vOrg.Group("registry/").Use(middleware_auth_org.ApiIsEnabled())

@@ -61,6 +61,8 @@ func OrganizationRegisterValidator() {
 	containers.Set(key, auth3.NormalLogin{})
 	key = consts.ValidatorPrefixOrg + "AuthHsLogin"
 	containers.Set(key, auth3.HsLogin{})
+	key = consts.ValidatorPrefixOrg + "AuthKoalValidate"
+	containers.Set(key, auth3.KoalValidate{})
 
 	//注册
 	key = consts.ValidatorPrefixOrg + "RegistryCheckOrgName"

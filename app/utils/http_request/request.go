@@ -12,6 +12,7 @@ const (
 	ContentTypeFormFile    = "multipart/form-data"
 	ContentTypeFormDefault = "application/x-www-form-urlencoded"
 	ContentTypeJson        = "application/json"
+	ContentTypeJsonUtf8    = "application/json;charset=utf-8"
 )
 
 func formatResp(resp *goCurl.Response, err error) (string, error) {
@@ -42,6 +43,23 @@ func GetNoParams(uri string, headers map[string]interface{}) (string, error) {
 	}
 	cli := goCurl.CreateHttpClient(goCurl.Options{
 		Headers:       headers,
+		SetResCharset: "utf-8",
+		Timeout:       30,
+	})
+	return formatResp(cli.Get(uri))
+}
+
+// GetWithQuery GET方法, 有参数
+func GetWithQuery(uri string, headers map[string]interface{}, params map[string]interface{}) (string, error) {
+	if _, isOk := headers["User-Agent"]; !isOk {
+		headers["User-Agent"] = userAgent
+	}
+	if _, isOk := headers["Content-Type"]; !isOk {
+		headers["Content-Type"] = ContentTypeJsonUtf8
+	}
+	cli := goCurl.CreateHttpClient(goCurl.Options{
+		Headers:       headers,
+		FormParams:    params,
 		SetResCharset: "utf-8",
 		Timeout:       30,
 	})

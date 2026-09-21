@@ -1,14 +1,17 @@
 package organization
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
+	"goskeleton/app/service/platform/third_user_auth_service"
 	"goskeleton/app/service/veda_other/huanshi_platform"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
+	"net/url"
 )
 
 // AuthController 安全验证相关
@@ -136,6 +139,63 @@ func (u *AuthController) HsLogin(ctx *gin.Context) {
 		return
 	}
 
+	response.SuccessReturnData(ctx, backInfo)
+}
+
+func (u *AuthController) getBaseURL(c *gin.Context) string {
+	scheme := "http"
+	if c.Request.TLS != nil {
+		scheme = "https"
+	}
+	// 代理场景
+	if proto := c.Request.Header.Get("X-Forwarded-Proto"); proto != "" {
+		scheme = proto
+	}
+	return "https://10.32.1.50" + url.PathEscape("/#/login")
+
+	return scheme + "://" + c.Request.Host + url.PathEscape("/#/login")
+}
+
+// KoalAddr 格尔登录地址
+func (u *AuthController) KoalAddr(ctx *gin.Context) {
+	//获取最新配置
+	authConfig := third_user_auth_service.CreateConfigFactory().GetNewestItem()
+	if authConfig == nil || string_helper.IsEmpty(authConfig.Addr) {
+		response.FailSimplify(ctx, "auth config fail")
+		return
+	}
+
+	response.SuccessReturnData(ctx, gin.H{
+		"addr": third_user_auth_service.CreateRequestFactory(authConfig).GenerateLoginUrl(u.getBaseURL(ctx)),
+	})
+
+}
+
+// KoalValidate 格尔验证票据
+func (u *AuthController) KoalValidate(ctx *gin.Context) {
+	ticket := ctx.GetString(consts.ValidatorPrefixOrg + "ticket")
+
+	//获取最新配置
+	authConfig := third_user_auth_service.CreateConfigFactory().GetNewestItem()
+	if authConfig == nil || string_helper.IsEmpty(authConfig.Addr) {
+		response.FailSimplify(ctx, "auth config fail")
+		return
+	}
+	//
+	err, ticketAttr := third_user_auth_service.CreateRequestFactory(authConfig).ValidateTicket(ticket, u.getBaseURL(ctx))
+	if err != nil {
+		response.FailSimplify(ctx, err.Error())
+		return
+	}
+	fmt.Println("uri--------------:")
+	fmt.Println(ticketAttr)
+	fmt.Println("uri--------------:")
+
+	backInfo, errCode, err := user_service.CreateAuthFactory().LoginByHs(ticketAttr.Account, ctx.ClientIP())
+	if err != nil {
+		response.FailRoutine(ctx, errCode, err.Error())
+		return
+	}
 	response.SuccessReturnData(ctx, backInfo)
 }
 

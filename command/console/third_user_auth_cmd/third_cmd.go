@@ -126,6 +126,9 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 	if len(thirdList) == 0 {
 		variable.ZapLog.Info("PullOrg Empty")
 	}
+	fmt.Println("orgList--------------:")
+	fmt.Println(json_helper.Encode(thirdList))
+	fmt.Println("orgList--------------:")
 
 	//三方数据
 	thirdMaps := make(map[string]*third_user_auth_service.ResponseOrg, len(thirdList))
@@ -135,14 +138,32 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 
 }
 
-// FindAllParentOrgIds 从 orgId 开始，向上查找所有父级 orgId，直到没有父级
-// 返回：从自己开始，到最顶层父级的 orgId 列表
-func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg, orgId string) []string {
+// orgPathItem 路径上的一个节点
+type orgPathItem struct {
+	OrgId   string `json:"orgId"`
+	OrgName string `json:"orgName"`
+}
 
-	var result []string
+// findAllParentResult 向上查找的返回结果
+type findAllParentResult struct {
+	// 没有父级的 orgId（最终追到的根节点，只有一个）
+	NoParentOrgId string `json:"noParentOrgId"`
+	// 是否有根节点（防止 orgId 本身就不存在的情况）
+	HasNoParent bool `json:"hasNoParent"`
+	// 有父级的节点路径：从自己 → 最顶层
+	ParentPath []orgPathItem `json:"parentPath"`
+}
+
+// findAllParentOrgIds 从 orgId 开始，向上查找所有父级
+// 返回：
+//   - NoParentOrgId: 没有父级的 orgId（根节点，只有一个）
+//   - ParentPath:    有父级的节点路径（从自己 → 最顶层），包含 orgId 和 orgName
+func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg, orgId string) findAllParentResult {
+	result := findAllParentResult{
+		ParentPath: make([]orgPathItem, 0),
+	}
+
 	currentId := orgId
-
-	// 用 visited 防止环
 	visited := make(map[string]bool)
 
 	for currentId != "" && currentId != "0" {
@@ -153,15 +174,28 @@ func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg
 
 		org, ok := orgMaps[currentId]
 		if !ok {
+			// 当前节点不在 map 里，无法继续向上
+			// 把它当作"没有父级"处理
+			result.NoParentOrgId = currentId
+			result.HasNoParent = true
 			break
 		}
-
-		result = append(result, org.OrgId)
 
 		parentId := org.ParentId
+
+		// 没有父级：记录唯一的根节点
 		if parentId == "" || parentId == "0" {
+			result.NoParentOrgId = org.OrgId
+			result.HasNoParent = true
 			break
 		}
+
+		// 有父级：记录 orgId + orgName
+		result.ParentPath = append(result.ParentPath, orgPathItem{
+			OrgId:   org.OrgId,
+			OrgName: org.OrgName,
+		})
+
 		currentId = parentId
 	}
 

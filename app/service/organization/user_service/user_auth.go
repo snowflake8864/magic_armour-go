@@ -319,6 +319,37 @@ func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBack
 
 }
 
+// LoginByKoal 格尔登录
+func (crd *UserAuth) LoginByKoal(username string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
+	//获取用户
+	err, userModel := crd.HasUser(username)
+	if err != nil {
+		return nil, -1, err
+	}
+	if userModel.Status == enum_user.StatusLocking {
+		return nil, -99, errors.New("用户已锁定，请联系管理员")
+	}
+	if userModel.Status == enum_user.StatusVerifying {
+		return nil, -99, errors.New("用户审核中，请联系管理员")
+	}
+	//企业验证
+	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userModel.OrgId)
+	if err != nil || orgModel.Id == 0 {
+		return nil, -1, errors.New("企业不存在")
+	}
+	if orgModel.Status == enum_organization.StatusVerifying {
+		return nil, -1, errors.New("账户审核中，请联系管理员")
+	}
+	if orgModel.Status == enum_organization.StatusLocking {
+		return nil, -1, errors.New("账户已锁定，请联系管理员")
+	}
+
+	backInfo = crd.loginAfter(userModel, orgModel, netIp, enum_org_operate.SourceKoal, nil)
+
+	return backInfo, 0, nil
+
+}
+
 // loginAfter
 func (crd *UserAuth) loginAfter(userModel *user_models.UserModel, orgModel *organization_models.OrganizationModel, netIp string, source int, orgDict map[string]string) *UserBackLogin {
 	var deptIds, deptWithChild []int64

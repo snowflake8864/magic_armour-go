@@ -93,14 +93,12 @@ func (aa *RequestThird) signData(params map[string]string, appSecret string) str
 }
 
 func (aa *RequestThird) getHeaders(signParams map[string]string) map[string]interface{} {
-
 	headers := map[string]interface{}{
-		"Content-Type": "application/json;charset=utf-8",
-		"appKey":       signParams["appKey"],
-		"once":         signParams["once"],
-		"signMethod":   signParams["signMethod"],
-		"ts":           signParams["ts"],
-		"signData":     signParams["signData"],
+		"appKey":     signParams["appKey"],
+		"once":       signParams["once"],
+		"signMethod": signParams["signMethod"],
+		"ts":         signParams["ts"],
+		"signData":   signParams["signData"],
 	}
 	return headers
 }
@@ -128,7 +126,11 @@ type ResponseOrg struct {
 // PullOrg 拉取组织结构
 func (aa *RequestThird) PullOrg() (error, []*ResponseOrg) {
 	//拼接地址
-	uri := fmt.Sprintf("%s/id-sync/v5/pull/orgs?syncSequence=%d", aa.Config.Addr, aa.Config.OrgSeq)
+	uri := fmt.Sprintf("%s/id-sync/v5/pull/orgs", aa.Config.Addr)
+	//参数
+	params := map[string]interface{}{
+		"syncSequence": aa.Config.OrgSeq,
+	}
 	//生成签名参数
 	signParams := aa.generateSign(aa.Config.OrgSeq)
 	//头部数据
@@ -140,7 +142,7 @@ func (aa *RequestThird) PullOrg() (error, []*ResponseOrg) {
 	//fmt.Println(uri)
 	//fmt.Println("uri--------------:")
 	//
-	bodyContext, err := http_request.GetNoParams(uri, headers)
+	bodyContext, err := http_request.GetWithQuery(uri, headers, params)
 	err2, respComm := aa.checkCode(bodyContext, err)
 	//fmt.Println("respComm--------------:")
 	//fmt.Println(json_helper.Encode(respComm))
@@ -204,7 +206,11 @@ type ResponseUserJobDept struct {
 // PullUser 拉取用户
 func (aa *RequestThird) PullUser() (error, []*ResponseUser) {
 	//拼接地址
-	uri := fmt.Sprintf("%s/id-sync/v5/pull/users?syncSequence=%d", aa.Config.Addr, aa.Config.UserSeq)
+	uri := fmt.Sprintf("%s/id-sync/v5/pull/users", aa.Config.Addr)
+	//参数
+	params := map[string]interface{}{
+		"syncSequence": aa.Config.UserSeq,
+	}
 	//生成签名参数
 	signParams := aa.generateSign(aa.Config.UserSeq)
 	//头部数据
@@ -216,7 +222,7 @@ func (aa *RequestThird) PullUser() (error, []*ResponseUser) {
 	//fmt.Println(uri)
 	//fmt.Println("uri--------------:")
 	//
-	bodyContext, err := http_request.GetNoParams(uri, headers)
+	bodyContext, err := http_request.GetWithQuery(uri, headers, params)
 	err2, respComm := aa.checkCode(bodyContext, err)
 	//fmt.Println("respComm--------------:")
 	//fmt.Println(json_helper.Encode(respComm))
@@ -234,4 +240,67 @@ func (aa *RequestThird) PullUser() (error, []*ResponseUser) {
 		}
 	}
 	return nil, result
+}
+
+// GenerateLoginUrl 生成跳转地址
+func (aa *RequestThird) GenerateLoginUrl(callback string) string {
+	return fmt.Sprintf("%s/authn-api/v5/cas/%s/login?service=%s", aa.Config.Addr, aa.Config.AppId, callback)
+}
+
+type ResponseTicket struct {
+	AuthenticationSuccess *ResponseTicketSuccess `json:"authenticationSuccess"`
+	AuthenticationFailure *ResponseTicketFailure `json:"authenticationFailure"`
+}
+
+type ResponseTicketSuccess struct {
+	User       string                          `json:"user"`
+	Attributes ResponseTicketSuccessAttributes `json:"attributes"`
+}
+
+type ResponseTicketSuccessAttributes struct {
+	Id      string `json:"id"`
+	Account string `json:"account"`
+	Email   string `json:"email"`
+}
+
+type ResponseTicketFailure struct {
+	Code string `json:"code"`
+	Desc string `json:"description"`
+}
+
+// ValidateTicket 验证票据
+func (aa *RequestThird) ValidateTicket(ticket, callback string) (error, *ResponseTicketSuccessAttributes) {
+	//拼接地址
+	/*uri := fmt.Sprintf("%s/authn-api/v5/cas/%s/p3/serviceValidate?ticket=%s&format=json&service=%s/#/login",
+		aa.Config.Addr,
+		aa.Config.AppId,
+		ticket,
+		callback,
+	)*/
+	uri := fmt.Sprintf("%s/authn-api/v5/cas/%s/p3/serviceValidate",
+		aa.Config.Addr,
+		aa.Config.AppId,
+	)
+	params := map[string]interface{}{
+		"ticket":  ticket,
+		"format":  "json",
+		"service": callback,
+	}
+	fmt.Println("uri--------------:")
+	fmt.Println(uri)
+	fmt.Println("uri--------------:")
+	bodyContext, err := http_request.GetWithQuery(uri, map[string]interface{}{}, params)
+	if err != nil {
+		return errors.New("body_error: " + err.Error()), nil
+	}
+	resp := ResponseTicket{}
+	err = json_helper.ToStruct(bodyContext, &resp)
+	if err != nil {
+		return errors.New("json_error: " + err.Error()), nil
+	}
+	if resp.AuthenticationFailure != nil {
+		return fmt.Errorf("code: %s, desc: %s", resp.AuthenticationFailure.Code, resp.AuthenticationFailure.Desc), nil
+	}
+
+	return nil, &resp.AuthenticationSuccess.Attributes
 }
