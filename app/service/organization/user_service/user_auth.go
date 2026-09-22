@@ -241,7 +241,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userModel.OrgId)
-	if err != nil || orgModel.Id == 0 {
+	if err != nil || orgModel.Id == 0 || orgModel.IsDel == enums.IsYes {
 		return nil, -1, errors.New("企业不存在")
 	}
 	if orgModel.Status == enum_organization.StatusVerifying {
@@ -291,7 +291,7 @@ func (crd *UserAuth) LoginByPw(username, pw, slider, sms string, netIp string) (
 func (crd *UserAuth) LoginByHs(orgCode string, netIp string) (backInfo *UserBackLogin, errCode int, err error) {
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemByCode(orgCode)
-	if err != nil || orgModel.Id == 0 {
+	if err != nil || orgModel.Id == 0 || orgModel.IsDel == enums.IsYes {
 		return nil, -1, errors.New("企业不存在")
 	}
 	if orgModel.Status == enum_organization.StatusVerifying {
@@ -334,7 +334,7 @@ func (crd *UserAuth) LoginByKoal(userID int64, netIp string) (backInfo *UserBack
 	}
 	//企业验证
 	orgModel, err := organization_models.CreateOrganizationFactory().GetItemById(userModel.OrgId)
-	if err != nil || orgModel.Id == 0 {
+	if err != nil || orgModel.Id == 0 || orgModel.IsDel == enums.IsYes {
 		return nil, -1, errors.New("企业不存在")
 	}
 	if orgModel.Status == enum_organization.StatusVerifying {

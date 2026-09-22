@@ -30,8 +30,8 @@ type OrgCurd struct {
 	masterModel *organization_models.OrganizationModel
 }
 
-// makeCode 生成企业编号, 导入授权要求长度是24位
-func (crd *OrgCurd) makeCode() string {
+// MakeCode 生成企业编号, 导入授权要求长度是24位
+func (crd *OrgCurd) MakeCode() string {
 	en1 := md5_encrypt.MD5(uuid.New().String())
 	en2 := md5_encrypt.MD5(int_helper.IntRandom2Str(10000, 99999))
 	en3 := md5_encrypt.MD5(date_helper.CurDatetime())
@@ -127,7 +127,7 @@ func (crd *OrgCurd) Add(orgParam *organization_models.OrganizationModel, userPar
 	orgParam.IsClean = enums.IsNot
 	orgParam.LoginPhoneCheck = enums.SwitchOff
 	orgParam.CreatedAt = date_helper.CurDatetime()
-	orgParam.Code = crd.makeCode()
+	orgParam.Code = crd.MakeCode()
 	if err = tx.Create(orgParam).Error; err != nil {
 		tx.Rollback()
 		return -1, errors.New("保存企业失败")

@@ -5,13 +5,20 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_organization"
+	"goskeleton/app/global/enums/enum_third_user_auth"
 	"goskeleton/app/global/variable"
+	"goskeleton/app/model/organization/department_models"
+	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/platform/third_user_auth_models"
+	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/platform/third_user_auth_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
+	"slices"
+	"strings"
 )
 
 func CreateCmdFactory() *ThirdUserAuthCmd {
@@ -113,8 +120,8 @@ func (crd *ThirdUserAuthCmd) Sync(isNotice bool) {
 	variable.ZapLog.Info("Sync end", zap.Bool("isNotice", isNotice))
 }
 
-// 三方组织结构中的单位对应我们企业;
-// 三方组织结构中的我们对应我们组织架构;
+// handleOrg 处理组织相关
+
 func (crd *ThirdUserAuthCmd) handleOrg() {
 	variable.ZapLog.Info("handleOrg ===================================")
 
@@ -126,16 +133,108 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 	if len(thirdList) == 0 {
 		variable.ZapLog.Info("PullOrg Empty")
 	}
-	fmt.Println("orgList--------------:")
-	fmt.Println(json_helper.Encode(thirdList))
-	fmt.Println("orgList--------------:")
+	//fmt.Println("orgList--------------:")
+	//fmt.Println(json_helper.Encode(thirdList))
+	//fmt.Println("orgList--------------:")
+
+	//格式化三方返回数据列表
+	orgSaveList, deptSaveList, deptDeleteIds := crd.formatThirdOrg(thirdList)
+	fmt.Println("orgSaveList--------------:")
+	fmt.Println(json_helper.Encode(orgSaveList))
+	fmt.Println("deptSaveList--------------:")
+	fmt.Println(json_helper.Encode(deptSaveList))
+	fmt.Println("deptDeleteIds--------------:")
+	fmt.Println(json_helper.Encode(deptDeleteIds))
+
+}
+
+// formatThirdOrg 格式化三方返回数据列表
+// 返回：
+//   - orgSaveList: 企业（单位）要保存列表
+//   - deptSaveList: 组织架构（部门）要保存列表
+//   - deptDeleteIds: 组织架构（部门）要删除集合
+func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service.ResponseOrg) (orgSaveList []*organization_models.OrganizationModel,
+	deptSaveList []*department_models.DepartmentModel, deptDeleteIds []int64) {
 
 	//三方数据
 	thirdMaps := make(map[string]*third_user_auth_service.ResponseOrg, len(thirdList))
 	for _, item := range thirdList {
 		thirdMaps[item.OrgId] = item
+
+		//同步序列
+		crd.authConfig.OrgSeq = string_helper.ToInt64(item.SyncSequence)
 	}
 
+	// 格式化成需要的数据
+	for _, item := range thirdList {
+		tId := string_helper.ToInt64(item.OrgId)
+		createdAt := date_helper.MilliTimestampToDatetime(string_helper.ToInt64(item.CreateTime))
+		if item.OrgType == enum_third_user_auth.OrgTypeOrg {
+			tmpModel := organization_models.OrganizationModel{
+				Id:                tId,
+				Name:              item.OrgName,
+				Type:              enum_organization.TypeOrg,
+				Status:            enum_organization.StatusVerifying,
+				IsClean:           enums.IsNot,
+				IsDel:             enums.IsNot,
+				Remark:            "用户统一认证",
+				LoginPhoneCheck:   enums.IsNot,
+				HuanshiSwitch:     enums.IsYes,
+				TrusteeshipSwitch: enums.IsYes,
+				Source:            enums.OperateSourcekoal,
+				CreatedAt:         createdAt,
+			}
+
+			if item.Status == enum_third_user_auth.StatusDeleted {
+				tmpModel.IsDel = enums.IsYes
+				tmpModel.Status = enum_organization.StatusLocking
+			} else if item.Status == enum_third_user_auth.StatusLocking {
+				tmpModel.Status = enum_organization.StatusLocking
+			} else if item.SyncStatus == enum_third_user_auth.SyncStatusRevoke {
+				tmpModel.Status = enum_organization.StatusLocking
+			}
+
+			orgSaveList = append(orgSaveList, &tmpModel)
+		} else if item.OrgType == enum_third_user_auth.OrgTypeDept {
+			if item.Status == enum_third_user_auth.StatusNormal && item.SyncStatus == enum_third_user_auth.SyncStatusNormal {
+				//所有父级
+				allParents := crd.findAllParentOrgs(thirdMaps, item.OrgId)
+				//完整路径
+				var fullCode, fullName []string
+				if len(allParents.ParentPath) > 0 {
+					//翻转路径
+					slices.Reverse(allParents.ParentPath)
+					for _, v := range allParents.ParentPath {
+						fullCode = append(fullCode, v.OrgId)
+						fullName = append(fullName, v.OrgName)
+					}
+				}
+				//父级
+				parentId := string_helper.ToInt64(item.ParentId)
+				if item.ParentId == allParents.NoParentOrgId {
+					parentId = 0
+				}
+
+				tmpModel := department_models.DepartmentModel{
+					Id:        tId,
+					OrgId:     string_helper.ToInt64(allParents.NoParentOrgId),
+					ParentId:  parentId,
+					Name:      item.OrgName,
+					FullCode:  strings.Join(fullCode, department_service.SEPARATOR),
+					FullName:  json_helper.Encode(fullName),
+					Level:     len(allParents.ParentPath),
+					Sort:      item.ShowOrder,
+					CreatedAt: createdAt,
+				}
+
+				deptSaveList = append(deptSaveList, &tmpModel)
+			} else {
+				deptDeleteIds = append(deptDeleteIds, tId)
+			}
+		}
+	} //end thirdList
+
+	return orgSaveList, deptSaveList, deptDeleteIds
 }
 
 // orgPathItem 路径上的一个节点
@@ -144,8 +243,8 @@ type orgPathItem struct {
 	OrgName string `json:"orgName"`
 }
 
-// findAllParentResult 向上查找的返回结果
-type findAllParentResult struct {
+// findAllParentOrg 向上查找的返回结果
+type findAllParentOrg struct {
 	// 没有父级的 orgId（最终追到的根节点，只有一个）
 	NoParentOrgId string `json:"noParentOrgId"`
 	// 是否有根节点（防止 orgId 本身就不存在的情况）
@@ -154,12 +253,12 @@ type findAllParentResult struct {
 	ParentPath []orgPathItem `json:"parentPath"`
 }
 
-// findAllParentOrgIds 从 orgId 开始，向上查找所有父级
+// findAllParentOrgs 从 orgId 开始，向上查找所有父级
 // 返回：
 //   - NoParentOrgId: 没有父级的 orgId（根节点，只有一个）
 //   - ParentPath:    有父级的节点路径（从自己 → 最顶层），包含 orgId 和 orgName
-func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg, orgId string) findAllParentResult {
-	result := findAllParentResult{
+func (crd *ThirdUserAuthCmd) findAllParentOrgs(orgMaps map[string]*third_user_auth_service.ResponseOrg, orgId string) findAllParentOrg {
+	result := findAllParentOrg{
 		ParentPath: make([]orgPathItem, 0),
 	}
 
@@ -198,7 +297,6 @@ func findAllParentOrgIds(orgMaps map[string]*third_user_auth_service.ResponseOrg
 
 		currentId = parentId
 	}
-
 	return result
 }
 

@@ -107,6 +107,16 @@ func TimestampToDatetime(timestamp int64) string {
 	return t.Format(variable.DateFormatNow)
 }
 
+// MilliTimestampToDatetime 时间戳转成日期， 默认格式
+func MilliTimestampToDatetime(timestamp int64) string {
+	if timestamp == 0 {
+		timestamp = CurTimestamp()
+	}
+	t := time.UnixMilli(timestamp).Local()
+
+	return t.Format(variable.DateFormatNow)
+}
+
 // TimestampToDatetimeByFormat 时间戳转成日期， 指定格式
 func TimestampToDatetimeByFormat(timestamp int64, format string) string {
 	if timestamp == 0 {

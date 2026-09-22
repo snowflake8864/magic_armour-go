@@ -8,6 +8,9 @@ const (
 	SyncStatusNormal int = 2000 //状态:正常
 	SyncStatusRevoke int = 800  //状态:撤回 (文档说明已没有使用权限)
 
+	OrgTypeOrg  int = 1 //机构类型: 单位
+	OrgTypeDept int = 2 //机构类型: 部门
+
 	NoticeSyncOrg  int = 1 //通知同步: 组织
 	NoticeSyncUser int = 2 //通知同步: 用户
 

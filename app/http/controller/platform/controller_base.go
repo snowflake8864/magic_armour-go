@@ -3,6 +3,7 @@ package platform
 import (
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
+	"goskeleton/app/global/enums"
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/service/platform/admin_service"
 	"goskeleton/app/utils/cur_userinfo"
@@ -27,6 +28,9 @@ func (u *ControllerBase) getOrgSearchConditions(ctx *gin.Context) (organization_
 	searchConditions.UserName = ctx.GetString(consts.ValidatorPrefixPlatform + "userName")
 	searchConditions.UserPhone = ctx.GetString(consts.ValidatorPrefixPlatform + "userPhone")
 	searchConditions.OrgType = int(ctx.GetFloat64(consts.ValidatorPrefixPlatform + "orgType"))
+
+	isDel := enums.IsNot
+	searchConditions.IsDel = &isDel
 	return searchConditions, nil
 }
 

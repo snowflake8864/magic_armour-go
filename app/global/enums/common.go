@@ -13,6 +13,7 @@ const (
 	OperateSourcePlatform int = 2 //操作来源：平台
 	OperateSourceAi       int = 3 //操作来源：AI
 	OperateSourceAgent    int = 4 //操作来源：终端
+	OperateSourcekoal     int = 5 //操作来源：终端
 )
 
 var EnumMapInt = map[string]map[int]string{
@@ -21,6 +22,7 @@ var EnumMapInt = map[string]map[int]string{
 		OperateSourcePlatform: "平台",
 		OperateSourceAi:       "系统AI",
 		OperateSourceAgent:    "终端",
+		OperateSourcekoal:     "格尔",
 	},
 }
 

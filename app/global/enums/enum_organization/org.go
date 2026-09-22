@@ -27,6 +27,9 @@ const (
 	LogActionOrgSelfModifyPhone int = 212 //日志行为: 修改手机
 	LogActionOrgSelfModifyInfo  int = 213 //日志行为: 修改基础信息
 	LogActionOrgSelfFindPw      int = 214 //日志行为: 修改基础信息
+
+	LogActionKoalSyncOrg  int = 300 //日志行为: 格尔同步企业
+	LogActionKoalSyncUser int = 301 //日志行为: 格尔同步用户
 )
 
 var EnumMap = map[string]map[int]string{
@@ -58,6 +61,8 @@ var EnumMap = map[string]map[int]string{
 		LogActionOrgSelfModifyPhone:     "修改手机",
 		LogActionOrgSelfModifyInfo:      "修改基本信息",
 		LogActionOrgSelfFindPw:          "找回密码",
+		LogActionKoalSyncOrg:            "格尔同步组织结构",
+		LogActionKoalSyncUser:           "格尔同步用户",
 	},
 }
 
@@ -85,5 +90,7 @@ var WebMapInt = map[string][]int{
 		LogActionOrgSelfModifyPhone,
 		LogActionOrgSelfModifyInfo,
 		LogActionOrgSelfFindPw,
+		LogActionKoalSyncOrg,
+		LogActionKoalSyncUser,
 	},
 }
