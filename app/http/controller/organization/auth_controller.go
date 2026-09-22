@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
@@ -151,7 +150,6 @@ func (u *AuthController) getBaseURL(c *gin.Context) string {
 	if proto := c.Request.Header.Get("X-Forwarded-Proto"); proto != "" {
 		scheme = proto
 	}
-	return "https://10.32.1.50" + url.PathEscape("/#/login")
 
 	return scheme + "://" + c.Request.Host + url.PathEscape("/#/login")
 }
@@ -187,9 +185,6 @@ func (u *AuthController) KoalValidate(ctx *gin.Context) {
 		response.FailSimplify(ctx, err.Error())
 		return
 	}
-	fmt.Println("ticketAttr--------------:")
-	fmt.Println(ticketAttr)
-	fmt.Println("ticketAttr--------------:")
 
 	backInfo, errCode, err := user_service.CreateAuthFactory().LoginByKoal(string_helper.ToInt64(ticketAttr.Id), ctx.ClientIP())
 	if err != nil {
