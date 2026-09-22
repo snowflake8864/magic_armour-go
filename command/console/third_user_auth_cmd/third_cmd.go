@@ -175,7 +175,7 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 		if err := deptFact.Delete(deptDeleteIds); err != nil {
 			//同步序列
 			crd.orgMaxSeq = 0
-			
+
 			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail: %v", json_helper.Encode(deptDeleteIds), err))
 			return
 		}
@@ -206,7 +206,7 @@ func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service
 		createdAt := date_helper.MilliTimestampToDatetime(string_helper.ToInt64(item.CreateTime))
 		if item.OrgType == enum_third_user_auth.OrgTypeOrg {
 			tmpModel := organization_models.OrganizationModel{
-				Id:                tId,
+				Code:              item.OrgId,
 				Name:              item.OrgName,
 				Type:              enum_organization.TypeOrg,
 				Status:            enum_organization.StatusVerifying,
