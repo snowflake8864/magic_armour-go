@@ -12,6 +12,7 @@ import (
 	"goskeleton/app/model/organization/organization_models"
 	"goskeleton/app/model/platform/third_user_auth_models"
 	"goskeleton/app/service/organization/department_service"
+	"goskeleton/app/service/organization/organize_service"
 	"goskeleton/app/service/platform/third_user_auth_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -36,6 +37,9 @@ type ThirdUserAuthCmd struct {
 	requestFactory *third_user_auth_service.RequestThird
 	configFactory  *third_user_auth_service.Config
 	authConfig     *third_user_auth_models.AuthModel
+
+	orgMaxSeq  int64 //组织同步序列
+	userMaxSeq int64 //用户同步序列
 }
 
 // 设置锁
@@ -60,12 +64,6 @@ func (crd *ThirdUserAuthCmd) delLock() bool {
 func (crd *ThirdUserAuthCmd) iniFact() error {
 	//获取最新配置
 	crd.configFactory = third_user_auth_service.CreateConfigFactory()
-	/*crd.authConfig := &third_user_auth_models.AuthModel{
-		Addr:      "https://10.32.2.4",
-		AppId:     "789546861770502144",
-		AppKey:    "56de926f281e4120b932476492b4d451",
-		AppSecret: "48642278b1bf4fe28b74fdd65ab799e5",
-	}*/
 	crd.authConfig = crd.configFactory.GetNewestItem()
 	if crd.authConfig == nil || string_helper.IsEmpty(crd.authConfig.Addr) {
 		return errors.New("auth config fail")
@@ -146,6 +144,43 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 	fmt.Println("deptDeleteIds--------------:")
 	fmt.Println(json_helper.Encode(deptDeleteIds))
 
+	//处理企业
+	orgFact := organize_service.CreateKoalFactory()
+	if len(orgSaveList) > 0 {
+		for _, model := range orgSaveList {
+			if err := orgFact.Sync(model); err != nil {
+				//同步序列
+				crd.orgMaxSeq = 0
+
+				variable.ZapLog.Info(fmt.Sprintf("org id=%d sync fail: %v", model.Id, err))
+				return
+			}
+		}
+	}
+
+	//处理部门
+	deptFact := department_service.CreateKoalFactory()
+	if len(deptSaveList) > 0 {
+		for _, model := range deptSaveList {
+			if err := deptFact.Sync(model); err != nil {
+				//同步序列
+				crd.orgMaxSeq = 0
+
+				variable.ZapLog.Info(fmt.Sprintf("dept id=%d sync fail: %v", model.Id, err))
+				return
+			}
+		}
+	}
+	if len(deptDeleteIds) > 0 {
+		if err := deptFact.Delete(deptDeleteIds); err != nil {
+			//同步序列
+			crd.orgMaxSeq = 0
+			
+			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail: %v", json_helper.Encode(deptDeleteIds), err))
+			return
+		}
+	}
+
 }
 
 // formatThirdOrg 格式化三方返回数据列表
@@ -162,7 +197,7 @@ func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service
 		thirdMaps[item.OrgId] = item
 
 		//同步序列
-		crd.authConfig.OrgSeq = string_helper.ToInt64(item.SyncSequence)
+		crd.orgMaxSeq = string_helper.ToInt64(item.SyncSequence)
 	}
 
 	// 格式化成需要的数据
