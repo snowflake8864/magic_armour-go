@@ -30,7 +30,8 @@ func (crd *Koal) Sync(models []*organization_models.OrganizationModel) error {
 			}
 
 		} else {
-			if err := crd.modify(hasModel.Id, model); err != nil {
+			model.Id = hasModel.Id
+			if err := crd.modify(model); err != nil {
 				return fmt.Errorf("modify [%s] fail: %v", model.Code, err)
 			}
 		}
@@ -76,7 +77,7 @@ func (crd *Koal) add(orgParam *organization_models.OrganizationModel) error {
 	return nil
 }
 
-func (crd *Koal) modify(existsId int64, orgParam *organization_models.OrganizationModel) error {
+func (crd *Koal) modify(orgParam *organization_models.OrganizationModel) error {
 	err := crd.orgModel.Transaction(func(tx *gorm.DB) error {
 		//保存企业
 		updates := map[string]interface{}{
@@ -84,7 +85,7 @@ func (crd *Koal) modify(existsId int64, orgParam *organization_models.Organizati
 			"status": orgParam.Status,
 			"is_del": orgParam.IsDel,
 		}
-		if err := tx.Model(&organization_models.OrganizationModel{}).Where("id=?", existsId).Updates(updates).Error; err != nil {
+		if err := tx.Model(&organization_models.OrganizationModel{}).Where("id=?", orgParam.Id).Updates(updates).Error; err != nil {
 			return err
 		}
 

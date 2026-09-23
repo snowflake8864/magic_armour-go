@@ -133,6 +133,16 @@ func (m *DepartmentModel) GetItemById(orgId, id int64) (item *DepartmentModel, e
 	}
 }
 
+// GetItemById 通过id获取一条记录
+func (m *DepartmentModel) GetItemByCode(orgId, id int64) (item *DepartmentModel, err error) {
+	result := m.Model(m).Where("org_id=? AND id=?", orgId, id).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
 // GetListByConditions 通过条件获取多条记录
 func (m *DepartmentModel) GetListByConditions(condition SearchConditions) (items []*DepartmentModel, err error) {
 	tmp := m.Model(m)

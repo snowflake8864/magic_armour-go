@@ -75,15 +75,16 @@ func (crd *ThirdUserAuthCmd) iniFact() error {
 }
 
 // Sync 同步数据
-func (crd *ThirdUserAuthCmd) Sync(isNotice bool) {
+func (crd *ThirdUserAuthCmd) Sync(isNoticeTask bool) {
+	variable.ZapLog.Info("Sync start", zap.Bool("isNoticeTask", isNoticeTask))
+
 	// 加锁失败：说明上一次还没执行完，直接返回
 	if !crd.setLock() {
-		variable.ZapLog.Info("Sync skipped: previous task not completed", zap.Bool("isNotice", isNotice))
+		variable.ZapLog.Info("Sync skipped: previous task not completed")
 		return
 	}
 	// 只有加锁成功后才 defer 解锁
 	defer crd.delLock()
-	variable.ZapLog.Info("Sync start", zap.Bool("isNotice", isNotice))
 
 	//
 	if err := crd.iniFact(); err != nil {
@@ -97,7 +98,7 @@ func (crd *ThirdUserAuthCmd) Sync(isNotice bool) {
 		crd.handleUser()
 	} else {
 		//通知任务
-		if isNotice {
+		if isNoticeTask {
 			//有通知
 			if crd.authConfig.NoticeSync > 0 {
 				crd.handleOrg()
@@ -113,8 +114,7 @@ func (crd *ThirdUserAuthCmd) Sync(isNotice bool) {
 	}
 
 	//
-
-	variable.ZapLog.Info("Sync end", zap.Bool("isNotice", isNotice))
+	variable.ZapLog.Info("Sync end", zap.Bool("isNoticeTask", isNoticeTask))
 }
 
 // handleOrg 处理组织相关
@@ -152,22 +152,20 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 			return
 		}
 	}
+	return
 
 	//处理部门
-	deptFact := department_service.CreateKoalFactory()
 	if len(deptSaveList) > 0 {
-		for _, model := range deptSaveList {
-			if err := deptFact.Sync(model); err != nil {
-				//同步序列
-				crd.orgMaxSeq = 0
+		if err := department_service.CreateKoalFactory().Sync(deptSaveList); err != nil {
+			//同步序列
+			crd.orgMaxSeq = 0
 
-				variable.ZapLog.Info(fmt.Sprintf("dept id=%d sync fail: %v", model.Id, err))
-				return
-			}
+			variable.ZapLog.Info(fmt.Sprintf("dept sync fail: %s", err.Error()))
+			return
 		}
 	}
 	if len(deptDeleteCodes) > 0 {
-		if err := deptFact.DeleteByCodes(deptDeleteCodes); err != nil {
+		if err := department_service.CreateKoalFactory().DeleteByCodes(deptDeleteCodes); err != nil {
 			//同步序列
 			crd.orgMaxSeq = 0
 
