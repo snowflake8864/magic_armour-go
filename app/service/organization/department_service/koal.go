@@ -200,7 +200,14 @@ func (crd *Koal) modify(deptParam *department_models.DepartmentModel) error {
 	return nil
 }
 
-func (crd *Koal) DeleteByCodes(codes []string) error {
+func (crd *Koal) DeleteByCodes(codes []string) bool {
+	if len(codes) == 0 {
+		return true
+	}
 
-	return nil
+	conditions := department_models.SearchConditions{
+		Codes: codes,
+	}
+
+	return crd.deptModel.DeleteByConditions(conditions)
 }

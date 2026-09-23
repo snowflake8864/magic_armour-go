@@ -164,11 +164,11 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 		}
 	}
 	if len(deptDeleteCodes) > 0 {
-		if err := department_service.CreateKoalFactory().DeleteByCodes(deptDeleteCodes); err != nil {
+		if !department_service.CreateKoalFactory().DeleteByCodes(deptDeleteCodes) {
 			//同步序列
 			crd.orgMaxSeq = 0
 
-			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail: %v", json_helper.Encode(deptDeleteCodes), err))
+			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail", json_helper.Encode(deptDeleteCodes)))
 			return
 		}
 	}
@@ -178,7 +178,7 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 // formatThirdOrg 格式化三方返回数据列表
 // 返回：
 //   - orgSaveList: 企业（单位）要保存列表
-//   - deptSaveList: 组织架构（部门）要保存列表, 已按照级别从高到底排序(1 > 2 >3)
+//   - deptSaveList: 组织架构（部门）要保存列表, 已按照级别从高到底排序, 要求能找到父级
 //   - deptDeleteCodes: 组织架构（部门）要删除集合
 func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service.ResponseOrg) (orgSaveList []*organization_models.OrganizationModel,
 	deptSaveList []*department_models.DepartmentModel, deptDeleteCodes []string) {

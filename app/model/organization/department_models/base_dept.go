@@ -9,6 +9,7 @@ type SearchConditions struct {
 	OrgId    int64
 	Id       int64
 	Ids      []int64
+	Codes    []string
 	FullCode string
 }
 
@@ -33,6 +34,12 @@ func (crd *baseDept) conditions2Where(condition SearchConditions) (wheres []mode
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "id in",
 			Val: condition.Ids,
+		})
+	}
+	if len(condition.Codes) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "code in",
+			Val: condition.Codes,
 		})
 	}
 	if !string_helper.IsEmpty(condition.FullCode) {
