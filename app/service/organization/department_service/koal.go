@@ -36,7 +36,7 @@ func (crd *Koal) Sync(models []*department_models.DepartmentModel) error {
 
 	for _, model := range models {
 		//是否存在
-		if hasModel, _ := crd.orgModel.GetItemByCode(model.Code); hasModel == nil || hasModel.Id == 0 {
+		if hasModel, _ := crd.deptModel.GetItemByCode(model.Code); hasModel == nil || hasModel.Id == 0 {
 			if err := crd.add(model); err != nil {
 				return fmt.Errorf("add [%s] fail: %v", model.Code, err)
 			}
@@ -69,10 +69,10 @@ func (crd *Koal) getOrgModel(thirdCode int64) *organization_models.OrganizationM
 
 }
 
-func (crd *Koal) getDeptModel(ordId int64, thirdCode int64) *department_models.DepartmentModel {
+func (crd *Koal) getDeptModel(thirdCode int64) *department_models.DepartmentModel {
 	code := int_helper.Int64ToStr(thirdCode)
 	if model, ok := crd.thirdDeptMap[code]; !ok {
-		if hasModel, _ := crd.deptModel.GetItemByCode(ordId, code); hasModel == nil || hasModel.Id == 0 {
+		if hasModel, _ := crd.deptModel.GetItemByCode(code); hasModel == nil || hasModel.Id == 0 {
 			crd.thirdDeptMap[code] = nil
 			return nil
 		} else {
@@ -96,7 +96,7 @@ func (crd *Koal) add(deptParam *department_models.DepartmentModel) error {
 
 	//父级信息
 	if deptParam.ParentId > 0 {
-		if parentModel := crd.getDeptModel(deptParam.OrgId, deptParam.ParentId); parentModel == nil {
+		if parentModel := crd.getDeptModel(deptParam.ParentId); parentModel == nil {
 			return fmt.Errorf("org[%d] pid[%d] not exist", deptParam.OrgId, deptParam.ParentId)
 		} else {
 			//真正的父级ID
@@ -142,21 +142,49 @@ func (crd *Koal) add(deptParam *department_models.DepartmentModel) error {
 }
 
 func (crd *Koal) modify(deptParam *department_models.DepartmentModel) error {
-	/*err := crd.orgModel.Transaction(func(tx *gorm.DB) error {
-		//保存企业
-		updates := map[string]interface{}{
-			"name": deptParam.Name,
+	//获取企业
+	orgModel := crd.getOrgModel(deptParam.OrgId)
+	if orgModel == nil {
+		return fmt.Errorf("org[%d] not exist", deptParam.OrgId)
+	} else {
+		//真正的企业ID
+		deptParam.OrgId = orgModel.Id
+	}
+
+	//父级信息
+	if deptParam.ParentId > 0 {
+		if parentModel := crd.getDeptModel(deptParam.ParentId); parentModel == nil {
+			return fmt.Errorf("org[%d] pid[%d] not exist", deptParam.OrgId, deptParam.ParentId)
+		} else {
+			//真正的父级ID
+			deptParam.ParentId = parentModel.Id
+			//继承父级
+			deptParam.FullCode = parentModel.FullCode
 		}
-		if err := tx.Model(&organization_models.OrganizationModel{}).Where("id=?", deptParam.Id).Updates(updates).Error; err != nil {
+	}
+
+	err := crd.orgModel.Transaction(func(tx *gorm.DB) error {
+
+		//保存
+		updates := map[string]interface{}{
+			"org_id":    deptParam.OrgId,
+			"parent_id": deptParam.ParentId,
+			"name":      deptParam.Name,
+			"full_code": strings.Trim(deptParam.FullCode+SEPARATOR+int_helper.Int64ToStr(deptParam.Id), SEPARATOR),
+			"full_name": deptParam.FullName,
+			"level":     deptParam.Level,
+			"sort":      deptParam.Sort,
+		}
+		if err := tx.Model(&department_models.DepartmentModel{}).Where("id=?", deptParam.Id).Updates(updates).Error; err != nil {
 			return err
 		}
 
 		//新增企业日志
 		logFact := org_log_service.CreateOrgLogFactory()
 		logModule := enum_organization.LogActionKoalSyncOrg
-		orgLogParam := logFact.InitByOrg(orgParam, logModule, "")
-		orgLogParam.CreatedAt = orgParam.CreatedAt
-		orgLogParam.Content = fmt.Sprintf("新增部门(%s)", deptParam.Code)
+		orgLogParam := logFact.InitByOrg(orgModel, logModule, "")
+		orgLogParam.CreatedAt = date_helper.CurDatetime()
+		orgLogParam.Content = fmt.Sprintf("修改部门(%s)", deptParam.Code)
 		orgLogParam.OperateSource = enums.OperateSourcekoal
 		if err := tx.Create(&orgLogParam).Error; err != nil {
 			tx.Rollback()
@@ -167,7 +195,7 @@ func (crd *Koal) modify(deptParam *department_models.DepartmentModel) error {
 
 	if err != nil {
 		return err
-	}*/
+	}
 
 	return nil
 }
