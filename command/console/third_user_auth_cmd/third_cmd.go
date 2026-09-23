@@ -19,7 +19,6 @@ import (
 	"goskeleton/app/utils/helpers/string_helper"
 	"goskeleton/app/utils/redis_factory"
 	"slices"
-	"strings"
 )
 
 func CreateCmdFactory() *ThirdUserAuthCmd {
@@ -136,25 +135,21 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 	//fmt.Println("orgList--------------:")
 
 	//格式化三方返回数据列表
-	orgSaveList, deptSaveList, deptDeleteIds := crd.formatThirdOrg(thirdList)
+	orgSaveList, deptSaveList, deptDeleteCodes := crd.formatThirdOrg(thirdList)
 	fmt.Println("orgSaveList--------------:")
 	fmt.Println(json_helper.Encode(orgSaveList))
 	fmt.Println("deptSaveList--------------:")
 	fmt.Println(json_helper.Encode(deptSaveList))
-	fmt.Println("deptDeleteIds--------------:")
-	fmt.Println(json_helper.Encode(deptDeleteIds))
-
+	fmt.Println("deptDeleteCodes--------------:")
+	fmt.Println(json_helper.Encode(deptDeleteCodes))
 	//处理企业
-	orgFact := organize_service.CreateKoalFactory()
 	if len(orgSaveList) > 0 {
-		for _, model := range orgSaveList {
-			if err := orgFact.Sync(model); err != nil {
-				//同步序列
-				crd.orgMaxSeq = 0
+		if err := organize_service.CreateKoalFactory().Sync(orgSaveList); err != nil {
+			//同步序列
+			crd.orgMaxSeq = 0
 
-				variable.ZapLog.Info(fmt.Sprintf("org id=%d sync fail: %v", model.Id, err))
-				return
-			}
+			variable.ZapLog.Info(fmt.Sprintf("org sync fail: %s", err.Error()))
+			return
 		}
 	}
 
@@ -171,12 +166,12 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 			}
 		}
 	}
-	if len(deptDeleteIds) > 0 {
-		if err := deptFact.Delete(deptDeleteIds); err != nil {
+	if len(deptDeleteCodes) > 0 {
+		if err := deptFact.DeleteByCodes(deptDeleteCodes); err != nil {
 			//同步序列
 			crd.orgMaxSeq = 0
 
-			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail: %v", json_helper.Encode(deptDeleteIds), err))
+			variable.ZapLog.Info(fmt.Sprintf("dept [%s] delete fail: %v", json_helper.Encode(deptDeleteCodes), err))
 			return
 		}
 	}
@@ -186,10 +181,10 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 // formatThirdOrg 格式化三方返回数据列表
 // 返回：
 //   - orgSaveList: 企业（单位）要保存列表
-//   - deptSaveList: 组织架构（部门）要保存列表
-//   - deptDeleteIds: 组织架构（部门）要删除集合
+//   - deptSaveList: 组织架构（部门）要保存列表, 已按照级别从高到底排序(1 > 2 >3)
+//   - deptDeleteCodes: 组织架构（部门）要删除集合
 func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service.ResponseOrg) (orgSaveList []*organization_models.OrganizationModel,
-	deptSaveList []*department_models.DepartmentModel, deptDeleteIds []int64) {
+	deptSaveList []*department_models.DepartmentModel, deptDeleteCodes []string) {
 
 	//三方数据
 	thirdMaps := make(map[string]*third_user_auth_service.ResponseOrg, len(thirdList))
@@ -200,10 +195,15 @@ func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service
 		crd.orgMaxSeq = string_helper.ToInt64(item.SyncSequence)
 	}
 
+	//组织架构（部门）最深级别
+	deptMaxLevel := 1
+	//组织架构（部门） 按级别处理
+	deptSaveMap := make(map[int][]*department_models.DepartmentModel)
+
 	// 格式化成需要的数据
 	for _, item := range thirdList {
-		tId := string_helper.ToInt64(item.OrgId)
 		createdAt := date_helper.MilliTimestampToDatetime(string_helper.ToInt64(item.CreateTime))
+		//是企业
 		if item.OrgType == enum_third_user_auth.OrgTypeOrg {
 			tmpModel := organization_models.OrganizationModel{
 				Code:              item.OrgId,
@@ -235,12 +235,11 @@ func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service
 				//所有父级
 				allParents := crd.findAllParentOrgs(thirdMaps, item.OrgId)
 				//完整路径
-				var fullCode, fullName []string
+				var fullName []string
 				if len(allParents.ParentPath) > 0 {
 					//翻转路径
 					slices.Reverse(allParents.ParentPath)
 					for _, v := range allParents.ParentPath {
-						fullCode = append(fullCode, v.OrgId)
 						fullName = append(fullName, v.OrgName)
 					}
 				}
@@ -249,27 +248,40 @@ func (crd *ThirdUserAuthCmd) formatThirdOrg(thirdList []*third_user_auth_service
 				if item.ParentId == allParents.NoParentOrgId {
 					parentId = 0
 				}
+				//级别
+				level := len(allParents.ParentPath)
+				if level > deptMaxLevel {
+					deptMaxLevel = level
+				}
 
 				tmpModel := department_models.DepartmentModel{
-					Id:        tId,
 					OrgId:     string_helper.ToInt64(allParents.NoParentOrgId),
 					ParentId:  parentId,
 					Name:      item.OrgName,
-					FullCode:  strings.Join(fullCode, department_service.SEPARATOR),
+					Code:      item.OrgId,
+					FullCode:  "",
 					FullName:  json_helper.Encode(fullName),
-					Level:     len(allParents.ParentPath),
+					Level:     level,
 					Sort:      item.ShowOrder,
 					CreatedAt: createdAt,
 				}
-
-				deptSaveList = append(deptSaveList, &tmpModel)
+				deptSaveMap[level] = append(deptSaveMap[level], &tmpModel)
 			} else {
-				deptDeleteIds = append(deptDeleteIds, tId)
+				deptDeleteCodes = append(deptDeleteCodes, item.OrgId)
 			}
 		}
 	} //end thirdList
 
-	return orgSaveList, deptSaveList, deptDeleteIds
+	// 已按照级别从高到底排序(1 > 2 >3)
+	if len(deptSaveMap) > 0 {
+		for lv := 1; lv <= deptMaxLevel; lv++ {
+			if models, ok := deptSaveMap[lv]; ok && len(models) > 0 {
+				deptSaveList = append(deptSaveList, models...)
+			}
+		}
+	}
+
+	return orgSaveList, deptSaveList, deptDeleteCodes
 }
 
 // orgPathItem 路径上的一个节点

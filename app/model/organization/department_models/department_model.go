@@ -68,6 +68,24 @@ func (m *DepartmentModel) CreateTable() bool {
 	}
 }
 
+func (m *DepartmentModel) AlterTable(ver string) bool {
+	sql := `ALTER TABLE ` + m.TableName()
+	switch ver {
+	case "third_user_auth":
+		sql += `
+			ADD INDEX index_code(code) USING BTREE;
+		`
+	default:
+		return true
+	}
+	result := m.Exec(m.TrimSql(sql))
+	if result.RowsAffected > 0 {
+		return true
+	} else {
+		return false
+	}
+}
+
 // InsertItem 插入一条
 func (m *DepartmentModel) InsertItem(s *DepartmentModel) bool {
 	result := m.Model(m).Create(s)
