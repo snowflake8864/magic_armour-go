@@ -152,7 +152,6 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 			return
 		}
 	}
-	return
 
 	//处理部门
 	if len(deptSaveList) > 0 {

@@ -133,9 +133,9 @@ func (m *DepartmentModel) GetItemById(orgId, id int64) (item *DepartmentModel, e
 	}
 }
 
-// GetItemById 通过id获取一条记录
-func (m *DepartmentModel) GetItemByCode(orgId, id int64) (item *DepartmentModel, err error) {
-	result := m.Model(m).Where("org_id=? AND id=?", orgId, id).Take(&item)
+// GetItemByCode 通过id获取一条记录
+func (m *DepartmentModel) GetItemByCode(orgId int64, code string) (item *DepartmentModel, err error) {
+	result := m.Model(m).Where("org_id=? AND code=?", orgId, code).Take(&item)
 	if result.Error == nil {
 		return item, nil
 	} else {
