@@ -166,7 +166,7 @@ func (aa *RequestThird) PullOrg() (error, []*ResponseOrg) {
 type ResponseUser struct {
 	UserId      string `json:"userId"`      // 统一用户ID
 	DisplayName string `json:"displayName"` // 姓名
-	//WorkNo      string `json:"workNo"`      // 工号
+	WorkNo      string `json:"workNo"`      // 工号
 	//IdCardNo    string `json:"idCardNo"`    // 身份证号码
 	Mobile    string `json:"mobile"`    // 手机号
 	UserEmail string `json:"userEmail"` // 工作网邮箱
@@ -192,8 +192,8 @@ type ResponseUserJob struct {
 
 }
 type ResponseUserJobDept struct {
-	DepId string `json:"depId"` //部门ID
-	//Position string `json:"position"`
+	DepId    string `json:"depId"` //部门ID
+	Position string `json:"position"`
 	//Job           interface{} `json:"job"`
 	//JobStatus     int         `json:"jobStatus"`
 	//JobType       string      `json:"jobType"`

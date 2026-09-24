@@ -9,6 +9,7 @@ import (
 type SearchConditions struct {
 	OrgId          int64
 	Id             int64
+	Codes          []string
 	IsRoot         *int
 	CreateAtGte    string
 	CreateAtLte    string
@@ -40,7 +41,12 @@ func (crd *baseUser) conditions2Where(condition SearchConditions) (wheres []mode
 			Val: *condition.IsRoot,
 		})
 	}
-
+	if len(condition.Codes) > 0 {
+		wheres = append(wheres, model_comm.Conditions{
+			Key: "code in",
+			Val: condition.Codes,
+		})
+	}
 	if !string_helper.IsEmpty(condition.CreateAtGte) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "created_at >=",

@@ -190,6 +190,16 @@ func (m *UserModel) GetItemByNameAndPw(name, pw string) (item *UserModel) {
 	}
 }
 
+// GetItemByCode 通过手机获取一条记录
+func (m *UserModel) GetItemByCode(code string) (item *UserModel, err error) {
+	result := m.Model(m).Select(m.Columns()).Where("code=?", code).Take(&item)
+	if result.Error == nil {
+		return item, nil
+	} else {
+		return item, result.Error
+	}
+}
+
 // GetItemsByIds 通过id集合获取多条记录
 func (m *UserModel) GetItemsByIds(ids []int64) (items []*UserModel, err error) {
 	result := m.Model(m).Select(m.Columns()).Where("id IN ?", ids).Find(&items)

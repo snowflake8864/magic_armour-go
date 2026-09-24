@@ -7,12 +7,15 @@ import (
 	"goskeleton/app/global/enums"
 	"goskeleton/app/global/enums/enum_organization"
 	"goskeleton/app/global/enums/enum_third_user_auth"
+	"goskeleton/app/global/enums/enum_user"
 	"goskeleton/app/global/variable"
 	"goskeleton/app/model/organization/department_models"
 	"goskeleton/app/model/organization/organization_models"
+	"goskeleton/app/model/organization/user_models"
 	"goskeleton/app/model/platform/third_user_auth_models"
 	"goskeleton/app/service/organization/department_service"
 	"goskeleton/app/service/organization/organize_service"
+	"goskeleton/app/service/organization/user_service"
 	"goskeleton/app/service/platform/third_user_auth_service"
 	"goskeleton/app/utils/helpers/date_helper"
 	"goskeleton/app/utils/helpers/json_helper"
@@ -136,12 +139,12 @@ func (crd *ThirdUserAuthCmd) handleOrg() {
 
 	//格式化三方返回数据列表
 	orgSaveList, deptSaveList, deptDeleteCodes := crd.formatThirdOrg(thirdList)
-	fmt.Println("orgSaveList--------------:")
-	fmt.Println(json_helper.Encode(orgSaveList))
-	fmt.Println("deptSaveList--------------:")
-	fmt.Println(json_helper.Encode(deptSaveList))
-	fmt.Println("deptDeleteCodes--------------:")
-	fmt.Println(json_helper.Encode(deptDeleteCodes))
+	//fmt.Println("orgSaveList--------------:")
+	//fmt.Println(json_helper.Encode(orgSaveList))
+	//fmt.Println("deptSaveList--------------:")
+	//fmt.Println(json_helper.Encode(deptSaveList))
+	//fmt.Println("deptDeleteCodes--------------:")
+	//fmt.Println(json_helper.Encode(deptDeleteCodes))
 	//处理企业
 	if len(orgSaveList) > 0 {
 		if err := organize_service.CreateKoalFactory().Sync(orgSaveList); err != nil {
@@ -346,7 +349,6 @@ func (crd *ThirdUserAuthCmd) findAllParentOrgs(orgMaps map[string]*third_user_au
 
 // 处理用户
 func (crd *ThirdUserAuthCmd) handleUser() {
-	return
 	variable.ZapLog.Info("handleUser ===================================")
 
 	//获取三方数据
@@ -357,7 +359,86 @@ func (crd *ThirdUserAuthCmd) handleUser() {
 	if len(thirdList) == 0 {
 		variable.ZapLog.Info("handleUser Empty")
 	}
-	fmt.Println("userList--------------:")
-	fmt.Println(json_helper.Encode(thirdList))
-	fmt.Println("userList--------------:")
+	//fmt.Println("userList--------------:")
+	//fmt.Println(json_helper.Encode(thirdList))
+	//fmt.Println("userList--------------:")
+
+	userSaveMap, userDeleteCodes := crd.formatThirdUser(thirdList)
+	fmt.Println("userSaveMap--------------:")
+	fmt.Println(json_helper.Encode(userSaveMap))
+	fmt.Println("userDeleteCodes--------------:")
+	fmt.Println(json_helper.Encode(userDeleteCodes))
+
+	//要删除， 涉及到重新选举企业超级管理员
+	if len(userDeleteCodes) > 0 {
+		if !user_service.CreateKoalFactory().DeleteByCodes(userDeleteCodes) {
+			//同步序列
+			crd.orgMaxSeq = 0
+
+			variable.ZapLog.Info(fmt.Sprintf("user [%s] delete fail", json_helper.Encode(userDeleteCodes)))
+			return
+		}
+	}
+}
+
+// formatThirdUser 格式化三方返回数据列表
+// 返回：
+//   - userSaveMap: 用户要保存列表， 按照企业进行处理
+//   - userDeleteCodes: 用户要删除集合
+func (crd *ThirdUserAuthCmd) formatThirdUser(thirdList []*third_user_auth_service.ResponseUser) (userSaveMap map[string][]*user_models.UserModel, userDeleteCodes []string) {
+	if userSaveMap == nil {
+		userSaveMap = make(map[string][]*user_models.UserModel)
+	}
+
+	// 格式化成需要的数据
+	for _, item := range thirdList {
+		//同步序列
+		crd.orgMaxSeq = string_helper.ToInt64(item.SyncSequence)
+
+		//如果删除
+		if item.Status == enum_third_user_auth.StatusDeleted || item.SyncStatus == enum_third_user_auth.SyncStatusRevoke {
+			userDeleteCodes = append(userDeleteCodes, item.UserId)
+			continue
+		}
+
+		//状态默认正常
+		status := enum_user.StatusNormal
+		if item.Status == enum_third_user_auth.StatusLocking {
+			status = enum_user.StatusLocking
+		}
+		//是否管理员
+		isRoot := enums.IsNot
+		if item.IsRoot == "1" {
+			isRoot = enums.IsYes
+		}
+		//用户工作信息
+		var thirdOrgCode, thirdDeptCode, position string
+		if len(item.UserJobInfo) > 0 {
+			//企业编号
+			thirdOrgCode = item.UserJobInfo[0].CompanyId
+
+			//用户部门信息
+			if len(item.UserJobInfo[0].DepJobInfo) > 0 {
+				//
+				thirdDeptCode = item.UserJobInfo[0].DepJobInfo[0].DepId
+				position = item.UserJobInfo[0].DepJobInfo[0].Position
+			}
+		}
+
+		tmpModel := user_models.UserModel{
+			Username:  item.DisplayName + "_" + item.WorkNo,
+			Email:     item.UserEmail,
+			Phone:     item.Mobile,
+			Realname:  item.DisplayName,
+			Code:      item.UserId,
+			Position:  position,
+			IsRoot:    isRoot,
+			Depts:     thirdDeptCode,
+			Status:    status,
+			CreatedAt: date_helper.MilliTimestampToDatetime(string_helper.ToInt64(item.CreateTime)),
+		}
+		userSaveMap[thirdOrgCode] = append(userSaveMap[thirdOrgCode], &tmpModel)
+
+	}
+	return userSaveMap, userDeleteCodes
 }
