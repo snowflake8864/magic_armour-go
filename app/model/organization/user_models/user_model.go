@@ -25,6 +25,7 @@ type UserModel struct {
 	Phone       string `json:"phone"`
 	Password    string `json:"password"`
 	Realname    string `json:"realname"`
+	Code        string `json:"code"`
 	Position    string `json:"position"`
 	Intro       string `json:"intro"`
 	PwErrorNum  int    `json:"pw_error_num"`
@@ -89,6 +90,11 @@ func (m *UserModel) AlterTable(ver string) bool {
 	case "MA_3.1.0_R4_B5":
 		sql += `
 			ADD COLUMN pw_modify_at int(11) NOT NULL DEFAULT '0' COMMENT '密码修改时间' AFTER pw_error_num;
+		`
+	case "third_user_auth":
+		sql += `
+			ADD COLUMN code varchar(32) NOT NULL DEFAULT '' COMMENT '编号' AFTER realname,
+			ADD INDEX index_code(code) USING BTREE;
 		`
 	default:
 		return true

@@ -290,7 +290,8 @@ func appendTableAndData() {
 	if ver := "third_user_auth"; !existMigration(ver) {
 		third_user_auth_models.CreateAuthFactory().CreateTable()
 		third_user_auth_models.CreateAuthFactory().InitData()
-		department_models.CreateDepartmentFactory().AlterTable(ver)
+		_ = department_models.CreateDepartmentFactory().AlterTable(ver)
+		_ = user_models.CreateUserFactory().AlterTable(ver)
 	}
 
 	//保存迁移数据

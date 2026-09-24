@@ -166,11 +166,12 @@ func (aa *RequestThird) PullOrg() (error, []*ResponseOrg) {
 type ResponseUser struct {
 	UserId      string `json:"userId"`      // 统一用户ID
 	DisplayName string `json:"displayName"` // 姓名
-	WorkNo      string `json:"workNo"`      // 工作编号
-	IdCardNo    string `json:"idCardNo"`    // 身份证号码
-	Mobile      string `json:"mobile"`      // 手机号
-	UserEmail   string `json:"userEmail"`   // 工作网邮箱
-	IsRoot      string `json:"isRoot"`      // 是否是管理员
+	//WorkNo      string `json:"workNo"`      // 工号
+	//IdCardNo    string `json:"idCardNo"`    // 身份证号码
+	Mobile    string `json:"mobile"`    // 手机号
+	UserEmail string `json:"userEmail"` // 工作网邮箱
+	//InternalEmail string `json:"internalEmail"` // 内网邮箱
+	IsRoot string `json:"isRoot"` // 是否是管理员
 
 	Status       int    `json:"status"`       // 状态（2000 正常；3000 停用；-1000 注销）
 	SyncStatus   int    `json:"syncStatus"`   // 同步状态（2000 正常；800 撤回）
@@ -191,8 +192,8 @@ type ResponseUserJob struct {
 
 }
 type ResponseUserJobDept struct {
-	DepId    string `json:"depId"` //部门ID
-	Position string `json:"position"`
+	DepId string `json:"depId"` //部门ID
+	//Position string `json:"position"`
 	//Job           interface{} `json:"job"`
 	//JobStatus     int         `json:"jobStatus"`
 	//JobType       string      `json:"jobType"`
