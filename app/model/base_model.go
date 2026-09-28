@@ -82,7 +82,6 @@ func (m *BaseModel) WhereBuild(conditions []model_comm.Conditions) (whereSQL str
 		if whereSQL != "" {
 			whereSQL += " AND "
 		}
-
 		switch len(fieldAndWhere) {
 		case 1:
 			whereSQL += fmt.Sprint(fieldAndWhere[0], "=?")
@@ -132,6 +131,12 @@ func (m *BaseModel) WhereBuild(conditions []model_comm.Conditions) (whereSQL str
 				break
 			case "IsNotNull":
 				whereSQL += fmt.Sprint(field, " IS NOT NULL")
+				break
+			case "IsEmpty":
+				whereSQL += fmt.Sprint(field, " = ''")
+				break
+			case "IsNotEmpty":
+				whereSQL += fmt.Sprint(field, " != ''")
 				break
 			case "findInSetLater":
 				whereSQL += fmt.Sprint(" FIND_IN_SET(?, ", field, ")")

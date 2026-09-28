@@ -29,6 +29,9 @@ const (
 	GrantStatusAuthorized   int = 2 //授权状态: 已授权
 	GrantStatusExpired      int = 3 //授权状态: 已过期
 
+	ModMatched int = 1 //内核匹配状态
+	ModUnmatch int = 2 //内核匹配状态
+
 	AgentFieldDefault string = "id" //默认排序字段
 )
 
@@ -67,6 +70,14 @@ var EnumIntMap = map[string]map[int]string{
 		GrantStatusAuthorized:   "Authorized",
 		GrantStatusExpired:      "Expired",
 	},
+	"mod_match": {
+		ModMatched: "已适配",
+		ModUnmatch: "未适配",
+	},
+	"mod_match_en": {
+		ModMatched: "Matched",
+		ModUnmatch: "Unmatch",
+	},
 }
 
 var WebMapInt = map[string][]int{
@@ -81,6 +92,10 @@ var WebMapInt = map[string][]int{
 	"grant_status": {
 		GrantStatusUnauthorized,
 		GrantStatusAuthorized,
+	},
+	"mod_match": {
+		ModMatched,
+		ModUnmatch,
 	},
 }
 

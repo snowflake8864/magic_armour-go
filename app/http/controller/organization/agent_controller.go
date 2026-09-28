@@ -52,6 +52,16 @@ func (u *AgentController) SafeStatus(ctx *gin.Context) {
 	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
 }
 
+// ModMatch 内核匹配
+func (u *AgentController) ModMatch(ctx *gin.Context) {
+	keys := enums.Get1stIsStrReturnSliceOfInt("mod_match", enum_agent.WebMapInt)
+	labels := enums.Get1stIsStrReturnMapIntOfStr("mod_match", enum_agent.EnumIntMap)
+	if cur_userinfo.GetLocales(ctx) == consts.LanguageEn {
+		labels = enums.Get1stIsStrReturnMapIntOfStr("mod_match_en", enum_agent.EnumIntMap)
+	}
+	response.SuccessReturnData(ctx, (&transformer.Common{Lang: cur_userinfo.GetLocales(ctx)}).FormatIntList(keys, labels, true))
+}
+
 // GrantStatus 授权状态
 func (u *AgentController) GrantStatus(ctx *gin.Context) {
 	keys := enums.Get1stIsStrReturnSliceOfInt("grant_status", enum_agent.WebMapInt)

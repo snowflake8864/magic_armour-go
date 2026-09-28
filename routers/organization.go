@@ -166,6 +166,7 @@ func InitOrganizationRouter() *gin.Engine {
 						public.POST("safeStatus", (&organization.AgentController{}).SafeStatus)
 						public.POST("grantStatus", (&organization.AgentController{}).GrantStatus)
 						public.POST("types", (&organization.AgentController{}).TypeList)
+						public.POST("modMatch", (&organization.AgentController{}).ModMatch)
 					}
 					manage := agent.Group("manage/")
 					{

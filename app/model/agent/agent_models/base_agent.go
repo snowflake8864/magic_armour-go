@@ -3,6 +3,7 @@ package agent_models
 import (
 	"fmt"
 	"goskeleton/app/global/enums"
+	"goskeleton/app/global/enums/enum_agent"
 	"goskeleton/app/global/enums/enum_software"
 	"goskeleton/app/model/model_comm"
 	"goskeleton/app/utils/helpers/string_helper"
@@ -35,6 +36,7 @@ type SearchConditions struct {
 	IsOnline            *int
 	IsSafe              *int
 	GrantStatus         int
+	ModMatch            int
 	GrantType           int
 	GrantExpireAtLte    string
 	Alias               string
@@ -126,6 +128,7 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 			Val: condition.GrantStatus,
 		})
 	}
+
 	if condition.GrantType > 0 {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "grant_type",
@@ -157,6 +160,18 @@ func (m *baseAgent) conditions2Where(condition SearchConditions) (wheres []model
 			Val: condition.DeptIds,
 		})
 	}
+	if condition.ModMatch > 0 {
+		if condition.ModMatch == enum_agent.ModMatched {
+			wheres = append(wheres, model_comm.Conditions{
+				Key: "mod_ver IsNotEmpty",
+			})
+		} else if condition.ModMatch == enum_agent.ModUnmatch {
+			wheres = append(wheres, model_comm.Conditions{
+				Key: "mod_ver IsEmpty",
+			})
+		}
+	}
+
 	if !string_helper.IsEmpty(condition.LiveAtLte) {
 		wheres = append(wheres, model_comm.Conditions{
 			Key: "live_at <=",

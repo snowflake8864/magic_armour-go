@@ -37,6 +37,7 @@ func (u *ControllerBase) getAgentSearchConditions(ctx *gin.Context) (agent_model
 	conditions.NetIp = ctx.GetString(consts.ValidatorPrefixOrg + "netIp")
 	conditions.Alias = ctx.GetString(consts.ValidatorPrefixOrg + "alias")
 	conditions.GrantStatus = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "grantStatus"))
+	conditions.ModMatch = int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "modMatch"))
 	if val, isOk := ctx.Get(consts.ValidatorPrefixOrg + "isOnline"); isOk && val != nil {
 		isOnline := int(ctx.GetFloat64(consts.ValidatorPrefixOrg + "isOnline"))
 		conditions.IsOnline = &isOnline
