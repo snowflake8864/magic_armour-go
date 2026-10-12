@@ -1,7 +1,6 @@
 package organization
 
 import (
-	"github.com/gin-gonic/gin"
 	"goskeleton/app/global/consts"
 	"goskeleton/app/http/middleware/authorization/middleware_auth_org"
 	"goskeleton/app/service/organization/user_service"
@@ -11,6 +10,8 @@ import (
 	"goskeleton/app/utils/openssl_encrypt"
 	"goskeleton/app/utils/response"
 	"net/url"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AuthController 安全验证相关
