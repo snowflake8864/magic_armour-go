@@ -5,4 +5,7 @@
 /storage/app/uploaded/*
 /public/storage
 *.exe
-*.linux64
+*.linux64config/config.yml
+app/utils/ali_sms/send.go
+config/config.yml
+app/utils/ali_sms/send.go
